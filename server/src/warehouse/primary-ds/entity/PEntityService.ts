@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 
@@ -24,8 +23,6 @@ export class PEntityService extends PrimaryDataService< PEntityId, PEntity>{
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
         ],
-            pEntityIdToString,
-            stringToPEntityId,
             pEntityKeyDefs
         )
 

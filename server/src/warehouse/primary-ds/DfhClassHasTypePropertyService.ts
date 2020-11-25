@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {rClassIdToString, stringToRClassId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 export interface RClassId {
     pkClass: number
 }
@@ -28,8 +27,6 @@ export class DfhClassHasTypePropertyService extends PrimaryDataService<RClassId,
         super(
             wh,
             ['modified_data_for_history_api_property'],
-            rClassIdToString,
-            stringToRClassId,
             rClassIdKeyDefs
         )
     }

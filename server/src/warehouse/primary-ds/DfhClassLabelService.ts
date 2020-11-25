@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {dfhClassIdToString, stringToDfhClassId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 export interface DfhClassLabelId {
     pkClass: number
     language: string
@@ -23,8 +22,6 @@ export class DfhClassLabelService extends PrimaryDataService<DfhClassLabelId, Df
         super(
             wh,
             ['modified_data_for_history_api_class'],
-            dfhClassIdToString,
-            stringToDfhClassId,
             keyDefs
         )
     }

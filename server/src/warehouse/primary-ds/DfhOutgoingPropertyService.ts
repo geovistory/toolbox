@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {outgoingProperyIdToString, stringToOutgoingProperyId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 export interface OutgoingProperyId {
     fkDomain: number
     fkProperty: number
@@ -46,8 +45,6 @@ export class DfhOutgoingPropertyService extends PrimaryDataService<OutgoingPrope
     constructor(wh: Warehouse) {
         super(wh,
             ['modified_data_for_history_api_property'],
-            outgoingProperyIdToString,
-            stringToOutgoingProperyId,
             outgoingPropertykeyDefs
         )
     }

@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {rEntityIdToString, stringToREntityId} from '../../../base/functions';
 import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityClassLabelAggregator} from './REntityClassLabelAggregator';
@@ -14,8 +13,6 @@ export class REntityClassLabelService extends AggregatedDataService<REntityId, R
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rEntityIdToString,
-            stringToREntityId,
             rEntityKeyDefs
         )
         this.registerCreatorDS(this.wh.prim.rEntity)

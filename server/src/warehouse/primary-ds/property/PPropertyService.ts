@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {pPropertyIdToString, stringToPPropertyId} from '../../base/functions';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 export interface PPropertyId {
@@ -31,7 +30,7 @@ export class PPropertyService extends PrimaryDataService<PPropertyId, PPropertyV
         'modified_projects_dfh_profile_proj_rel',
         'modified_data_for_history_api_property',
         'modified_data_for_history_api_class'
-      ], pPropertyIdToString, stringToPPropertyId,
+      ],
       pPropertyKeyDef
     )
 

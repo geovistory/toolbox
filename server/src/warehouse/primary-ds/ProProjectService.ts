@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {projectIdToString, stringToProjectId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 export interface ProjectId {
     pkProject: number
 }
@@ -18,8 +17,6 @@ export class ProProjectService extends PrimaryDataService<ProjectId, ProjectVal>
         super(
             wh,
             ['modified_projects_project'],
-            projectIdToString,
-            stringToProjectId,
             pProjectKeyDef
         )
     }

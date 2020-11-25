@@ -1,5 +1,5 @@
 import {combineLatest, Observable} from 'rxjs';
-import {filter, mapTo, map} from 'rxjs/operators';
+import {filter, map, mapTo} from 'rxjs/operators';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {PClassService} from '../primary-ds/class/PClassService';
@@ -11,11 +11,11 @@ import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
 import {StatementItemToIndexate} from "../primary-ds/edge/edge.commons";
 import {PEdgeService} from '../primary-ds/edge/PEdgeService';
 import {REdgeService} from '../primary-ds/edge/REdgeService';
-import {PEntity, PEntityId, PEntityService} from '../primary-ds/entity/PEntityService';
+import {PEntityService} from '../primary-ds/entity/PEntityService';
 import {REntityService} from '../primary-ds/entity/REntityService';
-import {PClassId, ProClassFieldsConfigService} from '../primary-ds/ProClassFieldsConfigService';
+import {ProClassFieldsConfigService} from '../primary-ds/ProClassFieldsConfigService';
 import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
-import {EntityLabelConfigVal, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
+import {ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
 import {PPropertyService} from '../primary-ds/property/PPropertyService';
 import {RPropertyService} from '../primary-ds/property/RPropertyService';
 import {ProProjectService} from '../primary-ds/ProProjectService';
@@ -86,16 +86,6 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
             }),
             mapTo(true))
 
-    }
-
-    async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfigVal) {
-        return this.proEntityLabelConfig.index.addToIdx(keyModel, val)
-    }
-    async createEntity(keyModel: PEntityId, val: PEntity) {
-        return this.pEntity.index.addToIdx(keyModel, val)
-    }
-    async indexateEdges(items: StatementItemToIndexate[]) {
-        return this.pEdge.indexateItems(items)
     }
 
     async initAllIndexes() {

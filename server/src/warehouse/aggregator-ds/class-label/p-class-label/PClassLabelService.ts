@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pClassIdToString, stringToPClassId} from '../../../base/functions';
 import {PClassService} from '../../../primary-ds/class/PClassService';
 import {PClassId, pClassIdKeyDef} from '../../../primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../Warehouse';
@@ -14,8 +13,6 @@ export class PClassLabelService extends AggregatedDataService<PClassId, PClassLa
     constructor(public wh: Warehouse) {
         super(
             wh,
-            pClassIdToString,
-            stringToPClassId,
             pClassIdKeyDef
         )
         this.registerCreatorDS(wh.prim.pClass);

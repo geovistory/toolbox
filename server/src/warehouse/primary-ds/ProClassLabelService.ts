@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {proClassIdToString, stringToProClassId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 export interface ProClassLabelId {
     fkProject: number
     fkClass: number
@@ -29,8 +28,6 @@ export class ProClassLabelService extends PrimaryDataService< ProClassLabelId, P
         super(
             wh,
             ['modified_projects_text_property'],
-            proClassIdToString,
-            stringToProClassId,
             keyDefs)
     }
 

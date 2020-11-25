@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {dfhPropertyIdToString, stringToDfhPropertyId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 export interface DfhPropertyLabelId {
     pkProperty: number
     language: string
@@ -17,8 +16,6 @@ export class DfhPropertyLabelService extends PrimaryDataService<DfhPropertyLabel
         super(
             wh,
             ['modified_data_for_history_api_property'],
-            dfhPropertyIdToString,
-            stringToDfhPropertyId,
             dfhPropertyLabelIdKeyDef
         )
     }

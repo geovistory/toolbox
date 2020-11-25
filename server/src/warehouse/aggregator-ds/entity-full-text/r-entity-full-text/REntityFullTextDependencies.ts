@@ -1,6 +1,5 @@
 import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {pClassIdToString, rClassFieldIdToString, rClassIdToString, rEntityIdToString, stringToPClassId, stringToRClassFieldId, stringToRClassId, stringToREntityId} from '../../../base/functions'
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
@@ -27,10 +26,6 @@ export class REntityFullTextDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.prim.rEntity,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
         ))
 
         // stores the dependency of entityFullText (receiver) on rEntityLabel (provider)
@@ -38,10 +33,6 @@ export class REntityFullTextDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.agg.rEntityLabel,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
         ));
 
         // stores the dependency of entityFullText (receiver) on rEdge (provider)
@@ -49,10 +40,6 @@ export class REntityFullTextDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.prim.rEdge,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
         ));
 
         // stores the dependency of entityFullText (receiver) on dfhClassHasTypeProperty
@@ -60,10 +47,6 @@ export class REntityFullTextDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.prim.pClassFieldsConfig,
-            rEntityIdToString,
-            stringToREntityId,
-            pClassIdToString,
-            stringToPClassId,
         ));
 
         // stores the dependency of entityFullText (receiver) on project class labels
@@ -71,20 +54,12 @@ export class REntityFullTextDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.agg.rClassLabel,
-            rEntityIdToString,
-            stringToREntityId,
-            rClassIdToString,
-            stringToRClassId,
         ));
 
         this.rClassFieldLabel = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.agg.rClassFieldLabel,
-            rEntityIdToString,
-            stringToREntityId,
-            rClassFieldIdToString,
-            stringToRClassFieldId,
         ));
     }
 }

@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {rClassFieldIdToString, stringToRClassFieldId} from '../../../base/functions';
 import {KeyDefinition} from '../../../base/interfaces/KeyDefinition';
 import {RPropertyService} from '../../../primary-ds/property/RPropertyService';
 import {Warehouse} from '../../../Warehouse';
@@ -34,8 +33,6 @@ export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rClassFieldIdToString,
-            stringToRClassFieldId,
             rClassFieldKeyDef
         )
 

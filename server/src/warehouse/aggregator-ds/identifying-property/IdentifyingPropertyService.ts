@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
-import {rClassIdToString, stringToRClassId} from '../../base/functions';
 import {RClassId, rClassIdKeyDefs} from '../../primary-ds/DfhClassHasTypePropertyService';
 import {DfhOutgoingPropertyService, OutgoingPropertyVal} from '../../primary-ds/DfhOutgoingPropertyService';
 import {Warehouse} from '../../Warehouse';
@@ -18,8 +17,6 @@ export class IdentifyingPropertyService extends AggregatedDataService<RClassId, 
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rClassIdToString,
-            stringToRClassId,
             rClassIdKeyDefs
         )
         this.registerCreatorDS(this.wh.prim.dfhOutgoingProperty)

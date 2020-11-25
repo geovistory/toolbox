@@ -1,6 +1,5 @@
 import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {rEntityIdToString, stringToREntityId} from '../../../base/functions'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
@@ -39,11 +38,7 @@ export class REntityTimeSpanDependencies extends Dependencies {
         this.rEntity = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.rEntityTimeSpan,
-            this.wh.prim.rEntity,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
+            this.wh.prim.rEntity
         ))
 
         // stores the dependency of entityType (receiver) on edge (provider)
@@ -51,10 +46,6 @@ export class REntityTimeSpanDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityTimeSpan,
             this.wh.prim.rEdge,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
         ));
 
     }

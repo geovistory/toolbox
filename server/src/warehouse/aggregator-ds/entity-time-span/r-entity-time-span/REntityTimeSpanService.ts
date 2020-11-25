@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {rEntityIdToString, stringToREntityId} from '../../../base/functions';
 import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
 import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
@@ -52,8 +51,6 @@ export class REntityTimeSpanService extends AggregatedDataService<REntityId, REn
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rEntityIdToString,
-            stringToREntityId,
             rEntityKeyDefs
         )
         this.registerCreatorDS(this.wh.prim.rEntity)

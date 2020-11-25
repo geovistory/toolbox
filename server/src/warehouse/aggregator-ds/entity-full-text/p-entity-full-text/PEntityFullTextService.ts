@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
 import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
@@ -32,8 +31,6 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
     constructor(public wh: Warehouse) {
         super(
             wh,
-            pEntityIdToString,
-            stringToPEntityId,
             pEntityKeyDefs
         )
         this.registerCreatorDS(wh.prim.pEntity)

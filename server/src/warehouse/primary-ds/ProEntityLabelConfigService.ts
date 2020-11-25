@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
 import {PClassId, pClassIdKeyDef} from './ProClassFieldsConfigService';
 
@@ -26,8 +25,6 @@ export class ProEntityLabelConfigService extends PrimaryDataService<PClassId, En
         super(
             wh,
             ['modified_projects_entity_label_config'],
-            pClassIdToString,
-            stringToPClassId,
             pClassIdKeyDef
         )
     }

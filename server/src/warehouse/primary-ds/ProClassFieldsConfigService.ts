@@ -1,7 +1,6 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {pClassIdToString, stringToPClassId} from '../base/functions';
-import {Warehouse} from '../Warehouse';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
+import {Warehouse} from '../Warehouse';
 
 export interface PClassId {
     fkProject: number,
@@ -29,8 +28,6 @@ export class ProClassFieldsConfigService extends PrimaryDataService<PClassId, Pr
         super(
             wh,
             ['modified_projects_class_field_config'],
-            pClassIdToString,
-            stringToPClassId,
             pClassIdKeyDef
         )
     }

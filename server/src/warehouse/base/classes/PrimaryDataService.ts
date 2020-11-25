@@ -5,7 +5,6 @@ import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Logger} from './Logger';
-import {logSql} from '../../../utils/helpers';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -26,25 +25,14 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     constructor(
         public wh: Warehouse,
         private listenTo: string[],
-        public keyToString: (key: KeyModel) => string,
-        public stringToKey: (str: string) => KeyModel,
         private keyDefs: KeyDefinition[]
     ) {
         super(wh)
         this.index = new DataIndexPostgres(
             this.keyDefs,
-            keyToString,
-            stringToKey,
             'prim_' + this.constructor.name.replace('Service', ''),
             wh
         )
-        // this.meta = new IndexDBGeneric(
-        //     (key: string) => key,
-        //     (str: string) => str,
-        //     this.constructor.name + '_meta',
-        //     wh
-        // )
-
 
     }
 

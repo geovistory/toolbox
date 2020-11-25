@@ -26,8 +26,6 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
     constructor(
         public keyDefs: KeyDefinition[],
-        public keyToString: (key: KeyModel) => string,
-        public stringToKey: (str: string) => KeyModel,
         name: string,
         wh: Warehouse
     ) {
@@ -96,46 +94,46 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
     }
 
-    forEachValue(cb: (val: ValueModel) => void): Promise<void> {
-        throw new Error('Method not implemented.');
-    }
-    getValues(): Promise<ValueModel[]> {
-        throw new Error('Method not implemented.');
-    }
+    // forEachValue(cb: (val: ValueModel) => void): Promise<void> {
+    //     throw new Error('Method not implemented.');
+    // }
+    // getValues(): Promise<ValueModel[]> {
+    //     throw new Error('Method not implemented.');
+    // }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     err(e: any) {
         console.log(`Error during setup of  ${this.schema}.${this.table}:`, e)
     }
 
-    async addToIdx(keyModel: KeyModel, val: ValueModel): Promise<void> {
-        const key: string = this.keyToString(keyModel);
+    // async addToIdx(keyModel: KeyModel, val: ValueModel): Promise<void> {
+    //     const key: string = this.keyToString(keyModel);
 
-        return new Promise((res, rej) => {
-            this.pgPool.query(this.insertStmt, [
-                ...this.getKeyModelValues(keyModel),
-                key,
-                Array.isArray(val) ? JSON.stringify(val) : val,
-            ]).then(_ => res())
-                .catch(e => {
-                    console.log('error when inserting: ', {key, val})
-                    console.log(e)
-                });
-        })
+    //     return new Promise((res, rej) => {
+    //         this.pgPool.query(this.insertStmt, [
+    //             ...this.getKeyModelValues(keyModel),
+    //             key,
+    //             Array.isArray(val) ? JSON.stringify(val) : val,
+    //         ]).then(_ => res())
+    //             .catch(e => {
+    //                 console.log('error when inserting: ', {key, val})
+    //                 console.log(e)
+    //             });
+    //     })
+    // }
 
-    }
 
     getKeyModelValues(keyModel: KeyModel) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this.keyDefs.map(k => (keyModel as any)[k.name]);
     }
 
-    async removeFromIdx(keyModel: KeyModel): Promise<void> {
-        const key: string = this.keyToString(keyModel);
-        await this.pgPool.query(`
-            DELETE FROM ${this.schema}.${this.table} WHERE key = $1;
-        `, [key]);
-    }
+    // async removeFromIdx(keyModel: KeyModel): Promise<void> {
+    //     const key: string = this.keyToString(keyModel);
+    //     await this.pgPool.query(`
+    //         DELETE FROM ${this.schema}.${this.table} WHERE key = $1;
+    //     `, [key]);
+    // }
 
 
     async removeFromIdxWhereDeletedBefore(tmsp: string): Promise<void> {
@@ -213,41 +211,41 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
     }
 
 
-    async forEachKey<M>(cb: (key: KeyModel) => Promise<M>) {
-        const querystream = new QueryStream(
-            `SELECT key FROM ${this.schema}.${this.table}`
-        )
-        const stream = await this.manageQueryStream<M>(querystream);
-        return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
+    // async forEachKey<M>(cb: (key: KeyModel) => Promise<M>) {
+    //     const querystream = new QueryStream(
+    //         `SELECT key FROM ${this.schema}.${this.table}`
+    //     )
+    //     const stream = await this.manageQueryStream<M>(querystream);
+    //     return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
 
-    }
+    // }
 
-    async forEachKeyStartingWith<M>(str: string, cb: (key: KeyModel) => Promise<M>): Promise<void> {
-        const querystream = new QueryStream(
-            `SELECT key FROM ${this.schema}.${this.table} WHERE key LIKE $1`,
-            [str + '%']
-        )
-        const stream = await this.manageQueryStream<M>(querystream);
-        return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
-    }
+    // async forEachKeyStartingWith<M>(str: string, cb: (key: KeyModel) => Promise<M>): Promise<void> {
+    //     const querystream = new QueryStream(
+    //         `SELECT key FROM ${this.schema}.${this.table} WHERE key LIKE $1`,
+    //         [str + '%']
+    //     )
+    //     const stream = await this.manageQueryStream<M>(querystream);
+    //     return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
+    // }
 
-    async forEachItemWith<M>(partialKey: Partial<KeyModel>, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
-        const cols = keys(partialKey);
-        if (cols.length < 1) throw new Error("Partial key must contain at least one key");
-        const sql = `
-        SELECT ${this.keyJsonObjSql} as key, val as value
-        FROM ${this.schemaTable}
-        WHERE ${cols.map((k, i) => `"${k}"=$${i + 1}`).join(' AND ')}`
-        const querystream = new QueryStream(
-            sql,
-            values(partialKey)
-        )
-        const stream = await this.manageQueryStream<M>(querystream);
-        return handleAsyncStream<M, {key: KeyModel, value: ValueModel}>(stream, (item) => cb({
-            key: item.key,
-            value: item.value
-        }));
-    }
+    // async forEachItemWith<M>(partialKey: Partial<KeyModel>, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
+    //     const cols = keys(partialKey);
+    //     if (cols.length < 1) throw new Error("Partial key must contain at least one key");
+    //     const sql = `
+    //     SELECT ${this.keyJsonObjSql} as key, val as value
+    //     FROM ${this.schemaTable}
+    //     WHERE ${cols.map((k, i) => `"${k}"=$${i + 1}`).join(' AND ')}`
+    //     const querystream = new QueryStream(
+    //         sql,
+    //         values(partialKey)
+    //     )
+    //     const stream = await this.manageQueryStream<M>(querystream);
+    //     return handleAsyncStream<M, {key: KeyModel, value: ValueModel}>(stream, (item) => cb({
+    //         key: item.key,
+    //         value: item.value
+    //     }));
+    // }
 
     async forEachItemWithNoDeleted<M>(partialKey: Partial<KeyModel>, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
         const cols = keys(partialKey);
@@ -271,45 +269,45 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
 
 
-    async clearIdx() {
-        await this.pgPool.query(`TRUNCATE TABLE ${this.schema}.${this.table};`)
-    }
+    // async clearIdx() {
+    //     await this.pgPool.query(`TRUNCATE TABLE ${this.schema}.${this.table};`)
+    // }
 
 
-    async keyExists(key: string): Promise<boolean> {
-        return new Promise((res, rej) => {
+    // async keyExists(key: string): Promise<boolean> {
+    //     return new Promise((res, rej) => {
 
-            this.pgPool.query<{exists: boolean}>(
-                `SELECT EXISTS (SELECT key FROM ${this.schema}.${this.table} WHERE key = $1);`,
-                [key]
-            )
-                .then(results => res(results?.rows?.[0].exists)
-                ).catch(e => rej(e))
+    //         this.pgPool.query<{exists: boolean}>(
+    //             `SELECT EXISTS (SELECT key FROM ${this.schema}.${this.table} WHERE key = $1);`,
+    //             [key]
+    //         )
+    //             .then(results => res(results?.rows?.[0].exists)
+    //             ).catch(e => rej(e))
 
-        });
-    }
-
-
-    async getKeys(): Promise<KeyModel[]> {
-        return new Promise((res, rej) => {
-            this.pgPool.query<{keys: KeyModel[]}>(
-                `SELECT array_agg(key) AS keys FROM ${this.schema}.${this.table};`
-            ).then(results => res(results?.rows?.[0].keys)
-            ).catch(e => rej(e))
-        })
-    }
+    //     });
+    // }
 
 
+    // async getKeys(): Promise<KeyModel[]> {
+    //     return new Promise((res, rej) => {
+    //         this.pgPool.query<{keys: KeyModel[]}>(
+    //             `SELECT array_agg(key) AS keys FROM ${this.schema}.${this.table};`
+    //         ).then(results => res(results?.rows?.[0].keys)
+    //         ).catch(e => rej(e))
+    //     })
+    // }
 
-    async getLength(): Promise<number> {
-        return new Promise((res, rej) => {
-            this.pgPool.query<{count: string}>(
-                `SELECT count(*) FROM ${this.schema}.${this.table}`
-            ).then(results => res(parseInt(results?.rows?.[0].count, 10))
-            ).catch(e => rej(e))
-        })
 
-    }
+
+    // async getLength(): Promise<number> {
+    //     return new Promise((res, rej) => {
+    //         this.pgPool.query<{count: string}>(
+    //             `SELECT count(*) FROM ${this.schema}.${this.table}`
+    //         ).then(results => res(parseInt(results?.rows?.[0].count, 10))
+    //         ).catch(e => rej(e))
+    //     })
+
+    // }
 
     /**
      * Takes QueryStream, checks out a pg.Client and returns the QueryStream.

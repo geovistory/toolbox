@@ -88,16 +88,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     constructor(
         public wh: Warehouse,
-        public keyToString: (key: KeyModel) => string,
-        public stringToKey: (str: string) => KeyModel,
-        private keyDefs: KeyDefinition[]
+        protected keyDefs: KeyDefinition[]
     ) {
         super(wh)
         const tableName = 'agg_' + this.constructor.name.replace('Service', '')
         this.index = new DataIndexPostgres(
             this.keyDefs,
-            keyToString,
-            stringToKey,
             tableName,
             wh
         )

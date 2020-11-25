@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {pClassIdToString, stringToPClassId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
 import {pClassIdKeyDef} from '../ProClassFieldsConfigService';
 export interface PClassId {fkProject: number, pkClass: number}
@@ -14,11 +13,13 @@ export class PClassService extends PrimaryDataService<PClassId, PClassVal>{
   measure = 1000;
 
   constructor(public wh: Warehouse) {
-    super(wh, [
-      'modified_projects_project',
-      'modified_projects_dfh_profile_proj_rel',
-      'modified_data_for_history_api_class'
-    ], pClassIdToString, stringToPClassId,
+    super(
+      wh,
+      [
+        'modified_projects_project',
+        'modified_projects_dfh_profile_proj_rel',
+        'modified_data_for_history_api_class'
+      ],
       pClassIdKeyDef
     )
 

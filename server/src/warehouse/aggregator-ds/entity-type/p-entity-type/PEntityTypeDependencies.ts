@@ -1,6 +1,5 @@
 import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {pEntityIdToString, rClassIdToString, rEntityIdToString, stringToPEntityId, stringToRClassId, stringToREntityId} from '../../../base/functions'
 import {DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService'
@@ -23,10 +22,6 @@ export class PEntityTypeDependencies extends Dependencies {
             this.wh,
             this.wh.agg.pEntityType,
             this.wh.prim.pEntity,
-            pEntityIdToString,
-            stringToPEntityId,
-            pEntityIdToString,
-            stringToPEntityId,
         ))
 
         // stores the dependency of pEntityType (receiver) on pEntityLabel (provider)
@@ -34,43 +29,27 @@ export class PEntityTypeDependencies extends Dependencies {
             this.wh,
             this.wh.agg.pEntityType,
             this.wh.agg.pEntityLabel,
-            pEntityIdToString,
-            stringToPEntityId,
-            pEntityIdToString,
-            stringToPEntityId,
         ));
 
         // stores the dependency of pEntityType (receiver) on rEntityLabel (provider)
         this.rEntityLabel = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.pEntityType,
-            this.wh.agg.rEntityLabel,
-            pEntityIdToString,
-            stringToPEntityId,
-            rEntityIdToString,
-            stringToREntityId,
+            this.wh.agg.rEntityLabel
         ));
 
         // stores the dependency of pEntityType (receiver) on pEdge (provider)
         this.pEdge = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.pEntityType,
-            this.wh.prim.pEdge,
-            pEntityIdToString,
-            stringToPEntityId,
-            pEntityIdToString,
-            stringToPEntityId,
+            this.wh.prim.pEdge
         ));
 
         // stores the dependency of pEntityType (receiver) on dfhClassHasTypeProperty
         this.dfhClassHasTypeProp = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.pEntityType,
-            this.wh.prim.dfhClassHasTypeProperty,
-            pEntityIdToString,
-            stringToPEntityId,
-            rClassIdToString,
-            stringToRClassId,
+            this.wh.prim.dfhClassHasTypeProperty
         ));
 
 

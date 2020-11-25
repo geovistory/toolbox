@@ -1,6 +1,5 @@
 import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {dfhPropertyIdToString, proPropertyIdToString, rClassFieldIdToString, stringToDfhPropertyId, stringToProPropertyId, stringToRClassFieldId} from '../../../base/functions'
 import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
@@ -18,20 +17,12 @@ export class RClassFieldLabelDependencies extends Dependencies {
       wh,
       wh.agg.rClassFieldLabel,
       wh.prim.dfhPropertyLabel,
-      rClassFieldIdToString,
-      stringToRClassFieldId,
-      dfhPropertyIdToString,
-      stringToDfhPropertyId
     ))
 
     this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
       wh,
       wh.agg.rClassFieldLabel,
       wh.prim.proPropertyLabel,
-      rClassFieldIdToString,
-      stringToRClassFieldId,
-      proPropertyIdToString,
-      stringToProPropertyId
     ))
   }
 

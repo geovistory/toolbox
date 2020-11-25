@@ -1,12 +1,11 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {rClassIdToString, stringToRClassId} from '../../../base/functions';
-import {RClassService} from '../../../primary-ds/class/RClassService';
-import {RClassId, rClassIdKeyDefs} from '../../../primary-ds/DfhClassHasTypePropertyService';
-import {Warehouse, PK_ENGLISH, PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
-import {RClassLabelAggregator} from './RClassLabelAggregator';
-import {RClassLabelProviders} from './RClassLabelProviders';
 import {PoolClient} from 'pg';
 import {brkOnErr, logSql} from '../../../../utils/helpers';
+import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
+import {RClassService} from '../../../primary-ds/class/RClassService';
+import {RClassId, rClassIdKeyDefs} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH, Warehouse} from '../../../Warehouse';
+import {RClassLabelAggregator} from './RClassLabelAggregator';
+import {RClassLabelProviders} from './RClassLabelProviders';
 
 export type RClassLabelValue = {label?: string}
 export class RClassLabelService extends AggregatedDataService<RClassId, RClassLabelValue>{
@@ -16,8 +15,6 @@ export class RClassLabelService extends AggregatedDataService<RClassId, RClassLa
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rClassIdToString,
-            stringToRClassId,
             rClassIdKeyDefs
         )
         this.registerCreatorDS(wh.prim.rClass);

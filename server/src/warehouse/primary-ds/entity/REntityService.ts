@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {rEntityIdToString, stringToREntityId} from '../../base/functions';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 
@@ -25,8 +24,6 @@ export class REntityService extends PrimaryDataService<REntityId, REntity>{
                 'modified_information_persistent_item',
                 'modified_information_temporal_entity'
             ],
-            rEntityIdToString,
-            stringToREntityId,
             rEntityKeyDefs
         )
 

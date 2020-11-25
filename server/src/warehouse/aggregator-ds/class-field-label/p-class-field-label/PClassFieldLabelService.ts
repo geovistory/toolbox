@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pClassFieldIdToString, stringToPClassFieldId} from '../../../base/functions';
 import {KeyDefinition} from '../../../base/interfaces/KeyDefinition';
 import {PPropertyService} from '../../../primary-ds/property/PPropertyService';
 import {Warehouse} from '../../../Warehouse';
@@ -36,8 +35,6 @@ export class PClassFieldLabelService extends AggregatedDataService<PClassFieldLa
     constructor(public wh: Warehouse) {
         super(
             wh,
-            pClassFieldIdToString,
-            stringToPClassFieldId,
             pClassFieldKeyDef
         )
 

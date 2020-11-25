@@ -1,6 +1,5 @@
 import {Dependencies} from '../../base/classes/Dependencies'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {outgoingProperyIdToString, rClassIdToString, stringToOutgoingProperyId, stringToRClassId} from '../../base/functions'
 import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
 import {OutgoingPropertyVal, OutgoingProperyId} from '../../primary-ds/DfhOutgoingPropertyService'
 import {Warehouse} from '../../Warehouse'
@@ -16,10 +15,6 @@ export class IdentifyingPropertyDependencies extends Dependencies {
       wh,
       wh.agg.identifyingProperty,
       wh.prim.dfhOutgoingProperty,
-      rClassIdToString,
-      stringToRClassId,
-      outgoingProperyIdToString,
-      stringToOutgoingProperyId
     ))
 
   }

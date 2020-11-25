@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {rEntityIdToString, stringToREntityId} from '../../../base/functions';
 import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {EntityLabelVal} from '../entity-label.commons';
@@ -13,8 +12,6 @@ export class REntityLabelService extends AggregatedDataService<REntityId, Entity
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rEntityIdToString,
-            stringToREntityId,
             rEntityKeyDefs
         )
 

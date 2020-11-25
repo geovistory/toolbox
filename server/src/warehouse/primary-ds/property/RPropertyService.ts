@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {rPropertyIdToString, stringToRPropertyId} from '../../base/functions';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 export interface RPropertyId {
@@ -34,10 +33,12 @@ export class RPropertyService extends PrimaryDataService<RPropertyId, RPropertyV
 
 
   constructor(public wh: Warehouse) {
-    super(wh, [
-      'modified_data_for_history_api_property',
-      'modified_data_for_history_api_class'
-    ], rPropertyIdToString, stringToRPropertyId,
+    super(
+      wh,
+      [
+        'modified_data_for_history_api_property',
+        'modified_data_for_history_api_class'
+      ],
       rPropertyIdKeyConfig
     )
 

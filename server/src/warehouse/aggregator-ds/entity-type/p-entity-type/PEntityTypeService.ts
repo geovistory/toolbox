@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
 import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTypeAggregator} from './PEntityTypeAggregator';
@@ -36,8 +35,6 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
     constructor(public wh: Warehouse) {
         super(
             wh,
-            pEntityIdToString,
-            stringToPEntityId,
             pEntityKeyDefs
         )
 

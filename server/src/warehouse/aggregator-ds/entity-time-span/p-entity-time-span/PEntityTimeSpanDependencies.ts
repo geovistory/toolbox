@@ -1,6 +1,5 @@
 import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {pEntityIdToString, stringToPEntityId} from '../../../base/functions'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../../Warehouse'
@@ -40,10 +39,6 @@ export class PEntityTimeSpanDependencies extends Dependencies {
             this.wh,
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEntity,
-            pEntityIdToString,
-            stringToPEntityId,
-            pEntityIdToString,
-            stringToPEntityId,
         ))
 
         // stores the dependency of entityType (receiver) on edge (provider)
@@ -51,10 +46,6 @@ export class PEntityTimeSpanDependencies extends Dependencies {
             this.wh,
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEdge,
-            pEntityIdToString,
-            stringToPEntityId,
-            pEntityIdToString,
-            stringToPEntityId,
         ));
 
     }

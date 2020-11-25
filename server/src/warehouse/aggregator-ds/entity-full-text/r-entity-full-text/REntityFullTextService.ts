@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {rEntityIdToString, stringToREntityId} from '../../../base/functions';
 import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityFullTextAggregator} from './REntityFullTextAggregator';
@@ -32,8 +31,6 @@ export class REntityFullTextService extends AggregatedDataService<REntityId, REn
     constructor(public wh: Warehouse) {
         super(
             wh,
-            rEntityIdToString,
-            stringToREntityId,
             rEntityKeyDefs
         )
         this.registerCreatorDS(wh.prim.rEntity)

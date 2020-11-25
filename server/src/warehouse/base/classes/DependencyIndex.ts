@@ -33,11 +33,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         public wh: Warehouse,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel>,
-        public providerDS: DataService<ProviderKeyModel, ProviderValModel>,
-        public receiverKeyToString: (key: ReceiverKeyModel) => string,
-        public stringToReceiverKey: (str: string) => ReceiverKeyModel,
-        public providerKeyToString: (key: ProviderKeyModel) => string,
-        public stringToProviderKey: (str: string) => ProviderKeyModel,
+        public providerDS: DataService<ProviderKeyModel, ProviderValModel>
     ) {
         this.pgPool = wh.pgPool;
         providerDS.registerProviderOf(this)

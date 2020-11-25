@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
 import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
 import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
@@ -52,8 +51,6 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
     constructor(public wh: Warehouse) {
         super(
             wh,
-            pEntityIdToString,
-            stringToPEntityId,
             pEntityKeyDefs
         )
 

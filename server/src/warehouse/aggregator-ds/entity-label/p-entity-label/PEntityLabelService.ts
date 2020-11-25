@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
 import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {EntityLabelVal} from '../entity-label.commons';
@@ -13,8 +12,6 @@ export class PEntityLabelService extends AggregatedDataService<PEntityId, Entity
     constructor(public wh: Warehouse) {
         super(
             wh,
-            pEntityIdToString,
-            stringToPEntityId,
             pEntityKeyDefs
         )
         this.registerCreatorDS(this.wh.prim.pEntity)

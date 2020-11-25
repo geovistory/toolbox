@@ -1,6 +1,5 @@
 import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {rClassIdToString, rEntityIdToString, stringToRClassId, stringToREntityId} from '../../../base/functions'
 import {DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
@@ -21,10 +20,6 @@ export class REntityTypeDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityType,
             this.wh.prim.rEntity,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
         ))
 
         // stores the dependency of entityType (receiver) on entityLabel (provider)
@@ -32,21 +27,13 @@ export class REntityTypeDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityType,
             this.wh.agg.rEntityLabel,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
         ));
 
         // stores the dependency of entityType (receiver) on edge (provider)
         this.rEdge = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.rEntityType,
-            this.wh.prim.rEdge,
-            rEntityIdToString,
-            stringToREntityId,
-            rEntityIdToString,
-            stringToREntityId,
+            this.wh.prim.rEdge
         ));
 
         // stores the dependency of entityType (receiver) on dfhClassHasTypeProperty
@@ -54,10 +41,6 @@ export class REntityTypeDependencies extends Dependencies {
             this.wh,
             this.wh.agg.rEntityType,
             this.wh.prim.dfhClassHasTypeProperty,
-            rEntityIdToString,
-            stringToREntityId,
-            rClassIdToString,
-            stringToRClassId,
         ));
 
 

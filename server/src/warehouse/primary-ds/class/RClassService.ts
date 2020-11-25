@@ -1,5 +1,4 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {rClassIdToString, stringToRClassId} from '../../base/functions';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 import {RClassId} from '../DfhClassHasTypePropertyService';
@@ -21,8 +20,6 @@ export class RClassService extends PrimaryDataService<RClassId, RClass>{
       [
         'modified_data_for_history_api_class'
       ],
-      rClassIdToString,
-      stringToRClassId,
       keyDefs
     )
 

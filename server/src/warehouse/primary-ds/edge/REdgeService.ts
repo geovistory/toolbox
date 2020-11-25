@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {rEntityIdToString, stringToREntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
 import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
 import {EntityFields} from "./edge.commons";
@@ -16,7 +15,6 @@ export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
             [
                 'modified_projects_info_proj_rel',
             ],
-            rEntityIdToString, stringToREntityId,
             rEntityKeyDefs
         )
     }
