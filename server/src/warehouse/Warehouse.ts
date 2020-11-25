@@ -9,8 +9,10 @@ import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
 import {values} from 'ramda';
+import {Inject, Injectable, InjectionToken} from 'injection-js';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
+export const APP_CONFIG = new InjectionToken<WarehouseConfig>('app.config');
 
 interface NotificationHandler {
     channel: string
@@ -29,6 +31,7 @@ export interface WarehouseConfig {
     }
 }
 
+@Injectable()
 export class Warehouse {
 
     pgPool: Pool;
@@ -56,7 +59,7 @@ export class Warehouse {
     schemaName = 'war_cache'
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
 
-    constructor(public readonly config: WarehouseConfig) {
+    constructor(@Inject(APP_CONFIG) private config: WarehouseConfig) {
 
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8(connectionString)

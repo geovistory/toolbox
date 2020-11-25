@@ -7,6 +7,7 @@ import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 import {testdb} from './testdb';
+import {createWarehouse} from '../../warehouse/createWarehouse';
 
 
 
@@ -14,7 +15,7 @@ const config: WarehouseConfig = {
     backups: undefined
 }
 export async function setupWarehouseWithoutStarting() {
-    const wh = new Warehouse(config)
+    const wh = createWarehouse(config)
     await wh.dbSetup()
 
     return wh;
@@ -23,7 +24,7 @@ export async function setupWarehouseWithoutStarting() {
 export async function setupCleanAndStartWarehouse() {
 
 
-    const wh = new Warehouse(config)
+    const wh = createWarehouse(config)
     await wh.pgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
     await wh.start()
     await wh.pgListener.query('LISTEN entity_previews_updated;')
