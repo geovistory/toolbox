@@ -55,7 +55,7 @@ export class RClassService extends PrimaryDataService<RClassId, RClass>{
 
 
 const updateSql = `
-  SELECT DISTINCT
+  SELECT DISTINCT ON (dfh_pk_class)
   dfh_pk_class "pkClass",
   jsonb_build_object(
     'fkClass', dfh_pk_class,

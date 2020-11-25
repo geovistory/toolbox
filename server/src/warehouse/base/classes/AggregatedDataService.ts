@@ -321,7 +321,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         return changes
     }
 
-    private async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
+     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
         let changes = 0
 
         const toAggregate = await brkOnErr(client.query<KeyModel>(`

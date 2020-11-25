@@ -84,7 +84,7 @@ const updateSql = `
     SELECT 5, pk_entity as fk_project, true, null -- GEOVISTORY BASICS
     FROM projects.project
   )
-  SELECT DISTINCT
+  SELECT DISTINCT ON (dfh_pk_class, fk_project)
     dfh_pk_class "pkClass",
     fk_project "fkProject",
     jsonb_build_object(
