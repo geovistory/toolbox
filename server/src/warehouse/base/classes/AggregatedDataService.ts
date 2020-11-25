@@ -1,3 +1,5 @@
+import {PoolClient} from 'pg';
+import {ReplaySubject} from 'rxjs';
 import {brkOnErr} from '../../../utils/helpers';
 import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
@@ -8,7 +10,6 @@ import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
 import {Logger} from './Logger';
-import {PoolClient} from 'pg';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -22,7 +23,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     abstract creatorDS: DataService<any, any>
-    abstract getDependencies(): Dependencies
+    abstract getDependencies(): Dependencies | void
     abstract aggregator: Constructor<AbstractAggregator<ValueModel>>
     abstract providers: Constructor<Providers<KeyModel>>
     // array of dependency indexes where this data service is receiver
@@ -86,6 +87,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     tempTable: string;
     batchSize = 100;
 
+    ready$ = new ReplaySubject<boolean>()
+
     constructor(
         public wh: Warehouse,
         protected keyDefs: KeyDefinition[]
@@ -99,6 +102,11 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         )
         this.tempTableName = tableName + '_tmp'
         this.tempTable = tableName + '_tmp' // `${this.index.schema}.${this.tempTableName}`
+    }
+    emitReady() {
+        this.index.ready$.subscribe((b) => {
+            if (b) this.ready$.next(b)
+        })
     }
 
     async aggregate(id: KeyModel) {
@@ -317,7 +325,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         return changes
     }
 
-     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
+    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
         let changes = 0
 
         const toAggregate = await brkOnErr(client.query<KeyModel>(`

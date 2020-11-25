@@ -15,6 +15,28 @@
 import {switchMap, filter, map} from 'rxjs/operators';
 import {timer, pipe} from 'rxjs';
 
+/**
+ * RxJS operator function
+ * When it recieves a value, waits for specified miliseconds
+ * until it emits the value. All values it receives during the
+ * miliseconds are skipped. After emitting the value, it starts over.
+ */
+export function skipWhileFirst<T>(miliseconds?: number) {
+    let blocked = false;
+    return pipe(
+        filter((a: T) => !blocked),
+        switchMap((value: T) => {
+            blocked = true
+            return timer(miliseconds).pipe(
+                map(_ => {
+                    blocked = false
+                    return value
+                })
+            )
+        })
+    )
+}
+
 // export function pEntityIdToString(key: PEntityId): string {
 //     return key.fkProject + '_' + key.pkEntity;
 // }
@@ -197,25 +219,3 @@ import {timer, pipe} from 'rxjs';
 //     return Math.round(used * 100) / 100
 // }
 
-
-/**
- * RxJS operator function
- * When it recieves a value, waits for specified miliseconds
- * until it emits the value. All values it receives during the
- * miliseconds are skipped. After emitting the value, it starts over.
- */
-export function skipWhileFirst<T>(miliseconds?: number) {
-    let blocked = false;
-    return pipe(
-        filter((a: T) => !blocked),
-        switchMap((value: T) => {
-            blocked = true
-            return timer(miliseconds).pipe(
-                map(_ => {
-                    blocked = false
-                    return value
-                })
-            )
-        })
-    )
-}

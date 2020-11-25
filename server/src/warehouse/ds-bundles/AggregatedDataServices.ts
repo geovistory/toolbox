@@ -47,53 +47,53 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
     constructor(wh: Warehouse) {
         super()
         // // Model aggregators
-        this.identifyingProperty = this.registerDataService(new IdentifyingPropertyService(wh));
+        this.identifyingProperty = this.registerDataService(new IdentifyingPropertyService(wh)); // rEntityLabel
 
         // // Project aggegators
-        this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
-        this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelService(wh))
-        this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
-        this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
-        this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
-        this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
-        this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
+        // this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
+        // this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelService(wh))
+        // this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
+        // this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
+        // this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
+        // this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
+        // this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
 
-        // // Repo aggregators
-        this.rClassLabel = this.registerDataService(new RClassLabelService(wh))
-        this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
-        this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
-        this.rEntityType = this.registerDataService(new REntityTypeService(wh));
-        this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
-        this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
-        this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
+        // // // Repo aggregators
+        // this.rClassLabel = this.registerDataService(new RClassLabelService(wh)) // rClassLabel
+        // this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
+        this.rEntityLabel = this.registerDataService(new REntityLabelService(wh)); // rEntityLabel
+        // this.rEntityType = this.registerDataService(new REntityTypeService(wh));
+        // this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
+        // this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
+        // this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 
         this.ready$ = combineLatest(
-            this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true))),
+            this.registered.map(ds => ds.ready$.pipe(filter(r => r === true))),
         ).pipe(mapTo(true))
     }
 
 
     async startCycling() {
         // Model aggregators
-        await this.identifyingProperty.startUpdate()
+        await this.identifyingProperty.startUpdate() // rEntityLabel
 
         // Project aggegators
-        await this.pClassLabel.startUpdate()
-        await this.pClassFieldLabel.startUpdate()
-        await this.pEntityClassLabel.startUpdate()
-        await this.pEntityLabel.startUpdate()
-        await this.pEntityType.startUpdate()
-        await this.pEntityFullText.startUpdate()
-        await this.pEntityTimeSpan.startUpdate()
+        // await this.pClassLabel.startUpdate()
+        // await this.pClassFieldLabel.startUpdate()
+        // await this.pEntityClassLabel.startUpdate()
+        // await this.pEntityLabel.startUpdate()
+        // await this.pEntityType.startUpdate()
+        // await this.pEntityFullText.startUpdate()
+        // await this.pEntityTimeSpan.startUpdate()
 
         // Repo aggregators
-        await this.rClassLabel.startUpdate()
-        await this.rClassFieldLabel.startUpdate()
-        await this.rEntityClassLabel.startUpdate()
-        await this.rEntityLabel.startUpdate()
-        await this.rEntityType.startUpdate()
-        await this.rEntityFullText.startUpdate()
-        await this.rEntityTimeSpan.startUpdate()
+        // await this.rClassLabel.startUpdate() // rClassLabel
+        // await this.rClassFieldLabel.startUpdate()
+        // await this.rEntityClassLabel.startUpdate()
+        await this.rEntityLabel.startUpdate() // rEntityLabel
+        // await this.rEntityType.startUpdate()
+        // await this.rEntityFullText.startUpdate()
+        // await this.rEntityTimeSpan.startUpdate()
     }
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));
