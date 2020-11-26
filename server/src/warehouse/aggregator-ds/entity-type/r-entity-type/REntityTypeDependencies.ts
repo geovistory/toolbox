@@ -6,14 +6,16 @@ import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {REntityTypeVal} from './REntityTypeService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class REntityTypeDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityTypeVal, REntityId, REntity>
     rEntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityLabelVal>
     rEdge: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityFields>
     dfhClassHasTypeProp: DependencyIndex<REntityId, REntityTypeVal, RClassId, DfhClassHasTypePropVal>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
         this.rEntity = this.registerDepIdx(new DependencyIndex(

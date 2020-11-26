@@ -8,6 +8,7 @@ import {PEntityLabelDependencies} from './PEntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityLabelVal} from '../entity-label.commons';
+
 export class PEntityLabelProviders extends Providers<PEntityId> {
     entity: Provider<PEntityId, EntityLabelVal, PEntityId, PEntity>;
     entityLabels: Provider<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>;

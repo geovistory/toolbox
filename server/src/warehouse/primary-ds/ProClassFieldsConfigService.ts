@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PClassId {
     fkProject: number,
@@ -22,9 +23,10 @@ export const pClassIdKeyDef: KeyDefinition[] = [
     }
 ]
 export type ProClassFieldVal = ClassField[]
+@Injectable()
 export class ProClassFieldsConfigService extends PrimaryDataService<PClassId, ProClassFieldVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             ['modified_projects_class_field_config'],

@@ -9,7 +9,7 @@ import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
 import {values} from 'ramda';
-import {Inject, Injectable, InjectionToken} from 'injection-js';
+import {Inject, Injectable, InjectionToken, Injector} from 'injection-js';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 export const APP_CONFIG = new InjectionToken<WarehouseConfig>('app.config');
@@ -38,14 +38,7 @@ export class Warehouse {
     pgListener: PoolClient;
     // pgClient: PoolClient;
 
-    // Indexes holding data given by db
-    prim: PrimaryDataServices;
 
-    // Indexed holding resulting data deferred by warehouse
-    agg: AggregatedDataServices;
-
-    // Indexes holding dependencies between primary and secondary data
-    dep: DependencyDataServices
 
     // if true, changes on dependencies are not propagated to aggregators
     preventPropagation = false
@@ -59,7 +52,25 @@ export class Warehouse {
     schemaName = 'war_cache'
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
 
-    constructor(@Inject(APP_CONFIG) private config: WarehouseConfig) {
+    // Indexes holding data given by db
+    public get prim(): PrimaryDataServices {
+        return this.injector.get(PrimaryDataServices)
+    }
+
+    // Indexed holding resulting data deferred by warehouse
+    public get agg(): AggregatedDataServices {
+        return this.injector.get(AggregatedDataServices)
+    }
+
+    // Indexes holding dependencies between primary and secondary data
+    public get dep(): DependencyDataServices {
+        return this.injector.get(DependencyDataServices)
+    }
+
+    constructor(
+        @Inject(APP_CONFIG) private config: WarehouseConfig,
+        private injector: Injector
+    ) {
 
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8(connectionString)
@@ -276,10 +287,10 @@ export class Warehouse {
             this
         )
 
-        // this.leveldb = await this.createLeveldb(this.leveldbpath)
-        this.prim = new PrimaryDataServices(this)
-        this.agg = new AggregatedDataServices(this)
-        this.dep = new DependencyDataServices(this)
+        // // this.leveldb = await this.createLeveldb(this.leveldbpath)
+        // this.prim = new PrimaryDataServices(this)
+        // this.agg = new AggregatedDataServices(this)
+        // this.dep = new DependencyDataServices(this)
 
         this.createSchema$.next()
         return new Promise((res, rej) => {

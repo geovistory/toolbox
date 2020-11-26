@@ -4,6 +4,7 @@ import {PPropertyService} from '../../../primary-ds/property/PPropertyService';
 import {Warehouse} from '../../../Warehouse';
 import {PClassFieldLabelAggregator} from './PClassFieldLabelAggregator';
 import {PClassFieldLabelProviders} from './PClassFieldLabelProviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PClassFieldLabelId {
     fkProject: number,
@@ -20,6 +21,7 @@ export const pClassFieldKeyDef: KeyDefinition[] = [
     {name: 'fkProperty', type: 'integer'},
     {name: 'isOutgoing', type: 'boolean'},
 ]
+@Injectable()
 export class PClassFieldLabelService extends AggregatedDataService<PClassFieldLabelId, PClassFieldLabelVal>{
     creatorDS: PPropertyService
     aggregator = PClassFieldLabelAggregator;
@@ -32,7 +34,7 @@ export class PClassFieldLabelService extends AggregatedDataService<PClassFieldLa
             select: `"fkProject" as "fkProject", "fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
         }
     ]
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             pClassFieldKeyDef

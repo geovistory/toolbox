@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface ProjectId {
     pkProject: number
 }
@@ -10,10 +11,11 @@ export interface ProjectVal {
 export const pProjectKeyDef: KeyDefinition[] = [
     {name: 'pkProject', type: 'integer'}
 ]
+@Injectable()
 export class ProProjectService extends PrimaryDataService<ProjectId, ProjectVal>{
     measure = 1000;
 
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             ['modified_projects_project'],

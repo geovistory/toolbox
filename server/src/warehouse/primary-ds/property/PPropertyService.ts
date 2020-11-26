@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface PPropertyId {
   fkProject: number,
   pkProperty: number,
@@ -19,10 +20,11 @@ export const pPropertyKeyDef: KeyDefinition[] = [
   {name: 'fkDomain', type: 'integer'},
   {name: 'fkRange', type: 'integer'}
 ]
+@Injectable()
 export class PPropertyService extends PrimaryDataService<PPropertyId, PPropertyVal>{
 
   measure = 1000;
-  constructor(public wh: Warehouse) {
+  constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
     super(
       wh,
       [

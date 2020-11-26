@@ -3,6 +3,7 @@ import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PEntityFullTextVal {fullText?: string};
 
@@ -24,11 +25,12 @@ export interface PEntityFullTextVal {fullText?: string};
  * -> The Val is the result of the PEntityFullTextAggregator
  *
  */
+@Injectable()
 export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEntityFullTextVal>{
     creatorDS: PEntityService
     aggregator = PEntityFullTextAggregator;
     providers = PEntityFullTextProviders;
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             pEntityKeyDefs

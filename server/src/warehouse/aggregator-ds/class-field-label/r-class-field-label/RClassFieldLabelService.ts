@@ -4,6 +4,7 @@ import {RPropertyService} from '../../../primary-ds/property/RPropertyService';
 import {Warehouse} from '../../../Warehouse';
 import {RClassFieldLabelAggregator} from './RClassFieldLabelAggregator';
 import {RClassFieldLabelProviders} from './RClassFieldLabelProviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface RClassFieldId {
     fkClass: number
@@ -18,6 +19,7 @@ export const rClassFieldKeyDef: KeyDefinition[] = [
     {name: 'fkProperty', type: 'integer'},
     {name: 'isOutgoing', type: 'boolean'},
 ]
+@Injectable()
 export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId, RClassFieldVal>{
     creatorDS: RPropertyService
     aggregator = RClassFieldLabelAggregator;
@@ -30,7 +32,7 @@ export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId
             select: `"fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
         }
     ]
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rClassFieldKeyDef

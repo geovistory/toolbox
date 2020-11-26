@@ -1,3 +1,4 @@
+import {Injectable, Inject, forwardRef} from 'injection-js';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, map, mapTo} from 'rxjs/operators';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
@@ -8,7 +9,6 @@ import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePrope
 import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
 import {DfhOutgoingPropertyService} from '../primary-ds/DfhOutgoingPropertyService';
 import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
-import {StatementItemToIndexate} from "../primary-ds/edge/edge.commons";
 import {PEdgeService} from '../primary-ds/edge/PEdgeService';
 import {REdgeService} from '../primary-ds/edge/REdgeService';
 import {PEntityService} from '../primary-ds/entity/PEntityService';
@@ -20,63 +20,98 @@ import {PPropertyService} from '../primary-ds/property/PPropertyService';
 import {RPropertyService} from '../primary-ds/property/RPropertyService';
 import {ProProjectService} from '../primary-ds/ProProjectService';
 import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
-import {Warehouse} from '../Warehouse';
 
+@Injectable()
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<any, any>> {
 
-    dfhClassLabel: DfhClassLabelService;
-    dfhPropertyLabel: DfhPropertyLabelService;
-    dfhClassHasTypeProperty: DfhClassHasTypePropertyService;
-    dfhOutgoingProperty: DfhOutgoingPropertyService;
-
-    proProject: ProProjectService;
-    proClassLabel: ProClassLabelService;
-    proPropertyLabel: ProPropertyLabelService;
-    proEntityLabelConfig: ProEntityLabelConfigService;
-
-    pClass: PClassService;
-    pProperty: PPropertyService;
-
-    pClassFieldsConfig: ProClassFieldsConfigService;
-
-    pEdge: PEdgeService;
-    pEntity: PEntityService;
-
-    rClass: RClassService;
-    rProperty: RPropertyService;
-
-    rEntity: REntityService;
-    rEdge: REdgeService;
 
     ready$: Observable<boolean>
 
-    constructor(private wh: Warehouse) {
+    constructor(
+
+        @Inject(forwardRef(() => DfhClassLabelService))
+        public dfhClassLabel: DfhClassLabelService,
+
+        @Inject(forwardRef(() => DfhPropertyLabelService))
+        public dfhPropertyLabel: DfhPropertyLabelService,
+
+        @Inject(forwardRef(() => DfhClassHasTypePropertyService))
+        public dfhClassHasTypeProperty: DfhClassHasTypePropertyService,
+
+        @Inject(forwardRef(() => DfhOutgoingPropertyService))
+        public dfhOutgoingProperty: DfhOutgoingPropertyService,
+
+
+        @Inject(forwardRef(() => ProProjectService))
+        public proProject: ProProjectService,
+
+        @Inject(forwardRef(() => ProClassLabelService))
+        public proClassLabel: ProClassLabelService,
+
+        @Inject(forwardRef(() => ProPropertyLabelService))
+        public proPropertyLabel: ProPropertyLabelService,
+
+        @Inject(forwardRef(() => ProEntityLabelConfigService))
+        public proEntityLabelConfig: ProEntityLabelConfigService,
+
+
+        @Inject(forwardRef(() => PClassService))
+        public pClass: PClassService,
+
+        @Inject(forwardRef(() => PPropertyService))
+        public pProperty: PPropertyService,
+
+
+        @Inject(forwardRef(() => ProClassFieldsConfigService))
+        public pClassFieldsConfig: ProClassFieldsConfigService,
+
+
+        @Inject(forwardRef(() => PEdgeService))
+        public pEdge: PEdgeService,
+
+        @Inject(forwardRef(() => PEntityService))
+        public pEntity: PEntityService,
+
+
+        @Inject(forwardRef(() => RClassService))
+        public rClass: RClassService,
+
+        @Inject(forwardRef(() => RPropertyService))
+        public rProperty: RPropertyService,
+
+
+        @Inject(forwardRef(() => REntityService))
+        public rEntity: REntityService,
+
+        @Inject(forwardRef(() => REdgeService))
+        public rEdge: REdgeService,
+    ) {
         super()
 
-        // this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh)); // rClassLabel
-        // this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));
-        // this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
-        this.dfhOutgoingProperty = this.registerDataService(new DfhOutgoingPropertyService(this.wh)); // rEntityLabel
+        // this.registerDataService(this.dfhClassLabel); // rClassLabel
+        // this.registerDataService(this.dfhPropertyLabel);
+        // this.registerDataService(this.dfhClassHasTypeProperty);
+        this.registerDataService(this.dfhOutgoingProperty); // rEntityLabel
 
-        // this.proProject = this.registerDataService(new ProProjectService(this.wh));
-        // this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh)); // rClassLabel
-        // this.proPropertyLabel = this.registerDataService(new ProPropertyLabelService(this.wh));
+        // this.registerDataService(this.proProject);
+        // this.registerDataService(this.proClassLabel); // rClassLabel
+        // this.registerDataService(this.proPropertyLabel);
 
-        // this.pClass = this.registerDataService(new PClassService(this.wh));
-        // this.pProperty = this.registerDataService(new PPropertyService(this.wh));
+        // this.registerDataService(this.pClass);
+        // this.registerDataService(this.pProperty);
 
-        // this.pClassFieldsConfig = this.registerDataService(new ProClassFieldsConfigService(this.wh));
-        this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh)); // rEntityLabel
+        // this.registerDataService(this.pClassFieldsConfig);
+        this.registerDataService(this.proEntityLabelConfig); // rEntityLabel
 
-        // this.pEdge = this.registerDataService(new PEdgeService(this.wh));
-        // this.pEntity = this.registerDataService(new PEntityService(this.wh));
+        // this.registerDataService(this.pEdge);
+        // this.registerDataService(this.pEntity);
 
-        this.rEntity = this.registerDataService(new REntityService(this.wh)); // rEntityLabel
-        this.rEdge = this.registerDataService(new REdgeService(this.wh)); // rEntityLabel
+        this.registerDataService(this.rEntity); // rEntityLabel
+        this.registerDataService(this.rEdge); // rEntityLabel
 
-        // this.rClass = this.registerDataService(new RClassService(this.wh)); // rClassLabel
-        // this.rProperty = this.registerDataService(new RPropertyService(this.wh));
+        // this.registerDataService(this.rClass); // rClassLabel
+        // this.registerDataService(this.rProperty);
 
         this.ready$ = combineLatest(
             this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true)))

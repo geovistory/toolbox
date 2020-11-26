@@ -5,12 +5,14 @@ import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
 import {Warehouse} from '../../../Warehouse'
 import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService'
 import {PEntityClassLabelVal} from './PEntityClassLabelService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class PEntityClassLabelDependencies extends Dependencies {
     entity: DependencyIndex<PEntityId, PEntityClassLabelVal, PEntityId, PEntity>
     pClassLabel: DependencyIndex<PEntityId, PEntityClassLabelVal, PClassId, PClassLabelVal>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
         this.entity = this.registerDepIdx(new DependencyIndex(

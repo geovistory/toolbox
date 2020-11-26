@@ -7,7 +7,9 @@ import {REntityId} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {PEntityTypeVal} from './PEntityTypeService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class PEntityTypeDependencies extends Dependencies {
     pEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, PEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityLabelVal>
@@ -15,7 +17,7 @@ export class PEntityTypeDependencies extends Dependencies {
     pEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityFields>
     dfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, RClassId, DfhClassHasTypePropVal>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of pEntityType (receiver) on pEntity (provider)
         this.pEntity = this.registerDepIdx(new DependencyIndex(

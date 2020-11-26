@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface OutgoingProperyId {
     fkDomain: number
     fkProperty: number
@@ -40,9 +41,10 @@ const outgoingPropertykeyDefs: KeyDefinition[] = [
         type: 'integer'
     },
 ]
+@Injectable()
 export class DfhOutgoingPropertyService extends PrimaryDataService<OutgoingProperyId, OutgoingPropertyVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(wh,
             ['modified_data_for_history_api_property'],
             outgoingPropertykeyDefs

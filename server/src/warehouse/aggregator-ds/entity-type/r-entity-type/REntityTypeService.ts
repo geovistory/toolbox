@@ -3,6 +3,7 @@ import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {REntityTypeAggregator} from './REntityTypeAggregator';
 import {REntityTypeProviders} from './REntityTypePoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface REntityTypeVal {
     fkType?: number,
@@ -27,12 +28,13 @@ export interface REntityTypeVal {
  * -> The Val is the result of the REntityTypeAggregator
  *
  */
+@Injectable()
 export class REntityTypeService extends AggregatedDataService<REntityId, REntityTypeVal>{
     creatorDS: REntityService
     aggregator = REntityTypeAggregator;
     providers = REntityTypeProviders;
 
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rEntityKeyDefs

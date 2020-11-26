@@ -4,6 +4,7 @@ import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {REntityTimeSpanAggregator} from './REntityTimeSpanAggregator';
 import {REntityTimeSpanProviders} from './REntityTimeSpanPoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -39,6 +40,7 @@ export type REntityTimeSpan = {
  * -> The Val is the result of the REntityTimeSpanAggregator
  *
  */
+@Injectable()
 export class REntityTimeSpanService extends AggregatedDataService<REntityId, REntityTimeSpanVal>{
     creatorDS: REntityService
     aggregator = REntityTimeSpanAggregator;
@@ -48,7 +50,7 @@ export class REntityTimeSpanService extends AggregatedDataService<REntityId, REn
             where: `val->>'entityType' = 'teEn'`,
         }
     ]
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rEntityKeyDefs

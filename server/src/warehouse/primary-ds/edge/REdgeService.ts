@@ -3,26 +3,28 @@ import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {Warehouse} from '../../Warehouse';
 import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
 import {EntityFields} from "./edge.commons";
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
+@Injectable()
 export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
 
-    measure = 10000;
+  measure = 10000;
 
-    constructor(wh: Warehouse) {
-        super(
-            wh,
-            [
-                'modified_projects_info_proj_rel',
-            ],
-            rEntityKeyDefs
-        )
-    }
+  constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    super(
+      wh,
+      [
+        'modified_projects_info_proj_rel',
+      ],
+      rEntityKeyDefs
+    )
+  }
 
-    getUpdatesSql(tmsp: Date) {
-        return updateSql
-    }
-    getDeletesSql(tmsp: Date) {return ''};
+  getUpdatesSql(tmsp: Date) {
+    return updateSql
+  }
+  getDeletesSql(tmsp: Date) {return ''};
 
 
 }

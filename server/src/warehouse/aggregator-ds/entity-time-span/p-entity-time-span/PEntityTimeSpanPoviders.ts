@@ -5,6 +5,7 @@ import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService';
 import {PEntityTimeSpanDependencies} from './PEntityTimeSpanDependencies';
 import {PEntityTimeSpanVal} from './PEntityTimeSpanService';
 import {RClassId, DfhClassHasTypePropVal} from '../../../primary-ds/DfhClassHasTypePropertyService';
+
 export class PEntityTimeSpanProviders extends Providers<PEntityId> {
     pEntity: Provider<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>;
     pEdges: Provider<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>;

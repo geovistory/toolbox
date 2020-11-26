@@ -1,6 +1,8 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
+
 export interface DfhClassLabelId {
     pkClass: number
     language: string
@@ -16,9 +18,11 @@ const keyDefs: KeyDefinition[] = [
     }
 ]
 export interface DfhClassLabelVal {label: string};
+
+@Injectable()
 export class DfhClassLabelService extends PrimaryDataService<DfhClassLabelId, DfhClassLabelVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             ['modified_data_for_history_api_class'],

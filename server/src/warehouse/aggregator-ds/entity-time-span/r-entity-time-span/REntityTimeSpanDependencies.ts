@@ -4,7 +4,9 @@ import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {REntityTimeSpanVal} from './REntityTimeSpanService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class REntityTimeSpanDependencies extends Dependencies {
 
     //the timespan depends on:
@@ -32,7 +34,7 @@ export class REntityTimeSpanDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityTimeSpanVal, REntityId, REntity>
     rEdge: DependencyIndex<REntityId, REntityTimeSpanVal, REntityId, EntityFields>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
         this.rEntity = this.registerDepIdx(new DependencyIndex(

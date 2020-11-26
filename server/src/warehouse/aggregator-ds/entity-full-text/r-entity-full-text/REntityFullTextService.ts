@@ -3,6 +3,7 @@ import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {REntityFullTextAggregator} from './REntityFullTextAggregator';
 import {REntityFullTextProviders} from './REntityFullTextPoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface REntityFullTextVal {fullText?: string};
 
@@ -24,11 +25,12 @@ export interface REntityFullTextVal {fullText?: string};
  * -> The Val is the result of the REntityFullTextAggregator
  *
  */
+@Injectable()
 export class REntityFullTextService extends AggregatedDataService<REntityId, REntityFullTextVal>{
     creatorDS: REntityService
     aggregator = REntityFullTextAggregator;
     providers = REntityFullTextProviders;
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rEntityKeyDefs

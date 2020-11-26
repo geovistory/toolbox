@@ -5,6 +5,7 @@ import {REntityClassLabelDependencies} from './REntityClassLabelDependencies';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService';
 import {REntityClassLabelVal} from './REntityClassLabelService';
+
 export class REntityClassLabelProviders extends Providers<REntityId> {
     entity: Provider<REntityId, REntityClassLabelVal, REntityId, REntity>;
     rClassLabels: Provider<REntityId, REntityClassLabelVal, RClassId, RClassLabelValue>;

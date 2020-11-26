@@ -9,7 +9,9 @@ import {RClassFieldId, RClassFieldVal} from '../../class-field-label/r-class-fie
 import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {REntityFullTextVal} from './REntityFullTextService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class REntityFullTextDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityFullTextVal, REntityId, REntity>
     rEntityLabel: DependencyIndex<REntityId, REntityFullTextVal, REntityId, EntityLabelVal>
@@ -19,7 +21,7 @@ export class REntityFullTextDependencies extends Dependencies {
 
     pClassFields: DependencyIndex<REntityId, REntityFullTextVal, PClassId, ProClassFieldVal>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityFullText (receiver) on rEntity (provider)
         this.rEntity = this.registerDepIdx(new DependencyIndex(

@@ -5,13 +5,14 @@ import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLab
 import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
 import {Warehouse} from '../../../Warehouse'
 import {RClassLabelValue} from './RClassLabelService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class RClassLabelDependencies extends Dependencies {
   dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
   proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
 
-  // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
-  constructor(private wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
     super()
 
 

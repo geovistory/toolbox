@@ -9,7 +9,9 @@ import {PClassFieldLabelId, PClassFieldLabelVal} from '../../class-field-label/p
 import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {PEntityFullTextVal} from './PEntityFullTextService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class PEntityFullTextDependencies extends Dependencies {
     pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, PEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityLabelVal>
@@ -19,7 +21,7 @@ export class PEntityFullTextDependencies extends Dependencies {
     pClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, ProClassFieldVal>
     pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassFieldLabelId, PClassFieldLabelVal>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityFullText (receiver) on pEntity (provider)
         this.pEntity = this.registerDepIdx(new DependencyIndex(

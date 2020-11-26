@@ -9,6 +9,7 @@ import {PClassFieldLabelId, PClassFieldLabelVal} from '../../class-field-label/p
 import {EntityLabelVal} from '../../entity-label/entity-label.commons';
 import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService';
+
 export class PEntityFullTextProviders extends Providers<PEntityId> {
     pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, PEntity>;
     pEdges: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>;

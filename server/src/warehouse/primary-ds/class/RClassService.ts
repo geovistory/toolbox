@@ -2,6 +2,7 @@ import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 import {RClassId} from '../DfhClassHasTypePropertyService';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 const keyDefs: KeyDefinition[] = [
@@ -10,11 +11,12 @@ const keyDefs: KeyDefinition[] = [
     type: 'integer'
   }
 ]
+@Injectable()
 export class RClassService extends PrimaryDataService<RClassId, RClass>{
 
   measure = 1000;
 
-  constructor(public wh: Warehouse) {
+  constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
     super(
       wh,
       [

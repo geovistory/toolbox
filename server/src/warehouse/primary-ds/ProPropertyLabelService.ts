@@ -1,3 +1,4 @@
+import {Injectable, Inject, forwardRef} from 'injection-js';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
@@ -15,10 +16,11 @@ export const proPropertyLabelKeyDef: KeyDefinition[] = [
     {name: 'isOutgoing', type: 'boolean'},
     {name: 'fkLanguage', type: 'integer'},
 ]
+@Injectable()
 export class ProPropertyLabelService extends PrimaryDataService<ProPropertyLabelId, ProPropertyLabelVal>{
     measure = 1000;
 
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             ['modified_projects_text_property'],

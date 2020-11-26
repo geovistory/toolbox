@@ -3,6 +3,7 @@ import {omit} from 'ramda';
 import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
 import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
 import {waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {createWarehouse} from '../../../../warehouse/createWarehouse';
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +22,7 @@ describe('IndexDB', function () {
 
   before(async () => {
 
-    wh = new Warehouse(config)
+    wh = createWarehouse(config)
     idx = new TestIdx('test_idx', wh)
     // await wh.connectPgClient();
     wh.createSchema$.next();

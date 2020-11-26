@@ -5,12 +5,14 @@ import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService'
 import {REntityClassLabelVal} from './REntityClassLabelService'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class REntityClassLabelDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityClassLabelVal, REntityId, REntity>
     rClassLabel: DependencyIndex<REntityId, REntityClassLabelVal, RClassId, RClassLabelValue>
 
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
         this.rEntity = this.registerDepIdx(new DependencyIndex(

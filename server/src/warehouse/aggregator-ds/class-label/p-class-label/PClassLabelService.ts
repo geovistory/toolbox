@@ -4,13 +4,15 @@ import {PClassId, pClassIdKeyDef} from '../../../primary-ds/ProClassFieldsConfig
 import {Warehouse} from '../../../Warehouse';
 import {PClassLabelAggregator} from './PClassLabelAggregator';
 import {PClassLabelProviders} from './PClassLabelProviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PClassLabelVal {label?: string}
+@Injectable()
 export class PClassLabelService extends AggregatedDataService<PClassId, PClassLabelVal>{
     creatorDS: PClassService
     aggregator = PClassLabelAggregator;
     providers = PClassLabelProviders;
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             pClassIdKeyDef

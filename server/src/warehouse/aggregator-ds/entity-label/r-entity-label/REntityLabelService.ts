@@ -15,7 +15,9 @@ import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingProp
 import {EntityLabelVal} from '../entity-label.commons';
 import {REntityLabelAggregator} from './REntityLabelAggregator';
 import {REntityLabelProviders} from './REntityLabelPoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class REntityLabelService extends AggregatedDataService2<REntityId, EntityLabelVal>{
     creatorDS: REntityService
     aggregator = REntityLabelAggregator;
@@ -27,7 +29,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
     rEntityLabel: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityLabelVal>
     rEdge: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityFields>
 
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rEntityKeyDefs
@@ -117,11 +119,12 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
 // import {REntityLabelAggregator} from './REntityLabelAggregator';
 // import {REntityLabelProviders} from './REntityLabelPoviders';
 
+// @Injectable()
 // export class REntityLabelService extends AggregatedDataService<REntityId, EntityLabelVal>{
 //     creatorDS: REntityService
 //     aggregator = REntityLabelAggregator;
 //     providers = REntityLabelProviders;
-//     constructor(public wh: Warehouse) {
+//     constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
 //         super(
 //             wh,
 //             rEntityKeyDefs

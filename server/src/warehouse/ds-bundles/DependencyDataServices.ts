@@ -1,3 +1,4 @@
+import {Injectable, Inject, forwardRef} from 'injection-js';
 import {combineLatest, Observable} from 'rxjs';
 import {mapTo} from 'rxjs/operators';
 import {PClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
@@ -17,50 +18,51 @@ import {REntityTypeDependencies} from '../aggregator-ds/entity-type/r-entity-typ
 import {IdentifyingPropertyDependencies} from '../aggregator-ds/identifying-property/IdentifyingPropertyDependencies';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {Dependencies} from '../base/classes/Dependencies';
-import {Warehouse} from '../Warehouse';
 
-
+@Injectable()
 export class DependencyDataServices extends DataServiceBundle<Dependencies> {
-    identifyingProperty: IdentifyingPropertyDependencies
 
-    pClassLabel: PClassLabelDependencies
-    pClassFieldLabel: PClassFieldLabelDependencies
-    pEntityLabel: PEntityLabelDependencies
-    pEntityType: PEntityTypeDependencies
-    pEntityClassLabel: PEntityClassLabelDependencies
-    pEntityFullText: PEntityFullTextDependencies
-    pEntityTimeSpan: PEntityTimeSpanDependencies
-
-    rClassLabel: RClassLabelDependencies
-    rClassFieldLabel: RClassFieldLabelDependencies
-    rEntityLabel: REntityLabelDependencies
-    rEntityType: REntityTypeDependencies
-
-    rEntityClassLabel: REntityClassLabelDependencies
-    rEntityFullText: REntityFullTextDependencies
-    rEntityTimeSpan: REntityTimeSpanDependencies
 
     ready$: Observable<boolean>
 
-    constructor(wh: Warehouse) {
+    constructor(
+        public identifyingProperty: IdentifyingPropertyDependencies,
+
+        public pClassLabel: PClassLabelDependencies,
+        public pClassFieldLabel: PClassFieldLabelDependencies,
+        public pEntityLabel: PEntityLabelDependencies,
+        public pEntityType: PEntityTypeDependencies,
+        public pEntityClassLabel: PEntityClassLabelDependencies,
+        public pEntityFullText: PEntityFullTextDependencies,
+        public pEntityTimeSpan: PEntityTimeSpanDependencies,
+
+        public rClassLabel: RClassLabelDependencies,
+        public rClassFieldLabel: RClassFieldLabelDependencies,
+        public rEntityLabel: REntityLabelDependencies,
+        public rEntityType: REntityTypeDependencies,
+
+        public rEntityClassLabel: REntityClassLabelDependencies,
+        public rEntityFullText: REntityFullTextDependencies,
+        public rEntityTimeSpan: REntityTimeSpanDependencies,
+    ) {
         super()
-        this.identifyingProperty = this.registerDataService(new IdentifyingPropertyDependencies(wh)); // rEntityLabel
+        this.registerDataService(this.identifyingProperty); // rEntityLabel
 
-        // this.pClassLabel = this.registerDataService(new PClassLabelDependencies(wh));
-        // this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelDependencies(wh));
-        // this.pEntityLabel = this.registerDataService(new PEntityLabelDependencies(wh));
-        // this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelDependencies(wh));
-        // this.pEntityType = this.registerDataService(new PEntityTypeDependencies(wh));
-        // this.pEntityFullText = this.registerDataService(new PEntityFullTextDependencies(wh));
-        // this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanDependencies(wh));
+        //  this.registerDataService(this.pClassLabel);
+        //  this.registerDataService(this.pClassFieldLabel);
+        //  this.registerDataService(this.pEntityLabel);
+        //  this.registerDataService(this.pEntityClassLabel);
+        //  this.registerDataService(this.pEntityType);
+        //  this.registerDataService(this.pEntityFullText);
+        //  this.registerDataService(this.pEntityTimeSpan);
 
-        // this.rClassLabel = this.registerDataService(new RClassLabelDependencies(wh));
-        // this.rEntityClassLabel = this.registerDataService(new REntityClassLabelDependencies(wh));
-        this.rEntityLabel = this.registerDataService(new REntityLabelDependencies(wh)); // rEntityLabel
-        // this.rEntityType = this.registerDataService(new REntityTypeDependencies(wh));
-        // this.rEntityFullText = this.registerDataService(new REntityFullTextDependencies(wh));
-        // this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelDependencies(wh));
-        // this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanDependencies(wh));
+        //  this.registerDataService(this.rClassLabel);
+        //  this.registerDataService(this.rEntityClassLabel);
+        this.registerDataService(this.rEntityLabel); // rEntityLabel
+        //  this.registerDataService(this.rEntityType);
+        //  this.registerDataService(this.rEntityFullText);
+        //  this.registerDataService(this.rClassFieldLabel);
+        //  this.registerDataService(this.rEntityTimeSpan);
 
         const readies$ = []
         for (const reg1 of this.registered) {

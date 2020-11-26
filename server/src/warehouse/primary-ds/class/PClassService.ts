@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {Warehouse} from '../../Warehouse';
 import {pClassIdKeyDef} from '../ProClassFieldsConfigService';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface PClassId {fkProject: number, pkClass: number}
 export interface PClassVal {
   fkClass: number
@@ -8,11 +9,12 @@ export interface PClassVal {
   basicType: number
 }
 
+@Injectable()
 export class PClassService extends PrimaryDataService<PClassId, PClassVal>{
 
   measure = 1000;
 
-  constructor(public wh: Warehouse) {
+  constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
     super(
       wh,
       [

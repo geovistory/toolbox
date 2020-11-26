@@ -5,10 +5,10 @@ import {EntityFields} from "../../../primary-ds/edge/edge.commons";
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService';
 import {PClassId, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService';
 import {RClassFieldId, RClassFieldVal} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
+import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService';
 import {EntityLabelVal} from '../../entity-label/entity-label.commons';
 import {REntityFullTextDependencies} from './REntityFullTextDependencies';
 import {REntityFullTextVal} from './REntityFullTextService';
-import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService';
 
 export class REntityFullTextProviders extends Providers<REntityId> {
     rEntity: Provider<REntityId, REntityFullTextVal, REntityId, REntity>;

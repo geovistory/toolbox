@@ -4,6 +4,7 @@ import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -39,6 +40,7 @@ export type PEntityTimeSpan = {
  * -> The Val is the result of the PEntityTimeSpanAggregator
  *
  */
+@Injectable()
 export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal>{
     creatorDS: PEntityService
     aggregator = PEntityTimeSpanAggregator;
@@ -48,7 +50,7 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             where: `val->>'entityType' = 'teEn'`,
         }
     ]
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             pEntityKeyDefs

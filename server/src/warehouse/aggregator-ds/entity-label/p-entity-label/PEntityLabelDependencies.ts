@@ -8,7 +8,9 @@ import {EntityLabelConfigVal} from '../../../primary-ds/ProEntityLabelConfigServ
 import {Warehouse} from '../../../Warehouse'
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService'
 import {EntityLabelVal} from '../entity-label.commons'
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
+@Injectable()
 export class PEntityLabelDependencies extends Dependencies {
     entity: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, PEntity>
     entityLabelConfig: DependencyIndex<PEntityId, EntityLabelVal, PClassId, EntityLabelConfigVal>
@@ -17,7 +19,7 @@ export class PEntityLabelDependencies extends Dependencies {
     edge: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityFields>
 
     // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
-    constructor(private wh: Warehouse) {
+      constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
         this.entity = this.registerDepIdx(new DependencyIndex(

@@ -3,6 +3,7 @@ import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTypeAggregator} from './PEntityTypeAggregator';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PEntityTypeVal {
     fkType?: number,
@@ -27,12 +28,13 @@ export interface PEntityTypeVal {
  * -> The Val is the result of the PEntityTypeAggregator
  *
  */
+@Injectable()
 export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal>{
     creatorDS: PEntityService
     aggregator = PEntityTypeAggregator;
     providers = PEntityTypeProviders;
 
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             pEntityKeyDefs

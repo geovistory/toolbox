@@ -4,17 +4,19 @@ import {DfhOutgoingPropertyService, OutgoingPropertyVal} from '../../primary-ds/
 import {Warehouse} from '../../Warehouse';
 import {IdentifyingPropertyAggregator} from './IdentifyingPropertyAggregator';
 import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 export type IdentifyingPropertyVal = OutgoingPropertyVal[]
 
+@Injectable()
 export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal>{
     creatorDS: DfhOutgoingPropertyService
     customCreatorDSSql = [{select: `"fkDomain" as "pkClass"`}]
 
     aggregator = IdentifyingPropertyAggregator;
     providers = IdentifyingPropertyProviders;
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rClassIdKeyDefs

@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface ProClassLabelId {
     fkProject: number
     fkClass: number
@@ -22,9 +23,10 @@ const keyDefs: KeyDefinition[] = [
 ]
 export interface ProClassLabelVal {label: string}
 
+@Injectable()
 export class ProClassLabelService extends PrimaryDataService< ProClassLabelId, ProClassLabelVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             ['modified_projects_text_property'],

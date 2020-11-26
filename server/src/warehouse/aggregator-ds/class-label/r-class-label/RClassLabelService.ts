@@ -11,8 +11,11 @@ import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLab
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH, Warehouse} from '../../../Warehouse';
 import {RClassLabelAggregator} from './RClassLabelAggregator';
 import {RClassLabelProviders} from './RClassLabelProviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export type RClassLabelValue = {label?: string}
+
+@Injectable()
 export class RClassLabelService extends AggregatedDataService2<RClassId, RClassLabelValue>{
     creatorDS: RClassService
     aggregator = RClassLabelAggregator;
@@ -21,7 +24,7 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
     dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
     proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
 
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rClassIdKeyDefs
@@ -114,11 +117,12 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
 // import {RClassLabelProviders} from './RClassLabelProviders';
 
 // export type RClassLabelValue = {label?: string}
+// @Injectable()
 // export class RClassLabelService extends AggregatedDataService<RClassId, RClassLabelValue>{
 //     creatorDS: RClassService
 //     aggregator = RClassLabelAggregator;
 //     providers = RClassLabelProviders;
-//     constructor(public wh: Warehouse) {
+//     constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
 //         super(
 //             wh,
 //             rClassIdKeyDefs

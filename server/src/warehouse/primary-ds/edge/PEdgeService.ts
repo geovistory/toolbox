@@ -3,6 +3,7 @@ import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityId, pEntityKeyDefs} from '../entity/PEntityService';
 import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from './edge.commons';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 interface Noun {
     table: string;
@@ -16,12 +17,13 @@ interface Noun {
 
 
 
+@Injectable()
 export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
 
     measure = 10000;
 
 
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             [

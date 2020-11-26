@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PEntityId {fkProject: number, pkEntity: number}
 export const pEntityKeyDefs: KeyDefinition[] = [
@@ -13,11 +14,12 @@ export const pEntityKeyDefs: KeyDefinition[] = [
         type: 'integer'
     }
 ]
+@Injectable()
 export class PEntityService extends PrimaryDataService< PEntityId, PEntity>{
 
     measure = 1000;
 
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
             'modified_information_persistent_item',

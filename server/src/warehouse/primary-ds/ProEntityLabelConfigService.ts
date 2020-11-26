@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
 import {PClassId, pClassIdKeyDef} from './ProClassFieldsConfigService';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 export interface LabelPart {
@@ -16,12 +17,13 @@ export interface EntityLabelConfigVal {
 }
 
 
+@Injectable()
 export class ProEntityLabelConfigService extends PrimaryDataService<PClassId, EntityLabelConfigVal>{
 
     measure = 1000;
 
 
-    constructor(wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             ['modified_projects_entity_label_config'],

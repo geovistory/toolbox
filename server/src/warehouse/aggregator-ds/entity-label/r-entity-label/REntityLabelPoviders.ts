@@ -8,6 +8,7 @@ import {REntityLabelDependencies} from './REntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityLabelVal} from '../entity-label.commons';
+
 export class REntityLabelProviders extends Providers<REntityId> {
     rEntity: Provider<REntityId, EntityLabelVal, REntityId, REntity>;
     rEntityLabels: Provider<REntityId, EntityLabelVal, REntityId, EntityLabelVal>;

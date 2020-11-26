@@ -3,14 +3,16 @@ import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/ent
 import {Warehouse} from '../../../Warehouse';
 import {REntityClassLabelAggregator} from './REntityClassLabelAggregator';
 import {REntityClassLabelProviders} from './REntityClassLabelPoviders';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 export interface REntityClassLabelVal {entityClassLabel?: string}
+@Injectable()
 export class REntityClassLabelService extends AggregatedDataService<REntityId, REntityClassLabelVal>{
     creatorDS: REntityService
     aggregator = REntityClassLabelAggregator;
     providers = REntityClassLabelProviders;
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(
             wh,
             rEntityKeyDefs
