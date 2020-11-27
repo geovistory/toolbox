@@ -164,7 +164,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      */
     private async manageUpdatesSince(date: Date = new Date(0)) {
 
-        const t2 = Logger.start(this.constructor.name, `Start update query  ...`, 2);
+        const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
 
         const updateSql = this.getUpdatesSql(date)
         const upsertHookSql = this.get2ndUpdatesSql ? `,
@@ -197,7 +197,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         if (upserted.rows?.[0].count > 0) {
             this.afterChange$.next()
         }
-        Logger.itTook(this.constructor.name, t2, `to update query`, 2);
+        Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted.rows?.[0].count} new lines`, 2);
         return upserted.rows.length
 
     }

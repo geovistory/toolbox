@@ -186,7 +186,6 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             conditionTrueIf: {},
             createCustomObject: remoteEntityLabelCustom
         })
-        const count = builder.twCount()
 
         // const hook = builder.twOnUpsertHook()
         const labelPartsTable = labelParts.tableDef.tableName
@@ -195,6 +194,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
 
         const upsertAggregations = builder.upsertAggResults(this.index, aggregateLabels.tw, '= true')
         const hook = builder.twOnUpsertHook()
+        const count = builder.twCount()
 
         const sql = `
         ${twBatch.sql},

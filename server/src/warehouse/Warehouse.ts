@@ -153,9 +153,10 @@ export class Warehouse {
 
         await this.pgNotify('warehouse_initializing', 'false')
 
+        Logger.msg(this.constructor.name, `************ Warehouse Index Created ***************`, 0)
+        Logger.msg(this.constructor.name, `The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`, 0)
         Logger.itTook(this.constructor.name, t0, 'to create warehouse data', 0)
-
-        Logger.log(`The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`);
+        Logger.msg(this.constructor.name, `****************************************************`, 0)
 
     };
 
@@ -312,21 +313,21 @@ export class Warehouse {
      */
     private async createPrimaryData() {
 
-        const t1 = Logger.start(this.constructor.name, 'Initialize indexes', 0)
+        const t1 = Logger.start(this.constructor.name, 'Initialize Primary Data Services', 0)
 
         await this.prim.initAllIndexes()
 
-        Logger.itTook(this.constructor.name, t1, 'to initialize indexes', 0)
+        Logger.itTook(this.constructor.name, t1, 'to initialize Primary Data Services', 0)
     }
     /**
      * Initialize the indexes of the secondary data services
      */
     private async createAggregatedData() {
-        const t1 = Logger.start(this.constructor.name, 'Start cycling for all aggregators', 0)
+        const t1 = Logger.start(this.constructor.name, 'Initialize Aggregated Data Services', 0)
 
         await this.agg.startCycling()
 
-        Logger.itTook(this.constructor.name, t1, 'to cycle for all aggregators', 0)
+        Logger.itTook(this.constructor.name, t1, 'to Initialize Aggregated Data Services', 0)
     }
 
     // /**

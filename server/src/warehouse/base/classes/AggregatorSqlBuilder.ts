@@ -189,7 +189,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
   twCount() {
     const tw = this.addTw()
     let counts = 'SELECT 0 as count'
-    if (this.addAggUpsertTw.length) {
+    if (this.aggUpsertTws.length) {
       counts = `${this.aggUpsertTws.map(aggUpsertTw => `SELECT count(*)::int FROM ${aggUpsertTw}`).join(' UNION ALL ')}`
     }
     const sql = `
