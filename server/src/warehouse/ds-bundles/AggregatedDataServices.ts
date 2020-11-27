@@ -1,5 +1,5 @@
 // import { EntityPreviewService } from '../data-services/aggregated/EntityPreviewService';
-import {Injectable, Inject, forwardRef} from 'injection-js';
+import {Injectable} from 'injection-js';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, mapTo} from 'rxjs/operators';
 import {PClassFieldLabelService} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
@@ -62,7 +62,7 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
         //  this.registerDataService(this.pEntityTimeSpan)
 
         // // // Repo aggregators
-        //  this.registerDataService(this.rClassLabel) // rClassLabel
+        this.registerDataService(this.rClassLabel) // rClassLabel
         //  this.registerDataService(this.rClassFieldLabel)
         this.registerDataService(this.rEntityLabel); // rEntityLabel
         //  this.registerDataService(this.rEntityType);
@@ -90,7 +90,7 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
         // await this.pEntityTimeSpan.startUpdate()
 
         // Repo aggregators
-        // await this.rClassLabel.startUpdate() // rClassLabel
+        await this.rClassLabel.startUpdate() // rClassLabel
         // await this.rClassFieldLabel.startUpdate()
         // await this.rEntityClassLabel.startUpdate()
         await this.rEntityLabel.startUpdate() // rEntityLabel

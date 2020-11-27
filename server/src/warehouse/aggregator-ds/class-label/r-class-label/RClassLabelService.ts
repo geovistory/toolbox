@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PoolClient} from 'pg';
 import {brkOnErr, logSql} from '../../../../utils/helpers';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
@@ -11,7 +12,6 @@ import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLab
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH, Warehouse} from '../../../Warehouse';
 import {RClassLabelAggregator} from './RClassLabelAggregator';
 import {RClassLabelProviders} from './RClassLabelProviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export type RClassLabelValue = {label?: string}
 
@@ -51,32 +51,39 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
 
         const twBatch = builder.twBatch(limit, offset)
 
-        const geovistoryLabelsTw = builder.joinProvider({
-            receiverTableAlias: twBatch.tw,
-            dependencyIdx: this.proClassLabel,
-            keyMapping: {
-                fkClass: {receiverCol: 'pkClass'},
+        const geovistoryLabelsTw = builder.joinProviderThroughDepIdx({
+            leftTable: twBatch.tableDef,
+            joinWith: this.proClassLabel,
+            joinOnKeys: {
+                fkClass: {leftCol: 'pkClass'},
                 fkProject: {value: PK_DEFAULT_CONFIG_PROJECT},
                 fkLanguage: {value: PK_ENGLISH},
             },
-            hasCondition: {
+            conditionTrueIf: {
                 providerVal: {label: 'IS NOT NULL'}
             },
-            createReceiverVal: (provider) => `jsonb_build_object('label',${provider}.val->>'label')`
+            createAggregationVal: {
+                sql: (provider) => `jsonb_build_object('label',${provider}.val->>'label')`,
+                upsert: {whereCondition: '= true'}
+            }
         })
 
-        const ontomeLabelsTw = builder.joinProvider({
-            receiverTableAlias: geovistoryLabelsTw.aggTw,
-            dependencyIdx: this.dfhClassLabel,
-            keyMapping: {
-                pkClass: {receiverCol: 'pkClass'},
+        if(!geovistoryLabelsTw.aggTableDef) throw new Error("aggUpsertTableDef missing");
+        const ontomeLabelsTw = builder.joinProviderThroughDepIdx({
+            leftTable: geovistoryLabelsTw.aggTableDef,
+            joinWhereLeftTableCondition: '= false',
+            joinWith: this.dfhClassLabel,
+            joinOnKeys: {
+                pkClass: {leftCol: 'pkClass'},
                 language: {value: 'en'},
             },
-            hasCondition: {
+            conditionTrueIf: {
                 providerVal: {label: 'IS NOT NULL'}
             },
-            aggregateWhereHasVal: '= false',
-            createReceiverVal: (provider) => `jsonb_build_object('label',${provider}.val->>'label')`
+            createAggregationVal: {
+                sql:(provider) => `jsonb_build_object('label',${provider}.val->>'label')`,
+                upsert: {whereCondition: '= true'}
+            }
         })
         const count = builder.twCount()
 

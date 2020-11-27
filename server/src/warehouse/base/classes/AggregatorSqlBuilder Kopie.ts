@@ -1,17 +1,20 @@
 import {AggregatedDataService2} from './AggregatedDataService2';
 import {DependencyIndex} from './DependencyIndex';
 import {DataIndexPostgres} from './DataIndexPostgres';
-export interface TableDef<Keys, Val, CustomObject> {
+export interface TableDef<Keys, Val> {
   tableName: string
 }
-export type CustomValSql<M> = (provTable: string) => string
-export type ProviderKeyColMapping<RK, RV, PK, CustomObject> = {
+export type ProviderKeyColMapping<RK, RV, PK> = {
   [key in keyof PK]: {
+    leftColPrefixP?: keyof RK,
+    leftColPrefixR?: keyof RK,
     leftCol?: keyof RK,
-    leftVal?: {name: keyof RV, type: 'int' | 'text'},
-    leftCustom?: {name: keyof CustomObject, type: 'int' | 'text'},
+    leftVal?: keyof RV,
     value?: string | number
   }
+}
+export type ColumnPrefixes<Cols> = {
+  [key in keyof Cols]: 'p_' | 'r_' | ''
 }
 type HasValOperator = 'IS NOT NULL' | 'is not {}'
 export type HasValCondition<PV> = {
@@ -57,60 +60,58 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     const tw = this.addTw()
     const sql = `
     WITH ${tw} AS (
-      SELECT ${this.agg.index.keyDefs.map(k => `"${k.name}" as "r_${k.name}"`)}
+      SELECT ${this.agg.index.keyDefs.map(k => `"${k.name}"`)}
       FROM ${this.agg.tempTable}
       LIMIT ${this.addParam(limit)} OFFSET ${this.addParam(offset)}
     )`
-    const tableDef: TableDef<KeyModel, ValueModel, never> = {
+    const tableDef: TableDef<KeyModel, ValueModel> = {
       tableName: tw
     }
     return {sql, tableDef}
   }
 
-  public joinProviderThroughDepIdx<LeftKeys, LeftVal, RK, RV, PK, PV, LeftCustom, RightCustom>(c: {
-    leftTable: TableDef<LeftKeys, LeftVal, LeftCustom>,
+  public joinProviderThroughDepIdx<LeftKeys, LeftVal, RK, RV, PK, PV>(c: {
+    leftTable: TableDef<LeftKeys, LeftVal>,
+    leftTableColPrefixes: ColumnPrefixes<LeftKeys>,
     joinWith: DependencyIndex<RK, RV, PK, PV>,
-    joinOnKeys: ProviderKeyColMapping<LeftKeys, LeftVal, PK, LeftCustom>,
+    joinOnKeys: ProviderKeyColMapping<LeftKeys, LeftVal, PK>,
     joinWhereLeftTableCondition?: AggregateWhereCondition,
     conditionTrueIf: HasCondition<PK, PV>,
     createAggregationVal?: {
       sql: (provTable: string) => string
       upsert: false | {whereCondition: '= true' | '= false'}
     },
-    createCustomObject?: CustomValSql<RightCustom>
   }
   ) {
     const provider = c.joinWith.providerDS.index
     const receiver = c.joinWith.receiverDS.index
-
-    const {selectProviderKeys, joinOns} = this.aggSelectAndJoin(c.joinOnKeys);
+    const selectReceiverKeys = this.aggReceiverSelects(receiver, c.leftTableColPrefixes)
+    const {selectProviderKeys, joinOns} = this.aggSelectAndJoin(c.joinOnKeys, c.leftTableColPrefixes);
     const createConditionSql = this.aggCondition(c.conditionTrueIf);
     const whereConditionSql = this.aggWhereCondition(c.joinWhereLeftTableCondition)
     const receiverValSql = this.aggCreateReceiverVal(c.createAggregationVal?.sql)
-    const customObjectSql = this.aggCreateCustomObject<RightCustom>(c.createCustomObject)
 
     const aggTw = this.addTw()
     const depUpsertTw = this.addTw()
-    let sql = `
-    -- aggregate
+    let aggUpsertTw: string | undefined = undefined;
+    let aggUpsertTableDef: TableDef<RK, RV> | undefined = undefined;
+    let sql = `-- aggregate from geovistory
     ${aggTw} AS (
         SELECT
                     --receiver keys
-                    ${receiver.keyDefs.map(k => `t1."r_${k.name}"`)},
+                    ${selectReceiverKeys},
                     --provider keys
-                    ${selectProviderKeys.join(',')},
+                    ${selectProviderKeys},
                     --provider val
                     t2.val p_val,
                     --val
                     ${receiverValSql} val,
-                    --custom
-                    ${customObjectSql} custom,
                     --condition
                     ${createConditionSql} condition
         FROM        ${c.leftTable.tableName} t1
         LEFT JOIN   ${provider.schemaTable} t2
-        ON          ${joinOns.join(' AND ')}
-        WHERE       tmsp_deleted IS NULL
+        ON          ${joinOns}
+        AND         tmsp_deleted IS NULL
                     ${whereConditionSql}
     ),
     -- insert or update dependencies
@@ -118,13 +119,10 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
         INSERT INTO
                     ${c.joinWith.schemaTable}
                     (${c.joinWith.keyCols}, tmsp_last_aggregation)
-        SELECT DISTINCT ON (
-          ${c.joinWith.providerKeyCols},
-          ${c.joinWith.receiverKeyCols}
-        )
+        SELECT
                     --dep index keys
-                    ${c.joinWith.providerKeyCols},
-                    ${c.joinWith.receiverKeyCols},
+                    ${selectReceiverKeys},
+                    ${selectProviderKeys},
                     --tmsp_last_aggregation
                     ${this.addParam(this.currentTimestamp)}
         FROM        ${aggTw}
@@ -134,56 +132,49 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     )`;
 
     if (c.createAggregationVal?.upsert) {
-      const whereCondition = c.createAggregationVal.upsert.whereCondition
-      const {sql: s} = this.upsertAggResults(receiver, aggTw, whereCondition);
+      aggUpsertTw = this.addAggUpsertTw()
 
       sql = `${sql},
-        ${s}
-      `
-
-
-    }
-    const aggTableDef: TableDef<RK, PV, RightCustom> = {
-      tableName: aggTw
-    }
-
-    return {sql, aggTableDef, depUpsertTw}
-  }
-
-   upsertAggResults<RK, RV>(
-    receiver: DataIndexPostgres<RK, RV>,
-    aggTw: string,
-    whereCondition: AggregateWhereCondition) {
-    const tw = this.addAggUpsertTw();
-    const sql = `
       -- insert or update aggregation results
-      ${tw} AS (
-        INSERT INTO ${receiver.schemaTable} (${receiver.keyCols},val)
-        SELECT DISTINCT ON (${receiver.keyDefs.map(k => `"r_${k.name}"`)})
+      ${aggUpsertTw} AS (
+        INSERT INTO ${this.agg.index.schemaTable} (${this.agg.index.keyCols},val)
+        SELECT
         --receiver keys
-        ${receiver.keyDefs.map(k => `"r_${k.name}"`)},
+          ${this.agg.index.keyDefs.map(k => `"${this.getLeftTableColPrefix(c.leftTableColPrefixes, k.name as keyof LeftKeys)}${k.name}"`)},
         --val
         val
         FROM        ${aggTw}
-        WHERE       condition ${whereCondition}
-        ON CONFLICT (${receiver.keyCols})
+        WHERE       condition ${c.createAggregationVal.upsert.whereCondition}
+        ON CONFLICT (${this.agg.index.keyCols})
         DO UPDATE
         SET val = EXCLUDED.val
         WHERE
-        EXCLUDED.val IS DISTINCT FROM ${receiver.schemaTable}.val
+        EXCLUDED.val IS DISTINCT FROM ${this.agg.index.schemaTable}.val
         RETURNING *
-        )`;
-    return {sql, tw};
+        )
+      `
+      aggUpsertTableDef = {
+        tableName: aggUpsertTw
+      }
+    }
+    // REMARK:
+    const aggTableDef: TableDef<RK & PK, PV> = {
+      tableName: aggTw
+    }
+
+    return {sql, aggTableDef, aggUpsertTableDef, depUpsertTw}
+  }
+
+  private aggReceiverSelects<LeftKeys, RK, RV>(
+    receiver: DataIndexPostgres<RK, RV>,
+    leftTableColPrefixes: ColumnPrefixes<LeftKeys>) {
+    return receiver.keyDefs
+      .map(k => `t1."${this.getLeftTableColPrefix(leftTableColPrefixes, k.name as keyof LeftKeys)}${k.name}"`);
   }
 
   private aggCreateReceiverVal(createReceiverVal?: ((provTable: string) => string)) {
     return !createReceiverVal ? `'{}'::jsonb` :
       createReceiverVal('t2');
-  }
-
-  private aggCreateCustomObject<M>(createCustomObject?: CustomValSql<M>) {
-    return !createCustomObject ? `'{}'::jsonb` :
-      createCustomObject('t2');
   }
 
   twCount() {
@@ -249,10 +240,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     return conditions.join(' AND ');
   }
   private aggCondition<PK, PV>(hasCondition: HasCondition<PK, PV>): string {
-    if (Object.keys(hasCondition).length === 0) {
-      return `null::boolean`
-    }
-    else if (hasCondition.or) {
+    if (hasCondition.or) {
       return `(${hasCondition.or.map(c => `${this.aggCondition(c)}`).join(' OR ')} )`
 
     } else if (hasCondition.and) {
@@ -264,8 +252,9 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
 
   }
 
-  private aggSelectAndJoin<RK, RV, PK, LeftCustom>(
-    keyMapping: ProviderKeyColMapping<RK, RV, PK, LeftCustom>
+  private aggSelectAndJoin<LeftKeys, LeftVal, PK>(
+    keyMapping: ProviderKeyColMapping<LeftKeys, LeftVal, PK>,
+    leftTableColPrefixes: ColumnPrefixes<LeftKeys>
   ) {
     const selectProviderKeys: string[] = [];
     const joinOns: string[] = [];
@@ -275,12 +264,16 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
         let select: string;
         let joinOn: string;
         if (e.leftCol) {
-          select = `t1."r_${e.leftCol}" "p_${providerCol}"`;
-          joinOn = `t1."r_${e.leftCol}" = t2."${providerCol}"`;
+          select = `t1.${this.getLeftTableColPrefix(leftTableColPrefixes, e.leftCol)}"${e.leftCol}" "p_${providerCol}"`;
+          joinOn = `t1.${this.getLeftTableColPrefix(leftTableColPrefixes, e.leftCol)}"${e.leftCol}" = t2."${providerCol}"`;
         }
-        else if (e.leftCustom) {
-          select = `(t1.custom->>'${e.leftCustom.name}')::${e.leftCustom.type} "p_${providerCol}"`;
-          joinOn = `(t1.custom->>'${e.leftCustom.name}')::${e.leftCustom.type} = t2."${providerCol}"`;
+        else if (e.leftColPrefixR) {
+          select = `t1."r_${e.leftColPrefixR}" "p_${providerCol}"`;
+          joinOn = `t1."r_${e.leftColPrefixR}" = t2."${providerCol}"`;
+        }
+        else if (e.leftColPrefixP) {
+          select = `t1."p_${e.leftColPrefixP}" "p_${providerCol}"`;
+          joinOn = `t1."p_${e.leftColPrefixP}" = t2."${providerCol}"`;
         }
         else if (e.value) {
           const parse = typeof e.value === 'number' ? '::int' : '';
@@ -295,10 +288,16 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
         joinOns.push(joinOn);
       }
     }
-    return {selectProviderKeys, joinOns};
+    return {
+      selectProviderKeys: selectProviderKeys.join(','),
+      joinOns: joinOns.join(' AND ')
+    };
   }
 
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private getLeftTableColPrefix<Keys>(leftTableColPrefixes: ColumnPrefixes<Keys>, colName: keyof Keys) {
+    return leftTableColPrefixes[colName]
+  }
 
 
 }

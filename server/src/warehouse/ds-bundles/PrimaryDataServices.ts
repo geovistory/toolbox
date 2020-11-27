@@ -89,13 +89,13 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
     ) {
         super()
 
-        // this.registerDataService(this.dfhClassLabel); // rClassLabel
+        this.registerDataService(this.dfhClassLabel); // rClassLabel
         // this.registerDataService(this.dfhPropertyLabel);
         // this.registerDataService(this.dfhClassHasTypeProperty);
         this.registerDataService(this.dfhOutgoingProperty); // rEntityLabel
 
         // this.registerDataService(this.proProject);
-        // this.registerDataService(this.proClassLabel); // rClassLabel
+        this.registerDataService(this.proClassLabel); // rClassLabel
         // this.registerDataService(this.proPropertyLabel);
 
         // this.registerDataService(this.pClass);
@@ -110,7 +110,7 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         this.registerDataService(this.rEntity); // rEntityLabel
         this.registerDataService(this.rEdge); // rEntityLabel
 
-        // this.registerDataService(this.rClass); // rClassLabel
+        this.registerDataService(this.rClass); // rClassLabel
         // this.registerDataService(this.rProperty);
 
         this.ready$ = combineLatest(

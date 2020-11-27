@@ -227,6 +227,13 @@ export class InfStatementMock {
     fk_property: 1218,
     fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
   })
+
+  static readonly UNOIN_1_HAS_PARTNER_2 = new InfStatement({
+    pk_entity: 3031,
+    fk_subject_info: InfTemporalEntityMock.UNION_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
+  })
 }
 
 

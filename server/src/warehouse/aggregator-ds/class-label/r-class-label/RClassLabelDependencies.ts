@@ -1,34 +1,34 @@
-import {Dependencies} from '../../../base/classes/Dependencies'
-import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
-import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService'
-import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
-import {Warehouse} from '../../../Warehouse'
-import {RClassLabelValue} from './RClassLabelService'
-import {Injectable, Inject, forwardRef} from 'injection-js';
+// import {Dependencies} from '../../../base/classes/Dependencies'
+// import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+// import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
+// import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService'
+// import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
+// import {Warehouse} from '../../../Warehouse'
+// import {RClassLabelValue} from './RClassLabelService'
+// import {Injectable, Inject, forwardRef} from 'injection-js';
 
-@Injectable()
-export class RClassLabelDependencies extends Dependencies {
-  dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
+// @Injectable()
+// export class RClassLabelDependencies extends Dependencies {
+//   dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
+//   proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
 
-    constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
-    super()
-
-
-    this.dfhClassLabel = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.rClassLabel,
-      wh.prim.dfhClassLabel,
-    ))
-
-    this.proClassLabel = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.rClassLabel,
-      wh.prim.proClassLabel,
-    ))
-  }
+//     constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
+//     super()
 
 
+//     this.dfhClassLabel = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.rClassLabel,
+//       wh.prim.dfhClassLabel,
+//     ))
 
-}
+//     this.proClassLabel = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.rClassLabel,
+//       wh.prim.proClassLabel,
+//     ))
+//   }
+
+
+
+// }

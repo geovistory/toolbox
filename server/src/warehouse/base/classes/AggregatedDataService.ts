@@ -115,8 +115,10 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     }
 
     public async startUpdate() {
+        const t0 = Logger.start(this.constructor.name, `Start update.`, 0)
         const tmsp = await this.wh.pgNow();
         const changes = await this.doUpdate(tmsp);
+        Logger.itTook(this.constructor.name, t0, `to start update`, 0)
         return changes
     }
 
@@ -203,8 +205,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             // if (this.constructor.name === 'REntityLabelService') {
             //     console.log('------------- restart startUpdate()')
             // }
-            Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
 
+            Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
             // restart
             currentTimestamp = await this.wh.pgNow();
             const nextChanges = await this.doUpdate(currentTimestamp);

@@ -137,6 +137,19 @@ describe('REntityLabelService', function () {
         expect(result)
     })
 
+    it('should create entity label of Union with 3 label parts', async () => {
+        await createProject();
+        const {appellation} = await createNamingMock();
+        await createPersonMock();
+        const {union} = await createUnion2Mock()
+        const result = await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === union.pk_entity
+                && item.fk_project === null
+                && item.entity_label === '(no label), Jack the foo, (no label)'
+        })
+        expect(result)
+    })
+
 
 
     /**
@@ -302,7 +315,7 @@ async function createUnionMock() {
     await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
 
     // TeEn
-    const birth = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
+    const union = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
 
     // Stmts
@@ -310,6 +323,37 @@ async function createUnionMock() {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
 
     await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
-    return birth;
+    return union;
+}
+
+async function createUnion2Mock() {
+
+    // MODEL + LABELS
+    await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
+
+    // TeEn
+    const union = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
+
+    const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
+
+    // peIt
+    await createInfPersistentItem(InfPersistentItemMock.ALBERT_IV);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_ALBERT_IV);
+
+    // Stmts
+    await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
+
+    await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_2);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_2);
+
+    await createInfStatement(InfStatementMock.BIRTH_1_STEMS_FROM_UNION_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_BIRTH_1_STEMS_FROM_UNION_1);
+
+    await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT_2)
+    return {union, birth};
 }
 

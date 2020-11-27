@@ -1,16 +1,14 @@
-import {Injectable, Inject, forwardRef} from 'injection-js';
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {combineLatest, Observable} from 'rxjs';
 import {mapTo} from 'rxjs/operators';
 import {PClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
 import {RClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelDependencies';
 import {PClassLabelDependencies} from '../aggregator-ds/class-label/p-class-label/PClassLabelDependencies';
-import {RClassLabelDependencies} from '../aggregator-ds/class-label/r-class-label/RClassLabelDependencies';
 import {PEntityClassLabelDependencies} from '../aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelDependencies';
 import {REntityClassLabelDependencies} from '../aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelDependencies';
 import {PEntityFullTextDependencies} from '../aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextDependencies';
 import {REntityFullTextDependencies} from '../aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextDependencies';
 import {PEntityLabelDependencies} from '../aggregator-ds/entity-label/p-entity-label/PEntityLabelDependencies';
-import {REntityLabelDependencies} from '../aggregator-ds/entity-label/r-entity-label/REntityLabelDependencies';
 import {PEntityTimeSpanDependencies} from '../aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanDependencies';
 import {REntityTimeSpanDependencies} from '../aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanDependencies';
 import {PEntityTypeDependencies} from '../aggregator-ds/entity-type/p-entity-type/PEntityTypeDependencies';
@@ -26,24 +24,24 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
     ready$: Observable<boolean>
 
     constructor(
-        public identifyingProperty: IdentifyingPropertyDependencies,
+        @Inject(forwardRef(()=>IdentifyingPropertyDependencies)) public identifyingProperty: IdentifyingPropertyDependencies,
 
-        public pClassLabel: PClassLabelDependencies,
-        public pClassFieldLabel: PClassFieldLabelDependencies,
-        public pEntityLabel: PEntityLabelDependencies,
-        public pEntityType: PEntityTypeDependencies,
-        public pEntityClassLabel: PEntityClassLabelDependencies,
-        public pEntityFullText: PEntityFullTextDependencies,
-        public pEntityTimeSpan: PEntityTimeSpanDependencies,
+        @Inject(forwardRef(()=>PClassLabelDependencies)) public pClassLabel: PClassLabelDependencies,
+        @Inject(forwardRef(()=>PClassFieldLabelDependencies)) public pClassFieldLabel: PClassFieldLabelDependencies,
+        @Inject(forwardRef(()=>PEntityLabelDependencies)) public pEntityLabel: PEntityLabelDependencies,
+        @Inject(forwardRef(()=>PEntityTypeDependencies)) public pEntityType: PEntityTypeDependencies,
+        @Inject(forwardRef(()=>PEntityClassLabelDependencies)) public pEntityClassLabel: PEntityClassLabelDependencies,
+        @Inject(forwardRef(()=>PEntityFullTextDependencies)) public pEntityFullText: PEntityFullTextDependencies,
+        @Inject(forwardRef(()=>PEntityTimeSpanDependencies)) public pEntityTimeSpan: PEntityTimeSpanDependencies,
 
-        public rClassLabel: RClassLabelDependencies,
-        public rClassFieldLabel: RClassFieldLabelDependencies,
-        public rEntityLabel: REntityLabelDependencies,
-        public rEntityType: REntityTypeDependencies,
+        // @Inject(forwardRef(()=>RClassLabelDependencies)) public rClassLabel: RClassLabelDependencies,
+        @Inject(forwardRef(()=>RClassFieldLabelDependencies)) public rClassFieldLabel: RClassFieldLabelDependencies,
+        // @Inject(forwardRef(()=>REntityLabelDependencies)) public rEntityLabel: REntityLabelDependencies,
+        @Inject(forwardRef(()=>REntityTypeDependencies)) public rEntityType: REntityTypeDependencies,
 
-        public rEntityClassLabel: REntityClassLabelDependencies,
-        public rEntityFullText: REntityFullTextDependencies,
-        public rEntityTimeSpan: REntityTimeSpanDependencies,
+        @Inject(forwardRef(()=>REntityClassLabelDependencies)) public rEntityClassLabel: REntityClassLabelDependencies,
+        @Inject(forwardRef(()=>REntityFullTextDependencies)) public rEntityFullText: REntityFullTextDependencies,
+        @Inject(forwardRef(()=>REntityTimeSpanDependencies)) public rEntityTimeSpan: REntityTimeSpanDependencies,
     ) {
         super()
         this.registerDataService(this.identifyingProperty); // rEntityLabel
@@ -58,7 +56,7 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
 
         //  this.registerDataService(this.rClassLabel);
         //  this.registerDataService(this.rEntityClassLabel);
-        this.registerDataService(this.rEntityLabel); // rEntityLabel
+        // this.registerDataService(this.rEntityLabel); // rEntityLabel
         //  this.registerDataService(this.rEntityType);
         //  this.registerDataService(this.rEntityFullText);
         //  this.registerDataService(this.rClassFieldLabel);

@@ -88,6 +88,10 @@ export class Warehouse {
      * start warehouse
      */
     async start() {
+        this.injector.get(PrimaryDataServices)
+        this.injector.get(AggregatedDataServices)
+        this.injector.get(DependencyDataServices)
+
         await this.dbSetup();
 
         const isInitialized = await this.prim.everythingInitialized();
@@ -161,8 +165,11 @@ export class Warehouse {
      * Starts listening
      */
     async listen() {
-        const t0 = Logger.start(this.constructor.name, 'Start listening Warehouse', 0)
+        this.injector.get(PrimaryDataServices)
+        this.injector.get(AggregatedDataServices)
+        this.injector.get(DependencyDataServices)
 
+        const t0 = Logger.start(this.constructor.name, 'Start listening Warehouse', 0)
 
         this.status = 'starting';
 
@@ -286,11 +293,6 @@ export class Warehouse {
             this.constructor.name + '_timestamps',
             this
         )
-
-        // // this.leveldb = await this.createLeveldb(this.leveldbpath)
-        // this.prim = new PrimaryDataServices(this)
-        // this.agg = new AggregatedDataServices(this)
-        // this.dep = new DependencyDataServices(this)
 
         this.createSchema$.next()
         return new Promise((res, rej) => {
