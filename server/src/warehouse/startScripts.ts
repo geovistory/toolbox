@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import pgkDir from 'pkg-dir';
 import {createWarehouse} from './createWarehouse';
-import {WarehouseConfig} from './Warehouse';
+import {WarehouseConfig, Warehouse} from './Warehouse';
 
 const appRoot = pgkDir.sync() ?? ''
 
@@ -29,7 +29,7 @@ export async function start() {
             compatibleWithCommits
         }
     }
-    const warehouse = createWarehouse(config)
+    const warehouse = createWarehouse(config).get(Warehouse)
     await warehouse.start();
 }
 
@@ -57,7 +57,7 @@ export async function startDev() {
             compatibleWithCommits
         }
     }
-    const warehouse = createWarehouse(config)
+    const warehouse = createWarehouse(config).get(Warehouse)
     await warehouse.start();
 }
 
@@ -67,7 +67,7 @@ export async function startDev() {
 // (No bucketeer instance required, everything related to backups is skipped)
 export async function cleanAndStartDev() {
     const config: WarehouseConfig = {}
-    const warehouse = createWarehouse(config)
+    const warehouse = createWarehouse(config).get(Warehouse)
     const client = await warehouse.pgPool.connect()
     await client.query(`drop schema if exists ${warehouse.schemaName} cascade;`)
     client.release()
