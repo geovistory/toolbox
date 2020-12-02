@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {ProPropertyLabelId, ProPropertyLabelService} from '../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
@@ -22,8 +23,9 @@ describe('ProPropertyLabelService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.proPropertyLabel
+    const injector = await setupCleanAndStartWarehouse()
+    wh = injector.get(Warehouse)
+    s = injector.get(ProPropertyLabelService)
   })
   beforeEach(async () => {
     await cleanDb()

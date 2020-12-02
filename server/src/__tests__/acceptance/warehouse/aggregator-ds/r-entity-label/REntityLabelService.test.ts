@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
-import {forwardRef, Inject, Injectable} from 'injection-js';
-import {PrimaryDataServicesBase} from '../../../../../warehouse/base/classes/PrimaryDataServicesBase';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
 import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
 import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
 import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
@@ -29,39 +31,20 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {AggregatedDataServicesBase} from '../../../../../warehouse/base/classes/AggregatedDataServicesBase';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {DependencyDataServicesBase} from '../../../../../warehouse/base/classes/DependencyDataServicesBase';
-import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 
-@Injectable()
-export class PrimBundle extends PrimaryDataServicesBase {
-    constructor(
-        @Inject(forwardRef(() => DfhOutgoingPropertyService)) public dfhOutgoingProperty: DfhOutgoingPropertyService,
-        @Inject(forwardRef(() => ProEntityLabelConfigService)) public proEntityLabelConfig: ProEntityLabelConfigService,
-        @Inject(forwardRef(() => REntityService)) public rEntity: REntityService,
-        @Inject(forwardRef(() => REdgeService)) public rEdge: REdgeService,
-    ) {
-        super(proEntityLabelConfig, rEntity, rEdge)
-    }
+export const rEntityLabelStub: WarehouseStubs = {
+    primaryDataServices: [
+        DfhOutgoingPropertyService,
+        ProEntityLabelConfigService,
+        REntityService,
+        REdgeService
+    ],
+    aggDataServices: [
+        IdentifyingPropertyService,
+        REntityLabelService
+    ]
 }
-@Injectable()
-export class AggBundle extends AggregatedDataServicesBase {
-    constructor(
-        @Inject(forwardRef(() => IdentifyingPropertyService)) public identifyingProperty: IdentifyingPropertyService,
-        @Inject(forwardRef(() => REntityLabelService)) public rEntityLabel: REntityLabelService,
-    ) {
-        super(identifyingProperty, rEntityLabel)
-    }
-}
-@Injectable()
-export class DepBundle extends DependencyDataServicesBase {
-    constructor() {
-        super()
-    }
-}
-
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -72,14 +55,8 @@ describe('REntityLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(15000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse({
-            primaryDataServiceBundle: PrimBundle,
-            primaryDataServices: [DfhOutgoingPropertyService, ProEntityLabelConfigService, REntityService, REdgeService],
-            aggDataServiceBundle: AggBundle,
-            aggDataServices: [IdentifyingPropertyService, REntityLabelService],
-            depDataServiceBundle: DepBundle,
-            depDataServices: []
-        })
+        const injector = await setupCleanAndStartWarehouse(rEntityLabelStub)
+        wh = injector.get(Warehouse)
     })
     beforeEach(async () => {
         await cleanDb()
@@ -188,6 +165,7 @@ describe('REntityLabelService', function () {
         await createPersonMock();
         const {union} = await createUnion2Mock()
         const result = await waitForEntityPreviewUntil(wh, (item) => {
+            // console.log(item.entity_label)
             return item.pk_entity === union.pk_entity
                 && item.fk_project === null
                 && item.entity_label === '(no label), Jack the foo, (no label)'
@@ -250,21 +228,28 @@ describe('REntityLabelService', function () {
         // since naming 2 is more often used, repo cityType.entity_label should be 'Stadt'
         const [proj1V, proj2V, proj3V, repoV] = await Promise.all([
             waitForEntityPreviewUntil(wh, (item) => {
+                // console.log(1, `${item.entity_label} should be ${appeCity.string}`)
                 return item.pk_entity === cityType.pk_entity
                     && item.fk_project === project1.pk_entity
                     && item.entity_label === appeCity.string
             }),
             waitForEntityPreviewUntil(wh, (item) => {
+                // console.log(2, `${item.entity_label} should be ${appeStadt.string}`)
+
                 return item.pk_entity === cityType.pk_entity
                     && item.fk_project === project2.pk_entity
                     && item.entity_label === appeStadt.string
             }),
             waitForEntityPreviewUntil(wh, (item) => {
+                // console.log(3, `${item.entity_label} should be ${appeStadt.string}`)
+
                 return item.pk_entity === cityType.pk_entity
                     && item.fk_project === project3.pk_entity
                     && item.entity_label === appeStadt.string
             }),
             waitForEntityPreviewUntil(wh, (item) => {
+                // console.log(4, `${item.entity_label} should be ${appeStadt.string}`)
+
                 return item.pk_entity === cityType.pk_entity
                     && item.fk_project === null
                     && item.entity_label === appeStadt.string

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -22,7 +23,8 @@ describe('REntityClassLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse()
+        wh = injector.get(Warehouse)
     })
     beforeEach(async () => {
         await cleanDb()

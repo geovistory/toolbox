@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
@@ -34,8 +35,9 @@ describe('PEntityTypeService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pEntityType
+        const injector = await setupCleanAndStartWarehouse()
+        wh = injector.get(Warehouse)
+        s = injector.get(PEntityTypeService)
     })
     beforeEach(async () => {
         await cleanDb()

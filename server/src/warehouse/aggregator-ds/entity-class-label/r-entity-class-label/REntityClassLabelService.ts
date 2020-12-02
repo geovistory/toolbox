@@ -1,26 +1,38 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {REntity, REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
+import {RClassLabelService, RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService';
 import {REntityClassLabelAggregator} from './REntityClassLabelAggregator';
 import {REntityClassLabelProviders} from './REntityClassLabelPoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 export interface REntityClassLabelVal {entityClassLabel?: string}
 @Injectable()
-export class REntityClassLabelService extends AggregatedDataService<REntityId, REntityClassLabelVal>{
+export class REntityClassLabelService extends AggregatedDataService2<REntityId, REntityClassLabelVal>{
     creatorDS: REntityService
     aggregator = REntityClassLabelAggregator;
     providers = REntityClassLabelProviders;
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depREntity: DependencyIndex<REntityId, REntityClassLabelVal, REntityId, REntity>
+    depRClassLabel: DependencyIndex<REntityId, REntityClassLabelVal, RClassId, RClassLabelValue>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
+        @Inject(forwardRef(() => RClassLabelService)) rClassLabel: RClassLabelService
+    ) {
         super(
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(this.wh.prim.rEntity)
+        this.registerCreatorDS(rEntity)
+        this.depREntity = this.addDepencency(rEntity)
+        this.depRClassLabel = this.addDepencency(rClassLabel)
     }
     getDependencies() {
-        return this.wh.dep.rEntityClassLabel
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

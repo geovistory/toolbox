@@ -7,8 +7,7 @@ import {PClassId, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConf
 import {RClassFieldId, RClassFieldVal} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
 import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService';
 import {EntityLabelVal} from '../../entity-label/entity-label.commons';
-import {REntityFullTextDependencies} from './REntityFullTextDependencies';
-import {REntityFullTextVal} from './REntityFullTextService';
+import {REntityFullTextVal, REntityFullTextService} from './REntityFullTextService';
 
 export class REntityFullTextProviders extends Providers<REntityId> {
     rEntity: Provider<REntityId, REntityFullTextVal, REntityId, REntity>;
@@ -20,17 +19,17 @@ export class REntityFullTextProviders extends Providers<REntityId> {
     pClassFields: Provider<REntityId, REntityFullTextVal, PClassId, ProClassFieldVal>;
 
     constructor(
-        dep: REntityFullTextDependencies,
+        dep: REntityFullTextService,
         protected receiverKey: REntityId
     ) {
         super()
-        this.rEntity = this.registerProvider(dep.rEntity, receiverKey)
-        this.rEntityLabel = this.registerProvider(dep.rEntityLabel, receiverKey);
-        this.rEdges = this.registerProvider(dep.rEdge, receiverKey)
-        this.rClassLabel = this.registerProvider(dep.rClassLabel, receiverKey)
-        this.rClassFieldLabel = this.registerProvider(dep.rClassFieldLabel, receiverKey)
+        this.rEntity = this.registerProvider(dep.depREntity, receiverKey)
+        this.rEntityLabel = this.registerProvider(dep.depREntityLabel, receiverKey);
+        this.rEdges = this.registerProvider(dep.depREdge, receiverKey)
+        this.rClassLabel = this.registerProvider(dep.depRClassLabel, receiverKey)
+        this.rClassFieldLabel = this.registerProvider(dep.depRClassFieldLabel, receiverKey)
 
-        this.pClassFields = this.registerProvider(dep.pClassFields, receiverKey)
+        this.pClassFields = this.registerProvider(dep.depPClassFields, receiverKey)
     }
 
 }

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {PClassFieldLabelId, PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -26,8 +27,9 @@ describe('PClassFieldLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(35000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pClassFieldLabel
+        const injector = await setupCleanAndStartWarehouse()
+        wh = injector.get(Warehouse)
+        s = injector.get(PClassFieldLabelService)
     })
     beforeEach(async () => {
         await cleanDb()

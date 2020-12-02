@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import '@abraham/reflection';
 import {REdgeService} from '../../../../warehouse/primary-ds/edge/REdgeService';
 import {REntityId} from '../../../../warehouse/primary-ds/entity/REntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
@@ -27,8 +28,9 @@ describe('REdgeService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.rEdge
+    const injector = await setupCleanAndStartWarehouse()
+    wh = injector.get(Warehouse)
+    s = injector.get(REdgeService)
   })
   beforeEach(async () => {
     await cleanDb()

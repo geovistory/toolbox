@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import '@abraham/reflection';
 import {PClassId, ProClassFieldsConfigService} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
@@ -18,8 +19,9 @@ describe('PClassFieldsConfigService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pClassFieldsConfig
+    const injector = await setupCleanAndStartWarehouse()
+    wh = injector.get(Warehouse)
+    s = injector.get(ProClassFieldsConfigService)
   })
   beforeEach(async () => {
     await cleanDb()

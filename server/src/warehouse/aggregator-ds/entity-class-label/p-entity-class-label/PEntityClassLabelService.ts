@@ -1,28 +1,38 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../Warehouse';
+import {PClassLabelService, PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService';
 import {PEntityClassLabelAggregator} from './PEntityClassLabelAggregator';
 import {PEntityClassLabelProviders} from './PEntityClassLabelPoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PEntityClassLabelVal {entityClassLabel: string}
 @Injectable()
-export class PEntityClassLabelService extends AggregatedDataService<PEntityId, PEntityClassLabelVal>{
+export class PEntityClassLabelService extends AggregatedDataService2<PEntityId, PEntityClassLabelVal>{
     creatorDS: PEntityService
     aggregator = PEntityClassLabelAggregator;
     providers = PEntityClassLabelProviders;
+    depEntity: DependencyIndex<PEntityId, PEntityClassLabelVal, PEntityId, PEntity>
+    depPClassLabel: DependencyIndex<PEntityId, PEntityClassLabelVal, PClassId, PClassLabelVal>
 
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
+        @Inject(forwardRef(() => PClassLabelService)) pClassLabel: PClassLabelService
+    ) {
         super(
             wh,
             pEntityKeyDefs
         )
-        this.registerCreatorDS(this.wh.prim.pEntity)
-
+        this.registerCreatorDS(pEntity)
+        this.depEntity = this.addDepencency(pEntity)
+        this.depPClassLabel = this.addDepencency(pClassLabel)
     }
 
     getDependencies() {
-        return this.wh.dep.pEntityClassLabel
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

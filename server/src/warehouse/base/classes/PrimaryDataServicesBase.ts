@@ -20,15 +20,15 @@ export abstract class PrimaryDataServicesBase extends DataServiceBundle<PrimaryD
 
     }
 
-    async initAllIndexes() {
-        for (const ds of this.registered) {
-            await ds.initIdx()
-        }
-    }
+    // async initAllIndexes() {
+    //     for (const ds of this.registered) {
+    //         await ds.initIdx()
+    //     }
+    // }
 
-    async everythingInitialized(): Promise<boolean> {
-        const doneDates = await Promise.all(this.registered.map(ds => ds.getLastUpdateDone()))
-        if (doneDates.includes(undefined)) return false
-        return true
-    }
+    // async everythingInitialized(): Promise<boolean> {
+    //     const doneDates = await Promise.all(this.registered.map(ds => ds.getLastUpdateDone()))
+    //     if (doneDates.includes(undefined)) return false
+    //     return true
+    // }
 }

@@ -131,6 +131,7 @@ const createCommand = () => {
   const dist = path.join(__dirname, '../dist');
 
   const cmd = `${mocha}\
+  --trace-warnings\
   --timeout ${mochaTimeout}\
   --colors\
   --exit\

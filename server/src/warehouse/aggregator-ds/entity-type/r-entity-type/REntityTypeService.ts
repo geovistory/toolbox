@@ -1,9 +1,15 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {DfhClassHasTypePropertyService, DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {EntityFields} from '../../../primary-ds/edge/edge.commons';
+import {REdgeService} from '../../../primary-ds/edge/REdgeService';
+import {REntity, REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
+import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {REntityLabelService} from '../../entity-label/r-entity-label/REntityLabelService';
 import {REntityTypeAggregator} from './REntityTypeAggregator';
 import {REntityTypeProviders} from './REntityTypePoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface REntityTypeVal {
     fkType?: number,
@@ -29,22 +35,36 @@ export interface REntityTypeVal {
  *
  */
 @Injectable()
-export class REntityTypeService extends AggregatedDataService<REntityId, REntityTypeVal>{
+export class REntityTypeService extends AggregatedDataService2<REntityId, REntityTypeVal>{
     creatorDS: REntityService
     aggregator = REntityTypeAggregator;
     providers = REntityTypeProviders;
 
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depREntity: DependencyIndex<REntityId, REntityTypeVal, REntityId, REntity>
+    depREntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityLabelVal>
+    depREdge: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityFields>
+    depDfhClassHasTypeProp: DependencyIndex<REntityId, REntityTypeVal, RClassId, DfhClassHasTypePropVal>
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
+        @Inject(forwardRef(() => REntityLabelService)) rEntityLabel: REntityLabelService,
+        @Inject(forwardRef(() => REdgeService)) rEdge: REdgeService,
+        @Inject(forwardRef(() => DfhClassHasTypePropertyService)) dfhClassHasTypeProp: DfhClassHasTypePropertyService,
+
+    ) {
         super(
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(this.wh.prim.rEntity)
-
+        this.registerCreatorDS(rEntity)
+        this.depREntity=this.addDepencency(rEntity);
+        this.depREntityLabel=this.addDepencency(rEntityLabel);
+        this.depREdge=this.addDepencency(rEdge);
+        this.depDfhClassHasTypeProp=this.addDepencency(dfhClassHasTypeProp);
     }
 
     getDependencies() {
-        return this.wh.dep.rEntityType
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

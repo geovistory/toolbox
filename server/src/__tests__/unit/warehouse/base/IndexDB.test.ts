@@ -22,7 +22,7 @@ describe('IndexDB', function () {
 
   before(async () => {
 
-    wh = createWarehouse(config)
+    wh = createWarehouse(config).get(Warehouse)
     idx = new TestIdx('test_idx', wh)
     // await wh.connectPgClient();
     wh.createSchema$.next();

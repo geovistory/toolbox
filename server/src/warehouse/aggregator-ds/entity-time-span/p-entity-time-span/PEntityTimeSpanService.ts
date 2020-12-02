@@ -1,10 +1,12 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
-import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {EntityTimePrimitive, EntityFields} from "../../../primary-ds/edge/edge.commons";
+import {PEntityId, pEntityKeyDefs, PEntityService, PEntity} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
+import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -41,7 +43,7 @@ export type PEntityTimeSpan = {
  *
  */
 @Injectable()
-export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal>{
+export class PEntityTimeSpanService extends AggregatedDataService2<PEntityId, PEntityTimeSpanVal>{
     creatorDS: PEntityService
     aggregator = PEntityTimeSpanAggregator;
     providers = PEntityTimeSpanProviders;
@@ -50,18 +52,26 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             where: `val->>'entityType' = 'teEn'`,
         }
     ]
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depPEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>
+    depPEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
+        @Inject(forwardRef(() => PEdgeService)) pEdge: PEdgeService
+    ) {
         super(
             wh,
             pEntityKeyDefs
         )
 
-        this.registerCreatorDS(this.wh.prim.pEntity)
-
+        this.registerCreatorDS(pEntity)
+        this.depPEntity=this.addDepencency(pEntity);
+        this.depPEdge=this.addDepencency(pEdge);
 
     }
     getDependencies() {
-        return this.wh.dep.pEntityTimeSpan
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

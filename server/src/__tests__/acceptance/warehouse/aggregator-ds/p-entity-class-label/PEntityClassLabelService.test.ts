@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
@@ -20,12 +21,13 @@ import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncate
 describe('PEntityClassLabelService', function () {
 
     let wh: Warehouse;
-    let s:PEntityClassLabelService
+    let s: PEntityClassLabelService
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pEntityClassLabel
+        const injector = await setupCleanAndStartWarehouse()
+        wh = injector.get(Warehouse)
+        s = injector.get(PEntityClassLabelService)
     })
     beforeEach(async () => {
         await cleanDb()
@@ -59,9 +61,9 @@ describe('PEntityClassLabelService', function () {
         await updateProInfoProjRel(prel.pk_entity ?? -1, {is_in_project: false})
 
         await searchUntilSatisfy({
-            notifier$:s.afterChange$,
-            getFn:()=>s.index.getFromIdxWithTmsps({pkEntity: pers.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
-            compare:(val)=>!!val?.deleted
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdxWithTmsps({pkEntity: pers.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
+            compare: (val) => !!val?.deleted
 
         })
     })

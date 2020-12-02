@@ -1,9 +1,19 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {EntityFields} from '../../../primary-ds/edge/edge.commons';
+import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
+import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {PClassId, ProClassFieldsConfigService, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../Warehouse';
+import {PClassFieldLabelId, PClassFieldLabelService, PClassFieldLabelVal} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassLabelService, PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService';
+import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {PEntityLabelService} from '../../entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../entity-label/r-entity-label/REntityLabelService';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PEntityFullTextVal {fullText?: string};
 
@@ -26,21 +36,46 @@ export interface PEntityFullTextVal {fullText?: string};
  *
  */
 @Injectable()
-export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEntityFullTextVal>{
+export class PEntityFullTextService extends AggregatedDataService2<PEntityId, PEntityFullTextVal>{
     creatorDS: PEntityService
     aggregator = PEntityFullTextAggregator;
     providers = PEntityFullTextProviders;
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depPEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, PEntity>
+    depPEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityLabelVal>
+    depREntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, REntityId, EntityLabelVal>
+    depPEdge: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>
+    depPClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, PClassLabelVal>
+    depPClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, ProClassFieldVal>
+    depPClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassFieldLabelId, PClassFieldLabelVal>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
+        @Inject(forwardRef(() => PEntityLabelService)) pEntityLabel: PEntityLabelService,
+        @Inject(forwardRef(() => REntityLabelService)) rEntityLabel: REntityLabelService,
+        @Inject(forwardRef(() => PEdgeService)) pEdge: PEdgeService,
+        @Inject(forwardRef(() => PClassLabelService)) pClassLabel: PClassLabelService,
+        @Inject(forwardRef(() => ProClassFieldsConfigService)) pClassFields: ProClassFieldsConfigService,
+        @Inject(forwardRef(() => PClassFieldLabelService)) pClassFieldLabel: PClassFieldLabelService,
+    ) {
         super(
             wh,
             pEntityKeyDefs
         )
-        this.registerCreatorDS(wh.prim.pEntity)
+        this.registerCreatorDS(pEntity)
+
+        this.depPEntity = this.addDepencency(pEntity);
+        this.depPEntityLabel = this.addDepencency(pEntityLabel);
+        this.depREntityLabel = this.addDepencency(rEntityLabel);
+        this.depPEdge = this.addDepencency(pEdge);
+        this.depPClassLabel = this.addDepencency(pClassLabel);
+        this.depPClassFields = this.addDepencency(pClassFields);
+        this.depPClassFieldLabel = this.addDepencency(pClassFieldLabel);
     }
 
 
     getDependencies() {
-        return this.wh.dep.pEntityFullText
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

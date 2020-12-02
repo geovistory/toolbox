@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {Pool, PoolClient} from 'pg';
+import {Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
+import {Pool, PoolClient, Notification} from 'pg';
+import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
+import {filter, first, mapTo} from 'rxjs/operators';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
+import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
 import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
 import {Logger} from './base/classes/Logger';
-import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
-import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
-import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import {values} from 'ramda';
-import {Inject, Injectable, InjectionToken, Injector} from 'injection-js';
+import {PrimaryDataService} from './base/classes/PrimaryDataService';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 export const APP_CONFIG = new InjectionToken<WarehouseConfig>('app.config');
+export const PRIMARY_DS = new InjectionToken<Type<any>[]>('primaryDs');
+export const AGG_DS = new InjectionToken<Type<any>[]>('aggDs');
 
 interface NotificationHandler {
     channel: string
@@ -48,27 +49,16 @@ export class Warehouse {
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
     pgListenerConnected$ = new ReplaySubject<PoolClient>()
+    pgNotifications$ = new Subject<Notification>()
     createSchema$ = new Subject<void>()
     schemaName = 'war_cache'
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
 
-    // Indexes holding data given by db
-    public get prim(): PrimaryDataServices {
-        return this.injector.get(PrimaryDataServices)
-    }
-
-    // Indexed holding resulting data deferred by warehouse
-    public get agg(): AggregatedDataServices {
-        return this.injector.get(AggregatedDataServices)
-    }
-
-    // Indexes holding dependencies between primary and secondary data
-    public get dep(): DependencyDataServices {
-        return this.injector.get(DependencyDataServices)
-    }
 
     constructor(
         @Inject(APP_CONFIG) private config: WarehouseConfig,
+        @Inject(PRIMARY_DS) private primaryDs: Type<any>[],
+        @Inject(AGG_DS) private aggDs: Type<any>[],
         private injector: Injector
     ) {
 
@@ -88,13 +78,12 @@ export class Warehouse {
      * start warehouse
      */
     async start() {
-        this.injector.get(PrimaryDataServices)
-        this.injector.get(AggregatedDataServices)
-        this.injector.get(DependencyDataServices)
+
+        this.initDataServices();
+
 
         await this.dbSetup();
-
-        const isInitialized = await this.prim.everythingInitialized();
+        const isInitialized = await this.primInitialized()
 
         if (!isInitialized) {
             await this.createWhData();
@@ -102,6 +91,7 @@ export class Warehouse {
 
         await this.listen()
     }
+
 
 
     /**
@@ -166,9 +156,7 @@ export class Warehouse {
      * Starts listening
      */
     async listen() {
-        this.injector.get(PrimaryDataServices)
-        this.injector.get(AggregatedDataServices)
-        this.injector.get(DependencyDataServices)
+        this.initDataServices()
 
         const t0 = Logger.start(this.constructor.name, 'Start listening Warehouse', 0)
 
@@ -183,30 +171,29 @@ export class Warehouse {
         Logger.itTook(this.constructor.name, t0, 'to start listening. Warehouse is up and running', 0)
     }
 
+    private initDataServices() {
+        this.getPrimaryDs();
+        this.getAggregatedDs();
 
-    // async createLeveldb(leveldbpath: string): Promise<LevelUp> {
-    //     return new Promise((res, rej) => {
+    }
 
-    //         const down = leveldown(leveldbpath)
-    //         const up = levelup(down, {}, (error) => {
-    //             if (error) {
-    //                 Logger.err(this.constructor.name, 'Error on opening leveldb. Make hard reset.')
-    //                 // if we have an error here, the db is currupt
-    //                 // make hard reset to trigger initialization of
-    //                 // warehouse on next start
-    //                 this.hardReset('Error on opening leveldb. Make hard reset.')
-    //                     .catch(e => {rej(e)})
-    //                     .finally(() => rej())
+    /**
+     * returns true if all primary data services have a valid
+     * date of a successfull update-done
+     */
+    async primInitialized(): Promise<boolean> {
+        const prim = this.getPrimaryDs()
+        const doneDates = await Promise.all(prim.map(ds => ds.getLastUpdateDone()))
+        if (doneDates.includes(undefined)) return false
+        return true
+    }
 
-    //             }
-    //             else {
-    //                 res(up)
-    //             }
-    //         })
-
-    //     })
-    // }
-
+    async primInitAll() {
+        const prim = this.getPrimaryDs()
+        for (const ds of prim) {
+            await ds.initIdx()
+        }
+    }
     /**
      * Deletes local and remote leveldb
      */
@@ -244,8 +231,8 @@ export class Warehouse {
      * until now.
      */
     private async catchUp() {
-
-        for (const primDS of this.prim.registered) {
+        const prim = this.getPrimaryDs()
+        for (const primDS of prim) {
 
             await primDS.catchUp();
         }
@@ -257,9 +244,10 @@ export class Warehouse {
      * the primary data services
      */
     private async getCatchUpDate() {
-
+        const prim = this.getPrimaryDs()
         const dates: Date[] = []
-        for (const p of this.prim.registered) {
+
+        for (const p of prim) {
             const d = await p.getLastUpdateDone()
             if (d) dates.push(d)
         }
@@ -295,11 +283,20 @@ export class Warehouse {
             this
         )
 
+        // const aggInitialized$ = combineLatest(
+        //     this.getAggregatedDs().map(ds => ds.ready$.pipe(filter(r => r === true))),
+        // ).pipe(mapTo(true))
+
+
+        const primReady$ = combineLatest(
+            this.getPrimaryDs().map(ds => ds.index.ready$.pipe(filter(r => r === true)))
+        ).pipe(mapTo(true))
+
         this.createSchema$.next()
         return new Promise((res, rej) => {
             combineLatest(
-                this.prim.ready$.pipe(filter(r => r === true)),
-                // this.agg.ready$.pipe(filter(r => r === true)),
+                primReady$.pipe(filter(r => r === true)),
+                // aggInitialized$.pipe(filter(r => r === true)),
                 // this.dep.ready$.pipe(filter(r => r === true)),
             ).pipe(first()).subscribe(_ => res())
         })
@@ -315,7 +312,7 @@ export class Warehouse {
 
         const t1 = Logger.start(this.constructor.name, 'Initialize Primary Data Services', 0)
 
-        await this.prim.initAllIndexes()
+        await this.primInitAll()
 
         Logger.itTook(this.constructor.name, t1, 'to initialize Primary Data Services', 0)
     }
@@ -324,10 +321,17 @@ export class Warehouse {
      */
     private async createAggregatedData() {
         const t1 = Logger.start(this.constructor.name, 'Initialize Aggregated Data Services', 0)
-
-        await this.agg.startCycling()
-
+        for (const ds of this.getAggregatedDs()) {
+            await ds.startUpdate()
+        }
         Logger.itTook(this.constructor.name, t1, 'to Initialize Aggregated Data Services', 0)
+    }
+
+    private getAggregatedDs(): AggregatedDataService2<any, any>[] {
+        return this.aggDs.map(klass => this.injector.get(klass));
+    }
+    private getPrimaryDs(): PrimaryDataService<any, any>[] {
+        return this.primaryDs.map(klass => this.injector.get(klass));
     }
 
     // /**
@@ -339,7 +343,9 @@ export class Warehouse {
 
         this.pgListener = await this.pgPool.connect();
         this.pgListenerConnected$.next(this.pgListener)
-
+        this.pgListener.on('notification', (msg) => {
+            this.pgNotifications$.next(msg)
+        })
     }
 
 
@@ -383,9 +389,8 @@ export class Warehouse {
      */
     startListening() {
 
-        this.pgListener.on('notification', (msg) => {
+        this.pgNotifications$.subscribe((msg) => {
             const handler = this.notificationHandlers[msg.channel];
-
 
             if (typeof msg.payload === 'string') {
                 const date = new Date(msg.payload);
@@ -411,7 +416,8 @@ export class Warehouse {
      */
     async waitUntilSyncingDone() {
         return new Promise((res, rej) => {
-            const syncStatuses$ = this.prim.registered.map(p => p.syncing$)
+            const prim = this.getPrimaryDs()
+            const syncStatuses$ = prim.map(p => p.syncing$)
             combineLatest(syncStatuses$)
                 // wait until no sync status is true
                 .pipe(first(syncStatuses => syncStatuses.includes(true) === false))

@@ -1,9 +1,17 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {DfhClassHasTypePropertyService, DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {EntityFields} from '../../../primary-ds/edge/edge.commons';
+import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
+import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
+import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {PEntityLabelService} from '../../entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../entity-label/r-entity-label/REntityLabelService';
 import {PEntityTypeAggregator} from './PEntityTypeAggregator';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface PEntityTypeVal {
     fkType?: number,
@@ -29,24 +37,41 @@ export interface PEntityTypeVal {
  *
  */
 @Injectable()
-export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal>{
+export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntityTypeVal>{
     creatorDS: PEntityService
     aggregator = PEntityTypeAggregator;
     providers = PEntityTypeProviders;
 
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depPEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, PEntity>
+    depPEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityLabelVal>
+    depREntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, REntityId, EntityLabelVal>
+    depPEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityFields>
+    depDfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, RClassId, DfhClassHasTypePropVal>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
+        @Inject(forwardRef(() => PEntityLabelService)) pEntityLabel: PEntityLabelService,
+        @Inject(forwardRef(() => REntityLabelService)) rEntityLabel: REntityLabelService,
+        @Inject(forwardRef(() => PEdgeService)) pEdge: PEdgeService,
+        @Inject(forwardRef(() => DfhClassHasTypePropertyService)) dfhClassHasTypeProp: DfhClassHasTypePropertyService,
+    ) {
         super(
             wh,
             pEntityKeyDefs
         )
 
-        this.registerCreatorDS(this.wh.prim.pEntity)
-
+        this.registerCreatorDS(pEntity)
+        this.depPEntity = this.addDepencency(pEntity)
+        this.depPEntityLabel = this.addDepencency(pEntityLabel)
+        this.depREntityLabel = this.addDepencency(rEntityLabel)
+        this.depPEdge = this.addDepencency(pEdge)
+        this.depDfhClassHasTypeProp = this.addDepencency(dfhClassHasTypeProp)
 
     }
 
     getDependencies() {
-        return this.wh.dep.pEntityType
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

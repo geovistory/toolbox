@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {Where} from '@loopback/repository';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {filter, first, switchMap} from 'rxjs/operators';
@@ -15,7 +16,7 @@ const config: WarehouseConfig = {
     backups: undefined
 }
 export async function setupWarehouseWithoutStarting() {
-    const wh = createWarehouse(config)
+    const wh = createWarehouse(config).get(Warehouse)
     await wh.dbSetup()
 
     return wh;
@@ -23,13 +24,13 @@ export async function setupWarehouseWithoutStarting() {
 
 export async function setupCleanAndStartWarehouse(stubs?: WarehouseStubs) {
 
-
-    const wh = createWarehouse(config, stubs)
+    const injector = createWarehouse(config, stubs)
+    const wh = injector.get(Warehouse)
     await wh.pgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
     await wh.start()
     await wh.pgListener.query('LISTEN entity_previews_updated;')
     await wh.pgListener.query('LISTEN modified_war_class_preview;')
-    return wh;
+    return injector;
 }
 
 export async function truncateWarehouseTables(wh: Warehouse) {
@@ -82,9 +83,8 @@ export async function waitUntilNext<M>(observable$: Observable<M>) {
  */
 export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
     return new Promise<WarEntityPreview>((res, rej) => {
-        wh.pgListener.on('notification', (msg) => {
+        const sub = wh.pgNotifications$.subscribe((msg) => {
             if (msg.channel === 'entity_previews_updated') {
-                // console.log('log in waitForEntityPreview', msg.payload)
 
                 createWarEntityPreviewRepo().find({
                     where: {
@@ -98,6 +98,7 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
                         if (result?.length === 1) {
                             // console.log('OK! ', msg.payload)
                             res(result[0])
+                            sub.unsubscribe()
                         } else if (result.length > 1) {
                             rej('found too many entity peviews')
                         }
@@ -116,8 +117,10 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
  */
 export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarEntityPreview) => boolean) {
     return new Promise<WarEntityPreview>((res, rej) => {
-        wh.pgListener.on('notification', (msg) => {
+        const sub = wh.pgNotifications$.subscribe((msg) => {
             if (msg.channel === 'entity_previews_updated') {
+
+
                 createWarEntityPreviewRepo().find({
                     where: {
                         and: [
@@ -131,6 +134,7 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
                             result.forEach(i => {
                                 if (compare(i)) {
                                     res(result[0])
+                                    sub.unsubscribe()
                                 }
                             })
                         }
@@ -149,7 +153,7 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
  */
 export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<WarClassPreview>[]) {
     return new Promise<WarClassPreview>((res, rej) => {
-        wh.pgListener.on('notification', (msg) => {
+        const sub = wh.pgNotifications$.subscribe((msg) => {
             if (msg.channel === 'modified_war_class_preview') {
                 createWarClassPreviewRepo().find({
                     where: {
@@ -162,6 +166,7 @@ export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<W
                     .then((result) => {
                         if (result?.length === 1) {
                             res(result[0])
+                            sub.unsubscribe()
                         } else if (result.length > 1) {
                             rej('found too many entity peviews')
                         }

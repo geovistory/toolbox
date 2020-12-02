@@ -1,14 +1,13 @@
 import {Provider} from '../../../base/classes/Provider';
 import {Providers} from "../../../base/interfaces/Providers";
-import {ProClassFieldVal, PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {EntityFields} from "../../../primary-ds/edge/edge.commons";
-import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService';
-import {PEntityFullTextDependencies} from './PEntityFullTextDependencies';
-import {PEntityFullTextVal} from './PEntityFullTextService';
-import {PClassFieldLabelId, PClassFieldLabelVal} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
-import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {PClassId, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService';
+import {PClassFieldLabelId, PClassFieldLabelVal} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService';
+import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {PEntityFullTextService, PEntityFullTextVal} from './PEntityFullTextService';
 
 export class PEntityFullTextProviders extends Providers<PEntityId> {
     pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, PEntity>;
@@ -20,17 +19,17 @@ export class PEntityFullTextProviders extends Providers<PEntityId> {
     pClassFieldLabel: Provider<PEntityId, PEntityFullTextVal, PClassFieldLabelId, PClassFieldLabelVal>;
 
     constructor(
-        dep: PEntityFullTextDependencies,
+        dep: PEntityFullTextService,
         protected receiverKey: PEntityId
     ) {
         super()
-        this.pEntity = this.registerProvider(dep.pEntity, receiverKey)
-        this.pEntityLabel = this.registerProvider(dep.pEntityLabel, receiverKey);
-        this.rEntityLabel = this.registerProvider(dep.rEntityLabel, receiverKey);
-        this.pEdges = this.registerProvider(dep.pEdge, receiverKey)
-        this.pClassLabel = this.registerProvider(dep.pClassLabel, receiverKey)
-        this.pClassFields = this.registerProvider(dep.pClassFields, receiverKey)
-        this.pClassFieldLabel = this.registerProvider(dep.pClassFieldLabel, receiverKey)
+        this.pEntity = this.registerProvider(dep.depPEntity, receiverKey)
+        this.pEntityLabel = this.registerProvider(dep.depPEntityLabel, receiverKey);
+        this.rEntityLabel = this.registerProvider(dep.depREntityLabel, receiverKey);
+        this.pEdges = this.registerProvider(dep.depPEdge, receiverKey)
+        this.pClassLabel = this.registerProvider(dep.depPClassLabel, receiverKey)
+        this.pClassFields = this.registerProvider(dep.depPClassFields, receiverKey)
+        this.pClassFieldLabel = this.registerProvider(dep.depPClassFieldLabel, receiverKey)
     }
 
 }

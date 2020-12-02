@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import '@abraham/reflection';
 import {DfhClassHasTypePropertyService, RClassId} from '../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
@@ -15,9 +16,10 @@ describe('DfhClassHasTypePropertyService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.dfhClassHasTypeProperty
-  })
+    const injector = await setupCleanAndStartWarehouse()
+    wh = injector.get(Warehouse)
+    s = injector.get(DfhClassHasTypePropertyService)
+})
   beforeEach(async () => {
     await cleanDb()
     await truncateWarehouseTables(wh)

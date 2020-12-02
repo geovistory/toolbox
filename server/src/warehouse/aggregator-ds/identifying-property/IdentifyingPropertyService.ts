@@ -1,30 +1,38 @@
-import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../base/classes/DependencyIndex';
 import {RClassId, rClassIdKeyDefs} from '../../primary-ds/DfhClassHasTypePropertyService';
-import {DfhOutgoingPropertyService, OutgoingPropertyVal} from '../../primary-ds/DfhOutgoingPropertyService';
+import {DfhOutgoingPropertyService, OutgoingPropertyVal, OutgoingProperyId} from '../../primary-ds/DfhOutgoingPropertyService';
 import {Warehouse} from '../../Warehouse';
 import {IdentifyingPropertyAggregator} from './IdentifyingPropertyAggregator';
 import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 export type IdentifyingPropertyVal = OutgoingPropertyVal[]
 
 @Injectable()
-export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal>{
+export class IdentifyingPropertyService extends AggregatedDataService2<RClassId, IdentifyingPropertyVal>{
     creatorDS: DfhOutgoingPropertyService
     customCreatorDSSql = [{select: `"fkDomain" as "pkClass"`}]
 
     aggregator = IdentifyingPropertyAggregator;
     providers = IdentifyingPropertyProviders;
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+
+    outgoingProperty: DependencyIndex<RClassId, IdentifyingPropertyVal, OutgoingProperyId, OutgoingPropertyVal>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => DfhOutgoingPropertyService)) dfhOutgoingProperty: DfhOutgoingPropertyService,
+    ) {
         super(
             wh,
             rClassIdKeyDefs
         )
-        this.registerCreatorDS(this.wh.prim.dfhOutgoingProperty)
+        this.registerCreatorDS(dfhOutgoingProperty)
+        this.outgoingProperty = this.addDepencency(dfhOutgoingProperty)
     }
-    getDependencies() {
-        return this.wh.dep.identifyingProperty
-    };
 
+    getDependencies() {
+        return this
+    };
 }

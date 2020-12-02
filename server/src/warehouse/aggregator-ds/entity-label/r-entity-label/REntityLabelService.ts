@@ -29,7 +29,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
     depREntityLabel: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityLabelVal>
     depREdge: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityFields>
 
-    batchSize = 10000
+    batchSize = 100000
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => ProEntityLabelConfigService)) private proEntityLabelConfig: ProEntityLabelConfigService,

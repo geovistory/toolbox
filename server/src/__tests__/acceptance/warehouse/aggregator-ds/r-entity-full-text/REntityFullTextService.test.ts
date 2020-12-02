@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
 import {REntityId} from '../../../../../warehouse/primary-ds/entity/REntityService';
@@ -44,8 +45,9 @@ describe('REntityFullTextService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.rEntityFullText
+        const injector = await setupCleanAndStartWarehouse()
+        wh = injector.get(Warehouse)
+        s = injector.get(REntityFullTextService)
     })
     beforeEach(async () => {
         await cleanDb()

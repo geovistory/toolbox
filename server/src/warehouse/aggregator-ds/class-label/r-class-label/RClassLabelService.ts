@@ -6,8 +6,8 @@ import {AggregatorSqlBuilder} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
 import {RClassService} from '../../../primary-ds/class/RClassService';
 import {RClassId, rClassIdKeyDefs} from '../../../primary-ds/DfhClassHasTypePropertyService';
-import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService';
-import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService';
+import {DfhClassLabelId, DfhClassLabelService, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService';
+import {ProClassLabelId, ProClassLabelService, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH, Warehouse} from '../../../Warehouse';
 import {RClassLabelAggregator} from './RClassLabelAggregator';
 import {RClassLabelProviders} from './RClassLabelProviders';
@@ -23,15 +23,20 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
     dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
     proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
 
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => RClassService)) rClass: RClassService,
+        @Inject(forwardRef(() => DfhClassLabelService)) dfhClassLabel: DfhClassLabelService,
+        @Inject(forwardRef(() => ProClassLabelService)) proClassLabel: ProClassLabelService
+    ) {
         super(
             wh,
             rClassIdKeyDefs
         )
-        this.registerCreatorDS(wh.prim.rClass);
+        this.registerCreatorDS(rClass);
 
-        this.dfhClassLabel = this.addDepencency(wh.prim.dfhClassLabel)
-        this.proClassLabel = this.addDepencency(wh.prim.proClassLabel)
+        this.dfhClassLabel = this.addDepencency(dfhClassLabel)
+        this.proClassLabel = this.addDepencency(proClassLabel)
     }
 
     onUpsertSql(tableAlias: string) {

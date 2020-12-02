@@ -1,10 +1,12 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
-import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {EntityTimePrimitive, EntityFields} from "../../../primary-ds/edge/edge.commons";
+import {REntityId, rEntityKeyDefs, REntityService, REntity} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityTimeSpanAggregator} from './REntityTimeSpanAggregator';
 import {REntityTimeSpanProviders} from './REntityTimeSpanPoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
+import {REdgeService} from '../../../primary-ds/edge/REdgeService';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -41,7 +43,7 @@ export type REntityTimeSpan = {
  *
  */
 @Injectable()
-export class REntityTimeSpanService extends AggregatedDataService<REntityId, REntityTimeSpanVal>{
+export class REntityTimeSpanService extends AggregatedDataService2<REntityId, REntityTimeSpanVal>{
     creatorDS: REntityService
     aggregator = REntityTimeSpanAggregator;
     providers = REntityTimeSpanProviders;
@@ -50,16 +52,24 @@ export class REntityTimeSpanService extends AggregatedDataService<REntityId, REn
             where: `val->>'entityType' = 'teEn'`,
         }
     ]
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depREntity: DependencyIndex<REntityId, REntityTimeSpanVal, REntityId, REntity>
+    depREdge: DependencyIndex<REntityId, REntityTimeSpanVal, REntityId, EntityFields>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
+        @Inject(forwardRef(() => REdgeService)) rEdge: REdgeService
+    ) {
         super(
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(this.wh.prim.rEntity)
-
+        this.registerCreatorDS(rEntity)
+        this.depREntity = this.addDepencency(rEntity);
+        this.depREdge = this.addDepencency(rEdge);
     }
     getDependencies() {
-        return this.wh.dep.rEntityTimeSpan
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

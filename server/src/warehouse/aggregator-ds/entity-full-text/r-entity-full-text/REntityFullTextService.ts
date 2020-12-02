@@ -1,9 +1,18 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {EntityFields} from '../../../primary-ds/edge/edge.commons';
+import {REdgeService} from '../../../primary-ds/edge/REdgeService';
+import {REntity, REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
+import {PClassId, ProClassFieldsConfigService, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../Warehouse';
+import {RClassFieldId, RClassFieldLabelService, RClassFieldVal} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
+import {RClassLabelService, RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService';
+import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {REntityLabelService} from '../../entity-label/r-entity-label/REntityLabelService';
 import {REntityFullTextAggregator} from './REntityFullTextAggregator';
 import {REntityFullTextProviders} from './REntityFullTextPoviders';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface REntityFullTextVal {fullText?: string};
 
@@ -26,21 +35,43 @@ export interface REntityFullTextVal {fullText?: string};
  *
  */
 @Injectable()
-export class REntityFullTextService extends AggregatedDataService<REntityId, REntityFullTextVal>{
+export class REntityFullTextService extends AggregatedDataService2<REntityId, REntityFullTextVal>{
     creatorDS: REntityService
     aggregator = REntityFullTextAggregator;
     providers = REntityFullTextProviders;
-    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    depREntity: DependencyIndex<REntityId, REntityFullTextVal, REntityId, REntity>
+    depREntityLabel: DependencyIndex<REntityId, REntityFullTextVal, REntityId, EntityLabelVal>
+    depREdge: DependencyIndex<REntityId, REntityFullTextVal, REntityId, EntityFields>
+    depRClassLabel: DependencyIndex<REntityId, REntityFullTextVal, RClassId, RClassLabelValue>
+    depRClassFieldLabel: DependencyIndex<REntityId, REntityFullTextVal, RClassFieldId, RClassFieldVal>
+    depPClassFields: DependencyIndex<REntityId, REntityFullTextVal, PClassId, ProClassFieldVal>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
+        @Inject(forwardRef(() => REntityLabelService)) rEntityLabel: REntityLabelService,
+        @Inject(forwardRef(() => REdgeService)) rEdge: REdgeService,
+        @Inject(forwardRef(() => RClassLabelService)) rClassLabel: RClassLabelService,
+        @Inject(forwardRef(() => RClassFieldLabelService)) rClassFieldLabel: RClassFieldLabelService,
+        @Inject(forwardRef(() => ProClassFieldsConfigService)) pClassFields: ProClassFieldsConfigService,
+    ) {
         super(
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(wh.prim.rEntity)
+        this.registerCreatorDS(rEntity)
+
+        this.depREntity = this.addDepencency(rEntity);
+        this.depREntityLabel = this.addDepencency(rEntityLabel);
+        this.depREdge = this.addDepencency(rEdge);
+        this.depRClassLabel = this.addDepencency(rClassLabel);
+        this.depRClassFieldLabel = this.addDepencency(rClassFieldLabel);
+        this.depPClassFields = this.addDepencency(pClassFields);
     }
 
 
     getDependencies() {
-        return this.wh.dep.rEntityFullText
+        return this
     };
     onUpsertSql(tableAlias: string) {
         return `

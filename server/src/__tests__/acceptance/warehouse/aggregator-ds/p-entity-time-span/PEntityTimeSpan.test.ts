@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
 import {PEntityTimeSpan, PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
@@ -35,9 +36,10 @@ describe('PEntityTimeSpanService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pEntityTimeSpan
-        edgeService = wh.prim.pEdge
+        const injector = await setupCleanAndStartWarehouse()
+        wh = injector.get(Warehouse)
+        s = injector.get(PEntityTimeSpanService)
+        edgeService = injector.get(PEdgeService)
     })
     beforeEach(async () => {
         await cleanDb()
