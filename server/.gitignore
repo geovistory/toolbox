@@ -72,7 +72,8 @@ typings/
 leveldb
 test_leveldb
 
-# development scripts
+# development files and scripts
+dev/
 dev.js
 
 openapi.json

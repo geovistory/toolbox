@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {PrimaryDataServicesBase} from '../../../../../warehouse/base/classes/PrimaryDataServicesBase';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -23,7 +28,40 @@ import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityL
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {AggregatedDataServicesBase} from '../../../../../warehouse/base/classes/AggregatedDataServicesBase';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {DependencyDataServicesBase} from '../../../../../warehouse/base/classes/DependencyDataServicesBase';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+
+@Injectable()
+export class PrimBundle extends PrimaryDataServicesBase {
+    constructor(
+        @Inject(forwardRef(() => DfhOutgoingPropertyService)) public dfhOutgoingProperty: DfhOutgoingPropertyService,
+        @Inject(forwardRef(() => ProEntityLabelConfigService)) public proEntityLabelConfig: ProEntityLabelConfigService,
+        @Inject(forwardRef(() => REntityService)) public rEntity: REntityService,
+        @Inject(forwardRef(() => REdgeService)) public rEdge: REdgeService,
+    ) {
+        super(proEntityLabelConfig, rEntity, rEdge)
+    }
+}
+@Injectable()
+export class AggBundle extends AggregatedDataServicesBase {
+    constructor(
+        @Inject(forwardRef(() => IdentifyingPropertyService)) public identifyingProperty: IdentifyingPropertyService,
+        @Inject(forwardRef(() => REntityLabelService)) public rEntityLabel: REntityLabelService,
+    ) {
+        super(identifyingProperty, rEntityLabel)
+    }
+}
+@Injectable()
+export class DepBundle extends DependencyDataServicesBase {
+    constructor() {
+        super()
+    }
+}
+
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -33,8 +71,15 @@ describe('REntityLabelService', function () {
 
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
-        this.timeout(5000); // A very long environment setup.
-        wh = await setupCleanAndStartWarehouse()
+        this.timeout(15000); // A very long environment setup.
+        wh = await setupCleanAndStartWarehouse({
+            primaryDataServiceBundle: PrimBundle,
+            primaryDataServices: [DfhOutgoingPropertyService, ProEntityLabelConfigService, REntityService, REdgeService],
+            aggDataServiceBundle: AggBundle,
+            aggDataServices: [IdentifyingPropertyService, REntityLabelService],
+            depDataServiceBundle: DepBundle,
+            depDataServices: []
+        })
     })
     beforeEach(async () => {
         await cleanDb()
@@ -111,35 +156,35 @@ describe('REntityLabelService', function () {
     })
 
 
-    it('should create entity label of Birth – E67 (-- with identifying property)', async () => {
-        await createProject();
-        const {appellation} = await createNamingMock();
-        await createPersonMock();
-        const birth = await createBirthMock()
-        const result = await waitForEntityPreviewUntil(wh, (item) => {
-            return item.pk_entity === birth.pk_entity
-                && item.fk_project === null
-                && item.entity_label === appellation.string
-        })
-        expect(result)
-    })
+    // it('should create entity label of Birth – E67 (-- with identifying property)', async () => {
+    //     await createProject();
+    //     const {appellation} = await createNamingMock();
+    //     await createPersonMock();
+    //     const birth = await createBirthMock()
+    //     const result = await waitForEntityPreviewUntil(wh, (item) => {
+    //         return item.pk_entity === birth.pk_entity
+    //             && item.fk_project === null
+    //             && item.entity_label === appellation.string
+    //     })
+    //     expect(result)
+    // })
 
-    it('should create entity label of Union – C9 (-- with identifying property)', async () => {
-        await createProject();
-        const {appellation} = await createNamingMock();
-        await createPersonMock();
-        const union = await createUnionMock()
-        const result = await waitForEntityPreviewUntil(wh, (item) => {
-            return item.pk_entity === union.pk_entity
-                && item.fk_project === null
-                && item.entity_label === appellation.string
-        })
-        expect(result)
-    })
+    // it('should create entity label of Union – C9 (-- with identifying property)', async () => {
+    //     await createProject();
+    //     const {appellation} = await createNamingMock();
+    //     await createPersonMock();
+    //     const union = await createUnionMock()
+    //     const result = await waitForEntityPreviewUntil(wh, (item) => {
+    //         return item.pk_entity === union.pk_entity
+    //             && item.fk_project === null
+    //             && item.entity_label === appellation.string
+    //     })
+    //     expect(result)
+    // })
 
     it('should create entity label of Union with 3 label parts', async () => {
         await createProject();
-        const {appellation} = await createNamingMock();
+        await createNamingMock();
         await createPersonMock();
         const {union} = await createUnion2Mock()
         const result = await waitForEntityPreviewUntil(wh, (item) => {
@@ -290,41 +335,41 @@ async function createNamingMock() {
 }
 
 
-async function createBirthMock() {
+// async function createBirthMock() {
 
-    // MODEL + LABELS
-    await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
+//     // MODEL + LABELS
+//     await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
+//     await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
+//     await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
 
-    // TeEn
-    const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
+//     // TeEn
+//     const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
 
-    // Stmts
-    await createInfStatement(InfStatementMock.BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_BIRTH_1_BROUGHT_INTO_LIFE_PERON_1);
-    return birth;
-}
+//     // Stmts
+//     await createInfStatement(InfStatementMock.BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_BIRTH_1_BROUGHT_INTO_LIFE_PERON_1);
+//     return birth;
+// }
 
 
-async function createUnionMock() {
+// async function createUnionMock() {
 
-    // MODEL + LABELS
-    await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
+//     // MODEL + LABELS
+//     await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
+//     await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
 
-    // TeEn
-    const union = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
+//     // TeEn
+//     const union = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
 
-    // Stmts
-    await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
+//     // Stmts
+//     await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
 
-    await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
-    return union;
-}
+//     await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
+//     return union;
+// }
 
 async function createUnion2Mock() {
 

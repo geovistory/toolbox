@@ -349,23 +349,7 @@ export class Warehouse {
         return new Date(tmsp)
     }
 
-    /**
-     * Clears the warehouse database (= all indexes)
-     */
-    async clearWhDB() {
-        const t1 = Logger.start(this.constructor.name, 'Clear Warehouse DB', 0)
 
-        // rimraf.sync(this.leveldbpath)
-
-        await this.prim.clearAll()
-
-        await this.agg.clearAll()
-
-        await this.dep.clearAll()
-
-        Logger.itTook(this.constructor.name, t1, `to clear Warehouse DB`, 0)
-
-    }
 
     /**
      * returns now() tmsp from postgres

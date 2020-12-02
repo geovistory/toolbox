@@ -7,7 +7,7 @@ import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 import {testdb} from './testdb';
-import {createWarehouse} from '../../warehouse/createWarehouse';
+import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
 
 
 
@@ -21,10 +21,10 @@ export async function setupWarehouseWithoutStarting() {
     return wh;
 }
 
-export async function setupCleanAndStartWarehouse() {
+export async function setupCleanAndStartWarehouse(stubs?: WarehouseStubs) {
 
 
-    const wh = createWarehouse(config)
+    const wh = createWarehouse(config, stubs)
     await wh.pgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
     await wh.start()
     await wh.pgListener.query('LISTEN entity_previews_updated;')

@@ -1,6 +1,5 @@
 import {forwardRef, Inject, Injectable} from 'injection-js';
-import {combineLatest, Observable} from 'rxjs';
-import {mapTo} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 import {PClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
 import {RClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelDependencies';
 import {PClassLabelDependencies} from '../aggregator-ds/class-label/p-class-label/PClassLabelDependencies';
@@ -14,11 +13,11 @@ import {REntityTimeSpanDependencies} from '../aggregator-ds/entity-time-span/r-e
 import {PEntityTypeDependencies} from '../aggregator-ds/entity-type/p-entity-type/PEntityTypeDependencies';
 import {REntityTypeDependencies} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeDependencies';
 import {IdentifyingPropertyDependencies} from '../aggregator-ds/identifying-property/IdentifyingPropertyDependencies';
-import {DataServiceBundle} from '../base/classes/DataServiceBundle';
-import {Dependencies} from '../base/classes/Dependencies';
+import {DependencyDataServicesBase} from '../base/classes/DependencyDataServicesBase';
+
 
 @Injectable()
-export class DependencyDataServices extends DataServiceBundle<Dependencies> {
+export class DependencyDataServices extends DependencyDataServicesBase {
 
 
     ready$: Observable<boolean>
@@ -43,34 +42,20 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
         @Inject(forwardRef(()=>REntityFullTextDependencies)) public rEntityFullText: REntityFullTextDependencies,
         @Inject(forwardRef(()=>REntityTimeSpanDependencies)) public rEntityTimeSpan: REntityTimeSpanDependencies,
     ) {
-        super()
-        this.registerDataService(this.identifyingProperty); // rEntityLabel
-
-        //  this.registerDataService(this.pClassLabel);
-        //  this.registerDataService(this.pClassFieldLabel);
-        //  this.registerDataService(this.pEntityLabel);
-        //  this.registerDataService(this.pEntityClassLabel);
-        //  this.registerDataService(this.pEntityType);
-        //  this.registerDataService(this.pEntityFullText);
-        //  this.registerDataService(this.pEntityTimeSpan);
-
-        //  this.registerDataService(this.rClassLabel);
-        //  this.registerDataService(this.rEntityClassLabel);
-        // this.registerDataService(this.rEntityLabel); // rEntityLabel
-        //  this.registerDataService(this.rEntityType);
-        //  this.registerDataService(this.rEntityFullText);
-        //  this.registerDataService(this.rClassFieldLabel);
-        //  this.registerDataService(this.rEntityTimeSpan);
-
-        const readies$ = []
-        for (const reg1 of this.registered) {
-            for (const reg2 of reg1.registered) {
-                readies$.push(reg2.ready$)
-            }
-        }
-        this.ready$ = combineLatest(readies$).pipe(mapTo(true))
+        super(
+            identifyingProperty,
+            pClassLabel,
+            pClassFieldLabel,
+            pEntityLabel,
+            pEntityType,
+            pEntityClassLabel,
+            pEntityFullText,
+            pEntityTimeSpan,
+            rClassFieldLabel,
+            rEntityType,
+            rEntityClassLabel,
+            rEntityFullText,
+            rEntityTimeSpan)
     }
-    async clearAll() {
-        await Promise.all(this.registered.map(x => x.clearAll()));
-    }
+
 }

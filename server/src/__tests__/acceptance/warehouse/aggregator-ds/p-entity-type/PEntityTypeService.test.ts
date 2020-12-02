@@ -23,7 +23,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext, truncateWarehouseTables, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse

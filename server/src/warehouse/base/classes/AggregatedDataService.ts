@@ -296,16 +296,17 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * @param currentTimestamp
      */
     private async cleanupOldDependencies(client: PoolClient, currentTimestamp: string) {
-        const depDS = this.isReceiverOf[0];
-        const cleanupSql = `
+        for (const depDS of this.isReceiverOf) {
+            const cleanupSql = `
             DELETE
             FROM    ${depDS.schemaTable} t1
             USING   ${this.tempTable} t2
             WHERE   ${depDS.receiverDS.index.keyDefs
-                .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
-            AND t1.tmsp_last_aggregation < '${currentTimestamp}'
-        `;
-        await client.query(cleanupSql);
+                    .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
+                AND t1.tmsp_last_aggregation < '${currentTimestamp}'
+                `;
+            await client.query(cleanupSql);
+        }
     }
 
     async aggregateAll(client: PoolClient, currentTimestamp: string) {

@@ -5,6 +5,9 @@ import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {AggregatedDataService} from './AggregatedDataService';
 import {DataService} from './DataService';
 import {DependencyIndex} from './DependencyIndex';
+import {QueryDef, TmpTableResult} from './AggregatorSqlBuilder';
+import {PoolClient} from 'pg';
+import {logSql} from '../../../utils/helpers';
 
 
 export abstract class AggregatedDataService2<KeyModel, ValueModel> extends AggregatedDataService<KeyModel, ValueModel> {
@@ -50,11 +53,12 @@ export abstract class AggregatedDataService2<KeyModel, ValueModel> extends Aggre
 
 
 
-
-
-
-
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async brkForDebugging(client: PoolClient, item: TmpTableResult<any, any, any> | QueryDef) {
+        logSql(item.sql, item.params)
+        await client.query('commit;')
+        process.exit()
+    }
 
 }
 

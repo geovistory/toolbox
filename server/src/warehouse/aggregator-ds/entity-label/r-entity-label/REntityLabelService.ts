@@ -2,9 +2,8 @@
 
 import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PoolClient} from 'pg';
-import {logSql} from '../../../../utils/helpers';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
-import {AggregatorSqlBuilder, CustomValSql, TableDef} from '../../../base/classes/AggregatorSqlBuilder';
+import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityFields} from '../../../primary-ds/edge/edge.commons';
@@ -30,7 +29,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
     depREntityLabel: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityLabelVal>
     depREdge: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityFields>
 
-    batchSize = 100
+    batchSize = 10000
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => ProEntityLabelConfigService)) private proEntityLabelConfig: ProEntityLabelConfigService,
@@ -66,35 +65,22 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
 
 
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
-        let changes = 0
-        const builder = new AggregatorSqlBuilder(this, currentTimestamp)
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
-        // helpful for debugging
-        // const res = await client.query(`
-        // SELECT  string_agg( '(' || ${this.index.keyDefs.map(k => `"${k.name}" `).join(` || ',' || `)} || ')', ', ')
-        // FROM ${this.tempTable}
-        // LIMIT ${limit} OFFSET ${offset}
-        // `)
-        // console.log('\n')
-        // console.log(res?.rows?.[0]?.string_agg)
-
-
-        const twBatch = builder.twBatch(limit, offset)
-
-        const rentity = builder.joinProviderThroughDepIdx({
-            leftTable: twBatch.tableDef,
-            joinWith: this.depREntity,
+        const rentity = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.depREntity,
             joinOnKeys: {
                 pkEntity: {leftCol: 'pkEntity'}
             },
             conditionTrueIf: {
                 providerKey: {pkEntity: 'IS NOT NULL'}
             },
-            createCustomObject: ((provider) => `jsonb_build_object('fkClass', (${provider}.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
+            createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
         })
-        const rEdges = builder.joinProviderThroughDepIdx({
-            leftTable: rentity.aggTableDef,
-            joinWith: this.depREdge,
+        const rEdges = await builder.joinProviderThroughDepIdx({
+            leftTable: rentity.aggregation.tableDef,
+            joinWithDepIdx: this.depREdge,
             joinWhereLeftTableCondition: '= true',
             joinOnKeys: {
                 pkEntity: {leftCol: 'pkEntity'}
@@ -107,10 +93,10 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             },
             createCustomObject: ((provider) => `t1.custom`) as CustomValSql<{fkClass: number}>,
         })
-        const entityLabelConfCustom: CustomValSql<EntityLabelConfigVal> = () => {
+        const entityLabelConfCustom: CustomValSql<EntityLabelConfigVal> = (q) => {
             return `
                 CASE WHEN (t1.custom->>'fkClass')::int = 365 THEN
-                    ${builder.addParam(JSON.stringify({
+                    ${q.addParam(JSON.stringify({
                 labelParts: [
                     {
                         ordNum: 1,
@@ -125,7 +111,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
                 WHEN t2.val->>'labelParts' IS NOT NULL THEN
                     t2.val
                 ELSE
-                ${builder.addParam(JSON.stringify({
+                ${q.addParam(JSON.stringify({
                 labelParts: [
                     {
                         ordNum: 1,
@@ -140,9 +126,9 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
                 END
             `
         }
-        const entityLabelConfig = builder.joinProviderThroughDepIdx({
-            leftTable: rentity.aggTableDef,
-            joinWith: this.depProEntityLabelConfig,
+        const entityLabelConfig = await builder.joinProviderThroughDepIdx({
+            leftTable: rentity.aggregation.tableDef,
+            joinWithDepIdx: this.depProEntityLabelConfig,
             joinWhereLeftTableCondition: '= true',
             joinOnKeys: {
                 pkClass: {leftCustom: {name: 'fkClass', type: 'int'}},
@@ -152,11 +138,80 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             createCustomObject: entityLabelConfCustom
         })
 
-        const labelParts = this.expandLabelParts(
-            builder,
-            entityLabelConfig.aggTableDef.tableName,
-            rEdges.aggTableDef.tableName
-        );
+        /**
+         * Expand Label parts for each entity
+         */
+        const labelPartsTbl = builder.createTableName();
+        const createlabelPartsTbl = builder.createTableStmt(labelPartsTbl)
+        const labelPartsSql = `
+        -- expands all labelParts for each entity
+        ${createlabelPartsTbl} (
+            SELECT t1.*, jsonb_array_elements(t1.custom->'labelParts') label_part
+            FROM ${entityLabelConfig.aggregation.tableDef.tableName} t1
+        )`
+        builder.registerTmpTable(labelPartsSql, [], labelPartsTbl)
+
+        /**
+         * expands all 'slots' per labelPart according to nrOfStatementsInLabel
+         */
+        const slotsTbl = builder.createTableName();
+        const createSlotsTbl = builder.createTableStmt(slotsTbl)
+        const slotsSql = `
+        -- expands all 'slots' per labelPart according to nrOfStatementsInLabel
+        ${createSlotsTbl} (
+            SELECT
+            t1."r_pkEntity",
+            t1."p_pkClass",
+            label_part->'field'->>'fkProperty' property,
+            label_part->'field'->>'nrOfStatementsInLabel',
+            CASE WHEN (label_part->'field'->'isOutgoing')::bool = true THEN 'outgoing' ELSE 'incoming' END direction,
+            label_part->>'ordNum' fielOrdNum,
+            generate_series(1,(label_part->'field'->'nrOfStatementsInLabel')::int) stmtOrdNum
+            FROM ${labelPartsTbl} t1
+        )`
+        builder.registerTmpTable(slotsSql, [], slotsTbl)
+
+        /**
+         * expands all 'slots' per labelPart according to nrOfStatementsInLabel
+         */
+        const stmtsTbl = builder.createTableName();
+        const createStmtsTbl = builder.createTableStmt(stmtsTbl)
+        const stmtsSql = `
+        -- joins slots with statements
+        ${createStmtsTbl} (
+            SELECT
+                t1."r_pkEntity", t2.property, t2.direction, t2.fielOrdNum, t2.stmtOrdNum, t1.p_val->t2.direction->t2.property->(t2.stmtOrdNum-1) stmt
+            FROM
+                 ${rEdges.aggregation.tableDef.tableName} t1,
+                 ${slotsTbl} t2
+            WHERE
+                t1."r_pkEntity"=t2."r_pkEntity"
+        )`
+        builder.registerTmpTable(stmtsSql, [], stmtsTbl)
+
+
+        /**
+         * stmts relevant for entity label
+         */
+        const finalTbl = builder.createTableName();
+        const createFinalTbl = builder.createTableStmt(finalTbl)
+        const finalSql = `
+        -- stmts relevant for entity label
+        ${createFinalTbl} (
+            SELECT
+            t1."r_pkEntity",
+            t1.property,
+            t1.direction,
+            t1.fielOrdNum,
+            t1.stmtOrdNum,
+            (t1.stmt->'targetIsEntity')::bool condition,
+            jsonb_build_object(
+                'fkTarget', (t1.stmt->'fkTarget')::int,
+                'targetLabel', t1.stmt->>'targetLabel'
+            ) custom
+            FROM ${stmtsTbl} t1
+        )`
+        const labelParts = builder.registerTmpTable<LabelPartKeys, never, LabelPartCustom>(finalSql, [], finalTbl)
 
         const remoteEntityLabelCustom: CustomValSql<{
             string: string
@@ -176,9 +231,9 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
                 'stmtOrdNum', t1.stmtOrdNum
             )`
         }
-        const remoteEntityLabel = builder.joinProviderThroughDepIdx({
+        const remoteEntityLabel = await builder.joinProviderThroughDepIdx({
             leftTable: labelParts.tableDef,
-            joinWith: this.depREntityLabel,
+            joinWithDepIdx: this.depREntityLabel,
             joinWhereLeftTableCondition: '= true',
             joinOnKeys: {
                 pkEntity: {leftCustom: {name: 'fkTarget', type: 'int'}},
@@ -188,33 +243,54 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
         })
 
         // const hook = builder.twOnUpsertHook()
+
+        /**
+         * aggregate labels
+         */
         const labelPartsTable = labelParts.tableDef.tableName
-        const remoteEntityLabelTable = remoteEntityLabel.aggTableDef.tableName
-        const aggregateLabels = this.aggregateLabels(builder, labelPartsTable, remoteEntityLabelTable);
+        const remoteEntityLabelTable = remoteEntityLabel.aggregation.tableDef.tableName
+        const aggLabelsTbl = builder.createTableName();
+        const createAggLabelsTbl = builder.createTableStmt(aggLabelsTbl)
+        const aggLabelsSql = `
+        -- aggregate entity labels
+        ${createAggLabelsTbl} (
+            SELECT
+            t1."r_pkEntity",
+            jsonb_build_object(
+                'entityLabel', coalesce(
+                    string_agg(
+                        coalesce(
+                            t2.custom->>'string',
+                            t1.custom->>'targetLabel'
+                            -- if we ever implement a placeholder for not available stmt, put val here
+                        ),
+                        ', '
+                        ORDER BY t1.fielOrdNum ASC,t1.stmtOrdNum ASC
+                    ),
+                    '(no label)'
+                ),
+                'labelMissing', string_agg(coalesce( t2.custom->>'string', t1.custom->>'targetLabel' ),'') IS NULL
+            ) val,
+            true::boolean condition
+            FROM ${labelPartsTable} t1
+            LEFT JOIN ${remoteEntityLabelTable} t2
+            ON t1."r_pkEntity"=(t2.custom->>'r_pkEntity')::int
+            AND t1.property=t2.custom->>'property'
+            AND t1.direction=t2.custom->>'direction'
+            AND t1.fielOrdNum=t2.custom->>'fielOrdNum'
+            AND t1.stmtOrdNum=(t2.custom->>'stmtOrdNum')::int
+            GROUP BY t1."r_pkEntity"
+        )`
+        const aggregateLabels =  builder.registerTmpTable<LabelPartKeys, never, LabelPartCustom>(aggLabelsSql, [], aggLabelsTbl)
 
-        const upsertAggregations = builder.upsertAggResults(this.index, aggregateLabels.tw, '= true')
-        const hook = builder.twOnUpsertHook()
-        const count = builder.twCount()
 
-        const sql = `
-        ${twBatch.sql},
-        ${rentity.sql},
-        ${rEdges.sql},
-        ${entityLabelConfig.sql},
-        ${labelParts.sql},
-        ${remoteEntityLabel.sql},
-        ${aggregateLabels.sql},
-        ${upsertAggregations.sql},
-        ${hook.sql},
-        ${count.sql}
-        `
-        logSql(sql, builder.params)
 
-        const result = await client.query<{changes: number;}>(
-            sql, builder.params);
-        changes = result.rows?.[0].changes ?? 0;
+        await builder.tmpTableUpsertAggregations(this.index, aggregateLabels.tableDef.tableName, '= true')
+        builder.registerUpsertHook()
+        // const count = builder.printQueries()
+        const count = builder.executeQueries()
 
-        return changes
+        return count
     }
 
     private aggregateLabels(
@@ -222,7 +298,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
         labelPartsTable: string,
         remoteEntityLabelTable: string
     ) {
-        const tw = builder.addTw();
+        const tw = builder.createTableName();
         const sql = `
         ${tw} AS (
             SELECT
@@ -256,63 +332,63 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
         return {sql, tw}
     }
 
-    private expandLabelParts(
-        builder: AggregatorSqlBuilder<REntityId, EntityLabelVal>,
-        entityLabelConfigTableName: string,
-        aggTableDefTableName: string
-    ) {
-        const labelPartsTw = builder.addTw();
-        const slotsTw = builder.addTw();
-        const stmtsTw = builder.addTw();
-        const finalTw = builder.addTw();
-        const sql = `
-        -- expands all labelParts for each entity
-        ${labelPartsTw} AS(
-            SELECT t1.*, jsonb_array_elements(t1.custom->'labelParts') label_part
-            FROM ${entityLabelConfigTableName} t1
-        ),
-        -- expands all 'slots' per labelPart according to nrOfStatementsInLabel
-        ${slotsTw} AS (
-            SELECT
-            t1."r_pkEntity",
-            t1."p_pkClass",
-            label_part->'field'->>'fkProperty' property,
-            label_part->'field'->>'nrOfStatementsInLabel',
-            CASE WHEN (label_part->'field'->'isOutgoing')::bool = true THEN 'outgoing' ELSE 'incoming' END direction,
-            label_part->>'ordNum' fielOrdNum,
-            generate_series(1,(label_part->'field'->'nrOfStatementsInLabel')::int) stmtOrdNum
-            FROM ${labelPartsTw} t1
-        ),
-        -- joins slots with statements
-        ${stmtsTw} AS (
-            SELECT
-                t1."r_pkEntity", t2.property, t2.direction, t2.fielOrdNum, t2.stmtOrdNum, t1.p_val->t2.direction->t2.property->(t2.stmtOrdNum-1) stmt
-            FROM
-                 ${aggTableDefTableName} t1,
-                 ${slotsTw} t2
-            WHERE
-                t1."r_pkEntity"=t2."r_pkEntity"
-        ),
-        -- label relevant stmts
-        ${finalTw} AS (
-            SELECT
-            t1."r_pkEntity",
-            t1.property,
-            t1.direction,
-            t1.fielOrdNum,
-            t1.stmtOrdNum,
-            (t1.stmt->'targetIsEntity')::bool condition,
-            jsonb_build_object(
-                'fkTarget', (t1.stmt->'fkTarget')::int,
-                'targetLabel', t1.stmt->>'targetLabel'
-            ) custom
-            FROM ${stmtsTw} t1
-        )`;
-        const tableDef: TableDef<LabelPartKeys, never, LabelPartCustom> = {
-            tableName: finalTw
-        }
-        return {sql, tableDef};
-    }
+    // private expandLabelParts(
+    //     builder: AggregatorSqlBuilder<REntityId, EntityLabelVal>,
+    //     entityLabelConfigTableName: string,
+    //     aggTableDefTableName: string
+    // ) {
+    //     const labelPartsTw = builder.createTableName();
+    //     const slotsTw = builder.createTableName();
+    //     const stmtsTw = builder.createTableName();
+    //     const finalTw = builder.createTableName();
+    //     const sql = `
+    //     -- expands all labelParts for each entity
+    //     ${labelPartsTw} (
+    //         SELECT t1.*, jsonb_array_elements(t1.custom->'labelParts') label_part
+    //         FROM ${entityLabelConfigTableName} t1
+    //     ),
+    //     -- expands all 'slots' per labelPart according to nrOfStatementsInLabel
+    //     ${slotsTw} AS (
+    //         SELECT
+    //         t1."r_pkEntity",
+    //         t1."p_pkClass",
+    //         label_part->'field'->>'fkProperty' property,
+    //         label_part->'field'->>'nrOfStatementsInLabel',
+    //         CASE WHEN (label_part->'field'->'isOutgoing')::bool = true THEN 'outgoing' ELSE 'incoming' END direction,
+    //         label_part->>'ordNum' fielOrdNum,
+    //         generate_series(1,(label_part->'field'->'nrOfStatementsInLabel')::int) stmtOrdNum
+    //         FROM ${labelPartsTw} t1
+    //     ),
+    //     -- joins slots with statements
+    //     ${stmtsTw} AS (
+    //         SELECT
+    //             t1."r_pkEntity", t2.property, t2.direction, t2.fielOrdNum, t2.stmtOrdNum, t1.p_val->t2.direction->t2.property->(t2.stmtOrdNum-1) stmt
+    //         FROM
+    //              ${aggTableDefTableName} t1,
+    //              ${slotsTw} t2
+    //         WHERE
+    //             t1."r_pkEntity"=t2."r_pkEntity"
+    //     ),
+    //     -- stmts relevant for entity label
+    //     ${finalTw} AS (
+    //         SELECT
+    //         t1."r_pkEntity",
+    //         t1.property,
+    //         t1.direction,
+    //         t1.fielOrdNum,
+    //         t1.stmtOrdNum,
+    //         (t1.stmt->'targetIsEntity')::bool condition,
+    //         jsonb_build_object(
+    //             'fkTarget', (t1.stmt->'fkTarget')::int,
+    //             'targetLabel', t1.stmt->>'targetLabel'
+    //         ) custom
+    //         FROM ${stmtsTw} t1
+    //     )`;
+    //     const tableDef: TableDef<LabelPartKeys, never, LabelPartCustom> = {
+    //         tableName: finalTw
+    //     }
+    //     return {sql, tableDef};
+    // }
 }
 
 interface LabelPartKeys {

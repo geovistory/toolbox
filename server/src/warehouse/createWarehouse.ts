@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import '@abraham/reflection';
-import {ReflectiveInjector} from 'injection-js';
+import {Provider, ReflectiveInjector, Type} from 'injection-js';
 import {PClassFieldLabelDependencies} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
 import {PClassFieldLabelService} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {RClassFieldLabelDependencies} from './aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelDependencies';
@@ -50,82 +51,131 @@ import {ProProjectService} from './primary-ds/ProProjectService';
 import {ProPropertyLabelService} from './primary-ds/ProPropertyLabelService';
 import {APP_CONFIG, Warehouse, WarehouseConfig} from './Warehouse';
 
+export interface WarehouseStubs {
+  primaryDataServiceBundle: Type<any>;
+  primaryDataServices: Provider[];
+  aggDataServiceBundle: Type<any>;
+  aggDataServices: Provider[];
+  depDataServiceBundle: Type<any>;
+  depDataServices: Provider[];
+}
 
-export function createWarehouse(config: WarehouseConfig): Warehouse {
+/**
+ *
+ * @param config configuration of the warehouse
+ * @param stubs stubs allow to substitute dependencies for testing purposes
+ */
+export function createWarehouse(
+  config: WarehouseConfig,
+  stubs?: WarehouseStubs
+): Warehouse {
+
+  // prepare injection of PrimaryDataServices (Bundle)
+  let primaryDataServiceBundle: Provider = PrimaryDataServices;
+  if (stubs?.primaryDataServiceBundle) {
+    primaryDataServiceBundle = {provide: PrimaryDataServices, useClass: stubs?.primaryDataServiceBundle}
+  }
+  // prepare injection of PrimaryDataService classes
+  const primaryDataServices = stubs?.primaryDataServices ?? defaultPrimaryDataServices
+
+  // prepare injection of AggregatedDataServices (Bundle)
+  let aggDataServiceBundle: Provider = AggregatedDataServices;
+  if (stubs?.aggDataServiceBundle) {
+    aggDataServiceBundle = {provide: AggregatedDataServices, useClass: stubs?.aggDataServiceBundle}
+  }
+  // prepare injection of AggregatedDataService classes
+  const aggDataServices = stubs?.aggDataServices ?? defaultAggregatedDataServices
+
+  // prepare injection of DependencyDataServices (Bundle)
+  let depDataServiceBundle: Provider = DependencyDataServices;
+  if (stubs?.depDataServiceBundle) {
+    depDataServiceBundle = {provide: DependencyDataServices, useClass: stubs?.depDataServiceBundle}
+  }
+  // prepare injection of DependencyDataService classes
+  const depDataServices = stubs?.depDataServices ?? defaultDependencyDataServices
+
+
+
   const injector = ReflectiveInjector.resolveAndCreate([
     Warehouse,
     // bundles
-    DependencyDataServices,
-    AggregatedDataServices,
-    PrimaryDataServices,
-
+    primaryDataServiceBundle,
+    aggDataServiceBundle,
+    depDataServiceBundle,
     // primary
-    DfhClassLabelService,
-    DfhPropertyLabelService,
-    DfhClassHasTypePropertyService,
-    DfhOutgoingPropertyService,
-
-    ProProjectService,
-    ProClassLabelService,
-    ProPropertyLabelService,
-    ProEntityLabelConfigService,
-
-    PClassService,
-    PPropertyService,
-
-    ProClassFieldsConfigService,
-
-    PEdgeService,
-    PEntityService,
-
-    RClassService,
-    RPropertyService,
-
-    REntityService,
-    REdgeService,
-
+    primaryDataServices,
     // agg
-    IdentifyingPropertyService,
-
-    // Project aggegators
-    PClassLabelService,
-    PClassFieldLabelService,
-    PEntityLabelService,
-    PEntityTypeService,
-    PEntityClassLabelService,
-    PEntityFullTextService,
-    PEntityTimeSpanService,
-
-    // Repo aggregators
-    RClassLabelService,
-    RClassFieldLabelService,
-    REntityLabelService,
-    REntityTypeService,
-    REntityClassLabelService,
-    REntityFullTextService,
-    REntityTimeSpanService,
-
+    aggDataServices,
     // dep
-    IdentifyingPropertyDependencies,
+    depDataServices,
 
-    PClassLabelDependencies,
-    PClassFieldLabelDependencies,
-    PEntityLabelDependencies,
-    PEntityTypeDependencies,
-    PEntityClassLabelDependencies,
-    PEntityFullTextDependencies,
-    PEntityTimeSpanDependencies,
-
-    // RClassLabelDependencies,
-    RClassFieldLabelDependencies,
-    // REntityLabelDependencies,
-    REntityTypeDependencies,
-
-    REntityClassLabelDependencies,
-    REntityFullTextDependencies,
-    REntityTimeSpanDependencies,
 
     {provide: APP_CONFIG, useValue: config}
   ]);
   return injector.get(Warehouse)
 }
+
+const defaultPrimaryDataServices = [
+  DfhClassLabelService,
+  DfhPropertyLabelService,
+  DfhClassHasTypePropertyService,
+  DfhOutgoingPropertyService,
+
+  ProProjectService,
+  ProClassLabelService,
+  ProPropertyLabelService,
+  ProEntityLabelConfigService,
+
+  PClassService,
+  PPropertyService,
+
+  ProClassFieldsConfigService,
+
+  PEdgeService,
+  PEntityService,
+
+  RClassService,
+  RPropertyService,
+
+  REntityService,
+  REdgeService,
+];
+
+const defaultAggregatedDataServices = [IdentifyingPropertyService,
+
+  // Project aggegators
+  PClassLabelService,
+  PClassFieldLabelService,
+  PEntityLabelService,
+  PEntityTypeService,
+  PEntityClassLabelService,
+  PEntityFullTextService,
+  PEntityTimeSpanService,
+
+  // Repo aggregators
+  RClassLabelService,
+  RClassFieldLabelService,
+  REntityLabelService,
+  REntityTypeService,
+  REntityClassLabelService,
+  REntityFullTextService,
+  REntityTimeSpanService,];
+
+const defaultDependencyDataServices = [IdentifyingPropertyDependencies,
+
+  PClassLabelDependencies,
+  PClassFieldLabelDependencies,
+  PEntityLabelDependencies,
+  PEntityTypeDependencies,
+  PEntityClassLabelDependencies,
+  PEntityFullTextDependencies,
+  PEntityTimeSpanDependencies,
+
+  // RClassLabelDependencies,
+  RClassFieldLabelDependencies,
+  // REntityLabelDependencies,
+  REntityTypeDependencies,
+
+  REntityClassLabelDependencies,
+  REntityFullTextDependencies,
+  REntityTimeSpanDependencies,];

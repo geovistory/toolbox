@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PoolClient} from 'pg';
-import {brkOnErr, logSql} from '../../../../utils/helpers';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
 import {AggregatorSqlBuilder} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
@@ -46,14 +45,11 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
     }
 
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
-        let changes = 0
-        const builder = new AggregatorSqlBuilder(this, currentTimestamp)
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
-        const twBatch = builder.twBatch(limit, offset)
-
-        const geovistoryLabelsTw = builder.joinProviderThroughDepIdx({
-            leftTable: twBatch.tableDef,
-            joinWith: this.proClassLabel,
+        const geovistoryLabelsTw = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.proClassLabel,
             joinOnKeys: {
                 fkClass: {leftCol: 'pkClass'},
                 fkProject: {value: PK_DEFAULT_CONFIG_PROJECT},
@@ -68,11 +64,11 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
             }
         })
 
-        if(!geovistoryLabelsTw.aggTableDef) throw new Error("aggUpsertTableDef missing");
-        const ontomeLabelsTw = builder.joinProviderThroughDepIdx({
-            leftTable: geovistoryLabelsTw.aggTableDef,
+        if (!geovistoryLabelsTw.aggregation) throw new Error("aggUpsertTableDef missing");
+        await builder.joinProviderThroughDepIdx({
+            leftTable: geovistoryLabelsTw.aggregation.tableDef,
             joinWhereLeftTableCondition: '= false',
-            joinWith: this.dfhClassLabel,
+            joinWithDepIdx: this.dfhClassLabel,
             joinOnKeys: {
                 pkClass: {leftCol: 'pkClass'},
                 language: {value: 'en'},
@@ -81,27 +77,15 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
                 providerVal: {label: 'IS NOT NULL'}
             },
             createAggregationVal: {
-                sql:(provider) => `jsonb_build_object('label',${provider}.val->>'label')`,
+                sql: (provider) => `jsonb_build_object('label',${provider}.val->>'label')`,
                 upsert: {whereCondition: '= true'}
             }
         })
-        const count = builder.twCount()
 
-        const hook = builder.twOnUpsertHook()
-
-
-        const sql = `
-        ${twBatch.sql},
-        ${geovistoryLabelsTw.sql},
-        ${ontomeLabelsTw.sql},
-        ${hook.sql},
-        ${count.sql}
-        `
-        logSql(sql, builder.params)
-        const result = await brkOnErr(client.query<{changes: number;}>(
-            sql, builder.params));
-        changes = result.rows?.[0].changes ?? 0;
-        return changes
+        builder.registerUpsertHook()
+        const count = await builder.executeQueries()
+        // const count = await builder.printQueries()
+        return count
     }
 
 
