@@ -6,7 +6,7 @@
   <p>
     The following table shows OntoMe Profiles ready to be activated in your Geovistory project.
     (See the full list of profiles on
-    <a href="http://ontologies.dataforhistory.org/profile" target="_blank"> OntoMe </a>.)
+    <a href="https://ontome.dataforhistory.org/profile" target="_blank"> OntoMe </a>.)
   </p>
   <p>
     Click on 'Activate...' to go on with the activation of a profile.
@@ -49,8 +49,8 @@
         <td mat-cell *matCellDef="let element">
           <button *ngIf="!(enabledProfiles$ | async)[element.profileId]" (click)="activate(element)" mat-button
             color="primary">Activate...</button>
-          <button *ngIf="(enabledProfiles$ | async)[element.profileId]" [disabled]="true" mat-button matTooltip="Already activated"
-            color="accent">Activate...</button>
+          <button *ngIf="(enabledProfiles$ | async)[element.profileId]" [disabled]="true" mat-button
+            matTooltip="Already activated" color="accent">Activate...</button>
         </td>
       </ng-container>
 

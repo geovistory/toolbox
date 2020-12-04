@@ -18,7 +18,7 @@ export class OntoClassInfoComponent implements OnInit {
   ngOnInit() {
     const class$ = this.p.dfh$.class$.by_pk_class$.key(this.pkClass).pipe(filter(c => !!c));
     this.label$ = class$.pipe(map((c) => c.identifier_in_namespace))
-    this.url = 'http://ontologies.dataforhistory.org/class/' + this.pkClass
+    this.url = 'https://ontome.dataforhistory.org/class/' + this.pkClass
   }
 
 }
