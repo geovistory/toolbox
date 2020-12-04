@@ -234,6 +234,20 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
   })
+
+  static readonly NAMING_ALBERT_2_TO_APPE_ALBERT = new InfStatement({
+    pk_entity: 3032,
+    fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING_2.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.ALBERT.pk_entity,
+  })
+
+  static readonly NAMING_ALBERT_2_TO_PEIT_ALBERT = new InfStatement({
+    pk_entity: 3033,
+    fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING_2.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
+  })
 }
 
 

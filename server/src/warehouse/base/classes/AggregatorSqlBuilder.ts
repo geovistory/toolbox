@@ -14,8 +14,8 @@ export type CustomValSql<M> = (q: SqlBuilderBase) => string
 export type ProviderKeyColMapping<RK, RV, PK, CustomObject> = {
   [key in keyof PK]: {
     leftCol?: keyof RK,
-    leftVal?: {name: keyof RV, type: 'int' | 'text'},
-    leftCustom?: {name: keyof CustomObject, type: 'int' | 'text'},
+    leftVal?: {name: keyof RV, type: 'int' | 'text' | 'bool'},
+    leftCustom?: {name: keyof CustomObject, type: 'int' | 'text' | 'bool'},
     value?: string | number
   }
 }
@@ -142,7 +142,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
         SELECT ${this.agg.index.keyDefs.map(k => `"${k.name}" as "r_${k.name}"`)}
         FROM
         (VALUES ' || string_agg(
-          ${this.agg.index.keyDefs.map(k => `'(' || t1."${k.name}"::text  ||')'`).join(',')},
+          '(' || ${this.agg.index.keyDefs.map(k => ` t1."${k.name}"::text `).join(`||','||`)} ||')',
            ','
         ) ||') as x(${this.agg.index.keyDefs.map(k => `"${k.name}"`).join(',')})
       )' as sql
@@ -358,6 +358,10 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
           select = `(t1.custom->>'${e.leftCustom.name}')::${e.leftCustom.type} "p_${providerCol}"`;
           joinOn = `(t1.custom->>'${e.leftCustom.name}')::${e.leftCustom.type} = t2."${providerCol}"`;
         }
+        else if (e.leftVal) {
+          select = `(t1.val->>'${e.leftVal.name}')::${e.leftVal.type} "p_${providerCol}"`;
+          joinOn = `(t1.val->>'${e.leftVal.name}')::${e.leftVal.type} = t2."${providerCol}"`;
+        }
         else if (e.value) {
           const parse = typeof e.value === 'number' ? '::int' : '';
           joinOn = `${q.addParam(e.value)} = t2."${providerCol}"`;
@@ -424,7 +428,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     return tw
   }
   createTableStmt(tableName: string) {
-      return `CREATE TEMP TABLE ${tableName} ON COMMIT DROP AS`;
+    return `CREATE TEMP TABLE ${tableName} ON COMMIT DROP AS`;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query<M>(sql: string, params: any[] = []) {
@@ -483,7 +487,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
         sql = sql.replace(replaceStr, typeof param === 'string' ? "'" + param + "'" : param)
       })
       sql = sqlFormatter.format(sql, {language: 'pl/sql'});
-      log = `${log}\n${sql};`
+      log = `${log}\n\n${sql};`
     }
     log = `BEGIN;
     -- the subsequent blocks create tmp tables. see last line for how to select

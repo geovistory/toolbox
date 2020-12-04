@@ -2,7 +2,7 @@
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {PEntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
-import {PEntityId} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {PEntityId, PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -33,7 +33,51 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
+import {ProClassFieldsConfigService} from '../../../../../warehouse/primary-ds/ProClassFieldsConfigService';
+import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+const pEntityFullTextStub: WarehouseStubs = {
+    primaryDataServices: [
+        PEntityService,
+        PEdgeService,
+        REdgeService,
+        REntityService,
+        ProClassFieldsConfigService,
+        PPropertyService,
+        ProProjectService,
+        DfhPropertyLabelService,
+        ProPropertyLabelService,
+        ProEntityLabelConfigService,
+        DfhOutgoingPropertyService,
+        PClassService,
+        DfhClassLabelService,
+        ProClassLabelService
+    ],
+    aggDataServices: [
+        IdentifyingPropertyService,
+        PClassFieldLabelService,
+        PEntityLabelService,
+        REntityLabelService,
+        PClassLabelService,
+        PEntityFullTextService
+    ],
+}
 /**
  * Testing whole stack from postgres to warehouse
  */
@@ -42,8 +86,8 @@ describe('PEntityFullTextService', function () {
     let s: PEntityFullTextService;
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
-        this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        this.timeout(15000); // A very long environment setup.
+        const injector = await setupCleanAndStartWarehouse(pEntityFullTextStub)
         wh = injector.get(Warehouse)
         s = injector.get(PEntityFullTextService)
     })

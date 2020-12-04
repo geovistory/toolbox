@@ -42,5 +42,9 @@ export class InfAppellationMock {
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Habsbourg Empire'
   })
-
+  static readonly ALBERT = new InfAppellation({
+    pk_entity: 5008,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Albert'
+  })
 }
