@@ -103,6 +103,7 @@ describe('PEntityFullTextService', function () {
         const {naming, project} = await createNamingMock();
 
         const result = await waitForEntityPreviewUntil(wh, (item) => {
+            // console.log(item)
             return item.pk_entity === naming.pk_entity
                 && item.fk_project === project.pk_entity
                 && item.full_text === `Appellation in a language (time-indexed) – refers to name: 'Jack the foo'`

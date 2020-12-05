@@ -21,7 +21,7 @@ async function getUserInputs() {
           title: 'Mockdata forFullText',
           description: `Creates mockdata useful for developing the warehouse to produce full texts for entities.`,
           value: forFullText.forFullText,
-        }
+        },
       ],
     },
     {
@@ -59,5 +59,11 @@ async function start() {
 }
 
 start()
-  .then(_ => console.log('Successfully seeded database!'))
-  .catch(err => console.error(err));
+  .then(_ => {
+    console.log('Successfully seeded database!');
+    process.exit();
+  })
+  .catch(err => {
+    console.error(err);
+    process.exit(1);
+  });

@@ -241,7 +241,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
   async tmpTableUpsertAggregations<RK, RV>(
     aggregatorDS: DataIndexPostgres<RK, RV>,
     aggregationTableName: string,
-    whereCondition: AggregateWhereCondition):
+    whereCondition?: AggregateWhereCondition):
     Promise<TmpTableResult<KeyModel, ValueModel, never>> {
     const tableName = this.addAggUpsertTw();
     const createTableStmt = this.createTableStmt(tableName)
@@ -257,7 +257,8 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
           --val
           val
           FROM        ${aggregationTableName}
-          WHERE       condition ${whereCondition}
+          ${whereCondition ? `
+          WHERE       condition ${whereCondition}` : ''}
           ON CONFLICT (${aggregatorDS.keyCols})
           DO UPDATE
           SET val = EXCLUDED.val
