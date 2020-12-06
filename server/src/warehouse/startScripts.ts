@@ -4,26 +4,6 @@ import path from 'path';
 import pgkDir from 'pkg-dir';
 import {createWarehouse} from './createWarehouse';
 import {WarehouseConfig, Warehouse} from './Warehouse';
-import {PEntityService} from './primary-ds/entity/PEntityService';
-import {PEdgeService} from './primary-ds/edge/PEdgeService';
-import {REdgeService} from './primary-ds/edge/REdgeService';
-import {REntityService} from './primary-ds/entity/REntityService';
-import {ProClassFieldsConfigService} from './primary-ds/ProClassFieldsConfigService';
-import {PPropertyService} from './primary-ds/property/PPropertyService';
-import {ProProjectService} from './primary-ds/ProProjectService';
-import {DfhPropertyLabelService} from './primary-ds/DfhPropertyLabelService';
-import {ProPropertyLabelService} from './primary-ds/ProPropertyLabelService';
-import {ProEntityLabelConfigService} from './primary-ds/ProEntityLabelConfigService';
-import {DfhOutgoingPropertyService} from './primary-ds/DfhOutgoingPropertyService';
-import {PClassService} from './primary-ds/class/PClassService';
-import {DfhClassLabelService} from './primary-ds/DfhClassLabelService';
-import {ProClassLabelService} from './primary-ds/ProClassLabelService';
-import {IdentifyingPropertyService} from './aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {PClassFieldLabelService} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
-import {PEntityLabelService} from './aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
-import {REntityLabelService} from './aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {PClassLabelService} from './aggregator-ds/class-label/p-class-label/PClassLabelService';
-import {PEntityFullTextService} from './aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
 
 const appRoot = pgkDir.sync() ?? ''
 
@@ -87,32 +67,7 @@ export async function startDev() {
 // (No bucketeer instance required, everything related to backups is skipped)
 export async function cleanAndStartDev() {
     const config: WarehouseConfig = {}
-    const warehouse = createWarehouse(config, {
-        primaryDataServices: [
-            PEntityService,
-            PEdgeService,
-            REdgeService,
-            REntityService,
-            ProClassFieldsConfigService,
-            PPropertyService,
-            ProProjectService,
-            DfhPropertyLabelService,
-            ProPropertyLabelService,
-            ProEntityLabelConfigService,
-            DfhOutgoingPropertyService,
-            PClassService,
-            DfhClassLabelService,
-            ProClassLabelService
-        ],
-        aggDataServices: [
-            IdentifyingPropertyService,
-            PClassFieldLabelService,
-            PEntityLabelService,
-            REntityLabelService,
-            PClassLabelService,
-            PEntityFullTextService
-        ],
-    }).get(Warehouse)
+    const warehouse = createWarehouse(config).get(Warehouse)
     const client = await warehouse.pgPool.connect()
     await client.query(`drop schema if exists ${warehouse.schemaName} cascade;`)
     client.release()
