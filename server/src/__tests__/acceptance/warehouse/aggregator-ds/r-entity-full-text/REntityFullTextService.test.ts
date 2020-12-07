@@ -2,8 +2,23 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
+import {RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
+import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
 import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
-import {REntityId} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityId, REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProClassFieldsConfigService} from '../../../../../warehouse/primary-ds/ProClassFieldsConfigService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {RPropertyService} from '../../../../../warehouse/primary-ds/property/RPropertyService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -33,8 +48,29 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, truncateWarehouseTables, waitForEntityPreview, stopWarehouse} from '../../../../helpers/warehouse-helpers';
-
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+const rEntityFullTextStub: WarehouseStubs = {
+    primaryDataServices: [
+        REntityService,
+        REdgeService,
+        ProClassFieldsConfigService,
+        RPropertyService,
+        DfhPropertyLabelService,
+        ProPropertyLabelService,
+        ProEntityLabelConfigService,
+        DfhOutgoingPropertyService,
+        RClassService,
+        DfhClassLabelService,
+        ProClassLabelService,
+    ],
+    aggDataServices: [
+        IdentifyingPropertyService,
+        RClassFieldLabelService,
+        REntityLabelService,
+        RClassLabelService,
+        REntityFullTextService
+    ],
+}
 /**
  * Testing whole stack from postgres to warehouse
  */
@@ -45,7 +81,7 @@ describe('REntityFullTextService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(rEntityFullTextStub)
         wh = injector.get(Warehouse)
         s = injector.get(REntityFullTextService)
     })

@@ -1,13 +1,8 @@
-import {flatten} from 'ramda';
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
-import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
+import {Edge} from "../../../primary-ds/edge/edge.commons";
 import {REntityId} from '../../../primary-ds/entity/REntityService';
-import {ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService';
-import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {RClassFieldId} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
 import {REntityFullTextProviders} from './REntityFullTextPoviders';
-import {isHiddenOutgoingProperty, isHiddenIngoingProperty} from '../entity-full-text.commons';
 import {REntityFullTextVal} from './REntityFullTextService';
 
 export interface ClassLabelConfig {
@@ -57,19 +52,19 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityFullTex
         if (!edges) return this.finalize();
         // if no edges, return
 
-        // get fields of that class
-        const rClassId: RClassId = {pkClass: entity.fkClass}
-        // look for config of efault config project
-        const classFields = await this.providers.pClassFields.get({pkClass: rClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
+        // // get fields of that class
+        // const rClassId: RClassId = {pkClass: entity.fkClass}
+        // // look for config of efault config project
+        // const classFields = await this.providers.pClassFields.get({pkClass: rClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
 
-        // create fulltext
-        const fullText = await this.loopOverFields(edges, classFields, entity.fkClass)
+        // // create fulltext
+        // const fullText = await this.loopOverFields(edges, classFields, entity.fkClass)
 
-        // get class label
-        const res = await this.providers.rClassLabel.get(rClassId)
+        // // get class label
+        // const res = await this.providers.rClassLabel.get(rClassId)
 
-        const classLabel = res?.label ?? `[${entity.fkClass}]`;
-        this.fullText = `${classLabel} – ${fullText}`;
+        // const classLabel = res?.label ?? `[${entity.fkClass}]`;
+        // this.fullText = `${classLabel} – ${fullText}`;
         return this.finalize()
     }
 
@@ -90,50 +85,50 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityFullTex
      *
      * @param entityFields
      */
-    async loopOverFields(entityFields: EntityFields, classFields: ProClassFieldVal = [], fkClass: number) {
+    // async loopOverFields(entityFields: EntityFields, classFields: ProClassFieldVal = [], fkClass: number) {
 
-        const loopedCache: {[key: string]: boolean;} = {};
+    //     const loopedCache: {[key: string]: boolean;} = {};
 
-        // loop over the fields of this class config first
-        const promises: Promise<string[]>[] = []
+    //     // loop over the fields of this class config first
+    //     const promises: Promise<string[]>[] = []
 
-        for (const cF of classFields) {
-            const k = fieldKey(cF.fkProperty, cF.isOutgoing);
+    //     for (const cF of classFields) {
+    //         const k = fieldKey(cF.fkProperty, cF.isOutgoing);
 
-            if (!loopedCache[k]) {
-                // get the edges of that field
-                const edges = entityFields?.[cF.isOutgoing ? 'outgoing' : 'incoming']?.[cF.fkProperty];
+    //         if (!loopedCache[k]) {
+    //             // get the edges of that field
+    //             const edges = entityFields?.[cF.isOutgoing ? 'outgoing' : 'incoming']?.[cF.fkProperty];
 
-                // add edges to resulting entity
-                promises.push(this.loopOverEdges(edges, fkClass, cF.fkProperty, cF.isOutgoing));
-            }
+    //             // add edges to resulting entity
+    //             promises.push(this.loopOverEdges(edges, fkClass, cF.fkProperty, cF.isOutgoing));
+    //         }
 
-            // mark field as covered
-            loopedCache[k] = true;
-        }
+    //         // mark field as covered
+    //         loopedCache[k] = true;
+    //     }
 
-        // loop over the remaining fields of the entity (not covered by class config)
-        const isOutgoing = true;
-        for (const fkProperty in entityFields.outgoing) {
+    //     // loop over the remaining fields of the entity (not covered by class config)
+    //     const isOutgoing = true;
+    //     for (const fkProperty in entityFields.outgoing) {
 
-            if (!loopedCache[fieldKey(fkProperty, isOutgoing)] && !isHiddenOutgoingProperty(fkProperty)) {
-                const edges = entityFields.outgoing[fkProperty];
-                promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isOutgoing));
-            }
+    //         if (!loopedCache[fieldKey(fkProperty, isOutgoing)] && !isHiddenOutgoingProperty(fkProperty)) {
+    //             const edges = entityFields.outgoing[fkProperty];
+    //             promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isOutgoing));
+    //         }
 
-        }
-        const isIncoming = false;
-        for (const fkProperty in entityFields.incoming) {
+    //     }
+    //     const isIncoming = false;
+    //     for (const fkProperty in entityFields.incoming) {
 
-            if (!loopedCache[fieldKey(fkProperty, isIncoming)] && !isHiddenIngoingProperty(fkProperty)) {
-                const edges = entityFields.incoming[fkProperty];
-                promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isIncoming));
-            }
-        }
+    //         if (!loopedCache[fieldKey(fkProperty, isIncoming)] && !isHiddenIngoingProperty(fkProperty)) {
+    //             const edges = entityFields.incoming[fkProperty];
+    //             promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isIncoming));
+    //         }
+    //     }
 
-        const res = await Promise.all(promises)
-        return flatten(res).join(', ');
-    }
+    //     const res = await Promise.all(promises)
+    //     return flatten(res).join(', ');
+    // }
 
 
 
@@ -211,7 +206,7 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityFullTex
 
 }
 
-function fieldKey(fkProperty: number | string, isOutgoing: boolean) {
-    return fkProperty + '_' + isOutgoing;
-}
+// function fieldKey(fkProperty: number | string, isOutgoing: boolean) {
+//     return fkProperty + '_' + isOutgoing;
+// }
 

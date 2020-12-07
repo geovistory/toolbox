@@ -189,7 +189,8 @@ export class ProInfoProjRelMock {
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.UNOIN_1_HAS_PARTNER_1.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
-    is_in_project: true
+    is_in_project: true,
+    ord_num_of_range: 2
   })
 
   static readonly SANDBOX_ALBERT_IV = new ProInfoProjRel({
@@ -229,7 +230,8 @@ export class ProInfoProjRelMock {
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.UNOIN_1_HAS_PARTNER_2.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
-    is_in_project: true
+    is_in_project: true,
+    ord_num_of_range: 1
   })
 
   static readonly PROJ_1_ALBERT_IV = new ProInfoProjRel({

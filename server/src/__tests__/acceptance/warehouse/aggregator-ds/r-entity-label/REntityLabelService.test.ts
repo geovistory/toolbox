@@ -54,7 +54,7 @@ describe('REntityLabelService', function () {
 
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
-        this.timeout(15000); // A very long environment setup.
+        this.timeout(5000); // A very long environment setup.
         const injector = await setupCleanAndStartWarehouse(rEntityLabelStub)
         wh = injector.get(Warehouse)
     })
@@ -225,37 +225,13 @@ describe('REntityLabelService', function () {
 
 
 
-        // since naming 2 is more often used, repo cityType.entity_label should be 'Stadt'
-        const [proj1V, proj2V, proj3V, repoV] = await Promise.all([
-            waitForEntityPreviewUntil(wh, (item) => {
-                // console.log(1, `${item.entity_label} should be ${appeCity.string}`)
-                return item.pk_entity === cityType.pk_entity
-                    && item.fk_project === project1.pk_entity
-                    && item.entity_label === appeCity.string
-            }),
-            waitForEntityPreviewUntil(wh, (item) => {
-                // console.log(2, `${item.entity_label} should be ${appeStadt.string}`)
-
-                return item.pk_entity === cityType.pk_entity
-                    && item.fk_project === project2.pk_entity
-                    && item.entity_label === appeStadt.string
-            }),
-            waitForEntityPreviewUntil(wh, (item) => {
-                // console.log(3, `${item.entity_label} should be ${appeStadt.string}`)
-
-                return item.pk_entity === cityType.pk_entity
-                    && item.fk_project === project3.pk_entity
-                    && item.entity_label === appeStadt.string
-            }),
-            waitForEntityPreviewUntil(wh, (item) => {
-                // console.log(4, `${item.entity_label} should be ${appeStadt.string}`)
-
-                return item.pk_entity === cityType.pk_entity
-                    && item.fk_project === null
-                    && item.entity_label === appeStadt.string
-            })
-        ])
-        expect({proj1V, proj2V, proj3V, repoV})
+        // since naming 2 is more often used,
+        // -> the repo label should be 'Stadt'
+        await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === cityType.pk_entity
+                && item.fk_project === null
+                && item.entity_label === appeStadt.string
+        })
 
         // add naming 1 to project 2
         await addInfosToProject(project2.pk_entity, [
@@ -356,7 +332,7 @@ async function createNamingMock() {
 //     return union;
 // }
 
-async function createUnion2Mock() {
+export async function createUnion2Mock() {
 
     // MODEL + LABELS
     await createDfhApiClass(DfhApiClassMock.EN_633_UNION);

@@ -93,7 +93,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
 
         const customVal: CustomValSql<{
             fkClass: number,
-            ntityLabelConfig: EntityLabelConfigVal
+            entityLabelConfig: EntityLabelConfigVal
         }> = () => `jsonb_build_object(
             'fkClass', t1.custom->>'fkClass',
             'entityLabelConfig', t2.val
@@ -141,10 +141,10 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
                 t1. "p_pkClass",
                 CASE WHEN (t1.custom->>'fkClass')::int = 365 THEN
                     '${JSON.stringify(labelPartsForAppeInLang365)}'::jsonb
-                WHEN t1.custom->>'labelParts' IS NOT NULL THEN
-                     t1.custom->'labelParts'
-                WHEN t2.custom->>'labelParts' IS NOT NULL THEN
-                     t2.custom->'labelParts'
+                WHEN t1.custom ->'entityLabelConfig'->> 'labelParts' IS NOT NULL THEN
+                    t1.custom ->'entityLabelConfig'-> 'labelParts'
+                WHEN t2.custom ->'entityLabelConfig'->> 'labelParts' IS NOT NULL THEN
+                    t2.custom ->'entityLabelConfig'-> 'labelParts'
                 ELSE
                 '${JSON.stringify(labelPartsForNormalEntities)}'::jsonb
                 END label_parts
@@ -303,7 +303,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
 
         await builder.tmpTableUpsertAggregations(this.index, aggregateLabels.tableDef.tableName, '= true')
         builder.registerUpsertHook()
-        // const count = builder.printQueries()
+        // builder.printQueries()
         const count = builder.executeQueries()
 
         return count

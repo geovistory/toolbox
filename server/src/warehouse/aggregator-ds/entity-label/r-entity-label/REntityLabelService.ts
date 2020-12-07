@@ -93,17 +93,14 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             },
             createCustomObject: ((provider) => `t1.custom`) as CustomValSql<{fkClass: number}>,
         })
-        const entityLabelConfCustom: CustomValSql<EntityLabelConfigVal> = (q) => {
-            return `
-                CASE WHEN (t1.custom->>'fkClass')::int = 365 THEN
-                    '${JSON.stringify(labelPartsForAppeInLang365)}'::jsonb
-                WHEN t2.val->>'labelParts' IS NOT NULL THEN
-                    t2.val
-                ELSE
-                    '${JSON.stringify(labelPartsForNormalEntities)}'::jsonb
-                END
-            `
-        }
+        const customVal: CustomValSql<{
+            fkClass: number,
+            entityLabelConfig: EntityLabelConfigVal
+        }> = () => `jsonb_build_object(
+            'fkClass', t1.custom->>'fkClass',
+            'entityLabelConfig', t2.val
+        )`
+
         const entityLabelConfig = await builder.joinProviderThroughDepIdx({
             leftTable: rentity.aggregation.tableDef,
             joinWithDepIdx: this.depProEntityLabelConfig,
@@ -113,7 +110,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
                 fkProject: {value: PK_DEFAULT_CONFIG_PROJECT}
             },
             conditionTrueIf: {},
-            createCustomObject: entityLabelConfCustom
+            createCustomObject: customVal
         })
 
         /**
@@ -124,8 +121,21 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
         const labelPartsSql = `
         -- expands all labelParts for each entity
         ${createlabelPartsTbl} (
-            SELECT t1.*, jsonb_array_elements(t1.custom->'labelParts') label_part
-            FROM ${entityLabelConfig.aggregation.tableDef.tableName} t1
+            WITH tw1 AS (
+                SELECT
+                t1. "r_pkEntity",
+                t1. "p_pkClass",
+                CASE WHEN (t1.custom->>'fkClass')::int = 365 THEN
+                    '${JSON.stringify(labelPartsForAppeInLang365)}'::jsonb
+                WHEN t1.custom ->'entityLabelConfig'->> 'labelParts' IS NOT NULL THEN
+                     t1.custom ->'entityLabelConfig'-> 'labelParts'
+                ELSE
+                    '${JSON.stringify(labelPartsForNormalEntities)}'::jsonb
+                END label_parts
+                FROM ${entityLabelConfig.aggregation.tableDef.tableName} t1
+            )
+            SELECT t1.*, jsonb_array_elements(label_parts) label_part
+            FROM tw1 t1
         )`
         builder.registerTmpTable(labelPartsSql, [], labelPartsTbl)
 
@@ -252,21 +262,21 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             true::boolean condition
             FROM ${labelPartsTable} t1
             LEFT JOIN ${remoteEntityLabelTable} t2
-            ON t1."r_pkEntity"=(t2.custom->>'r_pkEntity')::int
+            ON t1."r_pkEntity"=t2."r_pkEntity"
             AND t1.property=t2.custom->>'property'
             AND t1.direction=t2.custom->>'direction'
             AND t1.fielOrdNum=t2.custom->>'fielOrdNum'
             AND t1.stmtOrdNum=(t2.custom->>'stmtOrdNum')::int
             GROUP BY t1."r_pkEntity"
         )`
-        const aggregateLabels =  builder.registerTmpTable<LabelPartKeys, never, LabelPartCustom>(aggLabelsSql, [], aggLabelsTbl)
+        const aggregateLabels = builder.registerTmpTable<LabelPartKeys, never, LabelPartCustom>(aggLabelsSql, [], aggLabelsTbl)
 
 
 
         await builder.tmpTableUpsertAggregations(this.index, aggregateLabels.tableDef.tableName, '= true')
         builder.registerUpsertHook()
-        // const count = builder.printQueries()
-        const count = builder.executeQueries()
+        // await builder.printQueries()
+        const count = await builder.executeQueries()
 
         return count
     }

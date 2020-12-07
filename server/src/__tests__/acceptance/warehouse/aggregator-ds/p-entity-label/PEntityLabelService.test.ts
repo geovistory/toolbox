@@ -31,6 +31,7 @@ import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/P
 import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
 import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
 import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {createUnion2Mock} from '../r-entity-label/REntityLabelService.test';
 export const pEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -127,8 +128,18 @@ describe('PEntityLabelService', function () {
         expect(result.entity_label).to.equal(appellation.string)
     })
 
-    it('should create entity label of Presence – E93 (-- without )', async () => {
-
+    it('should create entity label of Union with 3 label parts', async () => {
+       const project= await createProject();
+        await createNamingMock();
+        await createPersonMock();
+        const {union} = await createUnion2Mock()
+        const result = await waitForEntityPreviewUntil(wh, (item) => {
+            // console.log(item.entity_label)
+            return item.pk_entity === union.pk_entity
+                && item.fk_project === project.pk_entity
+                && item.entity_label === '(no label), Jack the foo, (no label)'
+        })
+        expect(result)
     })
 
     // it('should create entity label of Birth – E67 (-- with identifying property)', async () => {

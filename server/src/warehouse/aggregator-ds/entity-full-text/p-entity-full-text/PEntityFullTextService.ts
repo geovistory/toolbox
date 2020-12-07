@@ -389,7 +389,7 @@ export class PEntityFullTextService extends AggregatedDataService2<PEntityId, PE
                     coalesce(
                         t2.custom->'edge'->>'targetLabel',
                         t3.custom->>'targetEntityLabel',
-                        t3.custom->>'targetEntityLabel'
+                        t4.custom->>'targetEntityLabel'
                     )
                     || ''''
                     , ', '
@@ -414,7 +414,8 @@ export class PEntityFullTextService extends AggregatedDataService2<PEntityId, PE
                     ON (t2.custom->'edge'->>'fkStatement')::int = (t4.custom->'edge'->>'fkStatement')::int
                     AND (t2.custom->'edge'->>'fkTarget')::int = (t4.custom->'edge'->>'fkTarget')::int
                     AND t2."r_fkProject" = t3."r_fkProject"
-                LEFT JOIN tw_0_2 t5 ON t1. "r_pkEntity" = t5. "r_pkEntity"
+                LEFT JOIN ${pEntity.aggregation.tableDef.tableName} t5
+                    ON t1. "r_pkEntity" = t5. "r_pkEntity"
                     AND t1. "r_fkProject" = t5. "r_fkProject"
                 GROUP BY
                 t1."r_pkEntity",
