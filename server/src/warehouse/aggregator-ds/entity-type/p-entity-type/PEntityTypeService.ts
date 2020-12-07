@@ -1,5 +1,7 @@
 import {forwardRef, Inject, Injectable} from 'injection-js';
+import {PoolClient} from 'pg';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
 import {DfhClassHasTypePropertyService, DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityFields} from '../../../primary-ds/edge/edge.commons';
@@ -47,7 +49,7 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
     depREntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, REntityId, EntityLabelVal>
     depPEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityFields>
     depDfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, RClassId, DfhClassHasTypePropVal>
-
+    batchSize: 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
@@ -76,16 +78,118 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
     onUpsertSql(tableAlias: string) {
         return `
         UPDATE war.entity_preview
-        SET type_label = ${tableAlias}.val->>'typeLabel',
-        fk_type = (${tableAlias}.val->>'fkType')::int
+        SET type_label = val->>'typeLabel',
+            fk_type = (val->>'fkType')::int
         FROM ${tableAlias}
-        WHERE pk_entity = ${tableAlias}."pkEntity"
-        AND project = ${tableAlias}."fkProject"
+        WHERE pk_entity = "pkEntity"
+        AND project = "fkProject"
         AND (
-            type_label IS DISTINCT FROM ${tableAlias}.val->>'typeLabel'
+            type_label IS DISTINCT FROM val->>'typeLabel'
             OR
-            fk_type IS DISTINCT FROM (${tableAlias}.val->>'fkType')::int
+            fk_type IS DISTINCT FROM (val->>'fkType')::int
         )`
     }
+    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
+
+        const pentity = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.depPEntity,
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
+        })
+        const dfhClassHasTypeProp = await builder.joinProviderThroughDepIdx({
+            leftTable: pentity.aggregation.tableDef,
+            joinWithDepIdx: this.depDfhClassHasTypeProp,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkClass: {leftCustom: {name: 'fkClass', type: 'int'}},
+            },
+            conditionTrueIf: {
+                providerVal: {fkProperty: 'IS NOT NULL'}
+            },
+            createCustomObject: ((provider) => `t2.val`) as CustomValSql<DfhClassHasTypePropVal>,
+            // upsert no entity type where fk property is null
+            createAggregationVal: {
+                sql: () => `jsonb_build_object()`,
+                upsert: {
+                    whereCondition: '= false'
+                }
+            }
+        })
+
+        const pEdges = await builder.joinProviderThroughDepIdx({
+            leftTable: dfhClassHasTypeProp.aggregation.tableDef,
+            joinWithDepIdx: this.depPEdge,
+            // join only where fk property is is given
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                custom: `t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget' IS NOT NULL`
+            },
+            createCustomObject: ((provider) =>
+                `jsonb_build_object('fkType', t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget')`) as CustomValSql<{fkType?: number}>,
+        })
+
+
+        const remotePEntityLabel = await builder.joinProviderThroughDepIdx({
+            leftTable: pEdges.aggregation.tableDef,
+            joinWithDepIdx: this.depPEntityLabel,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCustom: {name: 'fkType', type: 'int'}},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `t1.custom`) as CustomValSql<{fkType?: number}>,
+            createAggregationVal: {
+                sql: () => `jsonb_build_object(
+                    'entityTypeLabel', t2.val->>'entityLabel',
+                    'fkType', t1.custom->>'fkType'
+                )`,
+                upsert: {
+                    whereCondition: '= true'
+                }
+            }
+        })
+
+
+        await builder.joinProviderThroughDepIdx({
+            leftTable: remotePEntityLabel.aggregation.tableDef,
+            joinWithDepIdx: this.depREntityLabel,
+            joinWhereLeftTableCondition: '= false',
+            joinOnKeys: {
+                pkEntity: {leftCustom: {name: 'fkType', type: 'int'}}
+            },
+            conditionTrueIf: {},
+            createAggregationVal: {
+                sql: () => `jsonb_build_object(
+                    'entityTypeLabel', t2.val->>'entityLabel',
+                    'fkType', t1.custom->>'fkType'
+                )`,
+                upsert: true
+            }
+        })
+
+        builder.registerUpsertHook()
+        await builder.printQueries()
+        const count = builder.executeQueries()
+
+        return count
+    }
+
+
 }
+
 

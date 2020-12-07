@@ -29,11 +29,11 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityTypeVal> {
 
 
     /************************************************************************
-     * Methods for creating entity label
+     * Methods for creating entity type label
      ************************************************************************/
 
     /**
-     *  Create entity label
+     *  Create entity type label
      *
      *  Gets values from Indexes and chaches dependencies in itself.
      */
@@ -72,8 +72,6 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityTypeVal> {
                     if (!l) {
                         l = await this.providers.rEntityLabel.get({pkEntity: typeEntityId.pkEntity})
                     }
-
-                    // TODO: find repo entity label if this is undefined
 
                     if (l) {
                         this.entityTypeLabel = l.entityLabel

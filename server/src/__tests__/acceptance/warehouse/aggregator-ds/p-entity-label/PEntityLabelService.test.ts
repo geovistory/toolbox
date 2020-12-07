@@ -2,35 +2,31 @@
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
-import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
-import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
-import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
-import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 import {createUnion2Mock} from '../r-entity-label/REntityLabelService.test';
 export const pEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
@@ -238,39 +234,39 @@ async function createNamingMock() {
 }
 
 
-async function createBirthMock() {
+// async function createBirthMock() {
 
-    // MODEL + LABELS
-    await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
+//     // MODEL + LABELS
+//     await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
+//     await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
+//     await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
 
-    // TeEn
-    const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
+//     // TeEn
+//     const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
 
-    // Stmts
-    await createInfStatement(InfStatementMock.BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_BIRTH_1_BROUGHT_INTO_LIFE_PERON_1);
-    return birth;
-}
+//     // Stmts
+//     await createInfStatement(InfStatementMock.BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_BIRTH_1_BROUGHT_INTO_LIFE_PERON_1);
+//     return birth;
+// }
 
 
-async function createUnionMock() {
+// async function createUnionMock() {
 
-    // MODEL + LABELS
-    await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
+//     // MODEL + LABELS
+//     await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
+//     await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
 
-    // TeEn
-    const birth = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
+//     // TeEn
+//     const birth = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
 
-    // Stmts
-    await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
+//     // Stmts
+//     await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
+//     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
 
-    await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
-    return birth;
-}
+//     await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
+//     return birth;
+// }
 

@@ -62,7 +62,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
-        const rentity = await builder.joinProviderThroughDepIdx({
+        const pentity = await builder.joinProviderThroughDepIdx({
             leftTable: builder.batchTmpTable.tableDef,
             joinWithDepIdx: this.depPEntity,
             joinOnKeys: {
@@ -74,8 +74,8 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             },
             createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
         })
-        const rEdges = await builder.joinProviderThroughDepIdx({
-            leftTable: rentity.aggregation.tableDef,
+        const pEdges = await builder.joinProviderThroughDepIdx({
+            leftTable: pentity.aggregation.tableDef,
             joinWithDepIdx: this.depPEdge,
             joinWhereLeftTableCondition: '= true',
             joinOnKeys: {
@@ -99,7 +99,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             'entityLabelConfig', t2.val
         )`
         const pEntityLabelConfig = await builder.joinProviderThroughDepIdx({
-            leftTable: rentity.aggregation.tableDef,
+            leftTable: pentity.aggregation.tableDef,
             joinWithDepIdx: this.depProEntityLabelConfig,
             joinWhereLeftTableCondition: '= true',
             joinOnKeys: {
@@ -191,7 +191,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             SELECT
                 t1."r_pkEntity", t1."r_fkProject", t2.property, t2.direction, t2.fielOrdNum, t2.stmtOrdNum, t1.p_val->t2.direction->t2.property->(t2.stmtOrdNum-1) stmt
             FROM
-                 ${rEdges.aggregation.tableDef.tableName} t1,
+                 ${pEdges.aggregation.tableDef.tableName} t1,
                  ${slotsTbl} t2
             WHERE
                 t1."r_pkEntity"=t2."r_pkEntity"

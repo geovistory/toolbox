@@ -31,6 +31,7 @@ export type HasCondition<PK, PV> = {
   or?: HasCondition<PK, PV>[],
   providerKey?: HasKeyCondition<PK>,
   providerVal?: HasValCondition<PV>
+  custom?: string
 }
 export type AggregateWhereCondition = '= true' | '= false'
 interface JoinProviderConfig<LeftKeys, LeftVal, RK, RV, PK, PV, LeftCustom, RightCustom> {
@@ -393,6 +394,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     const conditions: string[] = [];
     const valConditions = hasCondition.providerVal;
     const keyConditions = hasCondition.providerKey;
+    const custom = hasCondition.custom;
     if (valConditions) {
       for (const valProp in valConditions) {
         if (Object.prototype.hasOwnProperty.call(valConditions, valProp)) {
@@ -412,6 +414,9 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
           conditions.push(`t2."${keyCol}" ${operator}`);
         }
       }
+    }
+    if (custom) {
+      conditions.push(custom);
     }
     return conditions.join(' AND ');
   }

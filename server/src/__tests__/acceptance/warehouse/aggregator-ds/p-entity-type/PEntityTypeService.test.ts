@@ -25,6 +25,34 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+const pEntityTypeServiceStub: WarehouseStubs = {
+    primaryDataServices: [
+        DfhOutgoingPropertyService,
+        ProEntityLabelConfigService,
+        PEntityService,
+        PEdgeService,
+        REntityService,
+        REdgeService,
+        DfhClassHasTypePropertyService
+    ],
+    aggDataServices: [
+        IdentifyingPropertyService,
+        PEntityLabelService,
+        REntityLabelService,
+        PEntityTypeService
+    ]
+}
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -35,7 +63,7 @@ describe('PEntityTypeService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(pEntityTypeServiceStub)
         wh = injector.get(Warehouse)
         s = injector.get(PEntityTypeService)
     })
@@ -137,24 +165,11 @@ describe('PEntityTypeService', function () {
 
 
         // cityType should be called 'City' in project 1 and 'Stadt' in repo
-        const [proj1V, repoV, madridTypeLabel] = await Promise.all([
-            waitForEntityPreviewUntil(wh, (item) => {
-                return item.pk_entity === cityType.pk_entity
-                    && item.fk_project === project1.pk_entity
-                    && item.entity_label === appeCity.string
-            }),
-            waitForEntityPreviewUntil(wh, (item) => {
-                return item.pk_entity === cityType.pk_entity
-                    && item.fk_project === null
-                    && item.entity_label === appeStadt.string
-            }),
-            waitForEntityPreviewUntil(wh, (item) => {
-                return item.pk_entity === madrid.pk_entity
-                    && item.fk_project === project1.pk_entity
-                    && item.type_label === appeCity.string // <- !! here is the tested type label
-            })
-        ])
-        expect({proj1V, repoV, madridTypeLabel})
+        await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === madrid.pk_entity
+                && item.fk_project === project1.pk_entity
+                && item.type_label === appeCity.string // <- !! here is the tested type label
+        })
 
         // remove the cityType (peIt) from the project1
         await removeEntityFromProject(project1.pk_entity, cityType.pk_entity)
@@ -180,9 +195,9 @@ describe('PEntityTypeService', function () {
         // remove madrid from the project
         await updateProInfoProjRel(madridProjRel.pk_entity ?? -1, {is_in_project: false})
         await searchUntilSatisfy({
-            notifier$:s.afterChange$,
-            getFn:()=>s.index.getFromIdxWithTmsps({pkEntity: madrid.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
-            compare:(val)=>!!val?.deleted
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdxWithTmsps({pkEntity: madrid.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
+            compare: (val) => !!val?.deleted
 
         })
     })
