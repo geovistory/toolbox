@@ -13,7 +13,7 @@ export class PEntityClassLabelProviders extends Providers<PEntityId> {
         protected receiverKey: PEntityId
     ) {
         super()
-        this.pEntity = this.registerProvider(dep.depEntity, receiverKey)
+        this.pEntity = this.registerProvider(dep.depPEntity, receiverKey)
         this.pClassLabels = this.registerProvider(dep.depPClassLabel, receiverKey)
     }
 

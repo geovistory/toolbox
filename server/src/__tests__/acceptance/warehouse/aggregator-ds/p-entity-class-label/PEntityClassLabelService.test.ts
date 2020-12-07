@@ -17,7 +17,27 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
 
+const rEntityClassLabelStub: WarehouseStubs = {
+    primaryDataServices: [
+        PEntityService,
+        PClassService,
+        ProProjectService,
+        DfhClassLabelService,
+        ProClassLabelService,
+    ],
+    aggDataServices: [
+        PClassLabelService,
+        PEntityClassLabelService
+    ]
+}
 describe('PEntityClassLabelService', function () {
 
     let wh: Warehouse;
@@ -25,7 +45,7 @@ describe('PEntityClassLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(rEntityClassLabelStub)
         wh = injector.get(Warehouse)
         s = injector.get(PEntityClassLabelService)
     })

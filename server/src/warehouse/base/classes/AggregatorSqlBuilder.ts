@@ -41,7 +41,7 @@ interface JoinProviderConfig<LeftKeys, LeftVal, RK, RV, PK, PV, LeftCustom, Righ
   conditionTrueIf: HasCondition<PK, PV>,
   createAggregationVal?: {
     sql: (provTable: string) => string
-    upsert: false | {whereCondition: '= true' | '= false'}
+    upsert: boolean | {whereCondition: '= true' | '= false'}
   },
   createCustomObject?: CustomValSql<RightCustom>
 }
@@ -112,7 +112,8 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     if (c.createAggregationVal?.upsert) {
       const aggDs = c.joinWithDepIdx.receiverDS.index
       const tableName = aggregation.tableDef.tableName
-      const whereCondition = c.createAggregationVal.upsert.whereCondition
+      const whereCondition = c.createAggregationVal.upsert === true ? undefined :
+        c.createAggregationVal.upsert.whereCondition
       // tmpTable for upsert aggregation
       const aggregationUpsert = await this.tmpTableUpsertAggregations(aggDs, tableName, whereCondition);
       return {aggregation, dependencyUpsert, aggregationUpsert}
