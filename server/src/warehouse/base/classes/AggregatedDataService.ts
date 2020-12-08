@@ -131,9 +131,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      */
     public doUpdate(currentTimestamp: string): Promise<number> {
         // useful for debugging
-        // if (this.constructor.name === 'REntityLabelService') {
-        //     console.log(`------------- doUpdate, current cycle: ${this.cycle}, is updating:${this.updating}`)
-        // }
+        if (this.constructor.name === 'PEntityTypeService') {
+            console.log(`------------- doUpdate, current cycle: ${this.cycle}, is updating:${this.updating}`)
+        }
 
         if (this.updating) {
             this.shouldRestart = true
@@ -161,9 +161,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // get the 'changesConsideredUntil'-timestamp
         const changesConsideredUntil = await this.getChangesConsideredUntilTsmp()
         // useful for debugging
-        // if (this.constructor.name === 'REntityLabelService') {
-        //     console.log(`------------- update (cycle ${this.cycle}) from ${changesConsideredUntil} to ${currentTimestamp}`)
-        // }
+        if (this.constructor.name === 'PEntityTypeService') {
+            console.log(`------------- update (cycle ${this.cycle}) from ${changesConsideredUntil} to ${currentTimestamp}`)
+        }
         /**
          * Handle deletes
          */
@@ -202,9 +202,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         this.updating = false;
         if (this.shouldRestart) {
             // useful for debugging
-            // if (this.constructor.name === 'REntityLabelService') {
-            //     console.log('------------- restart startUpdate()')
-            // }
+            if (this.constructor.name === 'PEntityTypeService') {
+                console.log('------------- restart startUpdate()')
+            }
 
             Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
             // restart
@@ -217,9 +217,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // - emit this.afterUpdate$ if anything has changed
         if (changes > 0) this.afterChange$.next()
         // useful for debugging
-        // if (this.constructor.name === 'REntityLabelService') {
-        //     console.log(`-------------  finalized cycle ${this.cycle} for time until ${currentTimestamp}`)
-        // }
+        if (this.constructor.name === 'PEntityTypeService') {
+            console.log(`-------------  finalized cycle ${this.cycle} for time until ${currentTimestamp}`)
+        }
 
         Logger.msg(this.constructor.name, `restart within cycle ${this.cycle}`, 0)
 
@@ -276,15 +276,18 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         `;
         // useful for debugging
         // logSql(handleDeletes, [])
-        // if (this.constructor.name === 'REntityLabelService') {
-        //     console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
-        // }
+        if (this.constructor.name === 'PEntityLabelService') {
+            console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
+        }
         const res = await this.wh.pgPool.query<{count: number;}>(handleDeletes);
         changes += res.rows[0].count;
         // useful for debugging
-        // if (this.constructor.name === 'PEntityTimeSpanService') {
-        //     console.log(`--> ${this.cycle} handled ${res.rows[0].count}`)
-        // }
+        if (this.constructor.name === 'PEntityLabelService') {
+            console.log(`--> ${this.cycle} handled ${res.rows[0].count}`)
+            if(res.rows[0].count){
+                console.log(``)
+            }
+        }
         return changes;
     }
 
@@ -315,9 +318,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const size = res.rows[0].count;
         const limit = this.batchSize;
         // useful for debugging
-        // if (this.constructor.name === 'REntityLabelService') {
-        //     console.log(`--> ${this.cycle} handle update of ${size} items`)
-        // }
+        if (this.constructor.name === 'PEntityTypeService') {
+            console.log(`--> ${this.cycle} handle update of ${size} items`)
+        }
         for (let offset = 0; offset < size; offset += limit) {
             const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1}/${Math.floor(size / limit) + 1}) in cycle ${this.cycle}`
             const t0 = Logger.start(this.constructor.name, `${logString}`, 0)
@@ -455,7 +458,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             }).join('\n');
             await client.query(sql1 + sql2);
 
-            // if (this.constructor.name === 'REntityLabelService') {
+            // if (this.constructor.name === 'PEntityTypeService') {
             //     console.log('-------------')
             //     console.log(`curr: ${currentTimestamp}, cons: ${changesConsideredUntil} `)
             //     console.log('------------- prim_pentity')

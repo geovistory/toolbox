@@ -163,6 +163,13 @@ describe('PEntityTypeService', function () {
             madrid.pk_entity,
             madridHasType.pk_entity])
 
+        // since naming 2 is more often used,
+        // -> the repo label should be 'Stadt'
+        await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === cityType.pk_entity
+                && item.fk_project === null
+                && item.entity_label === appeStadt.string
+        })
 
         // cityType should be called 'City' in project 1 and 'Stadt' in repo
         await waitForEntityPreviewUntil(wh, (item) => {
@@ -171,11 +178,12 @@ describe('PEntityTypeService', function () {
                 && item.type_label === appeCity.string // <- !! here is the tested type label
         })
 
-        // remove the cityType (peIt) from the project1
+        // remove the cityType (peIt) from project1
         await removeEntityFromProject(project1.pk_entity, cityType.pk_entity)
 
         // madrid.entiy_type should be called 'City' in project 1 and 'Stadt' in repo
         const madridTypeLabel2 = await waitForEntityPreviewUntil(wh, (item) => {
+            console.log(item)
             return item.pk_entity === madrid.pk_entity
                 && item.fk_project === project1.pk_entity
                 && item.type_label === appeStadt.string // <- !! here is the tested type label

@@ -138,6 +138,13 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
             },
             createCustomObject: ((provider) =>
                 `jsonb_build_object('fkType', t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget')`) as CustomValSql<{fkType?: number}>,
+            // upsert no entity type where no has type stmt with fkTarget found
+            createAggregationVal: {
+                sql: () => `jsonb_build_object()`,
+                upsert: {
+                    whereCondition: '= false'
+                }
+            }
         })
 
 
@@ -155,7 +162,7 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
             createCustomObject: (() => `t1.custom`) as CustomValSql<{fkType?: number}>,
             createAggregationVal: {
                 sql: () => `jsonb_build_object(
-                    'entityTypeLabel', t2.val->>'entityLabel',
+                    'typeLabel', t2.val->>'entityLabel',
                     'fkType', t1.custom->>'fkType'
                 )`,
                 upsert: {
@@ -175,7 +182,7 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
             conditionTrueIf: {},
             createAggregationVal: {
                 sql: () => `jsonb_build_object(
-                    'entityTypeLabel', t2.val->>'entityLabel',
+                    'typeLabel', t2.val->>'entityLabel',
                     'fkType', t1.custom->>'fkType'
                 )`,
                 upsert: true

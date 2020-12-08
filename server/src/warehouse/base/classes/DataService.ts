@@ -54,9 +54,9 @@ export abstract class DataService<KeyModel, ValueModel>{
             const currentTime = await wh.pgNow()
 
             // useful for debugging
-            // if (ds.some(d => d.constructor.name === 'REntityLabelService')) {
-            //     console.log(`-> propagate changes from ${this.constructor.name} to REntityLabelService: ${currentTime}`)
-            // }
+            if (ds.some(d => d.constructor.name === 'PEntityTypeService')) {
+                console.log(`-> propagate changes from ${this.constructor.name} to PEntityTypeService: ${currentTime}`)
+            }
 
             // propagate updates
             const updates = ds.map(d => d.doUpdate(currentTime));
@@ -65,9 +65,9 @@ export abstract class DataService<KeyModel, ValueModel>{
             await Promise.all(updates)
 
             // useful for debugging
-            // if (this.constructor.name === 'PEntityService') {
-            //     console.log(`---> cleanup items marked as deleted bevore or eq: ${currentTime}`)
-            // }
+            if (this.constructor.name === 'PEntityLabelService') {
+                console.log(`---> cleanup items marked as deleted bevore or eq: ${currentTime}`)
+            }
 
             // cleanup items marked as deleted
             this.index.removeFromIdxWhereDeletedBefore(currentTime)
