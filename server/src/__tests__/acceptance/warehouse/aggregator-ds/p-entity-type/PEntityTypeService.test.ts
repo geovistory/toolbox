@@ -24,7 +24,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil, wait} from '../../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
@@ -178,12 +178,13 @@ describe('PEntityTypeService', function () {
                 && item.type_label === appeCity.string // <- !! here is the tested type label
         })
 
+
         // remove the cityType (peIt) from project1
         await removeEntityFromProject(project1.pk_entity, cityType.pk_entity)
 
         // madrid.entiy_type should be called 'City' in project 1 and 'Stadt' in repo
         const madridTypeLabel2 = await waitForEntityPreviewUntil(wh, (item) => {
-            console.log(item)
+            // console.log(item)
             return item.pk_entity === madrid.pk_entity
                 && item.fk_project === project1.pk_entity
                 && item.type_label === appeStadt.string // <- !! here is the tested type label

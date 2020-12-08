@@ -194,7 +194,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
       FROM        ${c.leftTable.tableName} t1
       LEFT JOIN   ${provider.schemaTable} t2
       ON          ${joinOns.join(' AND ')}
-      WHERE       tmsp_deleted IS NULL
+      AND         tmsp_deleted IS NULL
       ${whereConditionSql}
       )`;
 
@@ -323,7 +323,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
    * Medium helpers for specific table creators
    ***********/
   private aggWhereCondition(aggregateWhereHasVal?: AggregateWhereCondition) {
-    return aggregateWhereHasVal ? `AND t1.condition ${aggregateWhereHasVal}` : '';
+    return aggregateWhereHasVal ? `WHERE t1.condition ${aggregateWhereHasVal}` : '';
   }
 
   private aggCondition<PK, PV>(
@@ -477,7 +477,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     if (!existsSync(dir)) {
       mkdirSync(dir);
     }
-    const filename = this.agg.tempTableName + '-' + new Date().toISOString()
+    const filename = this.agg.tempTable + '-' + new Date().toISOString()
     let log = ``
     const countSql = this.createCountSql()
     const allQueries = [...this.queryRequests, {sql: countSql, params: []}];
