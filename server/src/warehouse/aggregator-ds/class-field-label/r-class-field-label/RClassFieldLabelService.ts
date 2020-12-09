@@ -24,17 +24,8 @@ export const rClassFieldKeyDef: KeyDefinition[] = [
 ]
 @Injectable()
 export class RClassFieldLabelService extends AggregatedDataService2<RClassFieldId, RClassFieldVal>{
-    creatorDS: RPropertyService
     aggregator = RClassFieldLabelAggregator;
     providers = RClassFieldLabelProviders;
-    customCreatorDSSql = [
-        {
-            select: `"fkDomain" as "fkClass", "pkProperty" as "fkProperty", true as "isOutgoing"`,
-        },
-        {
-            select: `"fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
-        }
-    ]
     depDfhPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, DfhPropertyLabelId, DfhPropertyLabelVal>
     depProPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, ProPropertyLabelId, ProPropertyLabelVal>
 
@@ -50,7 +41,17 @@ export class RClassFieldLabelService extends AggregatedDataService2<RClassFieldI
             rClassFieldKeyDef
         )
 
-        this.registerCreatorDS(rProperty)
+        this.registerCreatorDS({
+            dataService: rProperty,
+            customSql: [
+                {
+                    select: `"fkDomain" as "fkClass", "pkProperty" as "fkProperty", true as "isOutgoing"`,
+                },
+                {
+                    select: `"fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
+                }
+            ]
+        })
         this.depDfhPropertyLabel = this.addDepencency(dfhPropertyLabel)
         this.depProPropertyLabel = this.addDepencency(proPropertyLabel)
 

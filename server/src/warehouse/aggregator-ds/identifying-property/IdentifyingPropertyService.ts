@@ -12,8 +12,7 @@ export type IdentifyingPropertyVal = OutgoingPropertyVal[]
 
 @Injectable()
 export class IdentifyingPropertyService extends AggregatedDataService2<RClassId, IdentifyingPropertyVal>{
-    creatorDS: DfhOutgoingPropertyService
-    customCreatorDSSql = [{select: `"fkDomain" as "pkClass"`}]
+
 
     aggregator = IdentifyingPropertyAggregator;
     providers = IdentifyingPropertyProviders;
@@ -28,7 +27,10 @@ export class IdentifyingPropertyService extends AggregatedDataService2<RClassId,
             wh,
             rClassIdKeyDefs
         )
-        this.registerCreatorDS(dfhOutgoingProperty)
+        this.registerCreatorDS({
+            dataService: dfhOutgoingProperty,
+            customSql: [{select: `"fkDomain" as "pkClass"`}]
+        })
         this.outgoingProperty = this.addDepencency(dfhOutgoingProperty)
     }
 

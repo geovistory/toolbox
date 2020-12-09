@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {PoolClient} from 'pg';
 import {ReplaySubject} from 'rxjs';
-import {brkOnErr} from '../../../utils/helpers';
+import {brkOnErr, pgLogOnErr} from '../../../utils/helpers';
 import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {Providers} from '../interfaces/Providers';
@@ -15,6 +16,11 @@ import {Logger} from './Logger';
 type Constructor<T> = new (...args: any[]) => T;
 interface CustomCreatorDsSql {select?: string, where?: string}
 
+interface CreatorDS {
+    dataService: DataService<any, any>,
+    customSql?: CustomCreatorDsSql[]
+}
+
 export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> {
 
     // updater: Updater<KeyModel, Aggregator>Ú
@@ -22,12 +28,11 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     index: DataIndexPostgres<KeyModel, ValueModel>
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    abstract creatorDS: DataService<any, any>
     abstract getDependencies(): Dependencies | void
-    abstract aggregator: Constructor<AbstractAggregator<ValueModel>>
-    abstract providers: Constructor<Providers<KeyModel>>
+    aggregator?: Constructor<AbstractAggregator<ValueModel>>
+    providers?: Constructor<Providers<KeyModel>>
     // array of dependency indexes where this data service is receiver
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    creatorDS: CreatorDS[] = []
     isReceiverOf: DependencyIndex<KeyModel, ValueModel, any, any>[] = []
 
     cycle = 0 //for debugging
@@ -107,9 +112,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         })
     }
 
-    async aggregate(id: KeyModel) {
-        const providers = new this.providers(this.getDependencies(), id)
-        return new this.aggregator(providers, id).create()
+    async aggregate(id: KeyModel): Promise<ValueModel | undefined> {
+        if (this.providers && this.aggregator) {
+
+            const providers = new this.providers(this.getDependencies(), id)
+            return new this.aggregator(providers, id).create()
+        }
     }
 
     public async startUpdate() {
@@ -241,6 +249,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     private async handleDeletes(changesConsideredUntil: string, currentTimestamp: string) {
         let changes = 0
         let twOnDelete = '';
+        if (!this.creatorDS.length) throw new Error("At least one creator data service needed");
+
         if (this.onDeleteSql) {
             twOnDelete = `,
             delete AS (
@@ -250,38 +260,44 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const handleDeletes = `
         -- find new deletes in creatorDS
         WITH tw1 AS (
-            ${this.getCreatorDsSqls().map(part => `
-            SELECT ${part.select ? part.select : this.index.keyCols}
-            FROM ${this.creatorDS.index.schemaTable}
-            WHERE tmsp_deleted > '${changesConsideredUntil}'
-            AND tmsp_deleted <= '${currentTimestamp}'
-            ${part.where ? `AND ${part.where}` : ''}
-            `).join(' UNION ')}
+            ${this.creatorDS.map(createDS => {
+            const ds = createDS.dataService
+            const customSqls = this.getCreatorCustomSql(createDS.customSql)
+            return `${customSqls.map(part => `
+                SELECT ${part.select ? part.select : this.index.keyCols}
+                FROM ${ds.index.schemaTable}
+                WHERE tmsp_deleted > '${changesConsideredUntil}'
+                AND tmsp_deleted <= '${currentTimestamp}'
+                ${part.where ? `AND ${part.where}` : ''}
+                `).join(' UNION ')}`
+        }).join(' UNION ')}
         )
-        ${twOnDelete},
-        -- mark them as deleted in aggregatedDS
-        tw2 AS (
-            UPDATE ${this.index.schemaTable} t1
-            SET tmsp_deleted = '${currentTimestamp}'
-            FROM tw1 t2
-            WHERE ${this.index.keyDefs
+            ${twOnDelete},
+            --mark them as deleted in aggregatedDS
+            tw2 AS(
+                UPDATE ${this.index.schemaTable} t1
+                        SET tmsp_deleted = '${currentTimestamp}'
+                        FROM tw1 t2
+                        WHERE ${
+            this.index.keyDefs
                 .map(k => `t1."${k.name}"=t2."${k.name}"`)
-                .join(' AND ')}
-            RETURNING t1.*
-        )
-        -- count the rows marked as deleted
-        SELECT count(*)::int FROM tw2
-        `;
+                .join(' AND ')
+            }
+                        RETURNING t1.*
+                    )
+            --count the rows marked as deleted
+            SELECT count(*):: int FROM tw2
+    `;
         // useful for debugging
         // logSql(handleDeletes, [])
         // if (this.constructor.name === 'PEntityLabelService') {
-        //     console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
+        //     console.log(`-- > ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp} `)
         // }
-        const res = await this.wh.pgPool.query<{count: number;}>(handleDeletes);
-        changes += res.rows[0].count;
+        const res = await pgLogOnErr((s, p) => this.wh.pgPool.query<{count: number;}>(s, p), handleDeletes, [])
+        changes += res?.rows?.[0].count ?? 0;
         // useful for debugging
         if (this.constructor.name === 'PEntityLabelService') {
-            // console.log(`--> ${this.cycle} handled  ${res.rows[0].count} deletes`)
+            // console.log(`-- > ${this.cycle} handled  ${res.rows[0].count} deletes`)
             // if (res.rows[0].count) {
             //     console.log(``)
             // }
@@ -299,31 +315,33 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     private async cleanupOldDependencies(client: PoolClient, currentTimestamp: string) {
         for (const depDS of this.isReceiverOf) {
             const cleanupSql = `
-            DELETE
-            FROM    ${depDS.schemaTable} t1
-            USING   ${this.tempTable} t2
-            WHERE   ${depDS.receiverDS.index.keyDefs
-                    .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
-                AND t1.tmsp_last_aggregation < '${currentTimestamp}'
-                `;
+DELETE
+FROM    ${depDS.schemaTable} t1
+USING   ${this.tempTable} t2
+WHERE   ${
+                depDS.receiverDS.index.keyDefs
+                    .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')
+                }
+AND t1.tmsp_last_aggregation < '${currentTimestamp}'
+    `;
             await client.query(cleanupSql);
         }
     }
 
     async aggregateAll(client: PoolClient, currentTimestamp: string) {
         let changes = 0
-        const res = await brkOnErr(client.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
+        const res = await brkOnErr(client.query<{count: number}>(`SELECT count(*):: integer From ${this.tempTable} `))
         const size = res.rows[0].count;
         const limit = this.batchSize;
         // useful for debugging
         // if (this.constructor.name === 'PEntityTypeService') {
-        //     console.log(`--> ${this.cycle} handle update of ${size} items`)
+        //     console.log(`-- > ${this.cycle} handle update of ${size} items`)
         // }
         for (let offset = 0; offset < size; offset += limit) {
-            const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1}/${Math.floor(size / limit) + 1}) in cycle ${this.cycle}`
-            const t0 = Logger.start(this.constructor.name, `${logString}`, 0)
+            const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1} /${Math.floor(size / limit) + 1}) in cycle ${this.cycle} `
+            const t0 = Logger.start(this.constructor.name, `${logString} `, 0)
             changes += await this.aggregateBatch(client, limit, offset, currentTimestamp);
-            Logger.itTook(this.constructor.name, t0, `to ${logString}`, 0)
+            Logger.itTook(this.constructor.name, t0, `to ${logString} `, 0)
 
         }
         return changes
@@ -333,9 +351,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         let changes = 0
 
         const toAggregate = await brkOnErr(client.query<KeyModel>(`
-        SELECT * From ${this.tempTable}
-        LIMIT $1 OFFSET $2
-        `, [limit, offset]));
+SELECT * From ${this.tempTable}
+LIMIT $1 OFFSET $2
+    `, [limit, offset]));
 
         if (toAggregate.rows.length > 0) {
             let valuesStr = '';
@@ -352,19 +370,19 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             for (const key of toAggregate.rows) {
                 i++;
                 const val = await brkOnErr(this.aggregate(key));
-                const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`;
+                const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])}) ${i < toAggregate.rows.length ? ',' : ''} `;
                 valuesStr = valuesStr + sql;
             }
             // insert or update the results of the aggregation
             const aggSql = `
-            INSERT INTO ${this.index.schemaTable} (${this.index.keyCols},val)
-            VALUES ${valuesStr}
-            ON CONFLICT (${this.index.keyCols})
-            DO UPDATE
-            SET val = EXCLUDED.val
-            WHERE EXCLUDED.val IS DISTINCT FROM ${this.index.schemaTable}.val
-            RETURNING *
-        `;
+INSERT INTO ${this.index.schemaTable} (${this.index.keyCols}, val)
+VALUES ${valuesStr}
+ON CONFLICT(${this.index.keyCols})
+DO UPDATE
+SET val = EXCLUDED.val
+WHERE EXCLUDED.val IS DISTINCT FROM ${this.index.schemaTable}.val
+RETURNING *
+    `;
             const depSqls: string[] = [];
             // get the dependency sqls
             this.isReceiverOf.forEach(dep => {
@@ -374,22 +392,22 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             });
             // create the full query
             const parts: string[] = [aggSql, ...depSqls];
-            const tws = parts.map((part, j) => `tw${j} AS (
-                    ${part}
-                )`).join(',');
+            const tws = parts.map((part, j) => `tw${j} AS(
+        ${part}
+    )`).join(',');
             let twOnUpsert = '';
             if (this.onUpsertSql) {
                 twOnUpsert = `
-                , onUpsert AS (
-                    ${this.onUpsertSql('tw0')}
-                )`;
+    , onUpsert AS(
+        ${this.onUpsertSql('tw0')}
+    )`;
             }
             const sql = `
-                WITH
-                ${tws}
-                ${twOnUpsert}
-                SELECT count(*):: int changes FROM tw0;
-                `;
+WITH
+${tws}
+${twOnUpsert}
+SELECT count(*):: int changes FROM tw0;
+`;
             // logSql(sql, params)
             const result = await brkOnErr(client.query<{changes: number;}>(sql, params));
             changes = result.rows?.[0].changes ?? 0;
@@ -413,69 +431,69 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * @param currentTimestamp
      */
     private async findWhatToAggregate(client: PoolClient, changesConsideredUntil: string, currentTimestamp: string) {
-        if (this.creatorDS) {
-            const creatorIdx = this.creatorDS.index;
-            const creatorSqlParts = this.getCreatorDsSqls();
+        if (this.creatorDS.length === 0) throw new Error("At least one creator DS is needed");
 
-            const sql1 = `
-                CREATE TEMPORARY TABLE ${this.tempTable} ON COMMIT DROP AS
-                ${creatorSqlParts.map(part => `
+        const sql0 = `CREATE TEMPORARY TABLE ${this.tempTable} ON COMMIT DROP AS`
+        const sql1 = this.creatorDS.map(createDS => {
+            const creatorIdx = createDS.dataService.index;
+            const creatorSqlParts = this.getCreatorCustomSql(createDS.customSql)
+
+            return `${
+                creatorSqlParts.map(part => `
                     SELECT ${part.select ? part.select : this.index.keyCols}
                     FROM ${creatorIdx.schemaTable}
                     WHERE tmsp_last_modification > '${changesConsideredUntil}'
                     AND tmsp_last_modification <= '${currentTimestamp}'
                     AND (tmsp_deleted IS NULL OR tmsp_deleted > '${currentTimestamp}')
                     ${part.where ? `AND ${part.where}` : ''}
-                `).join(' UNION ')}
-                `;
+                `).join(' UNION ')
+                }`;
+        }).join(' UNION ')
 
-            const sql2 = this.isReceiverOf.map(depDS => {
-                return `
+        const sql2 = this.isReceiverOf.map(depDS => {
+            return `
                 UNION
                 SELECT  ${depDS.receiverKeyDefs.map(k => `t1."${k.name}"`).join(',')}
                 FROM    ${depDS.schema}.${depDS.table} t1,
                     ${depDS.providerDS.index.schema}.${depDS.providerDS.index.table} t2
-                WHERE   ${
-                    depDS.providerDS.index.keyDefs
-                        .map(k => `t2."${k.name}" = t1."p_${k.name}"`).join(' AND ')
-                    }
-                AND(
+                WHERE   ${depDS.providerDS.index.keyDefs
+                    .map(k => `t2."${k.name}" = t1."p_${k.name}"`).join(' AND ')}
+                AND (
                     (
                         t2.tmsp_last_modification > '${changesConsideredUntil}'
-                            AND
-                            t2.tmsp_last_modification <= '${currentTimestamp}'
-                )
-                OR
+                        AND
+                        t2.tmsp_last_modification <= '${currentTimestamp}'
+                    )
+                    OR
                     (
                         t2.tmsp_deleted > '${changesConsideredUntil}'
-                            AND
-                            t2.tmsp_deleted <= '${currentTimestamp}'
+                        AND
+                        t2.tmsp_deleted <= '${currentTimestamp}'
                     )
-                    )
-                `;
-            }).join('\n');
-            await client.query(sql1 + sql2);
+                )
+        `;
+        }).join('\n');
+        await client.query(sql0 + sql1 + sql2);
+        // if (this.constructor.name === 'PEntityTypeService') {
+        //     console.log('-------------')
+        //     console.log(`cons: ${changesConsideredUntil}, curr: ${currentTimestamp} `)
+        //     console.log('------------- agg_pentitylabel')
+        //     const a = await this.index.pgPool.query('SELECT * FROM war_cache.agg_pentitylabel')
+        //     console.log(JSON.stringify(a.rows, null, 2))
+        //     console.log('------------- agg_pentitytype__on__agg_pentitylabel')
+        //     const b = await this.index.pgPool.query('SELECT * FROM war_cache.agg_pentitytype__on__agg_pentitylabel')
+        //     console.log(JSON.stringify(b.rows, null, 2))
+        //     console.log(`------------- ${this.tempTable} ------------- `)
+        //     console.log(`cons: ${changesConsideredUntil}, curr: ${currentTimestamp} `)
+        //     const x = await client.query(`SELECT * FROM ${this.tempTable} `)
+        //     console.log(JSON.stringify(x.rows, null, 2))
+        //     if(x.rows.length===2){
+        //         console.log(2)
 
-            // if (this.constructor.name === 'PEntityTypeService') {
-            //     console.log('-------------')
-            //     console.log(`cons: ${changesConsideredUntil}, curr: ${currentTimestamp}`)
-            //     console.log('------------- agg_pentitylabel')
-            //     const a = await this.index.pgPool.query('SELECT * FROM war_cache.agg_pentitylabel')
-            //     console.log(JSON.stringify(a.rows, null, 2))
-            //     console.log('------------- agg_pentitytype__on__agg_pentitylabel')
-            //     const b = await this.index.pgPool.query('SELECT * FROM war_cache.agg_pentitytype__on__agg_pentitylabel')
-            //     console.log(JSON.stringify(b.rows, null, 2))
-            //     console.log(`------------- ${this.tempTable} -------------`)
-            //     console.log(`cons: ${changesConsideredUntil}, curr: ${currentTimestamp}`)
-            //     const x = await client.query(`SELECT * FROM ${this.tempTable}`)
-            //     console.log(JSON.stringify(x.rows, null, 2))
-            //     if(x.rows.length===2){
-            //         console.log(2)
-
-            //     }
-            // }
-        }
+        //     }
+        // }
     }
+
 
     /**
      * returns the select statement, i.e.:
@@ -487,14 +505,13 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * aggregated data service.
      *
      * example, where column names match (i.e. creator and aggegator have same KeyModel)
-     * `"pkEntity","fkProject"`
+     * `"pkEntity", "fkProject"`
      *
      * example where column
      * `"fkDomain" as "pkClass"` -> creatorDS.fkDomain = aggDS.pkClass
      */
-    private getCreatorDsSqls(): CustomCreatorDsSql[] {
-        return this.customCreatorDSSql ?
-            this.customCreatorDSSql : [{select: this.index.keyCols}];
+    private getCreatorCustomSql(customSql: CustomCreatorDsSql[] | undefined) {
+        return customSql ?? [{select: this.index.keyCols}];
     }
 
     /**
@@ -517,9 +534,11 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * an aggregation should happen
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    registerCreatorDS<DS extends DataService<any, any>>(creatorDS: DS) {
-        this.creatorDS = creatorDS;
-        creatorDS.registerIsCreatorOf(this)
+    registerCreatorDS<DS extends DataService<any, any>>(...creatorDS: CreatorDS[]) {
+        creatorDS.forEach((ds) => {
+            this.creatorDS.push(ds);
+            ds.dataService.registerIsCreatorOf(this)
+        })
     }
     /**
      * Adds dep to this.isReceiverOf with the effect that this DataService acts
@@ -533,13 +552,13 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
 
 
-    async clearAll() {
-        // await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
-    }
+    // async clearAll() {
+    //     // await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
+    // }
 
-    async initIdx() {
-        // await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
-    }
+    // async initIdx() {
+    //     // await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
+    // }
 
 }
 

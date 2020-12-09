@@ -38,6 +38,7 @@ interface JoinProviderConfig<LeftKeys, LeftVal, RK, RV, PK, PV, LeftCustom, Righ
   leftTable: TableDef<LeftKeys, LeftVal, LeftCustom>,
   joinWithDepIdx: DependencyIndex<RK, RV, PK, PV>,
   joinOnKeys: ProviderKeyColMapping<LeftKeys, LeftVal, PK, LeftCustom>,
+  joinOnCustom?: string[],
   joinWhereLeftTableCondition?: AggregateWhereCondition,
   conditionTrueIf: HasCondition<PK, PV>,
   createAggregationVal?: {
@@ -61,7 +62,11 @@ export interface TmpTableQeryDef {
   sql: string;
   params: any[]
 }
-
+export interface JoinedProvider<KeyModel, ValueModel, RightCustom> {
+  aggregation: TmpTableResult<KeyModel, ValueModel, RightCustom>;
+  dependencyUpsert: TmpTableResult<KeyModel, ValueModel, never>;
+  aggregationUpsert?: TmpTableResult<KeyModel, ValueModel, never>;
+}
 
 export class AggregatorSqlBuilder<KeyModel, ValueModel> {
 
@@ -99,11 +104,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
    */
   public async joinProviderThroughDepIdx<LeftKeys, LeftVal, RK, RV, PK, PV, LeftCustom, RightCustom>(
     c: JoinProviderConfig<LeftKeys, LeftVal, RK, RV, PK, PV, LeftCustom, RightCustom>
-  ): Promise<{
-    aggregation: TmpTableResult<KeyModel, ValueModel, RightCustom>;
-    dependencyUpsert: TmpTableResult<KeyModel, ValueModel, never>;
-    aggregationUpsert?: TmpTableResult<KeyModel, ValueModel, never>;
-  }> {
+  ): Promise<JoinedProvider<KeyModel, ValueModel, RightCustom>> {
     // tmpTable for aggregation
     const aggregation = await this.tmpTableAggregate(c)
 
@@ -168,7 +169,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
 
     const provider = c.joinWithDepIdx.providerDS.index
     const receiver = c.joinWithDepIdx.receiverDS.index
-    const {selectProviderKeys, joinOns} = this.aggSelectAndJoin(q, c.joinOnKeys);
+    const {selectProviderKeys, joinOns} = this.aggSelectAndJoin(q, c.joinOnKeys, c.joinOnCustom);
     const createConditionSql = this.aggCondition(c.conditionTrueIf);
     const whereConditionSql = this.aggWhereCondition(c.joinWhereLeftTableCondition)
     const receiverValSql = this.aggCreateReceiverVal(c.createAggregationVal?.sql)
@@ -344,7 +345,8 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
   }
   private aggSelectAndJoin<RK, RV, PK, LeftCustom>(
     q: SqlBuilderBase,
-    keyMapping: ProviderKeyColMapping<RK, RV, PK, LeftCustom>
+    keyMapping: ProviderKeyColMapping<RK, RV, PK, LeftCustom>,
+    joinOnCustom: string[] = []
   ) {
     const selectProviderKeys: string[] = [];
     const joinOns: string[] = [];
@@ -377,6 +379,9 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
         selectProviderKeys.push(select);
         joinOns.push(joinOn);
       }
+    }
+    for (const joinCustom of joinOnCustom) {
+      joinOns.push(joinCustom)
     }
     return {selectProviderKeys, joinOns};
   }

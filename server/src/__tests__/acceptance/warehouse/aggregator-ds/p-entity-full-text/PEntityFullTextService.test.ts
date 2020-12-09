@@ -100,7 +100,7 @@ describe('PEntityFullTextService', function () {
     })
 
     it('should create full text of naming', async () => {
-        const {naming, project} = await createNamingMock();
+        const {naming, project} = await PEntityFullText.createNamingMock();
 
         const result = await waitForEntityPreviewUntil(wh, (item) => {
             // console.log(item)
@@ -113,7 +113,7 @@ describe('PEntityFullTextService', function () {
     })
 
     it('should create full text of naming with person', async () => {
-        const {naming, project} = await createNamingAndPersonMock();
+        const {naming, project} = await PEntityFullText.createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
 
@@ -140,7 +140,7 @@ describe('PEntityFullTextService', function () {
 
     // })
     it('should create full text of person', async () => {
-        const {person, project} = await createNamingAndPersonMock();
+        const {person, project} = await PEntityFullText.createNamingAndPersonMock();
 
         const expected = `Person – has appellations: 'Jack the foo'`
 
@@ -158,7 +158,7 @@ describe('PEntityFullTextService', function () {
 
     })
     it('should update full text of person', async () => {
-        const {person, project} = await createNamingAndPersonMock();
+        const {person, project} = await PEntityFullText.createNamingAndPersonMock();
 
         let expected = `Person – has appellations: 'Jack the foo'`
         const id: PEntityId = {
@@ -192,7 +192,7 @@ describe('PEntityFullTextService', function () {
     })
 
     it('should delete entity full text from index when entity is removed from project', async () => {
-        const {naming, namingProjRel, project} = await createNamingMock();
+        const {naming, namingProjRel, project} = await PEntityFullText.createNamingMock();
         const id: PEntityId = {
             pkEntity: naming.pk_entity ?? -1,
             fkProject: project.pk_entity ?? -1
@@ -217,51 +217,54 @@ describe('PEntityFullTextService', function () {
 
 })
 
+export namespace PEntityFullText {
 
 
-async function createNamingAndPersonMock() {
-    // NAMING
-    const {naming, project, appellation, propertyRefersToName} = await createNamingMock();
-    // PERSON
-    const {person, classPerson, hasAppePropLabel} = await createPersonMock();
-    return {project, appellation, naming, person, classPerson, hasAppePropLabel, propertyRefersToName};
+    export async function createNamingAndPersonMock() {
+        // NAMING
+        const {naming, project, appellation, propertyRefersToName} = await createNamingMock();
+        // PERSON
+        const {person, classPerson, hasAppePropLabel} = await createPersonMock();
+        return {project, appellation, naming, person, classPerson, hasAppePropLabel, propertyRefersToName};
+    }
+
+    export async function createPersonMock() {
+        await createTypes()
+        const classPerson = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF);
+        const hasAppePropLabel = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_PERSON_HAS_APPELLATION)
+        const person = await createInfPersistentItem(InfPersistentItemMock.PERSON_1);
+        await addInfoToProject(person.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
+        const stmt = await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
+        await addInfoToProject(stmt.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
+        return {person, classPerson, hasAppePropLabel};
+    }
+
+    export async function createNamingMock() {
+        await createInfLanguage(InfLanguageMock.GERMAN);
+        const project = await createProProject(ProProjectMock.PROJECT_1);
+        await createProProject(ProProjectMock.DEFAULT_PROJECT);
+        await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
+        await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
+        const propertyRefersToName = await createDfhApiProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME);
+
+        await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1111_IS_APPE_OF)
+        await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME)
+
+        const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
+        const namingProjRel = await addInfoToProject(naming.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
+
+        const appellation = await createInfAppellation(InfAppellationMock.JACK_THE_FOO);
+        const stmtToAppe = await createInfStatement(InfStatementMock.NAME_1_TO_APPE);
+        await addInfoToProject(stmtToAppe.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
+
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_1)
+
+        const stmtToTp = await createInfStatement(InfStatementMock.NAMING_1_ONGOING_THROUGHOUT_TP_1)
+        await addInfoToProject(stmtToTp.pk_entity, project.pk_entity)
+
+        return {naming, namingProjRel, project, appellation, propertyRefersToName};
+    }
+
+
 }
-
-async function createPersonMock() {
-    await createTypes()
-    const classPerson = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
-    await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF);
-    const hasAppePropLabel = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_PERSON_HAS_APPELLATION)
-    const person = await createInfPersistentItem(InfPersistentItemMock.PERSON_1);
-    await addInfoToProject(person.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
-    const stmt = await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
-    await addInfoToProject(stmt.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
-    return {person, classPerson, hasAppePropLabel};
-}
-
-async function createNamingMock() {
-    await createInfLanguage(InfLanguageMock.GERMAN);
-    const project = await createProProject(ProProjectMock.PROJECT_1);
-    await createProProject(ProProjectMock.DEFAULT_PROJECT);
-    await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
-    await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
-    const propertyRefersToName = await createDfhApiProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME);
-
-    await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1111_IS_APPE_OF)
-    await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME)
-
-    const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
-    const namingProjRel = await addInfoToProject(naming.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
-
-    const appellation = await createInfAppellation(InfAppellationMock.JACK_THE_FOO);
-    const stmtToAppe = await createInfStatement(InfStatementMock.NAME_1_TO_APPE);
-    await addInfoToProject(stmtToAppe.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
-
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_1)
-
-    const stmtToTp = await createInfStatement(InfStatementMock.NAMING_1_ONGOING_THROUGHOUT_TP_1)
-    await addInfoToProject(stmtToTp.pk_entity, project.pk_entity)
-
-    return {naming, namingProjRel, project, appellation, propertyRefersToName};
-}
-

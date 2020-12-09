@@ -49,7 +49,7 @@ describe('PEntityTimeSpanService', function () {
         await stopWarehouse(wh)
     })
     it('should create edges with time primitives', async () => {
-        const {shipVoyage, project} = await createMock();
+        const {shipVoyage, project} = await PEntityTimeSpanMock.createMock();
 
         await searchUntilSatisfy({
             notifier$: edgeService.afterChange$,
@@ -64,7 +64,7 @@ describe('PEntityTimeSpanService', function () {
 
 
     it('should create timespanval of time primitive', async () => {
-        const {shipVoyage, project} = await createMock();
+        const {shipVoyage, project} = await PEntityTimeSpanMock.createMock();
 
         const expectedTimeSpan: PEntityTimeSpan = {
             "p81": {
@@ -114,7 +114,7 @@ describe('PEntityTimeSpanService', function () {
 
     it('should create empty (null) time values', async () => {
         // - Langage and Project
-        const project = await createProjectAndModelMock();
+        const project = await PEntityTimeSpanMock.createProjectAndModelMock();
 
         // - shipVoyage
         const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
@@ -129,7 +129,7 @@ describe('PEntityTimeSpanService', function () {
 
 
     it('should delete entity time span from index when entity is removed from project', async () => {
-        await createProjectAndModelMock();
+        await PEntityTimeSpanMock.createProjectAndModelMock();
         const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
         const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
@@ -149,86 +149,89 @@ describe('PEntityTimeSpanService', function () {
     })
 
 })
+export namespace PEntityTimeSpanMock {
 
-// create the mock data:
-async function createMock() {
-    // - Langage and Project
-    const project = await createProjectAndModelMock();
+    // create the mock data:
+    export async function createMock() {
+        // - Langage and Project
+        const project = await createProjectAndModelMock();
 
-    // - shipVoyage
-    const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
+        // - shipVoyage
+        const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
-    // TimePrimitive 1
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_1);
-    // Stmt to TimePrimitive 1
-    await createInfStatement(InfStatementMock.SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1);
-    // Project rel for stmt (With calender info !)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1)
+        // TimePrimitive 1
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_1);
+        // Stmt to TimePrimitive 1
+        await createInfStatement(InfStatementMock.SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1);
+        // Project rel for stmt (With calender info !)
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1)
 
-    // TimePrimitive 2
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_2);
-    // Stmt to TimePrimitive 2
-    await createInfStatement(InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2);
-    // Project rel for stmt (With calender info !)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2)
+        // TimePrimitive 2
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_2);
+        // Stmt to TimePrimitive 2
+        await createInfStatement(InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2);
+        // Project rel for stmt (With calender info !)
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2)
 
-    // TimePrimitive 3
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_3);
-    // Stmt to TimePrimitive 3
-    await createInfStatement(InfStatementMock.SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3);
-    // Project rel for stmt (With calender info !)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3)
+        // TimePrimitive 3
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_3);
+        // Stmt to TimePrimitive 3
+        await createInfStatement(InfStatementMock.SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3);
+        // Project rel for stmt (With calender info !)
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3)
 
-    // TimePrimitive 4
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_4);
-    // Stmt to TimePrimitive 4
-    await createInfStatement(InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4);
-    // Project rel for stmt (With calender info !)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4)
+        // TimePrimitive 4
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_4);
+        // Stmt to TimePrimitive 4
+        await createInfStatement(InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4);
+        // Project rel for stmt (With calender info !)
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4)
 
-    // TimePrimitive 5
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_5);
-    // Stmt to TimePrimitive 5
-    await createInfStatement(InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5);
-    // Project rel for stmt (With calender info !)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5)
+        // TimePrimitive 5
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_5);
+        // Stmt to TimePrimitive 5
+        await createInfStatement(InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5);
+        // Project rel for stmt (With calender info !)
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5)
 
-    // TimePrimitive 6
-    await createInfTimePrimitive(InfTimePrimitiveMock.TP_6);
-    // Stmt to TimePrimitive 6
-    await createInfStatement(InfStatementMock.SHIP_VOYAGE_END_OF_THE_END_TP_6);
-    // Project rel for stmt (With calender info !)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_END_TP_6)
+        // TimePrimitive 6
+        await createInfTimePrimitive(InfTimePrimitiveMock.TP_6);
+        // Stmt to TimePrimitive 6
+        await createInfStatement(InfStatementMock.SHIP_VOYAGE_END_OF_THE_END_TP_6);
+        // Project rel for stmt (With calender info !)
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_END_TP_6)
 
-    return {shipVoyage, project};
+        return {shipVoyage, project};
+    }
+
+
+
+
+    export async function createProjectAndModelMock() {
+        await createInfLanguage(InfLanguageMock.GERMAN);
+        const project = await createProProject(ProProjectMock.PROJECT_1);
+
+        // - Class: Ship Voyage, TimePrimitive
+        await createDfhApiClass(DfhApiClassMock.EN_523_SHIP_VOYAGE);
+        await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE);
+
+        // P81 ongoing throughout
+        await createDfhApiProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT);
+        // P82 at some time within
+        await createDfhApiProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN);
+        // P81a end of the begin
+        await createDfhApiProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN);
+        // P81b begin of the end
+        await createDfhApiProperty(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END);
+        // P82a begin of the begin
+        await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN);
+        // P82b end of the end
+        await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
+        return project;
+    }
 }
 
-
-
-
-async function createProjectAndModelMock() {
-    await createInfLanguage(InfLanguageMock.GERMAN);
-    const project = await createProProject(ProProjectMock.PROJECT_1);
-
-    // - Class: Ship Voyage, TimePrimitive
-    await createDfhApiClass(DfhApiClassMock.EN_523_SHIP_VOYAGE);
-    await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE);
-
-    // P81 ongoing throughout
-    await createDfhApiProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT);
-    // P82 at some time within
-    await createDfhApiProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN);
-    // P81a end of the begin
-    await createDfhApiProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN);
-    // P81b begin of the end
-    await createDfhApiProperty(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END);
-    // P82a begin of the begin
-    await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN);
-    // P82b end of the end
-    await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
-    return project;
-}
 /**
 
 select *

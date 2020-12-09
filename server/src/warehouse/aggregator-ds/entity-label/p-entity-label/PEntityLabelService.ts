@@ -17,7 +17,6 @@ import {PEntityLabelProviders} from './PEntityLabelPoviders';
 
 @Injectable()
 export class PEntityLabelService extends AggregatedDataService2<PEntityId, EntityLabelVal>{
-    creatorDS: PEntityService
     aggregator = PEntityLabelAggregator;
     providers = PEntityLabelProviders;
 
@@ -27,7 +26,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
     depPEntityLabel: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>
     depPEdge: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityFields>
 
-    batchSize:100000;
+    batchSize: 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
@@ -39,7 +38,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             wh,
             pEntityKeyDefs
         )
-        this.registerCreatorDS(pEntity)
+        this.registerCreatorDS({dataService: pEntity})
         this.depPEntity = this.addDepencency(pEntity);
         this.depProEntityLabelConfig = this.addDepencency(entityLabelConfig);
         this.depIdentifyingProperty = this.addDepencency(identifyingProperty);
@@ -224,7 +223,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             ) custom
             FROM ${stmtsTbl} t1
         )`
-        const labelParts = builder.registerTmpTable<LabelPartKeys&{fkProject:number}, never, LabelPartCustom>(finalSql, [], finalTbl)
+        const labelParts = builder.registerTmpTable<LabelPartKeys & {fkProject: number}, never, LabelPartCustom>(finalSql, [], finalTbl)
 
         const remoteEntityLabelCustom: CustomValSql<{
             string: string
@@ -250,7 +249,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             joinWhereLeftTableCondition: '= true',
             joinOnKeys: {
                 pkEntity: {leftCustom: {name: 'fkTarget', type: 'int'}},
-                fkProject: {leftCol:'fkProject'}
+                fkProject: {leftCol: 'fkProject'}
             },
             conditionTrueIf: {},
             createCustomObject: remoteEntityLabelCustom

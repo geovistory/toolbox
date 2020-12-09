@@ -58,7 +58,7 @@ describe('PEntityClassLabelService', function () {
     })
 
     it('should create entity class label of Person', async () => {
-        const {prel, pers, cla} = await createBasicMock();
+        const {prel, pers, cla} = await PEntityClassLabel.createBasicMock();
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: pers.pk_entity}},
             {fk_project: {eq: prel.fk_project}},
@@ -69,7 +69,7 @@ describe('PEntityClassLabelService', function () {
 
 
     it('should delete entity class label from index when entity is removed from project', async () => {
-        const {prel, pers, cla} = await createBasicMock();
+        const {prel, pers, cla} = await PEntityClassLabel.createBasicMock();
 
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: pers.pk_entity}},
@@ -90,14 +90,17 @@ describe('PEntityClassLabelService', function () {
 
 
 })
-async function createBasicMock() {
-    // CLASS + LABEL
-    await createInfLanguage(InfLanguageMock.GERMAN);
-    await createProProject(ProProjectMock.PROJECT_1);
-    await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
-    const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
-    // PERSON
-    const pers = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-    const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    return {prel, pers, cla}
+export namespace PEntityClassLabel {
+
+    export async function createBasicMock() {
+        // CLASS + LABEL
+        await createInfLanguage(InfLanguageMock.GERMAN);
+        await createProProject(ProProjectMock.PROJECT_1);
+        await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
+        const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
+        // PERSON
+        const pers = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+        const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
+        return {prel, pers, cla}
+    }
 }

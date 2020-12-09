@@ -16,7 +16,6 @@ export type RClassLabelValue = {label?: string}
 
 @Injectable()
 export class RClassLabelService extends AggregatedDataService2<RClassId, RClassLabelValue>{
-    creatorDS: RClassService
     aggregator = RClassLabelAggregator;
     providers = RClassLabelProviders;
 
@@ -33,7 +32,7 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
             wh,
             rClassIdKeyDefs
         )
-        this.registerCreatorDS(rClass);
+        this.registerCreatorDS({dataService: rClass});
 
         this.dfhClassLabel = this.addDepencency(dfhClassLabel)
         this.proClassLabel = this.addDepencency(proClassLabel)

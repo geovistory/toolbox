@@ -15,7 +15,6 @@ import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/Aggregat
 export interface PClassLabelVal {label?: string}
 @Injectable()
 export class PClassLabelService extends AggregatedDataService2<PClassId, PClassLabelVal>{
-    creatorDS: PClassService
     aggregator = PClassLabelAggregator;
     providers = PClassLabelProviders;
     depProProject: DependencyIndex<PClassId, PClassLabelVal, ProjectId, ProjectVal>
@@ -32,7 +31,7 @@ export class PClassLabelService extends AggregatedDataService2<PClassId, PClassL
             wh,
             pClassIdKeyDef
         )
-        this.registerCreatorDS(pClass);
+        this.registerCreatorDS({dataService: pClass});
         this.depProProject = this.addDepencency(proProject)
         this.depDfhClassLabel = this.addDepencency(dfhClassLabel)
         this.depProClassLabel = this.addDepencency(proClassLabel)
@@ -115,7 +114,7 @@ export class PClassLabelService extends AggregatedDataService2<PClassId, PClassL
             createCustomObject: (() => `t1.custom`) as CustomValSql<{fkLanguage: number}>,
         })
         // from ontome
-        await builder.joinProviderThroughDepIdx({
+        const proLangOntoMe = await builder.joinProviderThroughDepIdx({
             leftTable: proLangFromDefaultProject.aggregation.tableDef,
             joinWhereLeftTableCondition: '= false',
             joinWithDepIdx: this.depDfhClassLabel,
@@ -132,15 +131,15 @@ export class PClassLabelService extends AggregatedDataService2<PClassId, PClassL
             }
         })
 
-         /**
-         * Try to get label in english
-         */
+        /**
+        * Try to get label in english
+        */
 
         // from project
         const enFromProject = await builder.joinProviderThroughDepIdx({
-            leftTable: projectLang.aggregation.tableDef,
+            leftTable: proLangOntoMe.aggregation.tableDef,
             joinWithDepIdx: this.depProClassLabel,
-            joinWhereLeftTableCondition: '= true',
+            joinWhereLeftTableCondition: '= false',
             joinOnKeys: {
                 fkClass: {leftCol: 'pkClass'},
                 fkProject: {leftCol: 'fkProject'},
@@ -160,7 +159,7 @@ export class PClassLabelService extends AggregatedDataService2<PClassId, PClassL
         const enFromDefaultProject = await builder.joinProviderThroughDepIdx({
             leftTable: enFromProject.aggregation.tableDef,
             joinWithDepIdx: this.depProClassLabel,
-            joinWhereLeftTableCondition: '= true',
+            joinWhereLeftTableCondition: '= false',
             joinOnKeys: {
                 fkClass: {leftCol: 'pkClass'},
                 fkProject: {value: PK_DEFAULT_CONFIG_PROJECT},
@@ -194,7 +193,7 @@ export class PClassLabelService extends AggregatedDataService2<PClassId, PClassL
         })
 
         builder.registerUpsertHook()
-        await builder.printQueries()
+        // await builder.printQueries()
         const count = await builder.executeQueries()
         return count
     }

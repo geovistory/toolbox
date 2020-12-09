@@ -1,7 +1,18 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
 import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -24,18 +35,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil, wait} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
-import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
-import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
-import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
-import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
-import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 const pEntityTypeServiceStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -75,7 +75,7 @@ describe('PEntityTypeService', function () {
         await stopWarehouse(wh)
     })
     it('should create fk_type of geographical place', async () => {
-        const {madrid, project, cityTypeProjRel} = await createMock();
+        const {madrid, project, cityTypeProjRel} = await PEntityTypeMock.createMock();
 
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: madrid.pk_entity}},
@@ -86,7 +86,7 @@ describe('PEntityTypeService', function () {
     })
 
     it('should update fk_type of geographical place', async () => {
-        const {madrid, project, cityTypeProjRel, cityTypeAppe} = await createMock();
+        const {madrid, project, cityTypeProjRel, cityTypeAppe} = await PEntityTypeMock.createMock();
 
         let result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: madrid.pk_entity}},
@@ -193,7 +193,7 @@ describe('PEntityTypeService', function () {
     })
 
     it('should delete entity type from index when entity is removed from project', async () => {
-        const {madrid, madridProjRel, project, cityTypeAppe} = await createMock();
+        const {madrid, madridProjRel, project, cityTypeAppe} = await PEntityTypeMock.createMock();
 
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: madrid.pk_entity}},
@@ -213,46 +213,49 @@ describe('PEntityTypeService', function () {
 
 })
 
-// create the mock data:
-async function createMock() {
-    // - Langage and Project
-    await createInfLanguage(InfLanguageMock.GERMAN);
-    const project = await createProProject(ProProjectMock.PROJECT_1);
+export namespace PEntityTypeMock {
 
-    // - Class: Geo Place, Geo Place type
-    await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE);
-    await createDfhApiClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE);
-    await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
+    // create the mock data:
+    export  async function createMock() {
+        // - Langage and Project
+        await createInfLanguage(InfLanguageMock.GERMAN);
+        const project = await createProProject(ProProjectMock.PROJECT_1);
 
-    // - Property: has geo. place type
-    await createDfhApiProperty(DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE);
+        // - Class: Geo Place, Geo Place type
+        await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE);
+        await createDfhApiClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE);
+        await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
 
-    // - peIt (Geo Place (Madrid))
-    const madrid = await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_MADRID);
-    const madridProjRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_MADRID);
+        // - Property: has geo. place type
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE);
 
-    // - peIt (Geo Place Type X)
-    await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_TYPE_CITY);
-    const cityTypeProjRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_CITY_TYPE);
+        // - peIt (Geo Place (Madrid))
+        const madrid = await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_MADRID);
+        const madridProjRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_MADRID);
 
-    // - stmt (has geo. place type, (Madrid has type 'City'))
-    await createInfStatement(InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE);
+        // - peIt (Geo Place Type X)
+        await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_TYPE_CITY);
+        const cityTypeProjRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_CITY_TYPE);
 
-    // - appe ('City)
-    const cityTypeAppe = await createInfAppellation(InfAppellationMock.CITY)
+        // - stmt (has geo. place type, (Madrid has type 'City'))
+        await createInfStatement(InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY);
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE);
 
-    // - teEn Y (Naming of peIt X = 'City')
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_CITY);
+        // - appe ('City)
+        const cityTypeAppe = await createInfAppellation(InfAppellationMock.CITY)
 
-    // - stmt (Y refers to Name appe 'City')
-    await createInfStatement(InfStatementMock.NAMING_CITY_TO_APPE_CITY);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAMING_CITY_TO_APPE_CITY);
+        // - teEn Y (Naming of peIt X = 'City')
+        await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_CITY);
 
-    // - stmt (Y is Naming of Geo Place Type X)
-    await createInfStatement(InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAMING_CITY_TO_GEO_PLACE_TYPE);
+        // - stmt (Y refers to Name appe 'City')
+        await createInfStatement(InfStatementMock.NAMING_CITY_TO_APPE_CITY);
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAMING_CITY_TO_APPE_CITY);
 
-    return {madrid, madridProjRel, cityTypeProjRel, project, cityTypeAppe};
+        // - stmt (Y is Naming of Geo Place Type X)
+        await createInfStatement(InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE);
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAMING_CITY_TO_GEO_PLACE_TYPE);
+
+        return {madrid, madridProjRel, cityTypeProjRel, project, cityTypeAppe};
+    }
 }

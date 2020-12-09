@@ -44,14 +44,9 @@ export type PEntityTimeSpan = {
  */
 @Injectable()
 export class PEntityTimeSpanService extends AggregatedDataService2<PEntityId, PEntityTimeSpanVal>{
-    creatorDS: PEntityService
     aggregator = PEntityTimeSpanAggregator;
     providers = PEntityTimeSpanProviders;
-    customCreatorDSSql = [
-        {
-            where: `val->>'entityType' = 'teEn'`,
-        }
-    ]
+
     depPEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>
     depPEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>
 
@@ -65,9 +60,16 @@ export class PEntityTimeSpanService extends AggregatedDataService2<PEntityId, PE
             pEntityKeyDefs
         )
 
-        this.registerCreatorDS(pEntity)
-        this.depPEntity=this.addDepencency(pEntity);
-        this.depPEdge=this.addDepencency(pEdge);
+        this.registerCreatorDS({
+            dataService: pEntity,
+            customSql: [
+                {
+                    where: `val->>'entityType' = 'teEn'`,
+                }
+            ]
+        })
+        this.depPEntity = this.addDepencency(pEntity);
+        this.depPEdge = this.addDepencency(pEdge);
 
     }
     getDependencies() {

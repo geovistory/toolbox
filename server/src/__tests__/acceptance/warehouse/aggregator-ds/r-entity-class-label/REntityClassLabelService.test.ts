@@ -46,6 +46,7 @@ describe('REntityClassLabelService', function () {
 
 
 })
+
 async function createBasicMock() {
     // CLASS + LABEL
     await createInfLanguage(InfLanguageMock.GERMAN);

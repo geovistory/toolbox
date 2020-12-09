@@ -38,7 +38,6 @@ export interface REntityTypeVal {
  */
 @Injectable()
 export class REntityTypeService extends AggregatedDataService2<REntityId, REntityTypeVal>{
-    creatorDS: REntityService
     aggregator = REntityTypeAggregator;
     providers = REntityTypeProviders;
 
@@ -59,11 +58,11 @@ export class REntityTypeService extends AggregatedDataService2<REntityId, REntit
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(rEntity)
-        this.depREntity=this.addDepencency(rEntity);
-        this.depREntityLabel=this.addDepencency(rEntityLabel);
-        this.depREdge=this.addDepencency(rEdge);
-        this.depDfhClassHasTypeProp=this.addDepencency(dfhClassHasTypeProp);
+        this.registerCreatorDS({dataService: rEntity})
+        this.depREntity = this.addDepencency(rEntity);
+        this.depREntityLabel = this.addDepencency(rEntityLabel);
+        this.depREdge = this.addDepencency(rEdge);
+        this.depDfhClassHasTypeProp = this.addDepencency(dfhClassHasTypeProp);
     }
 
     getDependencies() {

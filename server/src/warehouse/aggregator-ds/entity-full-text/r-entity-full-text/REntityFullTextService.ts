@@ -38,7 +38,7 @@ export interface REntityFullTextVal {fullText?: string};
  */
 @Injectable()
 export class REntityFullTextService extends AggregatedDataService2<REntityId, REntityFullTextVal>{
-    creatorDS: REntityService
+    // creatorDS: REntityService
     aggregator = REntityFullTextAggregator;
     providers = REntityFullTextProviders;
     depREntity: DependencyIndex<REntityId, REntityFullTextVal, REntityId, REntity>
@@ -62,7 +62,7 @@ export class REntityFullTextService extends AggregatedDataService2<REntityId, RE
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(rEntity)
+        this.registerCreatorDS({dataService: rEntity})
 
         this.depREntity = this.addDepencency(rEntity);
         this.depREntityLabel = this.addDepencency(rEntityLabel);

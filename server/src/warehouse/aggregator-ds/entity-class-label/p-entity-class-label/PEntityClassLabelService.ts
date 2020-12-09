@@ -13,7 +13,6 @@ import {PEntityClassLabelProviders} from './PEntityClassLabelPoviders';
 export interface PEntityClassLabelVal {entityClassLabel: string}
 @Injectable()
 export class PEntityClassLabelService extends AggregatedDataService2<PEntityId, PEntityClassLabelVal>{
-    creatorDS: PEntityService
     aggregator = PEntityClassLabelAggregator;
     providers = PEntityClassLabelProviders;
     depPEntity: DependencyIndex<PEntityId, PEntityClassLabelVal, PEntityId, PEntity>
@@ -28,7 +27,7 @@ export class PEntityClassLabelService extends AggregatedDataService2<PEntityId, 
             wh,
             pEntityKeyDefs
         )
-        this.registerCreatorDS(pEntity)
+        this.registerCreatorDS({dataService: pEntity})
         this.depPEntity = this.addDepencency(pEntity)
         this.depPClassLabel = this.addDepencency(pClassLabel)
     }
@@ -86,7 +85,7 @@ export class PEntityClassLabelService extends AggregatedDataService2<PEntityId, 
         })
 
         builder.registerUpsertHook()
-        // await builder.printQueries()
+        await builder.printQueries()
         const count = await builder.executeQueries()
         return count
     }

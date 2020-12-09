@@ -14,7 +14,6 @@ import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/Aggregat
 export interface REntityClassLabelVal {entityClassLabel?: string}
 @Injectable()
 export class REntityClassLabelService extends AggregatedDataService2<REntityId, REntityClassLabelVal>{
-    creatorDS: REntityService
     aggregator = REntityClassLabelAggregator;
     providers = REntityClassLabelProviders;
     depREntity: DependencyIndex<REntityId, REntityClassLabelVal, REntityId, REntity>
@@ -29,7 +28,7 @@ export class REntityClassLabelService extends AggregatedDataService2<REntityId, 
             wh,
             rEntityKeyDefs
         )
-        this.registerCreatorDS(rEntity)
+        this.registerCreatorDS({dataService: rEntity})
         this.depREntity = this.addDepencency(rEntity)
         this.depRClassLabel = this.addDepencency(rClassLabel)
     }

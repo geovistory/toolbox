@@ -19,7 +19,6 @@ import {REntityLabelProviders} from './REntityLabelPoviders';
 
 @Injectable()
 export class REntityLabelService extends AggregatedDataService2<REntityId, EntityLabelVal>{
-    creatorDS: REntityService
     aggregator = REntityLabelAggregator;
     providers = REntityLabelProviders;
 
@@ -42,7 +41,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             rEntityKeyDefs
         )
 
-        this.registerCreatorDS(this.rEntity)
+        this.registerCreatorDS({dataService: this.rEntity})
 
         this.depREntity = this.addDepencency(this.rEntity)
         this.depProEntityLabelConfig = this.addDepencency(this.proEntityLabelConfig)

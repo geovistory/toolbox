@@ -40,7 +40,6 @@ export interface PEntityTypeVal {
  */
 @Injectable()
 export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntityTypeVal>{
-    creatorDS: PEntityService
     aggregator = PEntityTypeAggregator;
     providers = PEntityTypeProviders;
 
@@ -63,7 +62,7 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
             pEntityKeyDefs
         )
 
-        this.registerCreatorDS(pEntity)
+        this.registerCreatorDS({dataService: pEntity})
         this.depPEntity = this.addDepencency(pEntity)
         this.depPEntityLabel = this.addDepencency(pEntityLabel)
         this.depREntityLabel = this.addDepencency(rEntityLabel)

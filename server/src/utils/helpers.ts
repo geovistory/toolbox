@@ -1,5 +1,6 @@
 import {existsSync, mkdirSync, writeFileSync} from 'fs';
 import sqlFormatter from 'sql-formatter';
+import {QueryResult} from 'pg';
 
 export const logSql = (sql: string, params: any[]) => {
 
@@ -46,24 +47,24 @@ export function logOnErr<M>(promise: Promise<M>) {
 export async function pgLogOnErr<M>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cb: (sql: string, params: any[]) => Promise<M>, sql: string, params: any[]
-) {
-  return cb(sql, params)
-    .then(data => data)
+): Promise<M> {
+  const call = cb(sql, params)
     .catch(error => {
       parsePGError(error, sql)
-      return {rows: undefined}
+      return {} as M
     });
+  return call
 }
 export async function pgBrkOnErr<M>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cb: (sql: string, params: any[]) => Promise<M>, sql: string, params: any[]
 ) {
-  return cb(sql, params)
-    .then(data => data)
+  const call = cb(sql, params)
     .catch(error => {
       parsePGError(error, sql)
       throw new Error(error)
     });
+  return call
 }
 
 export function brkOnErr<M>(promise: Promise<M>) {

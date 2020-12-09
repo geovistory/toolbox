@@ -27,17 +27,8 @@ export const pClassFieldKeyDef: KeyDefinition[] = [
 ]
 @Injectable()
 export class PClassFieldLabelService extends AggregatedDataService2<PClassFieldLabelId, PClassFieldLabelVal>{
-    creatorDS: PPropertyService
     aggregator = PClassFieldLabelAggregator;
     providers = PClassFieldLabelProviders;
-    customCreatorDSSql = [
-        {
-            select: `"fkProject" as "fkProject", "fkDomain" as "fkClass", "pkProperty" as "fkProperty", true as "isOutgoing"`,
-        },
-        {
-            select: `"fkProject" as "fkProject", "fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
-        }
-    ]
     depProject: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, ProjectId, ProjectVal>
     depDfhPropertyLabel: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, DfhPropertyLabelId, DfhPropertyLabelVal>
     depPropertyLabel: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, ProPropertyLabelId, ProPropertyLabelVal>
@@ -54,7 +45,17 @@ export class PClassFieldLabelService extends AggregatedDataService2<PClassFieldL
             pClassFieldKeyDef
         )
 
-        this.registerCreatorDS(pProperty)
+        this.registerCreatorDS({
+            dataService: pProperty,
+            customSql: [
+                {
+                    select: `"fkProject" as "fkProject", "fkDomain" as "fkClass", "pkProperty" as "fkProperty", true as "isOutgoing"`,
+                },
+                {
+                    select: `"fkProject" as "fkProject", "fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
+                }
+            ]
+        })
         this.depProject = this.addDepencency(proProject)
         this.depDfhPropertyLabel = this.addDepencency(dfhPropertyLabel)
         this.depPropertyLabel = this.addDepencency(proPropertyLabel)
