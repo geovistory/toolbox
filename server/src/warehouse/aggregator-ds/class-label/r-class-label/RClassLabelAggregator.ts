@@ -1,6 +1,5 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
-import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../../Warehouse';
 import {RClassLabelProviders} from './RClassLabelProviders';
 import {RClassLabelValue} from './RClassLabelService';
 
@@ -24,30 +23,30 @@ export class RClassLabelAggregator extends AbstractAggregator<RClassLabelValue> 
 
   async create() {
 
-    // default language (en)
-    const defaultLang = PK_ENGLISH;
+    // // default language (en)
+    // const defaultLang = PK_ENGLISH;
 
     // class label
     let classLabel: string | undefined;
 
-    /**
-    * Try to get label in english
-    */
+    // /**
+    // * Try to get label in english
+    // */
 
-    // from geovistory
-    classLabel = (await this.providers.proClassLabel.get({
-      fkClass: this.id.pkClass,
-      fkLanguage: defaultLang,
-      fkProject: PK_DEFAULT_CONFIG_PROJECT
-    }))?.label
+    // // from geovistory
+    // classLabel = (await this.providers.proClassLabel.get({
+    //   fkClass: this.id.pkClass,
+    //   fkLanguage: defaultLang,
+    //   fkProject: PK_DEFAULT_CONFIG_PROJECT
+    // }))?.label
 
-    if (classLabel) return this.finalize(classLabel);
+    // if (classLabel) return this.finalize(classLabel);
 
-    // from ontome
-    classLabel = (await this.providers.dfhClassLabel.get({
-      pkClass: this.id.pkClass,
-      language: 'en'
-    }))?.label
+    // // from ontome
+    // classLabel = (await this.providers.dfhClassLabel.get({
+    //   pkClass: this.id.pkClass,
+    //   language: 'en'
+    // }))?.label
 
     return this.finalize(classLabel);
 

@@ -10,6 +10,8 @@ import {EntityLabelVal} from '../../entity-label/entity-label.commons';
 import {REntityLabelService} from '../../entity-label/r-entity-label/REntityLabelService';
 import {REntityTypeAggregator} from './REntityTypeAggregator';
 import {REntityTypeProviders} from './REntityTypePoviders';
+import {PoolClient} from 'pg';
+import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 
 export interface REntityTypeVal {
     fkType?: number,
@@ -44,6 +46,7 @@ export class REntityTypeService extends AggregatedDataService2<REntityId, REntit
     depREntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityLabelVal>
     depREdge: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityFields>
     depDfhClassHasTypeProp: DependencyIndex<REntityId, REntityTypeVal, RClassId, DfhClassHasTypePropVal>
+    batchSize: 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
@@ -69,16 +72,105 @@ export class REntityTypeService extends AggregatedDataService2<REntityId, REntit
     onUpsertSql(tableAlias: string) {
         return `
         UPDATE war.entity_preview
-        SET type_label = ${tableAlias}.val->>'typeLabel',
-        fk_type = (${tableAlias}.val->>'fkType')::int
+        SET type_label = val->>'typeLabel',
+            fk_type = (val->>'fkType')::int
         FROM ${tableAlias}
-        WHERE pk_entity = ${tableAlias}."pkEntity"
+        WHERE pk_entity = "pkEntity"
         AND project = 0
         AND (
-            type_label IS DISTINCT FROM ${tableAlias}.val->>'typeLabel'
+            type_label IS DISTINCT FROM val->>'typeLabel'
             OR
-            fk_type IS DISTINCT FROM (${tableAlias}.val->>'fkType')::int
+            fk_type IS DISTINCT FROM (val->>'fkType')::int
         )`
+    }
+
+    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
+
+        const pentity = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.depREntity,
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
+        })
+        const dfhClassHasTypeProp = await builder.joinProviderThroughDepIdx({
+            leftTable: pentity.aggregation.tableDef,
+            joinWithDepIdx: this.depDfhClassHasTypeProp,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkClass: {leftCustom: {name: 'fkClass', type: 'int'}},
+            },
+            conditionTrueIf: {
+                providerVal: {fkProperty: 'IS NOT NULL'}
+            },
+            createCustomObject: ((provider) => `t2.val`) as CustomValSql<DfhClassHasTypePropVal>,
+            // upsert no entity type where fk property is null
+            createAggregationVal: {
+                sql: () => `jsonb_build_object()`,
+                upsert: {
+                    whereCondition: '= false'
+                }
+            }
+        })
+
+        const pEdges = await builder.joinProviderThroughDepIdx({
+            leftTable: dfhClassHasTypeProp.aggregation.tableDef,
+            joinWithDepIdx: this.depREdge,
+            // join only where fk property is is given
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+            },
+            conditionTrueIf: {
+                custom: `t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget' IS NOT NULL`
+            },
+            createCustomObject: ((provider) =>
+                `jsonb_build_object('fkType', t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget')`) as CustomValSql<{fkType?: number}>,
+            // upsert no entity type where no has type stmt with fkTarget found
+            createAggregationVal: {
+                sql: () => `jsonb_build_object()`,
+                upsert: {
+                    whereCondition: '= false'
+                }
+            }
+        })
+
+
+        await builder.joinProviderThroughDepIdx({
+            leftTable: pEdges.aggregation.tableDef,
+            joinWithDepIdx: this.depREntityLabel,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCustom: {name: 'fkType', type: 'int'}},
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `t1.custom`) as CustomValSql<{fkType?: number}>,
+            createAggregationVal: {
+                sql: () => `jsonb_build_object(
+                    'typeLabel', t2.val->>'entityLabel',
+                    'fkType', t1.custom->>'fkType'
+                )`,
+                upsert: {
+                    whereCondition: '= true'
+                }
+            }
+        })
+
+
+
+
+        builder.registerUpsertHook()
+        // await builder.printQueries()
+        const count = builder.executeQueries()
+
+        return count
     }
 }
 

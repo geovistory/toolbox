@@ -18,84 +18,84 @@ export class PClassLabelAggregator extends AbstractAggregator<PClassLabelVal> {
 
   async create() {
 
-    const project = await this.providers.proProject.get({pkProject: this.id.fkProject})
-    if (project) {
+    // const project = await this.providers.proProject.get({pkProject: this.id.fkProject})
+    // if (project) {
 
-      // default language (en)
-      const defaultLang = PK_ENGLISH;
+    //   // default language (en)
+    //   const defaultLang = PK_ENGLISH;
 
-      // project language
-      const proLang = project.fkLanguage
+    //   // project language
+    //   const proLang = project.fkLanguage
 
-      // class label
-      let classLabel: string | undefined;
+    //   // class label
+    //   let classLabel: string | undefined;
 
-      /**
-       * Try to get label in project language
-       */
+    //   /**
+    //    * Try to get label in project language
+    //    */
 
-      // from project
-      classLabel = (await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
-        fkLanguage: proLang,
-        fkProject: this.id.fkProject
-      }))?.label
+    //   // from project
+    //   classLabel = (await this.providers.proClassLabel.get({
+    //     fkClass: this.id.pkClass,
+    //     fkLanguage: proLang,
+    //     fkProject: this.id.fkProject
+    //   }))?.label
 
-      if (classLabel) return this.finalize(classLabel);
+    //   if (classLabel) return this.finalize(classLabel);
 
-      // from geovistory
-      classLabel = (await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
-        fkLanguage: proLang,
-        fkProject: PK_DEFAULT_CONFIG_PROJECT
-      }))?.label
+    //   // from geovistory
+    //   classLabel = (await this.providers.proClassLabel.get({
+    //     fkClass: this.id.pkClass,
+    //     fkLanguage: proLang,
+    //     fkProject: PK_DEFAULT_CONFIG_PROJECT
+    //   }))?.label
 
-      if (classLabel) return this.finalize(classLabel);
+    //   if (classLabel) return this.finalize(classLabel);
 
-      // from ontome
-      const iso6391ProLang = pkLanguageIso6391Map[proLang];
-      if (iso6391ProLang) {
-        classLabel =( await this.providers.dfhClassLabel.get({
-          pkClass: this.id.pkClass,
-          language: iso6391ProLang
+    //   // from ontome
+    //   const iso6391ProLang = pkLanguageIso6391Map[proLang];
+    //   if (iso6391ProLang) {
+    //     classLabel =( await this.providers.dfhClassLabel.get({
+    //       pkClass: this.id.pkClass,
+    //       language: iso6391ProLang
 
-        }))?.label
-      }
+    //     }))?.label
+    //   }
 
-      if (classLabel) return this.finalize(classLabel);
+    //   if (classLabel) return this.finalize(classLabel);
 
-      /**
-      * Try to get label in english
-      */
+    //   /**
+    //   * Try to get label in english
+    //   */
 
-      // from project
-      classLabel = (await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
-        fkLanguage: defaultLang,
-        fkProject: this.id.fkProject
-      }))?.label
+    //   // from project
+    //   classLabel = (await this.providers.proClassLabel.get({
+    //     fkClass: this.id.pkClass,
+    //     fkLanguage: defaultLang,
+    //     fkProject: this.id.fkProject
+    //   }))?.label
 
-      if (classLabel) return this.finalize(classLabel);
+    //   if (classLabel) return this.finalize(classLabel);
 
-      // from geovistory
-      classLabel = (await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
-        fkLanguage: defaultLang,
-        fkProject: PK_DEFAULT_CONFIG_PROJECT
-      }))?.label
+    //   // from geovistory
+    //   classLabel = (await this.providers.proClassLabel.get({
+    //     fkClass: this.id.pkClass,
+    //     fkLanguage: defaultLang,
+    //     fkProject: PK_DEFAULT_CONFIG_PROJECT
+    //   }))?.label
 
-      if (classLabel) return this.finalize(classLabel);
+    //   if (classLabel) return this.finalize(classLabel);
 
-      // from ontome
-      classLabel = (await this.providers.dfhClassLabel.get({
-        pkClass: this.id.pkClass,
-        language: 'en'
+    //   // from ontome
+    //   classLabel = (await this.providers.dfhClassLabel.get({
+    //     pkClass: this.id.pkClass,
+    //     language: 'en'
 
-      }))?.label
+    //   }))?.label
 
-      if (classLabel) return this.finalize(classLabel);
+    //   if (classLabel) return this.finalize(classLabel);
 
-    }
+    // }
 
     return this.finalize()
   }

@@ -7,6 +7,11 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass, deleteDfhApiClass, updateDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {setupCleanAndStartWarehouse, stopWarehouse, wait, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const dfhClassLabelServiceStub:WarehouseStubs={
+  primaryDataServices:[DfhClassLabelService],
+  aggDataServices:[]
+}
 
 describe('DfhClassLabelService', () => {
 
@@ -16,7 +21,7 @@ describe('DfhClassLabelService', () => {
    before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(dfhClassLabelServiceStub)
     wh = injector.get(Warehouse)
     s = injector.get(DfhClassLabelService)
 
@@ -31,7 +36,7 @@ describe('DfhClassLabelService', () => {
   it('should have api class label in index after initIdx()', async () => {
     const c = await createDfhApiClass({dfh_class_label: 'Foo'})
     await wait(200);
-    const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
+    const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: 18889})
     expect(result?.label).to.equal('Foo')
 
   })
@@ -41,14 +46,14 @@ describe('DfhClassLabelService', () => {
 
     await wait(200);
 
-    const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
+    const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: 18889})
     expect(result?.label).to.equal('Foo')
 
     const c2 = await updateDfhApiClass(c.pk_entity as any, {dfh_class_label: 'Bar'})
     expect(c2.dfh_class_label).to.equal('Bar')
 
     await wait(200);
-    const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
+    const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: 18889})
     expect(resultUpdated?.label).to.equal('Bar')
   })
 
@@ -56,14 +61,14 @@ describe('DfhClassLabelService', () => {
     const c = await createDfhApiClass({dfh_class_label: 'Foo'})
 
     await wait(200);
-    const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
+    const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: 18889})
     expect(result?.label).to.equal('Foo')
 
     await deleteDfhApiClass(c.pk_entity as any)
 
 
     await new Promise(r => setTimeout(r, 10));
-    const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
+    const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language:18889})
     expect(resultUpdated?.label).to.equal('Foo')
   })
 

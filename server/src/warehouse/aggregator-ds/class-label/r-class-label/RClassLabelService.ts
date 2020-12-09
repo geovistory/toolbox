@@ -76,7 +76,7 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
             joinWithDepIdx: this.dfhClassLabel,
             joinOnKeys: {
                 pkClass: {leftCol: 'pkClass'},
-                language: {value: 'en'},
+                language: {value: PK_ENGLISH},
             },
             conditionTrueIf: {
                 providerVal: {label: 'IS NOT NULL'}

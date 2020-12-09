@@ -190,7 +190,7 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
         })
 
         builder.registerUpsertHook()
-        await builder.printQueries()
+        // await builder.printQueries()
         const count = builder.executeQueries()
 
         return count

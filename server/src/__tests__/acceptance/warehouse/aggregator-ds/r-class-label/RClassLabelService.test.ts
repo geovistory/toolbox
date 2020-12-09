@@ -9,14 +9,28 @@ import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {setupCleanAndStartWarehouse, waitForClassPreview, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
+const rClassLabelService: WarehouseStubs = {
+    primaryDataServices: [
+        RClassService,
+        DfhClassLabelService,
+        ProClassLabelService
+    ],
+    aggDataServices: [
+        RClassLabelService
+    ]
+}
 describe('RClassLabelService', function () {
 
     let wh: Warehouse;
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(15000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(rClassLabelService)
         wh = injector.get(Warehouse)
     })
     beforeEach(async () => {

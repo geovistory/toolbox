@@ -13,7 +13,23 @@ import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, stopWarehouse, waitForClassPreview, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
+const pClassLabelService: WarehouseStubs = {
+    primaryDataServices: [
+        PClassService,
+        ProProjectService,
+        DfhClassLabelService,
+        ProClassLabelService
+    ],
+    aggDataServices: [
+        PClassLabelService
+    ]
+}
 describe('PClassLabelService', function () {
 
     let wh: Warehouse;
@@ -21,7 +37,7 @@ describe('PClassLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(pClassLabelService)
         wh = injector.get(Warehouse)
     })
     beforeEach(async () => {

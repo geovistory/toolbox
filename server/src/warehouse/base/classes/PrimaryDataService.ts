@@ -189,6 +189,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         `
         const params = [date]
         // if (this.constructor.name === 'REdgeService') logSql(sql, params)
+
         const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
         // useful for debugging
         // if (this.constructor.name === 'REdgeService') {

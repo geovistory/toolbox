@@ -22,7 +22,29 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
+import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {REntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+const rEntityTypeServiceStub: WarehouseStubs = {
+    primaryDataServices: [
+        DfhOutgoingPropertyService,
+        ProEntityLabelConfigService,
+        REntityService,
+        REdgeService,
+        DfhClassHasTypePropertyService
+    ],
+    aggDataServices: [
+        IdentifyingPropertyService,
+        REntityLabelService,
+        REntityTypeService
+    ]
+}
 /**
  * Testing whole stack from postgres to warehouse
  */
@@ -32,7 +54,7 @@ describe('REntityTypeService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(50000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(rEntityTypeServiceStub)
         wh = injector.get(Warehouse)
     })
     beforeEach(async () => {
