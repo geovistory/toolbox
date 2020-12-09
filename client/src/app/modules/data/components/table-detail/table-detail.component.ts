@@ -292,7 +292,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           for (let j = 0; j < keys.length; j++) {
             const key = keys[j];
             if (this.colMapping.indexOf(key) == -1) continue;
-            const str: string = (row[key]).string_value || (row[key].numeric_value || '').toString();
+            const str: string = row[key].string_value ? row[key].string_value : row[key].numeric_value == 0 || row[key].numeric_value ? row[key].numeric_value : '';
             const theCol = headers.filter(h => h.pk_column == parseInt(key, 10))[0];
             if (!theCol) continue;
             if (!theCol.mapping) table[i].push(str);
@@ -310,10 +310,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       }),
       takeUntil(this.destroy$)
     );
-
-
-    console.log('pkEntity: ' + this.pkEntity)
-    console.log('fkRow to filter on: ' + this.filterOnRow);
 
     if (this.filterOnRow) {
       // this.colFiltersEnabled = true;

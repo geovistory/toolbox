@@ -22,18 +22,18 @@
   <!-- is expression or expression portion -->
   <button mat-menu-item *ngIf="!isDigital"
     (click)="addExpressionPortion({pkParent: pkParent, parentIsF2Expression: rootIsF2Expression})">
-    <mat-icon>folder</mat-icon>
+    <mat-icon svgIcon="folder"></mat-icon>
     <span>Add a Section</span>
   </button>
   <button mat-menu-item *ngIf="!isDigital"
     (click)="addText({pkParent: pkParent, parentIsF2Expression: rootIsF2Expression})">
-    <mat-icon>description</mat-icon>
+    <mat-icon svgIcon="file-document"></mat-icon>
     <span>Add a Text</span>
   </button>
 
   <button mat-menu-item *ngIf="!isDigital"
     (click)="addTable({pkParent: pkParent, parentIsF2Expression: rootIsF2Expression})">
-    <mat-icon>folder</mat-icon>
+    <mat-icon svgIcon="file-table"></mat-icon>
     <span>Add a Table</span>
   </button>
 
