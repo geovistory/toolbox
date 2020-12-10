@@ -45,7 +45,7 @@ export class REntityTypeService extends AggregatedDataService2<REntityId, REntit
     depREntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityLabelVal>
     depREdge: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityFields>
     depDfhClassHasTypeProp: DependencyIndex<REntityId, REntityTypeVal, RClassId, DfhClassHasTypePropVal>
-    batchSize: 100000;
+    batchSize= 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
@@ -68,20 +68,20 @@ export class REntityTypeService extends AggregatedDataService2<REntityId, REntit
     getDependencies() {
         return this
     };
-    onUpsertSql(tableAlias: string) {
-        return `
-        UPDATE war.entity_preview
-        SET type_label = val->>'typeLabel',
-            fk_type = (val->>'fkType')::int
-        FROM ${tableAlias}
-        WHERE pk_entity = "pkEntity"
-        AND project = 0
-        AND (
-            type_label IS DISTINCT FROM val->>'typeLabel'
-            OR
-            fk_type IS DISTINCT FROM (val->>'fkType')::int
-        )`
-    }
+    // onUpsertSql(tableAlias: string) {
+    //     return `
+    //     UPDATE war.entity_preview
+    //     SET type_label = val->>'typeLabel',
+    //         fk_type = (val->>'fkType')::int
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = "pkEntity"
+    //     AND project = 0
+    //     AND (
+    //         type_label IS DISTINCT FROM val->>'typeLabel'
+    //         OR
+    //         fk_type IS DISTINCT FROM (val->>'fkType')::int
+    //     )`
+    // }
 
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)

@@ -35,6 +35,7 @@ import {RPropertyService} from './primary-ds/property/RPropertyService';
 import {ProProjectService} from './primary-ds/ProProjectService';
 import {ProPropertyLabelService} from './primary-ds/ProPropertyLabelService';
 import {AGG_DS, APP_CONFIG, PRIMARY_DS, Warehouse, WarehouseConfig} from './Warehouse';
+import {EntityPreviewService} from './aggregator-ds/entity-preview/EntityPreviewService';
 
 export interface WarehouseStubs {
   primaryDataServices: Provider[];
@@ -115,4 +116,9 @@ const defaultAggregatedDataServices = [
   REntityTypeService,
   REntityClassLabelService,
   REntityFullTextService,
-  REntityTimeSpanService,];
+  REntityTimeSpanService,
+
+
+  // Resulting aggregators
+  EntityPreviewService
+];

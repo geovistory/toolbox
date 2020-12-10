@@ -2,8 +2,11 @@
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
-import {REntityTimeSpan} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {REntityTimeSpan, REntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -24,7 +27,16 @@ import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimiti
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-
+const rEntityTimeSpanStub: WarehouseStubs = {
+    primaryDataServices: [
+        REntityService,
+        REdgeService
+    ],
+    aggDataServices: [
+        REntityTimeSpanService,
+        EntityPreviewService
+    ]
+}
 /**
  * Testing whole stack from postgres to warehouse
  */
@@ -35,7 +47,7 @@ describe('REntityTimeSpanService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(rEntityTimeSpanStub)
         wh = injector.get(Warehouse)
         edgeService = injector.get(REdgeService)
 

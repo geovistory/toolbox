@@ -52,15 +52,15 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
     }
 
 
-    onUpsertSql(tableAlias: string) {
-        return `
-        UPDATE war.entity_preview
-        SET entity_label = val->>'entityLabel'
-        FROM ${tableAlias}
-        WHERE pk_entity = "pkEntity"
-        AND project = 0
-        AND entity_label IS DISTINCT FROM val->>'entityLabel'`
-    }
+    // onUpsertSql(tableAlias: string) {
+    //     return `
+    //     UPDATE war.entity_preview
+    //     SET entity_label = val->>'entityLabel'
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = "pkEntity"
+    //     AND project = 0
+    //     AND entity_label IS DISTINCT FROM val->>'entityLabel'`
+    // }
 
 
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {

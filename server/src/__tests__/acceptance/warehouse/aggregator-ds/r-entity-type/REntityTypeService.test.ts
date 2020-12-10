@@ -31,6 +31,7 @@ import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-d
 import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
 import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
 import {REntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const rEntityTypeServiceStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -42,7 +43,8 @@ const rEntityTypeServiceStub: WarehouseStubs = {
     aggDataServices: [
         IdentifyingPropertyService,
         REntityLabelService,
-        REntityTypeService
+        REntityTypeService,
+        EntityPreviewService
     ]
 }
 /**

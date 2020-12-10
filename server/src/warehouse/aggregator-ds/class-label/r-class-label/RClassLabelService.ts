@@ -21,7 +21,7 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
 
     dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
     proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
-
+    batchSize = 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => RClassService)) rClass: RClassService,

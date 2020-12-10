@@ -24,7 +24,19 @@ import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimiti
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+const pEntityTimeSpanStub: WarehouseStubs = {
+    primaryDataServices: [
+        PEntityService,
+        PEdgeService
+    ],
+    aggDataServices: [
+        PEntityTimeSpanService,
+        EntityPreviewService
+    ]
+}
 /**
  * Testing whole stack from postgres to warehouse
  */
@@ -36,7 +48,7 @@ describe('PEntityTimeSpanService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(pEntityTimeSpanStub)
         wh = injector.get(Warehouse)
         s = injector.get(PEntityTimeSpanService)
         edgeService = injector.get(PEdgeService)

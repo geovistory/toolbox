@@ -36,6 +36,7 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const pEntityTypeServiceStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -50,7 +51,8 @@ const pEntityTypeServiceStub: WarehouseStubs = {
         IdentifyingPropertyService,
         PEntityLabelService,
         REntityLabelService,
-        PEntityTypeService
+        PEntityTypeService,
+        EntityPreviewService
     ]
 }
 

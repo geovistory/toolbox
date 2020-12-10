@@ -76,15 +76,15 @@ export class REntityFullTextService extends AggregatedDataService2<REntityId, RE
     getDependencies() {
         return this
     };
-    onUpsertSql(tableAlias: string) {
-        return `
-        UPDATE war.entity_preview
-        SET full_text = val->>'fullText'
-        FROM ${tableAlias}
-        WHERE pk_entity = "pkEntity"
-        AND project = 0
-        AND full_text IS DISTINCT FROM val->>'fullText'`
-    }
+    // onUpsertSql(tableAlias: string) {
+    //     return `
+    //     UPDATE war.entity_preview
+    //     SET full_text = val->>'fullText'
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = "pkEntity"
+    //     AND project = 0
+    //     AND full_text IS DISTINCT FROM val->>'fullText'`
+    // }
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
         const rEntity = await builder.joinProviderThroughDepIdx({

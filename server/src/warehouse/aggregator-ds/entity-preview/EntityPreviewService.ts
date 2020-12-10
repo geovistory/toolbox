@@ -52,6 +52,9 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
 
 
     potentialJoinedProviders: (JoinedProvider<PEntityId, EntityPreviewVal, unknown> | undefined)[] = []
+
+    batchSize=100000;
+
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Optional() @Inject(forwardRef(() => PEntityService)) pEntity?: PEntityService,
@@ -101,7 +104,47 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
         if (rEntityType) this.depREntityType = this.addDepencency(rEntityType)
     }
 
+    onUpsertSql(tableAlias: string) {
+        return `
+        UPDATE war.entity_preview
+        SET
+            class_label =       val->>'classLabel',
+            entity_label =      val->>'entityLabel',
+            full_text =         val->>'fullText',
+            type_label =        val->>'typeLabel',
+            fk_type =           (val->>'fkType')::int,
+            time_span =         val->'timeSpan',
+            first_second =      (val->>'firstSecond')::bigint,
+            last_second =       (val->>'lastSecond')::bigint
+        FROM ${tableAlias}
+        WHERE pk_entity = "pkEntity"
+        AND project = "fkProject"
+        AND (
+                entity_label,
+                class_label,
+                entity_label,
+                full_text,
+                type_label,
+                fk_type,
+                time_span,
+                first_second,
+                last_second
+            )
+            IS DISTINCT FROM
+            (
+                val->>'entityLabel',
+                val->>'classLabel',
+                val->>'entityLabel',
+                val->>'fullText',
+                val->>'typeLabel',
+                (val->>'fkType')::int,
+                val->'timeSpan',
+                (val->>'firstSecond')::bigint,
+                (val->>'lastSecond')::bigint
+            )
+        `
 
+    }
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
@@ -164,8 +207,9 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
 
 
         await builder.tmpTableUpsertAggregations(this.index, joinedColumns.tableDef.tableName)
+        builder.registerUpsertHook()
 
-        await builder.printQueries()
+        // await builder.printQueries()
         const count = await builder.executeQueries()
         return count
     }

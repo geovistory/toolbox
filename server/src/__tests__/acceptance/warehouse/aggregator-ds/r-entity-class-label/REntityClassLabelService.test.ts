@@ -16,14 +16,37 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
+import {REntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 
+const rEntityClassLabelStub: WarehouseStubs = {
+    primaryDataServices: [
+        REntityService,
+        RClassService,
+        ProProjectService,
+        DfhClassLabelService,
+        ProClassLabelService,
+    ],
+    aggDataServices: [
+        RClassLabelService,
+        REntityClassLabelService,
+        EntityPreviewService
+    ]
+}
 describe('REntityClassLabelService', function () {
 
     let wh: Warehouse;
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(rEntityClassLabelStub)
         wh = injector.get(Warehouse)
     })
     beforeEach(async () => {

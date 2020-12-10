@@ -32,6 +32,7 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 
 export const rEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
@@ -42,7 +43,8 @@ export const rEntityLabelStub: WarehouseStubs = {
     ],
     aggDataServices: [
         IdentifyingPropertyService,
-        REntityLabelService
+        REntityLabelService,
+        EntityPreviewService
     ]
 }
 

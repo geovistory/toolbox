@@ -28,6 +28,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 import {createUnion2Mock} from '../r-entity-label/REntityLabelService.test';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 export const pEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -37,7 +38,8 @@ export const pEntityLabelStub: WarehouseStubs = {
     ],
     aggDataServices: [
         IdentifyingPropertyService,
-        PEntityLabelService
+        PEntityLabelService,
+        EntityPreviewService
     ]
 }
 /**

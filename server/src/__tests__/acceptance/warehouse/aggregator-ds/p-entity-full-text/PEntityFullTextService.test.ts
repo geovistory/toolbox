@@ -52,6 +52,7 @@ import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntity
 import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
 import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
 import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const pEntityFullTextStub: WarehouseStubs = {
     primaryDataServices: [
         PEntityService,
@@ -75,7 +76,8 @@ const pEntityFullTextStub: WarehouseStubs = {
         PEntityLabelService,
         REntityLabelService,
         PClassLabelService,
-        PEntityFullTextService
+        PEntityFullTextService,
+        EntityPreviewService
     ],
 }
 /**

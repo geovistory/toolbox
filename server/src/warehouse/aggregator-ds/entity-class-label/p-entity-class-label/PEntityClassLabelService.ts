@@ -35,15 +35,15 @@ export class PEntityClassLabelService extends AggregatedDataService2<PEntityId, 
     getDependencies() {
         return this
     };
-    onUpsertSql(tableAlias: string) {
-        return `
-        UPDATE war.entity_preview
-        SET class_label = val->>'entityClassLabel'
-        FROM ${tableAlias}
-        WHERE pk_entity = "pkEntity"
-        AND project = "fkProject"
-        AND class_label IS DISTINCT FROM val->>'entityClassLabel'`
-    }
+    // onUpsertSql(tableAlias: string) {
+    //     return `
+    //     UPDATE war.entity_preview
+    //     SET class_label = val->>'entityClassLabel'
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = "pkEntity"
+    //     AND project = "fkProject"
+    //     AND class_label IS DISTINCT FROM val->>'entityClassLabel'`
+    // }
 
 
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {

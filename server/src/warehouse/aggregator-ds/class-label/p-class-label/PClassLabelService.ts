@@ -20,7 +20,7 @@ export class PClassLabelService extends AggregatedDataService2<PClassId, PClassL
     depProProject: DependencyIndex<PClassId, PClassLabelVal, ProjectId, ProjectVal>
     depDfhClassLabel: DependencyIndex<PClassId, PClassLabelVal, DfhClassLabelId, DfhClassLabelVal>
     depProClassLabel: DependencyIndex<PClassId, PClassLabelVal, ProClassLabelId, ProClassLabelVal>
-
+    batchSize = 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => PClassService)) pClass: PClassService,

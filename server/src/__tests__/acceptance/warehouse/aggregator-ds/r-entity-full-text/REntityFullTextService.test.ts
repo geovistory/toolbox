@@ -49,6 +49,7 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const rEntityFullTextStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,
@@ -68,7 +69,8 @@ const rEntityFullTextStub: WarehouseStubs = {
         RClassFieldLabelService,
         REntityLabelService,
         RClassLabelService,
-        REntityFullTextService
+        REntityFullTextService,
+        EntityPreviewService
     ],
 }
 /**

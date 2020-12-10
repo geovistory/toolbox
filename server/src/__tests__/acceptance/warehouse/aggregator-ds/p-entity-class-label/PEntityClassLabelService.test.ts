@@ -24,8 +24,9 @@ import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClass
 import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
 import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
 import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 
-const rEntityClassLabelStub: WarehouseStubs = {
+const pEntityClassLabelStub: WarehouseStubs = {
     primaryDataServices: [
         PEntityService,
         PClassService,
@@ -35,7 +36,8 @@ const rEntityClassLabelStub: WarehouseStubs = {
     ],
     aggDataServices: [
         PClassLabelService,
-        PEntityClassLabelService
+        PEntityClassLabelService,
+        EntityPreviewService
     ]
 }
 describe('PEntityClassLabelService', function () {
@@ -45,7 +47,7 @@ describe('PEntityClassLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse(rEntityClassLabelStub)
+        const injector = await setupCleanAndStartWarehouse(pEntityClassLabelStub)
         wh = injector.get(Warehouse)
         s = injector.get(PEntityClassLabelService)
     })

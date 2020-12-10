@@ -75,26 +75,26 @@ export class PEntityTimeSpanService extends AggregatedDataService2<PEntityId, PE
     getDependencies() {
         return this
     };
-    onUpsertSql(tableAlias: string) {
-        return `
-        UPDATE war.entity_preview
-        SET time_span = (${tableAlias}.val->>'timeSpan')::jsonb,
-            first_second = (${tableAlias}.val->>'firstSecond')::bigint,
-            last_second = (${tableAlias}.val->>'lastSecond')::bigint
-        FROM ${tableAlias}
-        WHERE pk_entity = ${tableAlias}."pkEntity"
-        AND project = ${tableAlias}."fkProject"
-        AND (
-            time_span,
-            first_second,
-            last_second
-        )
-        IS DISTINCT FROM
-        (
-            (${tableAlias}.val->>'timeSpan')::jsonb,
-            (${tableAlias}.val->>'firstSecond')::bigint,
-            (${tableAlias}.val->>'lastSecond')::bigint
-        )`
-    }
+    // onUpsertSql(tableAlias: string) {
+    //     return `
+    //     UPDATE war.entity_preview
+    //     SET time_span = (${tableAlias}.val->>'timeSpan')::jsonb,
+    //         first_second = (${tableAlias}.val->>'firstSecond')::bigint,
+    //         last_second = (${tableAlias}.val->>'lastSecond')::bigint
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = ${tableAlias}."pkEntity"
+    //     AND project = ${tableAlias}."fkProject"
+    //     AND (
+    //         time_span,
+    //         first_second,
+    //         last_second
+    //     )
+    //     IS DISTINCT FROM
+    //     (
+    //         (${tableAlias}.val->>'timeSpan')::jsonb,
+    //         (${tableAlias}.val->>'firstSecond')::bigint,
+    //         (${tableAlias}.val->>'lastSecond')::bigint
+    //     )`
+    // }
 }
 
