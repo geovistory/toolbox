@@ -23,7 +23,7 @@ export interface Header {
 
 @Component({
   selector: 'gv-table',
-  templateUrl: './table.component.html',
+  templateUrl: './table.component.html',  
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {

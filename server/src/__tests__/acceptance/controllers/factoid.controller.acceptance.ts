@@ -1,19 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Client, expect } from '@loopback/testlab';
 import { GeovistoryServer } from '../../../server';
-import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
-import { DatDigitalMock } from '../../helpers/data/gvDB/DatDigitalMock';
-import { DatFactoidMappingMock } from '../../helpers/data/gvDB/DatFactoidMappingMock';
-import { DfhApiPropertyMock } from '../../helpers/data/gvDB/DfhApiPropertyMock';
-import { InfAppellationMock } from '../../helpers/data/gvDB/InfAppellationMock';
 import { InfPersistentItemMock } from '../../helpers/data/gvDB/InfPersistentItemMock';
 import { ProProjectMock } from '../../helpers/data/gvDB/ProProjectMock';
 import { PubAccountMock } from '../../helpers/data/gvDB/PubAccountMock';
 import { PubCredentialMock } from '../../helpers/data/gvDB/PubCredentialMock';
-import { TabCellXMock } from '../../helpers/data/gvDB/TabCellXMock';
 import { createJonasSchneider } from '../../helpers/graphs/account.helper';
 import { forFeatureX } from '../../helpers/graphs/feature-X.helper';
 import { setupApplication } from '../../helpers/gv-server-helpers';
+import { cleanDb } from '../../helpers/meta/clean-db.helper';
 
 
 describe('FactoidController', () => {
@@ -25,8 +20,8 @@ describe('FactoidController', () => {
 
     describe('GET /get-factoids-from-entity', () => {
         const accountInProject = PubAccountMock.GAETAN_VERIFIED
-        const accountOutOfProject = PubAccountMock.JONAS;
         const pwdIn = PubCredentialMock.GAETAN_PASSWORD.password;
+        const accountOutOfProject = PubAccountMock.JONAS;
         const pwdOut = PubCredentialMock.JONAS_PASSWORD.password;
 
         beforeEach(async () => {
@@ -53,7 +48,7 @@ describe('FactoidController', () => {
         it('should reject the request because the user is not in the project', async () => {
             const jwt = (await client.post('/login').send({ email: accountOutOfProject.email, password: pwdOut })).body.lb4Token;
             const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt)
-                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity });
+                .query({ pkProject: ProProjectMock.PROJECT_1.pk_entity, pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity, factoidNumber:0, page:0 });
             expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
         });
 
@@ -78,28 +73,36 @@ describe('FactoidController', () => {
         it('should return an empty array, because albert has no factoid', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdIn })).body.lb4Token;
             const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt)
-                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity });
-            expect(res.body).to.containEql({ pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity + '', factoids: [] });
+                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity, factoidNumber: 10, page: 0 });
+            expect(res.body).to.containEql({ pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity + '', factoidEntities: [], totalLength: '0' });
         });
 
         it('should return an array of factoids', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdIn })).body.lb4Token;
             const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt)
-                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.RUDOLF.pk_entity });
+                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.RUDOLF.pk_entity, factoidNumber: 10, page: 0 });
+
             expect(res.body.pkEntity).to.be.equal(InfPersistentItemMock.RUDOLF.pk_entity + '');
-            expect(res.body.factoids.length).to.be.equal(2);
-            expect(res.body.factoids[0].fkdigital).to.be.equal(DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity);
-            expect(res.body.factoids[1].fkdigital).to.be.equal(DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity);
-            expect(res.body.factoids[0].fkfactoidmapping).to.be.equal(DatFactoidMappingMock.FactoidMapping_BIRTHDATES_BIRTH.pk_entity);
-            expect(res.body.factoids[1].fkfactoidmapping).to.be.equal(DatFactoidMappingMock.FactoidMapping_BIRTHDATES_BIRTH.pk_entity);
-            expect(res.body.factoids[0].fkclass).to.be.equal(DatFactoidMappingMock.FactoidMapping_BIRTHDATES_BIRTH.fk_class);
-            expect(res.body.factoids[1].fkclass).to.be.equal(DatFactoidMappingMock.FactoidMapping_BIRTHDATES_BIRTH.fk_class);
-            expect(res.body.factoids[0].fkproperty).to.be.equal(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN.dfh_pk_property);
-            expect(res.body.factoids[1].fkproperty).to.be.equal(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_pk_property);
-            expect(res.body.factoids[0].value).to.be.equal(TabCellXMock.FEATURE_X_2_2.numeric_value + '');
-            expect(res.body.factoids[1].value).to.be.equal(InfAppellationMock.RUDOLF.string);
+            expect(res.body.factoidEntities[0].pkClass).to.be.equal(61);
+            expect(res.body.factoidEntities[0].pkRow).to.be.equal(1000);
+            expect(res.body.factoidEntities[0].pkFactoidMapping).to.be.equal(7000);
+            expect(res.body.factoidEntities[0].headerStatements.length).to.be.equal(1);
+            expect(res.body.factoidEntities[0].headerStatements[0].fkProperty).to.be.equal(86);
+            expect(res.body.factoidEntities[0].headerStatements[0].isOutgoing).to.be.equal(true);
+            expect(res.body.factoidEntities[0].headerStatements[0].value).to.be.equal('Rudolf of Habsbourg');
+            expect(res.body.factoidEntities[0].headerStatements[0].pkEntity).to.be.equal(2005);
+            expect(res.body.factoidEntities[0].headerStatements[0].pkCell).to.be.equal(2002);
+            expect(res.body.factoidEntities[0].bodyStatements.length).to.be.equal(1);
+            expect(res.body.factoidEntities[0].bodyStatements[0].fkProperty).to.be.equal(152);
+            expect(res.body.factoidEntities[0].bodyStatements[0].isOutgoing).to.be.equal(true);
+            expect(res.body.factoidEntities[0].bodyStatements[0].value).to.be.equal('1218');
+            expect(res.body.factoidEntities[0].bodyStatements[0].pkEntity).to.be.equal(null);
+            expect(res.body.factoidEntities[0].bodyStatements[0].pkCell).to.be.equal(2003);
+
         });
 
+
+        //TODO: Add all tests concerning pagination (param: factoidNumber + param: page)
 
     });
 

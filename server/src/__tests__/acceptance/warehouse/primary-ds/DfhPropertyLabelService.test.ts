@@ -4,7 +4,7 @@ import {expect} from '@loopback/testlab';
 import {DfhPropertyLabelService} from '../../../../warehouse/primary-ds/DfhPropertyLabelService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {setupCleanAndStartWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 

@@ -3,7 +3,7 @@ import {expect} from '@loopback/testlab';
 import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 

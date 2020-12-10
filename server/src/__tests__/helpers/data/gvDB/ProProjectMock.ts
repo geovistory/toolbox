@@ -29,7 +29,7 @@ export class ProProjectMock {
   })
 
   static readonly SANDBOX_PROJECT = new ProProject({
-    pk_entity: 3004,
+    pk_entity: 375232,
     fk_language: InfLanguageMock.ENGLISH.pk_entity
   })
 
