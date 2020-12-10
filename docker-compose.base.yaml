@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: local_pw
       GEOVISTORY_DB: ${DEFAULT_DB}
-    command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/logs
+    command: ${DOCKER_PG_COMMAND}
     ports:
       - ${DOCKER_PG_HOST_PORT}:5432
     restart: always

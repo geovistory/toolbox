@@ -55,8 +55,14 @@ async function start() {
 }
 
 start()
-  .then(_ => console.log('Successfully restored backup!'))
-  .catch(err => console.error(err));
+  .then(_ => {
+    console.log('Successfully restored backup!')
+    process.exit();
+  })
+  .catch(err => {
+    console.error(err)
+    process.exit(1);
+  });
 
 async function dropSchemas() {
   const c = new pg.Client({connectionString: process.env.DATABASE_URL});
