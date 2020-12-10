@@ -241,7 +241,7 @@ export class RamListComponent implements OnInit, OnDestroy {
                       icon: 'cell',
                       label: 'Cell ' + cell.fk_row + ':' + cell.fk_column,
                       tooltip: 'Cell',
-                      fkRow: cell.fk_row,
+                      fkRow: cell.fk_row + '',
                       fkDigital: cell.fk_digital
                     }
                   },

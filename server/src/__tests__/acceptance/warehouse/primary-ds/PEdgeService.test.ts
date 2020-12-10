@@ -9,7 +9,7 @@ import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../helpers/atomic/inf-temporal-entity.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {InfAppellationMock} from '../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';

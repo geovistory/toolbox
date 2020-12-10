@@ -37,10 +37,36 @@ export class InfAppellationMock {
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Rudolf of Habsbourg'
   })
-  static readonly SOURCE_HABSBOURG_EMPIRE = new InfAppellation({
+  static readonly JEAN = new InfAppellation({
     pk_entity: 5007,
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Jean'
+  })
+  static readonly HANS = new InfAppellation({
+    pk_entity: 5008,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Hans'
+  })
+  static readonly PIERRE = new InfAppellation({
+    pk_entity: 5009,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Pierre'
+  })
+  static readonly ANGELA = new InfAppellation({
+    pk_entity: 5010,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Angela'
+  })
+  static readonly SOURCE_HABSBOURG_EMPIRE = new InfAppellation({
+    pk_entity: 5011,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Habsbourg Empire'
+  })
+
+  static readonly SOURCE_UNIONS = new InfAppellation({
+    pk_entity: 5012,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Unions'
   })
 
 }

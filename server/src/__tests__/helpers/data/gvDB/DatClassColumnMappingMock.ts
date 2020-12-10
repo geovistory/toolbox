@@ -12,4 +12,16 @@ export class DatClassColumnMappingMock {
         fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
         fk_column: DatColumnMock.COL_NAMES.pk_entity
     })
+
+    static readonly MAPPING_COL_PEOPLE_TO_CLASS_PERSON = new DatClassColumnMapping({
+        pk_entity: 4001,
+        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+        fk_column: DatColumnMock.COL_PEOPLE.pk_entity
+    })
+
+    static readonly MAPPING_COL_UNION_TO_CLASS_PERSON = new DatClassColumnMapping({
+        pk_entity: 4002,
+        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+        fk_column: DatColumnMock.COL_UNION.pk_entity
+    })
 }

@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import {WarEntityPreview} from '../../../models';
 import {GeovistoryServer} from '../../../server';
 import {createWarEntityPreview, deleteWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity_preview.helper';
-import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {wait} from '../../helpers/warehouse-helpers';
 
@@ -140,7 +140,6 @@ describe('WarEntityPreviewController', () => {
         // check the entity preview
         reply = await pEvent(socketClient, 'entityPreview');
         expect(reply.entity_label).to.equal('foo project 2');
-
       });
       it('should return versions of repo -> project -> repo', async () => {
         // add to stream

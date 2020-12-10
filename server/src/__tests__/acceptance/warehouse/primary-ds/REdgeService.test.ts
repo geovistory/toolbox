@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {REdgeService} from '../../../../warehouse/primary-ds/edge/REdgeService';
-import {Warehouse} from '../../../../warehouse/Warehouse';
-import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
-import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
-import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
-import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {InfAppellationMock} from '../../../helpers/data/gvDB/InfAppellationMock';
-import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
-import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
-import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
-import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import { REdgeService } from '../../../../warehouse/primary-ds/edge/REdgeService';
+import { Warehouse } from '../../../../warehouse/Warehouse';
+import { createInfAppellation } from '../../../helpers/atomic/inf-appellation.helper';
+import { createInfLanguage } from '../../../helpers/atomic/inf-language.helper';
+import { createInfPersistentItem } from '../../../helpers/atomic/inf-persistent-item.helper';
+import { createInfStatement } from '../../../helpers/atomic/inf-statement.helper';
+import { createInfTemporalEntity } from '../../../helpers/atomic/inf-temporal-entity.helper';
+import { createProInfoProjRel } from '../../../helpers/atomic/pro-info-proj-rel.helper';
+import { createProProject } from '../../../helpers/atomic/pro-project.helper';
+import { cleanDb } from '../../../helpers/meta/clean-db.helper';
+import { InfAppellationMock } from '../../../helpers/data/gvDB/InfAppellationMock';
+import { InfLanguageMock } from '../../../helpers/data/gvDB/InfLanguageMock';
+import { InfPersistentItemMock } from '../../../helpers/data/gvDB/InfPersistentItemMock';
+import { InfStatementMock } from '../../../helpers/data/gvDB/InfStatementMock';
+import { InfTemporalEntityMock } from '../../../helpers/data/gvDB/InfTemporalEntityMock';
+import { ProInfoProjRelMock } from '../../../helpers/data/gvDB/ProInfoProjRelMock';
+import { ProProjectMock } from '../../../helpers/data/gvDB/ProProjectMock';
+import { setupCleanAndStartWarehouse, waitUntilSatisfy } from '../../../helpers/warehouse-helpers';
 
 describe('REdgeService', () => {
 
@@ -29,7 +29,7 @@ describe('REdgeService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.rEdge;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () { await wh.stop() })
 
   it('should have field edges in index after initIdx()', async () => {
     await createInfLanguage(InfLanguageMock.GERMAN)

@@ -11,19 +11,19 @@
  * - mounts the Lb4 App
  */
 
-import {ApplicationConfig, Context} from '@loopback/core';
-import {RestBindings} from '@loopback/rest';
-import {once} from 'events';
+import { ApplicationConfig, Context } from '@loopback/core';
+import { RestBindings } from '@loopback/rest';
+import { once } from 'events';
 import express from 'express';
 import * as http from 'http';
-import {AddressInfo} from 'net';
-import {GeovistoryApplication} from './application';
-import {WarEntityPreviewController} from './controllers';
-import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
-import {WebSocketServer} from './realtime/websockets/websocket.server';
-import {RestApplicationLike, RestServerLike} from '@loopback/testlab';
-import {ImportTableController} from './controllers/import-table.controller';
-import {SysStatusController} from './controllers/sys-status.controller';
+import { AddressInfo } from 'net';
+import { GeovistoryApplication } from './application';
+import { WarEntityPreviewController } from './controllers';
+import { PostgresNotificationsManager } from './realtime/db-listeners/postgres-notifications-manager';
+import { WebSocketServer } from './realtime/websockets/websocket.server';
+import { RestApplicationLike, RestServerLike } from '@loopback/testlab';
+import { ImportTableController } from './controllers/import-table.controller';
+import { SysStatusController } from './controllers/sys-status.controller';
 
 
 
@@ -115,7 +115,7 @@ export class GeovistoryServer extends Context implements RestApplicationLike {
     await this.lbApp.start();
 
     //for the importer:
-    this.lbApp.bind(RestBindings.REQUEST_BODY_PARSER_OPTIONS).to({limit: '500mb'})
+    this.lbApp.bind(RestBindings.REQUEST_BODY_PARSER_OPTIONS).to({ limit: '500mb' })
 
     const port = this.lbApp.restServer.config.port || 3000;
     const host = this.lbApp.restServer.config.host ?? '127.0.0.1';

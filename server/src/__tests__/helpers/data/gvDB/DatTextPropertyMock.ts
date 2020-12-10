@@ -24,7 +24,7 @@ export class DatTextPropertyMock {
     fk_language: InfLanguageMock.ENGLISH.pk_entity,
     fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
     fk_system_type: SysSystemTypeMock.LABEL_OF_DATA_RECORD.pk_entity,
-    fk_entity: DatColumnMock.COL_DATES.pk_entity
+    fk_entity: DatColumnMock.COL_BIRTHDATES.pk_entity
   })
 
   static readonly RND1 = new DatTextProperty({
@@ -43,5 +43,32 @@ export class DatTextPropertyMock {
     fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
     fk_system_type: SysSystemTypeMock.LABEL_OF_DATA_RECORD.pk_entity,
     fk_entity: DatColumnMock.COL_RND2.pk_entity
+  })
+
+  static readonly PEOPLE = new DatTextProperty({
+    pk_entity: 5004,
+    string: 'Peoples',
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+    fk_system_type: SysSystemTypeMock.LABEL_OF_DATA_RECORD.pk_entity,
+    fk_entity: DatColumnMock.COL_PEOPLE.pk_entity
+  })
+
+  static readonly UNION = new DatTextProperty({
+    pk_entity: 5005,
+    string: 'Union',
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+    fk_system_type: SysSystemTypeMock.LABEL_OF_DATA_RECORD.pk_entity,
+    fk_entity: DatColumnMock.COL_UNION.pk_entity
+  })
+
+  static readonly BIRTH2 = new DatTextProperty({
+    pk_entity: 5006,
+    string: 'Birth date',
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+    fk_system_type: SysSystemTypeMock.LABEL_OF_DATA_RECORD.pk_entity,
+    fk_entity: DatColumnMock.COL_BIRTHDATES2.pk_entity
   })
 }

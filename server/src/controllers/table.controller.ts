@@ -78,9 +78,6 @@ export class TableController {
     // filter and orderby columns
     let masterColumns: string[] = [];
 
-
-    // console.log('options.sortBy', JSON.stringify(options.sortBy))
-
     // add sort-by column
     if (options.sortBy && options.sortBy !== 'pk_row') {
       masterColumns = [options.sortBy]

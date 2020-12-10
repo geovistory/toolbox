@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
-import {ProPropertyLabelService} from '../../../../warehouse/primary-ds/ProPropertyLabelService';
-import {Warehouse} from '../../../../warehouse/Warehouse';
-import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {createProTextProperty, deleteProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {ProTextPropertyMock} from '../../../helpers/data/gvDB/ProTextPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import { expect } from '@loopback/testlab';
+import { ProPropertyLabelService } from '../../../../warehouse/primary-ds/ProPropertyLabelService';
+import { Warehouse } from '../../../../warehouse/Warehouse';
+import { createInfLanguage } from '../../../helpers/atomic/inf-language.helper';
+import { createProProject } from '../../../helpers/atomic/pro-project.helper';
+import { createProTextProperty, deleteProTextProperty } from '../../../helpers/atomic/pro-text-property.helper';
+import { cleanDb } from '../../../helpers/meta/clean-db.helper';
+import { InfLanguageMock } from '../../../helpers/data/gvDB/InfLanguageMock';
+import { ProProjectMock } from '../../../helpers/data/gvDB/ProProjectMock';
+import { ProTextPropertyMock } from '../../../helpers/data/gvDB/ProTextPropertyMock';
+import { createTypes } from '../../../helpers/meta/model.helper';
+import { setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy } from '../../../helpers/warehouse-helpers';
 
 describe('ProPropertyLabelService', () => {
 
@@ -25,7 +25,7 @@ describe('ProPropertyLabelService', () => {
   })
 
 
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () { await wh.stop() })
 
   it('should create pro Property label in db', async () => {
     const txtProp = await createMock();

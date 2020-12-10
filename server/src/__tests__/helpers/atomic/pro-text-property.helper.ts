@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import { ProTextProperty } from '../../../models';
+import { ProTextPropertyRepository } from '../../../repositories';
 import { testdb } from "../testdb";
-import {ProTextPropertyRepository} from '../../../repositories';
-import {ProTextProperty} from '../../../models';
-import {AtmLanguages} from './inf-language.helper';
-import {dealWithPkEntity} from './_sequences.helper';
+import { dealWithPkEntity } from './_sequences.helper';
 function createProTextPropertyRepo() {
     return new ProTextPropertyRepository(
-      testdb
+        testdb
     )
-  }
+}
 
-export async function createProTextPropertyClassLabel(fkProject: number, fkClass: number, classLabel: string, fkLanguage = AtmLanguages.ENGLISH.id) {
+export async function createProTextPropertyClassLabel(fkProject: number, fkClass: number, classLabel: string, fkLanguage = 18889) { //english
     const item = new ProTextProperty({
         fk_language: fkLanguage,
         fk_project: fkProject,
@@ -23,7 +22,7 @@ export async function createProTextPropertyClassLabel(fkProject: number, fkClass
     return repo.findById(created.pk_entity)
 }
 
-export async function createProTextPropertyPropertyLabel(fkProject: number, fkProperty: number, propertyLabel: string, fkLanguage = AtmLanguages.ENGLISH.id) {
+export async function createProTextPropertyPropertyLabel(fkProject: number, fkProperty: number, propertyLabel: string, fkLanguage = 18889) { //english
     const item = new ProTextProperty({
         fk_language: fkLanguage,
         fk_project: fkProject,
@@ -49,4 +48,4 @@ export async function deleteProTextProperty(pkEntity: number) {
 
 export async function createProTextProperty(item: Partial<ProTextProperty>) {
     return createProTextPropertyRepo().create(await dealWithPkEntity(item, 'projects'));
-  }
+}

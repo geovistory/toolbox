@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
-import {RClassService} from '../../../../warehouse/primary-ds/class/RClassService';
-import {Warehouse} from '../../../../warehouse/Warehouse';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import { expect } from '@loopback/testlab';
+import { RClassService } from '../../../../warehouse/primary-ds/class/RClassService';
+import { Warehouse } from '../../../../warehouse/Warehouse';
+import { createDfhApiClass } from '../../../helpers/atomic/dfh-api-class.helper';
+import { cleanDb } from '../../../helpers/meta/clean-db.helper';
+import { DfhApiClassMock } from '../../../helpers/data/gvDB/DfhApiClassMock';
+import { setupCleanAndStartWarehouse, waitUntilNext } from '../../../helpers/warehouse-helpers';
 
 describe('RClassService', () => {
 
@@ -17,10 +17,10 @@ describe('RClassService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.rClass;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () { await wh.stop() })
 
   it('should add api-class', async () => {
-    const {cla} = await createRClassMockData();
+    const { cla } = await createRClassMockData();
     await waitUntilNext(s.afterPut$)
     const result = await s.index.getFromIdx({
       pkClass: cla.dfh_pk_class ?? -1
@@ -35,6 +35,6 @@ describe('RClassService', () => {
 
 async function createRClassMockData() {
   const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
-  return {cla};
+  return { cla };
 }
 
