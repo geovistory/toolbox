@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  # db access from host machine: postgres://postgres:local_pw@{DOCKER_IP}:5005
+  db:
+    build: 
+      context: ./db
+      dockerfile: db.dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_pw
+      GEOVISTORY_DB: ${DEFAULT_DB}
+    command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/logs
+    ports:
+      - ${DOCKER_PG_HOST_PORT}:5432
+    restart: always
+    volumes:
+      - "postgis-data:/var/lib/postgresql/data"
+      - "postgis-logs:/logs"
+
+volumes:
+  postgis-data:
+  postgis-logs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DOCKER_PG_HOST_LOGS_DIR}
+      o: bind
