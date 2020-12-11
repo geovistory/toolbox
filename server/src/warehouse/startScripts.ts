@@ -1,77 +1,94 @@
 import c from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import {Pool} from 'pg';
 import pgkDir from 'pkg-dir';
 import {createWarehouse} from './createWarehouse';
-import {WarehouseConfig, Warehouse} from './Warehouse';
+import {Warehouse, WarehouseConfig} from './Warehouse';
 
 const appRoot = pgkDir.sync() ?? ''
+const schemaPrefix = 'war_cache_'
 
-// Use this function on heroku environments
-// It starts the warehouse with backups: this requires a bucketeer instance,
-// specified by env vars. Additionnaly the warehouse-compat-list is required
+// Use this function to start warehouse on heroku environments
+// The warehouse-compat-list is required
 // (it's not created by this function, because on heroku .git folder is missing)
 export async function start() {
-
-    // reads warhouse compatible commits
-    const compatibleWithCommits = fs
-        .readFileSync(path.join(appRoot, '/deployment/warehouse-compat-list.txt'))
-        .toString()
-        .split('\n');
-
-    // reads latest commit
-    if (!compatibleWithCommits.length) throw new Error('Can\'t find the latest commit from compatibleWithCommits')
-    const currentCommit = compatibleWithCommits[0]
-
-    const config: WarehouseConfig = {
-        backups: {
-            currentCommit,
-            compatibleWithCommits
-        }
-    }
-    const warehouse = createWarehouse(config).get(Warehouse)
+    const config = getWarehouseConfig()
+    const warehouse: Warehouse = createWarehouse(config).get(Warehouse)
     await warehouse.start();
+    await removeWarehouseSchemasExcept(warehouse.pgPool, schemaPrefix, warehouse.schemaName)
+    return warehouse
 }
 
 
-// Use this function on local environments
-// Start on local dev server with backups: this requires a bucketeer instance,
-// specified by env vars. The function will create the warehouse-compat-list
+// Use this function to start warehouse on local environments
+// The function will create the warehouse-compat-list
 // (this requires git CLI and .git folder)
 export async function startDev() {
-
     c.execSync(`cd ${path.join(appRoot, '..')} && sh deployment/create-warehouse-compat-list.sh`);
+    await start();
+}
 
+
+// Use this function to start warehouse on local environments
+// Cleans the whDB and starts warehouse without backups
+export async function cleanAndStartDev() {
+    c.execSync(`cd ${path.join(appRoot, '..')} && sh deployment/create-warehouse-compat-list.sh`);
+    const config: WarehouseConfig = getWarehouseConfig()
+    const warehouse = createWarehouse(config).get(Warehouse)
+    await warehouse.pgPool.query(`drop schema if exists ${warehouse.schemaName} cascade;`)
+    await warehouse.start();
+    await removeWarehouseSchemasExcept(warehouse.pgPool, schemaPrefix, warehouse.schemaName)
+    return warehouse
+}
+
+
+
+function getSchemaName() {
+    const file = 'warehouse-compat-list.txt'
+    const filePath = path.join(__dirname, '../../../deployment/', file)
+    // const filePath= path.join(appRoot, '/deployment/', file)
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
-        .readFileSync(path.join(appRoot, '../deployment/warehouse-compat-list.txt'))
+        .readFileSync(filePath)
         .toString()
-        .split('\n');
+        .split('\n')
+        .filter(str => !!str);
 
-    // reads current commit
-    const currentCommit = c.execSync('git rev-parse --short HEAD').toString().replace('\n', '');
+    if (!compatibleWithCommits.length) throw new Error('Can\'t find the latest commit from compatibleWithCommits')
+
+    // gets commit sha of last change on warehouse directory
+    const warehouseCommit = compatibleWithCommits[compatibleWithCommits.length - 1]
+
+    return schemaPrefix + warehouseCommit
+}
+
+function getWarehouseConfig() {
+    if (!process.env.DATABASE_URL) throw new Error("Warehouse > No DATABASE_URL provided");
 
     const config: WarehouseConfig = {
-        backups: {
-            currentCommit,
-            compatibleWithCommits
-        }
+        geovistoryDatabase: process.env.DATABASE_URL,
+        warehouseSchema: getSchemaName()
     }
-    const warehouse = createWarehouse(config).get(Warehouse)
-    await warehouse.start();
+
+    return config
 }
 
-
-// Use this function on local environments
-// Cleans the whDB and starts warehouse without backups
-// (No bucketeer instance required, everything related to backups is skipped)
-export async function cleanAndStartDev() {
-    const config: WarehouseConfig = {}
-    const warehouse = createWarehouse(config).get(Warehouse)
-    const client = await warehouse.pgPool.connect()
-    await client.query(`drop schema if exists ${warehouse.schemaName} cascade;`)
-    client.release()
-    await warehouse.start();
+/**
+ *
+ * @param pgPool pg PoolClient
+ * @param warehouseSchemaPrefix prefix of warehouse schemas
+ * @param notRemovingSchema complete name of schema not to remove, even if it begins with warehouseSchemaPrefix
+ */
+async function removeWarehouseSchemasExcept(pgPool: Pool, warehouseSchemaPrefix: string, notRemovingSchema: string) {
+    const res = await pgPool.query<{schema: string}>(`
+        SELECT schema_name AS schema
+        FROM information_schema.schemata
+        WHERE schema_name iLike $1 || '%'
+        AND schema_name != $2
+    `, [warehouseSchemaPrefix, notRemovingSchema])
+    const schemasToRemove = res.rows
+    for (const item of schemasToRemove) {
+        await pgPool.query(`DROP SCHEMA ${item.schema} CASCADE;`)
+    }
 }
-
-

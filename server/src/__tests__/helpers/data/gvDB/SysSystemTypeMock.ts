@@ -2,7 +2,8 @@
 import {SysSystemType} from '../../../../models';
 
 /**
- * pk_entity prefix: 500
+ * pk_entity prefix: ---
+ * we take the pk_entities from the production/staging db
  */
 export class SysSystemTypeMock {
 

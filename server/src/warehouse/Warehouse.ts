@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
-import {Pool, PoolClient, Notification} from 'pg';
+import {Notification, Pool, PoolClient} from 'pg';
 import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first, mapTo} from 'rxjs/operators';
-import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
+import {getPgSslForPg8} from '../utils/databaseUrl';
 import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
 import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
 import {Logger} from './base/classes/Logger';
@@ -23,13 +23,8 @@ interface NotificationHandler {
 }
 
 export interface WarehouseConfig {
-    // if provided, warehouse creates backups
-    backups?: {
-        // current git commit (short hash)
-        currentCommit: string,
-        // array of commits
-        compatibleWithCommits: string[]
-    }
+    geovistoryDatabase: string,
+    warehouseSchema: string,
 }
 
 @Injectable()
@@ -37,8 +32,6 @@ export class Warehouse {
 
     pgPool: Pool;
     pgListener: PoolClient;
-    // pgClient: PoolClient;
-
 
 
     // if true, changes on dependencies are not propagated to aggregators
@@ -61,8 +54,9 @@ export class Warehouse {
         @Inject(AGG_DS) private aggDs: Type<any>[],
         private injector: Injector
     ) {
+        this.schemaName = config.warehouseSchema;
 
-        const connectionString = getPgUrlForPg8()
+        const connectionString =  config.geovistoryDatabase;
         const ssl = getPgSslForPg8(connectionString)
         this.pgPool = new Pool({
             max: 15,
@@ -122,14 +116,10 @@ export class Warehouse {
             this.pgNotify('warehouse_initializing', 'true').catch(e => { })
         }, 1000)
 
-        const interval2 = setInterval(() => {
-            this.pgNotify('warehouse_initializing', 'true').catch(e => { })
-        }, 10000)
+
 
 
         const t0 = Logger.start(this.constructor.name, 'Create Warehouse data', 0)
-
-        await this.getInitBackupDate();
 
         this.preventPropagation = true
         await this.createPrimaryData();
@@ -139,7 +129,6 @@ export class Warehouse {
         await this.createAggregatedData()
 
         clearInterval(interval1)
-        clearInterval(interval2)
 
         await this.pgNotify('warehouse_initializing', 'false')
 
@@ -202,26 +191,6 @@ export class Warehouse {
         await this.pgPool.query(`DROP SCHEMA IF EXISTS ${this.schemaName}`)
         // terminate process
         throw new Error(errorMsg)
-    }
-
-    /**
-     * Returns a promise that resolves with {changed:true} if the any file
-     * in the src/warehouse folder has changed since the given commit, else it
-     * resolves with {changed:false}
-     *
-     * @param commit short hash of git commit to compare with current commit
-     */
-    private checkIfCodeChanged(commit: string): {changed: boolean} {
-
-        Logger.msg(this.constructor.name, `Checking if code changed. Current: ${commit}.`)
-
-        Logger.msg(this.constructor.name, `Compatibility list: ${(this.config?.backups?.compatibleWithCommits ?? ['undefined']).join(', ')}`)
-
-        if (commit === this.config.backups?.currentCommit) return {changed: false}
-        if (this.config.backups?.compatibleWithCommits.some(
-            (compat) => compat.substring(0, 7) === commit.substring(0, 7)
-        )) return {changed: false}
-        return {changed: true}
     }
 
     /**

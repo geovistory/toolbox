@@ -13,17 +13,12 @@ import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
 
 
 const config: WarehouseConfig = {
-    backups: undefined
+    geovistoryDatabase: process.env.DATABASE_URL ?? '',
+    warehouseSchema: 'war_cache_1'
 }
-export async function setupWarehouseWithoutStarting() {
-    const wh = createWarehouse(config).get(Warehouse)
-    await wh.dbSetup()
 
-    return wh;
-}
 
 export async function setupCleanAndStartWarehouse(stubs?: WarehouseStubs) {
-
     const injector = createWarehouse(config, stubs)
     const wh = injector.get(Warehouse)
     await wh.pgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
@@ -32,6 +27,7 @@ export async function setupCleanAndStartWarehouse(stubs?: WarehouseStubs) {
     await wh.pgListener.query('LISTEN modified_war_class_preview;')
     return injector;
 }
+
 
 export async function truncateWarehouseTables(wh: Warehouse) {
     await wh.pgPool.query(`

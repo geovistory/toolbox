@@ -30,6 +30,7 @@ export type EntityPreviewVal = {
     fkType: number
     typeLabel: string
 }
+type JoinedProviders = (JoinedProvider<PEntityId, EntityPreviewVal, unknown> | undefined)[];
 
 @Injectable()
 export class EntityPreviewService extends AggregatedDataService2<PEntityId, EntityPreviewVal>{
@@ -51,9 +52,8 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
     depREntityType: DependencyIndex<PEntityId, EntityPreviewVal, REntityId, REntityTypeVal>
 
 
-    potentialJoinedProviders: (JoinedProvider<PEntityId, EntityPreviewVal, unknown> | undefined)[] = []
 
-    batchSize=100000;
+    batchSize = 100000;
 
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
@@ -148,35 +148,36 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
     async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
+        const p: JoinedProviders = []
         // EntityLabel
-        await this.joinProjectColumnTable(builder, [{r: 'entityLabel', p: 'entityLabel'}], this.depPEntityLabel)
-        await this.joinRepoColumnTable(builder, [{r: 'entityLabel', p: 'entityLabel'}], this.depREntityLabel)
+        await this.joinProjectColumnTable(p, builder, [{r: 'entityLabel', p: 'entityLabel'}], this.depPEntityLabel)
+        await this.joinRepoColumnTable(p, builder, [{r: 'entityLabel', p: 'entityLabel'}], this.depREntityLabel)
 
         // EntityClassLabel
-        await this.joinProjectColumnTable(builder, [{r: 'classLabel', p: 'entityClassLabel'}], this.depPEntityClassLabel)
-        await this.joinRepoColumnTable(builder, [{r: 'classLabel', p: 'entityClassLabel'}], this.depREntityClassLabel)
+        await this.joinProjectColumnTable(p, builder, [{r: 'classLabel', p: 'entityClassLabel'}], this.depPEntityClassLabel)
+        await this.joinRepoColumnTable(p, builder, [{r: 'classLabel', p: 'entityClassLabel'}], this.depREntityClassLabel)
 
         // EntityFullText
-        await this.joinProjectColumnTable(builder, [{r: 'fullText', p: 'fullText'}], this.depPEntityFullText)
-        await this.joinRepoColumnTable(builder, [{r: 'fullText', p: 'fullText'}], this.depREntityFullText)
+        await this.joinProjectColumnTable(p, builder, [{r: 'fullText', p: 'fullText'}], this.depPEntityFullText)
+        await this.joinRepoColumnTable(p, builder, [{r: 'fullText', p: 'fullText'}], this.depREntityFullText)
 
         // EntityTimeSpan
-        await this.joinProjectColumnTable(builder, [
+        await this.joinProjectColumnTable(p, builder, [
             {r: 'timeSpan', p: 'timeSpan'},
             {r: 'firstSecond', p: 'firstSecond'},
             {r: 'lastSecond', p: 'lastSecond'}
         ], this.depPEntityTimeSpan)
-        await this.joinRepoColumnTable(builder, [
+        await this.joinRepoColumnTable(p, builder, [
             {r: 'timeSpan', p: 'timeSpan'},
             {r: 'firstSecond', p: 'firstSecond'},
             {r: 'lastSecond', p: 'lastSecond'}
         ], this.depREntityTimeSpan)
 
         // EntityTimeSpan
-        await this.joinProjectColumnTable(builder, [{r: 'fkType', p: {n: 'fkType', t: 'int'}}, {r: 'typeLabel', p: 'typeLabel'}], this.depPEntityType)
-        await this.joinRepoColumnTable(builder, [{r: 'fkType', p: {n: 'fkType', t: 'int'}}, {r: 'typeLabel', p: 'typeLabel'}], this.depREntityType)
+        await this.joinProjectColumnTable(p, builder, [{r: 'fkType', p: {n: 'fkType', t: 'int'}}, {r: 'typeLabel', p: 'typeLabel'}], this.depPEntityType)
+        await this.joinRepoColumnTable(p, builder, [{r: 'fkType', p: {n: 'fkType', t: 'int'}}, {r: 'typeLabel', p: 'typeLabel'}], this.depREntityType)
 
-        const providers = this.potentialJoinedProviders.filter(p => !!p) as JoinedProvider<
+        const providers = p.filter(item => !!item) as JoinedProvider<
             PEntityId,
             EntityPreviewVal,
             Partial<EntityPreviewVal>
@@ -209,13 +210,14 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
         await builder.tmpTableUpsertAggregations(this.index, joinedColumns.tableDef.tableName)
         builder.registerUpsertHook()
 
-        // await builder.printQueries()
+        await builder.printQueries()
         const count = await builder.executeQueries()
         return count
     }
 
 
     async joinProjectColumnTable(
+        p: JoinedProviders,
         builder: AggregatorSqlBuilder<PEntityId, EntityPreviewVal>,
         properties: {
             r: string,
@@ -233,20 +235,21 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
                 },
                 conditionTrueIf: {},
                 createCustomObject: () => `jsonb_strip_nulls(jsonb_build_object(
-                   ${properties.map(p => {
-                    if (!p.p) return `'${p.r}', t2.val`
-                    else if (typeof p.p === 'string') {
-                        return `'${p.r}', t2.val->>'${p.p}'`
+                   ${properties.map(prop => {
+                    if (!prop.p) return `'${prop.r}', t2.val`
+                    else if (typeof prop.p === 'string') {
+                        return `'${prop.r}', t2.val->>'${prop.p}'`
                     } else {
-                        return `'${p.r}', (t2.val->>'${p.p.n}')::${p.p.t}`
+                        return `'${prop.r}', (t2.val->>'${prop.p.n}')::${prop.p.t}`
                     }
                 }).join(',\n')}
                 ))`,
             })
-            this.potentialJoinedProviders.push(x)
+            p.push(x)
         }
     }
     async joinRepoColumnTable(
+        p: JoinedProviders,
         builder: AggregatorSqlBuilder<PEntityId, EntityPreviewVal>,
         properties: {
             r: string,
@@ -264,17 +267,17 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
                 joinOnCustom: ['"r_fkProject" = 0'],
                 conditionTrueIf: {},
                 createCustomObject: () => `jsonb_strip_nulls(jsonb_build_object(
-                    ${properties.map(p => {
-                    if (!p.p) return `'${p.r}', t2.val`
-                    else if (typeof p.p === 'string') {
-                        return `'${p.r}', t2.val->>'${p.p}'`
+                    ${properties.map(prop => {
+                    if (!prop.p) return `'${prop.r}', t2.val`
+                    else if (typeof prop.p === 'string') {
+                        return `'${prop.r}', t2.val->>'${prop.p}'`
                     } else {
-                        return `'${p.r}', (t2.val->>'${p.p.n}')::${p.p.t}`
+                        return `'${prop.r}', (t2.val->>'${prop.p.n}')::${prop.p.t}`
                     }
                 }).join(',\n')}
                 ))`,
             })
-            this.potentialJoinedProviders.push(x)
+            p.push(x)
         }
     }
 

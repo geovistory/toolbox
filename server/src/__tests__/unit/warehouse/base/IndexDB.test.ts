@@ -4,6 +4,7 @@ import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
 import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
 import {waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {createWarehouse} from '../../../../warehouse/createWarehouse';
+import {getPgUrlForPg8} from '../../../../utils/databaseUrl';
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,7 +14,8 @@ export class TestIdx extends IndexDB<string, any> {
 }
 
 const config: WarehouseConfig = {
-  backups: undefined
+  geovistoryDatabase: getPgUrlForPg8(),
+  warehouseSchema: 'war_cache_test'
 }
 
 describe('IndexDB', function () {
