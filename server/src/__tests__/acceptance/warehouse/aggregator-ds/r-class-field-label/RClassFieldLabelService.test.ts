@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 import '@abraham/reflection';
 import {RClassFieldId, RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {RPropertyService} from '../../../../../warehouse/primary-ds/property/RPropertyService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -16,6 +20,16 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 
+const stubs: WarehouseStubs = {
+    primaryDataServices: [
+        RPropertyService,
+        DfhPropertyLabelService,
+        ProPropertyLabelService
+    ],
+    aggDataServices: [
+        RClassFieldLabelService
+    ]
+}
 
 
 describe('RClassFieldLabelService', function () {
@@ -25,17 +39,17 @@ describe('RClassFieldLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(stubs)
         wh = injector.get(Warehouse)
         s = injector.get(RClassFieldLabelService)
-      })
-      beforeEach(async () => {
+    })
+    beforeEach(async () => {
         await cleanDb()
         await truncateWarehouseTables(wh)
-      })
-      after(async function () {
+    })
+    after(async function () {
         await stopWarehouse(wh)
-      })
+    })
 
     it('should create outgoing property label for en from ontome', async () => {
         const {dfhProp} = await createDfhLabelMock();
@@ -177,5 +191,5 @@ async function createPersonMock() {
     // const dfhProp = await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF);
     const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_EN_PROPERTY_PERSON_HAS_APPELLATION)
 
-    return { gvTxt};
+    return {gvTxt};
 }

@@ -1,12 +1,14 @@
 import {forwardRef, Inject, Injectable} from 'injection-js';
+import {PoolClient} from 'pg';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
-import {EntityTimePrimitive, EntityFields} from "../../../primary-ds/edge/edge.commons";
-import {REntityId, rEntityKeyDefs, REntityService, REntity} from '../../../primary-ds/entity/REntityService';
+import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {EntityFields, EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
+import {REdgeService} from '../../../primary-ds/edge/REdgeService';
+import {REntity, REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityTimeSpanAggregator} from './REntityTimeSpanAggregator';
 import {REntityTimeSpanProviders} from './REntityTimeSpanPoviders';
-import {REdgeService} from '../../../primary-ds/edge/REdgeService';
-import {DependencyIndex} from '../../../base/classes/DependencyIndex';
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -49,7 +51,7 @@ export class REntityTimeSpanService extends AggregatedDataService2<REntityId, RE
 
     depREntity: DependencyIndex<REntityId, REntityTimeSpanVal, REntityId, REntity>
     depREdge: DependencyIndex<REntityId, REntityTimeSpanVal, REntityId, EntityFields>
-
+    batchSize = 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => REntityService)) rEntity: REntityService,
@@ -70,9 +72,93 @@ export class REntityTimeSpanService extends AggregatedDataService2<REntityId, RE
         this.depREntity = this.addDepencency(rEntity);
         this.depREdge = this.addDepencency(rEdge);
     }
-    getDependencies() {
-        return this
-    };
+
+    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
+
+        const pentity = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.depREntity,
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
+        })
+        await builder.joinProviderThroughDepIdx({
+            leftTable: pentity.aggregation.tableDef,
+            joinWithDepIdx: this.depREdge,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+            },
+            conditionTrueIf: {},
+            createAggregationVal: {
+                upsert: true,
+                sql: () => `
+                    jsonb_strip_nulls(jsonb_build_object(
+                        'timeSpan', json_strip_nulls(json_build_object(
+                            'p81', CASE WHEN t2.val->'outgoing'->'71' IS NOT NULL THEN json_build_object(
+                                    'julianDay', t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                    'duration', t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->'duration',
+                                    'calendar', t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p82', CASE WHEN t2.val->'outgoing'->'72' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p81a', CASE WHEN t2.val->'outgoing'->'150' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p81b', CASE WHEN t2.val->'outgoing'->'151' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p82a', CASE WHEN t2.val->'outgoing'->'152' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p82b', CASE WHEN t2.val->'outgoing'->'153' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END
+                        )),
+                        'firstSecond',  (SELECT min(unnest) FROM unnest(ARRAY[
+                                (t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint
+                            ])),
+                        'lastSecond',  (SELECT max(unnest) FROM unnest(ARRAY[
+                                (t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint
+                            ]))
+                    ))
+                `
+            }
+        })
+
+        builder.registerUpsertHook()
+        // await builder.printQueries()
+        const count = builder.executeQueries()
+
+        return count
+    }
+
     // onUpsertSql(tableAlias: string) {
     //     return `
     //     UPDATE war.entity_preview

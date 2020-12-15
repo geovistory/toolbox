@@ -71,47 +71,103 @@ export class REntityService extends PrimaryDataService<REntityId, REntity>{
 
 
 
+// export const updateSql = `
+// WITH tw1 AS(
+//     SELECT
+//     t1.pk_entity,
+//     t1.fk_class,
+//     'teEn' as entity_type,
+//     count(t2.pk_entity) filter(where is_in_project = true) is_in_project_count
+//     FROM
+//     information.temporal_entity t1
+//     JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
+//     AND(
+//                 t1.tmsp_last_modification >= $1
+//         OR
+//         t2.tmsp_last_modification >= $1
+//             )
+//     GROUP BY t1.pk_entity, t1.fk_class, entity_type
+//     UNION ALL
+//     SELECT
+//             t1.pk_entity,
+//             t1.fk_class,
+//             'peIt' as entity_type,
+//             count(t2.pk_entity) filter(where is_in_project = true) is_in_project_count
+//     FROM
+//     information.persistent_item t1
+//     JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
+//     AND(
+//                 t1.tmsp_last_modification >= $1
+//         OR
+//         t2.tmsp_last_modification >= $1
+//             )
+//     GROUP BY t1.pk_entity, t1.fk_class, entity_type
+//     )
+//     SELECT
+//         t1.pk_entity "pkEntity",
+//         t1.fk_class,
+//         t1.entity_type,
+//         jsonb_build_object(
+//             'pkEntity', t1.pk_entity,
+//             'fkClass', t1.fk_class,
+//             'entityType', t1.entity_type,
+//             'isInProjectCount', t1.is_in_project_count
+//         ) val
+//     FROM tw1 AS t1
+//             `
+
 export const updateSql = `
-        WITH tw1 AS(
-            SELECT
-            t1.pk_entity,
-            t1.fk_class,
-            'teEn' as entity_type,
-            count(t2.pk_entity) filter(where is_in_project = true) is_in_project_count
+WITH tw1 AS (
+    SELECT
+        t2.pk_entity,
+        t2.fk_class,
+        'peIt' as "entity_type"
     FROM
-    information.temporal_entity t1
-    JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
-    AND(
-                t1.tmsp_last_modification >= $1
-        OR
-        t2.tmsp_last_modification >= $1
-            )
-    GROUP BY t1.pk_entity, t1.fk_class, entity_type
+    projects.info_proj_rel t1
+    JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+    AND t1.tmsp_last_modification >=  $1
+	UNION
+	SELECT
+	t2.pk_entity,
+	t2.fk_class,
+	'peIt' as "entity_type"
+    FROM information.persistent_item t2
+    WHERE t2.tmsp_last_modification >=  $1
     UNION ALL
     SELECT
-            t1.pk_entity,
-            t1.fk_class,
-            'peIt' as entity_type,
-            count(t2.pk_entity) filter(where is_in_project = true) is_in_project_count
+        t2.pk_entity,
+        t2.fk_class,
+        'teEn' as "entity_type"
     FROM
-    information.persistent_item t1
-    JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
-    AND(
-                t1.tmsp_last_modification >= $1
-        OR
-        t2.tmsp_last_modification >= $1
-            )
-    GROUP BY t1.pk_entity, t1.fk_class, entity_type
-        )
-        SELECT
-            t1.pk_entity "pkEntity",
-            t1.fk_class,
-            t1.entity_type,
-            jsonb_build_object(
-                'pkEntity', t1.pk_entity,
-                'fkClass', t1.fk_class,
-                'entityType', t1.entity_type,
-                'isInProjectCount', t1.is_in_project_count
-            ) val
-        FROM tw1 AS t1
+    projects.info_proj_rel t1
+    JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+	AND t1.tmsp_last_modification >=  $1
+    UNION
+    SELECT
+        t2.pk_entity,
+        t2.fk_class,
+        'teEn' as "entity_type"
+    FROM information.temporal_entity t2
+	WHERE t2.tmsp_last_modification >=  $1
+	)
+SELECT
+    tw1.pk_entity "pkEntity",
+    tw1.fk_class,
+    tw1.entity_type,
+    jsonb_build_object(
+        'pkEntity', tw1.pk_entity,
+        'fkClass', tw1.fk_class,
+        'entityType', tw1.entity_type,
+		'isInProjectCount', count(t2.pk_entity)
+    ) val
+FROM tw1
+LEFT JOIN projects.info_proj_rel t2
+ON tw1.pk_entity = t2.fk_entity AND t2.is_in_project= true
+GROUP BY
+tw1.pk_entity,
+tw1.fk_class,
+tw1.entity_type
+
+
+
             `

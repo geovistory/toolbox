@@ -6,6 +6,7 @@ services:
     build: 
       context: ./db
       dockerfile: db.dockerfile
+    shm_size: 1g
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: local_pw

@@ -2,7 +2,8 @@
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
 import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
 import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
@@ -30,9 +31,7 @@ import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityL
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 export const rEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
@@ -42,7 +41,7 @@ export const rEntityLabelStub: WarehouseStubs = {
         REdgeService
     ],
     aggDataServices: [
-        IdentifyingPropertyService,
+        // IdentifyingPropertyService,
         REntityLabelService,
         EntityPreviewService
     ]
@@ -196,12 +195,12 @@ describe('REntityLabelService', function () {
             cityType,
             appeCity,
             appeStadt,
-            naming1,
-            naming1RefersTo,
-            naming1IsAppeOf,
-            naming2,
-            naming2RefersTo,
-            naming2IsAppeOf
+            namingCity1: naming1,
+            namingCity1RefersTo: naming1RefersTo,
+            namingCity1IsAppeOf: naming1IsAppeOf,
+            namingStadt2: naming2,
+            namingStadt2RefersTo: naming2RefersTo,
+            namingStadt2IsAppeOf: naming2IsAppeOf
         } = await createInstancesForCityType();
 
         // add naming 1 to project1

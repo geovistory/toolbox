@@ -15,7 +15,11 @@ import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentIte
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[PEntityService],
+  aggDataServices:[]
+}
 describe('PEntityService', () => {
 
   let wh: Warehouse;
@@ -23,7 +27,7 @@ describe('PEntityService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(stubs)
     wh = injector.get(Warehouse)
     s = injector.get(PEntityService)
   })

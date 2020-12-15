@@ -3,8 +3,8 @@ import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
 import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
@@ -36,7 +36,6 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const pEntityTypeServiceStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -48,7 +47,7 @@ const pEntityTypeServiceStub: WarehouseStubs = {
         DfhClassHasTypePropertyService
     ],
     aggDataServices: [
-        IdentifyingPropertyService,
+        // IdentifyingPropertyService,
         PEntityLabelService,
         REntityLabelService,
         PEntityTypeService,
@@ -127,12 +126,12 @@ describe('PEntityTypeService', function () {
             cityType,
             appeCity,
             appeStadt,
-            naming1,
-            naming1RefersTo,
-            naming1IsAppeOf,
-            naming2,
-            naming2RefersTo,
-            naming2IsAppeOf
+            namingCity1: naming1,
+            namingCity1RefersTo: naming1RefersTo,
+             namingCity1IsAppeOf: naming1IsAppeOf,
+            namingStadt2: naming2,
+            namingStadt2RefersTo: naming2RefersTo,
+            namingStadt2IsAppeOf: naming2IsAppeOf
         } = await createInstancesForCityType();
 
         // add naming 1 to project1

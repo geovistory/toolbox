@@ -22,15 +22,25 @@ export async function createInstancesForCityType() {
     const appeStadt = await createInfAppellation(InfAppellationMock.STADT);
 
     // teEn naming 1
-    const naming1 = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
-    const naming1RefersTo = await createInfStatement(InfStatementMock.NAMING_CITY_TO_APPE_CITY);
-    const naming1IsAppeOf = await createInfStatement(InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE);
+    const namingCity1 = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
+    const namingCity1RefersTo = await createInfStatement(InfStatementMock.NAMING_CITY_TO_APPE_CITY);
+    const namingCity1IsAppeOf = await createInfStatement(InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE);
 
     // teEn naming 2
-    const naming2 = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_2_STADT);
-    const naming2RefersTo = await createInfStatement(InfStatementMock.NAMING_2_STADT_TO_APPE_STADT);
-    const naming2IsAppeOf = await createInfStatement(InfStatementMock.NAMING_2_STADT_TO_GEO_PLACE_TYPE);
-    return {cityType, appeCity, appeStadt, naming1, naming1RefersTo, naming1IsAppeOf, naming2, naming2RefersTo, naming2IsAppeOf};
+    const namingStadt2 = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_2_STADT);
+    const namingStadt2RefersTo = await createInfStatement(InfStatementMock.NAMING_2_STADT_TO_APPE_STADT);
+    const namingStadt2IsAppeOf = await createInfStatement(InfStatementMock.NAMING_2_STADT_TO_GEO_PLACE_TYPE);
+    return {
+        cityType,
+        appeCity,
+        appeStadt,
+        namingCity1,
+        namingCity1RefersTo,
+        namingCity1IsAppeOf,
+        namingStadt2,
+        namingStadt2RefersTo,
+        namingStadt2IsAppeOf
+    };
 }
 export async function createProject1() {
     const project1 = await createProProject(ProProjectMock.PROJECT_1);

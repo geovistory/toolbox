@@ -85,7 +85,7 @@ export class PEntityClassLabelService extends AggregatedDataService2<PEntityId, 
         })
 
         builder.registerUpsertHook()
-        await builder.printQueries()
+        // await builder.printQueries()
         const count = await builder.executeQueries()
         return count
     }

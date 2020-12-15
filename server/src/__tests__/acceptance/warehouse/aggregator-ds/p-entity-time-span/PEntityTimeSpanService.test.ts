@@ -2,8 +2,11 @@
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {PEntityTimeSpan, PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -13,7 +16,6 @@ import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-e
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
@@ -23,10 +25,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 const pEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
         PEntityService,
@@ -124,19 +123,20 @@ describe('PEntityTimeSpanService', function () {
         expect(result.time_span).to.deepEqual(expectedTimeSpan);
     })
 
-    it('should create empty (null) time values', async () => {
+    it('should create empty time span object {}', async () => {
         // - Langage and Project
         const project = await PEntityTimeSpanMock.createProjectAndModelMock();
 
         // - shipVoyage
         const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
-        await wait(800)
-        const result = await getWarEntityPreview(shipVoyage.pk_entity ?? -1, project.pk_entity ?? -1)
-
-        expect(result?.[0].time_span).to.be.null()
-        expect(result?.[0].first_second).to.be.null()
-        expect(result?.[0].last_second).to.be.null()
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
+            compare: (val) => {
+                return equals(val?.timeSpan, {})
+            }
+        })
     })
 
 
@@ -145,17 +145,21 @@ describe('PEntityTimeSpanService', function () {
         const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
         const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
-        const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: shipVoyage.pk_entity}},
-            {fk_project: {eq: prel.fk_project}}
-        ])
-        expect(result)
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
+            compare: (val) => {
+                return equals(val?.timeSpan, {})
+            }
+        })
         // remove person from the project
         await updateProInfoProjRel(prel.pk_entity ?? -1, {is_in_project: false})
         await searchUntilSatisfy({
             notifier$: s.afterChange$,
             getFn: () => s.index.getFromIdxWithTmsps({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
-            compare: (item) => !!item?.deleted
+            compare: (item) => {
+                return !!item?.deleted
+            }
         })
 
     })

@@ -1,8 +1,27 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
+import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
 import {PEntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
 import {PEntityId, PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProClassFieldsConfigService} from '../../../../../warehouse/primary-ds/ProClassFieldsConfigService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -33,26 +52,6 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
-import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
-import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
-import {ProClassFieldsConfigService} from '../../../../../warehouse/primary-ds/ProClassFieldsConfigService';
-import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
-import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
-import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
-import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
-import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
-import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
-import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
-import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
-import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
-import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
-import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const pEntityFullTextStub: WarehouseStubs = {
     primaryDataServices: [
         PEntityService,
@@ -71,7 +70,7 @@ const pEntityFullTextStub: WarehouseStubs = {
         ProClassLabelService
     ],
     aggDataServices: [
-        IdentifyingPropertyService,
+        // IdentifyingPropertyService,
         PClassFieldLabelService,
         PEntityLabelService,
         REntityLabelService,

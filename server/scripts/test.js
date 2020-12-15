@@ -129,14 +129,16 @@ start().catch(err => console.error(err));
 const createCommand = () => {
   const mocha = path.join(__dirname, '../node_modules/.bin/mocha');
   const dist = path.join(__dirname, '../dist');
-
+  const report = path.join(__dirname, `../dev/mocha-test-${new Date().toISOString()}`);
   const cmd = `${mocha}\
   --trace-warnings\
   --timeout ${mochaTimeout}\
-  --colors\
+  --no-colors\
   --exit\
   ${mochaGrep ? `--grep "${mochaGrep}"` : ''}\
-  '${dist}/__tests__/${process.env.MOCHA_FOLDER}/*.js'`;
+  '${dist}/__tests__/${process.env.MOCHA_FOLDER}/*.js'\
+  2>&1 | tee ${report}
+  `;
 
   return cmd;
 };

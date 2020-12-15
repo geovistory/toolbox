@@ -6,7 +6,7 @@ import {RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/cl
 import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
 import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
 import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
 import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
@@ -49,7 +49,6 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 const rEntityFullTextStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,
@@ -65,7 +64,7 @@ const rEntityFullTextStub: WarehouseStubs = {
         ProClassLabelService,
     ],
     aggDataServices: [
-        IdentifyingPropertyService,
+        // IdentifyingPropertyService,
         RClassFieldLabelService,
         REntityLabelService,
         RClassLabelService,

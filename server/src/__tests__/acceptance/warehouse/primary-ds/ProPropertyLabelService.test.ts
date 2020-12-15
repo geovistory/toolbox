@@ -13,7 +13,11 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../helpers/data/gvDB/ProTextPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[ProPropertyLabelService],
+  aggDataServices:[]
+}
 describe('ProPropertyLabelService', () => {
 
   let wh: Warehouse;
@@ -23,7 +27,7 @@ describe('ProPropertyLabelService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(stubs)
     wh = injector.get(Warehouse)
     s = injector.get(ProPropertyLabelService)
   })

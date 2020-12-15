@@ -12,11 +12,11 @@ import {PEntityFullTextService} from './aggregator-ds/entity-full-text/p-entity-
 import {REntityFullTextService} from './aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
 import {PEntityLabelService} from './aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 import {REntityLabelService} from './aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {EntityPreviewService} from './aggregator-ds/entity-preview/EntityPreviewService';
 import {PEntityTimeSpanService} from './aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
 import {REntityTimeSpanService} from './aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
 import {PEntityTypeService} from './aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
 import {REntityTypeService} from './aggregator-ds/entity-type/r-entity-type/REntityTypeService';
-import {IdentifyingPropertyService} from './aggregator-ds/identifying-property/IdentifyingPropertyService';
 import {PClassService} from './primary-ds/class/PClassService';
 import {RClassService} from './primary-ds/class/RClassService';
 import {DfhClassHasTypePropertyService} from './primary-ds/DfhClassHasTypePropertyService';
@@ -35,7 +35,6 @@ import {RPropertyService} from './primary-ds/property/RPropertyService';
 import {ProProjectService} from './primary-ds/ProProjectService';
 import {ProPropertyLabelService} from './primary-ds/ProPropertyLabelService';
 import {AGG_DS, APP_CONFIG, PRIMARY_DS, Warehouse, WarehouseConfig} from './Warehouse';
-import {EntityPreviewService} from './aggregator-ds/entity-preview/EntityPreviewService';
 
 export interface WarehouseStubs {
   primaryDataServices: Provider[];
@@ -98,7 +97,7 @@ const defaultPrimaryDataServices = [
 ];
 
 const defaultAggregatedDataServices = [
-  IdentifyingPropertyService,
+  // IdentifyingPropertyService,
 
   // Project aggegators
   PClassLabelService,

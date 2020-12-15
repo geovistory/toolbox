@@ -21,6 +21,7 @@ import {createProClassFieldConfig} from '../atomic/pro-class-field-config.helper
 import {ProClassFieldConfigMock} from '../data/gvDB/ProClassFieldConfigMock';
 import {createProProject} from '../atomic/pro-project.helper';
 import {createSysClassFields} from '../meta/sysClassFields.helper';
+import {setSequencesToMax} from '../atomic/_sequences.helper';
 
 /**
  * This function creates mockdata useful for developing geovistory
@@ -63,6 +64,8 @@ export async function minimumForDev() {
     ...source.teens, ...source.peits, ...source.stmts,
     ...txtAnnot.stmts,]
     .map(x => x.pk_entity));
+
+  await setSequencesToMax()
 }
 
 

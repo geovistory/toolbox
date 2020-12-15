@@ -47,3 +47,10 @@ export async function dealWithId<M extends Id>(item: M, sequence: string) {
   }
   return omit(['id'], item);
 }
+
+export async function setSequencesToMax() {
+  for (const schema of ['information', 'projects', 'data', 'data_for_history', 'system']) {
+    await testdb.execute(`SELECT setval('${schema}.entity_pk_entity_seq', (SELECT MAX(pk_entity) FROM ${schema}.entity));`);
+  }
+}
+

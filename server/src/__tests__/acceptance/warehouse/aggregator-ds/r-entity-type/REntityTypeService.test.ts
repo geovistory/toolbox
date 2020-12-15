@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {REntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -21,17 +30,7 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
-import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
-import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
-import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {REntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/r-entity-type/REntityTypeService';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
 const rEntityTypeServiceStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -41,7 +40,7 @@ const rEntityTypeServiceStub: WarehouseStubs = {
         DfhClassHasTypePropertyService
     ],
     aggDataServices: [
-        IdentifyingPropertyService,
+        // IdentifyingPropertyService,
         REntityLabelService,
         REntityTypeService,
         EntityPreviewService

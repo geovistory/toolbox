@@ -1,9 +1,9 @@
 import {values} from 'ramda';
 import {Subject} from 'rxjs';
+import {LAST_UPDATE_DONE_SUFFIX, Warehouse} from '../../Warehouse';
 import {AggregatedDataService} from './AggregatedDataService';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DependencyIndex} from './DependencyIndex';
-import {Warehouse} from '../../Warehouse';
 
 
 
@@ -22,7 +22,7 @@ export abstract class DataService<KeyModel, ValueModel>{
     isCreatorOf: AggregatedDataService<KeyModel, any>[] = []
 
 
-    constructor(wh: Warehouse) {
+    constructor(public wh: Warehouse) {
 
         this.afterChange$
             // .pipe(throttleTime(10)) TODO: Test if this helps!
@@ -54,9 +54,14 @@ export abstract class DataService<KeyModel, ValueModel>{
             const currentTime = await wh.pgNow()
 
             // useful for debugging
-            // if (ds.some(d => d.constructor.name === 'PEntityTypeService')) {
-            //     console.log(`-> propagate changes from ${this.constructor.name} to PEntityTypeService: ${currentTime}`)
+            // for (const d of ds) {
+            //     if (this.constructor.name === 'REntityService'){
+            //         if( d.constructor.name === 'REntityLabelService') {
+            //             console.log(`- ${this.constructor.name}.propagateUpdates() --> ${d.constructor.name}, currentTime: ${currentTime}`)
+            //         }
+            //     }
             // }
+
 
             // propagate updates
             const updates = ds.map(d => d.doUpdate(currentTime));
@@ -97,7 +102,14 @@ export abstract class DataService<KeyModel, ValueModel>{
     }
 
 
-
+    async setLastUpdateDone(date: Date) {
+        await this.wh.metaTimestamps.addToIdx(this.constructor.name + LAST_UPDATE_DONE_SUFFIX, {tmsp: date.toISOString()});
+    }
+    async getLastUpdateBegin(): Promise<Date | undefined> {
+        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + LAST_UPDATE_DONE_SUFFIX);
+        const isoDate = val?.tmsp;
+        return isoDate ? new Date(isoDate) : undefined
+    }
 
 
 }

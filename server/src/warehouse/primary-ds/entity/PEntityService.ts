@@ -74,6 +74,52 @@ export class PEntityService extends PrimaryDataService< PEntityId, PEntity>{
 }
 
 
+// export const updateSql = `
+// WITH tw1 AS (
+//     SELECT
+//         t1.fk_project,
+//         t2.pk_entity,
+//         t2.fk_class,
+//         'peIt' as "entity_type"
+//     FROM
+//     projects.info_proj_rel t1
+//     JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+//     WHERE t1.is_in_project=true
+//     AND (
+//         t1.tmsp_last_modification >= $1
+//         OR
+//         t2.tmsp_last_modification >= $1
+//     )
+//     UNION ALL
+//     SELECT
+//         t1.fk_project,
+//         t2.pk_entity,
+//         t2.fk_class,
+//         'teEn' as "entity_type"
+//     FROM
+//     projects.info_proj_rel t1
+//     JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+//     WHERE t1.is_in_project=true
+//     AND (
+//         t1.tmsp_last_modification >= $1
+//         OR
+//         t2.tmsp_last_modification >= $1
+//     )
+// )
+// SELECT
+//     tw1.fk_project "fkProject",
+//     tw1.pk_entity "pkEntity",
+//     tw1.fk_class "fkClass",
+//     tw1.entity_type "entityType",
+//     jsonb_build_object(
+//         'pkEntity', tw1.pk_entity,
+//         'fkProject', tw1.fk_project,
+//         'fkClass', tw1.fk_class,
+//         'entityType', tw1.entity_type
+//     ) val
+// FROM tw1
+// `
+
 export const updateSql = `
 WITH tw1 AS (
     SELECT
@@ -85,11 +131,18 @@ WITH tw1 AS (
     projects.info_proj_rel t1
     JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
     WHERE t1.is_in_project=true
-    AND (
-        t1.tmsp_last_modification >= $1
-        OR
-        t2.tmsp_last_modification >= $1
-    )
+    AND t1.tmsp_last_modification >= $1
+	UNION
+	SELECT
+	t1.fk_project,
+	t2.pk_entity,
+	t2.fk_class,
+	'peIt' as "entity_type"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=true
+    AND t2.tmsp_last_modification >= $1
     UNION ALL
     SELECT
         t1.fk_project,
@@ -100,11 +153,18 @@ WITH tw1 AS (
     projects.info_proj_rel t1
     JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
     WHERE t1.is_in_project=true
-    AND (
-        t1.tmsp_last_modification >= $1
-        OR
-        t2.tmsp_last_modification >= $1
-    )
+	AND t1.tmsp_last_modification >= $1
+    UNION
+    SELECT
+        t1.fk_project,
+        t2.pk_entity,
+        t2.fk_class,
+        'teEn' as "entity_type"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=true
+	AND t2.tmsp_last_modification >= $1
 )
 SELECT
     tw1.fk_project "fkProject",

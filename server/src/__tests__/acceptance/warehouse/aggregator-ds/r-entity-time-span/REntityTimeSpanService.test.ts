@@ -16,7 +16,6 @@ import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-e
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
@@ -26,7 +25,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 const rEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,
@@ -43,12 +42,14 @@ const rEntityTimeSpanStub: WarehouseStubs = {
 describe('REntityTimeSpanService', function () {
     let wh: Warehouse;
     let edgeService: REdgeService;
+    let s: REntityTimeSpanService
 
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
         const injector = await setupCleanAndStartWarehouse(rEntityTimeSpanStub)
         wh = injector.get(Warehouse)
+        s = injector.get(REntityTimeSpanService)
         edgeService = injector.get(REdgeService)
 
     })
@@ -121,19 +122,20 @@ describe('REntityTimeSpanService', function () {
         expect(result.time_span).to.deepEqual(expectedTimeSpan);
     })
 
-    it('should create empty (null) time values', async () => {
+    it('should create empty time span object {}', async () => {
         // - Langage and Project
         await createProjectAndModelMock();
 
         // - shipVoyage
         const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
-        await wait(800)
-        const result = await getWarEntityPreview(shipVoyage.pk_entity ?? -1, 0)
-
-        expect(result?.[0].time_span).to.be.null()
-        expect(result?.[0].first_second).to.be.null()
-        expect(result?.[0].last_second).to.be.null()
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1}),
+            compare: (val) => {
+                return equals(val?.timeSpan, {})
+            }
+        })
     })
 })
 

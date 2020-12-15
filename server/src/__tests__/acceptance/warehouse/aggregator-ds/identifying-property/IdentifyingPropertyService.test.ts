@@ -7,8 +7,12 @@ import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-
-
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+const stubs: WarehouseStubs = {
+    primaryDataServices: [DfhOutgoingPropertyService],
+    aggDataServices: [IdentifyingPropertyService]
+}
 
 describe('IdentifyingPropertyService', function () {
 
@@ -17,7 +21,7 @@ describe('IdentifyingPropertyService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(stubs)
         wh = injector.get(Warehouse)
         s = injector.get(IdentifyingPropertyService)
     })

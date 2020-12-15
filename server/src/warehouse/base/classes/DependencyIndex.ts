@@ -80,9 +80,10 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
             'tmsp_last_aggregation'
         ]
         for (const indexCol of indexedCols) {
+            const indexName= `${indexCol}_${this.table}`
 
             await this.pgPool.query(`
-                    CREATE INDEX IF NOT EXISTS ${this.schema}_${this.table}_${indexCol}_idx
+                    CREATE INDEX IF NOT EXISTS ${indexName}
                     ON ${this.schemaTable}("${indexCol}");
                 `).catch((e) => {
                 console.log(`Error during CREATE INDEX:  ${this.schemaTable}(${indexCol}):`, e)

@@ -8,7 +8,11 @@ import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[DfhPropertyLabelService],
+  aggDataServices:[]
+}
 describe('DfhPropertyLabelService', () => {
 
   let wh: Warehouse;
@@ -17,7 +21,7 @@ describe('DfhPropertyLabelService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(stubs)
     wh = injector.get(Warehouse)
     s = injector.get(DfhPropertyLabelService)
   })

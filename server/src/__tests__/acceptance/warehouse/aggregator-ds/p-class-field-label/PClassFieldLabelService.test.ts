@@ -17,8 +17,21 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 
-
+const stubs: WarehouseStubs = {
+    primaryDataServices: [
+        PPropertyService,
+        ProProjectService,
+        DfhPropertyLabelService,
+        ProPropertyLabelService
+    ],
+    aggDataServices: [PClassFieldLabelService]
+}
 
 describe('PClassFieldLabelService', function () {
 
@@ -27,7 +40,7 @@ describe('PClassFieldLabelService', function () {
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(35000); // A very long environment setup.
-        const injector = await setupCleanAndStartWarehouse()
+        const injector = await setupCleanAndStartWarehouse(stubs)
         wh = injector.get(Warehouse)
         s = injector.get(PClassFieldLabelService)
     })
@@ -142,8 +155,8 @@ describe('PClassFieldLabelService', function () {
         const {project, apiProp: dfhProp, hasAppePropLabel} = await createPersonMock();
         const expected = hasAppePropLabel.string
         const id: PClassFieldLabelId = {
-            fkProject: project.pk_entity??-1,
-            fkClass:DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+            fkProject: project.pk_entity ?? -1,
+            fkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
             fkProperty: dfhProp.dfh_pk_property,
             isOutgoing: false,
         }

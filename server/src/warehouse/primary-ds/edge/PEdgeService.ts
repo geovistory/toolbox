@@ -58,10 +58,9 @@ WITH tw0 AS (
     JOIN
         information.entity t3 ON t2.fk_subject_info = t3.pk_entity
     WHERE
-        t1.tmsp_last_modification > $1
-
-    AND
         t3.table_name IN ('temporal_entity', 'persistent_item')
+    AND
+        t1.tmsp_last_modification > $1
     UNION
     SELECT DISTINCT
         t2.fk_object_info pk_entity,
@@ -73,10 +72,9 @@ WITH tw0 AS (
     JOIN
         information.entity t3 ON t2.fk_object_info = t3.pk_entity
     WHERE
-        t1.tmsp_last_modification > $1
-
-    AND
         t3.table_name IN ('temporal_entity', 'persistent_item')
+    AND
+        t1.tmsp_last_modification > $1
     UNION
     SELECT DISTINCT
         t2.pk_entity,

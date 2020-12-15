@@ -9,7 +9,11 @@ import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextPro
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[ProClassLabelService],
+  aggDataServices:[]
+}
 describe('ProClassLabelService', () => {
 
   let wh: Warehouse;
@@ -18,7 +22,7 @@ describe('ProClassLabelService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(stubs)
     wh = injector.get(Warehouse)
     s = injector.get(ProClassLabelService)
   })

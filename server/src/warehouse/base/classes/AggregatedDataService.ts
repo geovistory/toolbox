@@ -2,7 +2,7 @@
 import {PoolClient} from 'pg';
 import {ReplaySubject} from 'rxjs';
 import {brkOnErr, pgLogOnErr} from '../../../utils/helpers';
-import {Warehouse} from '../../Warehouse';
+import {Warehouse, LeftDSDates, CHANGES_CONSIDERED_UNTIL_SUFFIX, LAST_UPDATE_DONE_SUFFIX} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {Providers} from '../interfaces/Providers';
 import {AbstractAggregator} from './AbstractAggregator';
@@ -20,6 +20,8 @@ interface CreatorDS {
     dataService: DataService<any, any>,
     customSql?: CustomCreatorDsSql[]
 }
+
+
 
 export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> {
 
@@ -111,7 +113,104 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             if (b) this.ready$.next(b)
         })
     }
+    /**
+      * updates this aggregated data for time between last update and currentTimestamp
+      * to be exact, the changes considered are:
+      * changeTmsp > this.changesConsideredUntil AND <= currentTimestamp
+      *
+      * @param beginOfAggregation consider changes until (less or eq) to this tmsp
+      */
+    private async update(beginOfAggregation: string) {
+        const t0 = Logger.start(this.constructor.name, `Run aggregation cycle ${this.cycle}`, 0)
 
+        this.updating = true
+        let changes = 0;
+
+        // get the 'changesConsideredUntil'-timestamp
+        // const changesConsideredUntil = await this.getChangesConsideredUntilTsmp()
+        const updatesConsideredUntil = await this.getUpdatesConsidered()
+        const providerUpdateTmsps = await this.getleftDSupdateDone()
+
+
+        // useful for debugging
+        // if (this.constructor.name === 'REntityLabelService') {
+        //     console.log(`- ${this.constructor.name}.update(), cycle: ${this.cycle}),
+        //     aggregatedUnitlTsmps: ${JSON.stringify(aggregatedUnitlTsmps)},
+        //     providerUpdateTmsps: ${JSON.stringify(providerUpdateTmsps)},
+        //     beginOfAggregation: ${beginOfAggregation}`)
+        //     const x = await this.wh.pgPool.query(' select * from war_cache_1.agg_rentitylabel where "pkEntity" = 4002');
+        //     console.log(x.rows?.[0])
+        // }
+        /**
+         * Handle deletes
+         */
+        changes += await this.handleDeletes(updatesConsideredUntil, providerUpdateTmsps);
+
+        /**
+         * Handle upserts
+         */
+        // create client for the aggregation
+        const client = await this.wh.pgPool.connect()
+        try {
+            await client.query('BEGIN')
+
+            // find what to aggregate (store it in temp table)
+            await this.findWhatToAggregate(client, updatesConsideredUntil, providerUpdateTmsps);
+
+            // aggregate batchwise, reading from temp table
+            changes += await this.aggregateAll(client, beginOfAggregation)
+
+            // cleanup dependencies
+            await this.cleanupOldDependencies(client, beginOfAggregation);
+
+
+            // // update 'changesConsideredUntil'-timestamp
+            // await this.setChangesConsideredUntilTsmp(beginOfAggregation)
+            await this.setUpdatesConsidered(providerUpdateTmsps)
+            const t1 = Logger.start(this.constructor.name, `commit aggregations`, 0)
+            await client.query('COMMIT')
+            Logger.itTook(this.constructor.name, t1, `to commit aggregations `, 0)
+        } catch (e) {
+            await client.query('ROLLBACK')
+            throw e
+        } finally {
+            client.release()
+        }
+
+
+        // finalize
+        this.updating = false;
+        if (this.shouldRestart) {
+            // useful for debugging
+            // if (this.constructor.name === 'PEntityTypeService') {
+            //     console.log('------------- restart startUpdate()')
+            // }
+
+            Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
+            // restart
+            beginOfAggregation = await this.wh.pgNow();
+            const nextChanges = await this.doUpdate(beginOfAggregation);
+            changes = changes + nextChanges;
+        }
+
+
+        // emit this.afterUpdate$ if anything has changed
+        if (changes > 0) {
+            const done = await this.wh.pgNowDate();
+            await this.setLastUpdateDone(done)
+
+            // await this.setUpdatesConsidered(providerUpdateTmsps)
+            this.afterChange$.next()
+        }
+        // useful for debugging
+        // if (this.constructor.name === 'PEntityTypeService') {
+        //     console.log(`-------------  finalized cycle ${this.cycle} for time until ${currentTimestamp}`)
+        // }
+
+        Logger.msg(this.constructor.name, `restart within cycle ${this.cycle}`, 0)
+
+        return changes
+    }
     async aggregate(id: KeyModel): Promise<ValueModel | undefined> {
         if (this.providers && this.aggregator) {
 
@@ -137,8 +236,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      */
     public doUpdate(currentTimestamp: string): Promise<number> {
         // useful for debugging
-        // if (this.constructor.name === 'PEntityTypeService') {
-        //     console.log(`------------- doUpdate, current cycle: ${this.cycle}, is updating:${this.updating}`)
+        // if (this.constructor.name === 'EntityPreviewService') {
+        //     console.log(`- EntityPreviewService.doUpdate() currentTimestamp: ${currentTimestamp}, cycle: ${this.cycle}, updating:${this.updating}`)
         // }
 
         if (this.updating) {
@@ -151,86 +250,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         }
         return this.updatingPromise
     }
-    /**
-      * updates this aggregated data for time between last update and currentTimestamp
-      * to be exact, the changes considered are:
-      * changeTmsp > this.changesConsideredUntil AND <= currentTimestamp
-      *
-      * @param currentTimestamp consider changes until (less or eq) to this tmsp
-      */
-    private async update(currentTimestamp: string) {
-        const t0 = Logger.start(this.constructor.name, `Run aggregation cycle ${this.cycle}`, 0)
 
-        this.updating = true
-        let changes = 0;
-
-        // get the 'changesConsideredUntil'-timestamp
-        const changesConsideredUntil = await this.getChangesConsideredUntilTsmp()
-        // useful for debugging
-        // if (this.constructor.name === 'PEntityTypeService') {
-        //     console.log(`------------- update (cycle ${this.cycle}) from ${changesConsideredUntil} to ${currentTimestamp}`)
-        // }
-        /**
-         * Handle deletes
-         */
-        changes += await this.handleDeletes(changesConsideredUntil, currentTimestamp);
-
-        /**
-         * Handle upserts
-         */
-        // create client for the aggregation
-        const client = await this.wh.pgPool.connect()
-        try {
-            await client.query('BEGIN')
-
-            // find what to aggregate (store it in temp table)
-            await this.findWhatToAggregate(client, changesConsideredUntil, currentTimestamp);
-
-            // aggregate batchwise, reading from temp table
-            changes += await this.aggregateAll(client, currentTimestamp)
-
-            // cleanup dependencies
-            await this.cleanupOldDependencies(client, currentTimestamp);
-
-            await client.query('COMMIT')
-        } catch (e) {
-            await client.query('ROLLBACK')
-            throw e
-        } finally {
-            client.release()
-        }
-
-        // update 'changesConsideredUntil'-timestamp
-        await this.setChangesConsideredUntilTsmp(currentTimestamp)
-
-
-        // finalize
-        this.updating = false;
-        if (this.shouldRestart) {
-            // useful for debugging
-            // if (this.constructor.name === 'PEntityTypeService') {
-            //     console.log('------------- restart startUpdate()')
-            // }
-
-            Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
-            // restart
-            currentTimestamp = await this.wh.pgNow();
-            const nextChanges = await this.doUpdate(currentTimestamp);
-            changes = changes + nextChanges;
-        }
-
-
-        // - emit this.afterUpdate$ if anything has changed
-        if (changes > 0) this.afterChange$.next()
-        // useful for debugging
-        // if (this.constructor.name === 'PEntityTypeService') {
-        //     console.log(`-------------  finalized cycle ${this.cycle} for time until ${currentTimestamp}`)
-        // }
-
-        Logger.msg(this.constructor.name, `restart within cycle ${this.cycle}`, 0)
-
-        return changes
-    }
 
 
 
@@ -246,48 +266,55 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      *    (don't delete them yet, because they may be providers of other aggregators)
      *    this operation happens directly on Postgres (within one query)
      */
-    private async handleDeletes(changesConsideredUntil: string, currentTimestamp: string) {
+    private async handleDeletes(updatesConsidered: LeftDSDates, updatesDone: LeftDSDates) {
         let changes = 0
         let twOnDelete = '';
         if (!this.creatorDS.length) throw new Error("At least one creator data service needed");
+        const t0 = Logger.start(this.constructor.name, `handleDeletes`, 0)
 
         if (this.onDeleteSql) {
             twOnDelete = `,
             delete AS (
                 ${this.onDeleteSql('tw1')}
-            )`;
+                )`;
         }
         const handleDeletes = `
-        -- find new deletes in creatorDS
-        WITH tw1 AS (
-            ${this.creatorDS.map(createDS => {
+            -- find new deletes in creatorDS
+            WITH tw1 AS (
+                ${this.creatorDS.map(createDS => {
             const ds = createDS.dataService
             const customSqls = this.getCreatorCustomSql(createDS.customSql)
+
+            const {after, until} = this.getAfterAndUntil(ds.constructor.name, updatesConsidered, updatesDone);
+
             return `${customSqls.map(part => `
-                SELECT ${part.select ? part.select : this.index.keyCols}
-                FROM ${ds.index.schemaTable}
-                WHERE tmsp_deleted > '${changesConsideredUntil}'
-                AND tmsp_deleted <= '${currentTimestamp}'
-                ${part.where ? `AND ${part.where}` : ''}
-                `).join(' UNION ')}`
+                    SELECT ${part.select ? part.select : this.index.keyCols}
+                    FROM ${ds.index.schemaTable}
+                    WHERE tmsp_deleted > '${after}'
+                    AND tmsp_deleted <= '${until}'
+                    ${part.where ? `AND ${part.where}` : ''}
+                    `).join(' UNION ')}`
         }).join(' UNION ')}
-        )
-            ${twOnDelete},
-            --mark them as deleted in aggregatedDS
-            tw2 AS(
-                UPDATE ${this.index.schemaTable} t1
-                        SET tmsp_deleted = '${currentTimestamp}'
-                        FROM tw1 t2
-                        WHERE ${
+                )
+                ${twOnDelete},
+                --mark them as deleted in aggregatedDS
+                tw2 AS(
+                    UPDATE ${this.index.schemaTable} t1
+                    SET tmsp_deleted = clock_timestamp()
+                    FROM tw1 t2
+                    WHERE ${
             this.index.keyDefs
                 .map(k => `t1."${k.name}"=t2."${k.name}"`)
                 .join(' AND ')
             }
-                        RETURNING t1.*
+                    RETURNING t1.*
                     )
-            --count the rows marked as deleted
-            SELECT count(*):: int FROM tw2
-    `;
+
+                    -- TODO Delete dependencies where items from tw1 are receivers!
+
+                    --count the rows marked as deleted
+                    SELECT count(*):: int FROM tw2
+                    `;
         // useful for debugging
         // logSql(handleDeletes, [])
         // if (this.constructor.name === 'PEntityLabelService') {
@@ -296,13 +323,21 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const res = await pgLogOnErr((s, p) => this.wh.pgPool.query<{count: number;}>(s, p), handleDeletes, [])
         changes += res?.rows?.[0].count ?? 0;
         // useful for debugging
-        if (this.constructor.name === 'PEntityLabelService') {
-            // console.log(`-- > ${this.cycle} handled  ${res.rows[0].count} deletes`)
-            // if (res.rows[0].count) {
-            //     console.log(``)
-            // }
-        }
+        // if (this.constructor.name === 'PEntityLabelService') {
+        // console.log(`-- > ${this.cycle} handled  ${res.rows[0].count} deletes`)
+        // if (res.rows[0].count) {
+        //     console.log(``)
+        // }
+        // }
+        Logger.itTook(this.constructor.name, t0, `to handleDeletes `, 0)
+
         return changes;
+    }
+
+    private getAfterAndUntil(name: string, updatesConsidered: LeftDSDates, updatesDone: LeftDSDates) {
+        const after = updatesConsidered[name] ?? new Date(0).toISOString();
+        const until = updatesDone[name] ?? new Date().toISOString();
+        return {after, until};
     }
 
     /**
@@ -313,19 +348,48 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * @param currentTimestamp
      */
     private async cleanupOldDependencies(client: PoolClient, currentTimestamp: string) {
-        for (const depDS of this.isReceiverOf) {
-            const cleanupSql = `
-DELETE
-FROM    ${depDS.schemaTable} t1
-USING   ${this.tempTable} t2
-WHERE   ${
-                depDS.receiverDS.index.keyDefs
-                    .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')
-                }
-AND t1.tmsp_last_aggregation < '${currentTimestamp}'
-    `;
-            await client.query(cleanupSql);
-        }
+        const t0 = Logger.start(this.constructor.name, `cleanupOldDependencies`, 0)
+
+        // const promises: Promise<any>[] = []
+        const parts = this.isReceiverOf.map((depDS, i) => `
+            tw${i} AS (
+                DELETE
+                FROM    ${depDS.schemaTable} t1
+                USING   ${this.tempTable} t2
+                WHERE   ${depDS.receiverDS.index.keyDefs.map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
+                AND t1.tmsp_last_aggregation < '${currentTimestamp}'
+                RETURNING *
+            )
+        `).join(', ')
+
+        const sum = `
+            SELECT sum(count)
+            FROM (
+                ${this.isReceiverOf.map((depDS, i) => `SELECT count(*) from tw${i}`).join(' UNION ')}
+            )x
+        `
+        const sql = `
+            WITH
+            ${parts}
+            ${sum}
+        `
+
+        // for (const depDS of this.isReceiverOf) {
+        //     const cleanupSql = `
+        //     DELETE
+        //     FROM    ${depDS.schemaTable} t1
+        //     USING   ${this.tempTable} t2
+        //     WHERE   ${
+        //         depDS.receiverDS.index.keyDefs
+        //             .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')
+        //         }
+        //     AND t1.tmsp_last_aggregation < '${currentTimestamp}'
+        //     `;
+        //     promises.push(client.query(cleanupSql));
+        // }
+        // await Promise.all(promises)
+        await client.query(sql)
+        Logger.itTook(this.constructor.name, t0, `to cleanupOldDependencies `, 0)
     }
 
     async aggregateAll(client: PoolClient, currentTimestamp: string) {
@@ -430,27 +494,31 @@ SELECT count(*):: int changes FROM tw0;
      * @param changesConsideredUntil
      * @param currentTimestamp
      */
-    private async findWhatToAggregate(client: PoolClient, changesConsideredUntil: string, currentTimestamp: string) {
+    private async findWhatToAggregate(client: PoolClient, updatesConsidered: LeftDSDates, updatesDone: LeftDSDates) {
         if (this.creatorDS.length === 0) throw new Error("At least one creator DS is needed");
+        const t0 = Logger.start(this.constructor.name, `findWhatToAggregate`, 0)
 
         const sql0 = `CREATE TEMPORARY TABLE ${this.tempTable} ON COMMIT DROP AS`
         const sql1 = this.creatorDS.map(createDS => {
             const creatorIdx = createDS.dataService.index;
             const creatorSqlParts = this.getCreatorCustomSql(createDS.customSql)
+            const {after, until} = this.getAfterAndUntil(createDS.dataService.constructor.name, updatesConsidered, updatesDone);
 
             return `${
                 creatorSqlParts.map(part => `
                     SELECT ${part.select ? part.select : this.index.keyCols}
                     FROM ${creatorIdx.schemaTable}
-                    WHERE tmsp_last_modification > '${changesConsideredUntil}'
-                    AND tmsp_last_modification <= '${currentTimestamp}'
-                    AND (tmsp_deleted IS NULL OR tmsp_deleted > '${currentTimestamp}')
+                    WHERE tmsp_last_modification > '${after}'
+                    AND tmsp_last_modification <= '${until}'
+                    AND (tmsp_deleted IS NULL OR tmsp_deleted > '${until}')
                     ${part.where ? `AND ${part.where}` : ''}
                 `).join(' UNION ')
                 }`;
         }).join(' UNION ')
 
         const sql2 = this.isReceiverOf.map(depDS => {
+            const {after, until} = this.getAfterAndUntil(depDS.providerDS.constructor.name, updatesConsidered, updatesDone);
+
             return `
                 UNION
                 SELECT  ${depDS.receiverKeyDefs.map(k => `t1."${k.name}"`).join(',')}
@@ -460,20 +528,22 @@ SELECT count(*):: int changes FROM tw0;
                     .map(k => `t2."${k.name}" = t1."p_${k.name}"`).join(' AND ')}
                 AND (
                     (
-                        t2.tmsp_last_modification > '${changesConsideredUntil}'
+                        t2.tmsp_last_modification > '${after}'
                         AND
-                        t2.tmsp_last_modification <= '${currentTimestamp}'
+                        t2.tmsp_last_modification <= '${until}'
                     )
                     OR
                     (
-                        t2.tmsp_deleted > '${changesConsideredUntil}'
+                        t2.tmsp_deleted > '${after}'
                         AND
-                        t2.tmsp_deleted <= '${currentTimestamp}'
+                        t2.tmsp_deleted <= '${until}'
                     )
                 )
         `;
         }).join('\n');
         await client.query(sql0 + sql1 + sql2);
+        Logger.itTook(this.constructor.name, t0, `to findWhatToAggregate `, 0)
+
         // if (this.constructor.name === 'PEntityTypeService') {
         //     console.log('-------------')
         //     console.log(`cons: ${changesConsideredUntil}, curr: ${currentTimestamp} `)
@@ -514,18 +584,18 @@ SELECT count(*):: int changes FROM tw0;
         return customSql ?? [{select: this.index.keyCols}];
     }
 
-    /**
-     * returns tmsp of last changes considered by this aggregator service
-     * If not existing, returns a very early tmsp (year 1970) so that we
-     * can assume that all changes after 1970 will be considered
-     */
-    private async getChangesConsideredUntilTsmp() {
-        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + '__changes_considered_until');
-        return val?.tmsp ?? new Date(0).toISOString()
-    }
-    private async setChangesConsideredUntilTsmp(tmsp: string) {
-        await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__changes_considered_until', {tmsp});
-    }
+    // /**
+    //  * returns tmsp of last changes considered by this aggregator service
+    //  * If not existing, returns a very early tmsp (year 1970) so that we
+    //  * can assume that all changes after 1970 will be considered
+    //  */
+    // private async getChangesConsideredUntilTsmp() {
+    //     const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + '__changes_considered_until');
+    //     return val?.tmsp ?? new Date(0).toISOString()
+    // }
+    // private async setChangesConsideredUntilTsmp(tmsp: string) {
+    //     await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__changes_considered_until', {tmsp});
+    // }
 
 
 
@@ -552,13 +622,35 @@ SELECT count(*):: int changes FROM tw0;
 
 
 
-    // async clearAll() {
-    //     // await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
-    // }
+    async setUpdatesConsidered(leftDsDates: LeftDSDates) {
+        await this.wh.aggregationTimestamps.addToIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX, leftDsDates);
+    }
+    async getUpdatesConsidered(): Promise<LeftDSDates> {
+        const val = await this.wh.aggregationTimestamps.getFromIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX);
+        return val ?? {}
+    }
 
-    // async initIdx() {
-    //     // await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
-    // }
+    async getleftDSupdateDone(): Promise<LeftDSDates> {
+
+
+        const leftDS = [
+            ...this.isReceiverOf.map(depIdx => depIdx.providerDS),
+            ...this.creatorDS.map(item => item.dataService)
+        ]
+        const sql = `
+                    SELECT jsonb_object_agg(replace(key,'${LAST_UPDATE_DONE_SUFFIX}','') , val->>'tmsp') o
+                    FROM ${this.wh.metaTimestamps.schemaTable}
+                    WHERE key IN (
+                        ${leftDS.map(item => `'${item.constructor.name + LAST_UPDATE_DONE_SUFFIX}'`).join(',')}
+                    )
+                `
+        const res = await this.wh.pgPool.query<{o: LeftDSDates}>(sql)
+
+        const returnval = res.rows?.[0]?.o ?? {}
+        return returnval
+
+    }
+
 
 }
 

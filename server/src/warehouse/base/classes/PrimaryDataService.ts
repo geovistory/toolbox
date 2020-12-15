@@ -1,5 +1,5 @@
 import {BehaviorSubject, Subject} from 'rxjs';
-import {Warehouse} from '../../Warehouse';
+import {CHANGES_CONSIDERED_UNTIL_SUFFIX, Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
@@ -57,7 +57,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     async startAndSyncSince(lastUpdateBegin: Date) {
         await this.addPgListeners()
 
-        await this.setLastUpdateBegin(lastUpdateBegin)
+        await this.setChangesConsideredUntil(lastUpdateBegin)
 
         await this.sync(lastUpdateBegin)
     }
@@ -65,13 +65,13 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
     async catchUp() {
 
-        const lastUpdateDone = await this.getLastUpdateDone()
-        if (lastUpdateDone) {
-            Logger.msg(this.constructor.name, `Catch up changes since ${lastUpdateDone}`);
-            await this.startAndSyncSince(lastUpdateDone)
+        const lastUpdateBegin = await this.getChangesConsideredUntil()
+        if (lastUpdateBegin) {
+            Logger.msg(this.constructor.name, `Catch up changes since ${lastUpdateBegin}`);
+            await this.startAndSyncSince(lastUpdateBegin)
         }
         else {
-            Logger.msg(this.constructor.name, `WARNING: no lastUpdateDone date found for catchUp()!`)
+            Logger.msg(this.constructor.name, `WARNING: no lastUpdateBegin date found for catchUp()!`)
             await this.initIdx()
         }
     }
@@ -102,15 +102,15 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
     /**
      *
-     * @param tmsp the timestamp of oldest modification considered for syncing
+     * @param tmsp the timestamp sent by the notification of the original table
      */
-    async sync(tmsp: Date) {
-
+    async sync(tmsp: Date): Promise<number> {
+        let changes = 0
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
         if (this.syncing$.value) {
             this.restartSyncing = true
-            return;
+            return changes;
         }
 
         // Else sets syncing to true and restartSyncing to false
@@ -119,35 +119,45 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         // throttle sync process for 10 ms
         // await new Promise((res, rej) => { setTimeout(() => { res() }, 10) })
-        const lastUpdateBegin = await this.getLastUpdateBegin()
-        const t1 = Logger.start(this.constructor.name, `manageUpdatesSince ${lastUpdateBegin}`, 1);
+        const changesConsideredUntil = await this.getChangesConsideredUntil()
+        const t1 = Logger.start(this.constructor.name, `manageUpdatesSince ${changesConsideredUntil}`, 1);
 
         // Look for updates since the date of lastUpdateBegin or 1970
         const calls = [
-            this.manageUpdatesSince(lastUpdateBegin)
+            this.manageUpdatesSince(changesConsideredUntil)
         ]
 
         // Look for deletes if
         // - there is a deleteSql and
         // - this data service has ever been synced
 
-        if (lastUpdateBegin) {
-            const deleteSql = this.getDeletesSql(lastUpdateBegin)
-            if (deleteSql !== '') calls.push(this.manageDeletesSince(lastUpdateBegin, deleteSql))
+        if (changesConsideredUntil) {
+            const deleteSql = this.getDeletesSql(changesConsideredUntil)
+            if (deleteSql !== '') calls.push(this.manageDeletesSince(changesConsideredUntil, deleteSql))
         }
 
         // set lastUpdateBegin to timestamp that was used to run this sync
         // process.
-        await this.setLastUpdateBegin(tmsp)
+        await this.setChangesConsideredUntil(tmsp)
 
         // await the calls produced above
         const [updates, deletes] = await Promise.all(calls);
+
+        changes += updates + (deletes ?? 0);
+
         Logger.itTook(this.constructor.name, t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
 
         this.syncing$.next(false)
-        if (this.restartSyncing) await this.sync(tmsp);
+        if (this.restartSyncing) {
+            changes += await this.sync(tmsp);
+        }
+        const now = await this.wh.pgNowDate()
+        await this.setLastUpdateDone(now)
+        if (changes > 0) {
+            this.afterChange$.next()
+        }
 
-        await this.setLastUpdateDone(tmsp)
+        return changes
 
     }
 
@@ -195,9 +205,9 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         // if (this.constructor.name === 'REdgeService') {
         //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
         // }
-        if (upserted.rows?.[0].count > 0) {
-            this.afterChange$.next()
-        }
+        // if (upserted.rows?.[0].count > 0) {
+        //     this.afterChange$.next()
+        // }
         Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted.rows?.[0].count} new lines`, 2);
         return upserted.rows.length
 
@@ -239,10 +249,10 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
             `,
             [date]
         );
-        if (deleted.rows?.[0].count > 0) {
+        // if (deleted.rows?.[0].count > 0) {
 
-            this.afterChange$.next()
-        }
+        //     this.afterChange$.next()
+        // }
         Logger.itTook(this.constructor.name, t2, `To mark items as deleted  ...`, 2);
         return deleted.rows.length
 
@@ -266,20 +276,13 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     // marking the begin of the sync() process, which can be considerably earlier
     // than its end. It is null until sync() is called the first time.
 
-    async setLastUpdateBegin(date: Date) {
-        await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__last_update_begin', {tmsp: date.toISOString()});
+    async setChangesConsideredUntil(date: Date) {
+        await this.wh.metaTimestamps.addToIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX, {tmsp: date.toISOString()});
     }
-    async getLastUpdateBegin(): Promise<Date | undefined> {
-        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + '__last_update_begin');
+    async getChangesConsideredUntil(): Promise<Date | undefined> {
+        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX);
         const isoDate = val?.tmsp;
         return isoDate ? new Date(isoDate) : undefined
     }
-    async setLastUpdateDone(date: Date) {
-        await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__last_update_done', {tmsp: date.toISOString()});
-    }
-    async getLastUpdateDone(): Promise<Date | undefined> {
-        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + '__last_update_done');
-        const isoDate = val?.tmsp;
-        return isoDate ? new Date(isoDate) : undefined
-    }
+
 }

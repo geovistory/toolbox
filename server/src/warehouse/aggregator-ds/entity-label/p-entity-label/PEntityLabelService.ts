@@ -3,26 +3,22 @@ import {PoolClient} from 'pg';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
 import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityFields} from '../../../primary-ds/edge/edge.commons';
 import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
 import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {EntityLabelConfigVal, ProEntityLabelConfigService} from '../../../primary-ds/ProEntityLabelConfigService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../../../Warehouse';
-import {IdentifyingPropertyService, IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
 import {EntityLabelVal, LabelPartCustom, LabelPartKeys, labelPartsForAppeInLang365, labelPartsForNormalEntities} from '../entity-label.commons';
-import {PEntityLabelAggregator} from './PEntityLabelAggregator';
-import {PEntityLabelProviders} from './PEntityLabelPoviders';
 
 @Injectable()
 export class PEntityLabelService extends AggregatedDataService2<PEntityId, EntityLabelVal>{
-    aggregator = PEntityLabelAggregator;
-    providers = PEntityLabelProviders;
+    // aggregator = PEntityLabelAggregator;
+    // providers = PEntityLabelProviders;
 
     depPEntity: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, PEntity>
     depProEntityLabelConfig: DependencyIndex<PEntityId, EntityLabelVal, PClassId, EntityLabelConfigVal>
-    depIdentifyingProperty: DependencyIndex<PEntityId, EntityLabelVal, RClassId, IdentifyingPropertyVal>
+    // depIdentifyingProperty: DependencyIndex<PEntityId, EntityLabelVal, RClassId, IdentifyingPropertyVal>
     depPEntityLabel: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>
     depPEdge: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityFields>
 
@@ -31,7 +27,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
         @Inject(forwardRef(() => ProEntityLabelConfigService)) entityLabelConfig: ProEntityLabelConfigService,
-        @Inject(forwardRef(() => IdentifyingPropertyService)) identifyingProperty: IdentifyingPropertyService,
+        // @Inject(forwardRef(() => IdentifyingPropertyService)) identifyingProperty: IdentifyingPropertyService,
         @Inject(forwardRef(() => PEdgeService)) pEdge: PEdgeService,
     ) {
         super(
@@ -41,7 +37,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
         this.registerCreatorDS({dataService: pEntity})
         this.depPEntity = this.addDepencency(pEntity);
         this.depProEntityLabelConfig = this.addDepencency(entityLabelConfig);
-        this.depIdentifyingProperty = this.addDepencency(identifyingProperty);
+        // this.depIdentifyingProperty = this.addDepencency(identifyingProperty);
         this.depPEntityLabel = this.addDepencency(this);
         this.depPEdge = this.addDepencency(pEdge);
     }
@@ -302,7 +298,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
 
         await builder.tmpTableUpsertAggregations(this.index, aggregateLabels.tableDef.tableName, '= true')
         builder.registerUpsertHook()
-        // builder.printQueries()
+        // await builder.printQueries()
         const count = builder.executeQueries()
 
         return count

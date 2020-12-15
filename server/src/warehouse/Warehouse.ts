@@ -14,6 +14,8 @@ export const PK_ENGLISH = 18889;
 export const APP_CONFIG = new InjectionToken<WarehouseConfig>('app.config');
 export const PRIMARY_DS = new InjectionToken<Type<any>[]>('primaryDs');
 export const AGG_DS = new InjectionToken<Type<any>[]>('aggDs');
+export const LAST_UPDATE_DONE_SUFFIX = '__last_update_done'
+export const CHANGES_CONSIDERED_UNTIL_SUFFIX = '__changes_considered_until'
 
 interface NotificationHandler {
     channel: string
@@ -26,6 +28,8 @@ export interface WarehouseConfig {
     geovistoryDatabase: string,
     warehouseSchema: string,
 }
+// used for consideredUpdatesUntil and leftDSupdateDone
+export interface LeftDSDates {[DsName: string]: string}
 
 @Injectable()
 export class Warehouse {
@@ -46,6 +50,7 @@ export class Warehouse {
     createSchema$ = new Subject<void>()
     schemaName = 'war_cache'
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
+    aggregationTimestamps: IndexDBGeneric<string, LeftDSDates>;
 
 
     constructor(
@@ -56,7 +61,7 @@ export class Warehouse {
     ) {
         this.schemaName = config.warehouseSchema;
 
-        const connectionString =  config.geovistoryDatabase;
+        const connectionString = config.geovistoryDatabase;
         const ssl = getPgSslForPg8(connectionString)
         this.pgPool = new Pool({
             max: 15,
@@ -172,7 +177,7 @@ export class Warehouse {
      */
     async primInitialized(): Promise<boolean> {
         const prim = this.getPrimaryDs()
-        const doneDates = await Promise.all(prim.map(ds => ds.getLastUpdateDone()))
+        const doneDates = await Promise.all(prim.map(ds => ds.getLastUpdateBegin()))
         if (doneDates.includes(undefined)) return false
         return true
     }
@@ -217,7 +222,7 @@ export class Warehouse {
         const dates: Date[] = []
 
         for (const p of prim) {
-            const d = await p.getLastUpdateDone()
+            const d = await p.getLastUpdateBegin()
             if (d) dates.push(d)
         }
         dates.sort();
@@ -249,6 +254,12 @@ export class Warehouse {
             (key: string) => key,
             (str: string) => str,
             this.constructor.name + '_timestamps',
+            this
+        )
+        this.aggregationTimestamps = new IndexDBGeneric(
+            (key: string) => key,
+            (str: string) => str,
+            this.constructor.name + '_aggregation_timestamps',
             this
         )
 
@@ -327,12 +338,20 @@ export class Warehouse {
 
 
     /**
-     * returns now() tmsp from postgres
+     * returns now() tmsp from postgres as toISOString
      */
     async pgNow() {
-        const res = await this.pgPool.query<{now: Date}>('select now()')
-        return res.rows[0].now.toISOString()
+        const date = await this.pgNowDate()
+        return date.toISOString()
     }
+    /**
+     * returns now() tmsp from postgres as Date
+     */
+    async pgNowDate() {
+        const res = await this.pgPool.query<{now: Date}>('select now()')
+        return res.rows[0].now
+    }
+
 
 
     /**

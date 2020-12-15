@@ -16,6 +16,7 @@ export abstract class IndexPostgres<KeyModel, ValueModel> implements Index<KeyMo
 
     schema: string;
     table: string;
+    schemaTable: string;
     ready$ = new ReplaySubject<boolean>()
 
     constructor(
@@ -24,6 +25,7 @@ export abstract class IndexPostgres<KeyModel, ValueModel> implements Index<KeyMo
     ) {
         this.schema = wh.schemaName;
         this.table = name;
+        this.schemaTable = `${this.schema}.${this.table}`
         this.pgPool = wh.pgPool;
         combineLatest(
             wh.pgListenerConnected$,

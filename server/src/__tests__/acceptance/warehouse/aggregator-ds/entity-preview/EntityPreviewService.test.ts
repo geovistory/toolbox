@@ -1,45 +1,44 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import '@abraham/reflection';
-import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
-import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
-import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import {Warehouse} from '../../../../../warehouse/Warehouse';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-import {PEntityLabel} from '../p-entity-label/PEntityLabelService.test';
-import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
-import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
-import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
-import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
-import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
-import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
 import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
 import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
 import {REntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
-import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
-import {PEntityClassLabel} from '../p-entity-class-label/PEntityClassLabelService.test';
-import {PEntityFullText} from '../p-entity-full-text/PEntityFullTextService.test';
-import {ProClassFieldsConfigService} from '../../../../../warehouse/primary-ds/ProClassFieldsConfigService';
-import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
-import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
-import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
-import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PEntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
 import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
-import {RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
-import {RPropertyService} from '../../../../../warehouse/primary-ds/property/RPropertyService';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
 import {REntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
-import {PEntityTimeSpanMock} from '../p-entity-time-span/PEntityTimeSpan.test';
-import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
 import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
 import {REntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
+import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
+import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProClassFieldsConfigService} from '../../../../../warehouse/primary-ds/ProClassFieldsConfigService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
+import {RPropertyService} from '../../../../../warehouse/primary-ds/property/RPropertyService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
+import {Warehouse} from '../../../../../warehouse/Warehouse';
+import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
+import {PEntityClassLabel} from '../p-entity-class-label/PEntityClassLabelService.test';
+import {PEntityFullText} from '../p-entity-full-text/PEntityFullTextService.test';
+import {PEntityLabel} from '../p-entity-label/PEntityLabelService.test';
+import {PEntityTimeSpanMock} from '../p-entity-time-span/PEntityTimeSpanService.test';
 import {PEntityTypeMock} from '../p-entity-type/PEntityTypeService.test';
 
 /**
@@ -63,7 +62,7 @@ describe('EntityPreviewService', function () {
                     ProEntityLabelConfigService,
                 ],
                 aggDataServices: [
-                    IdentifyingPropertyService,
+                    // IdentifyingPropertyService,
                     PEntityLabelService,
                     REntityLabelService,
                     EntityPreviewService
@@ -185,7 +184,7 @@ describe('EntityPreviewService', function () {
                     DfhClassHasTypePropertyService
                 ],
                 aggDataServices: [
-                    IdentifyingPropertyService,
+                    // IdentifyingPropertyService,
                     PEntityLabelService,
                     REntityLabelService,
                     REntityTypeService,
@@ -278,7 +277,7 @@ describe('EntityPreviewService', function () {
             })
         })
 
-        it('should create repo entity class label', async () => {
+        it('should create repo entity time span', async () => {
             const {shipVoyage} = await PEntityTimeSpanMock.createMock();
 
             await searchUntilSatisfy({
@@ -316,7 +315,7 @@ describe('EntityPreviewService', function () {
                     ProClassLabelService
                 ],
                 aggDataServices: [
-                    IdentifyingPropertyService,
+                    // IdentifyingPropertyService,
                     PClassFieldLabelService,
                     RClassFieldLabelService,
                     PEntityLabelService,

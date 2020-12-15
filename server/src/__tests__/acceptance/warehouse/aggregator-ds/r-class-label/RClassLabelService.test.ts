@@ -7,7 +7,7 @@ import {AtmLanguages, createInfLanguage} from '../../../../helpers/atomic/inf-la
 import {createProTextPropertyClassLabel, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, waitForClassPreview, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForClassPreview, stopWarehouse, truncateWarehouseTables, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
@@ -27,11 +27,13 @@ const rClassLabelService: WarehouseStubs = {
 describe('RClassLabelService', function () {
 
     let wh: Warehouse;
+    let s: RClassLabelService
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(15000); // A very long environment setup.
         const injector = await setupCleanAndStartWarehouse(rClassLabelService)
         wh = injector.get(Warehouse)
+        s = injector.get(RClassLabelService)
     })
     beforeEach(async () => {
         await cleanDb()
@@ -40,7 +42,21 @@ describe('RClassLabelService', function () {
     after(async function () {
         await stopWarehouse(wh)
     })
-
+    it('should propagate rClass to rClassLabel', async () => {
+        const cla = await createDfhApiClass({
+            dfh_pk_class: 1,
+            dfh_class_label: 'BIRTH ONTOME',
+            dfh_class_label_language: 'en',
+            dfh_fk_profile: 5
+        });
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx({
+                pkClass: cla.dfh_pk_class
+            }),
+            compare: (item) => !!item
+        })
+    })
 
     it('should create class label of Person: en-geovistory', async () => {
         const {cla, gvTxt} = await createGeovistoryLabelMock();

@@ -6,7 +6,11 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[ProProjectService],
+  aggDataServices:[]
+}
 describe('ProProjectService', function () {
 
   let wh: Warehouse;
@@ -15,7 +19,7 @@ describe('ProProjectService', function () {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(stubs)
     wh = injector.get(Warehouse)
     s = injector.get(ProProjectService)
   })

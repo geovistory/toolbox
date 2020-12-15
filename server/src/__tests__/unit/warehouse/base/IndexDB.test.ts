@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 import assert from 'assert';
 import {omit} from 'ramda';
-import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
-import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
-import {waitUntilNext} from '../../../helpers/warehouse-helpers';
-import {createWarehouse} from '../../../../warehouse/createWarehouse';
 import {getPgUrlForPg8} from '../../../../utils/databaseUrl';
+import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
+import {createWarehouse} from '../../../../warehouse/createWarehouse';
+import {DfhOutgoingPropertyService} from '../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
+import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,21 +15,22 @@ export class TestIdx extends IndexDB<string, any> {
   stringToKey(key: string) {return key;}
 }
 
-const config: WarehouseConfig = {
-  geovistoryDatabase: getPgUrlForPg8(),
-  warehouseSchema: 'war_cache_test'
-}
 
 describe('IndexDB', function () {
   let idx: TestIdx
   let wh: Warehouse
 
-  before(async () => {
+  before(async function() {
+    this.timeout(50000); // A very long environment setup.
 
-    wh = createWarehouse(config).get(Warehouse)
+    const injector = await setupCleanAndStartWarehouse({
+      primaryDataServices: [DfhOutgoingPropertyService],
+      aggDataServices: []
+    })
+    wh = injector.get(Warehouse)
     idx = new TestIdx('test_idx', wh)
-    // await wh.connectPgClient();
     wh.createSchema$.next();
+    wh.pgListenerConnected$.next(wh.pgListener)
     await waitUntilNext(idx.ready$)
 
   })

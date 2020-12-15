@@ -5,26 +5,20 @@ import {PoolClient} from 'pg';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
 import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityFields} from '../../../primary-ds/edge/edge.commons';
 import {REdgeService} from '../../../primary-ds/edge/REdgeService';
 import {REntity, REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {EntityLabelConfigVal, ProEntityLabelConfigService} from '../../../primary-ds/ProEntityLabelConfigService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../../../Warehouse';
-import {IdentifyingPropertyService, IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
-import {EntityLabelVal, LabelPartKeys, LabelPartCustom, labelPartsForAppeInLang365, labelPartsForNormalEntities} from '../entity-label.commons';
-import {REntityLabelAggregator} from './REntityLabelAggregator';
-import {REntityLabelProviders} from './REntityLabelPoviders';
+import {EntityLabelVal, LabelPartCustom, LabelPartKeys, labelPartsForAppeInLang365, labelPartsForNormalEntities} from '../entity-label.commons';
 
 @Injectable()
 export class REntityLabelService extends AggregatedDataService2<REntityId, EntityLabelVal>{
-    aggregator = REntityLabelAggregator;
-    providers = REntityLabelProviders;
 
     depREntity: DependencyIndex<REntityId, EntityLabelVal, REntityId, REntity>
     depProEntityLabelConfig: DependencyIndex<REntityId, EntityLabelVal, PClassId, EntityLabelConfigVal>
-    depIdentifyingProperty: DependencyIndex<REntityId, EntityLabelVal, RClassId, IdentifyingPropertyVal>
+    // depIdentifyingProperty: DependencyIndex<REntityId, EntityLabelVal, RClassId, IdentifyingPropertyVal>
     depREntityLabel: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityLabelVal>
     depREdge: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityFields>
 
@@ -32,7 +26,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => ProEntityLabelConfigService)) private proEntityLabelConfig: ProEntityLabelConfigService,
-        @Inject(forwardRef(() => IdentifyingPropertyService)) private identifyingProperty: IdentifyingPropertyService,
+        // @Inject(forwardRef(() => IdentifyingPropertyService)) private identifyingProperty: IdentifyingPropertyService,
         @Inject(forwardRef(() => REdgeService)) private rEdge: REdgeService,
         @Inject(forwardRef(() => REntityService)) private rEntity: REntityService,
     ) {
@@ -45,7 +39,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
 
         this.depREntity = this.addDepencency(this.rEntity)
         this.depProEntityLabelConfig = this.addDepencency(this.proEntityLabelConfig)
-        this.depIdentifyingProperty = this.addDepencency(this.identifyingProperty)
+        // this.depIdentifyingProperty = this.addDepencency(this.identifyingProperty)
         this.depREntityLabel = this.addDepencency(this)
         this.depREdge = this.addDepencency(this.rEdge)
 

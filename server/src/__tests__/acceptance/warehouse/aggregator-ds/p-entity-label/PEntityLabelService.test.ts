@@ -2,7 +2,7 @@
 import '@abraham/reflection';
 import {expect} from '@loopback/testlab';
 import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
-import {IdentifyingPropertyService} from '../../../../../warehouse/aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
 import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
@@ -28,7 +28,6 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 import {createUnion2Mock} from '../r-entity-label/REntityLabelService.test';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 export const pEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
         DfhOutgoingPropertyService,
@@ -37,7 +36,7 @@ export const pEntityLabelStub: WarehouseStubs = {
         PEdgeService
     ],
     aggDataServices: [
-        IdentifyingPropertyService,
+        // IdentifyingPropertyService,
         PEntityLabelService,
         EntityPreviewService
     ]
@@ -62,6 +61,7 @@ describe('PEntityLabelService', function () {
     after(async function () {
         await stopWarehouse(wh)
     })
+
     it('should create entity label of naming', async () => {
         const project = await PEntityLabel.createProject();
         const {naming, appellation} = await PEntityLabel.createNamingMock();

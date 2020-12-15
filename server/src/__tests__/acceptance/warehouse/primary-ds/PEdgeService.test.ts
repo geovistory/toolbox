@@ -20,7 +20,11 @@ import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntit
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[PEdgeService],
+  aggDataServices:[]
+}
 describe('PEdgeService', () => {
 
   let wh: Warehouse;
@@ -29,7 +33,7 @@ describe('PEdgeService', () => {
   before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
-    const injector = await setupCleanAndStartWarehouse()
+    const injector = await setupCleanAndStartWarehouse(stubs)
     wh = injector.get(Warehouse)
     s = injector.get(PEdgeService)
   })
