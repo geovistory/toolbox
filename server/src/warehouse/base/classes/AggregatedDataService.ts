@@ -11,6 +11,8 @@ import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
 import {Logger} from './Logger';
+import sqlFormatter from 'sql-formatter';
+import {writeFileSync, mkdirSync, existsSync} from 'fs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -91,7 +93,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     shouldDelete = false;
 
     tempTable: string;
-    batchSize = 100;
+    batchSize = 100000;
 
     ready$ = new ReplaySubject<boolean>()
 
@@ -355,9 +357,11 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             tw${i} AS (
                 DELETE
                 FROM    ${depDS.schemaTable} t1
-                USING   ${this.tempTable} t2
-                WHERE   ${depDS.receiverDS.index.keyDefs.map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
-                AND t1.tmsp_last_aggregation < '${currentTimestamp}'
+                WHERE   (${depDS.receiverDS.index.keyDefs.map(k => `"r_${k.name}"`).join(',')}) IN (
+                            SELECT  ${depDS.receiverDS.index.keyDefs.map(k => `"${k.name}"`).join(',')}
+                            FROM    ${this.tempTable}
+                        )
+                AND     t1.tmsp_last_aggregation < '${currentTimestamp}'
                 RETURNING *
             )
         `).join(', ')
@@ -374,23 +378,16 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             ${sum}
         `
 
-        // for (const depDS of this.isReceiverOf) {
-        //     const cleanupSql = `
-        //     DELETE
-        //     FROM    ${depDS.schemaTable} t1
-        //     USING   ${this.tempTable} t2
-        //     WHERE   ${
-        //         depDS.receiverDS.index.keyDefs
-        //             .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')
-        //         }
-        //     AND t1.tmsp_last_aggregation < '${currentTimestamp}'
-        //     `;
-        //     promises.push(client.query(cleanupSql));
-        // }
-        // await Promise.all(promises)
+
         await client.query(sql)
+
+        // if (new Date().getTime() - t0 > 1000) {
+        //     await this.printQuery(client, 'cleanup_old_deps', sql, [])
+        // }
         Logger.itTook(this.constructor.name, t0, `to cleanupOldDependencies `, 0)
     }
+
+
 
     async aggregateAll(client: PoolClient, currentTimestamp: string) {
         let changes = 0
@@ -651,6 +648,43 @@ SELECT count(*):: int changes FROM tw0;
 
     }
 
+    /**
+     * prints a query in a file with a query for the tmpTable for debugging
+     */
+    private async printQuery(client: PoolClient, prefix: string, sql: string, params: any[]) {
+        const dir = './dev/agg-logs';
+        if (!existsSync(dir)) {
+            mkdirSync(dir);
+        }
+        const filename = prefix + '-' + new Date().toISOString()
+
+        const tmptable = await client.query<KeyModel>(`
+        SELECT ${this.index.keyDefs.map(k => `"${k.name}"`)}
+        FROM  ${this.tempTable}
+        `, [])
+        const tmpTableDebugSql = `
+        CREATE TEMP TABLE ${this.tempTable} ON COMMIT DROP AS (
+          SELECT ${this.index.keyDefs.map(k => `"${k.name}"`)}
+          FROM
+          (VALUES ${tmptable.rows.map(r => `(${this.index.keyDefs.map(k => r[k.name as keyof KeyModel]).join(', ')})`).join(', ')}) as x(${this.index.keyDefs.map(k => `"${k.name}"`).join(',')})
+        );
+        `
+
+
+        params.forEach((param, j) => {
+            const replaceStr = new RegExp('\\$' + (j + 1) + '(?!\\d)', 'g')
+            sql = sql.replace(replaceStr, typeof param === 'string' ? "'" + param + "'" : param)
+        })
+        sql = sqlFormatter.format(sql, {language: 'pl/sql'});
+
+        const log = `BEGIN;
+            ${tmpTableDebugSql}
+
+            ${sql}
+        `
+        writeFileSync(dir + '/' + filename, log, 'utf-8')
+        return 0
+    }
 
 }
 

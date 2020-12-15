@@ -11,6 +11,7 @@ export interface ProPropertyLabelId {
 }
 export interface ProPropertyLabelVal {label: string}
 export const proPropertyLabelKeyDef: KeyDefinition[] = [
+    {name: 'fkProject', type: 'integer'},
     {name: 'fkProperty', type: 'integer'},
     {name: 'fkClass', type: 'integer'},
     {name: 'isOutgoing', type: 'boolean'},

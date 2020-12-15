@@ -34,7 +34,7 @@ describe('DfhPropertyLabelService', () => {
   })
   it('should have api property label in index after initIdx()', async () => {
     const c = await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
-    const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: c.dfh_property_label_language}
+    const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: 18889}
 
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
@@ -46,7 +46,7 @@ describe('DfhPropertyLabelService', () => {
   it('should update property label', async () => {
     const c = await createDfhApiProperty({dfh_property_label: 'Foo'})
 
-    const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: c.dfh_property_label_language}
+    const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: 18889}
 
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
@@ -66,7 +66,7 @@ describe('DfhPropertyLabelService', () => {
 
   it('should NOT! delete property label', async () => {
     const c = await createDfhApiProperty({dfh_property_label: 'Foo'})
-    const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: c.dfh_property_label_language}
+    const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: 18889}
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx(id),
