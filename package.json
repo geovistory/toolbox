@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "loopack-build:watch": "cd server && npm run build:watch",
-    "install": "cd ./server && npm i --production=false && cd ../db-migrate && npm i",
+    "install": "cd ./server && npm i --production=false",
     "heroku-postbuild": "bash heroku-postbuild.sh"
   },
   "private": true,
@@ -14,7 +14,6 @@
     "npm": "6.13.2"
   },
   "cacheDirectories": [
-    "server/node_modules",
-    "db-migrate/node_modules"
+    "server/node_modules"
   ]
 }
