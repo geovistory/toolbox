@@ -207,8 +207,12 @@ export class Warehouse {
     private async catchUp() {
         const prim = this.getPrimaryDs()
         for (const primDS of prim) {
-
             await primDS.catchUp();
+        }
+
+        const agg = this.getAggregatedDs()
+        for (const aggDS of agg) {
+            await aggDS.startUpdate();
         }
 
     }

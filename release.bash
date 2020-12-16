@@ -1,1 +1,1 @@
-sh ./server/db-migrate/up.sh 
+bash ./server/db-migrate/up.sh 
