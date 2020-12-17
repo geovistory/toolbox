@@ -71,6 +71,7 @@ export class Warehouse {
         this.pgPool = new Pool(pgConfig);
 
         Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
+        Logger.msg(this.constructor.name, `max connections: ${config.geovistoryDatabaseMaxConnections}`)
 
     }
 

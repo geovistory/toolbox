@@ -153,9 +153,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
          */
         // create client for the aggregation
 
-        // const t2 = Logger.start(this.constructor.name, `pgPool connect (totalCount: ${this.wh.pgPool.totalCount}, waitingCount: ${this.wh.pgPool.waitingCount})`, 0)
         const client = await this.wh.pgPool.connect()
-        // Logger.itTook(this.constructor.name, t2, `to pgPool connect `, 0)
+        Logger.msg(this.constructor.name, `pgPool connected (totalCount: ${this.wh.pgPool.totalCount}, waitingCount: ${this.wh.pgPool.waitingCount})`, 0)
 
         let hasError = false;
         try {
@@ -186,7 +185,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             Logger.msg(this.constructor.name, `pgPool client released`)
 
         }
-        if(!hasError){
+        if (!hasError) {
             await this.setUpdatesConsidered(providerUpdateTmsps)
         }
 
