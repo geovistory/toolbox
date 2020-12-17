@@ -168,7 +168,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             t1."p_pkClass",
             label_part->'field'->>'fkProperty' property,
             label_part->'field'->>'nrOfStatementsInLabel',
-            CASE WHEN (label_part->'field'->'isOutgoing')::bool = true THEN 'outgoing' ELSE 'incoming' END direction,
+            CASE WHEN (label_part->'field'->>'isOutgoing')::bool = true THEN 'outgoing' ELSE 'incoming' END direction,
             label_part->>'ordNum' fielOrdNum,
             generate_series(1,(label_part->'field'->'nrOfStatementsInLabel')::int) stmtOrdNum
             FROM ${labelPartsTbl} t1
