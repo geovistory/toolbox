@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
-import {Notification, Pool, PoolClient} from 'pg';
+import {Notification, Pool, PoolClient, PoolConfig} from 'pg';
 import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first, mapTo} from 'rxjs/operators';
+import {parse} from 'pg-connection-string';
+
 import {getPgSslForPg8} from '../utils/databaseUrl';
 import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
 import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
@@ -63,12 +65,10 @@ export class Warehouse {
         this.schemaName = config.warehouseSchema;
 
         const connectionString = config.geovistoryDatabase;
-        const ssl = getPgSslForPg8(connectionString)
-        this.pgPool = new Pool({
-            max: config.geovistoryDatabaseMaxConnections,
-            connectionString,
-            ssl
-        });
+        const pgConfig = parse(config.geovistoryDatabase) as PoolConfig
+        pgConfig.max = config.geovistoryDatabaseMaxConnections
+        pgConfig.ssl = getPgSslForPg8(connectionString)
+        this.pgPool = new Pool(pgConfig);
 
         Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
 
