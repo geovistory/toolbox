@@ -20,9 +20,21 @@ addEventListener('message', ({ data }) => {
  * @returns the 2 dimensions array of strings correcponding to the binaries
  */
 function csvIntoTable(binaries: string, separator: string): string[][] {
-    if (separator == 'TAB') separator = String.fromCharCode(9);
-    return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.split(separator))));
+    console.log('separator<' + separator + '>');
+    if (separator == 'TAB' || separator == '|') {
+        if (separator == 'TAB') separator = String.fromCharCode(9);
+        return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.split(separator))));
+    } else {
+        const regExp = new RegExp('(".*?"|[^"' + separator + '\s]+)(?=\s*' + separator + '|\s*$)', 'g');
+        return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.match(regExp))));
+    }
 }
+
+// function removeFirstquote(str: string) {
+//     if (str.charAt(0) == '"' || str.charAt(0) == '\'') str = str.slice(1);
+//     if (str.charAt(str.length - 1) == '"' || str.charAt(str.length - 1) == '\'') str = str.slice(0, str.length - 1);
+//     return str;
+// }
 
 /**
  * Parse a raw binary string into a XLSX.Workbook (external lib) in order to exploit the workbook

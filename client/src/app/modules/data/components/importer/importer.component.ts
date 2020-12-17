@@ -456,6 +456,11 @@ function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: str
   for (let i = 0; i < table.length; i++) {
     let content = table[i][colNb];
 
+    // if content of cell is surrounded by quote or double quotes, remove them
+    if ((content.charAt(0) == '"' && content.charAt(content.length - 1) == '"') || (content.charAt(0) == '\'' && content.charAt(content.length - 1) == '\'')) {
+      content = content.slice(1, content.length - 1);
+    }
+
     if (comma == ',') {
       content = content.replace('.', '}'); // replace dots to prevent parsing a number which is supposed to be a string
       content = content.replace(',', '.');
