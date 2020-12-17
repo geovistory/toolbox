@@ -185,7 +185,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
             t1.direction,
             t1.fielOrdNum,
             t1.stmtOrdNum,
-            (t1.stmt->'targetIsEntity')::bool condition,
+            (t1.stmt->>'targetIsEntity')::bool condition,
             jsonb_build_object(
                 'fkTarget', (t1.stmt->>'fkTarget')::int,
                 'targetLabel', t1.stmt->>'targetLabel'
