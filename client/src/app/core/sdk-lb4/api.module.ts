@@ -13,6 +13,7 @@ import { DfhClassService } from './api/dfhClass.service';
 import { DfhLabelService } from './api/dfhLabel.service';
 import { DfhProfileService } from './api/dfhProfile.service';
 import { DfhPropertyService } from './api/dfhProperty.service';
+import { FactoidControllerService } from './api/factoidController.service';
 import { ImportTableControllerService } from './api/importTableController.service';
 import { InfLanguageService } from './api/infLanguage.service';
 import { InfPersistentItemService } from './api/infPersistentItem.service';

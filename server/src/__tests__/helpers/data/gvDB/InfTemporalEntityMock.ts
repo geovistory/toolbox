@@ -46,8 +46,33 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
 
-  static readonly HABSBOURG_EMPIRE_NAMING = new InfTemporalEntity({
+  static readonly JEAN_NAMING = new InfTemporalEntity({
     pk_entity: 4009,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly HANS_NAMING = new InfTemporalEntity({
+    pk_entity: 4010,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly PIERRE_NAMING = new InfTemporalEntity({
+    pk_entity: 4011,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly ANGELA_NAMING = new InfTemporalEntity({
+    pk_entity: 4012,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly HABSBOURG_EMPIRE_NAMING = new InfTemporalEntity({
+    pk_entity: 4013,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly UNIONS_NAMING = new InfTemporalEntity({
+    pk_entity: 4014,
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
 }

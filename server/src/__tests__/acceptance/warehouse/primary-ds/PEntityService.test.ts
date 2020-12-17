@@ -8,7 +8,7 @@ import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {getWarEntityPreview} from '../../../helpers/atomic/war-entity_preview.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';

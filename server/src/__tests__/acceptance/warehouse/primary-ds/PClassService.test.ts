@@ -4,7 +4,7 @@ import {PClassService} from '../../../../warehouse/primary-ds/class/PClassServic
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createProDfhProfileProjRel, updateProDfhProfileProjRel} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {ProDfhProfileProjRelMock} from '../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';

@@ -5,7 +5,7 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createProClassFieldConfig} from '../../../helpers/atomic/pro-class-field-config.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProClassFieldConfigMock} from '../../../helpers/data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';

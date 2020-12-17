@@ -1,8 +1,9 @@
-import {ApplicationConfig} from '@loopback/core';
-import {GeovistoryServer} from './server';
-import {cleanAndStartDev} from './warehouse';
-import {cleanDb} from './__tests__/helpers/cleaning/clean-db.helper';
-import {forFeatureX} from './__tests__/helpers/graphs/feature-X.helper';
+import { ApplicationConfig } from '@loopback/core';
+import { GeovistoryServer } from './server';
+import { cleanAndStartDev } from './warehouse';
+import { forFeatureX } from './__tests__/helpers/graphs/feature-X.helper';
+import { createHeavyFactoids } from './__tests__/helpers/graphs/heavy-factoids.helper';
+import { cleanDb } from './__tests__/helpers/meta/clean-db.helper';
 
 /**
  * This function starts the geovistory application and fills the database
@@ -10,11 +11,13 @@ import {forFeatureX} from './__tests__/helpers/graphs/feature-X.helper';
  * @param options
  */
 export async function serveWithMockData(options: ApplicationConfig = {}) {
-  console.log(`Cleaning test database...`);
+  process.stdout.write('Cleaning database ... ');
   await cleanDb();
+  console.log('Done');
 
-  console.log(`Seeding test database with mock data...`);
-  await forFeatureX();
+  console.log('Seeding test database with mock data:')
+  // await forFeatureX();
+  await createHeavyFactoids();
   console.log(`Test database is ready!\n`);
 
   console.log(`Cleaning and starting the Warehouse...`);

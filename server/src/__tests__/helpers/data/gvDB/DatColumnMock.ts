@@ -18,7 +18,7 @@ export class DatColumnMock {
         fk_column_relationship_type: 3367
     })
 
-    static readonly COL_DATES = new DatColumn({
+    static readonly COL_BIRTHDATES = new DatColumn({
         pk_entity: 3001,
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
         fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
@@ -44,5 +44,30 @@ export class DatColumnMock {
         fk_data_type: 3293, //string
     })
 
+    static readonly COL_PEOPLE = new DatColumn({
+        pk_entity: 3004,
+        fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity,
+        fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+        fk_data_type: 3293, //string
+    })
+
+    static readonly COL_UNION = new DatColumn({
+        pk_entity: 3005,
+        fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity,
+        fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+        fk_data_type: 3293, //string
+    })
+
+    static readonly COL_BIRTHDATES2 = new DatColumn({
+        pk_entity: 3006,
+        fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity,
+        fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+        fk_data_type: 3293, //string
+        is_imported: false,
+        fk_column_relationship_type: 3367
+    })
 
 }

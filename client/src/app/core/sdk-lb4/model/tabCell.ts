@@ -12,9 +12,9 @@
 
 
 export interface TabCell { 
-    pk_cell?: string;
+    pk_cell?: number;
     fk_column?: number;
-    fk_row?: string;
+    fk_row?: number;
     fk_digital?: number;
     string_value?: string;
     numeric_value?: number;

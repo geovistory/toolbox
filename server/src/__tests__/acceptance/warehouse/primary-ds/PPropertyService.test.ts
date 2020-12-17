@@ -6,7 +6,7 @@ import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.hel
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createProDfhProfileProjRel, updateProDfhProfileProjRel} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../helpers/data/gvDB/ProDfhProfileProjRelMock';

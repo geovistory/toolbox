@@ -1,37 +1,36 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {expect} from '@loopback/testlab';
-import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
-import {Warehouse} from '../../../../../warehouse/Warehouse';
-import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
-import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
-import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
-import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
-import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProClassFieldConfig} from '../../../../helpers/atomic/pro-class-field-config.helper';
-import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
-import {createProInfoProjRel, addInfoToProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
-import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {createProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
-import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
-import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
-import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
-import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
-import {ProClassFieldConfigMock} from '../../../../helpers/data/gvDB/ProClassFieldConfigMock';
-import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
-import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
-import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
-import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
-import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
-import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
+import { expect } from '@loopback/testlab';
+import { REntityFullTextService } from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
+import { Warehouse } from '../../../../../warehouse/Warehouse';
+import { createDfhApiClass } from '../../../../helpers/atomic/dfh-api-class.helper';
+import { createDfhApiProperty } from '../../../../helpers/atomic/dfh-api-property.helper';
+import { createInfAppellation } from '../../../../helpers/atomic/inf-appellation.helper';
+import { createInfLanguage } from '../../../../helpers/atomic/inf-language.helper';
+import { createInfPersistentItem } from '../../../../helpers/atomic/inf-persistent-item.helper';
+import { createInfStatement } from '../../../../helpers/atomic/inf-statement.helper';
+import { createInfTemporalEntity } from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import { createInfTimePrimitive } from '../../../../helpers/atomic/inf-time-primitive.helper';
+import { createProClassFieldConfig } from '../../../../helpers/atomic/pro-class-field-config.helper';
+import { createProDfhProfileProjRel } from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
+import { addInfoToProject } from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import { createProProject } from '../../../../helpers/atomic/pro-project.helper';
+import { createProTextProperty } from '../../../../helpers/atomic/pro-text-property.helper';
+import { cleanDb } from '../../../../helpers/meta/clean-db.helper';
+import { DfhApiClassMock } from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
+import { InfAppellationMock } from '../../../../helpers/data/gvDB/InfAppellationMock';
+import { InfLanguageMock } from '../../../../helpers/data/gvDB/InfLanguageMock';
+import { InfPersistentItemMock } from '../../../../helpers/data/gvDB/InfPersistentItemMock';
+import { InfStatementMock } from '../../../../helpers/data/gvDB/InfStatementMock';
+import { InfTemporalEntityMock } from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import { InfTimePrimitiveMock } from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
+import { ProClassFieldConfigMock } from '../../../../helpers/data/gvDB/ProClassFieldConfigMock';
+import { ProDfhProfileProjRelMock } from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
+import { ProProjectMock } from '../../../../helpers/data/gvDB/ProProjectMock';
+import { ProTextPropertyMock } from '../../../../helpers/data/gvDB/ProTextPropertyMock';
+import { SysSystemTypeMock } from '../../../../helpers/data/gvDB/SysSystemTypeMock';
+import { createTypes } from '../../../../helpers/meta/model.helper';
+import { setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy } from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -45,10 +44,10 @@ describe('REntityFullText', function () {
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.rEntityFullText
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () { await wh.stop() })
 
     it('should create full text of naming', async () => {
-        const {naming} = await createNamingMock();
+        const { naming } = await createNamingMock();
 
         const result = await waitForEntityPreviewUntil(wh, (item) => {
             return item.pk_entity === naming.pk_entity
@@ -60,7 +59,7 @@ describe('REntityFullText', function () {
     })
 
     it('should create full text of naming with person', async () => {
-        const {naming} = await createNamingAndPersonMock();
+        const { naming } = await createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
@@ -72,7 +71,7 @@ describe('REntityFullText', function () {
     })
 
     it('should create incoming property label of person "has appellations"', async () => {
-        const {hasAppePropLabel} = await createNamingAndPersonMock();
+        const { hasAppePropLabel } = await createNamingAndPersonMock();
         const expected = hasAppePropLabel.string
         const result = await waitUntilSatisfy(wh.agg.rClassFieldLabel.afterPut$, (item) => {
             return item.key.fkClass === DfhApiClassMock.EN_21_PERSON.dfh_pk_class
@@ -83,7 +82,7 @@ describe('REntityFullText', function () {
         expect(result.val).to.equal(expected)
     })
     it('should create full text of person', async () => {
-        const {person} = await createNamingAndPersonMock();
+        const { person } = await createNamingAndPersonMock();
 
         const expected = `Person – has appellations (default): 'Jack the foo'`
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
@@ -94,7 +93,7 @@ describe('REntityFullText', function () {
         expect(result).not.to.be.undefined();
     })
     it('should update full text of person', async () => {
-        const {person} = await createNamingAndPersonMock();
+        const { person } = await createNamingAndPersonMock();
 
         let expected = `Person – has appellations (default): 'Jack the foo'`
         let result = await waitUntilSatisfy(s.afterPut$, (item) => {
@@ -124,10 +123,10 @@ describe('REntityFullText', function () {
 
 async function createNamingAndPersonMock() {
     // NAMING
-    const {naming, project, appellation, propertyRefersToName} = await createNamingMock();
+    const { naming, project, appellation, propertyRefersToName } = await createNamingMock();
     // PERSON
-    const {person, classPerson, hasAppePropLabel} = await createPersonMock();
-    return {project, appellation, naming, person, classPerson, hasAppePropLabel, propertyRefersToName};
+    const { person, classPerson, hasAppePropLabel } = await createPersonMock();
+    return { project, appellation, naming, person, classPerson, hasAppePropLabel, propertyRefersToName };
 }
 
 async function createPersonMock() {
@@ -140,7 +139,7 @@ async function createPersonMock() {
     await addInfoToProject(person.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
     const stmt = await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
     await addInfoToProject(stmt.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
-    return {person, classPerson, hasAppePropLabel};
+    return { person, classPerson, hasAppePropLabel };
 }
 
 async function createNamingMock() {
@@ -166,6 +165,6 @@ async function createNamingMock() {
     const stmtToTp = await createInfStatement(InfStatementMock.NAMING_1_ONGOING_THROUGHOUT_TP_1)
     await addInfoToProject(stmtToTp.pk_entity, project.pk_entity)
 
-    return {naming, namingProjRel, project, appellation, propertyRefersToName};
+    return { naming, namingProjRel, project, appellation, propertyRefersToName };
 }
 
