@@ -152,7 +152,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
          * Handle upserts
          */
         // create client for the aggregation
+
+        // const t2 = Logger.start(this.constructor.name, `pgPool connect (totalCount: ${this.wh.pgPool.totalCount}, waitingCount: ${this.wh.pgPool.waitingCount})`, 0)
         const client = await this.wh.pgPool.connect()
+        // Logger.itTook(this.constructor.name, t2, `to pgPool connect `, 0)
+
+        let hasError = false;
         try {
             await client.query('BEGIN')
 
@@ -168,15 +173,21 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
             // // update 'changesConsideredUntil'-timestamp
             // await this.setChangesConsideredUntilTsmp(beginOfAggregation)
-            await this.setUpdatesConsidered(providerUpdateTmsps)
             const t1 = Logger.start(this.constructor.name, `commit aggregations`, 0)
             await client.query('COMMIT')
             Logger.itTook(this.constructor.name, t1, `to commit aggregations `, 0)
         } catch (e) {
+            hasError = true
             await client.query('ROLLBACK')
-            throw e
+            Logger.msg(this.constructor.name, `ERROR in aggregation`)
         } finally {
+
             client.release()
+            Logger.msg(this.constructor.name, `pgPool client released`)
+
+        }
+        if(!hasError){
+            await this.setUpdatesConsidered(providerUpdateTmsps)
         }
 
 
