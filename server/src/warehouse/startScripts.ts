@@ -68,6 +68,7 @@ function getWarehouseConfig() {
 
     const config: WarehouseConfig = {
         geovistoryDatabase: process.env.DATABASE_URL,
+        geovistoryDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_GV_DB_POOL_SIZE ?? '10', 10),
         warehouseSchema: getSchemaName()
     }
 

@@ -26,6 +26,7 @@ interface NotificationHandler {
 
 export interface WarehouseConfig {
     geovistoryDatabase: string,
+    geovistoryDatabaseMaxConnections: number,
     warehouseSchema: string,
 }
 // used for consideredUpdatesUntil and leftDSupdateDone
@@ -64,7 +65,7 @@ export class Warehouse {
         const connectionString = config.geovistoryDatabase;
         const ssl = getPgSslForPg8(connectionString)
         this.pgPool = new Pool({
-            max: 15,
+            max: config.geovistoryDatabaseMaxConnections,
             connectionString,
             ssl
         });
