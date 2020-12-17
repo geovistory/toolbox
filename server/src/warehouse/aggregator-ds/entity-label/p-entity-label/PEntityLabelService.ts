@@ -170,7 +170,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             label_part->'field'->>'nrOfStatementsInLabel',
             CASE WHEN (label_part->'field'->>'isOutgoing')::bool = true THEN 'outgoing' ELSE 'incoming' END direction,
             label_part->>'ordNum' fielOrdNum,
-            generate_series(1,(label_part->'field'->'nrOfStatementsInLabel')::int) stmtOrdNum
+            generate_series(1,(label_part->'field'->>'nrOfStatementsInLabel')::int) stmtOrdNum
             FROM ${labelPartsTbl} t1
         )`
         builder.registerTmpTable(slotsSql, [], slotsTbl)
@@ -212,9 +212,9 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             t1.direction,
             t1.fielOrdNum,
             t1.stmtOrdNum,
-            (t1.stmt->'targetIsEntity')::bool condition,
+            (t1.stmt->>'targetIsEntity')::bool condition,
             jsonb_build_object(
-                'fkTarget', (t1.stmt->'fkTarget')::int,
+                'fkTarget', (t1.stmt->>'fkTarget')::int,
                 'targetLabel', t1.stmt->>'targetLabel'
             ) custom
             FROM ${stmtsTbl} t1
