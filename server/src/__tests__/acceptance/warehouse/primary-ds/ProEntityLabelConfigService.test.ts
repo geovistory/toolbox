@@ -1,34 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { expect } from '@loopback/testlab';
-import { ProEntityLabelConfigService } from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import { Warehouse } from '../../../../warehouse/Warehouse';
-import { createInfLanguage } from '../../../helpers/atomic/inf-language.helper';
-import { createProEntityLabelConfig, updateProEntityLabelConfig, deleteProEntityLabelConfig } from '../../../helpers/atomic/pro-entity-label-config.helper';
-import { createProProject } from '../../../helpers/atomic/pro-project.helper';
-import { createTypes } from '../../../helpers/meta/model.helper';
-import { cleanDb } from '../../../helpers/meta/clean-db.helper';
-import { InfLanguageMock } from '../../../helpers/data/gvDB/InfLanguageMock';
-import { ProEntityLabelConfigMock } from '../../../helpers/data/gvDB/ProEntityLabelConfigMock';
-import { ProProjectMock } from '../../../helpers/data/gvDB/ProProjectMock';
-import { setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy } from '../../../helpers/warehouse-helpers';
-import { clone } from 'ramda';
-import { DfhApiPropertyMock } from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-
+import 'reflect-metadata';
+import {expect} from '@loopback/testlab';
+import {clone, equals} from 'ramda';
+import {ProEntityLabelConfigService} from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {Warehouse} from '../../../../warehouse/Warehouse';
+import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
+import {createProEntityLabelConfig, deleteProEntityLabelConfig, updateProEntityLabelConfig} from '../../../helpers/atomic/pro-entity-label-config.helper';
+import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {createTypes} from '../../../helpers/meta/model.helper';
+import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
+import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
+import {ProEntityLabelConfigMock} from '../../../helpers/data/gvDB/ProEntityLabelConfigMock';
+import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[ProEntityLabelConfigService],
+  aggDataServices:[]
+}
 describe('ProEntityLabelConfigService', () => {
 
   let wh: Warehouse;
   let s: ProEntityLabelConfigService;
 
-
-  beforeEach(async function () {
-    await cleanDb();
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.proEntityLabelConfig;
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
+    const injector = await setupCleanAndStartWarehouse(stubs)
+    wh = injector.get(Warehouse)
+    s = injector.get(ProEntityLabelConfigService)
   })
-
-
-  afterEach(async function () { await wh.stop() })
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should create pro entity label config in db', async () => {
     await createProjectMock();
     const item = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
@@ -40,12 +49,13 @@ describe('ProEntityLabelConfigService', () => {
     await createProjectMock();
     const dbItem = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
 
-    const whItem = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-    })
+    const whItem = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => equals(val, ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
+    });
 
-    expect(whItem.val).to.deepEqual(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
+    expect(whItem).to.deepEqual(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
 
   })
   it('should update pro entity label config in index', async () => {
@@ -53,10 +63,11 @@ describe('ProEntityLabelConfigService', () => {
     await createProjectMock();
     const dbItem = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
 
-    let whItem = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-    })
+    let whItem = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => equals(val, ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
+    });
     const modified = clone(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
     modified.config.labelParts = [{
       ordNum: 0,
@@ -68,12 +79,11 @@ describe('ProEntityLabelConfigService', () => {
     }]
     await updateProEntityLabelConfig(dbItem.pk_entity, modified);
 
-    whItem = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-        && item.val.labelParts?.[0].field?.nrOfStatementsInLabel === 1
-    })
-
+    whItem = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => val?.labelParts?.[0].field?.nrOfStatementsInLabel === 1
+    });
 
     expect(whItem).not.to.be.undefined()
 
@@ -84,19 +94,19 @@ describe('ProEntityLabelConfigService', () => {
     await createProjectMock();
     const dbItem = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
 
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-    })
-
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => !!val
+    });
     await deleteProEntityLabelConfig(dbItem.pk_entity ?? -1)
 
-    await waitUntilNext(s.afterDel$)
-    const resultUpdated = await s.index.getFromIdx({
+    await waitUntilNext(s.afterChange$)
+    const resultUpdated = await s.index.getFromIdxWithTmsps({
       fkProject: dbItem.fk_project,
       pkClass: dbItem.fk_class
     })
-    expect(resultUpdated).to.be.undefined()
+    expect(resultUpdated?.deleted).not.to.be.undefined()
   })
 
 });

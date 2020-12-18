@@ -1,134 +1,140 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../../base/classes/Updater';
-import {rClassIdToString, stringToRClassId} from '../../../base/functions';
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
-import {Warehouse} from '../../../Warehouse';
+/* eslint-disable @typescript-eslint/naming-convention */
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {PoolClient} from 'pg';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {AggregatorSqlBuilder} from '../../../base/classes/AggregatorSqlBuilder';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {RClassService} from '../../../primary-ds/class/RClassService';
+import {RClassId, rClassIdKeyDefs} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {DfhClassLabelId, DfhClassLabelService, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService';
+import {ProClassLabelId, ProClassLabelService, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService';
+import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH, Warehouse} from '../../../Warehouse';
 import {RClassLabelAggregator} from './RClassLabelAggregator';
 import {RClassLabelProviders} from './RClassLabelProviders';
 
-type ValueModel = string
-export class RClassLabelService extends AggregatedDataService<RClassId, ValueModel, RClassLabelAggregator>{
-    updater: Updater<RClassId, RClassLabelAggregator>;
+export type RClassLabelValue = {label?: string}
 
-    constructor(public wh: Warehouse) {
+@Injectable()
+export class RClassLabelService extends AggregatedDataService2<RClassId, RClassLabelValue>{
+    aggregator = RClassLabelAggregator;
+    providers = RClassLabelProviders;
+
+    dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
+    proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
+    batchSize = 100000;
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => RClassService)) rClass: RClassService,
+        @Inject(forwardRef(() => DfhClassLabelService)) dfhClassLabel: DfhClassLabelService,
+        @Inject(forwardRef(() => ProClassLabelService)) proClassLabel: ProClassLabelService
+    ) {
         super(
             wh,
-            rClassIdToString,
-            stringToRClassId
+            rClassIdKeyDefs
         )
-        const aggregatorFactory = async (id: RClassId) => {
-            const providers = new RClassLabelProviders(this.wh.dep.rClassLabel, id)
-            return new RClassLabelAggregator(providers, id).create()
-        }
-        const register = async (result: RClassLabelAggregator) => {
-            await this.put(result.id, result.classLabel)
-            await result.providers.removeProvidersFromIndexes()
-        }
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            rClassIdToString,
-            stringToRClassId,
-            // (results) => this.writeToDb(results)
-        )
+        this.registerCreatorDS({dataService: rClass});
 
-        const upsertQueue = new SqlUpsertQueue<RClassId, ValueModel>(
-            wh,
-            this.constructor.name,
-            (valuesStr: string) => `
-                INSERT INTO war.class_preview (fk_class, fk_project, label)
-                VALUES ${valuesStr}
-                ON CONFLICT (fk_class, fk_project) DO UPDATE
-                SET label = EXCLUDED.label
-                WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label;`,
-            (item) => [item.key.pkClass, 0, item.val],
-            rClassIdToString
-        )
+        this.dfhClassLabel = this.addDepencency(dfhClassLabel)
+        this.proClassLabel = this.addDepencency(proClassLabel)
+    }
 
-        /**
-         * Add actions after a new class label is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
+    onUpsertSql(tableAlias: string) {
+        return `
+        INSERT INTO war.class_preview (fk_class, fk_project, label)
+        SELECT DISTINCT ON ("pkClass") "pkClass", 0, val->>'label'
+        FROM ${tableAlias}
+        ON CONFLICT (fk_class, fk_project) DO UPDATE
+        SET label = EXCLUDED.label
+        WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label`
+    }
 
-            // Add item to queue to upsert it into db
-            upsertQueue.add(item)
+    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
+
+        const geovistoryLabelsTw = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.proClassLabel,
+            joinOnKeys: {
+                fkClass: {leftCol: 'pkClass'},
+                fkProject: {value: PK_DEFAULT_CONFIG_PROJECT},
+                fkLanguage: {value: PK_ENGLISH},
+            },
+            conditionTrueIf: {
+                providerVal: {label: 'IS NOT NULL'}
+            },
+            createAggregationVal: {
+                sql: (provider) => `jsonb_build_object('label',${provider}.val->>'label')`,
+                upsert: {whereCondition: '= true'}
+            }
         })
 
+        if (!geovistoryLabelsTw.aggregation) throw new Error("aggUpsertTableDef missing");
+        await builder.joinProviderThroughDepIdx({
+            leftTable: geovistoryLabelsTw.aggregation.tableDef,
+            joinWhereLeftTableCondition: '= false',
+            joinWithDepIdx: this.dfhClassLabel,
+            joinOnKeys: {
+                pkClass: {leftCol: 'pkClass'},
+                language: {value: PK_ENGLISH},
+            },
+            conditionTrueIf: {
+                providerVal: {label: 'IS NOT NULL'}
+            },
+            createAggregationVal: {
+                sql: (provider) => `jsonb_build_object('label',${provider}.val->>'label')`,
+                upsert: {whereCondition: '= true'}
+            }
+        })
+
+        builder.registerUpsertHook()
+        const count = await builder.executeQueries()
+        // const count = await builder.printQueries()
+        return count
     }
 
 
-    // writeToDb(results: RClassLabelAggregator[]) {
-    //     let i = 0;
-    //     let batchSize = 0;
-    //     const maxBatchSize = 1000;
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     let params: any[] = []
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     const addParam = (val: any) => {
-    //         params.push(val)
-    //         return '$' + params.length;
-    //     }
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     const addParams = (vals: any[]) => {
-    //         return vals.map(val => addParam(val)).join(',');
-    //     }
-    //     let values = ''
-    //     let remaining = results.length;
 
-
-    //     for (const res of results) {
-    //         const updateEntityPreviewQ = `
-    //             UPDATE war.entity_preview
-    //             SET class_label = $1
-    //             WHERE fk_class = $2
-    //             AND project = $3
-    //             AND class_label IS DISTINCT FROM $1
-    //         `
-    //         this.main.pgClient.query(updateEntityPreviewQ, [res.classLabel, res.id.pkClass, res.id.fkProject])
-    //             .then(() => {
-    //                 Logger.msg(`Updated class labels of entity previews`, 2)
-    //             })
-    //             .catch(e => {
-    //                 console.log(e)
-    //             })
-
-
-    //         const arr = this.getParamsForUpsert(res)
-    //         values = values + `(${addParams(arr)}),`
-    //         i++
-    //         batchSize++
-    //         if (i % maxBatchSize === 0 || i === results.length) {
-    //             remaining = remaining - batchSize;
-    //             const t = Logger.start(`Upserting ${batchSize} class labels, remaining: ${remaining} of ${results.length}`, 2)
-    //             const q = this.getUpsertSql(values.slice(0, -1))
-    //             this.main.pgClient.query(q, params)
-    //                 .then(() => {
-    //                     Logger.itTook(t, `to batch upsert class labels`, 2)
-    //                 })
-    //                 .catch(e => {
-    //                     console.log(e)
-    //                 })
-
-    //             params = []
-    //             values = ''
-    //             batchSize = 0;
-    //         }
-    //     }
-    // }
-    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // getParamsForUpsert(res: RClassLabelAggregator): any[] {
-    //     return [res.id.pkClass, res.id.fkProject, res.classLabel]
-    // }
-
-    // getUpsertSql(valuesStr: string) {
-    //     return `
-    //         INSERT INTO war.class_preview (fk_class, fk_project, label)
-    //         VALUES ${valuesStr}
-    //         ON CONFLICT (fk_class, fk_project) DO UPDATE
-    //         SET label = EXCLUDED.label
-    //         WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label;`
-    // }
 }
+
+
+
+
+
+
+
+
+
+// import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
+// import {RClassService} from '../../../primary-ds/class/RClassService';
+// import {RClassId, rClassIdKeyDefs} from '../../../primary-ds/DfhClassHasTypePropertyService';
+// import {Warehouse} from '../../../Warehouse';
+// import {RClassLabelAggregator} from './RClassLabelAggregator';
+// import {RClassLabelProviders} from './RClassLabelProviders';
+
+// export type RClassLabelValue = {label?: string}
+// @Injectable()
+// export class RClassLabelService extends AggregatedDataService<RClassId, RClassLabelValue>{
+//     creatorDS: RClassService
+//     aggregator = RClassLabelAggregator;
+//     providers = RClassLabelProviders;
+//     constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+//         super(
+//             wh,
+//             rClassIdKeyDefs
+//         )
+//         this.registerCreatorDS(wh.prim.rClass);
+
+//     }
+//     getDependencies() {
+//         return this.wh.dep.rClassLabel
+//     };
+//     onUpsertSql(tableAlias: string) {
+//         return `
+//         INSERT INTO war.class_preview (fk_class, fk_project, label)
+//         SELECT "pkClass", 0, val->>'label'
+//         FROM ${tableAlias}
+//         ON CONFLICT (fk_class, fk_project) DO UPDATE
+//         SET label = EXCLUDED.label
+//         WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label`
+//     }
+// }

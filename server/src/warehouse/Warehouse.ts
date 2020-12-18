@@ -1,98 +1,77 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {existsSync} from "fs";
-import getFolderSize from 'get-folder-size';
-import leveldown from 'leveldown';
-import levelup, {LevelUp} from 'levelup';
-import path from 'path';
-import {Pool, PoolClient} from 'pg';
-import rimraf from 'rimraf';
-import rmfr from 'rmfr';
+import {Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
+import {Notification, Pool, PoolClient, PoolConfig} from 'pg';
+import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
-import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
-import {wait} from '../utils/helpers';
-import {S3LevelBackup} from './base/bucketeer/S3LevelBackup';
+import {filter, first, mapTo} from 'rxjs/operators';
+import {parse} from 'pg-connection-string';
+
+import {getPgSslForPg8} from '../utils/databaseUrl';
+import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
+import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
 import {Logger} from './base/classes/Logger';
-import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
-import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
-import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
+import {PrimaryDataService} from './base/classes/PrimaryDataService';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
+export const APP_CONFIG = new InjectionToken<WarehouseConfig>('app.config');
+export const PRIMARY_DS = new InjectionToken<Type<any>[]>('primaryDs');
+export const AGG_DS = new InjectionToken<Type<any>[]>('aggDs');
+export const LAST_UPDATE_DONE_SUFFIX = '__last_update_done'
+export const CHANGES_CONSIDERED_UNTIL_SUFFIX = '__changes_considered_until'
 
 interface NotificationHandler {
     channel: string
     listeners: {
-        listenerName: string,
-        callback(date: Date): Promise<void>
-    }[]
-}
-
-export interface WarehouseConfig {
-    // parent folder of leveldb
-    rootDir: string
-    // name of leveldb folder
-    leveldbFolder: string
-    // if provided, warehouse creates backups
-    backups?: {
-        // current git commit (short hash)
-        currentCommit: string,
-        // array of commits
-        compatibleWithCommits: string[]
+        [listenerName: string]: Subject<Date>,
     }
 }
 
+export interface WarehouseConfig {
+    geovistoryDatabase: string,
+    geovistoryDatabaseMaxConnections: number,
+    warehouseSchema: string,
+}
+// used for consideredUpdatesUntil and leftDSupdateDone
+export interface LeftDSDates {[DsName: string]: string}
+
+@Injectable()
 export class Warehouse {
 
     pgPool: Pool;
-    pgClient: PoolClient;
+    pgListener: PoolClient;
 
-    // Indexes holding data given by db
-    prim: PrimaryDataServices;
 
-    // Indexed holding resulting data deferred by warehouse
-    agg: AggregatedDataServices;
-
-    // Indexes holding dependencies between primary and secondary data
-    dep: DependencyDataServices
-
-    initializingIndexes = false
+    // if true, changes on dependencies are not propagated to aggregators
+    preventPropagation = false
 
     status: 'stopped' | 'initializing' | 'starting' | 'running' | 'backuping' = 'stopped'
 
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
-    pgConnected$ = new ReplaySubject<PoolClient>()
+    pgListenerConnected$ = new ReplaySubject<PoolClient>()
+    pgNotifications$ = new Subject<Notification>()
     createSchema$ = new Subject<void>()
-
-    // The date for which the current leveldb is up to date.
-    s3backuper: S3LevelBackup
-
-
-    /**
-     * This creates the level database that can be imported
-     * throughout the app in order to use the database
-     */
-    leveldbpath: string;
-    leveldb: LevelUp;
+    schemaName = 'war_cache'
+    metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
+    aggregationTimestamps: IndexDBGeneric<string, LeftDSDates>;
 
 
-    constructor(public readonly config: WarehouseConfig) {
+    constructor(
+        @Inject(APP_CONFIG) private config: WarehouseConfig,
+        @Inject(PRIMARY_DS) private primaryDs: Type<any>[],
+        @Inject(AGG_DS) private aggDs: Type<any>[],
+        private injector: Injector
+    ) {
+        this.schemaName = config.warehouseSchema;
 
-        this.leveldbpath = path.join(config.rootDir, this.config.leveldbFolder)
+        const connectionString = config.geovistoryDatabase;
+        const pgConfig = parse(config.geovistoryDatabase) as PoolConfig
+        pgConfig.max = config.geovistoryDatabaseMaxConnections
+        pgConfig.ssl = getPgSslForPg8(connectionString)
+        this.pgPool = new Pool(pgConfig);
 
-        if (config.backups) {
-            this.s3backuper = new S3LevelBackup(config.rootDir, this.config.leveldbFolder)
-        }
-
-        const connectionString = getPgUrlForPg8()
-        const ssl = getPgSslForPg8()
-        this.pgPool = new Pool({
-            max: 15,
-            connectionString,
-            ssl
-        });
-
-        Logger.msg(`create warehouse for DB: ${connectionString.split('@')[1]}`)
+        Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
+        Logger.msg(this.constructor.name, `max connections: ${config.geovistoryDatabaseMaxConnections}`)
 
     }
 
@@ -100,98 +79,21 @@ export class Warehouse {
      * start warehouse
      */
     async start() {
-        const whDataFound = await this.findWhData();
 
-        if (!whDataFound) {
-            await this.dbSetup()
+        this.initDataServices();
+
+
+        await this.dbSetup();
+        const isInitialized = await this.primInitialized()
+
+        if (!isInitialized) {
             await this.createWhData();
         }
 
         await this.listen()
     }
 
-    /**
-     * Tries to find wh data, first in local leveldb folder,
-     * then in remote backup.
-     *
-     * returns true if data available, otherwise false
-     */
-    private async findWhData(): Promise<boolean> {
 
-        // Q: is there a valid leveldb folder?
-        // For development: remove leveldb folder if you want to trigger
-        // creation of wh data
-        if (this.leveldbFolderExists()) {
-            // A: yes. data found.
-
-            // Q: Is the leveldb folder initialized ?
-            const initialized = await this.setupAndCheckWhDb();
-
-            return initialized
-        }
-
-        // Q: Does warehouse support backups?
-        if (!this.config.backups) {
-            // A: No. no data found.
-            return false
-        }
-
-        // Q: I there a backup?
-        const latestBackupId = await this.s3backuper.getCurrentBackupId();
-
-        if (!latestBackupId) {
-            // A: No. no data found.
-            Logger.msg('*** no backup found – need to create data first ***', 0);
-            return false;
-        }
-        else {
-            // A: Yes.
-            Logger.msg(`Found backup – Date: ${latestBackupId.isoDate} Commit: ${latestBackupId.gitCommit}`, 0);
-
-            // Q: Did the warehouse code change since backup?
-            const {changed} = this.checkIfCodeChanged(latestBackupId.gitCommit);
-            if (changed) {
-                // A: YES. This means the backup is not compatible with current warehouse
-                // (we are in a fresh deployment)
-                // no data found.
-                Logger.msg('*** warehouse code changed – need to create first ***', 0);
-                return false;
-            }
-            else {
-                // A: NO. this means the backup is compatible with current warehouse
-                Logger.msg(`Backup is compatible with current warehouse`, 0);
-
-                // download it
-                const {download} = await this.downloadBackup();
-
-                // Q: Download successful?
-                if (download === 'success') {
-                    // A: YES. data found
-
-                    const initialized = await this.setupAndCheckWhDb();
-                    return initialized
-                } else {
-                    // there was an error, no data found.
-                    Logger.msg('*** there was an error with backup download – need to initialize ***', 0);
-                    // A: No. no data found
-                    return false;
-                }
-            }
-        }
-    }
-
-    /**
-     * sets up the db code and checks if the current folder contains a
-     * initialized wh db. If not, make a hard reset.
-     */
-    private async setupAndCheckWhDb() {
-        await this.dbSetup();
-        const isInitialized = await this.prim.everythingInitialized();
-
-        // A: No. delete and stop process
-        if (!isInitialized) await this.hardReset('Primary data services were not (all) initialized');
-        return isInitialized
-    }
 
     /**
      * sets the databases up:
@@ -200,9 +102,9 @@ export class Warehouse {
      */
     async dbSetup() {
 
-        await this.connectPgClient();
+        await this.connectPgListener();
 
-        await this.initWhDb()
+        await this.initWhDbSchema()
     }
 
     /**
@@ -218,34 +120,29 @@ export class Warehouse {
             if (maxMemoryUsage < m) {
                 maxMemoryUsage = m
             }
-            this.pgNotify('warehouse_initializing', 'true').catch(e => {})
+            this.pgNotify('warehouse_initializing', 'true').catch(e => { })
         }, 1000)
 
-        const interval2 = setInterval(() => {
-            this.pgNotify('warehouse_initializing', 'true').catch(e => {})
-        }, 10000)
 
 
-        const t0 = Logger.start('Create Warehouse data', 0)
 
-        const date = await this.getInitBackupDate();
+        const t0 = Logger.start(this.constructor.name, 'Create Warehouse data', 0)
 
+        this.preventPropagation = true
         await this.createPrimaryData();
+        await this.createAggregatedData()
+        this.preventPropagation = false
 
         await this.createAggregatedData()
 
-        await this.createS3Backup(date)
-
         clearInterval(interval1)
-        clearInterval(interval2)
 
         await this.pgNotify('warehouse_initializing', 'false')
 
-        Logger.itTook(t0, 'to create warehouse data', 0)
-
-        Logger.log(`The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`);
-        const diskUsage = await this.getLevelDbFileSize()
-        Logger.log(`The warehouse uses approximately ${diskUsage.readable} of disk space`)
+        Logger.msg(this.constructor.name, `************ Warehouse Index Created ***************`, 0)
+        Logger.msg(this.constructor.name, `The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`, 0)
+        Logger.itTook(this.constructor.name, t0, 'to create warehouse data', 0)
+        Logger.msg(this.constructor.name, `****************************************************`, 0)
 
     };
 
@@ -255,8 +152,9 @@ export class Warehouse {
      * Starts listening
      */
     async listen() {
-        const t0 = Logger.start('Start listening Warehouse', 0)
+        this.initDataServices()
 
+        const t0 = Logger.start(this.constructor.name, 'Start listening Warehouse', 0)
 
         this.status = 'starting';
 
@@ -264,71 +162,42 @@ export class Warehouse {
 
         await this.catchUp();
 
-        this.startRegularBackups()
-            .catch(e => {
-                throw new Error("********** Error during regular backup cycle! **********");
-            })
-
-
         this.status = 'running';
 
-        Logger.itTook(t0, 'to start listening. Warehouse is up and running', 0)
+        Logger.itTook(this.constructor.name, t0, 'to start listening. Warehouse is up and running', 0)
     }
 
+    private initDataServices() {
+        this.getPrimaryDs();
+        this.getAggregatedDs();
 
-    async createLeveldb(leveldbpath: string): Promise<LevelUp> {
-        return new Promise((res, rej) => {
-
-            const down = leveldown(leveldbpath)
-            const up = levelup(down, {}, (error) => {
-                if (error) {
-                    Logger.err('Error on opening leveldb. Make hard reset.')
-                    // if we have an error here, the db is currupt
-                    // make hard reset to trigger initialization of
-                    // warehouse on next start
-                    this.hardReset('Error on opening leveldb. Make hard reset.')
-                        .catch(e => {rej(e)})
-                        .finally(() => rej())
-
-                }
-                else {
-                    res(up)
-                }
-            })
-
-        })
     }
 
+    /**
+     * returns true if all primary data services have a valid
+     * date of a successfull update-done
+     */
+    async primInitialized(): Promise<boolean> {
+        const prim = this.getPrimaryDs()
+        const doneDates = await Promise.all(prim.map(ds => ds.getLastUpdateBegin()))
+        if (doneDates.includes(undefined)) return false
+        return true
+    }
+
+    async primInitAll() {
+        const prim = this.getPrimaryDs()
+        for (const ds of prim) {
+            await ds.initIdx()
+        }
+    }
     /**
      * Deletes local and remote leveldb
      */
     async hardReset(errorMsg: string) {
-        // delete the local folder
-        await rmfr(this.leveldbpath)
-        // delete the link to the current backup
-        if (this.config.backups) await this.s3backuper.deleteLinkToCurrent()
+        // delete the warehouse schema
+        await this.pgPool.query(`DROP SCHEMA IF EXISTS ${this.schemaName}`)
         // terminate process
         throw new Error(errorMsg)
-    }
-
-    /**
-     * Returns a promise that resolves with {changed:true} if the any file
-     * in the src/warehouse folder has changed since the given commit, else it
-     * resolves with {changed:false}
-     *
-     * @param commit short hash of git commit to compare with current commit
-     */
-    private checkIfCodeChanged(commit: string): {changed: boolean} {
-
-        Logger.msg(`Checking if code changed. Current: ${commit}.`)
-
-        Logger.msg(`Compatibility list: ${(this.config?.backups?.compatibleWithCommits ?? ['undefined']).join(', ')}`)
-
-        if (commit === this.config.backups?.currentCommit) return {changed: false}
-        if (this.config.backups?.compatibleWithCommits.some(
-            (compat) => compat.substring(0, 7) === commit.substring(0, 7)
-        )) return {changed: false}
-        return {changed: true}
     }
 
     /**
@@ -338,10 +207,14 @@ export class Warehouse {
      * until now.
      */
     private async catchUp() {
-
-        for (const primDS of this.prim.registered) {
-
+        const prim = this.getPrimaryDs()
+        for (const primDS of prim) {
             await primDS.catchUp();
+        }
+
+        const agg = this.getAggregatedDs()
+        for (const aggDS of agg) {
+            await aggDS.startUpdate();
         }
 
     }
@@ -351,10 +224,11 @@ export class Warehouse {
      * the primary data services
      */
     private async getCatchUpDate() {
-
+        const prim = this.getPrimaryDs()
         const dates: Date[] = []
-        for (const p of this.prim.registered) {
-            const d = await p.getLastUpdateDone()
+
+        for (const p of prim) {
+            const d = await p.getLastUpdateBegin()
             if (d) dates.push(d)
         }
         dates.sort();
@@ -365,21 +239,51 @@ export class Warehouse {
      * Initializes the 'database schema' and returns a Promise that resolves as
      * soon as all 'tables' (= indexes) are ready to be used
      */
-    private async initWhDb() {
+    private async initWhDbSchema() {
+        await this.pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${this.schemaName}`)
+        await this.pgPool.query(`
+        CREATE OR REPLACE FUNCTION ${this.schemaName}.tmsp_last_modification()
+                RETURNS trigger
+                LANGUAGE 'plpgsql'
+                COST 100
+                VOLATILE NOT LEAKPROOF
+            AS $BODY$
+            BEGIN NEW.tmsp_last_modification = clock_timestamp();
+            RETURN NEW;
+            END;
+            $BODY$;
+        `)
 
-        this.leveldb = await this.createLeveldb(this.leveldbpath)
-        this.prim = new PrimaryDataServices(this)
-        this.agg = new AggregatedDataServices(this)
-        this.dep = new DependencyDataServices(this)
+        // creates a toplevel metadata table
+        // this can be used e.g. for storing timestamps of dataservices
+        this.metaTimestamps = new IndexDBGeneric(
+            (key: string) => key,
+            (str: string) => str,
+            this.constructor.name + '_timestamps',
+            this
+        )
+        this.aggregationTimestamps = new IndexDBGeneric(
+            (key: string) => key,
+            (str: string) => str,
+            this.constructor.name + '_aggregation_timestamps',
+            this
+        )
+
+        // const aggInitialized$ = combineLatest(
+        //     this.getAggregatedDs().map(ds => ds.ready$.pipe(filter(r => r === true))),
+        // ).pipe(mapTo(true))
 
 
+        const primReady$ = combineLatest(
+            this.getPrimaryDs().map(ds => ds.index.ready$.pipe(filter(r => r === true)))
+        ).pipe(mapTo(true))
 
         this.createSchema$.next()
         return new Promise((res, rej) => {
             combineLatest(
-                this.prim.ready$.pipe(filter(r => r === true)),
-                this.agg.ready$.pipe(filter(r => r === true)),
-                this.dep.ready$.pipe(filter(r => r === true)),
+                primReady$.pipe(filter(r => r === true)),
+                // aggInitialized$.pipe(filter(r => r === true)),
+                // this.dep.ready$.pipe(filter(r => r === true)),
             ).pipe(first()).subscribe(_ => res())
         })
     }
@@ -391,119 +295,69 @@ export class Warehouse {
      * In short: The function (re-)creates all indexes
      */
     private async createPrimaryData() {
-        this.initializingIndexes = true
-        const t1 = Logger.start('Initialize indexes', 0)
 
-        await this.prim.initAllIndexes()
+        const t1 = Logger.start(this.constructor.name, 'Initialize Primary Data Services', 0)
 
-        Logger.itTook(t1, 'to initialize indexes', 0)
-        this.initializingIndexes = false
+        await this.primInitAll()
+
+        Logger.itTook(this.constructor.name, t1, 'to initialize Primary Data Services', 0)
     }
     /**
      * Initialize the indexes of the secondary data services
      */
     private async createAggregatedData() {
-        const t1 = Logger.start('Start cycling for all aggregators', 0)
-
-        await this.agg.startCycling()
-
-        Logger.itTook(t1, 'to cycle for all aggregators', 0)
+        const t1 = Logger.start(this.constructor.name, 'Initialize Aggregated Data Services', 0)
+        for (const ds of this.getAggregatedDs()) {
+            await ds.startUpdate()
+        }
+        Logger.itTook(this.constructor.name, t1, 'to Initialize Aggregated Data Services', 0)
     }
 
-    /**
-     * checks out a new postgres client from the pool and nexts the pgConnected$
-     * observable that allows classes aware of this warehouse to wait for the
-     * connection before executing postgres queries.
-     */
-    public async connectPgClient() {
-        this.pgClient = await this.pgPool.connect();
-        this.pgConnected$.next(this.pgClient)
+    private getAggregatedDs(): AggregatedDataService2<any, any>[] {
+        return this.aggDs.map(klass => this.injector.get(klass));
+    }
+    private getPrimaryDs(): PrimaryDataService<any, any>[] {
+        return this.primaryDs.map(klass => this.injector.get(klass));
+    }
+
+    // /**
+    //  * checks out a new postgres client from the pool and nexts the pgConnected$
+    //  * observable that allows classes aware of this warehouse to wait for the
+    //  * connection before executing postgres queries.
+    //  */
+    public async connectPgListener() {
+
+        this.pgListener = await this.pgPool.connect();
+        this.pgListenerConnected$.next(this.pgListener)
+        this.pgListener.on('notification', (msg) => {
+            this.pgNotifications$.next(msg)
+        })
     }
 
 
     private async getInitBackupDate(): Promise<Date> {
-        const dbNow = await this.pgClient.query('SELECT now() as now');
+        const dbNow = await this.pgPool.query('SELECT now() as now');
         const tmsp: string = dbNow.rows?.[0]?.now;
         return new Date(tmsp)
     }
 
-    private async createS3Backup(date: Date): Promise<Date | undefined> {
-        if (!this.config.backups) return;
 
-        const t1 = Logger.start(`Creating backup...`, 0)
-
-        // Set status to backuping
-        const statusCache = this.status;
-        this.status = 'backuping'
-
-        await this.waitUntilSyncingDone()
-
-        Logger.itTook(t1, `to wait until syning done. Catch-up-date is: ${date.toISOString()}`, 0)
-
-
-        await this.s3backuper.createBackup(date, this.config.backups.currentCommit)
-
-        // Reset status
-        this.status = statusCache;
-
-        Logger.itTook(t1, `to create backup for catch-up-date ${date.toISOString()}`, 0)
-        return date
-    }
-    /**
-     * Download backup from S3 and replace the folder
-     * If this.skipS3Backups is true, no download happens
-     */
-    private async downloadBackup(): Promise<{download: 'success' | 'skipped' | 'not found'}> {
-        if (!this.config.backups) return {download: 'skipped'};
-
-        rimraf.sync(path.join(this.config.rootDir, this.config.leveldbFolder))
-        const backupId = await this.s3backuper.downloadCurrentBackup()
-        if (backupId) {
-            this.s3backuper.deleteUnusedBackups()
-                .catch(e => console.log('Error when deleting old backups.', e))
-            return {download: 'success'}
-        }
-        else {
-            return {download: 'not found'}
-        }
-    }
-    /**
-     * Starts the creation of regular backups
-     */
-    private async startRegularBackups() {
-        if (!this.config.backups) return;
-
-        // pause in miliseconds
-        const pause = 1000 * 60 * 30 // 30 Min
-
-        // make a pause
-        await wait(pause)
-        const date = await this.getCatchUpDate()
-        // create backup (causing pause of warehouse)
-        await this.createS3Backup(date)
-        await this.catchUp()
-        this.s3backuper.deleteUnusedBackups()
-            .catch(e => console.log('error when deleting old backups'))
-        await this.startRegularBackups()
-    }
 
     /**
-     * Clears the warehouse database (= all indexes)
+     * returns now() tmsp from postgres as toISOString
      */
-    async clearWhDB() {
-        const t1 = Logger.start('Clear Warehouse DB', 0)
-
-        // rimraf.sync(this.leveldbpath)
-
-        await this.prim.clearAll()
-
-        await this.agg.clearAll()
-
-        await this.dep.clearAll()
-
-        Logger.itTook(t1, `to clear Warehouse DB`, 0)
-
+    async pgNow() {
+        const date = await this.pgNowDate()
+        return date.toISOString()
     }
+    /**
+     * returns now() tmsp from postgres as Date
+     */
+    async pgNowDate() {
+        const res = await this.pgPool.query<{now: Date}>('select now()')
+        return res.rows[0].now
+    }
+
 
 
     /**
@@ -512,17 +366,14 @@ export class Warehouse {
      * @param callback
      * @param name for debugging
      */
-    async registerDbListener(channel: string, callback: (date: Date) => Promise<void>, listenerName: string) {
-        await this.pgClient.query(`LISTEN ${channel}`)
+    async registerDbListener(channel: string, emitter: Subject<Date>, listenerName: string) {
+        await this.pgListener.query(`LISTEN ${channel}`)
         this.notificationHandlers[channel] = {
             channel,
-            listeners: [
-                ...(this.notificationHandlers?.[channel]?.listeners ?? []),
-                {
-                    listenerName,
-                    callback
-                }
-            ]
+            listeners: {
+                ...(this.notificationHandlers?.[channel]?.listeners ?? {}),
+                [listenerName]: emitter
+            }
         }
     }
 
@@ -531,29 +382,18 @@ export class Warehouse {
      * and calls callback of notification handler, if available for the channel
      */
     startListening() {
-        this.pgClient.on('notification', (msg) => {
-            const handler = this.notificationHandlers[msg.channel];
 
+        this.pgNotifications$.subscribe((msg) => {
+            const handler = this.notificationHandlers[msg.channel];
 
             if (typeof msg.payload === 'string') {
                 const date = new Date(msg.payload);
                 if (isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
                 else if (handler) {
-                    // Q: Is leveldb folder still present?
-                    if (!this.leveldbFolderExists()) {
-                        // A: NO
-                        // exit the process, so that listen() is called again.
-                        process.exit(1)
-                    }
-                    // A: YES
-                    // Q: Is status running? (this prevents actions during backuping)
-                    if (this.status === 'running') {
-                        handler.listeners.map(l => {
-                            l.callback(date).catch(e => {
-                                console.log(e)
-                            })
-                        })
-                    }
+
+                    values(handler.listeners).map(emitter => {
+                        emitter.next(date)
+                    })
 
                 }
             } else {
@@ -562,9 +402,7 @@ export class Warehouse {
         });
     }
 
-    private leveldbFolderExists() {
-        return existsSync(this.leveldbpath);
-    }
+
 
     /**
      * Returns a promise that resolves as soon as all sync processes
@@ -572,7 +410,8 @@ export class Warehouse {
      */
     async waitUntilSyncingDone() {
         return new Promise((res, rej) => {
-            const syncStatuses$ = this.prim.registered.map(p => p.syncing$)
+            const prim = this.getPrimaryDs()
+            const syncStatuses$ = prim.map(p => p.syncing$)
             combineLatest(syncStatuses$)
                 // wait until no sync status is true
                 .pipe(first(syncStatuses => syncStatuses.includes(true) === false))
@@ -582,27 +421,10 @@ export class Warehouse {
     }
 
 
-    /**
-     * returns file size of db in MB
-     */
-    async getLevelDbFileSize(): Promise<{
-        bytes: number,
-        readable: string
-    }> {
-        return new Promise((res, rej) => {
-            getFolderSize(this.leveldbpath, (err, size) => {
-                if (err) {rej(err);}
 
-                res({
-                    bytes: size,
-                    readable: (size / 1024 / 1024).toFixed(2) + ' MB'
-                })
-            })
-        })
-    }
 
     pgNotify(channel: string, value: string) {
-        return this.pgClient.query(`SELECT pg_notify($1, $2)`, [channel, value])
+        return this.pgPool.query(`SELECT pg_notify($1, $2)`, [channel, value])
     }
 
 
@@ -612,9 +434,8 @@ export class Warehouse {
     async stop() {
         this.status = 'stopped';
         this.notificationHandlers = {}
-        this.pgClient.release();
-        await this.leveldb.close()
-
+        this.pgListener.release();
+        await this.pgPool.end();
     }
 }
 

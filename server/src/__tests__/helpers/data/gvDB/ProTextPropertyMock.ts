@@ -71,8 +71,8 @@ export class ProTextPropertyMock {
     fk_dfh_property_domain: DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_domain,
     fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
     string: 'Brought into life (default)'
-
   })
+
   static readonly PROJ_DEF_EN_PROPERTY_BROUGHT_INTO_LIFE_REVERSE = new ProTextProperty({
     pk_entity: 5007,
     fk_project: PK_DEFAULT_CONFIG_PROJECT,

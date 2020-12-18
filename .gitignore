@@ -1,2 +1,8 @@
 node_modules
 dev-logs
+
+# postgres logs
+pg_logs
+
+# file for customizing environment vars 
+.env

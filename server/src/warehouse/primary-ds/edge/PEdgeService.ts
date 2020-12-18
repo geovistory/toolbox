@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {Logger} from '../../base/classes/Logger';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {PEntityId} from '../entity/PEntityService';
-import {buildIncomingEdges, buildOutgoingEdges, Edge, EdgeInitItem, EntityFields, StatementItemToIndexate} from './edge.commons';
+import {PEntityId, pEntityKeyDefs} from '../entity/PEntityService';
+import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from './edge.commons';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 interface Noun {
     table: string;
@@ -18,119 +17,27 @@ interface Noun {
 
 
 
-export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, EntityFields>{
+@Injectable()
+export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
 
     measure = 10000;
 
 
-    constructor(wh: Warehouse) {
-        super(wh, [
-            'modified_projects_info_proj_rel',
-        ], pEntityIdToString, stringToPEntityId)
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+        super(
+            wh,
+            [
+                'modified_projects_info_proj_rel',
+            ],
+            pEntityKeyDefs
+        )
     }
 
-
-    dbItemToKeyVal(item: EdgeInitItem): {key: PEntityId; val: EntityFields;} {
-        const key = {pkEntity: item.pkEntity, fkProject: item.fkProject}
-        const val = item.fields
-        return {key, val}
-    }
 
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
     getDeletesSql(tmsp: Date) {return ''};
-
-
-    // function is only used to easily add mock data
-    async indexateItems(items: StatementItemToIndexate[]) {
-        let i = 0
-
-        for (const item of items) {
-            const s: Noun = {
-                table: item.subject_table,
-                fkInfo: item.fk_subject_info,
-                value: {
-                    appellation: null,
-                    language: null,
-                    lang_string: null
-                }
-            };
-            const o: Noun = {
-                table: item.object_table,
-                fkInfo: item.fk_object_info,
-                value: {
-                    appellation: item.appellation,
-                    language: item.language,
-                    lang_string: item.lang_string
-                }
-            };
-            const outgoing = true;
-            // add edge going out of entity
-            if (this.isEntityTable(s.table)) {
-                await this.addEdgeToEdgedsPerEntity(item, s, o, outgoing);
-            }
-            // add edge coming in to entity
-            if (this.isEntityTable(o.table)) {
-                await this.addEdgeToEdgedsPerEntity(item, o, s, !outgoing);
-            }
-            i++
-            if (i % this.measure === 0) {
-                Logger.msg(`indexed ${i} edges`, 1)
-            }
-
-
-        }
-    }
-
-    isEntityTable(str: string) {
-        return (str === 'temporal_entity' || str === 'persistent_item')
-    }
-
-    private async addEdgeToEdgedsPerEntity(item: StatementItemToIndexate, a: Noun, b: Noun, isOutgoing: boolean) {
-        const fkProperty = item.fk_property
-        const fkPropStr = fkProperty.toString()
-        const key: PEntityId = {
-            fkProject: item.fk_project,
-            pkEntity: a.fkInfo,
-        }
-        let val = await this.index.getFromIdx(key);
-        if (!val) val = {outgoing: {}, incoming: {}};
-        const outgoing = val.outgoing
-        const incoming = val.incoming
-
-
-
-        const edge: Edge = {
-            fkStatement: item.pk_statement,
-            // fkSubject: item.fk_subject_info,
-            fkProperty,
-            // fkObject: item.fk_object_info,
-
-            fkSource: a.fkInfo,
-            fkTarget: b.fkInfo,
-            isOutgoing: isOutgoing,
-            targetLabel: (b?.value?.appellation ?? (b?.value?.lang_string) ?? b?.value?.language) ?? b.fkInfo.toString(),
-            targetValue: b.value,
-            ordNumWithinField: item.ord_num_of_range,
-            targetIsEntity: isOutgoing ? this.isEntityTable(item.object_table) : this.isEntityTable(item.subject_table)
-        }
-
-
-        if (isOutgoing) {
-            if (!outgoing[fkPropStr]) outgoing[fkPropStr] = []
-            outgoing[fkPropStr].push(edge)
-        }
-        else {
-            if (!incoming[fkPropStr]) incoming[fkPropStr] = []
-            incoming[fkPropStr].push(edge)
-        }
-        await this.index.addToIdx(key, val)
-
-    }
-
-
-
 
 
 }
@@ -151,10 +58,9 @@ WITH tw0 AS (
     JOIN
         information.entity t3 ON t2.fk_subject_info = t3.pk_entity
     WHERE
-        t1.tmsp_last_modification > $1
-
-    AND
         t3.table_name IN ('temporal_entity', 'persistent_item')
+    AND
+        t1.tmsp_last_modification > $1
     UNION
     SELECT DISTINCT
         t2.fk_object_info pk_entity,
@@ -166,10 +72,9 @@ WITH tw0 AS (
     JOIN
         information.entity t3 ON t2.fk_object_info = t3.pk_entity
     WHERE
-        t1.tmsp_last_modification > $1
-
-    AND
         t3.table_name IN ('temporal_entity', 'persistent_item')
+    AND
+        t1.tmsp_last_modification > $1
     UNION
     SELECT DISTINCT
         t2.pk_entity,
@@ -280,7 +185,7 @@ tw5 AS (
 SELECT
 t1.fk_project "fkProject",
 t1.pk_entity "pkEntity",
-COALESCE(t2.fields, '{}'::json) fields
+COALESCE(t2.fields, '{}'::json) val
 FROM tw0 t1
 LEFT JOIN tw5 t2 ON t1.pk_entity = t2.pk_entity AND t1.fk_project =  t2.fk_project
 `

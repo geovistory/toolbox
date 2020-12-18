@@ -1,10 +1,15 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {rClassIdToString, stringToRClassId} from '../base/functions';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface RClassId {
     pkClass: number
 }
-export type DfhClassHasTypePropVal = number;
+export const rClassIdKeyDefs: KeyDefinition[] = [
+    {name: 'pkClass', type: 'integer'}
+]
+
+export interface DfhClassHasTypePropVal {fkProperty: number};
 
 /**
  * This PrimaryDataService creates an index of all properties that are
@@ -17,18 +22,15 @@ export type DfhClassHasTypePropVal = number;
  *      '363': 1110
  * }
  */
-export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, RClassId, DfhClassHasTypePropVal>{
+@Injectable()
+export class DfhClassHasTypePropertyService extends PrimaryDataService<RClassId, DfhClassHasTypePropVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'], rClassIdToString, stringToRClassId)
-    }
-    dbItemToKeyVal(item: DbItem): {key: RClassId; val: DfhClassHasTypePropVal;} {
-        const key: RClassId = {
-            pkClass: item.fkClass
-        }
-        const val: DfhClassHasTypePropVal = item.fkProperty
-
-        return {key, val}
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+        super(
+            wh,
+            ['modified_data_for_history_api_property'],
+            rClassIdKeyDefs
+        )
     }
     getUpdatesSql(tmsp: Date) {
         return updateSql
@@ -45,8 +47,8 @@ interface DbItem {
 
 const updateSql = `
     SELECT DISTINCT
-        dfh_property_domain "fkClass",
-        dfh_pk_property "fkProperty"
+        dfh_property_domain "pkClass",
+        jsonb_build_object('fkProperty',dfh_pk_property) val
     FROM
         data_for_history.api_property
     WHERE
@@ -90,8 +92,7 @@ SELECT DISTINCT
 FROM
     data_for_history.api_property
 WHERE
-    dfh_is_has_type_subproperty = true;
+    dfh_is_has_type_subproperty = true
 
 -- ... as a result we get only the items that have been set to false
-
 `

@@ -1,27 +1,28 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {projectIdToString, stringToProjectId} from '../base/functions';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface ProjectId {
     pkProject: number
 }
 export interface ProjectVal {
     fkLanguage: number
 }
-export class ProProjectService extends PrimaryDataService<DbItem, ProjectId, ProjectVal>{
+export const pProjectKeyDef: KeyDefinition[] = [
+    {name: 'pkProject', type: 'integer'}
+]
+@Injectable()
+export class ProProjectService extends PrimaryDataService<ProjectId, ProjectVal>{
     measure = 1000;
 
-    constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_project'],projectIdToString, stringToProjectId)
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+        super(
+            wh,
+            ['modified_projects_project'],
+            pProjectKeyDef
+        )
     }
-    dbItemToKeyVal(item: DbItem): {key: ProjectId; val: ProjectVal;} {
-        const key: ProjectId = {
-            pkProject: item.pkProject
-        }
-        const val: ProjectVal = {
-            fkLanguage: item.fkLanguage
-        }
-        return {key, val}
-    }
+
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
@@ -30,14 +31,10 @@ export class ProProjectService extends PrimaryDataService<DbItem, ProjectId, Pro
     };
 }
 
-interface DbItem {
-    pkProject: number,
-    fkLanguage: number,
-}
 const updateSql = `
     SELECT
         pk_entity "pkProject",
-        fk_language "fkLanguage"
+        jsonb_build_object('fkLanguage', fk_language) val
     FROM
         projects.project
     WHERE
@@ -56,5 +53,5 @@ const deleteSql = `
     SELECT
         pk_entity "pkProject"
     FROM
-        projects.project;
+        projects.project
 `

@@ -1,33 +1,45 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { expect } from '@loopback/testlab';
-import { REntityService } from '../../../../warehouse/primary-ds/entity/REntityService';
-import { Warehouse } from '../../../../warehouse/Warehouse';
-import { createInfLanguage } from '../../../helpers/atomic/inf-language.helper';
-import { createInfPersistentItem, updateInfPersistentItem } from '../../../helpers/atomic/inf-persistent-item.helper';
-import { createProInfoProjRel, updateProInfoProjRel } from '../../../helpers/atomic/pro-info-proj-rel.helper';
-import { createProProject } from '../../../helpers/atomic/pro-project.helper';
-import { cleanDb } from '../../../helpers/meta/clean-db.helper';
-import { InfLanguageMock } from '../../../helpers/data/gvDB/InfLanguageMock';
-import { InfPersistentItemMock } from '../../../helpers/data/gvDB/InfPersistentItemMock';
-import { ProInfoProjRelMock } from '../../../helpers/data/gvDB/ProInfoProjRelMock';
-import { ProProjectMock } from '../../../helpers/data/gvDB/ProProjectMock';
-import { setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy } from '../../../helpers/warehouse-helpers';
-
+import 'reflect-metadata';
+import {expect} from '@loopback/testlab';
+import {REntityService} from '../../../../warehouse/primary-ds/entity/REntityService';
+import {Warehouse} from '../../../../warehouse/Warehouse';
+import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
+import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
+import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
+import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
+import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
+import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+const stubs: WarehouseStubs = {
+  primaryDataServices: [REntityService],
+  aggDataServices: []
+}
 describe('REntityService', () => {
 
   let wh: Warehouse;
   let s: REntityService;
 
-  before(async () => {
-    // await wh.pgClient.connect()
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
+    const injector = await setupCleanAndStartWarehouse(stubs)
+    wh = injector.get(Warehouse)
+    s = injector.get(REntityService)
   })
-  beforeEach(async function () {
-    await cleanDb();
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.rEntity;
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
   })
-  afterEach(async function () { await wh.stop() })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
+
+
 
   it('should have entity preview', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
@@ -78,15 +90,14 @@ describe('REntityService', () => {
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.val.isInProjectCount === 1
-    })
-
     const id = {
       pkEntity: entity.pk_entity ?? -1
     }
-    let result = await s.index.getFromIdx(id)
-    expect(result?.isInProjectCount).to.equal(1)
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => val?.isInProjectCount === 1
+    })
     await updateProInfoProjRel(
       entity.pk_entity ?? -1,
       {
@@ -95,12 +106,11 @@ describe('REntityService', () => {
       }
     )
 
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.val.isInProjectCount === 0
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => val?.isInProjectCount === 0
     })
-
-    result = await s.index.getFromIdx(id)
-    expect(result?.isInProjectCount).to.equal(0)
   })
 
 

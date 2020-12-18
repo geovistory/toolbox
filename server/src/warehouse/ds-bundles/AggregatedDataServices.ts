@@ -1,104 +1,151 @@
-// import { EntityPreviewService } from '../data-services/aggregated/EntityPreviewService';
-import {PEntityClassLabelService} from '../aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
-import {IdentifyingPropertyService} from '../aggregator-ds/identifying-property/IdentifyingPropertyService';
-import {PClassFieldLabelService} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
-import {PClassLabelService} from '../aggregator-ds/class-label/p-class-label/PClassLabelService';
-import {PEntityFullTextService} from '../aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
-import {PEntityLabelService} from '../aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
-import {PEntityTimeSpanService} from '../aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
-import {PEntityTypeService} from '../aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
-import {DataServiceBundle} from '../base/classes/DataServiceBundle';
-import {Warehouse} from '../Warehouse';
-import {RClassLabelService} from '../aggregator-ds/class-label/r-class-label/RClassLabelService';
-import {REntityClassLabelService} from '../aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
-import {RClassFieldLabelService} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
-import {REntityLabelService} from '../aggregator-ds/entity-label/r-entity-label/REntityLabelService';
-import {REntityTimeSpanService} from '../aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
-import {REntityTypeService} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeService';
-import {REntityFullTextService} from '../aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
-import {AggregatedDataService} from '../base/classes/AggregatedDataService';
-import {combineLatest, Observable} from 'rxjs';
-import {filter, mapTo} from 'rxjs/operators';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any,any,any>> {
-    // Model aggregators
-    identifyingProperty: IdentifyingPropertyService;
+// // import { EntityPreviewService } from '../data-services/aggregated/EntityPreviewService';
+// import {Injectable, Inject, forwardRef} from 'injection-js';
+// import {PClassFieldLabelService} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+// import {RClassFieldLabelService} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
+// import {PClassLabelService} from '../aggregator-ds/class-label/p-class-label/PClassLabelService';
+// import {RClassLabelService} from '../aggregator-ds/class-label/r-class-label/RClassLabelService';
+// import {PEntityClassLabelService} from '../aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
+// import {REntityClassLabelService} from '../aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
+// import {PEntityFullTextService} from '../aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
+// import {REntityFullTextService} from '../aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
+// import {PEntityLabelService} from '../aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+// import {REntityLabelService} from '../aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+// import {PEntityTimeSpanService} from '../aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+// import {REntityTimeSpanService} from '../aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
+// import {PEntityTypeService} from '../aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
+// import {REntityTypeService} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+// import {IdentifyingPropertyService} from '../aggregator-ds/identifying-property/IdentifyingPropertyService';
+// import {AggregatedDataServicesBase} from '../base/classes/AggregatedDataServicesBase';
 
-    // Project aggegators
-    pClassLabel: PClassLabelService
-    pClassFieldLabel: PClassFieldLabelService
-    pEntityLabel: PEntityLabelService;
-    pEntityType: PEntityTypeService;
-    pEntityClassLabel: PEntityClassLabelService;
-    pEntityFullText: PEntityFullTextService;
-    pEntityTimeSpan: PEntityTimeSpanService;
+// @Injectable()
+// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// export class AggregatedDataServices extends AggregatedDataServicesBase {
+//     constructor(
+//         // Model aggregators
+//         @Inject(forwardRef(() => IdentifyingPropertyService)) public identifyingProperty: IdentifyingPropertyService,
 
-    // Repo aggregators
-    rClassLabel: RClassLabelService
-    rClassFieldLabel: RClassFieldLabelService
-    rEntityLabel: REntityLabelService;
-    rEntityType: REntityTypeService;
-    rEntityClassLabel: REntityClassLabelService
-    rEntityFullText: REntityFullTextService;
-    rEntityTimeSpan: REntityTimeSpanService;
+//         // Project aggegators
+//         public pClassLabel: PClassLabelService,
+//         public pClassFieldLabel: PClassFieldLabelService,
+//         public pEntityClassLabel: PEntityClassLabelService,
+//         public pEntityLabel: PEntityLabelService,
+//         public pEntityType: PEntityTypeService,
+//         public pEntityFullText: PEntityFullTextService,
+//         public pEntityTimeSpan: PEntityTimeSpanService,
 
-    ready$: Observable<boolean>
-
-    constructor(wh: Warehouse) {
-        super()
-        // Model aggregators
-        this.identifyingProperty = this.registerDataService(new IdentifyingPropertyService(wh));
-
-        // Project aggegators
-        this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
-        this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelService(wh))
-        this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
-        this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
-        this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
-        this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
-        this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
-
-        // Repo aggregators
-        this.rClassLabel = this.registerDataService(new RClassLabelService(wh))
-        this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
-        this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
-        this.rEntityType = this.registerDataService(new REntityTypeService(wh));
-        this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
-        this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
-        this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
-
-        this.ready$ = combineLatest(
-            this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true))),
-        ).pipe(mapTo(true))
-    }
+//         // Repo aggregators
+//         public rClassLabel: RClassLabelService,
+//         public rClassFieldLabel: RClassFieldLabelService,
+//         public rEntityClassLabel: REntityClassLabelService,
+//         public rEntityLabel: REntityLabelService,
+//         public rEntityType: REntityTypeService,
+//         public rEntityFullText: REntityFullTextService,
+//         public rEntityTimeSpan: REntityTimeSpanService,
+//     ) {
+//         super(
+//             identifyingProperty,
+//             pClassLabel,
+//             pClassFieldLabel,
+//             pEntityClassLabel,
+//             pEntityLabel,
+//             pEntityType,
+//             pEntityFullText,
+//             pEntityTimeSpan,
+//             rClassLabel,
+//             rClassFieldLabel,
+//             rEntityClassLabel,
+//             rEntityLabel,
+//             rEntityType,
+//             rEntityFullText,
+//             rEntityTimeSpan)
+//     }
+// }
 
 
-    async startCycling() {
-        // Model aggregators
-        await this.identifyingProperty.updater.startCylcling()
 
-        // Project aggegators
-        await this.pClassLabel.updater.startCylcling()
-        await this.pClassFieldLabel.updater.startCylcling()
-        await this.pEntityClassLabel.updater.startCylcling()
-        await this.pEntityLabel.updater.startCylcling()
-        await this.pEntityType.updater.startCylcling()
-        await this.pEntityFullText.updater.startCylcling()
-        await this.pEntityTimeSpan.updater.startCylcling()
 
-        // Repo aggregators
-        await this.rClassLabel.updater.startCylcling()
-        await this.rClassFieldLabel.updater.startCylcling()
-        await this.rEntityClassLabel.updater.startCylcling()
-        await this.rEntityLabel.updater.startCylcling()
-        await this.rEntityType.updater.startCylcling()
-        await this.rEntityFullText.updater.startCylcling()
-        await this.rEntityTimeSpan.updater.startCylcling()
-    }
-    async clearAll() {
-        await Promise.all(this.registered.map(x => x.clearAll()));
-    }
-    async clearUpdateQueues() {
-        await Promise.all(this.registered.map(x => x.updater.clearIdx()));
-    }
-}
+// // @Injectable()
+// // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// // export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any, any>> {
+
+
+// //     ready$: Observable<boolean>
+
+// //     constructor(
+// //         // Model aggregators
+// //         public identifyingProperty: IdentifyingPropertyService,
+
+// //         // Project aggegators
+// //         public pClassLabel: PClassLabelService,
+// //         public pClassFieldLabel: PClassFieldLabelService,
+// //         public pEntityClassLabel: PEntityClassLabelService,
+// //         public pEntityLabel: PEntityLabelService,
+// //         public pEntityType: PEntityTypeService,
+// //         public pEntityFullText: PEntityFullTextService,
+// //         public pEntityTimeSpan: PEntityTimeSpanService,
+
+// //         // Repo aggregators
+// //         public rClassLabel: RClassLabelService,
+// //         public rClassFieldLabel: RClassFieldLabelService,
+// //         public rEntityClassLabel: REntityClassLabelService,
+// //         public rEntityLabel: REntityLabelService,
+// //         public rEntityType: REntityTypeService,
+// //         public rEntityFullText: REntityFullTextService,
+// //         public rEntityTimeSpan: REntityTimeSpanService,
+// //     ) {
+// //         super()
+// //         // // Model aggregators
+
+
+
+
+// //         this.registerDataService(this.identifyingProperty); // rEntityLabel
+
+// //         // // Project aggegators
+// //         //  this.registerDataService(this.pClassLabel)
+// //         //  this.registerDataService(this.pClassFieldLabel)
+// //         //  this.registerDataService(this.pEntityLabel);
+// //         //  this.registerDataService(this.pEntityType);
+// //         //  this.registerDataService(this.pEntityClassLabel)
+// //         //  this.registerDataService(this.pEntityFullText)
+// //         //  this.registerDataService(this.pEntityTimeSpan)
+
+// //         // // // Repo aggregators
+// //         // this.registerDataService(this.rClassLabel) // rClassLabel
+// //         //  this.registerDataService(this.rClassFieldLabel)
+// //         this.registerDataService(this.rEntityLabel); // rEntityLabel
+// //         //  this.registerDataService(this.rEntityType);
+// //         //  this.registerDataService(this.rEntityClassLabel)
+// //         //  this.registerDataService(this.rEntityFullText)
+// //         //  this.registerDataService(this.rEntityTimeSpan)
+
+// //         this.ready$ = combineLatest(
+// //             this.registered.map(ds => ds.ready$.pipe(filter(r => r === true))),
+// //         ).pipe(mapTo(true))
+// //     }
+
+
+// //     async startCycling() {
+// //         // Model aggregators
+// //         await this.identifyingProperty.startUpdate() // rEntityLabel
+
+// //         // Project aggegators
+// //         // await this.pClassLabel.startUpdate()
+// //         // await this.pClassFieldLabel.startUpdate()
+// //         // await this.pEntityClassLabel.startUpdate()
+// //         // await this.pEntityLabel.startUpdate()
+// //         // await this.pEntityType.startUpdate()
+// //         // await this.pEntityFullText.startUpdate()
+// //         // await this.pEntityTimeSpan.startUpdate()
+
+// //         // Repo aggregators
+// //         // await this.rClassLabel.startUpdate() // rClassLabel
+// //         // await this.rClassFieldLabel.startUpdate()
+// //         // await this.rEntityClassLabel.startUpdate()
+// //         await this.rEntityLabel.startUpdate() // rEntityLabel
+// //         // await this.rEntityType.startUpdate()
+// //         // await this.rEntityFullText.startUpdate()
+// //         // await this.rEntityTimeSpan.startUpdate()
+// //     }
+
+// // }

@@ -2,7 +2,7 @@ import {keys} from 'ramda';
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {REntityTimeSpanProviders} from './REntityTimeSpanPoviders';
-import {REntityTimeSpan, TimeSpanKeys} from './REntityTimeSpanService';
+import {REntityTimeSpan, TimeSpanKeys, REntityTimeSpanVal} from './REntityTimeSpanService';
 type KeyMap = {
     [key in TimeSpanKeys]: number
 }
@@ -15,7 +15,7 @@ const keyMap: KeyMap = {
     p82b: 153,
 }
 const ks = keys(keyMap)
-export class REntityTimeSpanAggregator extends AbstractAggregator<REntityId> {
+export class REntityTimeSpanAggregator extends AbstractAggregator<REntityTimeSpanVal> {
 
     // the resulting entityTimeSpan
     entityTimeSpan?: REntityTimeSpan;
@@ -48,10 +48,6 @@ export class REntityTimeSpanAggregator extends AbstractAggregator<REntityId> {
 
         if (entity) {
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
             const timeSpan: REntityTimeSpan = {}
             let first = Number.POSITIVE_INFINITY;
             let last = Number.NEGATIVE_INFINITY;
@@ -86,7 +82,14 @@ export class REntityTimeSpanAggregator extends AbstractAggregator<REntityId> {
             if (Object.keys(timeSpan).length) this.entityTimeSpan = timeSpan
 
         }
-        return this
+        return this.finalize()
+    }
+    finalize(): REntityTimeSpanVal {
+        return {
+            firstSecond: this.firstSecond,
+            lastSecond: this.lastSecond,
+            timeSpan: this.entityTimeSpan
+        }
     }
 
 }

@@ -1,38 +1,33 @@
-import {Dependencies} from '../../../base/classes/Dependencies'
-import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {dfhPropertyIdToString, proPropertyIdToString, rClassFieldIdToString, stringToDfhPropertyId, stringToProPropertyId, stringToRClassFieldId} from '../../../base/functions'
-import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService'
-import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
-import {Warehouse} from '../../../Warehouse'
-import {RClassFieldId} from './RClassFieldLabelService'
+// import {Dependencies} from '../../../base/classes/Dependencies'
+// import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+// import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService'
+// import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
+// import {Warehouse} from '../../../Warehouse'
+// import {RClassFieldId, RClassFieldVal} from './RClassFieldLabelService'
+// import {Injectable, Inject, forwardRef} from 'injection-js';
 
-export class RClassFieldLabelDependencies extends Dependencies {
-  dfhPropertyLabel: DependencyIndex<RClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
-  proPropertyLabel: DependencyIndex<RClassFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
+// @Injectable()
+// export class RClassFieldLabelDependencies extends Dependencies {
+//   dfhPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, DfhPropertyLabelId, DfhPropertyLabelVal>
+//   proPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, ProPropertyLabelId, ProPropertyLabelVal>
 
-  // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
-  constructor(private wh: Warehouse) {
-    super()
+//   // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
+//   constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
 
-    this.dfhPropertyLabel = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.rClassFieldLabel,
-      wh.prim.dfhPropertyLabel,
-      rClassFieldIdToString,
-      stringToRClassFieldId,
-      dfhPropertyIdToString,
-      stringToDfhPropertyId
-    ))
+//     super()
 
-    this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.rClassFieldLabel,
-      wh.prim.proPropertyLabel,
-      rClassFieldIdToString,
-      stringToRClassFieldId,
-      proPropertyIdToString,
-      stringToProPropertyId
-    ))
-  }
+//     this.dfhPropertyLabel = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.rClassFieldLabel,
+//       wh.prim.dfhPropertyLabel,
+//     ))
 
-}
+//     this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.rClassFieldLabel,
+//       wh.prim.proPropertyLabel,
+//     ))
+//   }
+
+// }
+

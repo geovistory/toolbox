@@ -3,7 +3,7 @@ import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
 import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
 import {IdentifyingPropertyVal} from './IdentifyingPropertyService';
 
-export class IdentifyingPropertyAggregator extends AbstractAggregator<RClassId> {
+export class IdentifyingPropertyAggregator extends AbstractAggregator<IdentifyingPropertyVal> {
 
 
   // the resulting label
@@ -17,16 +17,14 @@ export class IdentifyingPropertyAggregator extends AbstractAggregator<RClassId> 
   }
 
   async create() {
-    await this.providers.load();
-
-    const outProps = await this.providers.outgoingProperty.getItemsStartingWith(this.id.pkClass.toString());
+    const outProps = await this.providers.outgoingProperty.getItemsWith({fkDomain: this.id.pkClass});
     for (const p of outProps) {
       if (p.value.dfhIdentityDefining) {
         this.identyfyingProperties.push(p.value)
       }
 
     }
-    return this
+    return this.identyfyingProperties
   }
 
 }

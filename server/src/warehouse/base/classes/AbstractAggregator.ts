@@ -1,5 +1,5 @@
 
-export abstract class AbstractAggregator<IdModel> {
+export abstract class AbstractAggregator<ValueModel> {
     constructor() { }
-    abstract create(id: IdModel): Promise<AbstractAggregator<IdModel>>;
+    abstract create(): Promise<ValueModel>;
 }

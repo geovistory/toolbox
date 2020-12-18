@@ -1,13 +1,12 @@
-import QueryStream from 'pg-query-stream';
-import prettyms from 'pretty-ms';
-import {BehaviorSubject} from 'rxjs';
-import {Warehouse} from '../../Warehouse';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {CHANGES_CONSIDERED_UNTIL_SUFFIX, Warehouse} from '../../Warehouse';
+import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
+import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
-import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
 
-export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
+export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
     // number of iterations before measurin time an memory
     abstract measure: number;
@@ -18,32 +17,22 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     // True if running sync() should restart right after finishing
     restartSyncing = false;
 
-    index: IndexDBGeneric<KeyModel, ValueModel>
+    index: DataIndexPostgres<KeyModel, ValueModel>
 
-    // a meta index where each primary data service can store its catchup date
-    meta: IndexDBGeneric<string, string>
-
+    // // a meta index where each primary data service can store its catchup date
+    // meta: IndexDBGeneric<string, string>
 
     constructor(
         public wh: Warehouse,
         private listenTo: string[],
-        public keyToString: (key: KeyModel) => string,
-        public stringToKey: (str: string) => KeyModel,
+        private keyDefs: KeyDefinition[]
     ) {
-        super()
-        this.index = new IndexDBGeneric(
-            keyToString,
-            stringToKey,
-            this.constructor.name,
+        super(wh)
+        this.index = new DataIndexPostgres(
+            this.keyDefs,
+            'prim_' + this.constructor.name.replace('Service', ''),
             wh
         )
-        this.meta = new IndexDBGeneric(
-            (key: string) => key,
-            (str: string) => str,
-            this.constructor.name + '_meta',
-            wh
-        )
-
 
     }
 
@@ -55,7 +44,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         await this.addPgListeners()
 
-        const dbNow = await this.wh.pgClient.query('SELECT now() as now');
+        const dbNow = await this.wh.pgPool.query('SELECT now() as now');
 
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
@@ -68,7 +57,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     async startAndSyncSince(lastUpdateBegin: Date) {
         await this.addPgListeners()
 
-        await this.setLastUpdateBegin(lastUpdateBegin)
+        await this.setChangesConsideredUntil(lastUpdateBegin)
 
         await this.sync(lastUpdateBegin)
     }
@@ -76,19 +65,19 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
     async catchUp() {
 
-        const lastUpdateDone = await this.getLastUpdateDone()
-        if (lastUpdateDone) {
-            Logger.msg(`${this.constructor.name} > Catch up changes since ${lastUpdateDone}`);
-            await this.startAndSyncSince(lastUpdateDone)
+        const lastUpdateBegin = await this.getChangesConsideredUntil()
+        if (lastUpdateBegin) {
+            Logger.msg(this.constructor.name, `Catch up changes since ${lastUpdateBegin}`);
+            await this.startAndSyncSince(lastUpdateBegin)
         }
         else {
-            Logger.msg(`WARNING: ${this.constructor.name} > no lastUpdateDone date found for catchUp()!`)
+            Logger.msg(this.constructor.name, `WARNING: no lastUpdateBegin date found for catchUp()!`)
             await this.initIdx()
         }
     }
 
     async clearAll() {
-        await Promise.all([this.index.clearIdx(), this.meta.clearIdx()])
+        // await Promise.all([this.index.clearIdx(), this.meta.clearIdx()])
     }
 
     /**
@@ -96,10 +85,16 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      * @param listenTo
      */
     private async addPgListeners() {
+        const sync$ = new Subject<Date>()
+        sync$.pipe(
+            // skipWhileFirst(80)
+        ).subscribe(tmsp => {
+            this.sync(tmsp).catch(e => console.log(e))
+        })
         for (const eventName of this.listenTo) {
             await this.wh.registerDbListener(
                 eventName,
-                (tmsp: Date) => this.sync(tmsp),
+                sync$,
                 this.constructor.name
             )
         }
@@ -107,14 +102,15 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
     /**
      *
-     * @param tmsp the timestamp of oldest modification considered for syncing
+     * @param tmsp the timestamp sent by the notification of the original table
      */
-    async sync(tmsp: Date) {
+    async sync(tmsp: Date): Promise<number> {
+        let changes = 0
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
         if (this.syncing$.value) {
             this.restartSyncing = true
-            return;
+            return changes;
         }
 
         // Else sets syncing to true and restartSyncing to false
@@ -123,35 +119,45 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         // throttle sync process for 10 ms
         // await new Promise((res, rej) => { setTimeout(() => { res() }, 10) })
-        const lastUpdateBegin = await this.getLastUpdateBegin()
-        const t1 = Logger.start(`${this.constructor.name} > manageUpdatesSince ${lastUpdateBegin}`, 1);
+        const changesConsideredUntil = await this.getChangesConsideredUntil()
+        const t1 = Logger.start(this.constructor.name, `manageUpdatesSince ${changesConsideredUntil}`, 1);
 
         // Look for updates since the date of lastUpdateBegin or 1970
         const calls = [
-            this.manageUpdatesSince(lastUpdateBegin)
+            this.manageUpdatesSince(changesConsideredUntil)
         ]
 
         // Look for deletes if
         // - there is a deleteSql and
         // - this data service has ever been synced
 
-        if (lastUpdateBegin) {
-            const deleteSql = this.getDeletesSql(lastUpdateBegin)
-            if (deleteSql !== '') calls.push(this.manageDeletesSince(lastUpdateBegin, deleteSql))
+        if (changesConsideredUntil) {
+            const deleteSql = this.getDeletesSql(changesConsideredUntil)
+            if (deleteSql !== '') calls.push(this.manageDeletesSince(changesConsideredUntil, deleteSql))
         }
 
         // set lastUpdateBegin to timestamp that was used to run this sync
         // process.
-        await this.setLastUpdateBegin(tmsp)
+        await this.setChangesConsideredUntil(tmsp)
 
         // await the calls produced above
         const [updates, deletes] = await Promise.all(calls);
-        Logger.itTook(t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
+
+        changes += updates + (deletes ?? 0);
+
+        Logger.itTook(this.constructor.name, t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
 
         this.syncing$.next(false)
-        if (this.restartSyncing) await this.sync(tmsp);
+        if (this.restartSyncing) {
+            changes += await this.sync(tmsp);
+        }
+        const now = await this.wh.pgNowDate()
+        await this.setLastUpdateDone(now)
+        if (changes > 0) {
+            this.afterChange$.next()
+        }
 
-        await this.setLastUpdateDone(tmsp)
+        return changes
 
     }
 
@@ -166,79 +172,44 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      *
      * @param date
      */
-    private async manageUpdatesSince(date?: Date) {
+    private async manageUpdatesSince(date: Date = new Date(0)) {
 
-        const t2 = Logger.start(`Start update query  ...`, 2);
-        const d = date ?? new Date(0);
-        const query = new QueryStream(this.getUpdatesSql(d), [d])
+        const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
 
-        const stream = this.wh.pgClient.query(query)
-        let minMeasure: number | null = null, maxMeasure: number | null = null;
-        let i = 0;
-        return new Promise((res, rej) => {
+        const updateSql = this.getUpdatesSql(date)
+        const upsertHookSql = this.get2ndUpdatesSql ? `,
+            hook AS (${this.get2ndUpdatesSql('tw1', date)})`
+            : ''
+        const sql = `
+        WITH tw1 AS (
+            ${updateSql}
+        )
+        ${upsertHookSql},
+        tw2 AS (
+            INSERT INTO  ${this.index.schemaTable}
+            (${this.index.keyCols}, val)
+            SELECT ${this.index.keyCols}, tw1.val
+            FROM tw1
+            ON CONFLICT (${this.index.keyCols}) DO UPDATE
+            SET val = EXCLUDED.val
+            WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
+            RETURNING *
+        )
+        SELECT count(*)::int FROM tw2
+        `
+        const params = [date]
+        // if (this.constructor.name === 'REdgeService') logSql(sql, params)
 
-            let t3 = Logger.getTime()
-            let t4 = Logger.getTime()
-            stream.once('data', _ => {
-                Logger.itTook(t2, `to run update query.`, 2);
-                t3 = Logger.start(`Start putting items from stream ...`, 2)
-                t4 = Logger.getTime()
-            })
-            stream.on('data', (item: DbItem) => {
-
-                i++;
-                // if no date we are in the initial sync process
-                if (!date) {
-                    // no need to check for existing vals
-                    const {key, val} = this.dbItemToKeyVal(item)
-                    this.index.addToIdx(key, val).catch((e) => {
-                        stream.destroy();
-                        rej(e);
-                    });
-                    this.afterPut$.next({key, val})
-                } else {
-                    // put item, and compare to existing vals and add update request if needed
-                    this.putDbItem(item)
-                        // .then(() => {
-                        //     // for debugging only: allows acceptance test to wait
-                        //     // until value was updated
-                        //     this.afterPut$.next(item)
-                        // })
-                        .catch((e) => {
-                            stream.destroy();
-                            rej(e);
-                        });;
-                }
-
-                i++
-                if (i % this.measure === 0) {
-                    // Logger.resetLine()
-                    const time = Logger.itTook(t3, `to put ${this.measure} items to index of ${this.constructor.name} – done so far: ${i}`, 2)
-                    t3 = Logger.getTime()
-                    if (!minMeasure || minMeasure > time) minMeasure = time;
-                    if (!maxMeasure || maxMeasure < time) maxMeasure = time;
-                }
-
-            })
-            stream.on('error', (e) => {
-                rej(e)
-            })
-
-            stream.on('end', () => {
-                res(i)
-                // Logger.resetLine()
-                if (minMeasure && maxMeasure) {
-                    Logger.itTook(t4, `to put ${i} items to index of ${this.constructor.name}  –  fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 2);
-                } else {
-                    Logger.itTook(t4, `to put ${i} items to index of ${this.constructor.name}`, 2);
-                }
-            })
-
-
-        })
-
-
-
+        const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
+        // useful for debugging
+        // if (this.constructor.name === 'REdgeService') {
+        //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
+        // }
+        // if (upserted.rows?.[0].count > 0) {
+        //     this.afterChange$.next()
+        // }
+        Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted.rows?.[0].count} new lines`, 2);
+        return upserted.rows.length
 
     }
 
@@ -253,105 +224,65 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      * @param date
      */
     private async manageDeletesSince(date: Date, deleteSql: string) {
-        const t2 = Logger.start(`Start deletes query  ...`, 2);
-        const query = new QueryStream(deleteSql, [date])
+        const t2 = Logger.start(this.constructor.name, `Start deletes query  ...`, 2);
 
-        const stream = this.wh.pgClient.query(query)
-        let minMeasure: number | null = null, maxMeasure: number | null = null;
-        let i = 0;
-        return new Promise((res, rej) => {
+        const deleteHookTw = this.get2ndDeleteSql ? `,
+            hook AS (
+                ${this.get2ndDeleteSql('tw1', date)}
+            )`
+            : '';
+        const deleted = await this.wh.pgPool.query<{count: number}>(
+            `
+                WITH tw1 AS (
+                    ${deleteSql}
+                )
+                ${deleteHookTw},
+                tw2 AS (
+                    UPDATE  ${this.index.schemaTable} t1
+                    SET tmsp_deleted = now()
+                    FROM tw1
+                    WHERE
+                    ${this.index.keyDefs.map(k => `t1."${k.name}" = tw1."${k.name}"`).join(' AND ')}
+                    RETURNING t1.*
+                )
+                SELECT count(*)::int FROM tw2
+            `,
+            [date]
+        );
+        // if (deleted.rows?.[0].count > 0) {
 
-            let t3 = Logger.getTime()
-            let t4 = Logger.getTime()
-            stream.once('data', _ => {
-                Logger.itTook(t2, `to run delete query.`, 2);
-                t3 = Logger.start(`Start deleting items from stream ...`, 2)
-                t4 = Logger.getTime()
-            })
-            stream.on('data', (item: KeyModel) => {
+        //     this.afterChange$.next()
+        // }
+        Logger.itTook(this.constructor.name, t2, `To mark items as deleted  ...`, 2);
+        return deleted.rows.length
 
-                i++;
-
-                // delete item and add update request if needed
-                this.del(item)
-                    .catch((e) => {
-                        stream.destroy();
-                        rej(e);
-                    });;
-
-
-                i++
-                if (i % this.measure === 0) {
-                    // Logger.resetLine()
-                    const time = Logger.itTook(t3, `to delete ${this.measure} items from index of ${this.constructor.name} – done so far: ${i}`, 2)
-                    t3 = Logger.getTime()
-                    if (!minMeasure || minMeasure > time) minMeasure = time;
-                    if (!maxMeasure || maxMeasure < time) maxMeasure = time;
-                }
-
-            })
-            stream.on('error', (e) => {
-                rej(e)
-            })
-
-            stream.on('end', () => {
-                res(i)
-                // Logger.resetLine()
-                if (minMeasure && maxMeasure) {
-                    Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}  –  fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 2);
-                } else {
-                    Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}`, 2);
-                }
-            })
-
-
-        })
-
-
-    }
-
-    /**
-     * Converts item to key-value pair. Must be implemented by derived class.
-     *
-     * @param item
-     */
-    abstract dbItemToKeyVal(item: DbItem): {key: KeyModel, val: ValueModel}
-
-    /**
-     * Puts dbItem into index using put() function
-     * which counts responsible for informing receivers to update themselfs.
-     * @param item
-     */
-    private async putDbItem(item: DbItem) {
-        const pair = this.dbItemToKeyVal(item);
-        await this.put(pair.key, pair.val)
     }
 
     // sql statement used to query updates for the index
     abstract getUpdatesSql(tmsp: Date): string;
 
+    // sql statement used to do anything with the update sql
+    get2ndUpdatesSql?(updateSqlAlias: string, tmsp: Date): string;
+
     // sql statement used to query deletes for the index
     // if the warehouse does not need to consider deletets, set this to null
     abstract getDeletesSql(tmsp: Date): string;
 
+    // sql statement used to do anything with the delete sql
+    get2ndDeleteSql?(deleteSqlAlias: string, tmsp: Date): string;
 
     // The following 4 function are for:
     // Storing date and time of the last time the function sync() was called,
     // marking the begin of the sync() process, which can be considerably earlier
     // than its end. It is null until sync() is called the first time.
 
-    async setLastUpdateBegin(date: Date) {
-        await this.meta.addToIdx('lastUpdateBegin', date.toISOString())
+    async setChangesConsideredUntil(date: Date) {
+        await this.wh.metaTimestamps.addToIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX, {tmsp: date.toISOString()});
     }
-    async getLastUpdateBegin(): Promise<Date | undefined> {
-        const isoDate = await this.meta.getFromIdx('lastUpdateBegin')
+    async getChangesConsideredUntil(): Promise<Date | undefined> {
+        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX);
+        const isoDate = val?.tmsp;
         return isoDate ? new Date(isoDate) : undefined
     }
-    async setLastUpdateDone(date: Date) {
-        await this.meta.addToIdx('lastUpdateDone', date.toISOString())
-    }
-    async getLastUpdateDone(): Promise<Date | undefined> {
-        const isoDate = await this.meta.getFromIdx('lastUpdateDone')
-        return isoDate ? new Date(isoDate) : undefined
-    }
+
 }

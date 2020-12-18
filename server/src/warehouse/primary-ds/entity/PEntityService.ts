@@ -1,83 +1,48 @@
-import {Logger} from '../../base/classes/Logger';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
-import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
+import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
-export interface PEntityId {fkProject: number, pkEntity: number}
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
-export class PEntityService extends PrimaryDataService<InitItem, PEntityId, PEntity>{
+export interface PEntityId {fkProject: number, pkEntity: number}
+export const pEntityKeyDefs: KeyDefinition[] = [
+    {
+        name: 'pkEntity',
+        type: 'integer'
+    },
+    {
+        name: 'fkProject',
+        type: 'integer'
+    }
+]
+@Injectable()
+export class PEntityService extends PrimaryDataService< PEntityId, PEntity>{
 
     measure = 1000;
 
-    upsertQueue: SqlUpsertQueue<PEntityId, PEntity>;
-    constructor(public wh: Warehouse) {
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
         ],
-            pEntityIdToString, stringToPEntityId)
-
-        this.upsertQueue = new SqlUpsertQueue(
-            wh,
-            'war.entity_preview (pk_entity,fk_project,fk_class)',
-            (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
-                VALUES ${valuesStr}
-                ON CONFLICT (pk_entity, project) DO UPDATE
-                SET fk_class = EXCLUDED.fk_class, entity_type = EXCLUDED.entity_type
-                WHERE EXCLUDED.fk_class IS DISTINCT FROM war.entity_preview.fk_class OR EXCLUDED.entity_type IS DISTINCT FROM war.entity_preview.entity_type;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val.fkClass, item.val.entityType],
-            pEntityIdToString
+            pEntityKeyDefs
         )
 
-        /**
-         * Add actions after a new ProjectEntity is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
-            // exclude dirty data
-            if (item.val.fkClass) {
-
-                // Add update requests on aggregaters based on project entity
-                wh.agg.pEntityLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
-                wh.agg.pEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
-                wh.agg.pEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
-                if (item.val.entityType === 'teEn') wh.agg.pEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
-                wh.agg.pEntityFullText.updater.addItemToQueue(item.key).catch(e => console.log(e))
-
-                // Add item to queue to upsert it into db
-                this.upsertQueue.add(item)
-            }
-        })
 
         /**
         * Remove entity preview from db
         */
-        this.afterDel$.subscribe(item => {
-            wh.agg.pEntityLabel.del(item).catch(e => console.log(e))
-            wh.agg.pEntityClassLabel.del(item).catch(e => console.log(e))
-            wh.agg.pEntityType.del(item).catch(e => console.log(e))
-            wh.agg.pEntityTimeSpan.del(item).catch(e => console.log(e))
-            wh.agg.pEntityFullText.del(item).catch(e => console.log(e))
+        // this.afterDel$.subscribe(item => {
+            // wh.agg.pEntityLabel.del(item).catch(e => console.log(e))
+            // wh.agg.pEntityClassLabel.del(item).catch(e => console.log(e))
+            // wh.agg.pEntityType.del(item).catch(e => console.log(e))
+            // wh.agg.pEntityTimeSpan.del(item).catch(e => console.log(e))
+            // wh.agg.pEntityFullText.del(item).catch(e => console.log(e))
 
-            this.deleteEntityPreview(item).catch(e => console.log(e))
-        })
+            // this.deleteEntityPreview(item).catch(e => console.log(e))
+        // })
 
 
-    }
-
-    dbItemToKeyVal(item: InitItem): {key: PEntityId; val: PEntity;} {
-        const key: PEntityId = {
-            pkEntity: item.pkEntity,
-            fkProject: item.fkProject,
-        };
-        const val: PEntity = {
-            pkEntity: item.pkEntity,
-            fkClass: item.fkClass,
-            fkProject: item.fkProject,
-            entityType: item.entityType
-        };
-        return {key, val}
     }
 
     getUpdatesSql(tmsp: Date) {
@@ -86,70 +51,133 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, PEnt
     getDeletesSql(tmsp: Date) {
         return deleteSql
     };
-
-    async deleteEntityPreview(key: PEntityId) {
-
-        // remove potential upsert requests, that could be executed with a delay
-        // and thus re-add the entity preview
-        this.upsertQueue.remove(key)
-
-        const params = [key.pkEntity, key.fkProject];
-
-        const q = `
-        DELETE FROM war.entity_preview
-        WHERE pk_entity = $1
-        AND fk_project = $2;`
-        this.wh.pgClient.query(q, params)
-            .then(() => {
-                Logger.msg(`deleted entity preview pkEntity:${key.pkEntity}, fkProject:${key.fkProject}`, 2)
-            })
-            .catch(e => {
-                console.log(e)
-            })
-
+    get2ndUpdatesSql(tableAlias: string) {
+        return `
+        INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
+        SELECT "pkEntity", "fkProject", "fkProject", "fkClass", "entityType"
+        FROM ${tableAlias}
+        ON CONFLICT (pk_entity, project) DO UPDATE
+        SET fk_class = EXCLUDED.fk_class, entity_type = EXCLUDED.entity_type
+        WHERE EXCLUDED.fk_class IS DISTINCT FROM war.entity_preview.fk_class
+        OR EXCLUDED.entity_type IS DISTINCT FROM war.entity_preview.entity_type
+        `
     }
-
-
+    get2ndDeleteSql(tableAlias: string) {
+        return `
+        DELETE FROM war.entity_preview
+        USING ${tableAlias}
+        WHERE pk_entity = ${tableAlias}."pkEntity"
+        AND fk_project = ${tableAlias}."fkProject"
+        `
+    }
+    dbItemToKeyVal = undefined
 }
 
 
-interface InitItem {
-    fkProject: number,
-    pkEntity: number,
-    fkClass: number,
-    entityType: 'peIt' | 'teEn'
-}
+// export const updateSql = `
+// WITH tw1 AS (
+//     SELECT
+//         t1.fk_project,
+//         t2.pk_entity,
+//         t2.fk_class,
+//         'peIt' as "entity_type"
+//     FROM
+//     projects.info_proj_rel t1
+//     JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+//     WHERE t1.is_in_project=true
+//     AND (
+//         t1.tmsp_last_modification >= $1
+//         OR
+//         t2.tmsp_last_modification >= $1
+//     )
+//     UNION ALL
+//     SELECT
+//         t1.fk_project,
+//         t2.pk_entity,
+//         t2.fk_class,
+//         'teEn' as "entity_type"
+//     FROM
+//     projects.info_proj_rel t1
+//     JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+//     WHERE t1.is_in_project=true
+//     AND (
+//         t1.tmsp_last_modification >= $1
+//         OR
+//         t2.tmsp_last_modification >= $1
+//     )
+// )
+// SELECT
+//     tw1.fk_project "fkProject",
+//     tw1.pk_entity "pkEntity",
+//     tw1.fk_class "fkClass",
+//     tw1.entity_type "entityType",
+//     jsonb_build_object(
+//         'pkEntity', tw1.pk_entity,
+//         'fkProject', tw1.fk_project,
+//         'fkClass', tw1.fk_class,
+//         'entityType', tw1.entity_type
+//     ) val
+// FROM tw1
+// `
 
 export const updateSql = `
-SELECT
-    t1.fk_project "fkProject",
-	t2.pk_entity "pkEntity",
-    t2.fk_class "fkClass",
-    'peIt' as "entityType"
-FROM
-projects.info_proj_rel t1
-JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
-WHERE t1.is_in_project=true
-AND (
-    t1.tmsp_last_modification >= $1
-    OR
-    t2.tmsp_last_modification >= $1
+WITH tw1 AS (
+    SELECT
+        t1.fk_project,
+        t2.pk_entity,
+        t2.fk_class,
+        'peIt' as "entity_type"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=true
+    AND t1.tmsp_last_modification >= $1
+	UNION
+	SELECT
+	t1.fk_project,
+	t2.pk_entity,
+	t2.fk_class,
+	'peIt' as "entity_type"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=true
+    AND t2.tmsp_last_modification >= $1
+    UNION ALL
+    SELECT
+        t1.fk_project,
+        t2.pk_entity,
+        t2.fk_class,
+        'teEn' as "entity_type"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=true
+	AND t1.tmsp_last_modification >= $1
+    UNION
+    SELECT
+        t1.fk_project,
+        t2.pk_entity,
+        t2.fk_class,
+        'teEn' as "entity_type"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=true
+	AND t2.tmsp_last_modification >= $1
 )
-UNION ALL
 SELECT
-    t1.fk_project "fkProject",
-	t2.pk_entity "pkEntity",
-	t2.fk_class "fkClass",
-    'teEn' as "entityType"
-FROM
-projects.info_proj_rel t1
-JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
-WHERE t1.is_in_project=true
-AND (
-    t1.tmsp_last_modification >= $1
-    OR
-    t2.tmsp_last_modification >= $1
-);
+    tw1.fk_project "fkProject",
+    tw1.pk_entity "pkEntity",
+    tw1.fk_class "fkClass",
+    tw1.entity_type "entityType",
+    jsonb_build_object(
+        'pkEntity', tw1.pk_entity,
+        'fkProject', tw1.fk_project,
+        'fkClass', tw1.fk_class,
+        'entityType', tw1.entity_type
+    ) val
+FROM tw1
 `
 export const deleteSql = `
 SELECT

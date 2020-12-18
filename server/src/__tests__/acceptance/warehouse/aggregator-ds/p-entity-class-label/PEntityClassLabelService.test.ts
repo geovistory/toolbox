@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
+import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
@@ -14,22 +16,51 @@ import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistent
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, wait, waitUntilNext} from '../../../../helpers/warehouse-helpers';
-import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 
+const pEntityClassLabelStub: WarehouseStubs = {
+    primaryDataServices: [
+        PEntityService,
+        PClassService,
+        ProProjectService,
+        DfhClassLabelService,
+        ProClassLabelService,
+    ],
+    aggDataServices: [
+        PClassLabelService,
+        PEntityClassLabelService,
+        EntityPreviewService
+    ]
+}
 describe('PEntityClassLabelService', function () {
 
     let wh: Warehouse;
-    let s:PEntityClassLabelService
-    beforeEach(async function () {
-        await cleanDb()
-        wh = await setupCleanAndStartWarehouse()
-        s=wh.agg.pEntityClassLabel
+    let s: PEntityClassLabelService
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
+        const injector = await setupCleanAndStartWarehouse(pEntityClassLabelStub)
+        wh = injector.get(Warehouse)
+        s = injector.get(PEntityClassLabelService)
     })
-    afterEach(async function () {await wh.stop()})
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
 
     it('should create entity class label of Person', async () => {
-        const {prel, pers, cla} = await createBasicMock();
+        const {prel, pers, cla} = await PEntityClassLabel.createBasicMock();
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: pers.pk_entity}},
             {fk_project: {eq: prel.fk_project}},
@@ -40,7 +71,7 @@ describe('PEntityClassLabelService', function () {
 
 
     it('should delete entity class label from index when entity is removed from project', async () => {
-        const {prel, pers, cla} = await createBasicMock();
+        const {prel, pers, cla} = await PEntityClassLabel.createBasicMock();
 
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: pers.pk_entity}},
@@ -51,22 +82,27 @@ describe('PEntityClassLabelService', function () {
         // remove person from the project
         await updateProInfoProjRel(prel.pk_entity ?? -1, {is_in_project: false})
 
-        await waitUntilNext(s.afterDel$)
-        const item = await s.index.getFromIdx({pkEntity: pers.pk_entity ?? -1, fkProject: prel.fk_project ?? -1})
-        expect(item).to.be.undefined()
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdxWithTmsps({pkEntity: pers.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
+            compare: (val) => !!val?.deleted
+
+        })
     })
 
 
 })
-async function createBasicMock() {
-    // CLASS + LABEL
-    await createInfLanguage(InfLanguageMock.GERMAN);
-    await createProProject(ProProjectMock.PROJECT_1);
-    await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
-    const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
-    // PERSON
-    await wait(2000)
-    const pers = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-    const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    return {prel, pers, cla}
+export namespace PEntityClassLabel {
+
+    export async function createBasicMock() {
+        // CLASS + LABEL
+        await createInfLanguage(InfLanguageMock.GERMAN);
+        await createProProject(ProProjectMock.PROJECT_1);
+        await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
+        const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
+        // PERSON
+        const pers = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+        const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
+        return {prel, pers, cla}
+    }
 }

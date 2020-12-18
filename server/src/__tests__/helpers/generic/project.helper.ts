@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { createInfLanguage } from '../atomic/inf-language.helper';
 import * as projects from '../atomic/pro-project.helper';
-import { createProTextProperty } from '../atomic/pro-text-property.helper';
-import { SysSystemTypeMock } from '../data/gvDB/SysSystemTypeMock';
-import { getIndex } from '../meta/index.helper';
+import {createProTextProperty} from '../atomic/pro-text-property.helper';
+import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
+import {getIndex} from '../meta/index.helper';
 
 export async function createProject(name: string, lang: number): Promise<number> {
   const proj = (await projects.createProProject({

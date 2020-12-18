@@ -1,6 +1,7 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
+import {PEntityTypeVal} from './PEntityTypeService';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -10,7 +11,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
+export class PEntityTypeAggregator extends AbstractAggregator<PEntityTypeVal> {
 
     // the resulting entityTypeLabel
     entityTypeLabel?: string;
@@ -28,24 +29,19 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
 
 
     /************************************************************************
-     * Methods for creating entity label
+     * Methods for creating entity type label
      ************************************************************************/
 
     /**
-     *  Create entity label
+     *  Create entity type label
      *
      *  Gets values from Indexes and chaches dependencies in itself.
      */
     async create() {
-        // load previous providers in a cache
-        // in the end (after create), this cahche will contain only deprecated providers
-        // that can then be deleted from dependency indexes
-        await this.providers.load()
-
         const entity = await this.providers.pEntity.get(this.id);
         if (entity) {
 
-            if (!entity.fkClass) return this
+            if (!entity.fkClass) return this.finalize()
 
             const classId = {
                 pkClass: entity.fkClass
@@ -58,7 +54,7 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
                 // Get the 'directed-statements' a.k.a. 'edges' of the entity
                 const fieldsWithEdges = await this.providers.pEdges.get(this.id)
 
-                const hasTypeStmts = fieldsWithEdges?.outgoing?.[fkHasTypeSubproperty];
+                const hasTypeStmts = fieldsWithEdges?.outgoing?.[fkHasTypeSubproperty.fkProperty];
 
                 if (hasTypeStmts?.length) {
 
@@ -68,7 +64,7 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
                     // this gives the info for war.entity_preview (type_label)
                     const typeEntityId: PEntityId = {
                         fkProject: entity.fkProject,
-                        pkEntity: this.fkEntityType
+                        pkEntity: hasTypeStmts[0].fkTarget
                     }
                     // fetch project variant of the type's entityLabel
                     let l = await this.providers.pEntityLabel.get(typeEntityId)
@@ -76,8 +72,6 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
                     if (!l) {
                         l = await this.providers.rEntityLabel.get({pkEntity: typeEntityId.pkEntity})
                     }
-
-                    // TODO: find repo entity label if this is undefined
 
                     if (l) {
                         this.entityTypeLabel = l.entityLabel
@@ -88,7 +82,12 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
             }
 
         }
-        return this
+        return this.finalize()
     }
-
+    finalize(): PEntityTypeVal {
+        return {
+            typeLabel: this.entityTypeLabel,
+            fkType: this.fkEntityType
+        }
+    }
 }

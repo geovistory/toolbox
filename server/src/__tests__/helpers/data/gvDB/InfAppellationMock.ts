@@ -62,11 +62,15 @@ export class InfAppellationMock {
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Habsbourg Empire'
   })
-
   static readonly SOURCE_UNIONS = new InfAppellation({
     pk_entity: 5012,
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Unions'
+  })
+  static readonly ALBERT = new InfAppellation({
+    pk_entity: 5013,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Albert'
   })
 
 }

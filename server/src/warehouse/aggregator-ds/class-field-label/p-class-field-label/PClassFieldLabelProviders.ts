@@ -1,25 +1,24 @@
-import {Providers} from '../../../base/interfaces/Providers';
+// import {Provider} from '../../../base/classes/Provider';
+// import {Providers} from '../../../base/interfaces/Providers';
+// import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService';
+// import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService';
+// import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService';
+// import {PClassFieldLabelId, PClassFieldLabelService, PClassFieldLabelVal} from './PClassFieldLabelService';
 
-import {PClassFieldLabelDependencies} from './PClassFieldLabelDependencies';
-import {Provider} from '../../../base/classes/Provider';
-import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService';
-import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService';
-import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService';
-import {PClassFieldId} from './PClassFieldLabelService';
 
-export class PClassFieldLabelProviders extends Providers<PClassFieldId> {
-  project: Provider<PClassFieldId, string, ProjectId, ProjectVal>
-  dfhPropertyLabel: Provider<PClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
-  proPropertyLabel: Provider<PClassFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
+// export class PClassFieldLabelProviders extends Providers<PClassFieldLabelId> {
+//   project: Provider<PClassFieldLabelId, PClassFieldLabelVal, ProjectId, ProjectVal>
+//   dfhPropertyLabel: Provider<PClassFieldLabelId, PClassFieldLabelVal, DfhPropertyLabelId, DfhPropertyLabelVal>
+//   proPropertyLabel: Provider<PClassFieldLabelId, PClassFieldLabelVal, ProPropertyLabelId, ProPropertyLabelVal>
 
-  constructor(
-    dep: PClassFieldLabelDependencies,
-    protected receiverKey: PClassFieldId
-  ) {
-    super()
-    this.project = this.registerProvider(dep.project, receiverKey);
-    this.dfhPropertyLabel = this.registerProvider(dep.dfhPropertyLabel, receiverKey)
-    this.proPropertyLabel = this.registerProvider(dep.proPropertyLabel, receiverKey);
-  }
-}
+//   constructor(
+//     dep: PClassFieldLabelService,
+//     protected receiverKey: PClassFieldLabelId
+//   ) {
+//     super()
+//     this.project = this.registerProvider(dep.depProProject, receiverKey);
+//     this.dfhPropertyLabel = this.registerProvider(dep.depDfhPropertyLabel, receiverKey)
+//     this.proPropertyLabel = this.registerProvider(dep.depProPropertyLabel, receiverKey);
+//   }
+// }
 

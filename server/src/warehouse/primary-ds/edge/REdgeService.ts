@@ -1,41 +1,30 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {rEntityIdToString, stringToREntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {REntityId} from '../entity/REntityService';
-import {buildIncomingEdges, buildOutgoingEdges, EdgeInitItem, EntityFields} from "./edge.commons";
+import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
+import {EntityFields} from "./edge.commons";
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
-export class REdgeService extends PrimaryDataService<EdgeInitItem, REntityId, EntityFields>{
+@Injectable()
+export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
 
-    measure = 10000;
+  measure = 10000;
 
-    constructor(wh: Warehouse) {
-        super(
-            wh,
-            [
-                'modified_projects_info_proj_rel',
-            ],
-            rEntityIdToString, stringToREntityId
-        )
-    }
+  constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+    super(
+      wh,
+      [
+        'modified_projects_info_proj_rel',
+      ],
+      rEntityKeyDefs
+    )
+  }
 
-    dbItemToKeyVal(item: EdgeInitItem): {key: REntityId; val: EntityFields;} {
-        const key = {pkEntity: item.pkEntity, fkProject: item.fkProject}
-        const val = item.fields
-        return {key, val}
-    }
-
-    getUpdatesSql(tmsp: Date) {
-        return updateSql
-    }
-    getDeletesSql(tmsp: Date) {return ''};
-
-
-
-    isEntityTable(str: string) {
-        return (str === 'temporal_entity' || str === 'persistent_item')
-    }
+  getUpdatesSql(tmsp: Date) {
+    return updateSql
+  }
+  getDeletesSql(tmsp: Date) {return ''};
 
 
 }
@@ -43,139 +32,419 @@ export class REdgeService extends PrimaryDataService<EdgeInitItem, REntityId, En
 
 const updateSql = `
 WITH tw0 AS (
-    -- select affected entities
-    SELECT DISTINCT
-        t2.fk_subject_info pk_entity
-    FROM
-        projects.info_proj_rel t1
-    JOIN
-        information."statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN
-        information.entity t3 ON t2.fk_subject_info = t3.pk_entity
-    WHERE
-        t1.tmsp_last_modification >  $1
-    AND
-        t3.table_name IN ('temporal_entity', 'persistent_item')
-    UNION
-    SELECT DISTINCT
-        t2.fk_object_info pk_entity
-    FROM
-        projects.info_proj_rel t1
-    JOIN
-        information."statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN
-        information.entity t3 ON t2.fk_object_info = t3.pk_entity
-    WHERE
-        t1.tmsp_last_modification >  $1
+  -- select affected entities
+  SELECT
+    DISTINCT t2.fk_subject_info pk_entity
+  FROM
+    projects.info_proj_rel t1
+    JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
+    JOIN information.entity t3 ON t2.fk_subject_info = t3.pk_entity
+  WHERE
+    t1.tmsp_last_modification >= $1
+    AND t3.table_name IN ('temporal_entity', 'persistent_item')
+  UNION
+  SELECT
+    DISTINCT t2.fk_object_info pk_entity
+  FROM
+    projects.info_proj_rel t1
+    JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
+    JOIN information.entity t3 ON t2.fk_object_info = t3.pk_entity
+  WHERE
+    t1.tmsp_last_modification >= $1
+    AND t3.table_name IN ('temporal_entity', 'persistent_item')
+  UNION
+  SELECT
+    DISTINCT t2.pk_entity
+  FROM
+    projects.info_proj_rel t1
+    JOIN information.entity t2 ON t1.fk_entity = t2.pk_entity
+  WHERE
+    t2.table_name IN ('temporal_entity', 'persistent_item')
+    AND t1.tmsp_last_modification >= $1
+  ),
 
-    AND
-        t3.table_name IN ('temporal_entity', 'persistent_item')
-    UNION
-    SELECT DISTINCT
-        t2.pk_entity
-    FROM
-        projects.info_proj_rel t1
-    JOIN
-        information.entity t2 ON t1.fk_entity = t2.pk_entity
-    WHERE
-        t2.table_name IN ('temporal_entity', 'persistent_item')
-    AND
-        t1.tmsp_last_modification >  $1
+tw1 AS (
+  SELECT
+  t2.pk_entity as pk_statement,
+  t2.fk_property,
+  t2.fk_subject_info,
+  t2.fk_object_info,
+  count(t1.fk_project) is_in_project_count,
+  AVG(t1.ord_num_of_range) :: numeric(10, 2) ord_num_of_range,
+  (t10.pk_entity IS NOT NULL OR t11.pk_entity IS NOT NULL ) target_is_entity,
+  COALESCE(t12.string,  t14.notes)  target_label,
+  t12.string appellation_str,
+  t14.notes language_str,
+  t13.julian_day,
+  t13.duration,
+  mode() WITHIN GROUP ( ORDER BY t1.calendar ) AS calendar
+  FROM
+  tw0 t0
+  JOIN information."statement" t2 ON t2.fk_subject_info = t0.pk_entity
 
-), tw1 AS (
-    SELECT DISTINCT
-	t1.ord_num_of_domain,
- 	t1.ord_num_of_range,
-    t1.calendar,
-    t2.pk_entity as pk_statement,
+  LEFT JOIN information.persistent_item t8 ON t8.pk_entity =  t2.fk_subject_info
+  LEFT JOIN information.temporal_entity t9 ON t9.pk_entity =  t2.fk_subject_info
+
+  LEFT JOIN information.persistent_item t10 ON t10.pk_entity =  t2.fk_object_info
+  LEFT JOIN information.temporal_entity t11 ON t11.pk_entity =  t2.fk_object_info
+  LEFT JOIN information.appellation t12 ON t12.pk_entity = t2.fk_object_info
+  LEFT JOIN information.time_primitive t13 ON t13.pk_entity = t2.fk_object_info
+  LEFT JOIN information.language t14 ON t14.pk_entity = t2.fk_object_info
+
+   JOIN projects.info_proj_rel t1 ON t1.fk_entity = t2.pk_entity
+     AND t1.is_in_project = true
+
+    WHERE
+    (
+      t8.pk_entity IS NOT NULL OR
+      t9.pk_entity IS NOT NULL
+    )
+  AND
+    (
+      t10.pk_entity IS NOT NULL
+      OR t11.pk_entity IS NOT NULL
+        OR t12.pk_entity IS NOT NULL
+        OR t13.pk_entity IS NOT NULL
+      OR t14.pk_entity IS NOT NULL
+    )
+  GROUP BY
+    t2.pk_entity,
     t2.fk_property,
     t2.fk_subject_info,
-    t8.table_name subject_table,
     t2.fk_object_info,
-    t9.table_name object_table,
-    t3.string as appellation,
-    t4.notes as language,
-    t7.string as lang_string,
-    t6.julian_day,
-    t6.duration,
-    t1.is_in_project_count
-    FROM
-    tw0 t0
-    JOIN information."statement" t2 ON (
-			t2.fk_subject_info = t0.pk_entity
-			OR
-			t2.fk_object_info = t0.pk_entity
-		) AND t2.fk_object_info IS NOT NULL
-    JOIN information.entity t8 ON t8.pk_entity =  t2.fk_subject_info
-    JOIN information.entity t9 ON t9.pk_entity =  t2.fk_object_info
-    LEFT JOIN information.appellation t3 ON t3.pk_entity = t2.fk_object_info
-    LEFT JOIN information.language t4 ON t4.pk_entity = t2.fk_object_info
-    LEFT JOIN information.place t5 ON t5.pk_entity = t2.fk_object_info
-    LEFT JOIN information.time_primitive t6 ON t6.pk_entity = t2.fk_object_info
-    LEFT JOIN information.lang_string t7 ON t7.pk_entity = t2.fk_object_info
-	LEFT JOIN LATERAL (
-		SELECT
-			AVG(t.ord_num_of_domain)::numeric(10,2) ord_num_of_domain,
-		   	AVG(t.ord_num_of_range)::numeric(10,2) ord_num_of_range,
-            mode() WITHIN GROUP (ORDER BY t.calendar) AS calendar,
-            count(t.pk_entity) is_in_project_count
-		FROM projects.info_proj_rel t
-		WHERE t.fk_entity = t2.pk_entity AND t.is_in_project = true
-  		GROUP BY t.fk_entity) t1 ON true
-    WHERE t1.is_in_project_count > 0
+    t10.pk_entity,
+    t11.pk_entity,
+    t12.string,
+    t14.notes,
+    t13.julian_day,
+    t13.duration
 ),
--- outgoing
 tw2 AS (
-    SELECT
-        fk_property,
-        fk_subject_info pk_entity,
-        json_agg(
-            ${buildOutgoingEdges}
-            ORDER BY
-                t1.ord_num_of_range ASC,
-                t1.is_in_project_count DESC
-        ) outgoing
-    FROM tw1 t1
-    WHERE t1.subject_table IN ('temporal_entity', 'persistent_item')
-    GROUP BY fk_property, fk_subject_info
-    ORDER BY fk_property, fk_subject_info
+
+  SELECT
+    t1.fk_subject_info pk_entity,
+    t1.fk_property,
+    json_agg(
+      json_build_object(
+      'fkProperty', t1.fk_property,
+      'isOutgoing', true,
+      'fkStatement', t1.pk_statement,
+      'fkSource', t1.fk_subject_info,
+      'fkTarget', t1.fk_object_info,
+      'ordNumWithinField', t1.ord_num_of_range,
+      'targetIsEntity', t1.target_is_entity,
+      'targetLabel', t1.target_label,
+      'targetValue',
+      json_strip_nulls(
+        json_build_object(
+        'appellation', t1.appellation_str,
+        'language', t1.language_str,
+        'timePrimitive',
+        CASE
+          WHEN t1.julian_day IS NOT NULL THEN json_strip_nulls(
+          json_build_object(
+            'julianDay', t1.julian_day,
+            'duration', t1.duration,
+            'calendar', t1.calendar,
+            'firstSecond', commons.time_primitive__get_first_second(t1.julian_day),
+            'lastSecond', commons.time_primitive__get_last_second(t1.julian_day, t1.duration, t1.calendar)
+          )
+          )
+          ELSE null
+        END
+        )
+      )
+      )
+      ORDER BY
+      t1.ord_num_of_range ASC,
+      t1.is_in_project_count DESC
+    ) outgoing
+  from tw1 t1
+  GROUP BY
+    t1.fk_property,
+    t1.fk_subject_info
 ),
--- incoming
 tw3 AS (
-    SELECT
-        fk_property,
-        fk_object_info pk_entity,
-        json_agg(
-            ${buildIncomingEdges}
-             ORDER BY
-                t1.ord_num_of_domain ASC,
-                t1.is_in_project_count DESC
-        ) incoming
-    FROM tw1 t1
-    WHERE t1.object_table IN ('temporal_entity', 'persistent_item')
-    GROUP BY fk_property, fk_object_info
-    ORDER BY fk_property, fk_object_info
+  SELECT
+  t2.pk_entity as pk_statement,
+  t2.fk_property,
+  t2.fk_subject_info,
+  t2.fk_object_info,
+  count(t1.fk_project) is_in_project_count,
+  AVG(t1.ord_num_of_domain) :: numeric(10, 2) ord_num_of_domain,
+  (t10.pk_entity IS NOT NULL OR t11.pk_entity IS NOT NULL ) target_is_entity
+  FROM
+  tw0 t0
+  JOIN information."statement" t2 ON t2.fk_object_info = t0.pk_entity
+
+  LEFT JOIN information.persistent_item t8 ON t8.pk_entity =  t2.fk_object_info
+  LEFT JOIN information.temporal_entity t9 ON t9.pk_entity =  t2.fk_object_info
+
+  LEFT JOIN information.persistent_item t10 ON t10.pk_entity =  t2.fk_subject_info
+  LEFT JOIN information.temporal_entity t11 ON t11.pk_entity =  t2.fk_subject_info
+
+  JOIN projects.info_proj_rel t1 ON t1.fk_entity = t2.pk_entity
+     AND t1.is_in_project = true
+
+    WHERE
+    (
+      t8.pk_entity IS NOT NULL OR
+      t9.pk_entity IS NOT NULL
+    )
+  AND
+    (
+      t10.pk_entity IS NOT NULL
+      OR t11.pk_entity IS NOT NULL
+    )
+  GROUP BY
+    t2.pk_entity,
+    t2.fk_property,
+    t2.fk_subject_info,
+    t2.fk_object_info,
+    t10.pk_entity,
+    t11.pk_entity
 ),
 tw4 AS (
-    SELECT fk_property, pk_entity, outgoing, NULL::json incoming
-    FROM tw2
-    UNION ALL
-    SELECT fk_property, pk_entity, NULL::json outgoing, incoming
-    FROM tw3
-),
-tw5 AS (
-    SELECT
-    pk_entity,
-    json_build_object(
-        'outgoing', json_strip_nulls(json_object_agg(fk_property, outgoing)),
-        'incoming', json_strip_nulls(json_object_agg(fk_property, incoming))
-    ) fields
-    FROM tw4
-    GROUP BY
-    pk_entity
+
+  SELECT
+    t1.fk_object_info pk_entity,
+    t1.fk_property,
+    json_agg(
+      json_build_object(
+      'fkProperty', t1.fk_property,
+      'isOutgoing', true,
+      'fkStatement', t1.pk_statement,
+      'fkSource', t1.fk_object_info,
+      'fkTarget', t1.fk_subject_info,
+      'ordNumWithinField', t1.ord_num_of_domain,
+      'targetIsEntity', t1.target_is_entity
+      )
+      ORDER BY
+      t1.ord_num_of_domain ASC,
+      t1.is_in_project_count DESC
+    ) incoming
+  from tw3 t1
+  GROUP BY
+    t1.fk_property,
+    t1.fk_object_info
 )
-SELECT
-t1.pk_entity "pkEntity",
-COALESCE(t2.fields, '{}'::json) fields
-FROM tw0 t1
-LEFT JOIN tw5 t2 ON t1.pk_entity = t2.pk_entity `
+ SELECT
+     t1.pk_entity "pkEntity",
+     json_build_object(
+       'outgoing',
+         json_strip_nulls( COALESCE(json_object_agg(t2.fk_property, t2.outgoing) FILTER (WHERE t2.fk_property IS NOT NULL), '{}') ),
+       'incoming',
+         json_strip_nulls( COALESCE(json_object_agg(t3.fk_property, t3.incoming) FILTER (WHERE t3.fk_property IS NOT NULL), '{}') )
+     ) val
+ FROM
+   tw0 t1
+ LEFT JOIN tw2 t2 ON t1.pk_entity = t2.pk_entity
+ LEFT JOIN tw4 t3 ON t1.pk_entity = t3.pk_entity
+ GROUP BY
+   t1.pk_entity
+ `
+
+// const updateSql = `
+// WITH tw0 AS (
+//     -- select affected entities
+//     SELECT
+//       DISTINCT t2.fk_subject_info pk_entity
+//     FROM
+//       projects.info_proj_rel t1
+//       JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
+//       JOIN information.entity t3 ON t2.fk_subject_info = t3.pk_entity
+//     WHERE
+//       t1.tmsp_last_modification >= $1
+//       AND t3.table_name IN ('temporal_entity', 'persistent_item')
+//     UNION
+//     SELECT
+//       DISTINCT t2.fk_object_info pk_entity
+//     FROM
+//       projects.info_proj_rel t1
+//       JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
+//       JOIN information.entity t3 ON t2.fk_object_info = t3.pk_entity
+//     WHERE
+//       t1.tmsp_last_modification >= $1
+//       AND t3.table_name IN ('temporal_entity', 'persistent_item')
+//     UNION
+//     SELECT
+//       DISTINCT t2.pk_entity
+//     FROM
+//       projects.info_proj_rel t1
+//       JOIN information.entity t2 ON t1.fk_entity = t2.pk_entity
+//     WHERE
+//       t2.table_name IN ('temporal_entity', 'persistent_item')
+//       AND t1.tmsp_last_modification >= $1
+//     ),
+//     --outgoing
+//     tw1 AS (
+//     SELECT
+//       t2.fk_property,
+//       t2.fk_subject_info pk_entity,
+//       json_agg(
+//         json_build_object(
+//           'fkProperty',
+//           t2.fk_property,
+//           'isOutgoing',
+//           true,
+//           'fkStatement',
+//           t2.pk_entity,
+//           'fkSource',
+//           t2.fk_subject_info,
+//           'fkTarget',
+//           t2.fk_object_info,
+//           'ordNumWithinField',
+//           t1.ord_num_of_range,
+//           'targetIsEntity',
+//           t9.table_name IN ('temporal_entity', 'persistent_item'),
+//           'targetLabel',
+//           COALESCE(t3.string,  t4.notes, t7.string),
+//           'targetValue',
+//           json_strip_nulls(
+//             json_build_object(
+//               'appellation',
+//               t3.string,
+//               'language',
+//               t4.notes,
+//               'langString',
+//               t7.string,
+//               'timePrimitive',
+//               CASE
+//                 WHEN t6.julian_day IS NOT NULL THEN json_strip_nulls(
+//                   json_build_object(
+//                     'julianDay',
+//                     t6.julian_day,
+//                     'duration',
+//                     t6.duration,
+//                     'calendar',
+//                     t1.calendar,
+//                     'firstSecond',
+//                     commons.time_primitive__get_first_second(t6.julian_day),
+//                     'lastSecond',
+//                     commons.time_primitive__get_last_second(t6.julian_day, t6.duration, t1.calendar)
+//                   )
+//                 )
+//                 ELSE null
+//               END
+//             )
+//           )
+//         )
+//         ORDER BY
+//           t1.ord_num_of_range ASC,
+//           t1.is_in_project_count DESC
+//     ) outgoing
+//     FROM
+//       tw0 t0
+//       JOIN information."statement" t2 ON t2.fk_subject_info = t0.pk_entity
+//         AND t2.fk_object_info IS NOT NULL -- as long as we exclude fk_object_data etc.
+//       JOIN information.entity t8 ON t8.pk_entity = t2.fk_subject_info
+//       JOIN information.entity t9 ON t9.pk_entity = t2.fk_object_info
+//       LEFT JOIN information.appellation t3 ON t3.pk_entity = t2.fk_object_info
+//       LEFT JOIN information.language t4 ON t4.pk_entity = t2.fk_object_info
+//       LEFT JOIN information.place t5 ON t5.pk_entity = t2.fk_object_info
+//       LEFT JOIN information.time_primitive t6 ON t6.pk_entity = t2.fk_object_info
+//       LEFT JOIN information.lang_string t7 ON t7.pk_entity = t2.fk_object_info
+//       LEFT JOIN LATERAL (
+//         SELECT
+//           AVG(t.ord_num_of_domain) :: numeric(10, 2) ord_num_of_domain,
+//           AVG(t.ord_num_of_range) :: numeric(10, 2) ord_num_of_range,
+//           mode() WITHIN GROUP (
+//             ORDER BY
+//               t.calendar
+//           ) AS calendar,
+//           count(t.pk_entity) is_in_project_count
+//         FROM
+//           projects.info_proj_rel t
+//         WHERE
+//           t.fk_entity = t2.pk_entity
+//           AND t.is_in_project = true
+//         GROUP BY
+//           t.fk_entity
+//       ) t1 ON true
+//     WHERE
+//         t1.is_in_project_count IS NOT NULL
+//     AND
+//      t8.table_name IN ('temporal_entity', 'persistent_item')
+//     GROUP BY
+//       t2.fk_property,
+//       t2.fk_subject_info
+//     ORDER BY
+//       t2.fk_property,
+//       t2.fk_subject_info
+//     ),
+//     -- incoming
+//     tw2 AS (
+//     SELECT
+//       t2.fk_property,
+//       t2.fk_object_info pk_entity,
+//       json_agg(
+//         json_build_object(
+//           'fkProperty',
+//           t2.fk_property,
+//           'isOutgoing',
+//           false,
+//           'fkStatement',
+//           t2.pk_entity,
+//           'fkSource',
+//           t2.fk_object_info,
+//           'fkTarget',
+//           t2.fk_subject_info,
+//           'ordNumWithinField',
+//           t1.ord_num_of_domain,
+//           'targetIsEntity',
+//           t8.table_name IN ('temporal_entity', 'persistent_item')
+//         )
+//         ORDER BY
+//           t1.ord_num_of_domain ASC,
+//           t1.is_in_project_count DESC
+//       ) incoming
+//     FROM
+//       tw0 t0
+//       JOIN information. "statement" t2 ON t2.fk_object_info = t0.pk_entity
+//       JOIN information.entity t8 ON t8.pk_entity = t2.fk_subject_info
+//       JOIN information.entity t9 ON t9.pk_entity = t2.fk_object_info
+//       LEFT JOIN LATERAL (
+//         SELECT
+//           AVG(t.ord_num_of_domain) :: numeric(10, 2) ord_num_of_domain,
+//           AVG(t.ord_num_of_range) :: numeric(10, 2) ord_num_of_range,
+//           mode() WITHIN GROUP (
+//             ORDER BY
+//               t.calendar
+//           ) AS calendar,
+//           count(t.pk_entity) is_in_project_count
+//         FROM
+//           projects.info_proj_rel t
+//         WHERE
+//           t.fk_entity = t2.pk_entity
+//           AND t.is_in_project = true
+//         GROUP BY
+//           t.fk_entity
+//       ) t1 ON true
+//     WHERE
+//       t1.is_in_project_count IS NOT NULL
+//       AND
+//       t9.table_name IN ('temporal_entity', 'persistent_item')
+//     GROUP BY
+//       t2.fk_property,
+//       t2.fk_object_info
+//     ORDER BY
+//       t2.fk_property,
+//       t2.fk_object_info
+//     )
+//     SELECT
+//         t1.pk_entity "pkEntity",
+//         json_build_object(
+//           'outgoing',
+//             json_strip_nulls( COALESCE(json_object_agg(t2.fk_property, t2.outgoing) FILTER (WHERE t2.fk_property IS NOT NULL), '{}') ),
+//           'incoming',
+//             json_strip_nulls( COALESCE(json_object_agg(t3.fk_property, t3.incoming) FILTER (WHERE t3.fk_property IS NOT NULL), '{}') )
+//         ) val
+//     FROM
+//       tw0 t1
+//     LEFT JOIN tw1 t2 ON t1.pk_entity = t2.pk_entity
+//     LEFT JOIN tw2 t3 ON t1.pk_entity = t3.pk_entity
+//     GROUP BY
+//       t1.pk_entity
+
+
+//       `

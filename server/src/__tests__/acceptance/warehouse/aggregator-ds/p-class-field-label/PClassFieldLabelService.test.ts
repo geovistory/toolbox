@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {expect} from '@loopback/testlab';
-import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import 'reflect-metadata';
+import {PClassFieldLabelId, PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
+import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
@@ -14,180 +15,226 @@ import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
-import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 
-
+const stubs: WarehouseStubs = {
+    primaryDataServices: [
+        PPropertyService,
+        ProProjectService,
+        DfhPropertyLabelService,
+        ProPropertyLabelService
+    ],
+    aggDataServices: [PClassFieldLabelService]
+}
 
 describe('PClassFieldLabelService', function () {
 
     let wh: Warehouse;
     let s: PClassFieldLabelService;
-    beforeEach(async function () {
-        await cleanDb()
-        wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pClassFieldLabel
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(35000); // A very long environment setup.
+        const injector = await setupCleanAndStartWarehouse(stubs)
+        wh = injector.get(Warehouse)
+        s = injector.get(PClassFieldLabelService)
     })
-    afterEach(async function () {await wh.stop()})
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
+
 
     it('should create outgoing property label for en from ontome', async () => {
         const {prel, dfhProp} = await createDfhLabelMock();
-
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_domain,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: true,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label
         })
-
-        expect(result.val).to.equal(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label)
     })
 
 
     it('should create incoming property label for en from ontome', async () => {
         const {prel, dfhProp} = await createDfhLabelMock();
         const expected = '[reverse of: ' + DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label + ']'
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_range
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === false
-                && item.val === expected
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_range,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: false,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-
-        expect(result.val).to.equal(expected)
     })
 
     it('should create outgoing property label for de from geovistory', async () => {
         const {prel, dfhProp, gvTxt} = await createGeovistoryLabelMock();
         const expected = gvTxt.string
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === expected
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_domain,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: true,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-
-        expect(result.val).to.equal(expected)
     })
 
 
     it('should create incoming property label for de from geovistory', async () => {
         const {prel, dfhProp, gvTxt} = await createGeovistoryLabelIncomingMock();
         const expected = gvTxt.string
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_range
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === false
-                && item.val === expected
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_range,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: false,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-
-        expect(result.val).to.equal(expected)
     })
 
     it('should create outgoing property label de from project', async () => {
         const {prel, dfhProp, proTxt} = await createProjectLabelMock();
         const expected = proTxt.string
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === expected
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_domain,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: true,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-        expect(result.val).to.equal(expected)
     })
 
 
     it('should create incoming property label de from project', async () => {
         const {prel, dfhProp, proTxt} = await createProjectLabelIncomingMock();
         const expected = proTxt.string
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_range
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === false
-                && item.val === expected
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_range,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: false,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-        expect(result.val).to.equal(expected)
     })
 
     it('should create incoming property label of person "has appellations"', async () => {
-        const {project, apiProp, hasAppePropLabel} = await createPersonMock();
+        const {project, apiProp: dfhProp, hasAppePropLabel} = await createPersonMock();
         const expected = hasAppePropLabel.string
-        const result = await waitUntilSatisfy(wh.agg.pClassFieldLabel.afterPut$, (item) => {
-            return item.key.fkProject === project.pk_entity
-                && item.key.fkClass === DfhApiClassMock.EN_21_PERSON.dfh_pk_class
-                && item.key.fkProperty === apiProp.dfh_pk_property
-                && item.key.isOutgoing === false
-                && item.val === expected
+        const id: PClassFieldLabelId = {
+            fkProject: project.pk_entity ?? -1,
+            fkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: false,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-        expect(result.val).to.equal(expected)
     })
 
     it('should update outgoing property label de from project', async () => {
         const {prel, dfhProp, proTxt} = await createProjectLabelMock();
+        const expected = 'Brachte zur Welt 2'
         await updateProTextProperty(
             proTxt.pk_entity ?? -1,
-            {string: 'Brachte zur Welt 2'}
+            {string: expected}
         )
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === 'Brachte zur Welt 2'
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_domain,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: true,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === expected
         })
-        expect(result.val).to.equal('Brachte zur Welt 2')
+
     })
 
     it('should switch outgoing property label de-project to de-geovistory', async () => {
         const {prel, dfhProp, gvTxt, proTxt} = await createProjectLabelMock();
-        let result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === proTxt.string
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_domain,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: true,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === proTxt.string
         })
-        expect(result.val).to.equal(proTxt.string)
+
 
         await deleteProTextProperty(proTxt.pk_entity ?? -1)
-        result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === gvTxt.string
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === gvTxt.string
         })
-        expect(result.val).to.equal(gvTxt.string)
+
 
     })
 
     it('should switch outgoing property label from de-project to de-ontome', async () => {
         const {prel, dfhProp, proTxt, gvTxt} = await createProjectLabelMock();
-        let result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === proTxt.string
+        const id: PClassFieldLabelId = {
+            fkProject: prel.fk_project,
+            fkClass: dfhProp.dfh_property_domain,
+            fkProperty: dfhProp.dfh_pk_property,
+            isOutgoing: true,
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === proTxt.string
         })
-        expect(result.val).to.equal(proTxt.string)
+
         await deleteProTextProperty(proTxt.pk_entity ?? -1)
         await deleteProTextProperty(gvTxt.pk_entity ?? -1)
-        result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.fkProject === prel.fk_project
-                && item.key.fkClass === dfhProp.dfh_property_domain
-                && item.key.fkProperty === dfhProp.dfh_pk_property
-                && item.key.isOutgoing === true
-                && item.val === dfhProp.dfh_property_label
+
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => val?.label === dfhProp.dfh_property_label
         })
-        expect(result.val).to.equal(dfhProp.dfh_property_label)
 
     })
 

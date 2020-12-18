@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
-import {ProClassFieldsConfigService} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
+import 'reflect-metadata';
+import {PClassId, ProClassFieldsConfigService} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createProClassFieldConfig} from '../../../helpers/atomic/pro-class-field-config.helper';
@@ -9,27 +9,41 @@ import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProClassFieldConfigMock} from '../../../helpers/data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('PClassFieldsConfigService', () => {
 
   let wh: Warehouse;
   let s: ProClassFieldsConfigService;
 
-  beforeEach(async function () {
-    await cleanDb();
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pClassFieldsConfig;
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
+    const injector = await setupCleanAndStartWarehouse({
+      primaryDataServices:[ProClassFieldsConfigService],
+      aggDataServices:[]
+    })
+    wh = injector.get(Warehouse)
+    s = injector.get(ProClassFieldsConfigService)
   })
-  afterEach(async function () {await wh.stop()})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should add project-class', async () => {
     const {one} = await createPClassMockData();
-    const result =   await waitUntilSatisfy(s.afterPut$, (i) => {
-      return i.key.fkProject === one.fk_project
-        && i.key.pkClass === one.fk_domain_class
+    const id: PClassId = {
+      fkProject: one.fk_project ?? -1,
+      pkClass: one.fk_domain_class ?? -1,
+    }
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => !!val?.outgoing[1111] && !!val?.outgoing[1113]
     })
-    expect(result.val.length).to.equal(2)
   })
 
 
