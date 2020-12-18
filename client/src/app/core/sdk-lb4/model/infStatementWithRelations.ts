@@ -20,7 +20,7 @@ export interface InfStatementWithRelations {
     fk_subject_info?: number;
     fk_subject_data?: number;
     fk_subject_tables_cell?: number;
-    fk_subject_tables_row?: number;
+    fk_subject_tables_row?: string;
     fk_property?: number;
     fk_property_of_property?: number;
     fk_object_info?: number;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {REntityService} from '../../../../warehouse/primary-ds/entity/REntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
@@ -8,13 +8,13 @@ import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 const stubs: WarehouseStubs = {
   primaryDataServices: [REntityService],
   aggDataServices: []

@@ -383,6 +383,8 @@ export class QRamList extends SqlBuilderLb4Models {
             SELECT proj_rel FROM tw2
             UNION ALL
             SELECT proj_rel FROM tw3
+            UNION ALL
+            SELECT proj_rel FROM tw4
           ) AS t1
         ) as t1
         GROUP BY true

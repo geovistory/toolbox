@@ -3,10 +3,10 @@ import {expect} from '@loopback/testlab';
 import {RClassService} from '../../../../warehouse/primary-ds/class/RClassService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 const stubs: WarehouseStubs = {
   primaryDataServices:[RClassService],
   aggDataServices:[]
@@ -45,6 +45,6 @@ describe('RClassService', () => {
 
 async function createRClassMockData() {
   const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
-  return {cla};
+  return { cla };
 }
 

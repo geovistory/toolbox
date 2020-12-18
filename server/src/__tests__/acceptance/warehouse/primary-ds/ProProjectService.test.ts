@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {ProProjectService} from '../../../../warehouse/primary-ds/ProProjectService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 const stubs: WarehouseStubs = {
-  primaryDataServices:[ProProjectService],
-  aggDataServices:[]
+  primaryDataServices: [ProProjectService],
+  aggDataServices: []
 }
 describe('ProProjectService', function () {
 
@@ -32,7 +33,8 @@ describe('ProProjectService', function () {
   })
 
   it('should have project in index', async () => {
-    const project = await createProject('German')
+
+    const project = await createProject(InfLanguageMock.GERMAN.pk_entity ?? -1)
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx({pkProject: project.pk_entity ?? -1}),
@@ -42,9 +44,9 @@ describe('ProProjectService', function () {
   })
 
   it('should update project', async () => {
-    const project = await createProject('German')
+    const project = await createProject(InfLanguageMock.GERMAN.pk_entity ?? -1)
 
-    const projectUpdated = await updateProjectLanguage(project.pk_entity as any, 'English')
+    const projectUpdated = await updateProjectLanguage(project.pk_entity as any, 18889)
     expect(projectUpdated.fk_language).to.not.equal(project.fk_language)
 
     await searchUntilSatisfy({
@@ -57,7 +59,7 @@ describe('ProProjectService', function () {
   })
 
   it('should delete project', async () => {
-    const project = await createProject('German')
+    const project = await createProject(InfLanguageMock.GERMAN.pk_entity ?? -1)
     await deleteProject(project.pk_entity ?? -1)
     await searchUntilSatisfy({
       notifier$: s.afterChange$,

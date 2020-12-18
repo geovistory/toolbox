@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
@@ -20,7 +20,7 @@ import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helpe
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {PClassFieldLabelId, PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -8,9 +8,8 @@ import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper'
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
-import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import {createTypes} from '../../../../helpers/meta/model.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
@@ -22,6 +21,7 @@ import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPr
 import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
 import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
+import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 
 const stubs: WarehouseStubs = {
     primaryDataServices: [

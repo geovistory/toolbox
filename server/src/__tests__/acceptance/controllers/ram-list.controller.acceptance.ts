@@ -2,7 +2,7 @@
 import {Client, expect} from '@loopback/testlab';
 import {PubAccount} from '../../../models';
 import {GeovistoryServer} from '../../../server';
-import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {DatChunkMock} from '../../helpers/data/gvDB/DatChunkMock';
 import {InfPersistentItemMock} from '../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';

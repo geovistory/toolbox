@@ -69,7 +69,7 @@ export class OntomeProfilesListComponent implements OnInit {
 
 
     this.loading = true;
-    this.http.get(`https://ontome.dataforhistory.org/api/profiles.json`)
+    this.http.get(`https://ontome.dataforhistory.org/api/profiles.json?lang=en&selected-by-project=6`)
       .pipe(takeUntil(this.destroy$))
       .subscribe((response: ApiProfile[]) => {
 

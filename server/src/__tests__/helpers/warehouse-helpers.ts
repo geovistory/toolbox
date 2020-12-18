@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {Where} from '@loopback/repository';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {filter, first, switchMap} from 'rxjs/operators';
@@ -7,7 +7,6 @@ import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
-import {testdb} from './testdb';
 import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
 
 
@@ -200,7 +199,3 @@ export async function searchUntilSatisfy<M>(options: {
 
 
 
-
-export function pgNotify(channel: string, value: string) {
-    return testdb.execute(`SELECT pg_notify($1, $2)`, [channel, value])
-}

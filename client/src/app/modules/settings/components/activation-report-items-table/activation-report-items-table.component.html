@@ -15,11 +15,11 @@
       <td mat-cell *matCellDef="let element">
 
         <a *ngIf="category=='property'" class="badge badge-success"
-          [attr.href]="'http://ontologies.dataforhistory.org/property/' + element.id" target="_blank">
+          [attr.href]="'https://ontome.dataforhistory.org/property/' + element.id" target="_blank">
           {{element.identifierInNamespace}}
         </a>
         <a *ngIf="category=='class'" class="badge badge-success"
-          [attr.href]="'http://ontologies.dataforhistory.org/class/' + element.id" target="_blank">
+          [attr.href]="'https://ontome.dataforhistory.org/class/' + element.id" target="_blank">
           {{element.identifierInNamespace}}
         </a>
 

@@ -101,6 +101,7 @@
     "pretty-ms": "^7.0.0",
     "ramda": "^0.26.1",
     "recursive-readdir": "^2.2.2",
+    "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rmfr": "^2.0.0",
     "rxjs": "^6.5.3",

@@ -11,6 +11,8 @@ import { MentioningListComponent } from './components/mentioning-list/mentioning
 import { RamListEditDialogComponent } from './components/ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListComponent } from './components/ram-list/ram-list.component';
 import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialog/ram-list-remove-dialog.component';
+import { FactoidListComponent } from './components/factoid-list/factoid-list.component';
+import { MaterialModule } from 'app/core/material/material.module';
 
 @NgModule({
   imports: [
@@ -20,10 +22,11 @@ import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialo
     DndModule,
     TableModule,
     DigitalPreviewModule,
+    MaterialModule
   ],
   providers: [],
-  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent, RamListEditDialogComponent, RamListRemoveDialogComponent],
-  exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent],
-  entryComponents: [RamListEditDialogComponent, RamListRemoveDialogComponent]
+  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent, RamListEditDialogComponent, RamListRemoveDialogComponent, FactoidListComponent],
+  exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, FactoidListComponent],
+  entryComponents: [RamListEditDialogComponent, RamListRemoveDialogComponent, FactoidListComponent]
 })
 export class AnnotationModule { }

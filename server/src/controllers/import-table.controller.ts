@@ -72,7 +72,7 @@ export class ImportTableController {
     for (let i = 0; i < table.rows.length; i++) {
       //columns number
       if (table.rows[i].length !== table.headers.length) {
-        return { error: "Inconsistency in columns number in row <" + (i+1) + ">." };
+        return { error: "Inconsistency in columns number in row <" + (i + 1) + ">." };
       }
       //data format
       for (let j = 0; j < table.rows[i].length; j++) {
@@ -245,7 +245,7 @@ async function createCells(datasource: Postgres1DataSource, fkDigital: number, r
 
   for (let i = 0; i < rowKeys.length; i++) {
     for (let j = 0; j < colKeys.length; j++) {
-      if (table[i][j] === '' || !table[i][j]) continue; //only cells with values are produced
+      if (!table[i][j] || table[i][j] === '') continue; //only cells with values are produced
       q.sql += `(${q.addParam(fkDigital)}, ${q.addParam(rowKeys[i])}, ${q.addParam(colKeys[j])}, ${q.addParam(types[j] === 'string' ? table[i][j] : null)}, ${q.addParam(types[j] === 'number' ? parseFloat(table[i][j].trim().replace(/,/g, '.')) : null)}),`
       nb++;
       if (nb * 5 % 20000 === 0) {

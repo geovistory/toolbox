@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {DfhClassLabelService} from '../../../../warehouse/primary-ds/DfhClassLabelService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass, deleteDfhApiClass, updateDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {setupCleanAndStartWarehouse, stopWarehouse, wait, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 const dfhClassLabelServiceStub:WarehouseStubs={
   primaryDataServices:[DfhClassLabelService],
   aggDataServices:[]

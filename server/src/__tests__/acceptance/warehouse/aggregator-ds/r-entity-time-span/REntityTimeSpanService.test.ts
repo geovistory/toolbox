@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
@@ -16,7 +16,7 @@ import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-e
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';

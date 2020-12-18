@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
@@ -12,14 +12,13 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
-import {createInfLanguage, createLanguages} from '../../../../helpers/atomic/inf-language.helper';
+import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
 import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
 import {addInfosToProject, createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
@@ -30,8 +29,11 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {createInstancesForCityType} from '../../../../helpers/graphs/cityType.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
+import {createModelForCityType, createLanguages} from '../../../../helpers/meta/model.helper';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {createProject1, createProject2, createProject3} from '../../../../helpers/graphs/project.helper';
 
 export const rEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
@@ -81,21 +83,21 @@ describe('REntityLabelService', function () {
     })
     it('should create entity label of person', async () => {
         await createProject();
-        const {person, appellation} = await createNamingAndPersonMock();
+        const { person, appellation } = await createNamingAndPersonMock();
         const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: null}},
-            {entity_label: {eq: appellation.string}},
+            { pk_entity: { eq: person.pk_entity } },
+            { fk_project: { eq: null } },
+            { entity_label: { eq: appellation.string } },
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
     it('should update entity label of person after removing stmt 1111 from project', async () => {
         await createProject();
-        const {person, appellation} = await createNamingAndPersonMock();
+        const { person, appellation } = await createNamingAndPersonMock();
         let result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: null}},
-            {entity_label: {eq: appellation.string}},
+            { pk_entity: { eq: person.pk_entity } },
+            { fk_project: { eq: null } },
+            { entity_label: { eq: appellation.string } },
         ])
         expect(result.entity_label).to.equal(appellation.string)
 
@@ -107,28 +109,28 @@ describe('REntityLabelService', function () {
             })
 
         result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: null}},
-            {entity_label: {eq: '(no label)'}},
+            { pk_entity: { eq: person.pk_entity } },
+            { fk_project: { eq: null } },
+            { entity_label: { eq: '(no label)' } },
         ])
         expect(result.entity_label).to.equal('(no label)')
     })
 
     it('should create entity label of naming and add person.', async () => {
         await createProject();
-        const {naming, appellation} = await createNamingMock();
+        const { naming, appellation } = await createNamingMock();
         let result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: naming.pk_entity}},
-            {fk_project: {eq: null}},
-            {entity_label: {eq: appellation.string}},
+            { pk_entity: { eq: naming.pk_entity } },
+            { fk_project: { eq: null } },
+            { entity_label: { eq: appellation.string } },
         ])
         expect(result.entity_label).to.equal(appellation.string)
 
         const person = await createPersonMock();
         result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: null}},
-            {entity_label: {eq: appellation.string}},
+            { pk_entity: { eq: person.pk_entity } },
+            { fk_project: { eq: null } },
+            { entity_label: { eq: appellation.string } },
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
@@ -182,13 +184,13 @@ describe('REntityLabelService', function () {
      */
     it('should create entity label of Geov.Place Type – according to most used is appe. of stmt', async () => {
         await createLanguages()
-        await createModelMockForCityType();
+        await createModelForCityType();
 
-        const {project1} = await createProject1();
+        const { project1 } = await createProject1();
 
-        const {project2} = await createProject2();
+        const { project2 } = await createProject2();
 
-        const {project3} = await createProject3();
+        const { project3 } = await createProject3();
 
         // create instances
         const {
@@ -260,10 +262,10 @@ describe('REntityLabelService', function () {
 
 async function createNamingAndPersonMock() {
     // NAMING
-    const {naming, appellation} = await createNamingMock();
+    const { naming, appellation } = await createNamingMock();
     // PERSON
     const person = await createPersonMock();
-    return {naming, person, appellation};
+    return { naming, person, appellation };
 }
 
 async function createPersonMock() {
@@ -293,7 +295,7 @@ async function createNamingMock() {
 
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON);
-    return {naming, appellation};
+    return { naming, appellation };
 }
 
 

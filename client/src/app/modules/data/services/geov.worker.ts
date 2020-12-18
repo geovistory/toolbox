@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 import { sort } from 'ramda';
 import { TColFilter } from '../../../../../../server/src/lb3/server/table/interfaces';
 
@@ -20,9 +20,21 @@ addEventListener('message', ({ data }) => {
  * @returns the 2 dimensions array of strings correcponding to the binaries
  */
 function csvIntoTable(binaries: string, separator: string): string[][] {
-    if (separator == 'TAB') separator = String.fromCharCode(9);
-    return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split("\n").map(row => row.split(separator))));
+    console.log('separator<' + separator + '>');
+    if (separator == 'TAB' || separator == '|') {
+        if (separator == 'TAB') separator = String.fromCharCode(9);
+        return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.split(separator))));
+    } else {
+        const regExp = new RegExp('(".*?"|[^"' + separator + '\s]+)(?=\s*' + separator + '|\s*$)', 'g');
+        return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.match(regExp))));
+    }
 }
+
+// function removeFirstquote(str: string) {
+//     if (str.charAt(0) == '"' || str.charAt(0) == '\'') str = str.slice(1);
+//     if (str.charAt(str.length - 1) == '"' || str.charAt(str.length - 1) == '\'') str = str.slice(0, str.length - 1);
+//     return str;
+// }
 
 /**
  * Parse a raw binary string into a XLSX.Workbook (external lib) in order to exploit the workbook
@@ -45,24 +57,24 @@ function workbookIntoTable(wb: XLSX.WorkBook, sheetName: string): string[][] {
     const table: string[][] = [];
     const sheet: XLSX.WorkSheet = wb.Sheets[sheetName];
 
-    if (!sheet["!ref"]) return table;
+    if (!sheet['!ref']) return table;
 
-    const range: XLSX.Range = XLSX.utils.decode_range(sheet["!ref"]);
+    const range: XLSX.Range = XLSX.utils.decode_range(sheet['!ref']);
 
-    //because first cell is not necessarily [0 ; 0]]
+    // because first cell is not necessarily [0 ; 0]]
     const rowNb = range.e.r - range.s.r;
     const colNb = range.e.c - range.s.c;
 
-    //the parsing
+    // the parsing
     for (let i = 0; i <= rowNb; i++) {
         table[i] = new Array(colNb);
     }
     for (let i = range.s.r; i <= range.e.r; ++i) {
         for (let j = range.s.c; j <= range.e.c; ++j) {
             const cellref: string = XLSX.utils.encode_cell({ c: j, r: i });
-            //empty cells has to be empty string in our case
-            if (!sheet[cellref]) table[i - range.s.r][j - range.s.c] = "";
-            else table[i - range.s.r][j - range.s.c] = sheet[cellref].v + '';
+            // empty cells has to be empty string in our case
+            if (!sheet[cellref]) table[i - range.s.r][j - range.s.c] = '';
+            else table[i - range.s.r][j - range.s.c] = sheet[cellref].w;
         }
     }
 
@@ -78,8 +90,8 @@ function workbookIntoTable(wb: XLSX.WorkBook, sheetName: string): string[][] {
  * @returns The sorted table
  */
 function sortTable(table: string[][], col: number, direction: string): string[][] {
-    let way1 = direction == 'ASC' ? -1 : 1;
-    let way2 = direction == 'ASC' ? 1 : -1;
+    const way1 = direction == 'ASC' ? -1 : 1;
+    const way2 = direction == 'ASC' ? 1 : -1;
 
     return sort((a, b) => {
         if (!a[col]) return way1;
@@ -98,7 +110,7 @@ function sortTable(table: string[][], col: number, direction: string): string[][
  * @returns The filtered table
  */
 function filterTable(table: string[][], filters: { col: number, filter: TColFilter }[]): string[][] {
-    let result = table;
+    const result = table;
     for (let i = table.length - 1; i >= 0; i--) {
         for (let j = 0; j < filters.length; j++) {
             if (!filterKeep(table[i][filters[j].col], filters[j].filter)) {
@@ -120,13 +132,13 @@ function filterTable(table: string[][], filters: { col: number, filter: TColFilt
  * @returns the clean table
  */
 function removeEmptyCol(table: string[][]): string[][] {
-    //remove empty cols: iterate by column and not by rows like just above.
-    //could be done in the same iteration, but it will much complicate the code
-    //since it does not take long to process, better for maintenance
+    // remove empty cols: iterate by column and not by rows like just above.
+    // could be done in the same iteration, but it will much complicate the code
+    // since it does not take long to process, better for maintenance
     for (let j = table[0].length - 1; j >= 0; j--) {
         let colEmpty = true;
         for (let i = 0; i < table.length; i++) {
-            let content = table[i][j];
+            const content = table[i][j];
             if (content) {
                 colEmpty = false;
                 i = table.length;
@@ -148,13 +160,13 @@ function removeEmptyCol(table: string[][]): string[][] {
  * @returns the clean table
  */
 function removeEmptyRow(table: string[][]): string[][] {
-    //remove empty row: iterate by column and not by rows like just above.
-    //could be done in the same iteration, but it will much complicate the code
-    //since it does not take long to process, better for maintenance
+    // remove empty row: iterate by column and not by rows like just above.
+    // could be done in the same iteration, but it will much complicate the code
+    // since it does not take long to process, better for maintenance
     for (let i = table.length - 1; i >= 0; i--) {
         let rowEmpty = true;
         for (let j = 0; j < table[i].length; j++) {
-            let content = table[i][j];
+            const content = table[i][j];
             if (content) {
                 rowEmpty = false;
                 j = table[i].length;

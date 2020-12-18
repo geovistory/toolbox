@@ -189,7 +189,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
     // readFile
     const fr: FileReader = new FileReader();
-    fr.readAsBinaryString(file);
+    if (this.type == 'csv') fr.readAsText(file, 'utf-8');
+    else fr.readAsBinaryString(file);
     fr.onload = () => {
       if (typeof fr.result != 'string') {
         this.reset();
@@ -454,6 +455,11 @@ function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: str
   let isNumber = true;
   for (let i = 0; i < table.length; i++) {
     let content = table[i][colNb];
+
+    // if content of cell is surrounded by quote or double quotes, remove them
+    if ((content.charAt(0) == '"' && content.charAt(content.length - 1) == '"') || (content.charAt(0) == '\'' && content.charAt(content.length - 1) == '\'')) {
+      content = content.slice(1, content.length - 1);
+    }
 
     if (comma == ',') {
       content = content.replace('.', '}'); // replace dots to prevent parsing a number which is supposed to be a string

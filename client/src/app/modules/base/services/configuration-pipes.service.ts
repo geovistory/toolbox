@@ -784,7 +784,7 @@ export class ConfigurationPipesService {
               identityDefiningForSource: o ? p.identity_defining : false, // replace false with p.identity_defining_for_range when available
               identityDefiningForTarget: o ? false : p.identity_defining, // replace false with p.identity_defining_for_range when available
               ontoInfoLabel: p.identifier_in_namespace,
-              ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.pk_property,
+              ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
               removedFromAllProfiles: p.removedFromAllProfiles
             }
             return node
@@ -827,7 +827,7 @@ export class ConfigurationPipesService {
           isOutgoing: true,
           fkClassField: pkClassField,
           ontoInfoLabel: 'P4',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/4',
+          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/4',
           targetMaxQuantity: 1
         }
       case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
@@ -837,7 +837,7 @@ export class ConfigurationPipesService {
           label: 'Description',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
           targetMaxQuantity: -1
         }
       case SysConfig.PK_CLASS_FIELD_COMMENT:
@@ -847,7 +847,7 @@ export class ConfigurationPipesService {
           listType: 'text-property',
           label: 'Comments',
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
           targetMaxQuantity: -1
         }
       case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
@@ -857,7 +857,7 @@ export class ConfigurationPipesService {
           label: 'Exact Reference',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
           targetMaxQuantity: -1
         }
       case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
@@ -867,7 +867,7 @@ export class ConfigurationPipesService {
           label: 'Short Title',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
           targetMaxQuantity: -1
         }
       default:

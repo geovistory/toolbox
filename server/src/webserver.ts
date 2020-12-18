@@ -2,7 +2,6 @@
  * This section is starting the express server as described here
  * https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
  */
-import {ApplicationConfig} from '@loopback/core';
 import {GeovistoryServer} from './server';
 
 

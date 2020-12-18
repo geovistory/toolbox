@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {InfLanguage} from '../../../../models';
+import { InfLanguage } from '../../../../models';
 
 /**
  * pk_entity prefixed with 100
@@ -13,7 +13,7 @@ export class InfLanguageMock {
     "iso6392t": "eng",
     "pk_entity": 18889,
     "pk_language": "eng"
-})
+  })
   static readonly GERMAN = new InfLanguage({
     "notes": "German",
     "iso6391": "de ",
@@ -21,7 +21,25 @@ export class InfLanguageMock {
     "iso6392t": "deu",
     "pk_entity": 18605,
     "pk_language": "deu"
-})
+  })
+
+  static readonly ITALIAN = new InfLanguage({
+    "notes": "Italian",
+    "iso6391": "it ",
+    "iso6392b": "ita",
+    "iso6392t": "ita",
+    "pk_entity": 19703,
+    "pk_language": "ita"
+  })
+
+  static readonly FRENCH = new InfLanguage({
+    "notes": "French",
+    "iso6391": "fr ",
+    "iso6392b": "fre",
+    "iso6392t": "fra",
+    "pk_entity": 19008,
+    "pk_language": "fra"
+  })
 }
 
 

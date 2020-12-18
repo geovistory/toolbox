@@ -5,7 +5,8 @@ const execShell = require('./__execShell');
 const prompts = require('prompts');
 const path = require('path');
 const pg = require('pg');
-
+const parse = require('pg-connection-string').parse;
+const getPgSslForPg8 = require('../dist/utils/databaseUrl').getPgSslForPg8;
 async function getUserInputs() {
   const response = await prompts([
     {
@@ -56,16 +57,18 @@ async function start() {
 
 start()
   .then(_ => {
-    console.log('Successfully restored backup!')
+    console.log('Successfully restored backup!');
     process.exit();
   })
   .catch(err => {
-    console.error(err)
+    console.error(err);
     process.exit(1);
   });
 
 async function dropSchemas() {
-  const c = new pg.Client({connectionString: process.env.DATABASE_URL});
+  const pgConfig = parse(process.env.DATABASE_URL);
+  pgConfig.ssl = getPgSslForPg8(process.env.DATABASE_URL);
+  const c = new pg.Client(pgConfig);
   await c.connect();
   await c.query(`CREATE OR REPLACE FUNCTION public.drop_all ()
   RETURNS VOID  AS

@@ -1,5 +1,5 @@
-import {Client} from 'pg';
-import {getPgSslForPg8} from '../../../utils/databaseUrl';
+import {Client, ClientConfig} from 'pg';
+import {getPgSslForPg8, getPgUrlForPg8} from '../../../utils/databaseUrl';
 import {parse} from 'pg-connection-string'
 /**
  * This function only works of there is a database server with these dbs:
@@ -19,11 +19,10 @@ export async function recreateDB() {
     if (maintainanceDb.host !== templateDb.host || maintainanceDb.host !== testDb.host) {
         throw Error('Databases must be on same host')
     }
-
-    const maintainanceClient = new Client({
-        connectionString: process.env.DB_MAINTAINANCE,
-        ssl: getPgSslForPg8(process.env.DB_MAINTAINANCE)
-    })
+    const connectionString = process.env.DB_MAINTAINANCE
+    const pgConfig = parse(connectionString) as ClientConfig
+    pgConfig.ssl = getPgSslForPg8(connectionString)
+    const maintainanceClient = new Client(pgConfig)
     await maintainanceClient.connect()
 
     // terminate existing sessions on both: template and test db

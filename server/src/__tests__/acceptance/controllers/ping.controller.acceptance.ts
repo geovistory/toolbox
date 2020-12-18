@@ -1,7 +1,7 @@
 import { Client, expect } from '@loopback/testlab';
 import { GeovistoryServer } from '../../../server';
 import { setupApplication } from '../../helpers/gv-server-helpers';
-import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
+import { cleanDb } from '../../helpers/meta/clean-db.helper';
 
 describe('PingController', () => {
   let server: GeovistoryServer;
@@ -11,7 +11,7 @@ describe('PingController', () => {
   after(async () => { await server.stop(); });
 
   describe('GET /ping', () => {
-    beforeEach(async () => await cleanDb());
+    beforeEach(async () => cleanDb());
 
     it('should answer to normal ping', async () => {
       const res = await client.get('/ping?msg=world').expect(200);

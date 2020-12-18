@@ -129,7 +129,10 @@ start().catch(err => console.error(err));
 const createCommand = () => {
   const mocha = path.join(__dirname, '../node_modules/.bin/mocha');
   const dist = path.join(__dirname, '../dist');
-  const report = path.join(__dirname, `../dev/mocha-test-${new Date().toISOString()}`);
+  const report = path.join(
+    __dirname,
+    `../dev/mocha-test-${new Date().toISOString()}`,
+  );
   const cmd = `${mocha}\
   --trace-warnings\
   --timeout ${mochaTimeout}\

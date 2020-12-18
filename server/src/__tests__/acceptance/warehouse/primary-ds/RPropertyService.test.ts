@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {RPropertyId, RPropertyService} from '../../../../warehouse/primary-ds/property/RPropertyService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 const stubs: WarehouseStubs = {
   primaryDataServices:[RPropertyService],
@@ -66,6 +66,6 @@ describe('RPropertyService', () => {
 
 async function createPPropertyMockData() {
   const prop = await createDfhApiProperty(DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE);
-  return {prop};
+  return { prop };
 }
 

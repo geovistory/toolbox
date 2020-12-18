@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
@@ -33,13 +33,13 @@ import {RPropertyService} from '../../../../../warehouse/primary-ds/property/RPr
 import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
 import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 import {PEntityClassLabel} from '../p-entity-class-label/PEntityClassLabelService.test';
 import {PEntityFullText} from '../p-entity-full-text/PEntityFullTextService.test';
 import {PEntityLabel} from '../p-entity-label/PEntityLabelService.test';
 import {PEntityTimeSpanMock} from '../p-entity-time-span/PEntityTimeSpanService.test';
 import {PEntityTypeMock} from '../p-entity-type/PEntityTypeService.test';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 
 /**
  * Testing whole stack from postgres to warehouse

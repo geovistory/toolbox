@@ -490,6 +490,37 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "geovP1"
   }
+
+  static readonly EN_1409_INVOLVES_PARTNER: DfhApiProperty = {
+    "pk_entity": 4053,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 1409,
+    "dfh_fk_namespace": 112,
+    "dfh_is_inherited": true,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Social interactions of persons",
+    "dfh_property_label": "involves partner",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "Social and economic life (HistDMI) ongoing",
+    "dfh_property_domain": 334,
+    "tmsp_last_dfh_update": "2020-10-21T09:14:55.117+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "Associates to the relationship the persons or groups involved in it.\r\nEach relationship generally involves only two instances of one or more classes. Informal relationships like commercial relations or friendship should be restricted to two persistent items per instance. Therefore, the range quantifiers sould be: 2,2.\r\nRelationships involving more than two partners could be used to express multi-lateral agreements, treaties, etc. although it is preferable to treat structured relationships between several entities as membership in a group. This is mandatory if the duration of the relationship is not the same for all partners.",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P15"
+}
 }
 
 

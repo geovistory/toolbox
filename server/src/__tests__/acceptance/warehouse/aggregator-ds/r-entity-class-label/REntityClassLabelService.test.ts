@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -8,7 +8,7 @@ import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';

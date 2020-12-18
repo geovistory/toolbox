@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import {InfStatement} from '../../../../models';
-import {DatDigitalMock} from './DatDigitalMock';
-import {DfhApiPropertyMock} from './DfhApiPropertyMock';
-import {InfAppellationMock} from './InfAppellationMock';
-import {InfPersistentItemMock} from './InfPersistentItemMock';
-import {InfTemporalEntityMock} from './InfTemporalEntityMock';
-import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
-import {TabCellXMock} from './TabCellXMock';
-import {DatChunkMock} from './DatChunkMock';
+import { InfStatement } from '../../../../models';
+import { DatDigitalMock } from './DatDigitalMock';
+import { DfhApiPropertyMock } from './DfhApiPropertyMock';
+import { InfAppellationMock } from './InfAppellationMock';
+import { InfPersistentItemMock } from './InfPersistentItemMock';
+import { InfTemporalEntityMock } from './InfTemporalEntityMock';
+import { InfTimePrimitiveMock } from './InfTimePrimitiveMock';
+import { TabCellXMock } from './TabCellXMock';
+import { DatChunkMock } from './DatChunkMock';
 
 /**
  * pk_entity prefix: 300
@@ -228,26 +228,149 @@ export class InfStatementMock {
     fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
   })
 
-  static readonly UNOIN_1_HAS_PARTNER_2 = new InfStatement({
+
+  static readonly NAMING_JEAN_TO_APPE_JEAN = new InfStatement({
     pk_entity: 3031,
+    fk_subject_info: InfTemporalEntityMock.JEAN_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.JEAN.pk_entity,
+  })
+  static readonly NAMING_HANS_TO_APPE_HANS = new InfStatement({
+    pk_entity: 3032,
+    fk_subject_info: InfTemporalEntityMock.HANS_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.HANS.pk_entity,
+  })
+  static readonly NAMING_PIERRE_TO_APPE_PIERRE = new InfStatement({
+    pk_entity: 3033,
+    fk_subject_info: InfTemporalEntityMock.PIERRE_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.PIERRE.pk_entity,
+  })
+  static readonly NAMING_ANGELA_TO_APPE_ANGELA = new InfStatement({
+    pk_entity: 3034,
+    fk_subject_info: InfTemporalEntityMock.ANGELA_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.ANGELA.pk_entity,
+  })
+
+  static readonly NAMING_JEAN_TO_PEIT_JEAN = new InfStatement({
+    pk_entity: 3035,
+    fk_subject_info: InfTemporalEntityMock.JEAN_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.JEAN.pk_entity,
+  })
+  static readonly NAMING_PIERRE_TO_PEIT_PIERRE = new InfStatement({
+    pk_entity: 3036,
+    fk_subject_info: InfTemporalEntityMock.PIERRE_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.PIERRE.pk_entity,
+  })
+  static readonly NAMING_HANS_TO_PEIT_HANS = new InfStatement({
+    pk_entity: 3037,
+    fk_subject_info: InfTemporalEntityMock.HANS_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.HANS.pk_entity,
+  })
+  static readonly NAMING_ANGELA_TO_PEIT_ANGELA = new InfStatement({
+    pk_entity: 3038,
+    fk_subject_info: InfTemporalEntityMock.ANGELA_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.ANGELA.pk_entity,
+  })
+
+  static readonly NAMING_UNIONS_TO_PEIT_UNIONS = new InfStatement({
+    pk_entity: 3039,
+    fk_subject_info: InfTemporalEntityMock.UNIONS_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.UNIONS_MANIF_PROD_TYPE.pk_entity,
+  })
+
+  static readonly NAMING_UNIONS_TO_APPE_UNIONS = new InfStatement({
+    pk_entity: 3040,
+    fk_subject_info: InfTemporalEntityMock.UNIONS_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.SOURCE_UNIONS.pk_entity,
+  })
+
+  static readonly DIGITAL_UNIONS_IS_REPRODUCTION_OF_UNIONS = new InfStatement({
+    pk_entity: 3041,
+    fk_subject_data: DatDigitalMock.DIGITAL_UNIONS.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.UNIONS_EXPR.pk_entity,
+  })
+
+  static readonly UNIONS_CARRIERS_PROVIDED_BY = new InfStatement({
+    pk_entity: 3042,
+    fk_subject_info: InfPersistentItemMock.UNIONS_EXPR.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_979_CARRIERS_PROVIDED_BY.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.UNIONS_MANIF_PROD_TYPE.pk_entity,
+  })
+
+  static readonly CELL_JEAN_NAME_REFERS8_TO_JEAN = new InfStatement({
+    pk_entity: 3043,
+    fk_subject_tables_cell: TabCellXMock.FEATURE_X_UNIONS_JEAN.pk_cell,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.JEAN.pk_entity,
+  })
+
+  static readonly CELL_UNION_PEOPLE_RUDOLF_NAME_REFERS8_TO_RUDOLF = new InfStatement({
+    pk_entity: 3044,
+    fk_subject_tables_cell: TabCellXMock.FEATURE_X_UNIONS_RUDOLPH.pk_cell,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
+
+  static readonly CELL_UNION_UNION_RUDOLF_NAME_REFERS8_TO_RUDOLF = new InfStatement({
+    pk_entity: 3045,
+    fk_subject_tables_cell: TabCellXMock.FEATURE_X_UNIONS_ANGELA_UNION.pk_cell,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
+
+  static readonly CELL_UNION_PEOPLE_ANGELA_NAME_REFERS_TO_ANGELA = new InfStatement({
+    pk_entity: 3046,
+    fk_subject_tables_cell: TabCellXMock.FEATURE_X_UNIONS_ANGELA.pk_cell,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.ANGELA.pk_entity,
+  })
+
+  static readonly CELL_UNION_UNION_ALBERT_NAME_REFERS_TO_RUDOLPH = new InfStatement({
+    pk_entity: 3047,
+    fk_subject_tables_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT_UNION.pk_cell,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
+
+  static readonly CELL_UNION_PEOPLE_ALBERT_NAME_REFERS_TO_RUDOLPH = new InfStatement({
+    pk_entity: 3048,
+    fk_subject_tables_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
+
+
+  static readonly UNOIN_1_HAS_PARTNER_2 = new InfStatement({
+    pk_entity: 3049,
     fk_subject_info: InfTemporalEntityMock.UNION_1.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
   })
 
   static readonly NAMING_ALBERT_2_TO_APPE_ALBERT = new InfStatement({
-    pk_entity: 3032,
+    pk_entity: 3050,
     fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING_2.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
     fk_object_info: InfAppellationMock.ALBERT.pk_entity,
   })
 
   static readonly NAMING_ALBERT_2_TO_PEIT_ALBERT = new InfStatement({
-    pk_entity: 3033,
+    pk_entity: 3051,
     fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING_2.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
   })
+
 }
 
 

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {DfhPropertyLabelId, DfhPropertyLabelService} from '../../../../warehouse/primary-ds/DfhPropertyLabelService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 const stubs: WarehouseStubs = {
   primaryDataServices:[DfhPropertyLabelService],
   aggDataServices:[]

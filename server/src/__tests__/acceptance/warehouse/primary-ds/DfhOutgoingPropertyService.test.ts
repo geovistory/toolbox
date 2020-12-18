@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {DfhOutgoingPropertyService} from '../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
-import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';

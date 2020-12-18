@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {Provider, ReflectiveInjector} from 'injection-js';
 // import {PClassFieldLabelDependencies} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
 import {PClassFieldLabelService} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
@@ -59,12 +59,12 @@ export function createWarehouse(
   const aggDataServices = stubs?.aggDataServices ?? defaultAggregatedDataServices
 
   const injector = ReflectiveInjector.resolveAndCreate([
-    Warehouse,
     primaryDataServices,
     aggDataServices,
     {provide: APP_CONFIG, useValue: config},
     {provide: PRIMARY_DS, useValue: primaryDataServices},
     {provide: AGG_DS, useValue: aggDataServices},
+    Warehouse,
 
   ]);
   return injector

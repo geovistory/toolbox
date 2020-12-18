@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/p-class-label/PClassLabelService';
@@ -36,8 +36,8 @@ import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-pro
 import {addInfoToProject, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {createTypes} from '../../../../helpers/meta/model.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';

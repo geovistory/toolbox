@@ -181,6 +181,16 @@
             </mat-tab-group>
 
           </mat-tab>
+
+          <mat-tab *ngIf="tab == 'linked-digitals'">
+            <ng-template mat-tab-label>
+              <mat-icon svgIcon="alpha-f-box-outline" class="gv-digital-color"></mat-icon>
+              Factoids
+            </ng-template>
+            
+            <gv-factoid-list [pkEntity]="pkEntity$|async" ></gv-factoid-list>
+
+          </mat-tab>
         </ng-container>
 
       </mat-tab-group>

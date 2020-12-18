@@ -10,11 +10,11 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/index.js",
+      "console": "integratedTerminal",
+      "program": "${workspaceFolder}/scripts/start-webserver.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
-      "runtimeExecutable": null,
-      "envFile": "${workspaceFolder}/.env",
       "restart": false,
+      "outputCapture": "std",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]

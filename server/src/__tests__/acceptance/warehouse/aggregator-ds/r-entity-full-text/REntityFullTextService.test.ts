@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/camelcase */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
@@ -33,8 +33,7 @@ import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-pro
 import {addInfoToProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {createTypes} from '../../../../helpers/meta/model.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
@@ -49,6 +48,7 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 const rEntityFullTextStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,
@@ -94,9 +94,8 @@ describe('REntityFullTextService', function () {
         await stopWarehouse(wh)
     })
 
-
     it('should create full text of naming', async () => {
-        const {naming} = await createNamingMock();
+        const { naming } = await createNamingMock();
 
 
         const result = await waitForEntityPreview(wh, [
@@ -109,7 +108,7 @@ describe('REntityFullTextService', function () {
     })
 
     it('should create full text of naming with person', async () => {
-        const {naming} = await createNamingAndPersonMock();
+        const { naming } = await createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
 
@@ -124,7 +123,7 @@ describe('REntityFullTextService', function () {
 
 
     it('should create full text of person', async () => {
-        const {person} = await createNamingAndPersonMock();
+        const { person } = await createNamingAndPersonMock();
 
         const expected = `Person – has appellations (default): 'Jack the foo'`
         const id: REntityId = {
@@ -140,7 +139,7 @@ describe('REntityFullTextService', function () {
 
     })
     it('should update full text of person', async () => {
-        const {person} = await createNamingAndPersonMock();
+        const { person } = await createNamingAndPersonMock();
 
         let expected = `Person – has appellations (default): 'Jack the foo'`
         const id: REntityId = {
@@ -176,10 +175,10 @@ describe('REntityFullTextService', function () {
 
 async function createNamingAndPersonMock() {
     // NAMING
-    const {naming, project, appellation, propertyRefersToName} = await createNamingMock();
+    const { naming, project, appellation, propertyRefersToName } = await createNamingMock();
     // PERSON
-    const {person, classPerson, hasAppePropLabel} = await createPersonMock();
-    return {project, appellation, naming, person, classPerson, hasAppePropLabel, propertyRefersToName};
+    const { person, classPerson, hasAppePropLabel } = await createPersonMock();
+    return { project, appellation, naming, person, classPerson, hasAppePropLabel, propertyRefersToName };
 }
 
 async function createPersonMock() {
@@ -192,7 +191,7 @@ async function createPersonMock() {
     await addInfoToProject(person.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
     const stmt = await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
     await addInfoToProject(stmt.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
-    return {person, classPerson, hasAppePropLabel};
+    return { person, classPerson, hasAppePropLabel };
 }
 
 async function createNamingMock() {
@@ -218,6 +217,6 @@ async function createNamingMock() {
     const stmtToTp = await createInfStatement(InfStatementMock.NAMING_1_ONGOING_THROUGHOUT_TP_1)
     await addInfoToProject(stmtToTp.pk_entity, project.pk_entity)
 
-    return {naming, namingProjRel, project, appellation, propertyRefersToName};
+    return { naming, namingProjRel, project, appellation, propertyRefersToName };
 }
 

@@ -1,0 +1,208 @@
+<ng-container *ngIf="!loading">
+    <mat-grid-list cols="12" rowHeight="60px" class="gv-td-menu-item gv-td-paginator orange"
+        style="flex:auto; align-items: center;">
+
+        <!-- Paginator -->
+        <mat-grid-tile [colspan]="11" [rowspan]="1">
+            <mat-paginator [length]="totalLength" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                class="content gv-one-liner gv-fade-out-right" [pageSizeOptions]="[2, 5, 10, 20, 50]"
+                showFirstLastButtons (page)="onPageChange($event)">
+            </mat-paginator>
+        </mat-grid-tile>
+
+        <!-- refresh button -->
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <button mat-icon-button aria-label="Refresh factoids" (click)="askForFactoids()" color="primary">
+                <mat-icon style="color: inherit">refresh</mat-icon>
+            </button>
+        </mat-grid-tile>
+
+    </mat-grid-list>
+
+    <!-- TITLE -->
+    <ng-container *ngIf="factoidsEntities.length != 0">
+        <mat-grid-list cols="12" rowHeight="18px">
+            <mat-grid-tile [colspan]="12" [rowspan]="1">
+                <mat-divider style="width: 100%;"></mat-divider>
+            </mat-grid-tile>
+
+            <mat-grid-tile [colspan]="1" [rowspan]="1">
+                <div class="content bold">Class</div>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="3" [rowspan]="1">
+                <div class="content bold">Property</div>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="3" [rowspan]="1">
+                <div class="content bold">Cell content</div>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="3" [rowspan]="1">
+                <div class="content bold">Cell matching</div>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1">
+                <div class="content bold">Location</div>
+            </mat-grid-tile>
+
+            <mat-grid-tile [colspan]="12" [rowspan]="1"> </mat-grid-tile>
+        </mat-grid-list>
+
+        <!-- DATA -->
+        <mat-grid-list cols="12" rowHeight="35px" *ngFor="let factoidEntity of factoidsEntities;">
+            <!-- Factoid header -->
+            <mat-grid-tile [colspan]="12" [rowspan]="1">
+                <!-- <div class="content"> -->
+                <span class="content align-middle" style="font-size: 15px;">
+                    <span class="icon fa fa-star-o align-self-center gv-icon-preview gv-entity-color"></span>
+                    {{c.pipeClassLabel(factoidEntity.pkClass) | async}}
+                </span>
+                <!-- </div> -->
+            </mat-grid-tile>
+
+            <!-- Placeholder -->
+            <mat-grid-tile [colspan]="1" [rowspan]="1"></mat-grid-tile>
+
+            <!-- principal property -->
+            <mat-grid-tile [colspan]="3" [rowspan]="1">
+                <div class="content bold gv-one-liner gv-fade-out-right ">
+                    {{c.pipeLabelOfPropertyField(factoidEntity.headerStatements[0].fkProperty, factoidEntity.headerStatements[0].isOutgoing ? factoidEntity.pkClass : null, factoidEntity.headerStatements[0].isOutgoing ? null : factoidEntity.pkClass) | async}}
+                </div>
+            </mat-grid-tile>
+
+            <!-- principal cell content -->
+            <mat-grid-tile [colspan]="3" [rowspan]="1">
+                <div class="content bold italic gv-one-liner gv-fade-out-right">
+                    {{factoidEntity.headerStatements[0].value}}
+                </div>
+            </mat-grid-tile>
+
+            <!-- principal entity entity -->
+            <mat-grid-tile [colspan]="3" [rowspan]="1">
+                <div class="content bold">
+                    <gv-entity-preview *ngIf="factoidEntity.headerStatements[0].pkEntity"
+                        class="gv-one-liner gv-fade-out-right" [pkEntity]="factoidEntity.headerStatements[0].pkEntity"
+                        class="left-col"></gv-entity-preview>
+                </div>
+            </mat-grid-tile>
+
+            <!-- principal locations-->
+            <mat-grid-tile [colspan]="2" [rowspan]="1">
+                <div class="content bold gv-one-liner gv-fade-out-right">
+                    <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
+                        [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
+                    </mat-icon>
+                    <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
+                        [matTooltip]="'Table ' + factoidEntity.pkDigital + '. Click to open.'"
+                        (click)="this.p.addTableTab(factoidEntity.pkDigital)">
+                    </mat-icon>
+                    <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+                        [matTooltip]="'Row ' + factoidEntity.pkRow + '. Click to open table and filter on the row.'"
+                        (click)="this.p.addTableTab(factoidEntity.pkDigital, factoidEntity.pkRow);">
+                    </mat-icon>
+                </div>
+            </mat-grid-tile>
+
+
+            <!-- HEADER FACTOID STATEMENTS -->
+            <ng-container *ngFor="let headStatement of factoidEntity.headerStatements; let i = index">
+                <ng-container *ngIf="i != 0">
+
+                    <!-- Placeholder -->
+                    <mat-grid-tile [colspan]="1" [rowspan]="1"></mat-grid-tile>
+
+                    <!-- header properties -->
+                    <mat-grid-tile [colspan]="3" [rowspan]="1">
+                        <div class="content bold gv-one-liner gv-fade-out-right ">
+                            {{c.pipeLabelOfPropertyField(headStatement.fkProperty, headStatement.isOutgoing ? factoidEntity.pkClass : null, headStatement.isOutgoing ? null : factoidEntity.pkClass) | async}}
+                        </div>
+                    </mat-grid-tile>
+
+                    <!-- header cells content -->
+                    <mat-grid-tile [colspan]="3" [rowspan]="1">
+                        <div class="content bold italic gv-one-liner gv-fade-out-right ">{{headStatement.value}}</div>
+                    </mat-grid-tile>
+
+                    <!-- header entity preview -->
+                    <mat-grid-tile [colspan]="3" [rowspan]="1">
+
+                        <div class="content bold">
+                            <gv-entity-preview *ngIf="headStatement.pkEntity" class="gv-one-liner gv-fade-out-right"
+                                [pkEntity]="headStatement.pkEntity" class="left-col">
+                            </gv-entity-preview>
+                        </div>
+                    </mat-grid-tile>
+
+                    <!-- header cell position-->
+                    <mat-grid-tile [colspan]="2" [rowspan]="1">
+                        <div class="content bold gv-one-liner gv-fade-out-right">
+                            <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
+                                [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
+                            </mat-icon>
+                            <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
+                                [matTooltip]="'Table ' + factoidEntity.pkDigital + '. Click to open.'"
+                                (click)="this.p.addTableTab(factoidEntity.pkDigital)">
+                            </mat-icon>
+                            <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+                                [matTooltip]="'Row ' + factoidEntity.pkRow + '. Click to open table and filter on the row.'"
+                                (click)="this.p.addTableTab(factoidEntity.pkDigital, factoidEntity.pkRow);">
+                            </mat-icon>
+                        </div>
+                    </mat-grid-tile>
+                </ng-container>
+            </ng-container>
+
+
+            <!-- BODY FACTOID STATEMENTS -->
+            <ng-container *ngFor="let bodyStatement of factoidEntity.bodyStatements; let i = index">
+
+                <!-- Placeholder -->
+                <mat-grid-tile [colspan]="1" [rowspan]="1"></mat-grid-tile>
+
+                <!-- body properties -->
+                <mat-grid-tile [colspan]="3" [rowspan]="1">
+                    <div class="content gv-one-liner gv-fade-out-right ">
+                        {{c.pipeLabelOfPropertyField(bodyStatement.fkProperty, bodyStatement.isOutgoing ? factoidEntity.pkClass : null, bodyStatement.isOutgoing ? null : factoidEntity.pkClass) | async}}
+                    </div>
+                </mat-grid-tile>
+
+                <!-- body cells content -->
+                <mat-grid-tile [colspan]="3" [rowspan]="1">
+                    <div class="content italic gv-one-liner gv-fade-out-right ">{{bodyStatement.value}}</div>
+                </mat-grid-tile>
+
+                <!-- body entity preview -->
+                <mat-grid-tile [colspan]="3" [rowspan]="1">
+                    <div class="content">
+                        <gv-entity-preview *ngIf="bodyStatement.pkEntity" class="gv-one-liner gv-fade-out-right"
+                            [pkEntity]="bodyStatement.pkEntity" class="left-col" [openTabOnClick]="true">
+                        </gv-entity-preview>
+                    </div>
+                </mat-grid-tile>
+
+                <!-- body cell position-->
+                <mat-grid-tile [colspan]="2" [rowspan]="1">
+                    <div class="content bold gv-one-liner gv-fade-out-right">
+                        <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
+                            [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
+                        </mat-icon>
+                        <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
+                            [matTooltip]="'Table ' + factoidEntity.pkDigital + '. Click to open.'"
+                            (click)="this.p.addTableTab(factoidEntity.pkDigital)">
+                        </mat-icon>
+                        <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+                            [matTooltip]="'Row ' + factoidEntity.pkRow + '. Click to open table and filter on the row.'"
+                            (click)="this.p.addTableTab(factoidEntity.pkDigital, factoidEntity.pkRow);">
+                        </mat-icon>
+                    </div>
+                </mat-grid-tile>
+            </ng-container>
+
+            <mat-divider></mat-divider>
+        </mat-grid-list>
+    </ng-container>
+
+    <div *ngIf="factoidsEntities.length == 0" style="margin-top: 10px;">
+        <mat-divider style="width: 100%"></mat-divider>
+        <p class="my-2" style="margin-left: 20px;">No records found</p>
+        <mat-divider style="width: 100%"></mat-divider>
+    </div>
+
+</ng-container>

@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 import assert from 'assert';
 import {omit} from 'ramda';
-import {getPgUrlForPg8} from '../../../../utils/databaseUrl';
 import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
-import {createWarehouse} from '../../../../warehouse/createWarehouse';
 import {DfhOutgoingPropertyService} from '../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
-import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
+import {Warehouse} from '../../../../warehouse/Warehouse';
 import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 

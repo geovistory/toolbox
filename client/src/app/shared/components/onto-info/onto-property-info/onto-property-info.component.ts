@@ -21,6 +21,6 @@ export class OntoPropertyInfoComponent implements OnInit {
     this.label$ = property$.pipe(map((c) => {
       return values(c)[0].identifier_in_namespace
     }))
-    this.url = 'http://ontologies.dataforhistory.org/property/' + this.pkProperty
+    this.url = 'https://ontome.dataforhistory.org/property/' + this.pkProperty
   }
 }

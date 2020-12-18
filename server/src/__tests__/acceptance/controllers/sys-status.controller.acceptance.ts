@@ -2,8 +2,7 @@ import {expect} from '@loopback/testlab';
 import pEvent from 'p-event';
 import io from 'socket.io-client';
 import {GeovistoryServer} from '../../../server';
-import {setupApplication} from '../../helpers/gv-server-helpers';
-import {pgNotify} from '../../helpers/warehouse-helpers';
+import {setupApplication, pgNotify} from '../../helpers/gv-server-helpers';
 
 describe('SysStatusController', () => {
   let server: GeovistoryServer;

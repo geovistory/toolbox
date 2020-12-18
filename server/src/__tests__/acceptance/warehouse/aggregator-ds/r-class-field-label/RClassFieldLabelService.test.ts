@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
-import '@abraham/reflection';
+import 'reflect-metadata';
 import {RClassFieldId, RClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
@@ -11,8 +11,8 @@ import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
-import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {createTypes} from '../../../../helpers/meta/model.helper';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
