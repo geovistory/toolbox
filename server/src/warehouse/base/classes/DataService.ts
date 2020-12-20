@@ -51,7 +51,7 @@ export abstract class DataService<KeyModel, ValueModel>{
         const ds = values(toInform)
         if (ds.length) {
             const wh = ds[0].wh
-            const currentTime = await wh.pgNow()
+            const currentTime = await wh.whPgNow()
 
             // useful for debugging
             // for (const d of ds) {

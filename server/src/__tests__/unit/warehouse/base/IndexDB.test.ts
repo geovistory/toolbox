@@ -28,7 +28,7 @@ describe('IndexDB', function () {
     wh = injector.get(Warehouse)
     idx = new TestIdx('test_idx', wh)
     wh.createSchema$.next();
-    wh.pgListenerConnected$.next(wh.pgListener)
+    wh.gvPgListenerConnected$.next(wh.gvPgListener)
     await waitUntilNext(idx.ready$)
 
   })

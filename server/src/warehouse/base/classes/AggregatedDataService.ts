@@ -153,8 +153,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
          */
         // create client for the aggregation
 
-        const client = await this.wh.pgPool.connect()
-        Logger.msg(this.constructor.name, `pgPool connected (totalCount: ${this.wh.pgPool.totalCount}, waitingCount: ${this.wh.pgPool.waitingCount})`, 0)
+        const client = await this.wh.whPgPool.connect()
+        Logger.msg(this.constructor.name, `pgPool connected (totalCount: ${this.wh.whPgPool.totalCount}, waitingCount: ${this.wh.whPgPool.waitingCount})`, 0)
 
         let hasError = false;
         try {
@@ -200,7 +200,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
             Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
             // restart
-            beginOfAggregation = await this.wh.pgNow();
+            beginOfAggregation = await this.wh.whPgNow();
             const nextChanges = await this.doUpdate(beginOfAggregation);
             changes = changes + nextChanges;
         }
@@ -208,7 +208,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
         // emit this.afterUpdate$ if anything has changed
         if (changes > 0) {
-            const done = await this.wh.pgNowDate();
+            const done = await this.wh.whPgNowDate();
             await this.setLastUpdateDone(done)
 
             // await this.setUpdatesConsidered(providerUpdateTmsps)
@@ -233,7 +233,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     public async startUpdate() {
         const t0 = Logger.start(this.constructor.name, `Start update.`, 0)
-        const tmsp = await this.wh.pgNow();
+        const tmsp = await this.wh.whPgNow();
         const changes = await this.doUpdate(tmsp);
         Logger.itTook(this.constructor.name, t0, `to start update`, 0)
         return changes
@@ -332,7 +332,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // if (this.constructor.name === 'PEntityLabelService') {
         //     console.log(`-- > ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp} `)
         // }
-        const res = await pgLogOnErr((s, p) => this.wh.pgPool.query<{count: number;}>(s, p), handleDeletes, [])
+        const res = await pgLogOnErr((s, p) => this.wh.whPgPool.query<{count: number;}>(s, p), handleDeletes, [])
         changes += res?.rows?.[0].count ?? 0;
         // useful for debugging
         // if (this.constructor.name === 'PEntityLabelService') {
@@ -651,7 +651,7 @@ SELECT count(*):: int changes FROM tw0;
                         ${leftDS.map(item => `'${item.constructor.name + LAST_UPDATE_DONE_SUFFIX}'`).join(',')}
                     )
                 `
-        const res = await this.wh.pgPool.query<{o: LeftDSDates}>(sql)
+        const res = await this.wh.whPgPool.query<{o: LeftDSDates}>(sql)
 
         const returnval = res.rows?.[0]?.o ?? {}
         return returnval

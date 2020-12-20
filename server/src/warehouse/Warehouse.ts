@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
+import {Inject, Injectable, InjectionToken, Injector, Type, forwardRef} from 'injection-js';
 import {Notification, Pool, PoolClient, PoolConfig} from 'pg';
 import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
@@ -27,6 +27,8 @@ interface NotificationHandler {
 }
 
 export interface WarehouseConfig {
+    warehouseDatabase: string,
+    warehouseDatabaseMaxConnections: number,
     geovistoryDatabase: string,
     geovistoryDatabaseMaxConnections: number,
     warehouseSchema: string,
@@ -37,41 +39,52 @@ export interface LeftDSDates {[DsName: string]: string}
 @Injectable()
 export class Warehouse {
 
-    pgPool: Pool;
-    pgListener: PoolClient;
+
+    // Geovistory postgres
+    gvPgPool: Pool;
+    gvPgListener: PoolClient;
+    gvPgListenerConnected$ = new ReplaySubject<PoolClient>()
+    gvPgNotifications$ = new Subject<Notification>()
 
 
-    // if true, changes on dependencies are not propagated to aggregators
-    preventPropagation = false
-
-    status: 'stopped' | 'initializing' | 'starting' | 'running' | 'backuping' = 'stopped'
-
-    notificationHandlers: {[key: string]: NotificationHandler} = {}
-
-    pgListenerConnected$ = new ReplaySubject<PoolClient>()
-    pgNotifications$ = new Subject<Notification>()
+    // Warehouse postgres
+    whPgPool: Pool;
     createSchema$ = new Subject<void>()
-    schemaName = 'war_cache'
+    schemaName: string;
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
     aggregationTimestamps: IndexDBGeneric<string, LeftDSDates>;
 
+    // Warehosue inner logic
+    notificationHandlers: {[key: string]: NotificationHandler} = {}
+    // if true, changes on dependencies are not propagated to aggregators
+    preventPropagation = false
+    status: 'stopped' | 'initializing' | 'starting' | 'running' | 'backuping'
 
     constructor(
-        @Inject(APP_CONFIG) private config: WarehouseConfig,
+        @Inject(APP_CONFIG) config: WarehouseConfig,
         @Inject(PRIMARY_DS) private primaryDs: Type<any>[],
         @Inject(AGG_DS) private aggDs: Type<any>[],
-        private injector: Injector
+        @Inject(forwardRef(() => Injector)) private injector: Injector
     ) {
         this.schemaName = config.warehouseSchema;
 
-        const connectionString = config.geovistoryDatabase;
-        const pgConfig = parse(config.geovistoryDatabase) as PoolConfig
-        pgConfig.max = config.geovistoryDatabaseMaxConnections
-        pgConfig.ssl = getPgSslForPg8(connectionString)
-        this.pgPool = new Pool(pgConfig);
 
-        Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
-        Logger.msg(this.constructor.name, `max connections: ${config.geovistoryDatabaseMaxConnections}`)
+        const whPgUrl = config.warehouseDatabase;
+        const whPgConfig = parse(config.warehouseDatabase) as PoolConfig
+        whPgConfig.max = config.warehouseDatabaseMaxConnections
+        whPgConfig.ssl = getPgSslForPg8(whPgUrl)
+        this.whPgPool = new Pool(whPgConfig);
+        Logger.msg(this.constructor.name, `warehouse DB: ${whPgUrl.split('@')[1]}`)
+        Logger.msg(this.constructor.name, `warehouse DB max connections: ${config.warehouseDatabaseMaxConnections}`)
+
+
+        const gvPgUrl = config.geovistoryDatabase;
+        Logger.msg(this.constructor.name, `geovistory DB: ${gvPgUrl.split('@')[1]}`)
+        const gvPgConfig = parse(config.geovistoryDatabase) as PoolConfig
+        gvPgConfig.max = config.geovistoryDatabaseMaxConnections
+        gvPgConfig.ssl = getPgSslForPg8(gvPgUrl)
+        this.gvPgPool = new Pool(gvPgConfig);
+        Logger.msg(this.constructor.name, `geovistory DB max connections: ${config.geovistoryDatabaseMaxConnections}`)
 
     }
 
@@ -120,7 +133,7 @@ export class Warehouse {
             if (maxMemoryUsage < m) {
                 maxMemoryUsage = m
             }
-            this.pgNotify('warehouse_initializing', 'true').catch(e => { })
+            this.gvPgNotify('warehouse_initializing', 'true').catch(e => { })
         }, 1000)
 
 
@@ -137,7 +150,7 @@ export class Warehouse {
 
         clearInterval(interval1)
 
-        await this.pgNotify('warehouse_initializing', 'false')
+        await this.gvPgNotify('warehouse_initializing', 'false')
 
         Logger.msg(this.constructor.name, `************ Warehouse Index Created ***************`, 0)
         Logger.msg(this.constructor.name, `The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`, 0)
@@ -195,7 +208,7 @@ export class Warehouse {
      */
     async hardReset(errorMsg: string) {
         // delete the warehouse schema
-        await this.pgPool.query(`DROP SCHEMA IF EXISTS ${this.schemaName}`)
+        await this.whPgPool.query(`DROP SCHEMA IF EXISTS ${this.schemaName}`)
         // terminate process
         throw new Error(errorMsg)
     }
@@ -240,8 +253,8 @@ export class Warehouse {
      * soon as all 'tables' (= indexes) are ready to be used
      */
     private async initWhDbSchema() {
-        await this.pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${this.schemaName}`)
-        await this.pgPool.query(`
+        await this.whPgPool.query(`CREATE SCHEMA IF NOT EXISTS ${this.schemaName}`)
+        await this.whPgPool.query(`
         CREATE OR REPLACE FUNCTION ${this.schemaName}.tmsp_last_modification()
                 RETURNS trigger
                 LANGUAGE 'plpgsql'
@@ -269,9 +282,8 @@ export class Warehouse {
             this
         )
 
-        // const aggInitialized$ = combineLatest(
-        //     this.getAggregatedDs().map(ds => ds.ready$.pipe(filter(r => r === true))),
-        // ).pipe(mapTo(true))
+
+        // await this.initializeForeignDataWrappers();
 
 
         const primReady$ = combineLatest(
@@ -288,6 +300,139 @@ export class Warehouse {
         })
     }
 
+    /**
+     * Initialiue foreign data wrappers so that whDb sees
+     * schemas of gvDB
+     */
+    private async initializeForeignDataWrappers() {
+        const x = [
+            `CREATE EXTENSION IF NOT EXISTS postgres_fdw;`,
+            `CREATE EXTENSION IF NOT EXISTS postgis;`,
+
+            `CREATE SERVER IF NOT EXISTS gv_database_server
+            FOREIGN DATA WRAPPER postgres_fdw
+            OPTIONS (host '0.0.0.0', dbname 'gv_test_db');`,
+
+            `CREATE USER MAPPING  IF NOT EXISTS FOR CURRENT_USER
+            SERVER gv_database_server
+            OPTIONS (user 'postgres', password 'local_pw');`,
+
+            `DROP SCHEMA IF EXISTS information CASCADE;`,
+            `DROP SCHEMA IF EXISTS projects CASCADE;`,
+            `DROP SCHEMA IF EXISTS data_for_history CASCADE;`,
+            `DROP SCHEMA IF EXISTS commons CASCADE;`,
+            `DROP SCHEMA IF EXISTS war CASCADE;`,
+
+            `DROP TYPE IF EXISTS public.calendar_granularities;`,
+            `CREATE TYPE public.calendar_granularities AS ENUM
+                ('1 year', '1 month', '1 day', '1 hour', '1 minute', '1 second');`,
+
+            `DROP TYPE IF EXISTS public.calendar_type;`,
+            `CREATE TYPE public.calendar_type AS ENUM
+                ('gregorian', 'julian');`,
+
+            `CREATE SCHEMA information;`,
+            `IMPORT FOREIGN SCHEMA information
+            FROM SERVER gv_database_server
+            INTO information;`,
+
+            `CREATE SCHEMA projects;`,
+            `IMPORT FOREIGN SCHEMA projects
+            FROM SERVER gv_database_server
+            INTO projects;`,
+
+            `CREATE SCHEMA data_for_history;`,
+            `IMPORT FOREIGN SCHEMA data_for_history
+            FROM SERVER gv_database_server
+            INTO data_for_history;`,
+
+            `CREATE SCHEMA commons;`,
+            `IMPORT FOREIGN SCHEMA commons
+            FROM SERVER gv_database_server
+            INTO commons;`,
+
+            `CREATE OR REPLACE FUNCTION commons.time_primitive__get_first_second(
+                julian_day integer)
+                RETURNS bigint
+                LANGUAGE 'sql'
+
+                COST 100
+                VOLATILE
+
+              AS $BODY$
+                 SELECT (julian_day::bigint * 86400::bigint) ; -- 86400 = 60 * 60 * 24 = number of seconds per day
+                $BODY$;`,
+
+            `CREATE OR REPLACE FUNCTION commons.time_primitive__get_last_second(
+            julian_day integer,
+            duration calendar_granularities,
+            calendar calendar_type)
+            RETURNS bigint
+            LANGUAGE 'plpgsql'
+
+            COST 100
+            VOLATILE
+
+            AS $BODY$
+            DECLARE
+            day_after_added_duration int;
+            BEGIN
+
+            IF(calendar IS NULL) THEN
+            RAISE WARNING 'No calendar provided';
+            IF(julian_day < 2299161) THEN
+            calendar = 'julian';
+            ELSE
+            calendar = 'gregorian';
+            END IF;
+            END IF;
+
+            IF(calendar = 'gregorian') THEN
+            IF(duration = '1 day') THEN
+            SELECT julian_day + 1 INTO day_after_added_duration;
+            ELSIF(duration = '1 month') THEN
+            SELECT to_char((('J' || julian_day::text)::DATE + INTERVAL '1 month'), 'J') INTO day_after_added_duration;
+            ELSIF(duration = '1 year') THEN
+            SELECT to_char((('J' || julian_day::text)::DATE + INTERVAL '1 year'), 'J') INTO day_after_added_duration;
+            ELSE
+            RAISE EXCEPTION 'duration not supported --> %', duration
+            USING HINT = 'Supported durations: "1 day", "1 month", "1 year"';
+            END IF;
+
+            ELSIF (calendar = 'julian') THEN
+
+            IF(duration = '1 day') THEN
+            SELECT  julian_day + 1 INTO day_after_added_duration;
+            ELSIF(duration = '1 month') THEN
+            SELECT commons.julian_cal__add_1_month(julian_day) INTO day_after_added_duration;
+            ELSIF(duration = '1 year') THEN
+            SELECT commons.julian_cal__add_1_year(julian_day) INTO day_after_added_duration;
+            ELSE
+            RAISE EXCEPTION 'duration not supported --> %', duration
+            USING HINT = 'Supported durations: "1 day", "1 month", "1 year"';
+            END IF;
+
+            ELSE
+            RAISE EXCEPTION 'calendar not supported --> %', calendar
+            USING HINT = 'Supported calendars: "gregorian", "julian"';
+            END IF;
+
+            -- calculate the first second of the day after the added duration and subtract one second
+            -- so that we get the last second of the duration
+            RETURN commons.time_primitive__get_first_second(day_after_added_duration) - 1;
+            END;
+            $BODY$;`,
+            `CREATE SCHEMA war;`,
+            `CREATE TYPE war.edge_target_type AS ENUM ('text', 'type');`,
+            `IMPORT FOREIGN SCHEMA war
+            FROM SERVER gv_database_server
+            INTO war;`,
+        ];
+
+        for (const sql of x) {
+            await this.whPgPool.query(sql);
+        }
+    }
 
     /**
      * Initialize the indexes of the primary data services which will potentially
@@ -327,16 +472,16 @@ export class Warehouse {
     //  */
     public async connectPgListener() {
 
-        this.pgListener = await this.pgPool.connect();
-        this.pgListenerConnected$.next(this.pgListener)
-        this.pgListener.on('notification', (msg) => {
-            this.pgNotifications$.next(msg)
+        this.gvPgListener = await this.gvPgPool.connect();
+        this.gvPgListenerConnected$.next(this.gvPgListener)
+        this.gvPgListener.on('notification', (msg) => {
+            this.gvPgNotifications$.next(msg)
         })
     }
 
 
     private async getInitBackupDate(): Promise<Date> {
-        const dbNow = await this.pgPool.query('SELECT now() as now');
+        const dbNow = await this.whPgPool.query('SELECT now() as now');
         const tmsp: string = dbNow.rows?.[0]?.now;
         return new Date(tmsp)
     }
@@ -344,17 +489,33 @@ export class Warehouse {
 
 
     /**
-     * returns now() tmsp from postgres as toISOString
+     * returns now() tmsp from wh postgres as toISOString
      */
-    async pgNow() {
-        const date = await this.pgNowDate()
+    async whPgNow() {
+        const date = await this.whPgNowDate()
         return date.toISOString()
     }
     /**
-     * returns now() tmsp from postgres as Date
+     * returns now() tmsp from wh postgres as Date
      */
-    async pgNowDate() {
-        const res = await this.pgPool.query<{now: Date}>('select now()')
+    async whPgNowDate() {
+        const res = await this.whPgPool.query<{now: Date}>('select now()')
+        return res.rows[0].now
+    }
+
+
+    /**
+     * returns now() tmsp from gv postgres as toISOString
+     */
+    async gvPgNow() {
+        const date = await this.gvPgNowDate()
+        return date.toISOString()
+    }
+    /**
+     * returns now() tmsp from gv postgres as Date
+     */
+    async gvPgNowDate() {
+        const res = await this.gvPgPool.query<{now: Date}>('select now()')
         return res.rows[0].now
     }
 
@@ -367,7 +528,7 @@ export class Warehouse {
      * @param name for debugging
      */
     async registerDbListener(channel: string, emitter: Subject<Date>, listenerName: string) {
-        await this.pgListener.query(`LISTEN ${channel}`)
+        await this.gvPgListener.query(`LISTEN ${channel}`)
         this.notificationHandlers[channel] = {
             channel,
             listeners: {
@@ -383,7 +544,7 @@ export class Warehouse {
      */
     startListening() {
 
-        this.pgNotifications$.subscribe((msg) => {
+        this.gvPgNotifications$.subscribe((msg) => {
             const handler = this.notificationHandlers[msg.channel];
 
             if (typeof msg.payload === 'string') {
@@ -423,8 +584,8 @@ export class Warehouse {
 
 
 
-    pgNotify(channel: string, value: string) {
-        return this.pgPool.query(`SELECT pg_notify($1, $2)`, [channel, value])
+    gvPgNotify(channel: string, value: string) {
+        return this.gvPgPool.query(`SELECT pg_notify($1, $2)`, [channel, value])
     }
 
 
@@ -434,8 +595,9 @@ export class Warehouse {
     async stop() {
         this.status = 'stopped';
         this.notificationHandlers = {}
-        this.pgListener.release();
-        await this.pgPool.end();
+        this.gvPgListener.release();
+        await this.whPgPool.end();
+        await this.gvPgPool.end();
     }
 }
 

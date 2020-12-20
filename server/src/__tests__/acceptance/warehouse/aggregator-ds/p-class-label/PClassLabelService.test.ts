@@ -43,7 +43,6 @@ describe('PClassLabelService', function () {
     beforeEach(async () => {
         await cleanDb()
         await truncateWarehouseTables(wh)
-
     })
     after(async function () {
         await stopWarehouse(wh)

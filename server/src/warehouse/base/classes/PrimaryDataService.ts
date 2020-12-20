@@ -44,7 +44,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         await this.addPgListeners()
 
-        const dbNow = await this.wh.pgPool.query('SELECT now() as now');
+        const dbNow = await this.wh.gvPgPool.query('SELECT now() as now');
 
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
@@ -151,7 +151,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         if (this.restartSyncing) {
             changes += await this.sync(tmsp);
         }
-        const now = await this.wh.pgNowDate()
+        const now = await this.wh.whPgNowDate()
         await this.setLastUpdateDone(now)
         if (changes > 0) {
             this.afterChange$.next()
@@ -178,7 +178,9 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         const updateSql = this.getUpdatesSql(date)
         const upsertHookSql = this.get2ndUpdatesSql ? `,
-            hook AS (${this.get2ndUpdatesSql('tw1', date)})`
+            hook AS (
+                ${this.get2ndUpdatesSql('tw1', date)}
+            )`
             : ''
         const sql = `
         WITH tw1 AS (
@@ -200,7 +202,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const params = [date]
         // if (this.constructor.name === 'REdgeService') logSql(sql, params)
 
-        const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
+        const upserted = await this.wh.whPgPool.query<{count: number}>(sql, params);
         // useful for debugging
         // if (this.constructor.name === 'REdgeService') {
         //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
@@ -231,7 +233,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
                 ${this.get2ndDeleteSql('tw1', date)}
             )`
             : '';
-        const deleted = await this.wh.pgPool.query<{count: number}>(
+        const deleted = await this.wh.whPgPool.query<{count: number}>(
             `
                 WITH tw1 AS (
                     ${deleteSql}

@@ -16,7 +16,7 @@ export async function start() {
     const config = getWarehouseConfig()
     const warehouse: Warehouse = createWarehouse(config).get(Warehouse)
     await warehouse.start();
-    await removeWarehouseSchemasExcept(warehouse.pgPool, schemaPrefix, warehouse.schemaName)
+    await removeWarehouseSchemasExcept(warehouse.whPgPool, schemaPrefix, warehouse.schemaName)
     return warehouse
 }
 
@@ -63,10 +63,13 @@ function getSchemaName() {
     return schemaPrefix + warehouseCommit
 }
 
-function getWarehouseConfig() {
+export function getWarehouseConfig() {
     if (!process.env.DATABASE_URL) throw new Error("Warehouse > No DATABASE_URL provided");
+    if (!process.env.WH_DATABASE_URL) throw new Error("Warehouse > No WH_DATABASE_URL provided");
 
     const config: WarehouseConfig = {
+        warehouseDatabase: process.env.WH_DATABASE_URL,
+        warehouseDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_WH_DB_POOL_SIZE ?? '25', 10),
         geovistoryDatabase: process.env.DATABASE_URL,
         geovistoryDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_GV_DB_POOL_SIZE ?? '25', 10),
         warehouseSchema: getSchemaName()

@@ -30,7 +30,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         wh: Warehouse
     ) {
         if (!keyDefs || keyDefs?.length < 1) throw Error(`KeyDefs missing in ${name}`)
-        this.pgPool = wh.pgPool;
+        this.pgPool = wh.whPgPool;
         this.schema = wh.schemaName;
         this.table = name;
         this.schemaTable = `${this.schema}.${this.table}`
@@ -38,7 +38,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         this.insertStmt = this.createInsertStatement()
         this.keyJsonObjSql = this.createKeyJsonObjSql()
         combineLatest(
-            wh.pgListenerConnected$,
+            wh.gvPgListenerConnected$,
             wh.createSchema$
         ).pipe(first()).subscribe(([client]) => {
             this.setupTable()
