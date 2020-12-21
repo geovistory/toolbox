@@ -56,7 +56,7 @@ export class RClassFieldLabelService extends AggregatedDataService2<RClassFieldI
         this.depProPropertyLabel = this.addDepencency(proPropertyLabel)
 
     }
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
 
@@ -98,7 +98,6 @@ export class RClassFieldLabelService extends AggregatedDataService2<RClassFieldI
             }
         })
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = await builder.executeQueries()
         return count

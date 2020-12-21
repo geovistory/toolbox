@@ -88,7 +88,7 @@ export class PEntityFullTextService extends AggregatedDataService2<PEntityId, PE
     //     AND project = "fkProject"
     //     AND full_text IS DISTINCT FROM val->>'fullText'`
     // }
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
         const pEntity = await builder.joinProviderThroughDepIdx({
             leftTable: builder.batchTmpTable.tableDef,
@@ -509,7 +509,6 @@ export class PEntityFullTextService extends AggregatedDataService2<PEntityId, PE
 
         await builder.tmpTableUpsertAggregations(this.index, final.tableDef.tableName)
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = builder.executeQueries()
 

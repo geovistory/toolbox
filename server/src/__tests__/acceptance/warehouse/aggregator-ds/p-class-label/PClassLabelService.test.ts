@@ -147,7 +147,6 @@ async function createGeovistoryLabelMock() {
 
 async function createProjectLabelMock() {
     const { prel, cla, gvTxt } = await createGeovistoryLabelMock();
-    await createTypes()
     const proTxt = await createProTextPropertyClassLabel(
         prel.fk_project ?? -1,
         1,

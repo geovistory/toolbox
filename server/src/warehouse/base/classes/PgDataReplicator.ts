@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {PoolClient, QueryArrayResult} from 'pg';
 import {Logger} from './Logger';
-import {brkOnErr} from '../../../utils/helpers';
+import {brkOnErr, pgLogOnErr} from '../../../utils/helpers';
 
-interface PgTable {
+export interface PgTable {
     client: PoolClient,
     table: string
 }
+export type DataReplicatorSqlFn = (insertClause: string, fromClause: string) => string
 
 export class PgDataReplicator<M> {
 
 
     constructor(
-        private from: PgTable,
-        private to: PgTable,
+        private source: PgTable,
+        private target: PgTable,
         private columns?: string[],
-        private getInsertStatement = (insertClause: string, fromClause: string) => `${insertClause} ${fromClause}`
+        private getInsertStatement: DataReplicatorSqlFn = (insertClause: string, fromClause: string) => `${insertClause} ${fromClause}`
 
     ) { }
     /**
@@ -25,10 +26,10 @@ export class PgDataReplicator<M> {
      * returns statitistics about batches and time (miliseconds) used per batch
      */
     async replicateTable(batchSize = 10000) {
-        const res = await brkOnErr(this.from.client.query<{count: number}>(`SELECT count(*):: integer From ${this.from.table} `))
+        const res = await brkOnErr(this.source.client.query<{count: number}>(`SELECT count(*):: integer From ${this.source.table} `))
         const size = res.rows[0].count;
         const limit = batchSize;
-        const logPrefix = `${this.constructor.name} ${this.from.table}`
+        const logPrefix = `${this.constructor.name} ${this.source.table}`
 
         const stats: {items: number, duration: number, rows: M[]}[] = []
 
@@ -51,8 +52,8 @@ export class PgDataReplicator<M> {
 
     private async readFromTable(limit: number, offset: number) {
         const cols = this.columns ? this.columns.join(',') : '*'
-        return this.from.client.query({
-            text: `select ${cols} from ${this.from.table} LIMIT ${limit} OFFSET ${offset}`,
+        return this.source.client.query({
+            text: `select ${cols} from ${this.source.table} LIMIT ${limit} OFFSET ${offset}`,
             rowMode: 'array',
         })
     }
@@ -72,14 +73,14 @@ export class PgDataReplicator<M> {
             }
         })
 
-        const insertClause = `INSERT INTO ${this.to.table} (${colNames.join(',')})`
-        const fromClause = `SELECT * FROM UNNEST (${placeholders.join(',')}) t(${colNames.join(',')})`
+        const insertClause = `INSERT INTO ${this.target.table} (${colNames.join(',')})`
+        const fromClause = `(SELECT * FROM UNNEST (${placeholders.join(',')}) t(${colNames.join(',')}))`
         const sql = this.getInsertStatement(insertClause, fromClause)
         return {sql, params}
     }
 
     private async writeToTable<M>(sql: string, params: any[]) {
-        return this.to.client.query<M>(sql, params)
+        return pgLogOnErr((s, p) => this.target.client.query<M>(s, p), sql, params)
     }
 
     private getDataTypeName(id: number): string {

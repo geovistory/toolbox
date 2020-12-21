@@ -224,39 +224,6 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         ).replicateTable()
         const upserted = sum(stats.map(s => s.rows?.[0].count))
 
-        // const upsertHookSql = this.get2ndUpdatesSql ? `,
-        //     hook AS (
-        //         ${this.get2ndUpdatesSql('tw1', date)}
-        //     )`
-        //     : ''
-        // const sql = `
-        // WITH tw1 AS (
-        //     ${updateSql}
-        // )
-        // ${upsertHookSql},
-        // tw2 AS (
-        //     INSERT INTO  ${this.index.schemaTable}
-        //     (${this.index.keyCols}, val)
-        //     SELECT ${this.index.keyCols}, tw1.val
-        //     FROM tw1
-        //     ON CONFLICT (${this.index.keyCols}) DO UPDATE
-        //     SET val = EXCLUDED.val
-        //     WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
-        //     RETURNING *
-        // )
-        // SELECT count(*)::int FROM tw2
-        // `
-        // const params = [date]
-        // // if (this.constructor.name === 'REdgeService') logSql(sql, params)
-
-        // const upserted = await this.wh.whPgPool.query<{count: number}>(sql, params);
-        // useful for debugging
-        // if (this.constructor.name === 'REdgeService') {
-        //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
-        // }
-        // if (upserted.rows?.[0].count > 0) {
-        //     this.afterChange$.next()
-        // }
         Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
         return upserted
 
@@ -296,33 +263,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         ).replicateTable()
         const deleted = sum(stats.map(s => s.rows?.[0].count))
 
-        // const deleteHookTw = this.get2ndDeleteSql ? `,
-        //     hook AS (
-        //         ${this.get2ndDeleteSql('tw1', date)}
-        //     )`
-        //     : '';
-        // const deleted = await this.wh.whPgPool.query<{count: number}>(
-        //     `
-        //         WITH tw1 AS (
-        //             ${deleteSql}
-        //         )
-        //         ${deleteHookTw},
-        //         tw2 AS (
-        //             UPDATE  ${this.index.schemaTable} t1
-        //             SET tmsp_deleted = now()
-        //             FROM tw1
-        //             WHERE
-        //             ${this.index.keyDefs.map(k => `t1."${k.name}" = tw1."${k.name}"`).join(' AND ')}
-        //             RETURNING t1.*
-        //         )
-        //         SELECT count(*)::int FROM tw2
-        //     `,
-        //     [date]
-        // );
-        // if (deleted.rows?.[0].count > 0) {
 
-        //     this.afterChange$.next()
-        // }
         Logger.itTook(this.constructor.name, t2, `To mark items as deleted  ...`, 2);
         return deleted
 

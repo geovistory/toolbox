@@ -46,7 +46,7 @@ export class REntityClassLabelService extends AggregatedDataService2<REntityId, 
     // }
 
 
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
         /**
         * join entity
@@ -82,7 +82,6 @@ export class REntityClassLabelService extends AggregatedDataService2<REntityId, 
 
         })
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = await builder.executeQueries()
         return count

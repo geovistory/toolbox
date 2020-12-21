@@ -22,7 +22,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
     depPEntityLabel: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>
     depPEdge: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityFields>
 
-    batchSize= 100000;
+    batchSize = 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
@@ -54,7 +54,7 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
     //     AND entity_label IS DISTINCT FROM val->>'entityLabel'`
     // }
 
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const pentity = await builder.joinProviderThroughDepIdx({
@@ -297,7 +297,19 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
 
 
         await builder.tmpTableUpsertAggregations(this.index, aggregateLabels.tableDef.tableName, '= true')
-        builder.registerUpsertHook()
+
+        builder.registerUpsertHook(
+            {client: client2, table: 'war.entity_preview'},
+            (insertStmt, fromStmt) => `
+                    UPDATE war.entity_preview
+                    SET entity_label = val->>'entityLabel'
+                    FROM ${fromStmt} t1
+                    WHERE pk_entity = "pkEntity"
+                    AND project = "fkProject"
+                    AND entity_label IS DISTINCT FROM val->>'entityLabel'
+            `
+        )
+
         // await builder.printQueries()
         const count = builder.executeQueries()
 

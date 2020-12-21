@@ -7,6 +7,7 @@ import {DataIndexPostgres} from './DataIndexPostgres';
 import {DependencyIndex} from './DependencyIndex';
 import {existsSync, mkdirSync, writeFileSync} from 'fs';
 import sqlFormatter from 'sql-formatter';
+import {PgDataReplicator, DataReplicatorSqlFn, PgTable} from './PgDataReplicator';
 export interface TableDef<Keys, Val, CustomObject> {
   tableName: string
 }
@@ -85,7 +86,9 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
   // List of queries that can be executed by calling executeQueries()
   queryRequests: QueryDef[] = [];
 
-
+  // List of data replication requests that can be executed by calling executeQueries()
+  dataReplicationRequests: PgDataReplicator<any>[] = []
+  replicationSourceTable: string;
   constructor(
     private agg: AggregatedDataService2<KeyModel, ValueModel>,
     private client: PoolClient,
@@ -94,6 +97,7 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     private offset: number,
   ) {
     this.batchTmpTable = this.tmpTableBatch(limit, offset)
+    this.replicationSourceTable = this.createTableName()
   }
 
   /**
@@ -278,17 +282,15 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
 
 
 
-  registerUpsertHook() {
-    let sql = ''
-    if (this.agg.onUpsertSql) {
-      sql = `
-        ${this.agg.onUpsertSql(`
-        (
-          ${this.aggUpsertTws.map(aggUpsertTw => `SELECT * FROM ${aggUpsertTw}`).join(' UNION ALL ')}
-        ) sub`)}
-      `
-      this.registerQueryRequest(sql, [])
-    }
+  registerUpsertHook(target: PgTable, sqlFn: DataReplicatorSqlFn) {
+
+    const replRequest = new PgDataReplicator<{count: number}>(
+      {client: this.client, table: this.replicationSourceTable},
+      target,
+      [this.agg.index.keyCols, 'val'],
+      sqlFn
+    )
+    this.dataReplicationRequests.push(replRequest)
   }
 
   private createCountSql() {
@@ -471,8 +473,28 @@ export class AggregatorSqlBuilder<KeyModel, ValueModel> {
     for (const q of this.queryRequests) {
       await this.query(q.sql, q.params)
     }
+
+    await this.executeDataReplications();
+
     return this.executeCountSql()
   }
+
+  private async executeDataReplications() {
+    if (this.dataReplicationRequests.length) {
+
+      const createTableStmt = this.createTableStmt(this.replicationSourceTable);
+      const sql = `
+        ${createTableStmt}
+        ${this.aggUpsertTws.map(aggUpsertTw => `SELECT * FROM ${aggUpsertTw}`).join(' UNION ALL ')}`;
+      await this.query(sql, []);
+
+      for (const replReq of this.dataReplicationRequests) {
+        await replReq.replicateTable();
+      }
+
+    }
+  }
+
   /**
    * prints the queries in queryRequests list including the count query
    * for debugging

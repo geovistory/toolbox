@@ -154,17 +154,19 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // create client for the aggregation
 
         const client = await this.wh.whPgPool.connect()
+        const client2 = await this.wh.gvPgPool.connect()
         Logger.msg(this.constructor.name, `pgPool connected (totalCount: ${this.wh.whPgPool.totalCount}, waitingCount: ${this.wh.whPgPool.waitingCount})`, 0)
 
         let hasError = false;
         try {
             await client.query('BEGIN')
+            await client2.query('BEGIN')
 
             // find what to aggregate (store it in temp table)
             await this.findWhatToAggregate(client, updatesConsideredUntil, providerUpdateTmsps);
 
             // aggregate batchwise, reading from temp table
-            changes += await this.aggregateAll(client, beginOfAggregation)
+            changes += await this.aggregateAll(client, client2, beginOfAggregation)
 
             // cleanup dependencies
             await this.cleanupOldDependencies(client, beginOfAggregation);
@@ -173,14 +175,17 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             // await this.setChangesConsideredUntilTsmp(beginOfAggregation)
             const t1 = Logger.start(this.constructor.name, `commit aggregations`, 0)
             await client.query('COMMIT')
+            await client2.query('COMMIT')
             Logger.itTook(this.constructor.name, t1, `to commit aggregations `, 0)
         } catch (e) {
             hasError = true
             await client.query('ROLLBACK')
+            await client2.query('ROLLBACK')
             Logger.msg(this.constructor.name, `ERROR in aggregation`)
         } finally {
 
             client.release()
+            client2.release()
             Logger.msg(this.constructor.name, `pgPool client released`)
 
         }
@@ -398,7 +403,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
 
 
-    async aggregateAll(client: PoolClient, currentTimestamp: string) {
+    async aggregateAll(client: PoolClient, client2: PoolClient, currentTimestamp: string) {
         let changes = 0
         const res = await brkOnErr(client.query<{count: number}>(`SELECT count(*):: integer From ${this.tempTable} `))
         const size = res.rows[0].count;
@@ -410,14 +415,14 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         for (let offset = 0; offset < size; offset += limit) {
             const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1} /${Math.floor(size / limit) + 1}) in cycle ${this.cycle} `
             const t0 = Logger.start(this.constructor.name, `${logString} `, 0)
-            changes += await this.aggregateBatch(client, limit, offset, currentTimestamp);
+            changes += await this.aggregateBatch(client, client2, limit, offset, currentTimestamp);
             Logger.itTook(this.constructor.name, t0, `to ${logString} `, 0)
 
         }
         return changes
     }
 
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string) {
         let changes = 0
 
         const toAggregate = await brkOnErr(client.query<KeyModel>(`

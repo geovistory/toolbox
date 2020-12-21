@@ -138,9 +138,10 @@ describe('PgDataReplicator', function () {
                 {client: pool1, table: 'test_table'},
                 {client: pool2, table: 'test_table'},
                 ['id', 'name'],
-                (insertStmt) => `
+                (insertStmt, fromStmt) => `
                     WITH tw1 AS (
                         ${insertStmt}
+                        ${fromStmt}
                         ON CONFLICT (id) DO UPDATE
                         SET name = EXCLUDED.name
                         WHERE  test_table.name <> EXCLUDED.name
