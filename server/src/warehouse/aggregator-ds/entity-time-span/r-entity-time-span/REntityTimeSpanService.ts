@@ -73,7 +73,7 @@ export class REntityTimeSpanService extends AggregatedDataService2<REntityId, RE
         this.depREdge = this.addDepencency(rEdge);
     }
 
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const pentity = await builder.joinProviderThroughDepIdx({
@@ -152,7 +152,6 @@ export class REntityTimeSpanService extends AggregatedDataService2<REntityId, RE
             }
         })
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = builder.executeQueries()
 

@@ -1,3 +1,5 @@
+import { PoolConfig } from 'pg';
+import { parse } from 'pg-connection-string';
 
 export function getDatabaseUrl() {
   const databaseUrl = process.env.DATABASE_URL as string;
@@ -20,7 +22,7 @@ export function getPgUrlForPg8() {
 };
 // creates postgres ssl config for node-postgres ('pg') v8 and higher
 export function getPgSslForPg8(url: string) {
-  if (dbRequiresSSL(url)) return {rejectUnauthorized: false}
+  if (dbRequiresSSL(url)) return { rejectUnauthorized: false }
   return undefined;
 };
 
@@ -29,4 +31,12 @@ export function dbRequiresSSL(url: string) {
   if (url.includes('ssl=true')) return true;
   if (url.includes('sslmode=require')) return true;
   return false
+}
+
+export function createPoolConfig(connectionString?: string, maxConnections?: number): PoolConfig {
+  if(!connectionString) throw new Error("Please provide a connection string");
+  const config = parse(connectionString) as PoolConfig
+  config.max = maxConnections
+  config.ssl = getPgSslForPg8(connectionString)
+  return config
 }

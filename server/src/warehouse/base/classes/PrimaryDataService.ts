@@ -5,6 +5,9 @@ import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Logger} from './Logger';
+import {PgDataReplicator} from './PgDataReplicator';
+import {sum} from 'ramda';
+import {PoolClient} from 'pg';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -44,7 +47,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         await this.addPgListeners()
 
-        const dbNow = await this.wh.pgPool.query('SELECT now() as now');
+        const dbNow = await this.wh.gvPgPool.query('SELECT now() as now');
 
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
@@ -122,36 +125,59 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const changesConsideredUntil = await this.getChangesConsideredUntil()
         const t1 = Logger.start(this.constructor.name, `manageUpdatesSince ${changesConsideredUntil}`, 1);
 
-        // Look for updates since the date of lastUpdateBegin or 1970
-        const calls = [
-            this.manageUpdatesSince(changesConsideredUntil)
-        ]
+        const c1 = await this.wh.gvPgPool.connect()
+        const c2 = await this.wh.whPgPool.connect()
+        let hasError = false;
+        let updates = 0;
+        let deletes = 0;
 
-        // Look for deletes if
-        // - there is a deleteSql and
-        // - this data service has ever been synced
+        try {
 
-        if (changesConsideredUntil) {
-            const deleteSql = this.getDeletesSql(changesConsideredUntil)
-            if (deleteSql !== '') calls.push(this.manageDeletesSince(changesConsideredUntil, deleteSql))
+            await c1.query('BEGIN')
+            await c2.query('BEGIN')
+
+            // Look for updates since the date of lastUpdateBegin or 1970
+            updates += await this.manageUpdatesSince(c1, c2, changesConsideredUntil)
+
+            // Look for deletes if
+            // - there is a deleteSql and
+            // - this data service has ever been synced
+            if (changesConsideredUntil) {
+                const deleteSql = this.getDeletesSql(changesConsideredUntil)
+                if (deleteSql !== '') deletes += await this.manageDeletesSince(c1, c2, changesConsideredUntil, deleteSql)
+            }
+            await c1.query('COMMIT')
+            await c2.query('COMMIT')
+
+        } catch (e) {
+            hasError = true
+            await c1.query('ROLLBACK')
+            await c2.query('ROLLBACK')
+            Logger.msg(this.constructor.name, `ERROR in aggregation`)
+        } finally {
+            c1.release()
+            c2.release()
+            Logger.msg(this.constructor.name, `pgPool client released`)
         }
+
 
         // set lastUpdateBegin to timestamp that was used to run this sync
         // process.
-        await this.setChangesConsideredUntil(tmsp)
+        if (!hasError) {
+            await this.setChangesConsideredUntil(tmsp)
+        }
 
         // await the calls produced above
-        const [updates, deletes] = await Promise.all(calls);
 
-        changes += updates + (deletes ?? 0);
+        changes += updates + deletes;
 
-        Logger.itTook(this.constructor.name, t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
+        Logger.itTook(this.constructor.name, t1, `to manage ${updates} updates and ${deletes} deletes by ${this.constructor.name}`, 1);
 
         this.syncing$.next(false)
         if (this.restartSyncing) {
             changes += await this.sync(tmsp);
         }
-        const now = await this.wh.pgNowDate()
+        const now = await this.wh.whPgNowDate()
         await this.setLastUpdateDone(now)
         if (changes > 0) {
             this.afterChange$.next()
@@ -172,44 +198,34 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      *
      * @param date
      */
-    private async manageUpdatesSince(date: Date = new Date(0)) {
+    private async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
 
         const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
 
+        const tmpTable = `${this.constructor.name}_update_tmp`
         const updateSql = this.getUpdatesSql(date)
-        const upsertHookSql = this.get2ndUpdatesSql ? `,
-            hook AS (${this.get2ndUpdatesSql('tw1', date)})`
-            : ''
-        const sql = `
-        WITH tw1 AS (
-            ${updateSql}
-        )
-        ${upsertHookSql},
-        tw2 AS (
-            INSERT INTO  ${this.index.schemaTable}
-            (${this.index.keyCols}, val)
-            SELECT ${this.index.keyCols}, tw1.val
-            FROM tw1
-            ON CONFLICT (${this.index.keyCols}) DO UPDATE
-            SET val = EXCLUDED.val
-            WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
-            RETURNING *
-        )
-        SELECT count(*)::int FROM tw2
-        `
-        const params = [date]
-        // if (this.constructor.name === 'REdgeService') logSql(sql, params)
 
-        const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
-        // useful for debugging
-        // if (this.constructor.name === 'REdgeService') {
-        //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
-        // }
-        // if (upserted.rows?.[0].count > 0) {
-        //     this.afterChange$.next()
-        // }
-        Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted.rows?.[0].count} new lines`, 2);
-        return upserted.rows.length
+        await pool1.query(`CREATE TEMP TABLE ${tmpTable} ON COMMIT DROP AS ${updateSql}`, [date])
+        const stats = await new PgDataReplicator<{count: number}>(
+            {client: pool1, table: tmpTable},
+            {client: pool2, table: this.index.schemaTable},
+            [this.index.keyCols, 'val'],
+            (insertClause, fromClause) => `
+                WITH tw1 AS (
+                    ${insertClause}
+                    ${fromClause}
+                    ON CONFLICT (${this.index.keyCols}) DO UPDATE
+                    SET val = EXCLUDED.val
+                    WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
+                    RETURNING *
+                )
+                SELECT count(*)::int FROM tw1
+            `
+        ).replicateTable()
+        const upserted = sum(stats.map(s => s.rows?.[0].count))
+
+        Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
+        return upserted
 
     }
 
@@ -223,38 +239,33 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      * On each streamed key, the function calls delItem(key)
      * @param date
      */
-    private async manageDeletesSince(date: Date, deleteSql: string) {
+    private async manageDeletesSince(pool1: PoolClient, pool2: PoolClient, date: Date, deleteSql: string) {
         const t2 = Logger.start(this.constructor.name, `Start deletes query  ...`, 2);
 
-        const deleteHookTw = this.get2ndDeleteSql ? `,
-            hook AS (
-                ${this.get2ndDeleteSql('tw1', date)}
-            )`
-            : '';
-        const deleted = await this.wh.pgPool.query<{count: number}>(
-            `
-                WITH tw1 AS (
-                    ${deleteSql}
-                )
-                ${deleteHookTw},
-                tw2 AS (
+        const tmpTable = `${this.constructor.name}_delete_tmp`
+
+        await pool1.query(`CREATE TEMP TABLE ${tmpTable} ON COMMIT DROP AS ${deleteSql}`, [date])
+        const stats = await new PgDataReplicator<{count: number}>(
+            {client: pool1, table: tmpTable},
+            {client: pool2, table: this.index.schemaTable},
+            [this.index.keyCols],
+            (insertClause, fromClause) => `
+                WITH tw2 AS (
                     UPDATE  ${this.index.schemaTable} t1
                     SET tmsp_deleted = now()
-                    FROM tw1
+                    FROM (${fromClause}) t2
                     WHERE
-                    ${this.index.keyDefs.map(k => `t1."${k.name}" = tw1."${k.name}"`).join(' AND ')}
+                    ${this.index.keyDefs.map(k => `t1."${k.name}" = t2."${k.name}"`).join(' AND ')}
                     RETURNING t1.*
                 )
                 SELECT count(*)::int FROM tw2
-            `,
-            [date]
-        );
-        // if (deleted.rows?.[0].count > 0) {
+            `
+        ).replicateTable()
+        const deleted = sum(stats.map(s => s.rows?.[0].count))
 
-        //     this.afterChange$.next()
-        // }
+
         Logger.itTook(this.constructor.name, t2, `To mark items as deleted  ...`, 2);
-        return deleted.rows.length
+        return deleted
 
     }
 

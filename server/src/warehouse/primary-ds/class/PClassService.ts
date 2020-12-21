@@ -49,18 +49,6 @@ export class PClassService extends PrimaryDataService<PClassId, PClassVal>{
 
   }
 
-  dbItemToKeyVal(item: InitItem): {key: PClassId; val: PClassVal;} {
-    const key: PClassId = {
-      pkClass: item.fkClass,
-      fkProject: item.fkProject,
-    };
-    const val: PClassVal = {
-      fkClass: item.fkClass,
-      fkProject: item.fkProject,
-      basicType: item.basicType
-    };
-    return {key, val}
-  }
 
   getUpdatesSql(tmsp: Date) {
     return updateSql
@@ -72,11 +60,6 @@ export class PClassService extends PrimaryDataService<PClassId, PClassVal>{
 }
 
 
-interface InitItem {
-  fkProject: number,
-  fkClass: number,
-  basicType: number
-}
 
 const updateSql = `
   WITH tw1 AS (

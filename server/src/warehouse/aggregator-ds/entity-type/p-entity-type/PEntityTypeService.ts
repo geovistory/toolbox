@@ -88,7 +88,7 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
     //         fk_type IS DISTINCT FROM (val->>'fkType')::int
     //     )`
     // }
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const pentity = await builder.joinProviderThroughDepIdx({
@@ -188,7 +188,6 @@ export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntit
             }
         })
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = builder.executeQueries()
 

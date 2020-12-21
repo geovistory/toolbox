@@ -1,36 +1,38 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import 'reflect-metadata';
 import {Where} from '@loopback/repository';
+import 'reflect-metadata';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
-import {filter, first, switchMap} from 'rxjs/operators';
+import {filter, first, switchMap, startWith} from 'rxjs/operators';
 import {WarClassPreview, WarEntityPreview} from '../../models';
-import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
+import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
+import {getWarehouseConfig} from '../../warehouse/startScripts';
+import {Warehouse} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
-import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
 
 
 
-const config: WarehouseConfig = {
-    geovistoryDatabase: process.env.DATABASE_URL ?? '',
-    geovistoryDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_GV_DB_POOL_SIZE ?? '10', 10),
-    warehouseSchema: 'war_cache_1'
-}
+// const config: WarehouseConfig = {
+//     geovistoryDatabase: process.env.DATABASE_URL ?? '',
+//     geovistoryDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_GV_DB_POOL_SIZE ?? '10', 10),
+//     warehouseSchema: 'war_cache_1'
+// }
 
 
 export async function setupCleanAndStartWarehouse(stubs?: WarehouseStubs) {
+    const config = getWarehouseConfig()
     const injector = createWarehouse(config, stubs)
-    const wh = injector.get(Warehouse)
-    await wh.pgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
+    const wh: Warehouse = injector.get(Warehouse)
+    await wh.whPgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
     await wh.start()
-    await wh.pgListener.query('LISTEN entity_previews_updated;')
-    await wh.pgListener.query('LISTEN modified_war_class_preview;')
+    await wh.gvPgListener.query('LISTEN entity_previews_updated;')
+    await wh.gvPgListener.query('LISTEN modified_war_class_preview;')
     return injector;
 }
 
 
 export async function truncateWarehouseTables(wh: Warehouse) {
-    await wh.pgPool.query(`
+    await wh.whPgPool.query(`
         CREATE OR REPLACE FUNCTION truncate_tables(_schemaname text)
         RETURNS void AS
         $func$
@@ -52,7 +54,7 @@ export async function truncateWarehouseTables(wh: Warehouse) {
 
 export async function stopWarehouse(wh: Warehouse) {
     // await wait(1000)
-    await wh.pgPool.query('VACUUM ANALYZE')
+    await wh.whPgPool.query('VACUUM ANALYZE')
     await wh.stop()
 }
 /**
@@ -79,7 +81,7 @@ export async function waitUntilNext<M>(observable$: Observable<M>) {
  */
 export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
     return new Promise<WarEntityPreview>((res, rej) => {
-        const sub = wh.pgNotifications$.subscribe((msg) => {
+        const sub = wh.gvPgNotifications$.subscribe((msg) => {
             if (msg.channel === 'entity_previews_updated') {
 
                 createWarEntityPreviewRepo().find({
@@ -107,13 +109,13 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
 
 
 /**
- * Returns a Promis that resolves as soon as the database emits a entity preview
+ * Returns a Promise that resolves as soon as the database emits a entity preview
  * that machtches the given whereFilter.
  * @param observable$
  */
 export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarEntityPreview) => boolean) {
     return new Promise<WarEntityPreview>((res, rej) => {
-        const sub = wh.pgNotifications$.subscribe((msg) => {
+        const sub = wh.gvPgNotifications$.subscribe((msg) => {
             if (msg.channel === 'entity_previews_updated') {
 
 
@@ -141,6 +143,41 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
     })
 }
 
+/**
+ * Returns a Promis that resolves as soon as it finds a entity preview
+ * matching the given filter. It begins to search emmediately and
+ * repeats the search every time the gvDB emits a entity preview
+ * @param observable$
+ */
+export function searchForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
+    return new Promise<WarEntityPreview>((res, rej) => {
+        const sub = wh.gvPgNotifications$
+            .pipe(startWith({channel: 'entity_previews_updated'}))
+            .subscribe((msg) => {
+                if (msg.channel === 'entity_previews_updated') {
+
+                    createWarEntityPreviewRepo().find({
+                        where: {
+                            and: [
+                                ...whereFilter
+                            ]
+                        }
+                    })
+                        .then((result) => {
+                            if (result?.length === 1) {
+                                // console.log('OK! ', msg.payload)
+                                res(result[0])
+                                sub.unsubscribe()
+                            } else if (result.length > 1) {
+                                rej('found too many entity peviews')
+                            }
+                        })
+                        .catch(e => rej(e))
+                }
+            })
+    })
+}
+
 
 /**
  * Returns a Promis that resolves as soon as the database emits a entity preview
@@ -149,7 +186,7 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
  */
 export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<WarClassPreview>[]) {
     return new Promise<WarClassPreview>((res, rej) => {
-        const sub = wh.pgNotifications$.subscribe((msg) => {
+        const sub = wh.gvPgNotifications$.subscribe((msg) => {
             if (msg.channel === 'modified_war_class_preview') {
                 createWarClassPreviewRepo().find({
                     where: {

@@ -160,7 +160,7 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
         `
 
     }
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const p: JoinedProviders = []
@@ -227,7 +227,47 @@ export class EntityPreviewService extends AggregatedDataService2<PEntityId, Enti
 
 
         await builder.tmpTableUpsertAggregations(this.index, joinedColumns.tableDef.tableName)
-        builder.registerUpsertHook()
+        builder.registerUpsertHook(
+            {client: client2, table: 'war.entity_preview'},
+            (insertClause, fromClause) => `
+            UPDATE war.entity_preview
+            SET
+                class_label =       val->>'classLabel',
+                entity_label =      val->>'entityLabel',
+                full_text =         val->>'fullText',
+                type_label =        val->>'typeLabel',
+                fk_type =           (val->>'fkType')::int,
+                time_span =         val->'timeSpan',
+                first_second =      (val->>'firstSecond')::bigint,
+                last_second =       (val->>'lastSecond')::bigint
+            FROM ${fromClause} t1
+            WHERE pk_entity = "pkEntity"
+            AND project = "fkProject"
+            AND (
+                    entity_label,
+                    class_label,
+                    entity_label,
+                    full_text,
+                    type_label,
+                    fk_type,
+                    time_span,
+                    first_second,
+                    last_second
+                )
+                IS DISTINCT FROM
+                (
+                    val->>'entityLabel',
+                    val->>'classLabel',
+                    val->>'entityLabel',
+                    val->>'fullText',
+                    val->>'typeLabel',
+                    (val->>'fkType')::int,
+                    val->'timeSpan',
+                    (val->>'firstSecond')::bigint,
+                    (val->>'lastSecond')::bigint
+                )
+            `
+        )
 
         // await builder.printQueries()
         const count = await builder.executeQueries()

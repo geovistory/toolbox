@@ -57,7 +57,7 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
     // }
 
 
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const rentity = await builder.joinProviderThroughDepIdx({
@@ -267,7 +267,6 @@ export class REntityLabelService extends AggregatedDataService2<REntityId, Entit
 
 
         await builder.tmpTableUpsertAggregations(this.index, aggregateLabels.tableDef.tableName, '= true')
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = await builder.executeQueries()
 

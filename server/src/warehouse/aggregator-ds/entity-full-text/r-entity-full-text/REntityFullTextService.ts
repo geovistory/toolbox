@@ -85,7 +85,7 @@ export class REntityFullTextService extends AggregatedDataService2<REntityId, RE
     //     AND project = 0
     //     AND full_text IS DISTINCT FROM val->>'fullText'`
     // }
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
         const rEntity = await builder.joinProviderThroughDepIdx({
             leftTable: builder.batchTmpTable.tableDef,
@@ -431,7 +431,6 @@ export class REntityFullTextService extends AggregatedDataService2<REntityId, RE
 
         await builder.tmpTableUpsertAggregations(this.index, final.tableDef.tableName)
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = builder.executeQueries()
 

@@ -38,17 +38,7 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
         this.proClassLabel = this.addDepencency(proClassLabel)
     }
 
-    onUpsertSql(tableAlias: string) {
-        return `
-        INSERT INTO war.class_preview (fk_class, fk_project, label)
-        SELECT DISTINCT ON ("pkClass") "pkClass", 0, val->>'label'
-        FROM ${tableAlias}
-        ON CONFLICT (fk_class, fk_project) DO UPDATE
-        SET label = EXCLUDED.label
-        WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label`
-    }
-
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const geovistoryLabelsTw = await builder.joinProviderThroughDepIdx({
@@ -86,7 +76,16 @@ export class RClassLabelService extends AggregatedDataService2<RClassId, RClassL
             }
         })
 
-        builder.registerUpsertHook()
+        builder.registerUpsertHook(
+            {client: client2, table: 'war.class_preview'},
+            (insertClause, fromClause) => `
+            INSERT INTO war.class_preview (fk_class, fk_project, label)
+            SELECT DISTINCT ON ("pkClass") "pkClass", 0, val->>'label'
+            FROM ${fromClause} t1
+            ON CONFLICT (fk_class, fk_project) DO UPDATE
+            SET label = EXCLUDED.label
+            WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label`
+        )
         const count = await builder.executeQueries()
         // const count = await builder.printQueries()
         return count

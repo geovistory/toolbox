@@ -33,7 +33,7 @@ export class Logger {
         return new Date().getTime();
     }
     static itTook(slug: string, beginMs: number, msg: string, intendation = 1, endLine = true) {
-        if (process.env.LOGS === 'OFF') return
+        if (process.env.LOGS === 'OFF') return 0
 
         const ind = new Array(intendation + 1).join('      ');
         const ram = Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100

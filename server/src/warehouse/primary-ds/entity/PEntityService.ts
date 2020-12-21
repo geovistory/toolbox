@@ -165,6 +165,15 @@ WITH tw1 AS (
     JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
     WHERE t1.is_in_project=true
 	AND t2.tmsp_last_modification >= $1
+),
+tw2 AS (
+    INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
+    SELECT pk_entity, fk_project, fk_project, fk_class, entity_type
+    FROM tw1
+    ON CONFLICT (pk_entity, project) DO UPDATE
+    SET fk_class = EXCLUDED.fk_class, entity_type = EXCLUDED.entity_type
+    WHERE EXCLUDED.fk_class IS DISTINCT FROM war.entity_preview.fk_class
+    OR EXCLUDED.entity_type IS DISTINCT FROM war.entity_preview.entity_type
 )
 SELECT
     tw1.fk_project "fkProject",
@@ -178,25 +187,34 @@ SELECT
         'entityType', tw1.entity_type
     ) val
 FROM tw1
-`
+        `
 export const deleteSql = `
-SELECT
-    t1.fk_project "fkProject",
-	t2.pk_entity "pkEntity"
-FROM
-projects.info_proj_rel t1
-JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
-WHERE t1.is_in_project=false
-AND t1.tmsp_last_modification >= $1
-UNION ALL
-SELECT
-    t1.fk_project "fkProject",
-	t2.pk_entity "pkEntity"
-FROM
-projects.info_proj_rel t1
-JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
-WHERE t1.is_in_project=false
-AND t1.tmsp_last_modification >= $1
+WITH tw1 AS (
+    SELECT
+        t1.fk_project "fkProject",
+        t2.pk_entity "pkEntity"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=false
+    AND t1.tmsp_last_modification >= $1
+    UNION ALL
+    SELECT
+        t1.fk_project "fkProject",
+        t2.pk_entity "pkEntity"
+    FROM
+    projects.info_proj_rel t1
+    JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
+    WHERE t1.is_in_project=false
+    AND t1.tmsp_last_modification >= $1
+),
+tw2 AS (
+    DELETE FROM war.entity_preview
+    USING tw1
+    WHERE pk_entity = tw1."pkEntity"
+    AND fk_project = tw1."fkProject"
+)
+SELECT * FROM tw1
 `
 export interface PEntity {
     pkEntity: number

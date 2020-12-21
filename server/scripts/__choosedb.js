@@ -8,23 +8,40 @@ require('./__dotenv');
 const prompts = require('prompts');
 
 async function chooseDb() {
+  const response = await prompts([
+    {
+      type: 'select',
+      name: 'gvDbUrl',
+      message: 'What database should be used as DATABASE_URL?',
+      choices: [
+        {title: 'GV_DB_REVIEW_COPY', value: process.env.GV_DB_REVIEW_COPY},
+        {title: 'GV_DB_PROD_COPY', value: process.env.GV_DB_PROD_COPY},
+        {title: 'GV_DB_FOR_SEEDING', value: process.env.GV_DB_FOR_SEEDING},
+        {
+          title: 'GV_DB_SCHEMA_TEMPLATE',
+          value: process.env.GV_DB_SCHEMA_TEMPLATE,
+        },
+      ],
+    },
+    {
+      type: 'select',
+      name: 'whDbUrl',
+      message: 'What database should be used as WH_DATABASE_URL?',
+      choices: [
+        {title: 'WH_DB_REVIEW_COPY', value: process.env.WH_DB_REVIEW_COPY},
+        {title: 'WH_DB_PROD_COPY', value: process.env.WH_DB_PROD_COPY},
+        {title: 'WH_DB_FOR_SEEDING', value: process.env.WH_DB_FOR_SEEDING},
+        {
+          title: 'WH_DB_SCHEMA_TEMPLATE',
+          value: process.env.WH_DB_SCHEMA_TEMPLATE,
+        },
+      ],
+    }
+  ]);
 
-  const response = await prompts({
-    type: 'select',
-    name: 'selectedDbUrl',
-    message: 'What database should be used as DATABASE_URL?',
-    choices: [
-      {title: 'DB_REVIEW_COPY', value: process.env.DB_REVIEW_COPY},
-      {title: 'DB_PROD_COPY', value: process.env.DB_PROD_COPY},
-      {title: 'DB_FOR_SEEDING', value: process.env.DB_FOR_SEEDING},
-      {
-        title: 'DB_SCHEMA_TEMPLATE',
-        value: process.env.DB_SCHEMA_TEMPLATE,
-      },
-    ],
-  })
-
-  if(!response.selectedDbUrl) process.exit()
-  process.env.DATABASE_URL = response.selectedDbUrl;
+  if (!response.gvDbUrl) process.exit();
+  if (!response.whDbUrl) process.exit();
+  process.env.DATABASE_URL = response.gvDbUrl;
+  process.env.WH_DATABASE_URL = response.whDbUrl;
 }
 module.exports = chooseDb;

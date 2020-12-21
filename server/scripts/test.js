@@ -2,12 +2,14 @@ require('./__dotenv');
 const prompts = require('prompts');
 const path = require('path');
 const helpers = require('./__helpers');
+const chooseDB = require('./__choosedb');
 
 process.env.LOGS = 'OFF';
 process.env.NO_LOGS = 'true';
 
 // assign defaults
-process.env.DATABASE_URL = process.env.DB_FOR_SEEDING;
+process.env.DATABASE_URL = process.env.GV_DB_FOR_SEEDING;
+process.env.WH_DATABASE_URL = process.env.WH_DB_FOR_SEEDING;
 let mochaGrep = process.env.MOCHA_GREP;
 let mochaTimeout = process.env.MOCHA_TIMEOUT;
 let mochaFolder = process.env.MOCHA_FOLDER;
@@ -26,21 +28,10 @@ async function getUserInputs() {
 
   // let user customize settings
   console.log(`Defaults denyed. Customize settings:`);
+
+  await chooseDB();
+
   const custom = await prompts([
-    {
-      type: 'select',
-      name: 'selectedDbUrl',
-      message: 'What database should be used? (as DATABASE_URL)',
-      choices: [
-        {title: 'DB_FOR_SEEDING', value: process.env.DB_FOR_SEEDING},
-        {title: 'DB_REVIEW_COPY', value: process.env.DB_REVIEW_COPY},
-        {title: 'DB_PROD_COPY', value: process.env.DB_PROD_COPY},
-        {
-          title: 'DB_SCHEMA_TEMPLATE',
-          value: process.env.DB_SCHEMA_TEMPLATE,
-        },
-      ],
-    },
     {
       type: 'select',
       message: 'What regex filter should be applied? (mocha --grep)',
@@ -75,7 +66,6 @@ async function getUserInputs() {
   ]);
 
   // assign custom settings
-  process.env.DATABASE_URL = custom.selectedDbUrl;
   mochaGrep = custom.customGrep || custom.grep;
   mochaTimeout = custom.timeout;
   mochaFolder = custom.folder;
@@ -94,9 +84,12 @@ async function confirmSettings() {
   return prompts({
     type: 'confirm',
     message: `Run tests with these settings?
-    database:       ${helpers.createDbUrlPreview(
+    WH database:       ${helpers.createDbUrlPreview(
+      process.env.WH_DATABASE_URL,
+    )} (from env.WH_DB_FOR_SEEDING)
+    GV database:       ${helpers.createDbUrlPreview(
       process.env.DATABASE_URL,
-    )} (from env.DB_FOR_SEEDING)
+    )} (from env.GV_DB_FOR_SEEDING)
     mocha-grep:     ${mochaGrep}
     mocha-folder:   ${mochaFolder}
     mocha-timeout:  ${mochaTimeout}
@@ -107,18 +100,26 @@ async function confirmSettings() {
 
 function validateSettings() {
   if (!process.env.DATABASE_URL) {
-    console.log('No database url specified');
+    console.log('No geovistory database url specified');
+    process.exit();
+  }
+
+  if (!process.env.WH_DATABASE_URL) {
+    console.log('No warehouse database url specified');
     process.exit();
   }
 }
 
 async function start() {
+
   await getUserInputs();
   const cmd = createCommand();
   console.log(`
-  Running tests on ${helpers.createDbUrlPreview(
+  Running tests on geovistory db: ${helpers.createDbUrlPreview(
     process.env.DATABASE_URL,
-  )} with this command:`);
+  )} and warehouse db: ${helpers.createDbUrlPreview(
+    process.env.WH_DATABASE_URL,
+  )}  with this command:`);
   console.log(cmd);
 
   return require('./__execShell').fromScript(cmd);

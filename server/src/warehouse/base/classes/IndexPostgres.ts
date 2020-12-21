@@ -26,9 +26,9 @@ export abstract class IndexPostgres<KeyModel, ValueModel> implements Index<KeyMo
         this.schema = wh.schemaName;
         this.table = name;
         this.schemaTable = `${this.schema}.${this.table}`
-        this.pgPool = wh.pgPool;
+        this.pgPool = wh.whPgPool;
         combineLatest(
-            wh.pgListenerConnected$,
+            wh.gvPgListenerConnected$,
             wh.createSchema$
         ).pipe(first()).subscribe(([client]) => {
             this.pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${this.schema}`)

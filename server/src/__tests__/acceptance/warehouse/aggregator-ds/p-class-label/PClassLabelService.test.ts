@@ -43,7 +43,6 @@ describe('PClassLabelService', function () {
     beforeEach(async () => {
         await cleanDb()
         await truncateWarehouseTables(wh)
-
     })
     after(async function () {
         await stopWarehouse(wh)
@@ -148,7 +147,6 @@ async function createGeovistoryLabelMock() {
 
 async function createProjectLabelMock() {
     const { prel, cla, gvTxt } = await createGeovistoryLabelMock();
-    await createTypes()
     const proTxt = await createProTextPropertyClassLabel(
         prel.fk_project ?? -1,
         1,

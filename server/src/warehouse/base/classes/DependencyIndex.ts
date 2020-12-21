@@ -35,7 +35,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel>,
         public providerDS: DataService<ProviderKeyModel, ProviderValModel>
     ) {
-        this.pgPool = wh.pgPool;
+        this.pgPool = wh.whPgPool;
         providerDS.registerProviderOf(this)
         receiverDS.registerReceiverOf(this)
         this.schema = wh.schemaName;
@@ -48,7 +48,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         this.receiverKeyCols = this.receiverKeyDefs.map(k => `"${k.name}"`).join(',')
         this.keyCols = `${this.providerKeyCols},${this.receiverKeyCols}`
         combineLatest(
-            wh.pgListenerConnected$,
+            wh.gvPgListenerConnected$,
             wh.createSchema$
         ).pipe(first()).subscribe(([client]) => {
             this.setupTable()

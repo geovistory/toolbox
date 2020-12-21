@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
+import 'reflect-metadata';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {REntityService} from '../../../../warehouse/primary-ds/entity/REntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
@@ -12,9 +13,8 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+import {searchForEntityPreview, searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../helpers/warehouse-helpers';
 const stubs: WarehouseStubs = {
   primaryDataServices: [REntityService],
   aggDataServices: []
@@ -47,10 +47,10 @@ describe('REntityService', () => {
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    const result = await waitForEntityPreviewUntil(wh, item => {
-      return item.fk_project === null
-        && item.pk_entity === entity.pk_entity
-    })
+    const result = await searchForEntityPreview(wh, [
+      {pk_entity: {eq: entity.pk_entity}},
+      {fk_project: {eq: null}},
+    ])
     expect(result?.fk_class).to.equal(entity?.fk_class)
 
   })
@@ -61,10 +61,10 @@ describe('REntityService', () => {
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    let result = await waitForEntityPreviewUntil(wh, item => {
-      return item.fk_project === null
-        && item.pk_entity === entity.pk_entity
-    })
+    let result = await searchForEntityPreview(wh, [
+      {pk_entity: {eq: entity.pk_entity}},
+      {fk_project: {eq: null}},
+    ])
     expect(result?.fk_class).to.equal(entity?.fk_class)
 
     await updateInfPersistentItem(

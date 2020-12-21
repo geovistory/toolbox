@@ -40,8 +40,7 @@ export class ProClassLabelService extends PrimaryDataService< ProClassLabelId, P
     getDeletesSql(tmsp: Date) {
         return deleteSql
     };
-    get2ndUpdatesSql = undefined
-    get2ndDeleteSql = undefined
+
 }
 
 

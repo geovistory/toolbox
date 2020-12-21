@@ -62,7 +62,7 @@ export class PClassFieldLabelService extends AggregatedDataService2<PClassFieldL
         this.depProPropertyLabel = this.addDepencency(proPropertyLabel)
     }
 
-    async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
         const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
 
         const projectLang = await builder.joinProviderThroughDepIdx({
@@ -213,7 +213,6 @@ export class PClassFieldLabelService extends AggregatedDataService2<PClassFieldL
             }
         })
 
-        builder.registerUpsertHook()
         // await builder.printQueries()
         const count = await builder.executeQueries()
         return count

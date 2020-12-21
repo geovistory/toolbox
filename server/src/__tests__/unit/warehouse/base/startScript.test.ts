@@ -15,7 +15,7 @@ describe('Warehouse Start Script', function () {
     createCompatList(['commit10', 'commit09', 'commit08'])
 
     const warehouse = await start();
-    const res = await warehouse.pgPool.query<{schema: string}>(`
+    const res = await warehouse.whPgPool.query<{schema: string}>(`
       SELECT schema_name AS schema
       FROM information_schema.schemata
     `)
@@ -28,7 +28,7 @@ describe('Warehouse Start Script', function () {
     createCompatList(['commit10', 'commit09', 'commit08'])
 
     let warehouse = await start();
-    let res = await warehouse.pgPool.query<{schema: string}>(`
+    let res = await warehouse.whPgPool.query<{schema: string}>(`
       SELECT schema_name AS schema
       FROM information_schema.schemata
     `)
@@ -40,7 +40,7 @@ describe('Warehouse Start Script', function () {
     createCompatList(['commit11', 'commit10', 'commit09'])
 
     warehouse = await start();
-    res = await warehouse.pgPool.query<{schema: string}>(`
+    res = await warehouse.whPgPool.query<{schema: string}>(`
       SELECT schema_name AS schema
       FROM information_schema.schemata
     `)
