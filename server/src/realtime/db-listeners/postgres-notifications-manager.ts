@@ -1,7 +1,7 @@
 import {Client, ClientConfig} from 'pg';
 import {parse} from 'pg-connection-string';
 import {GeovistoryApplication} from '../../application';
-import {getPgSslForPg8, getPgUrlForPg8} from '../../utils/databaseUrl';
+import {getGvDatabaseUrl, getPgSslForPg8} from '../../utils/databaseUrl';
 
 /**
  * This class manages notifications from prostgres.
@@ -32,7 +32,7 @@ export class PostgresNotificationsManager {
 
   // create postgres client
   createClient() {
-    const connectionString = getPgUrlForPg8()
+    const connectionString = getGvDatabaseUrl()
     const pgConfig = parse(connectionString) as ClientConfig
     pgConfig.ssl = getPgSslForPg8(connectionString)
     return new Client(pgConfig)

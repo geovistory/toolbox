@@ -1,6 +1,6 @@
 import {Client, ClientConfig} from 'pg';
-import {getPgSslForPg8, getPgUrlForPg8} from '../../../utils/databaseUrl';
-import {parse} from 'pg-connection-string'
+import {parse} from 'pg-connection-string';
+import {getPgSslForPg8} from '../../../utils/databaseUrl';
 /**
  * This function only works of there is a database server with these dbs:
  * - a mainainance db

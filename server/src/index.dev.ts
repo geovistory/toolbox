@@ -3,6 +3,7 @@ import {GeovistoryServer} from './server';
 import {createHeavyFactoids} from './__tests__/helpers/graphs/heavy-factoids.helper';
 import {cleanDb} from './__tests__/helpers/meta/clean-db.helper';
 import {cleanAndStartDev} from './warehouse/startScripts';
+import {getGvDatabaseUrl} from './utils/databaseUrl';
 
 /**
  * This function starts the geovistory application and fills the database
@@ -22,7 +23,7 @@ export async function serveWithMockData(options: ApplicationConfig = {}) {
   console.log(`Cleaning and starting the Warehouse...`);
   await cleanAndStartDev()
 
-  console.log(`Starting server using database: ${process.env.DATABASE_URL}`)
+  console.log(`Starting server using database: ${getGvDatabaseUrl()}`)
   console.log(`Starting server at ${options.rest.host}:${options.rest.port} ...`);
   const server = new GeovistoryServer(options);
   await server.boot();

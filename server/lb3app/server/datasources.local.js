@@ -1,3 +1,4 @@
+const getGvPgUrlForLoopback = require('../../dist/utils/databaseUrl').getGvPgUrlForLoopback
 let config = {
   postgres1: {
     url: '',
@@ -25,6 +26,6 @@ let config = {
   },
 };
 
-config.postgres1.url = process.env.DATABASE_URL.replace('sslmode=require', 'ssl=true')
+config.postgres1.url = getGvPgUrlForLoopback()
 
 module.exports = config;

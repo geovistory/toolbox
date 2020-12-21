@@ -1,5 +1,6 @@
 import {LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
+import {getGvPgUrlForLoopback} from '../utils/databaseUrl';
 
 
 // Observe application's life cycle to disconnect the datasource when
@@ -14,7 +15,7 @@ export class TestdbDataSource extends juggler.DataSource
   constructor() {
 
     super({
-      url: process.env.DATABASE_URL,
+      url: getGvPgUrlForLoopback(),
       name: 'testdb',
       connector: 'postgresql',
       ssl: {

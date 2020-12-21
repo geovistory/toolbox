@@ -1,28 +1,34 @@
-import { PoolConfig } from 'pg';
-import { parse } from 'pg-connection-string';
+import {PoolConfig} from 'pg';
+import {parse} from 'pg-connection-string';
 
-export function getDatabaseUrl() {
-  const databaseUrl = process.env.DATABASE_URL as string;
+export function getGvDatabaseUrl() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) throw new Error("Warehouse > No DATABASE_URL provided")
+  if (!dbRequiresSSL(databaseUrl) && process.env.GV_DB_SSL === 'sslmode=require') {
+    return databaseUrl + '?sslmode=require'
+  }
   return databaseUrl
 }
 
 // creates postgres url for loopback juggler.DataSource
-export function getPgUrlForLoopback() {
-  const url = getDatabaseUrl().replace('sslmode=require', 'ssl=true')
+export function getGvPgUrlForLoopback() {
+  const url = getGvDatabaseUrl().replace('sslmode=require', 'ssl=true')
   return url
-};
-// creates postgres ssl config for loopback juggler.DataSource
-export function getPgSslForLoopback() {
 };
 
-// creates postgres url for node-postgres ('pg') v8 and higher
-export function getPgUrlForPg8() {
-  const url = getDatabaseUrl()
-  return url
-};
+export function getWhDatabaseUrl() {
+  const databaseUrl = process.env.WH_DATABASE_URL as string;
+  if (!databaseUrl) throw new Error("Warehouse > No WH_DATABASE_URL provided")
+  if (!dbRequiresSSL(databaseUrl) && process.env.WH_DB_SSL === 'sslmode=require') {
+    return databaseUrl + '?sslmode=require'
+  }
+  return databaseUrl
+}
+
+
 // creates postgres ssl config for node-postgres ('pg') v8 and higher
 export function getPgSslForPg8(url: string) {
-  if (dbRequiresSSL(url)) return { rejectUnauthorized: false }
+  if (dbRequiresSSL(url)) return {rejectUnauthorized: false}
   return undefined;
 };
 
@@ -34,7 +40,7 @@ export function dbRequiresSSL(url: string) {
 }
 
 export function createPoolConfig(connectionString?: string, maxConnections?: number): PoolConfig {
-  if(!connectionString) throw new Error("Please provide a connection string");
+  if (!connectionString) throw new Error("Please provide a connection string");
   const config = parse(connectionString) as PoolConfig
   config.max = maxConnections
   config.ssl = getPgSslForPg8(connectionString)

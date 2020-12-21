@@ -12,12 +12,6 @@ import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 
 
 
-// const config: WarehouseConfig = {
-//     geovistoryDatabase: process.env.DATABASE_URL ?? '',
-//     geovistoryDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_GV_DB_POOL_SIZE ?? '10', 10),
-//     warehouseSchema: 'war_cache_1'
-// }
-
 
 export async function setupCleanAndStartWarehouse(stubs?: WarehouseStubs) {
     const config = getWarehouseConfig()
