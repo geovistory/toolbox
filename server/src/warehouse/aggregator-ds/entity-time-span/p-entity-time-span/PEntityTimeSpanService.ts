@@ -1,9 +1,11 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../../base/classes/Updater';
-import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
-import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
-import {PEntityId} from '../../../primary-ds/entity/PEntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {PoolClient} from 'pg';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {EntityFields, EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
+import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
+import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
@@ -42,121 +44,147 @@ export type PEntityTimeSpan = {
  * -> The Val is the result of the PEntityTimeSpanAggregator
  *
  */
-export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal, PEntityTimeSpanAggregator>{
-    updater: Updater<PEntityId, PEntityTimeSpanAggregator>;
+@Injectable()
+export class PEntityTimeSpanService extends AggregatedDataService2<PEntityId, PEntityTimeSpanVal>{
+    aggregator = PEntityTimeSpanAggregator;
+    providers = PEntityTimeSpanProviders;
 
-    constructor(public wh: Warehouse) {
+    depPEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>
+    depPEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>
+    batchSize = 100000;
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
+        @Inject(forwardRef(() => PEdgeService)) pEdge: PEdgeService
+    ) {
         super(
             wh,
-            pEntityIdToString,
-            stringToPEntityId
-        )
-        const aggregatorFactory = async (id: PEntityId) => {
-            const providers = new PEntityTimeSpanProviders(this.wh.dep.pEntityTimeSpan, id)
-            return new PEntityTimeSpanAggregator(providers, id).create()
-        }
-        const register = async (result: PEntityTimeSpanAggregator) => {
-            await this.put(result.id, {
-                timeSpan: result.entityTimeSpan,
-                firstSecond: result.firstSecond,
-                lastSecond: result.lastSecond
-            })
-            await result.providers.removeProvidersFromIndexes()
-        }
-
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            pEntityIdToString,
-            stringToPEntityId,
+            pEntityKeyDefs
         )
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTimeSpanVal>(
-            wh,
-            'war.entity_preview (time_span)',
-            (valuesStr: string) => `
-            UPDATE war.entity_preview
-            SET time_span = x.column3::jsonb,
-                first_second = x.column4::bigint,
-                last_second = x.column5::bigint
-            FROM
-            (
-                values ${valuesStr}
-            ) as x
-            WHERE pk_entity = x.column1::int
-            AND project = x.column2::int
-            AND time_span IS DISTINCT FROM x.column3::jsonb;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val.timeSpan, item.val.firstSecond, item.val.lastSecond],
-            pEntityIdToString
-        )
-
-        /**
-         * Add actions after a new class type is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
-
-            // Add item to queue to upsert it into db
-            upsertQueue.add(item)
+        this.registerCreatorDS({
+            dataService: pEntity,
+            customSql: [
+                {
+                    where: `val->>'entityType' = 'teEn'`,
+                }
+            ]
         })
+        this.depPEntity = this.addDepencency(pEntity);
+        this.depPEdge = this.addDepencency(pEdge);
+
     }
 
-    // writeToDb(results: PEntityTimeSpanAggregator[]) {
-    //     let i = 0;
-    //     let batchSize = 0;
-    //     const maxBatchSize = 1000;
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     let params: any[] = []
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     const addParam = (val: any) => {
-    //         params.push(val)
-    //         return '$' + params.length;
-    //     }
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     const addParams = (vals: any[]) => {
-    //         return vals.map(val => addParam(val)).join(',');
-    //     }
-    //     let values = ''
-    //     let remaining = results.length;
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
+
+        const pentity = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.depPEntity,
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
+        })
+        await builder.joinProviderThroughDepIdx({
+            leftTable: pentity.aggregation.tableDef,
+            joinWithDepIdx: this.depPEdge,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {},
+            createAggregationVal: {
+                upsert: true,
+                sql: () => `
+                    jsonb_strip_nulls(jsonb_build_object(
+                        'timeSpan', json_strip_nulls(json_build_object(
+                            'p81', CASE WHEN t2.val->'outgoing'->'71' IS NOT NULL THEN json_build_object(
+                                    'julianDay', t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                    'duration', t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->'duration',
+                                    'calendar', t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p82', CASE WHEN t2.val->'outgoing'->'72' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p81a', CASE WHEN t2.val->'outgoing'->'150' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p81b', CASE WHEN t2.val->'outgoing'->'151' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p82a', CASE WHEN t2.val->'outgoing'->'152' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END,
+                            'p82b', CASE WHEN t2.val->'outgoing'->'153' IS NOT NULL THEN json_build_object(
+                                'julianDay', t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->'julianDay',
+                                'duration', t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->'duration',
+                                'calendar', t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->'calendar'
+                            ) END
+                        )),
+                        'firstSecond',  (SELECT min(unnest) FROM unnest(ARRAY[
+                                (t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint,
+                                (t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->>'firstSecond')::bigint
+                            ])),
+                        'lastSecond',  (SELECT max(unnest) FROM unnest(ARRAY[
+                                (t2.val->'outgoing'->'71'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'72'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'150'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'151'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'152'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint,
+                                (t2.val->'outgoing'->'153'->0->'targetValue'->'timePrimitive'->>'lastSecond')::bigint
+                            ]))
+                    ))
+                `
+            }
+        })
 
 
-    //     for (const res of results) {
-    //         const arr = this.getParamsForUpsert(res)
-    //         values = values + `(${addParams(arr)}),`
-    //         i++
-    //         batchSize++
-    //         if (i % maxBatchSize === 0 || i === results.length) {
-    //             remaining = remaining - batchSize;
-    //             const t = Logger.start(`Upserting ${batchSize} entity labels, remaining: ${remaining} of ${results.length}`, 2)
-    //             const q = this.getUpsertSql(values.slice(0, -1))
-    //             this.wh.pgClient.query(q, params)
-    //                 .then(() => {
-    //                     Logger.itTook(t, `to batch upsert entity labels`, 2)
-    //                 })
-    //                 .catch(e => {
-    //                     console.log(e)
-    //                 })
 
-    //             params = []
-    //             values = ''
-    //             batchSize = 0;
-    //         }
-    //     }
-    // }
 
-    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // getParamsForUpsert(res: PEntityTimeSpanAggregator): any[] {
-    //     return [res.id.pkEntity, res.id.fkProject, res.id.fkProject, res.entityType]
-    // }
+        // await builder.printQueries()
+        const count = builder.executeQueries()
 
-    // getUpsertSql(valuesStr: string) {
+        return count
+    }
+
+    // onUpsertSql(tableAlias: string) {
     //     return `
-    //     INSERT INTO war.entity_preview (pk_entity, fk_project, project, entity_label)
-    //     VALUES ${valuesStr}
-    //     ON CONFLICT (pk_entity, project) DO UPDATE
-    //     SET entity_label = EXCLUDED.entity_label
-    //     WHERE EXCLUDED.entity_label IS DISTINCT FROM war.entity_preview.entity_label;`
+    //     UPDATE war.entity_preview
+    //     SET time_span = (${tableAlias}.val->>'timeSpan')::jsonb,
+    //         first_second = (${tableAlias}.val->>'firstSecond')::bigint,
+    //         last_second = (${tableAlias}.val->>'lastSecond')::bigint
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = ${tableAlias}."pkEntity"
+    //     AND project = ${tableAlias}."fkProject"
+    //     AND (
+    //         time_span,
+    //         first_second,
+    //         last_second
+    //     )
+    //     IS DISTINCT FROM
+    //     (
+    //         (${tableAlias}.val->>'timeSpan')::jsonb,
+    //         (${tableAlias}.val->>'firstSecond')::bigint,
+    //         (${tableAlias}.val->>'lastSecond')::bigint
+    //     )`
     // }
 }
 

@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {outgoingProperyIdToString, stringToOutgoingProperyId} from '../base/functions';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface OutgoingProperyId {
     fkDomain: number
     fkProperty: number
@@ -8,8 +9,8 @@ export interface OutgoingProperyId {
 export type OutgoingPropertyVal = {
     fkDomain: number,
     fkProperty: number,
-    dfhIdentityDefining: false,
-    dfhIsHasTypeSubproperty: true,
+    dfhIdentityDefining: boolean,
+    dfhIsHasTypeSubproperty: boolean,
     dfhRangeInstancesMaxQuantifier: number,
     dfhRangeInstancesMinQuantifier: number,
     dfhDomainInstancesMaxQuantifier: number,
@@ -30,31 +31,24 @@ export type OutgoingPropertyVal = {
  *      '363': 1110
  * }
  */
-export class DfhOutgoingPropertyService extends PrimaryDataService<DbItem, OutgoingProperyId, OutgoingPropertyVal>{
+const outgoingPropertykeyDefs: KeyDefinition[] = [
+    {
+        name: 'fkDomain',
+        type: 'integer'
+    },
+    {
+        name: 'fkProperty',
+        type: 'integer'
+    },
+]
+@Injectable()
+export class DfhOutgoingPropertyService extends PrimaryDataService<OutgoingProperyId, OutgoingPropertyVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'],outgoingProperyIdToString, stringToOutgoingProperyId)
-        this.afterPut$.subscribe(item => {
-            wh.agg.identifyingProperty.updater.addItemToQueue({pkClass: item.key.fkDomain}).catch(e => console.log(e))
-        })
-    }
-    dbItemToKeyVal(item: DbItem): {key: OutgoingProperyId; val: OutgoingPropertyVal;} {
-        const key: OutgoingProperyId = {
-            fkDomain: item.fkDomain,
-            fkProperty: item.fkProperty
-        }
-        const val: OutgoingPropertyVal = {
-            fkDomain: item.fkDomain,
-            fkProperty: item.fkProperty,
-            dfhIdentityDefining: item.dfhIdentityDefining,
-            dfhIsHasTypeSubproperty: item.dfhIsHasTypeSubproperty,
-            dfhRangeInstancesMaxQuantifier: item.dfhRangeInstancesMaxQuantifier,
-            dfhRangeInstancesMinQuantifier: item.dfhRangeInstancesMinQuantifier,
-            dfhDomainInstancesMaxQuantifier: item.dfhDomainInstancesMaxQuantifier,
-            dfhDomainInstancesMinQuantifier: item.dfhDomainInstancesMinQuantifier
-        }
-
-        return {key, val}
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+        super(wh,
+            ['modified_data_for_history_api_property'],
+            outgoingPropertykeyDefs
+        )
     }
 
     getUpdatesSql(tmsp: Date) {
@@ -63,27 +57,20 @@ export class DfhOutgoingPropertyService extends PrimaryDataService<DbItem, Outgo
     getDeletesSql(tmsp: Date) {return ''};
 }
 
-interface DbItem {
-    fkDomain: number
-    fkProperty: number
-    dfhIdentityDefining: false,
-    dfhIsHasTypeSubproperty: true,
-    dfhRangeInstancesMaxQuantifier: number,
-    dfhRangeInstancesMinQuantifier: number,
-    dfhDomainInstancesMaxQuantifier: number,
-    dfhDomainInstancesMinQuantifier: number,
-}
-
 const updateSql = `
     SELECT DISTINCT ON (dfh_property_domain, dfh_pk_property)
-        dfh_property_domain "fkDomain",
-        dfh_pk_property "fkProperty",
-        dfh_identity_defining "dfhIdentityDefining",
-        dfh_is_has_type_subproperty "dfhIsHasTypeSubproperty",
-        dfh_range_instances_max_quantifier "dfhRangeInstancesMaxQuantifier",
-        dfh_range_instances_min_quantifier "dfhRangeInstancesMinQuantifier",
-        dfh_domain_instances_max_quantifier "dfhDomainInstancesMaxQuantifier",
-        dfh_domain_instances_min_quantifier "dfhDomainInstancesMinQuantifier"
+    dfh_property_domain "fkDomain",
+    dfh_pk_property "fkProperty",
+    jsonb_build_object(
+        'fkDomain', dfh_property_domain,
+        'fkProperty', dfh_pk_property,
+        'dfhIdentityDefining', dfh_identity_defining,
+        'dfhIsHasTypeSubproperty', dfh_is_has_type_subproperty,
+        'dfhRangeInstancesMaxQuantifier', dfh_range_instances_max_quantifier,
+        'dfhRangeInstancesMinQuantifier', dfh_range_instances_min_quantifier,
+        'dfhDomainInstancesMaxQuantifier', dfh_domain_instances_max_quantifier,
+        'dfhDomainInstancesMinQuantifier', dfh_domain_instances_min_quantifier
+    ) val
     FROM
         data_for_history.api_property
     WHERE

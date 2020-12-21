@@ -1,7 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
-import {PClassId} from './ProClassFieldsConfigService';
+import {PClassId, pClassIdKeyDef} from './ProClassFieldsConfigService';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 
 
 export interface LabelPart {
@@ -12,30 +12,25 @@ export interface LabelPart {
     }
     ordNum: number
 }
-export interface EntityLabelConfig {
+export interface EntityLabelConfigVal {
     labelParts?: LabelPart[]
 }
 
 
-export class ProEntityLabelConfigService extends PrimaryDataService<InitItem, PClassId, EntityLabelConfig>{
+@Injectable()
+export class ProEntityLabelConfigService extends PrimaryDataService<PClassId, EntityLabelConfigVal>{
 
     measure = 1000;
 
 
-    constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_entity_label_config'],pClassIdToString, stringToPClassId)
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+        super(
+            wh,
+            ['modified_projects_entity_label_config'],
+            pClassIdKeyDef
+        )
     }
 
-    dbItemToKeyVal(item: InitItem): {key: PClassId; val: EntityLabelConfig;} {
-
-
-        const key: PClassId = {
-            fkProject: item.fkProject,
-            pkClass: item.pkClass
-        }
-        const val: EntityLabelConfig = item.config;
-        return {key, val}
-    }
 
     /**
      * returns entity label config of requested project, else of default config project
@@ -63,18 +58,18 @@ export class ProEntityLabelConfigService extends PrimaryDataService<InitItem, PC
 interface InitItem {
     pkClass: number
     fkProject: number
-    config: EntityLabelConfig
+    config: EntityLabelConfigVal
 }
 
 const updateSql = `
     SELECT
         fk_project "fkProject",
         fk_class "pkClass",
-        config
+        config val
     FROM
         projects.entity_label_config
     WHERE
-        tmsp_last_modification >= $1;`
+        tmsp_last_modification >= $1`
 
 const deleteSql = `
     SELECT
@@ -91,4 +86,4 @@ const deleteSql = `
         fk_project "fkProject",
         fk_class "pkClass"
     FROM
-        projects.entity_label_config;`
+        projects.entity_label_config`

@@ -28,24 +28,7 @@ let config = {
   },
 };
 
-/**
- * Add the Database URL according to the value of DB_ENV
- */
-switch (process.env.DB_ENV) {
-  case 'development':
-    config.postgres1.url = process.env.DATABASE_URL + '?ssl=true';
-    break;
+config.postgres1.url = process.env.DATABASE_URL.replace('sslmode=require', 'ssl=true')
 
-  case 'review':
-  case 'staging':
-  case 'production':
-    config.postgres1.url = process.env.DATABASE_URL + '?ssl=true';
-    break;
-
-  default:
-    console.log(
-      "Sorry, we don't have a config for DB_ENV='" + process.env.DB_ENV + "'."
-    );
-}
 
 module.exports = config;

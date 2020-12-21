@@ -1,48 +1,38 @@
-import {Dependencies} from '../../../base/classes/Dependencies'
-import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {dfhClassIdToString, pClassIdToString, proClassIdToString, projectIdToString, stringToDfhClassId, stringToPClassId, stringToProClassId, stringToProjectId} from '../../../base/functions'
-import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService'
-import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
-import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
-import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService'
-import {Warehouse} from '../../../Warehouse'
+// import {Dependencies} from '../../../base/classes/Dependencies'
+// import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+// import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService'
+// import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
+// import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
+// import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService'
+// import {Warehouse} from '../../../Warehouse'
+// import {PClassLabelVal} from './PClassLabelService'
+// import {Injectable, Inject, forwardRef} from 'injection-js'
 
-export class PClassLabelDependencies extends Dependencies {
-  project: DependencyIndex<PClassId, string, ProjectId, ProjectVal>
-  dfhClassLabel: DependencyIndex<PClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: DependencyIndex<PClassId, string, ProClassLabelId, ProClassLabelVal>
+// @Injectable()
+// export class PClassLabelDependencies extends Dependencies {
+//   proProject: DependencyIndex<PClassId, PClassLabelVal, ProjectId, ProjectVal>
+//   dfhClassLabel: DependencyIndex<PClassId, PClassLabelVal, DfhClassLabelId, DfhClassLabelVal>
+//   proClassLabel: DependencyIndex<PClassId, PClassLabelVal, ProClassLabelId, ProClassLabelVal>
 
-  // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
-  constructor(private wh: Warehouse) {
-    super()
-    this.project = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.pClassLabel,
-      wh.prim.proProject,
-      pClassIdToString,
-      stringToPClassId,
-      projectIdToString,
-      stringToProjectId
-    ))
+//   // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
+//   constructor(@Inject(forwardRef(() => Warehouse)) private wh: Warehouse) {
+//     super()
+//     this.proProject = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.pClassLabel,
+//       wh.prim.proProject,
+//     ))
 
-    this.dfhClassLabel = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.pClassLabel,
-      wh.prim.dfhClassLabel,
-      pClassIdToString,
-      stringToPClassId,
-      dfhClassIdToString,
-      stringToDfhClassId
-    ))
+//     this.dfhClassLabel = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.pClassLabel,
+//       wh.prim.dfhClassLabel,
+//     ))
 
-    this.proClassLabel = this.registerDepIdx(new DependencyIndex(
-      wh,
-      wh.agg.pClassLabel,
-      wh.prim.proClassLabel,
-      pClassIdToString,
-      stringToPClassId,
-      proClassIdToString,
-      stringToProClassId
-    ))
-  }
-}
+//     this.proClassLabel = this.registerDepIdx(new DependencyIndex(
+//       wh,
+//       wh.agg.pClassLabel,
+//       wh.prim.proClassLabel,
+//     ))
+//   }
+// }

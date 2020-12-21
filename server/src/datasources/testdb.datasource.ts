@@ -11,11 +11,10 @@ export class TestdbDataSource extends juggler.DataSource
   implements LifeCycleObserver {
   static dataSourceName = 'testdb';
   // static readonly defaultConfig = config;
-
   constructor() {
 
     super({
-      url: process.env.TEST_DATABASE_URL + '?ssl=true',
+      url: process.env.DATABASE_URL,
       name: 'testdb',
       connector: 'postgresql',
       ssl: {

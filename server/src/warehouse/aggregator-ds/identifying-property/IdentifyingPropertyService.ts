@@ -1,43 +1,40 @@
-import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
-import {Updater} from '../../base/classes/Updater';
-import {rClassIdToString, stringToRClassId} from '../../base/functions';
-import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
-import {OutgoingPropertyVal} from '../../primary-ds/DfhOutgoingPropertyService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {AggregatedDataService2} from '../../base/classes/AggregatedDataService2';
+import {DependencyIndex} from '../../base/classes/DependencyIndex';
+import {RClassId, rClassIdKeyDefs} from '../../primary-ds/DfhClassHasTypePropertyService';
+import {DfhOutgoingPropertyService, OutgoingPropertyVal, OutgoingProperyId} from '../../primary-ds/DfhOutgoingPropertyService';
 import {Warehouse} from '../../Warehouse';
 import {IdentifyingPropertyAggregator} from './IdentifyingPropertyAggregator';
 import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
 
 
 export type IdentifyingPropertyVal = OutgoingPropertyVal[]
-export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal, IdentifyingPropertyAggregator>{
-    updater: Updater<RClassId, IdentifyingPropertyAggregator>;
 
-    constructor(public wh: Warehouse) {
+@Injectable()
+export class IdentifyingPropertyService extends AggregatedDataService2<RClassId, IdentifyingPropertyVal>{
+
+
+    aggregator = IdentifyingPropertyAggregator;
+    providers = IdentifyingPropertyProviders;
+
+    outgoingProperty: DependencyIndex<RClassId, IdentifyingPropertyVal, OutgoingProperyId, OutgoingPropertyVal>
+
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => DfhOutgoingPropertyService)) dfhOutgoingProperty: DfhOutgoingPropertyService,
+    ) {
         super(
             wh,
-            rClassIdToString,
-            stringToRClassId
+            rClassIdKeyDefs
         )
-        const aggregatorFactory = async (id: RClassId) => {
-            const providers = new IdentifyingPropertyProviders(this.wh.dep.identifyingProperty, id)
-            return new IdentifyingPropertyAggregator(providers, id).create()
-        }
-        const register = async (result: IdentifyingPropertyAggregator) => {
-            await this.put(result.id, result.identyfyingProperties)
-            await result.providers.removeProvidersFromIndexes()
-        }
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            rClassIdToString,
-            stringToRClassId,
-        )
-
-
-
+        this.registerCreatorDS({
+            dataService: dfhOutgoingProperty,
+            customSql: [{select: `"fkDomain" as "pkClass"`}]
+        })
+        this.outgoingProperty = this.addDepencency(dfhOutgoingProperty)
     }
 
-
+    getDependencies() {
+        return this
+    };
 }

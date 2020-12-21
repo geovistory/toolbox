@@ -1,9 +1,8 @@
-import { ApplicationConfig } from '@loopback/core';
-import { GeovistoryServer } from './server';
-import { cleanAndStartDev } from './warehouse';
-import { forFeatureX } from './__tests__/helpers/graphs/feature-X.helper';
-import { createHeavyFactoids } from './__tests__/helpers/graphs/heavy-factoids.helper';
-import { cleanDb } from './__tests__/helpers/meta/clean-db.helper';
+import {ApplicationConfig} from '@loopback/core';
+import {GeovistoryServer} from './server';
+import {createHeavyFactoids} from './__tests__/helpers/graphs/heavy-factoids.helper';
+import {cleanDb} from './__tests__/helpers/meta/clean-db.helper';
+import {cleanAndStartDev} from './warehouse/startScripts';
 
 /**
  * This function starts the geovistory application and fills the database

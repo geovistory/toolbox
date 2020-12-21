@@ -1,9 +1,17 @@
-import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../../base/classes/Updater';
-import {pEntityIdToString, sqlForTsVector, stringToPEntityId} from '../../../base/functions';
-import {PEntityId} from '../../../primary-ds/entity/PEntityService';
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {PoolClient} from 'pg';
+import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
+import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
+import {DependencyIndex} from '../../../base/classes/DependencyIndex';
+import {DfhClassHasTypePropertyService, DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {EntityFields} from '../../../primary-ds/edge/edge.commons';
+import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
+import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
+import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
+import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {PEntityLabelService} from '../../entity-label/p-entity-label/PEntityLabelService';
+import {REntityLabelService} from '../../entity-label/r-entity-label/REntityLabelService';
 import {PEntityTypeAggregator} from './PEntityTypeAggregator';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
 
@@ -30,69 +38,163 @@ export interface PEntityTypeVal {
  * -> The Val is the result of the PEntityTypeAggregator
  *
  */
-export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal, PEntityTypeAggregator>{
-    updater: Updater<PEntityId, PEntityTypeAggregator>;
+@Injectable()
+export class PEntityTypeService extends AggregatedDataService2<PEntityId, PEntityTypeVal>{
+    aggregator = PEntityTypeAggregator;
+    providers = PEntityTypeProviders;
 
-    constructor(public wh: Warehouse) {
+    depPEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, PEntity>
+    depPEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityLabelVal>
+    depREntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, REntityId, EntityLabelVal>
+    depPEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityFields>
+    depDfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, RClassId, DfhClassHasTypePropVal>
+    batchSize= 100000;
+    constructor(
+        @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
+        @Inject(forwardRef(() => PEntityService)) pEntity: PEntityService,
+        @Inject(forwardRef(() => PEntityLabelService)) pEntityLabel: PEntityLabelService,
+        @Inject(forwardRef(() => REntityLabelService)) rEntityLabel: REntityLabelService,
+        @Inject(forwardRef(() => PEdgeService)) pEdge: PEdgeService,
+        @Inject(forwardRef(() => DfhClassHasTypePropertyService)) dfhClassHasTypeProp: DfhClassHasTypePropertyService,
+    ) {
         super(
             wh,
-            pEntityIdToString,
-            stringToPEntityId
+            pEntityKeyDefs
         )
 
-        const aggregatorFactory = async (id: PEntityId) => {
-            const providers = new PEntityTypeProviders(this.wh.dep.pEntityType, id)
-            return new PEntityTypeAggregator(providers, id).create()
-        }
-        const register = async (result: PEntityTypeAggregator) => {
-            await this.put(result.id, {
-                fkType: result.fkEntityType,
-                typeLabel: result.entityTypeLabel
-            })
-            await result.providers.removeProvidersFromIndexes()
-        }
+        this.registerCreatorDS({dataService: pEntity})
+        this.depPEntity = this.addDepencency(pEntity)
+        this.depPEntityLabel = this.addDepencency(pEntityLabel)
+        this.depREntityLabel = this.addDepencency(rEntityLabel)
+        this.depPEdge = this.addDepencency(pEdge)
+        this.depDfhClassHasTypeProp = this.addDepencency(dfhClassHasTypeProp)
 
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            pEntityIdToString,
-            stringToPEntityId,
-        )
-
-        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTypeVal>(
-            wh,
-            'war.entity_preview (entity_type)',
-            (valuesStr: string) => `
-                UPDATE war.entity_preview
-                SET
-                    type_label = x.column3,
-                    fk_type = x.column4::int,
-                    ${sqlForTsVector}
-                FROM
-                (
-                    values ${valuesStr}
-                ) as x
-                WHERE pk_entity = x.column1::int
-                AND project = x.column2::int
-                AND (
-                    type_label IS DISTINCT FROM x.column3
-                    OR
-                    fk_type IS DISTINCT FROM x.column4::int
-                );`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val.typeLabel, item.val.fkType],
-            pEntityIdToString
-        )
-
-        /**
-         * Add actions after a new class type is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
-
-            // Add item to queue to upsert it into db
-            upsertQueue.add(item)
-        })
     }
+
+    getDependencies() {
+        return this
+    };
+    // onUpsertSql(tableAlias: string) {
+    //     return `
+    //     UPDATE war.entity_preview
+    //     SET type_label = val->>'typeLabel',
+    //         fk_type = (val->>'fkType')::int
+    //     FROM ${tableAlias}
+    //     WHERE pk_entity = "pkEntity"
+    //     AND project = "fkProject"
+    //     AND (
+    //         type_label IS DISTINCT FROM val->>'typeLabel'
+    //         OR
+    //         fk_type IS DISTINCT FROM (val->>'fkType')::int
+    //     )`
+    // }
+    async aggregateBatch(client: PoolClient, client2: PoolClient, limit: number, offset: number, currentTimestamp: string): Promise<number> {
+        const builder = new AggregatorSqlBuilder(this, client, currentTimestamp, limit, offset)
+
+        const pentity = await builder.joinProviderThroughDepIdx({
+            leftTable: builder.batchTmpTable.tableDef,
+            joinWithDepIdx: this.depPEntity,
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `jsonb_build_object('fkClass', (t2.val->>'fkClass')::int)`) as CustomValSql<{fkClass: number}>,
+        })
+        const dfhClassHasTypeProp = await builder.joinProviderThroughDepIdx({
+            leftTable: pentity.aggregation.tableDef,
+            joinWithDepIdx: this.depDfhClassHasTypeProp,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkClass: {leftCustom: {name: 'fkClass', type: 'int'}},
+            },
+            conditionTrueIf: {
+                providerVal: {fkProperty: 'IS NOT NULL'}
+            },
+            createCustomObject: ((provider) => `t2.val`) as CustomValSql<DfhClassHasTypePropVal>,
+            // upsert no entity type where fk property is null
+            createAggregationVal: {
+                sql: () => `jsonb_build_object()`,
+                upsert: {
+                    whereCondition: '= false'
+                }
+            }
+        })
+
+        const pEdges = await builder.joinProviderThroughDepIdx({
+            leftTable: dfhClassHasTypeProp.aggregation.tableDef,
+            joinWithDepIdx: this.depPEdge,
+            // join only where fk property is is given
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCol: 'pkEntity'},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                custom: `t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget' IS NOT NULL`
+            },
+            createCustomObject: ((provider) =>
+                `jsonb_build_object('fkType', t2.val->'outgoing'->(t1.custom->>'fkProperty')->0->'fkTarget')`) as CustomValSql<{fkType?: number}>,
+            // upsert no entity type where no has type stmt with fkTarget found
+            createAggregationVal: {
+                sql: () => `jsonb_build_object()`,
+                upsert: {
+                    whereCondition: '= false'
+                }
+            }
+        })
+
+
+        const remotePEntityLabel = await builder.joinProviderThroughDepIdx({
+            leftTable: pEdges.aggregation.tableDef,
+            joinWithDepIdx: this.depPEntityLabel,
+            joinWhereLeftTableCondition: '= true',
+            joinOnKeys: {
+                pkEntity: {leftCustom: {name: 'fkType', type: 'int'}},
+                fkProject: {leftCol: 'fkProject'}
+            },
+            conditionTrueIf: {
+                providerKey: {pkEntity: 'IS NOT NULL'}
+            },
+            createCustomObject: (() => `t1.custom`) as CustomValSql<{fkType?: number}>,
+            createAggregationVal: {
+                sql: () => `jsonb_build_object(
+                    'typeLabel', t2.val->>'entityLabel',
+                    'fkType', t1.custom->>'fkType'
+                )`,
+                upsert: {
+                    whereCondition: '= true'
+                }
+            }
+        })
+
+
+        await builder.joinProviderThroughDepIdx({
+            leftTable: remotePEntityLabel.aggregation.tableDef,
+            joinWithDepIdx: this.depREntityLabel,
+            joinWhereLeftTableCondition: '= false',
+            joinOnKeys: {
+                pkEntity: {leftCustom: {name: 'fkType', type: 'int'}}
+            },
+            conditionTrueIf: {},
+            createAggregationVal: {
+                sql: () => `jsonb_build_object(
+                    'typeLabel', t2.val->>'entityLabel',
+                    'fkType', t1.custom->>'fkType'
+                )`,
+                upsert: true
+            }
+        })
+
+        // await builder.printQueries()
+        const count = builder.executeQueries()
+
+        return count
+    }
+
+
 }
+
 

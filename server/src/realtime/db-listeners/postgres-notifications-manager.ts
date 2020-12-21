@@ -1,6 +1,7 @@
-import {Client} from 'pg';
+import {Client, ClientConfig} from 'pg';
+import {parse} from 'pg-connection-string';
 import {GeovistoryApplication} from '../../application';
-import {getPgUrlForPg8, getPgSslForPg8} from '../../utils/databaseUrl';
+import {getPgSslForPg8, getPgUrlForPg8} from '../../utils/databaseUrl';
 
 /**
  * This class manages notifications from prostgres.
@@ -27,14 +28,14 @@ export class PostgresNotificationsManager {
   /**
    * @param lb4App the Application Context to which we bind this manager
    */
-  constructor(private lb4App: GeovistoryApplication) {}
+  constructor(private lb4App: GeovistoryApplication) { }
 
   // create postgres client
   createClient() {
-    return new Client({
-      connectionString: getPgUrlForPg8(),
-      ssl: getPgSslForPg8(),
-    })
+    const connectionString = getPgUrlForPg8()
+    const pgConfig = parse(connectionString) as ClientConfig
+    pgConfig.ssl = getPgSslForPg8(connectionString)
+    return new Client(pgConfig)
   }
 
 

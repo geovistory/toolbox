@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -14,17 +15,47 @@ import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistent
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, wait} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {RClassService} from '../../../../../warehouse/primary-ds/class/RClassService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {DfhClassLabelService} from '../../../../../warehouse/primary-ds/DfhClassLabelService';
+import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
+import {RClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/r-class-label/RClassLabelService';
+import {REntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 
+const rEntityClassLabelStub: WarehouseStubs = {
+    primaryDataServices: [
+        REntityService,
+        RClassService,
+        ProProjectService,
+        DfhClassLabelService,
+        ProClassLabelService,
+    ],
+    aggDataServices: [
+        RClassLabelService,
+        REntityClassLabelService,
+        EntityPreviewService
+    ]
+}
 describe('REntityClassLabelService', function () {
 
     let wh: Warehouse;
-    beforeEach(async function () {
-        await cleanDb()
-        wh = await setupCleanAndStartWarehouse()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
+        const injector = await setupCleanAndStartWarehouse(rEntityClassLabelStub)
+        wh = injector.get(Warehouse)
     })
-    afterEach(async function () {await wh.stop()})
-
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
     it('should create entity class label of Person', async () => {
         const {pers, cla} = await createBasicMock();
         const result = await waitForEntityPreview(wh, [
@@ -38,6 +69,7 @@ describe('REntityClassLabelService', function () {
 
 
 })
+
 async function createBasicMock() {
     // CLASS + LABEL
     await createInfLanguage(InfLanguageMock.GERMAN);
@@ -45,7 +77,6 @@ async function createBasicMock() {
     await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
     const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
     // PERSON
-    await wait(2000)
     const pers = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
     const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
     return {prel, pers, cla}

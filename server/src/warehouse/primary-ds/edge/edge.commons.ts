@@ -111,7 +111,7 @@ export const buildOutgoingEdges = `json_build_object(
 
 export const buildIncomingEdges = `json_build_object(
     'fkProperty', t1.fk_property,
-    'isOutgoing', true,
+    'isOutgoing', false,
     'fkStatement', t1.pk_statement,
     'fkSource', t1.fk_object_info,
     'fkTarget', t1.fk_subject_info,

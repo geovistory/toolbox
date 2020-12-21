@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { createDfhApiClass, DfhApiClass } from '../atomic/dfh-api-class.helper';
-import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
-import { createDfhApiProfile } from '../atomic/dfh-api-profile.helper';
-import { DfhApiProfileMock } from '../data/gvDB/DfhApiProfileMock';
-import { createDfhApiProperty, DfhApiProperty } from '../atomic/dfh-api-property.helper';
-import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
-import { DfhApiProfile, InfLanguage } from '../../../models';
-import { createType } from '../atomic/sys-system-type.helper';
-import { createInfLanguage } from '../atomic/inf-language.helper';
-import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
+import {DfhApiProfile, InfLanguage} from '../../../models';
+import {createDfhApiClass, DfhApiClass} from '../atomic/dfh-api-class.helper';
+import {createDfhApiProfile} from '../atomic/dfh-api-profile.helper';
+import {createDfhApiProperty, DfhApiProperty} from '../atomic/dfh-api-property.helper';
+import {createInfLanguage} from '../atomic/inf-language.helper';
+import {createSysSystemType} from '../atomic/sys-system-type.helper';
+import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
+import {DfhApiProfileMock} from '../data/gvDB/DfhApiProfileMock';
+import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
+import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
+import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
 
 export async function createModel() {
     await createTypes();
@@ -17,7 +18,7 @@ export async function createModel() {
     const classes = await createClasses();
     const properties = await createProperties();
 
-    return { languages, profiles, classes, properties };
+    return {languages, profiles, classes, properties};
 }
 
 //is this still needed?
@@ -27,14 +28,14 @@ export async function createModelForCityType() {
 }
 
 export async function createTypes(): Promise<void> {
-    await createType("projectDescription", 638, 'Description of an entity.');
-    await createType("projectLabel", 639, 'Label of an entity.');
-    await createType("digitalTable", 3287, 'Table. Type of Digital stored in the table data.digital');
-    await createType("digitalText", 3286, 'Text. Type of a Digital stored in the table data.digital');
-    await createType("value", 3291, 'Value.  Semistructured data of one of the data types specified with fk_data_type');
-    await createType("string", 3292, 'Text. Data type');
-    await createType("number", 3293, 'Float. Data type');
-    await createType("label", 3295, 'Label of an entity.');
+    await createSysSystemType(SysSystemTypeMock.PRO_TEXT_PROPTERTY_DESCRIPTION)
+    await createSysSystemType(SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL)
+    await createSysSystemType(SysSystemTypeMock.DIGITAL_TEXT)
+    await createSysSystemType(SysSystemTypeMock.DIGITAL_TABLE)
+    await createSysSystemType(SysSystemTypeMock.NUMBER)
+    await createSysSystemType(SysSystemTypeMock.VALUE)
+    await createSysSystemType(SysSystemTypeMock.TEXT)
+    await createSysSystemType(SysSystemTypeMock.LABEL_OF_DATA_RECORD)
 }
 
 export async function createLanguages(): Promise<Array<InfLanguage>> {
@@ -78,6 +79,6 @@ export async function createProperties(): Promise<Array<DfhApiProperty>> {
         await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
         await createDfhApiProperty(DfhApiPropertyMock.EN_1409_INVOLVES_PARTNER),
         // await createDfhApiProperty(DfhApiPropertyMock.),
-        
+
     ]);
 }

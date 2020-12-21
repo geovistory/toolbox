@@ -1,25 +1,38 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {DfhOutgoingPropertyService} from '../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
-
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[DfhOutgoingPropertyService],
+  aggDataServices:[]
+}
 describe('DfhOutgoingPropertyService', () => {
 
   let wh: Warehouse;
   let s: DfhOutgoingPropertyService;
 
-  beforeEach(async function () {
-    await cleanDb();
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.dfhOutgoingProperty;
-  })
-  afterEach(async function () {await wh.stop()})
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
+    const injector = await setupCleanAndStartWarehouse(stubs)
+    wh = injector.get(Warehouse)
+    s = injector.get(DfhOutgoingPropertyService)
 
+  })
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
 
   it('should have two outgoing properties in index', async () => {
     await Promise.all([
@@ -27,17 +40,21 @@ describe('DfhOutgoingPropertyService', () => {
       createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM)
     ])
 
-    const a = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.fkDomain === 61
-        && item.key.fkProperty === 86
-    })
-    const b = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.fkDomain === 61
-        && item.key.fkProperty === 1435
-    })
+    const [a, b] = await Promise.all([
+      await searchUntilSatisfy({
+        notifier$: s.afterChange$,
+        getFn: () => s.index.getFromIdx({fkDomain: 61, fkProperty: 86}),
+        compare: (v) => v?.dfhIdentityDefining === true
+      }),
+      await searchUntilSatisfy({
+        notifier$: s.afterChange$,
+        getFn: () => s.index.getFromIdx({fkDomain: 61, fkProperty: 1435}),
+        compare: (v) => v?.dfhIdentityDefining === false
+      })
+    ])
 
-    expect(a.val.dfhIdentityDefining).to.equal(true)
-    expect(b.val.dfhIdentityDefining).to.equal(false)
+    expect(a?.dfhIdentityDefining).to.equal(true)
+    expect(b?.dfhIdentityDefining).to.equal(false)
 
   })
 

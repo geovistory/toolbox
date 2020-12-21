@@ -1,0 +1,18 @@
+{
+  "defaultEnv": {
+    "ENV": "DB_MIGRATE_ENV"
+  },
+  "db": {
+    "driver": "pg",
+    "url": {
+      "ENV": "DB_MIGRATE_URL"
+    }
+  },
+  "dbSSL": {
+    "driver": "pg",
+    "url": {
+      "ENV": "DB_MIGRATE_URL"
+    },
+    "ssl": true
+  }
+}

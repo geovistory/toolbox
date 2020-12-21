@@ -75,4 +75,10 @@ export class InfTemporalEntityMock {
     pk_entity: 4014,
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
+
+  static readonly ALBERT_IV_NAMING_2 = new InfTemporalEntity({
+    pk_entity: 4015,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
 }

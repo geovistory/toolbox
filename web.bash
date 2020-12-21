@@ -1,1 +1,1 @@
-./server/node_modules/.bin/forever server/index.js
+./server/node_modules/.bin/forever ./server/dist/webserver.js 

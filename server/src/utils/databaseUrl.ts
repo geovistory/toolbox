@@ -1,27 +1,42 @@
+import { PoolConfig } from 'pg';
+import { parse } from 'pg-connection-string';
 
-function getDatabaseUrl() {
-  const databaseUrl = (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) as string;
+export function getDatabaseUrl() {
+  const databaseUrl = process.env.DATABASE_URL as string;
   return databaseUrl
 }
-const dbOnLocalhost = getDatabaseUrl().split('@')[1].startsWith('localhost');
 
 // creates postgres url for loopback juggler.DataSource
 export function getPgUrlForLoopback() {
-  const url = getDatabaseUrl() + '?ssl=true'
+  const url = getDatabaseUrl().replace('sslmode=require', 'ssl=true')
   return url
 };
 // creates postgres ssl config for loopback juggler.DataSource
 export function getPgSslForLoopback() {
-  return {rejectUnauthorized: false}
 };
 
 // creates postgres url for node-postgres ('pg') v8 and higher
 export function getPgUrlForPg8() {
-
   const url = getDatabaseUrl()
   return url
 };
 // creates postgres ssl config for node-postgres ('pg') v8 and higher
-export function getPgSslForPg8() {
-  return {rejectUnauthorized: false}
+export function getPgSslForPg8(url: string) {
+  if (dbRequiresSSL(url)) return { rejectUnauthorized: false }
+  return undefined;
 };
+
+// returns true if the url string wants ssl, else false
+export function dbRequiresSSL(url: string) {
+  if (url.includes('ssl=true')) return true;
+  if (url.includes('sslmode=require')) return true;
+  return false
+}
+
+export function createPoolConfig(connectionString?: string, maxConnections?: number): PoolConfig {
+  if(!connectionString) throw new Error("Please provide a connection string");
+  const config = parse(connectionString) as PoolConfig
+  config.max = maxConnections
+  config.ssl = getPgSslForPg8(connectionString)
+  return config
+}

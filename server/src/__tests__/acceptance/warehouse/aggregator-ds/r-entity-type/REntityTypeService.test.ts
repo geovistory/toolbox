@@ -1,5 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
+import {REntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {REntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhClassHasTypePropertyService} from '../../../../../warehouse/primary-ds/DfhClassHasTypePropertyService';
+import {DfhOutgoingPropertyService} from '../../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
+import {ProEntityLabelConfigService} from '../../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -20,20 +30,41 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
-
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+const rEntityTypeServiceStub: WarehouseStubs = {
+    primaryDataServices: [
+        DfhOutgoingPropertyService,
+        ProEntityLabelConfigService,
+        REntityService,
+        REdgeService,
+        DfhClassHasTypePropertyService
+    ],
+    aggDataServices: [
+        // IdentifyingPropertyService,
+        REntityLabelService,
+        REntityTypeService,
+        EntityPreviewService
+    ]
+}
 /**
  * Testing whole stack from postgres to warehouse
  */
 describe('REntityTypeService', function () {
     let wh: Warehouse;
 
-    beforeEach(async function () {
-        await cleanDb()
-        wh = await setupCleanAndStartWarehouse()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(50000); // A very long environment setup.
+        const injector = await setupCleanAndStartWarehouse(rEntityTypeServiceStub)
+        wh = injector.get(Warehouse)
     })
-    afterEach(async function () {await wh.stop()})
-
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
     // TODO: Test that the entity type most often used by projects is used
     // for the repo variant (should be the case according to order by of edges)
 

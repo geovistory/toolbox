@@ -1,4 +1,4 @@
-import {EntityLabelConfig} from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
+import {EntityLabelConfigVal} from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {PClassId} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
 import {ClassMock} from './ClassMock';
 import {ProjectMock} from './ProjectMock';
@@ -15,7 +15,7 @@ export class EntityLabelConfigMock {
         pkClass: ClassMock.NAMING_ID
     }
 
-    static readonly NAMING_1_STMT_VAL: EntityLabelConfig = {
+    static readonly NAMING_1_STMT_VAL: EntityLabelConfigVal = {
         labelParts: [{
             field: {
                 fkProperty: 1113,
@@ -26,7 +26,7 @@ export class EntityLabelConfigMock {
         }]
     }
 
-    static readonly NAMING_2_STMT_VAL: EntityLabelConfig = {
+    static readonly NAMING_2_STMT_VAL: EntityLabelConfigVal = {
         labelParts: [{
             field: {
                 fkProperty: 1113,
@@ -44,7 +44,7 @@ export class EntityLabelConfigMock {
         pkClass: ClassMock.PERSON_ID
     }
 
-    static readonly PERSON_1_STMT_VAL: EntityLabelConfig = {
+    static readonly PERSON_1_STMT_VAL: EntityLabelConfigVal = {
         labelParts: [{
             field: {
                 fkProperty: 1111,
@@ -53,7 +53,7 @@ export class EntityLabelConfigMock {
             ordNum: 1,
         }]
     }
-    static readonly PERSON_2_STMT_VAL: EntityLabelConfig = {
+    static readonly PERSON_2_STMT_VAL: EntityLabelConfigVal = {
         labelParts: [{
             field: {
                 fkProperty: 1111,
@@ -69,7 +69,7 @@ export class EntityLabelConfigMock {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.BIRTH_ID
     }
-    static readonly BIRTH_VAL: EntityLabelConfig = {
+    static readonly BIRTH_VAL: EntityLabelConfigVal = {
         labelParts: [{
             field: {
                 fkProperty: 41,
@@ -87,7 +87,7 @@ export class EntityLabelConfigMock {
         pkClass: ClassMock.UNION_ID
     }
 
-    static readonly UNION_VAL: EntityLabelConfig = {
+    static readonly UNION_VAL: EntityLabelConfigVal = {
         labelParts: [{
             field: {
                 fkProperty: 52,

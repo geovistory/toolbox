@@ -6,15 +6,15 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch App",
+      "name": "Launch Webserver",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/index.js",
+      "console": "integratedTerminal",
+      "program": "${workspaceFolder}/scripts/start-webserver.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
-      "runtimeExecutable": null,
-      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
       "restart": false,
+      "outputCapture": "std",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -22,32 +22,15 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch App with Mock",
+      "name": "Launch Warehouse",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/index.dev.js",
+      "console": "integratedTerminal",
+      "program": "${workspaceFolder}/scripts/start-warehouse.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
-      "runtimeExecutable": null,
-      "env": {
-        "DATABASE_URL": "${env:TEST_DATABASE_URL}",
-      },
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch App:watch",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "program": "${workspaceFolder}/index.js",
-      "preLaunchTask": "tsc: watch - tsconfig.json",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
-      "restart": true,
+      "restart": false,
+      "outputCapture": "std",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -56,101 +39,25 @@
       "name": "Launch Tests",
       "type": "node",
       "request": "launch",
-      "preLaunchTask": "tsc: watch - tsconfig.json",
-      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "stopOnEntry": false,
-      "args": [
-        "--timeout",
-        "5000",
-        "--colors",
-        "'dist/__tests__/**/*.js'",
-        "--grep",
-        "/^RamList/"
-      ],
+      "console": "integratedTerminal",
       "cwd": "${workspaceRoot}",
-      "runtimeExecutable": null,
-      "envFile": "${workspaceFolder}/.vscode/envFile.test",
+      "program": "${workspaceRoot}/scripts/test.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
-      ]
+      ],
     },
     {
-      "name": "Launch Tests:watch",
+      "name": "Seed database",
       "type": "node",
       "request": "launch",
-      "preLaunchTask": "tsc: watch - tsconfig.json",
-      "program": "${workspaceRoot}/node_modules/.bin/_mocha",
-      "stopOnEntry": false,
-      "args": [
-        "--timeout",
-        "20000",
-        "--colors",
-        "'dist/__tests__/**/*.js'",
-        "--grep",
-        "/WarEntityPreviewController.*test the stream/"
-      ],
+      "console": "integratedTerminal",
       "cwd": "${workspaceRoot}",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-      "restart": true,
-      "envFile": "${workspaceFolder}/.vscode/envFile.test",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch Warehouse (dev)",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/forever",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "program": "${workspaceFolder}/warehouse.dev.js",
+      "program": "${workspaceRoot}/scripts/db-seed.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
-      "restart": false,
-      "outputCapture": "std",
-      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Bucket Test",
-      "skipFiles": [
-        "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/dev.js",
-      "preLaunchTask": "tsc: watch - tsconfig.json",
-      "restart": false,
-      "outputCapture": "std",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
-    },
-    {
-      "name": "Launch Warehouse Tests",
-      "type": "node",
-      "request": "launch",
-      "preLaunchTask": "tsc: watch - tsconfig.json",
-      "program": "${workspaceRoot}/node_modules/.bin/mocha",
-      "stopOnEntry": false,
-      "args": [
-        "--timeout",
-        "4000",
-        "--colors",
-        "'dist/__tests__/**/warehouse/**/*.js'",
-        "--grep",
-        "/.*should create full text of naming/"
-        // "/IndexDB.*/"
-      ],
-      "cwd": "${workspaceRoot}",
-      "restart": false,
-      "envFile": "${workspaceFolder}/.vscode/envFile.test",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
     }
   ]
 }

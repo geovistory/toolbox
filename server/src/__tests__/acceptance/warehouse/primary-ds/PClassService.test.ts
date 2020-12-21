@@ -1,56 +1,77 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
+import 'reflect-metadata';
 import {PClassService} from '../../../../warehouse/primary-ds/class/PClassService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
-import {createProDfhProfileProjRel, updateProDfhProfileProjRel} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
-import {cleanDb} from '../../../helpers/meta/clean-db.helper';
-import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
-import {ProDfhProfileProjRelMock} from '../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
-import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
+import {createProDfhProfileProjRel, updateProDfhProfileProjRel} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
+import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-
-describe('PClassService', () => {
+import {ProDfhProfileProjRelMock} from '../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
+import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+const stubs: WarehouseStubs = {
+  primaryDataServices:[PClassService],
+  aggDataServices:[]
+}
+describe('PClassService', function () {
 
   let wh: Warehouse;
   let s: PClassService;
 
-  beforeEach(async function () {
-    await cleanDb();
-    wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pClass;
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
+    const injector = await setupCleanAndStartWarehouse(stubs)
+    wh = injector.get(Warehouse)
+    s = injector.get(PClassService)
   })
-  afterEach(async function () {await wh.stop()})
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
 
   it('should add project-class', async () => {
     const {prel, cla} = await createPClassMockData();
-    await waitUntilNext(s.afterPut$)
-    const result = await s.index.getFromIdx({
-      fkProject: prel.fk_project ?? -1,
-      pkClass: cla.dfh_pk_class ?? -1
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({
+        fkProject: prel.fk_project ?? -1,
+        pkClass: cla.dfh_pk_class ?? -1
+      }),
+      compare: (val) => val?.fkClass === cla.dfh_pk_class
     })
-    expect(result?.fkClass).to.equal(cla.dfh_pk_class)
-
   })
 
 
 
   it('should delete project-class', async () => {
     const {prel, cla} = await createPClassMockData();
-    await waitUntilNext(s.afterPut$)
-
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({
+        fkProject: prel.fk_project ?? -1,
+        pkClass: cla.dfh_pk_class ?? -1
+      }),
+      compare: (val) => val?.fkClass === cla.dfh_pk_class
+    })
 
     await updateProDfhProfileProjRel(prel.pk_entity ?? -1, {enabled: false})
 
-    await waitUntilNext(s.afterDel$)
-    const result = await s.index.getFromIdx({
-      fkProject: prel.fk_project ?? -1,
-      pkClass: cla.dfh_pk_class ?? -1
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdxWithTmsps({
+        fkProject: prel.fk_project ?? -1,
+        pkClass: cla.dfh_pk_class ?? -1
+      }),
+      compare: (val) => !!val?.deleted
     })
-    expect(result).to.be.undefined()
   })
 
 });

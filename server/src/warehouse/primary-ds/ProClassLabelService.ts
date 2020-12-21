@@ -1,34 +1,46 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {proClassIdToString, stringToProClassId} from '../base/functions';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
+import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface ProClassLabelId {
     fkProject: number
     fkClass: number
     fkLanguage: number
 }
-export type ProClassLabelVal = string
+const keyDefs: KeyDefinition[] = [
+    {
+        name: 'fkClass',
+        type: 'integer'
+    },
+    {
+        name: 'fkProject',
+        type: 'integer'
+    },
+    {
+        name: 'fkLanguage',
+        type: 'integer'
+    }
+]
+export interface ProClassLabelVal {label: string}
 
-export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLabelId, ProClassLabelVal>{
+@Injectable()
+export class ProClassLabelService extends PrimaryDataService< ProClassLabelId, ProClassLabelVal>{
     measure = 1000;
-    constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_text_property'],proClassIdToString, stringToProClassId)
+    constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
+        super(
+            wh,
+            ['modified_projects_text_property'],
+            keyDefs)
     }
 
-    dbItemToKeyVal(item: DbItem): {key: ProClassLabelId; val: ProClassLabelVal;} {
-        const key: ProClassLabelId = {
-            fkProject: item.fkProject,
-            fkClass: item.fkClass,
-            fkLanguage: item.fkLanguage
-        }
-        const val = item.label
-        return {key, val};
-    }
+    dbItemToKeyVal = undefined
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
     getDeletesSql(tmsp: Date) {
         return deleteSql
     };
+
 }
 
 
@@ -45,7 +57,7 @@ SELECT
     fk_project "fkProject",
     fk_dfh_class "fkClass",
     fk_language "fkLanguage",
-    string "label"
+    jsonb_build_object( 'label', string ) val
 FROM
     projects.text_property
 WHERE
@@ -74,5 +86,5 @@ const deleteSql = `
         fk_dfh_class "fkClass",
         fk_language "fkLanguage"
     FROM
-        projects.text_property;
+        projects.text_property
 `

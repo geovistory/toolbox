@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 import assert from 'assert';
-import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
-import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
-import {waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {omit} from 'ramda';
-import path from 'path'
-import pgkDir from 'pkg-dir'
+import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
+import {DfhOutgoingPropertyService} from '../../../../warehouse/primary-ds/DfhOutgoingPropertyService';
+import {Warehouse} from '../../../../warehouse/Warehouse';
+import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
-const appRoot = pgkDir.sync() ?? ''
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TestIdx extends IndexDB<string, any> {
@@ -14,22 +13,22 @@ export class TestIdx extends IndexDB<string, any> {
   stringToKey(key: string) {return key;}
 }
 
-const config: WarehouseConfig = {
-  leveldbFolder: 'leveldb',
-  rootDir: path.resolve(appRoot, '/server'),
-  backups: undefined
-}
 
 describe('IndexDB', function () {
   let idx: TestIdx
   let wh: Warehouse
 
-  before(async () => {
+  before(async function() {
+    this.timeout(50000); // A very long environment setup.
 
-    wh = new Warehouse(config)
+    const injector = await setupCleanAndStartWarehouse({
+      primaryDataServices: [DfhOutgoingPropertyService],
+      aggDataServices: []
+    })
+    wh = injector.get(Warehouse)
     idx = new TestIdx('test_idx', wh)
-    await wh.connectPgClient();
     wh.createSchema$.next();
+    wh.gvPgListenerConnected$.next(wh.gvPgListener)
     await waitUntilNext(idx.ready$)
 
   })

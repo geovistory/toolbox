@@ -91,9 +91,9 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
         const placeholder = values(this.queue).map(row => `(${addParams(row)})`).join(',');
         const q = this.getSql(placeholder);
         if (this.wh.status !== 'stopped') {
-            this.wh.pgClient.query(q, params)
+            this.wh.whPgPool.query(q, params)
                 .then(() => {
-                    Logger.msg(`\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
+                    Logger.msg(this.constructor.name, `\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
                 })
                 .catch(e => {
                     console.log(`Error on upserting items in ${this.queueName}:

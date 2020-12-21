@@ -10,9 +10,6 @@
   "formation": {},
   "addons": [
     {
-      "plan": "bucketeer:hobbyist"
-    },
-    {
       "plan": "heroku-postgresql:hobby-basic",
       "options": {
         "version": "10"

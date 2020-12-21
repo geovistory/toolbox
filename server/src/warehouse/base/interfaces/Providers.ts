@@ -1,18 +1,12 @@
 import {DependencyIndex} from '../classes/DependencyIndex';
 import {Provider} from '../classes/Provider';
 
-export interface ProviderInterface<ReceiverKeyModel> {
-    loadProvidersInCache(receiverKey: ReceiverKeyModel): Promise<void>
-    removeCachedProvidersFromIndex(): Promise<void>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any
-}
-
 export abstract class Providers<ReceiverKeyModel> {
 
     protected abstract receiverKey: ReceiverKeyModel;
 
-    private providers: ProviderInterface<ReceiverKeyModel>[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private providers: Provider<ReceiverKeyModel, any, any, any>[] = []
 
     registerProvider<ReceiverValModel, ProviderKeyModel, ProviderValModel>(
         dependencyIndex: DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel>,
@@ -22,15 +16,5 @@ export abstract class Providers<ReceiverKeyModel> {
         return p
     }
 
-    async load() {
-        await Promise.all(
-            this.providers.map(p => p.loadProvidersInCache(this.receiverKey))
-        )
-    }
-    async removeProvidersFromIndexes() {
-        await Promise.all(
-            this.providers.map(p => p.removeCachedProvidersFromIndex())
-        )
-    }
 
 }

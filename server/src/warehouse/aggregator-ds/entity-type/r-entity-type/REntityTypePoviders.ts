@@ -1,25 +1,24 @@
 import {Provider} from '../../../base/classes/Provider';
 import {Providers} from "../../../base/interfaces/Providers";
+import {DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {EntityFields} from "../../../primary-ds/edge/edge.commons";
-import {REntityId, REntity} from '../../../primary-ds/entity/REntityService';
-import {REntityTypeDependencies} from './REntityTypeDependencies';
-import {REntityTypeVal} from './REntityTypeService';
-import {RClassId, DfhClassHasTypePropVal} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {REntity, REntityId} from '../../../primary-ds/entity/REntityService';
 import {EntityLabelVal} from '../../entity-label/entity-label.commons';
+import {REntityTypeService, REntityTypeVal} from './REntityTypeService';
 export class REntityTypeProviders extends Providers<REntityId> {
     rEntity: Provider<REntityId, REntityTypeVal, REntityId, REntity>;
     rEdges: Provider<REntityId, REntityTypeVal, REntityId, EntityFields>;
     rEntityLabel: Provider<REntityId, REntityTypeVal, REntityId, EntityLabelVal>;
     dfhClassHasTypeProp: Provider<REntityId, REntityTypeVal, RClassId, DfhClassHasTypePropVal>;
     constructor(
-        dep: REntityTypeDependencies,
+        dep: REntityTypeService,
         protected receiverKey: REntityId
     ) {
         super()
-        this.rEntity = this.registerProvider(dep.rEntity, receiverKey)
-        this.rEntityLabel = this.registerProvider(dep.rEntityLabel, receiverKey);
-        this.rEdges = this.registerProvider(dep.rEdge, receiverKey)
-        this.dfhClassHasTypeProp = this.registerProvider(dep.dfhClassHasTypeProp, receiverKey)
+        this.rEntity = this.registerProvider(dep.depREntity, receiverKey)
+        this.rEntityLabel = this.registerProvider(dep.depREntityLabel, receiverKey);
+        this.rEdges = this.registerProvider(dep.depREdge, receiverKey)
+        this.dfhClassHasTypeProp = this.registerProvider(dep.depDfhClassHasTypeProp, receiverKey)
     }
 
 }
