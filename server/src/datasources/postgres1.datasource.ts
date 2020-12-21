@@ -1,9 +1,9 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
 import { juggler } from '@loopback/repository';
-import { getPgUrlForLoopback } from '../utils/databaseUrl';
+import { getGvPgUrlForLoopback } from '../utils/databaseUrl';
 
 const config = {
-  url: getPgUrlForLoopback(),
+  url: getGvPgUrlForLoopback(),
   name: 'postgres1',
   connector: 'postgresql',
   ssl: {

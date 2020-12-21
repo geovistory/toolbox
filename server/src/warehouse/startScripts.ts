@@ -5,6 +5,7 @@ import {Pool} from 'pg';
 import pgkDir from 'pkg-dir';
 import {createWarehouse} from './createWarehouse';
 import {Warehouse, WarehouseConfig} from './Warehouse';
+import {getGvDatabaseUrl, getWhDatabaseUrl} from '../utils/databaseUrl';
 
 const appRoot = pgkDir.sync() ?? ''
 const schemaPrefix = 'war_cache_'
@@ -35,7 +36,7 @@ export async function startDev() {
 export async function cleanAndStartDev() {
     c.execSync(`cd ${path.join(appRoot, '..')} && sh deployment/create-warehouse-compat-list.sh`);
     const config: WarehouseConfig = getWarehouseConfig()
-    const warehouse:Warehouse = createWarehouse(config).get(Warehouse)
+    const warehouse: Warehouse = createWarehouse(config).get(Warehouse)
     await warehouse.whPgPool.query(`drop schema if exists ${warehouse.schemaName} cascade;`)
     await warehouse.start();
     await removeWarehouseSchemasExcept(warehouse.whPgPool, schemaPrefix, warehouse.schemaName)
@@ -64,13 +65,13 @@ function getSchemaName() {
 }
 
 export function getWarehouseConfig() {
-    if (!process.env.DATABASE_URL) throw new Error("Warehouse > No DATABASE_URL provided");
-    if (!process.env.WH_DATABASE_URL) throw new Error("Warehouse > No WH_DATABASE_URL provided");
+    const gvDb = getGvDatabaseUrl();
+    const whDb = getWhDatabaseUrl();
 
     const config: WarehouseConfig = {
-        warehouseDatabase: process.env.WH_DATABASE_URL,
+        warehouseDatabase: whDb,
         warehouseDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_WH_DB_POOL_SIZE ?? '25', 10),
-        geovistoryDatabase: process.env.DATABASE_URL,
+        geovistoryDatabase: gvDb,
         geovistoryDatabaseMaxConnections: parseInt(process.env.WAREHOUSE_GV_DB_POOL_SIZE ?? '25', 10),
         warehouseSchema: getSchemaName()
     }

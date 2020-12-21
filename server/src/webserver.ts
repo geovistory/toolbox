@@ -3,6 +3,7 @@
  * https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
  */
 import {GeovistoryServer} from './server';
+import {getGvDatabaseUrl} from './utils/databaseUrl';
 
 
 const PORT = +(process.env.PORT ?? 3000);
@@ -35,7 +36,7 @@ const config = {
 };
 
 export async function main() {
-  console.log(`Starting server using database: ${process.env.DATABASE_URL?.split('@')?.[1]}`)
+  console.log(`Starting server using database: ${getGvDatabaseUrl()?.split('@')?.[1]}`)
 
   const server = new GeovistoryServer(config);
   await server.boot();

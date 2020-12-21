@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 import {Pool, PoolClient} from 'pg';
-import {createPoolConfig} from '../../../../utils/databaseUrl';
+import {createPoolConfig, getGvDatabaseUrl, getWhDatabaseUrl} from '../../../../utils/databaseUrl';
 import {expect} from '@loopback/testlab';
 import {PgDataReplicator} from '../../../../warehouse/base/classes/PgDataReplicator';
 import {sum} from 'ramda';
@@ -11,8 +11,8 @@ describe('PgDataReplicator', function () {
     let pool2: PoolClient
 
     beforeEach(async function () {
-        pool1 = await new Pool(createPoolConfig(process.env.DATABASE_URL)).connect()
-        pool2 = await new Pool(createPoolConfig(process.env.WH_DATABASE_URL)).connect()
+        pool1 = await new Pool(createPoolConfig(getGvDatabaseUrl())).connect()
+        pool2 = await new Pool(createPoolConfig(getWhDatabaseUrl())).connect()
 
         const beginSql = `BEGIN;`
         await pool1.query(beginSql)
