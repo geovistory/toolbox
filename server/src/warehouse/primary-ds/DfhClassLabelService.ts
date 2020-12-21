@@ -33,9 +33,7 @@ export class DfhClassLabelService extends PrimaryDataService<DfhClassLabelId, Df
         return updateSql
     }
     getDeletesSql(tmsp: Date) {return ''};
-    get2ndDeleteSql = undefined
-    get2ndUpdatesSql = undefined
-    dbItemToKeyVal = undefined
+
 }
 
 interface DbItem {

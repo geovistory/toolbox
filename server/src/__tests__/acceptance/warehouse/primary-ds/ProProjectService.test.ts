@@ -8,6 +8,7 @@ import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncate
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
+import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 const stubs: WarehouseStubs = {
   primaryDataServices: [ProProjectService],
   aggDataServices: []
@@ -33,7 +34,7 @@ describe('ProProjectService', function () {
   })
 
   it('should have project in index', async () => {
-
+    await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProject(InfLanguageMock.GERMAN.pk_entity ?? -1)
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
@@ -44,6 +45,8 @@ describe('ProProjectService', function () {
   })
 
   it('should update project', async () => {
+    await createInfLanguage(InfLanguageMock.GERMAN)
+    await createInfLanguage(InfLanguageMock.ENGLISH)
     const project = await createProject(InfLanguageMock.GERMAN.pk_entity ?? -1)
 
     const projectUpdated = await updateProjectLanguage(project.pk_entity as any, 18889)
@@ -59,6 +62,7 @@ describe('ProProjectService', function () {
   })
 
   it('should delete project', async () => {
+    await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProject(InfLanguageMock.GERMAN.pk_entity ?? -1)
     await deleteProject(project.pk_entity ?? -1)
     await searchUntilSatisfy({

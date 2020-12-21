@@ -61,10 +61,10 @@ describe('REntityService', () => {
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    let result = await waitForEntityPreviewUntil(wh, item => {
-      return item.fk_project === null
-        && item.pk_entity === entity.pk_entity
-    })
+    let result = await searchForEntityPreview(wh, [
+      {pk_entity: {eq: entity.pk_entity}},
+      {fk_project: {eq: null}},
+    ])
     expect(result?.fk_class).to.equal(entity?.fk_class)
 
     await updateInfPersistentItem(

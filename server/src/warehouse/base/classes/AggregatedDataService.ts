@@ -169,7 +169,6 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             // cleanup dependencies
             await this.cleanupOldDependencies(client, beginOfAggregation);
 
-
             // // update 'changesConsideredUntil'-timestamp
             // await this.setChangesConsideredUntilTsmp(beginOfAggregation)
             const t1 = Logger.start(this.constructor.name, `commit aggregations`, 0)

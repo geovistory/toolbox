@@ -149,8 +149,17 @@ WITH tw1 AS (
         'teEn' as "entity_type"
     FROM information.temporal_entity t2
 	WHERE t2.tmsp_last_modification >=  $1
-	)
-SELECT
+    ),
+    tw2 AS (
+        INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
+        SELECT pk_entity, null, 0, fk_class, entity_type
+        FROM tw1
+        ON CONFLICT (pk_entity, project) DO UPDATE
+        SET fk_class = EXCLUDED.fk_class, entity_type = EXCLUDED.entity_type
+        WHERE EXCLUDED.fk_class IS DISTINCT FROM war.entity_preview.fk_class OR EXCLUDED.entity_type IS DISTINCT FROM war.entity_preview.entity_type
+
+    )
+    SELECT
     tw1.pk_entity "pkEntity",
     tw1.fk_class,
     tw1.entity_type,
@@ -160,13 +169,13 @@ SELECT
         'entityType', tw1.entity_type,
 		'isInProjectCount', count(t2.pk_entity)
     ) val
-FROM tw1
-LEFT JOIN projects.info_proj_rel t2
-ON tw1.pk_entity = t2.fk_entity AND t2.is_in_project= true
-GROUP BY
-tw1.pk_entity,
-tw1.fk_class,
-tw1.entity_type
+    FROM tw1
+    LEFT JOIN projects.info_proj_rel t2
+    ON tw1.pk_entity = t2.fk_entity AND t2.is_in_project= true
+    GROUP BY
+    tw1.pk_entity,
+    tw1.fk_class,
+    tw1.entity_type
 
 
 
