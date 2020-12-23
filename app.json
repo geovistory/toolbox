@@ -5,10 +5,21 @@
     "DB_ENV": "review",
     "HEROKU_APP_NAME": {
       "required": true
+    },
+    "GV_DB_SSL": "sslmode=require",
+    "WH_DB_SSL": "sslmode=require",
+    "WH_DATABASE_URL": {
+      "required": true
     }
   },
   "formation": {},
   "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-basic",
+      "options": {
+        "version": "10"
+      }
+    },
     {
       "plan": "heroku-postgresql:hobby-basic",
       "options": {
