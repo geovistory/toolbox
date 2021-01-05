@@ -9,7 +9,7 @@ import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../prima
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {EntityLabelConfigVal, ProEntityLabelConfigService} from '../../../primary-ds/ProEntityLabelConfigService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../../../Warehouse';
-import {EntityLabelVal, LabelPartCustom, LabelPartKeys, labelPartsForAppeInLang365, labelPartsForNormalEntities} from '../entity-label.commons';
+import {EntityLabelVal, LabelPartCustom, LabelPartKeys, labelPartsForAppeInLang365, labelPartsForNormalEntities, ENTITY_LABEL_MAX_LENGTH} from '../entity-label.commons';
 
 @Injectable()
 export class PEntityLabelService extends AggregatedDataService2<PEntityId, EntityLabelVal>{
@@ -267,17 +267,20 @@ export class PEntityLabelService extends AggregatedDataService2<PEntityId, Entit
             t1."r_pkEntity",
             t1."r_fkProject",
             jsonb_build_object(
-                'entityLabel', coalesce(
-                    string_agg(
-                        coalesce(
-                            t2.custom->>'string',
-                            t1.custom->>'targetLabel'
-                            -- if we ever implement a placeholder for not available stmt, put val here
+                'entityLabel',
+                substring(
+                    coalesce(
+                        string_agg(
+                            coalesce(
+                                t2.custom->>'string',
+                                t1.custom->>'targetLabel'
+                                -- if we ever implement a placeholder for not available stmt, put val here
+                            ),
+                            ', '
+                            ORDER BY t1.fielOrdNum ASC,t1.stmtOrdNum ASC
                         ),
-                        ', '
-                        ORDER BY t1.fielOrdNum ASC,t1.stmtOrdNum ASC
-                    ),
-                    '(no label)'
+                        '(no label)'
+                    ) FROM 1 FOR ${ENTITY_LABEL_MAX_LENGTH}
                 ),
                 'labelMissing', string_agg(coalesce( t2.custom->>'string', t1.custom->>'targetLabel' ),'') IS NULL
             ) val,

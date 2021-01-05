@@ -1,9 +1,9 @@
 require('./__dotenv');
 const chooseDB = require('./__choosedb');
 const prompts = require('prompts');
-const warehouse = require('../dist/warehouse/startScripts');
 
 async function chooseStartMode() {
+  const warehouse = require('../dist/warehouse/startScripts');
   const response = await prompts({
     type: 'select',
     name: 'selectedStartFn',
