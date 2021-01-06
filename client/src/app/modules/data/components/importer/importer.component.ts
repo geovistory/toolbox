@@ -62,6 +62,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   columnsOption: string;
   rowsNbs = ['20', '50', '100', '500', '1000'];
   rowsNb: string;
+  encodings = ['UTF-8', 'ASCII', 'BASE64', 'UCS-2', 'BINARY', 'ISO-8859-1'];
+  encoding: string;
 
   // informations for server
   namespaces = [];
@@ -130,6 +132,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.columnsOption = this.columnsOptions[0];
     this.rowsNb = this.rowsNbs[0];
     this.fkDigital = -1;
+    this.encoding = this.encodings[0];
   }
 
   /**
@@ -189,8 +192,10 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
     // readFile
     const fr: FileReader = new FileReader();
-    if (this.type == 'csv') fr.readAsText(file, 'utf-8');
-    else fr.readAsBinaryString(file);
+    if (this.type === 'xls' || this.encoding === 'BINARY') fr.readAsBinaryString(file);
+    else if (this.encoding === 'BASE64') fr.readAsDataURL(file);
+    else fr.readAsText(file, this.encoding.toLowerCase());
+
     fr.onload = () => {
       if (typeof fr.result != 'string') {
         this.reset();
@@ -455,11 +460,7 @@ function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: str
   let isNumber = true;
   for (let i = 0; i < table.length; i++) {
     let content = table[i][colNb];
-
-    // if content of cell is surrounded by quote or double quotes, remove them
-    if ((content.charAt(0) == '"' && content.charAt(content.length - 1) == '"') || (content.charAt(0) == '\'' && content.charAt(content.length - 1) == '\'')) {
-      content = content.slice(1, content.length - 1);
-    }
+    if (content === undefined) continue;
 
     if (comma == ',') {
       content = content.replace('.', '}'); // replace dots to prevent parsing a number which is supposed to be a string

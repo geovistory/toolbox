@@ -5,8 +5,9 @@ const prompts = require('prompts');
 async function getUserInputs() {
   const minimumForDev = require('../dist/__tests__/helpers/graphs/minimum-for-dev.helper');
   const featureX = require('../dist/__tests__/helpers/graphs/feature-X.helper');
+  const factoids = require('../dist/__tests__/helpers/graphs/heavy-factoids.helper');
   const forFullText = require('../dist/__tests__/helpers/graphs/entity-fulltext.helper');
-  const cleanDb = require('../dist/__tests__/helpers/cleaning/clean-db.helper');
+  const cleanDb = require('../dist/__tests__/helpers/meta/clean-db.helper');
   const response = await prompts([
     {
       type: 'select',
@@ -22,6 +23,11 @@ async function getUserInputs() {
           title: 'Mockdata forFeatureX',
           description: `Fills the database with mock data. Few data, fast.`,
           value: featureX.forFeatureX,
+        },
+        {
+          title: 'Mockdata with heavy factoids',
+          description: `Fills the database with factoid mock data. A lot of data, not so fast.`,
+          value: factoids.createHeavyFactoids,
         },
         {
           title: 'Mockdata forFullText',
