@@ -32,8 +32,9 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType} from '../../../../helpers/graphs/cityType.helper';
 import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {createModelForCityType, createLanguages} from '../../../../helpers/meta/model.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 import {createProject1, createProject2, createProject3} from '../../../../helpers/graphs/project.helper';
+import {EntityLabel, ENTITY_LABEL_MAX_LENGTH} from '../../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
 
 export const rEntityLabelStub: WarehouseStubs = {
     primaryDataServices: [
@@ -54,12 +55,15 @@ export const rEntityLabelStub: WarehouseStubs = {
  */
 describe('REntityLabelService', function () {
     let wh: Warehouse;
+    let s: REntityLabelService
 
     before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
         const injector = await setupCleanAndStartWarehouse(rEntityLabelStub)
         wh = injector.get(Warehouse)
+        s = injector.get(REntityLabelService)
+
     })
     beforeEach(async () => {
         await cleanDb()
@@ -83,21 +87,21 @@ describe('REntityLabelService', function () {
     })
     it('should create entity label of person', async () => {
         await createProject();
-        const { person, appellation } = await createNamingAndPersonMock();
+        const {person, appellation} = await createNamingAndPersonMock();
         const result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: person.pk_entity } },
-            { fk_project: { eq: null } },
-            { entity_label: { eq: appellation.string } },
+            {pk_entity: {eq: person.pk_entity}},
+            {fk_project: {eq: null}},
+            {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
     it('should update entity label of person after removing stmt 1111 from project', async () => {
         await createProject();
-        const { person, appellation } = await createNamingAndPersonMock();
+        const {person, appellation} = await createNamingAndPersonMock();
         let result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: person.pk_entity } },
-            { fk_project: { eq: null } },
-            { entity_label: { eq: appellation.string } },
+            {pk_entity: {eq: person.pk_entity}},
+            {fk_project: {eq: null}},
+            {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
 
@@ -109,28 +113,28 @@ describe('REntityLabelService', function () {
             })
 
         result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: person.pk_entity } },
-            { fk_project: { eq: null } },
-            { entity_label: { eq: '(no label)' } },
+            {pk_entity: {eq: person.pk_entity}},
+            {fk_project: {eq: null}},
+            {entity_label: {eq: '(no label)'}},
         ])
         expect(result.entity_label).to.equal('(no label)')
     })
 
     it('should create entity label of naming and add person.', async () => {
         await createProject();
-        const { naming, appellation } = await createNamingMock();
+        const {naming, appellation} = await createNamingMock();
         let result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: naming.pk_entity } },
-            { fk_project: { eq: null } },
-            { entity_label: { eq: appellation.string } },
+            {pk_entity: {eq: naming.pk_entity}},
+            {fk_project: {eq: null}},
+            {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
 
         const person = await createPersonMock();
         result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: person.pk_entity } },
-            { fk_project: { eq: null } },
-            { entity_label: { eq: appellation.string } },
+            {pk_entity: {eq: person.pk_entity}},
+            {fk_project: {eq: null}},
+            {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
@@ -176,7 +180,22 @@ describe('REntityLabelService', function () {
         expect(result)
     })
 
+    it('should create entity label of birth infinit label', async () => {
+        await createProject();
+        await createNamingMock();
+        await createPersonMock();
+        const {birth} = await EntityLabel.createInfinitLabel()
 
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx({pkEntity: birth.pk_entity ?? -1}),
+            compare: (item) => {
+                console.log(item?.entityLabel)
+                console.log(item?.entityLabel?.length)
+                return item?.entityLabel?.length === ENTITY_LABEL_MAX_LENGTH
+            }
+        })
+    })
 
     /**
      * tests if the entity label of the repo variant is the label that has the highest
@@ -186,11 +205,11 @@ describe('REntityLabelService', function () {
         await createLanguages()
         await createModelForCityType();
 
-        const { project1 } = await createProject1();
+        const {project1} = await createProject1();
 
-        const { project2 } = await createProject2();
+        const {project2} = await createProject2();
 
-        const { project3 } = await createProject3();
+        const {project3} = await createProject3();
 
         // create instances
         const {
@@ -262,10 +281,10 @@ describe('REntityLabelService', function () {
 
 async function createNamingAndPersonMock() {
     // NAMING
-    const { naming, appellation } = await createNamingMock();
+    const {naming, appellation} = await createNamingMock();
     // PERSON
     const person = await createPersonMock();
-    return { naming, person, appellation };
+    return {naming, person, appellation};
 }
 
 async function createPersonMock() {
@@ -295,7 +314,7 @@ async function createNamingMock() {
 
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON);
-    return { naming, appellation };
+    return {naming, appellation};
 }
 
 
