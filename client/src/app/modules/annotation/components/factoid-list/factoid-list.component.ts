@@ -1,21 +1,17 @@
-import { ChangeDetectorRef } from '@angular/core';
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService } from 'app/core/active-project';
-import { DfhProperty } from 'app/core/sdk';
-import { FactoidControllerService, GetFactoidsFromEntityResponse } from 'app/core/sdk-lb4';
+import { FactoidControllerService } from 'app/core/sdk-lb4';
+import { FactoidEntity } from 'app/core/sdk-lb4/model/factoidEntity';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-import { forEach, groupBy } from 'ramda';
-import { Observable, Subject } from 'rxjs';
-import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { FactoidEntity } from 'app/core/sdk-lb4/model/factoidEntity';
+import { Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 
 
 @Component({
   selector: 'gv-factoid-list',
   templateUrl: './factoid-list.component.html',
   styleUrls: ['./factoid-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     QuillOpsToStrPipe
   ]
@@ -60,18 +56,13 @@ export class FactoidListComponent implements OnInit, OnDestroy {
   askForFactoids() {
     this.factoidsEntities = [];
     this.loading = true;
-    this.ref.detectChanges();
     this.factoidService.factoidControllerFactoidsFromEntity(this.pkProject + '', this.pkEntity + '', this.pageSize + '', this.pageIndex + '')
       .pipe(first(), takeUntil(this.destroy$)).subscribe(resp => {
         this.totalLength = resp.totalLength;
         this.factoidsEntities = resp.factoidEntities;
         this.loading = false;
-        this.ref.detectChanges();
       })
   }
-
-
-
 
   stringify(objet: Object) {
     return JSON.stringify(objet);
