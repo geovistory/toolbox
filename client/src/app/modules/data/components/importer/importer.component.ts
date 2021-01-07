@@ -62,7 +62,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
   columnsOption: string;
   rowsNbs = ['20', '50', '100', '500', '1000'];
   rowsNb: string;
-  encodings = ['UTF-8', 'ASCII', 'BASE64', 'UCS-2', 'BINARY', 'ISO-8859-1'];
+  encodings = ['UTF-8', 'UTF-16', 'ASCII', 'CYRILLIC', 'ARABIC', 'GREEK', 'HEBREW', 'CHINESE', 'KOREAN', 'BINARY', 'BASE64'];
   encoding: string;
 
   // informations for server
