@@ -126,4 +126,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
       // ]
     )
   }
+  onShowAllItemsClick($event: number[]) {
+    this.pagEntDialog.open(true, $event, `${$event.length} Entities`)
+  }
 }

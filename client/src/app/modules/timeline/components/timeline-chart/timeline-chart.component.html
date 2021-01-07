@@ -90,29 +90,33 @@
     <mat-icon>close</mat-icon>
   </button>
 
+
+  <mat-card-content class="mt-3" *ngIf="chartLine?.config?.data?.activeLine == undefined">
+    <i>Click a line to inspect</i>
+  </mat-card-content>
+  <mat-card-subtitle *ngIf="chartLine?.config?.data?.activeLine !== undefined">
+    Active line
+  </mat-card-subtitle>
+  <mat-card-content *ngIf="chartLine?.config?.data?.activeLine !== undefined">
+    <div>{{chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.label}}</div>
+    <a href *ngIf="chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.pkEntities"
+      class="gv-passive-link" matTooltip="Show details"
+      (click)="onAllItemsClick(chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.pkEntities)">
+      {{chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.pkEntities?.length}} items </a>
+  </mat-card-content>
   <mat-card-subtitle>
     Date
   </mat-card-subtitle>
   <mat-card-content>
-    {{cursorInfo.cursorDateLabel}}
+    <div>{{cursorInfo.cursorDateLabel}}</div>
+    <a href *ngIf="cursorInfo.activeLine" class="gv-passive-link" matTooltip="Show details"
+      (click)="onShowDetailsClick()"> {{cursorInfo?.linePoint?.y}} items on this date</a>
   </mat-card-content>
-  <mat-card-subtitle *ngIf="!cursorInfo.activeLine">
-    <i>Click a line to inspect</i>
-  </mat-card-subtitle>
-  <mat-card-subtitle *ngIf="cursorInfo.activeLine">
-    Active line
-  </mat-card-subtitle>
-  <mat-card-content *ngIf="cursorInfo.activeLine">
-    {{cursorInfo.activeLine?.label}}
-  </mat-card-content>
-  <mat-card-subtitle *ngIf="cursorInfo.activeLine">
+  <!-- <mat-card-subtitle *ngIf="cursorInfo.activeLine">
     Y-value of active line
-  </mat-card-subtitle>
-  <mat-card-content *ngIf="cursorInfo.activeLine">
-    {{cursorInfo.linePoint.y}} <a href class="ml-3 gv-passive-link" matTooltip="Show details"
-      (click)="onShowDetailsClick()"> show
-      details </a>
-  </mat-card-content>
+  </mat-card-subtitle> -->
+  <!-- <mat-card-content>
+  </mat-card-content> -->
 </mat-card>
 
 <button class="info-btn" [ngClass]="{'is-small': width < 450 }" mat-icon-button

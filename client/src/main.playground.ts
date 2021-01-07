@@ -36,6 +36,8 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { TreeviewModule } from 'ngx-treeview';
 import { CookiesModule } from 'app/core/cookies/cookies.module';
 import { EntityLabelConfigModule } from 'app/shared/modules/entity-label-config/entity-label-config.module';
+import { TabModule } from 'app/core/tab/tab.module';
+import { SocketsModule } from 'app/core/sockets/sockets.module';
 
 
 @NgModule()
@@ -58,6 +60,7 @@ PlaygroundModule
       DfhModule,
       ProModule,
       WarModule,
+      TabModule,
       FormFactoryModule,
       MatDialogModule,
       MatSliderModule, // needed because of https://github.com/angular/components/issues/4278
@@ -89,7 +92,8 @@ PlaygroundModule
       ChecklistControlModule,
       CookiesModule.forRoot(),
       AuthModule,
-      EntityLabelConfigModule
+      EntityLabelConfigModule,
+      SocketsModule
     ]
   });
 
