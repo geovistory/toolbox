@@ -277,11 +277,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.table$ = combineLatest([res$, this.headers$]).pipe(
       map(([res, headers]) => {
         this.colMapping = ['pk_row', ...res.columns];
-
-        console.log('HERE2')
-        console.log(res)
-        console.log(headers)
-
         this.dataMapping = [];
         const rows: TableRow[] = res.rows;
         const table: Array<Array<string | { text: string, pkCell: number }>> = [];

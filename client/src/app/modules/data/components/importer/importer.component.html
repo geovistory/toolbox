@@ -73,6 +73,14 @@
             </mat-select>
         </mat-form-field>
 
+        <mat-form-field appearance="outline" style="margin-right: 10px">
+            <mat-label>Encoding</mat-label>
+            <mat-select [(value)]="encoding" (selectionChange)="selectFile(this.file)"
+                [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
+                <mat-option *ngFor="let enc of encodings" [value]="enc">{{enc}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
     </div>
     <mat-progress-bar mode="indeterminate" *ngIf="mode=='load'"></mat-progress-bar>
 
