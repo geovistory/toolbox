@@ -1736,6 +1736,24 @@ export const queryResults1: MapAndTimeContQueryRes = [
         }
       ]
     }
+  },
+  {
+    geo_entity_pk: 742832,
+    geo_entity_preview: {
+      'pk_entity': 742832,
+      'fk_project': 591,
+      'type_label': 'Parrocchia',
+      'class_label': 'Geographical Place',
+      'entity_type': 'peIt',
+      'entity_label': 'S. Agnese'
+    },
+    geo_positions: [{ 'lat': 45.42979, 'long': 12.32818 }],
+    pk_entities: [],
+    temporal_data: {
+      'data_lookup': {},
+      'timeCzmlValues': [],
+      'timeLinePoints': []
+    }
   }
 ]
 

@@ -1,5 +1,5 @@
-import { SqlBuilder } from './sql-builder';
-import { QueryDefinition } from '../../common';
+import {SqlBuilder, ColDefWithAliases} from './sql-builder';
+import {QueryDefinition} from '../../common';
 import sqlFormatter from 'sql-formatter';
 
 export class SqlBuilderMapAndTime extends SqlBuilder {
@@ -34,14 +34,9 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
     // this.createLimitAndOffset(query);
 
 
-    if (!columnsWithAliases[0].queryPath || !columnsWithAliases[0].queryPath.length) {
-      throw new Error('querypath is required')
-    } else {
+    const {selectPkEntities, selectTemporalData} = this.createSqlForEntitiesAndTemporalData(columnsWithAliases, fkProject);
 
-      const p = columnsWithAliases[0].queryPath
-      const aliasOfEntityTable = p[p.length - 1]._tableAlias;
-
-      this.sql = `
+    this.sql = `
         WITH tw1 AS (
           -- apply the query filter
           SELECT DISTINCT
@@ -76,8 +71,8 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
             'fk_project',
             t_1.fk_project
           )) geo_entity_preview,
-          coalesce(jsonb_agg(${aliasOfEntityTable}.pk_entity) Filter (Where ${aliasOfEntityTable}.pk_entity Is Not Null), '[]') As pk_entities,
-          commons.analysis__time_chart_cont__czml_time_values(array_agg(${aliasOfEntityTable}.pk_entity), ${fkProject}) temporal_data
+          ${selectPkEntities} pk_entities,
+          ${selectTemporalData} temporal_data
         FROM
           ${this.joinFroms(this.froms)}
         GROUP BY
@@ -134,7 +129,7 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
           tw2.pk_entities,
           tw2.temporal_data;
      `
-    }
+
     let forLog = this.sql;
     this.params.forEach((param, i) => {
       const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g');
@@ -142,12 +137,36 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
     });
     console.log(`
     "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
-    ${sqlFormatter.format(forLog, { language: 'pl/sql' })}
+    ${sqlFormatter.format(forLog, {language: 'pl/sql'})}
 
     `);
     return {
       sql: this.sql,
       params: this.params,
     };
+  }
+
+
+  private createSqlForEntitiesAndTemporalData(columnsWithAliases: ColDefWithAliases[], fkProject: number) {
+    const p = columnsWithAliases[0].queryPath;
+    const lastSegment = p?.[p?.length - 1]
+    const pathEndsWithClass = (lastSegment?.data.classes?.length ?? 0) + (lastSegment?.data?.types?.length ?? 0) > 0;
+
+    if (!lastSegment || !pathEndsWithClass) {
+      const selectPkEntities = `'[]'::jsonb`;
+      const selectTemporalData = `'{
+        "data_lookup": {},
+        "timeLinePoints": [],
+        "timeCzmlValues": []
+      }'::jsonb`;
+      return {selectPkEntities, selectTemporalData};
+    } else {
+
+      const aliasOfEntityTable = lastSegment._tableAlias;
+
+      const selectPkEntities = `coalesce(jsonb_agg(${aliasOfEntityTable}.pk_entity) Filter (Where ${aliasOfEntityTable}.pk_entity Is Not Null), '[]')`;
+      const selectTemporalData = `commons.analysis__time_chart_cont__czml_time_values(array_agg(${aliasOfEntityTable}.pk_entity), ${fkProject})`;
+      return {selectPkEntities, selectTemporalData};
+    }
   }
 }

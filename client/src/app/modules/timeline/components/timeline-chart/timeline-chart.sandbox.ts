@@ -67,17 +67,21 @@ export default sandboxOf(TimelineChartComponent, {
 })
   .add('TimeLineChart | Few Data ', {
     context: {
-      data1$
+      data1$,
+      showCursor$: new BehaviorSubject<boolean>(true)
     },
     template: `
     <p style="width: 800px; height: 400px; margin: 20px; padding: 5px; border: 1px dashed red;">
-        <gv-timeline-chart [data$]="data1$" [showCursor]="true" (cursorChange)="cursorPos=$event"></gv-timeline-chart>
+        <gv-timeline-chart [data$]="data1$" [showCursor$]="showCursor$" (cursorChange)="cursorPos=$event"></gv-timeline-chart>
     </p>
     <p style="margin: 20px;">
 
     </p>
     <p style="margin: 20px;">
       {{cursorPos | json}}
+    </p>
+    <p style="margin: 20px;">
+      <input type="checkbox" [checked]="showCursor$ | async" (change)="showCursor$.next(!showCursor$?.value)"> show cursor
     </p>
 
     `
@@ -88,7 +92,7 @@ export default sandboxOf(TimelineChartComponent, {
     },
     template: `
       <p style="width: 800px; height: 400px; margin: 20px; padding: 5px; border: 1px dashed red;">
-          <gv-timeline-chart [data$]="data2$" [showCursor]="true"></gv-timeline-chart>
+          <gv-timeline-chart [data$]="data2$"></gv-timeline-chart>
       </p>
       <p style="margin: 20px;">
 
@@ -105,7 +109,7 @@ export default sandboxOf(TimelineChartComponent, {
     },
     template: `
       <p style="width: 800px; height: 600px; margin: 20px; padding: 5px; border: 1px dashed red;">
-          <gv-timeline-chart [data$]="data4$" [showCursor]="true"></gv-timeline-chart>
+          <gv-timeline-chart [data$]="data4$"></gv-timeline-chart>
       </p>
       <p style="margin: 20px;">
 
@@ -122,7 +126,7 @@ export default sandboxOf(TimelineChartComponent, {
     },
     template: `
       <p style="width: 800px; height: 600px; margin: 20px; padding: 5px; border: 1px dashed red;">
-          <gv-timeline-chart [data$]="data5$" [showCursor]="true"></gv-timeline-chart>
+          <gv-timeline-chart [data$]="data5$"></gv-timeline-chart>
       </p>
       <p style="margin: 20px;">
 
@@ -139,7 +143,7 @@ export default sandboxOf(TimelineChartComponent, {
     },
     template: `
       <p style="width: 800px; height: 400px; margin: 20px; padding: 5px; border: 1px dashed red;">
-          <gv-timeline-chart [data$]="data3$" [showCursor]="true"></gv-timeline-chart>
+          <gv-timeline-chart [data$]="data3$"></gv-timeline-chart>
       </p>
       <p style="margin: 20px;">
 
@@ -156,7 +160,7 @@ export default sandboxOf(TimelineChartComponent, {
     },
     template: `
       <p style="width: 400px; height: 200px; margin: 20px; padding: 5px; border: 1px dashed red;">
-          <gv-timeline-chart [data$]="data3$" [showCursor]="true" [showInfoBtn]="true" [showInfoBox]="false" ></gv-timeline-chart>
+          <gv-timeline-chart [data$]="data3$" [showInfoBtn]="true" [showInfoBox]="false" ></gv-timeline-chart>
       </p>
       <p style="margin: 20px;">
 

@@ -1,5 +1,5 @@
 require('./__dotenv');
-const chooseDB = require('./__choosedb');
+const chooseDB = require('./__chooseGvDb');
 const helpers = require('./__helpers');
 const execShell = require('./__execShell');
 const prompts = require('prompts');

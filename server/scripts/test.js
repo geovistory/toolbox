@@ -2,7 +2,7 @@ require('./__dotenv');
 const prompts = require('prompts');
 const path = require('path');
 const helpers = require('./__helpers');
-const chooseDB = require('./__choosedb');
+const chooseGvAndWhDB = require('./__chooseGvAndWhDb');
 
 process.env.LOGS = 'OFF';
 process.env.NO_LOGS = 'true';
@@ -29,7 +29,7 @@ async function getUserInputs() {
   // let user customize settings
   console.log(`Defaults denyed. Customize settings:`);
 
-  await chooseDB();
+  await chooseGvAndWhDB();
 
   const custom = await prompts([
     {

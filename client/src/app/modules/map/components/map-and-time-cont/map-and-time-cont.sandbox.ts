@@ -11,7 +11,8 @@ export default sandboxOf(MapAndTimeContComponent, {
 })
   .add('MapAndTimeContComponent | Preset ', {
     context: {
-      data$: new BehaviorSubject(queryResults1)
+      data$: new BehaviorSubject(queryResults1),
+      temporalFilter$: new BehaviorSubject<boolean>(true)
     },
     template: `
         <div style="width:800px; height:800px; border: 1px dashed red;" class="m-4 p-1">
@@ -22,6 +23,7 @@ export default sandboxOf(MapAndTimeContComponent, {
 
         <button (click)="c.selectGeometriesOfEntity(206099)">Select geometries of entity 206099</button>
         <button (click)="c.selectGeometriesOfEntity()">Deselect geometries</button>
+
 
         `
   })
