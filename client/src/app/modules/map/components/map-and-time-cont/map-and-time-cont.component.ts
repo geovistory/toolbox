@@ -305,13 +305,14 @@ export class MapAndTimeContComponent implements OnInit {
     }
   }
   private createStaticPoint = (
-    outlineColorRgba: number[],
     value: number,
     scaleRadius: d3.ScaleLinear<number, number>,
+    outlineColorActive = [255, 0, 0, 128],
+    outlineColorPassive = [180, 180, 180, 128],
   ): CzmlPoint => {
     return {
       color: { rgba: [255, 255, 255, 128] },
-      outlineColor: { rgba: outlineColorRgba },
+      outlineColor: { rgba: value === 0 ? outlineColorPassive : outlineColorActive },
       outlineWidth: 3,
       pixelSize: scaleRadius(value)
     }
@@ -396,7 +397,8 @@ export class MapAndTimeContComponent implements OnInit {
     const scalePoint = d3.scaleLinear()
       .domain([minVal, maxVal])
       .range([minRadius, maxRadius]);
-    const outlineColor = [255, 0, 0, 128]
+    const outlineColorActive = [255, 0, 0, 128];
+    const outlineColorPassive = [180, 180, 180, 128];
 
     queryRes.forEach((item, lineIndex) => {
       const temporalVals = item.temporal_data.timeCzmlValues
@@ -405,15 +407,15 @@ export class MapAndTimeContComponent implements OnInit {
 
       const point: CzmlPoint = pointDisplayMode.fixedSize ?
         // else create fixed point
-        this.createFixedPoint(outlineColor) :
+        this.createFixedPoint(outlineColorActive) :
         pointDisplayMode.proportionalStaticSize ?
           // else create static point
-          this.createStaticPoint(outlineColor, item.pk_entities.length, scalePoint) :
+          this.createStaticPoint(item.pk_entities.length, scalePoint, outlineColorActive, outlineColorPassive) :
           pointDisplayMode.proportionalDynamicSize ?
             // if temporal filter enabled create dynamic point
-            this.createDynamicPoint(outlineColor, temporalVals, scalePoint) :
+            this.createDynamicPoint(outlineColorActive, temporalVals, scalePoint) :
             // default
-            this.createFixedPoint(outlineColor);
+            this.createFixedPoint(outlineColorActive);
 
 
       // logTime(`conversion - item ${lineIndex} pointCreated`)
