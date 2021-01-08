@@ -219,7 +219,20 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     ).pipe(
       map(([cols, colToggleOptions]) => {
         const colInd = indexBy(c => c.toString(), cols);
-        return colToggleOptions.filter(o => !!colInd[o.value])
+        this.colMapping = ['pk_row'];
+        const result: {
+          display: string;
+          value: number;
+          datColumn: DatColumn;
+        }[] = []
+        for (const option of colToggleOptions) {
+          if (!!colInd[option.value]) {
+            result.push(option)
+            this.colMapping.push(option.value.toString())
+          }
+        }
+        // return colToggleOptions.filter(o => !!colInd[o.value])
+        return result
       }),
       shareReplay({ bufferSize: 1, refCount: true })
     );
@@ -276,7 +289,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
     this.table$ = combineLatest([res$, this.headers$]).pipe(
       map(([res, headers]) => {
-        this.colMapping = ['pk_row', ...res.columns];
+
         this.dataMapping = [];
         const rows: TableRow[] = res.rows;
         const table: Array<Array<string | { text: string, pkCell: number }>> = [];
