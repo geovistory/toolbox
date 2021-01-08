@@ -59,7 +59,7 @@ export interface PointDisplayMode {
 interface PointDisplayOption { label: string, svgIcon: string, value: PointDisplayMode }
 export const pointDisplayOptions: PointDisplayOption[] = [
   {
-    label: 'Proportional (static)', svgIcon: 'google-circles',
+    label: 'Proportional (static over time)', svgIcon: 'google-circles',
     value: { proportionalStaticSize: {} }
   },
   {
@@ -67,7 +67,7 @@ export const pointDisplayOptions: PointDisplayOption[] = [
     value: { proportionalDynamicSize: {} }
   },
   {
-    label: 'Fix size for all points', svgIcon: 'gamepad-circle-outline',
+    label: 'Fixed size for all points', svgIcon: 'gamepad-circle-outline',
     value: { fixedSize: {} }
   },
 ]
