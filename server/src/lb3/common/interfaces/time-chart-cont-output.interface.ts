@@ -9,4 +9,5 @@ export interface ChartLinePoint { x: number, y: number, data?: any, data_ref?: a
 export interface ChartLine {
   label: string
   linePoints: ChartLinePoint[]
+  pkEntities?: number[]
 }

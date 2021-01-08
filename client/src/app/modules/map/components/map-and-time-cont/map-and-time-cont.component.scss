@@ -21,12 +21,25 @@
   top: 5px;
   left: 5px;
   display: flex;
+  .toolbar-item {
+    margin-right: 3px;
+  }
 }
-.toolbar-item {
-  margin-right: 3px;
+
+.toolbar-bottom-right {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display: flex;
+  .toolbar-item {
+    margin-left: 3px;
+  }
 }
 
 .info-box {
+  position: absolute;
+  top: 55px;
+  right: 5px;
   width: 160px;
   mat-card-title {
     display: flex;

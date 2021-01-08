@@ -1,16 +1,14 @@
-import { Component, Input, OnInit, HostBinding } from '@angular/core';
-import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
-import * as d3 from 'd3';
-import { apply, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject } from 'rxjs';
-import { map, shareReplay, first } from 'rxjs/operators';
-import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue, CzmlPoint, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
-import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { EntityPreview } from 'app/core';
 import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
-import { ActiveProjectService, EntityPreview } from 'app/core';
-import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
-import { MatDialog } from '@angular/material';
+import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
+import * as d3 from 'd3';
+import { apply, values, keys, equals } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { first, map, shareReplay } from 'rxjs/operators';
+import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue } from '../../../../../../../server/src/lb3/common/interfaces';
+import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 
 export interface MapAndTimeContLayer {
   data_lookups: { [key: string]: number[] }[]
@@ -51,6 +49,28 @@ interface InfoBox {
   cursorInfo?: CursorInfo
   geoEntity?: EntityPreview
 }
+// interface for display settings of the point display
+// (extensible for adding e.g. the min and max radius sizes)
+export interface PointDisplayMode {
+  fixedSize?: {}
+  proportionalStaticSize?: {}
+  proportionalDynamicSize?: {}
+}
+interface PointDisplayOption { label: string, svgIcon: string, value: PointDisplayMode }
+export const pointDisplayOptions: PointDisplayOption[] = [
+  {
+    label: 'Proportional (static over time)', svgIcon: 'google-circles',
+    value: { proportionalStaticSize: {} }
+  },
+  {
+    label: 'Proportional (time-dynamic)', svgIcon: 'google-circles-group',
+    value: { proportionalDynamicSize: {} }
+  },
+  {
+    label: 'Fixed size for all points', svgIcon: 'gamepad-circle-outline',
+    value: { fixedSize: {} }
+  },
+]
 
 @Component({
   selector: 'gv-map-and-time-cont',
@@ -60,8 +80,9 @@ interface InfoBox {
 export class MapAndTimeContComponent implements OnInit {
 
   @Input() data$: Observable<MapAndTimeContOutput>
-  @Input() showInfoBtn = false;
-  @Input() showInfoBox = true;
+  @Input() pointDisplayMode$: BehaviorSubject<PointDisplayMode>
+  @Input() showInfoBtn = true;
+  @Input() showInfoBox = false;
 
   @HostBinding('class.fullscreen')
   @Input() fullscreen = false;
@@ -81,22 +102,39 @@ export class MapAndTimeContComponent implements OnInit {
 
   selectedPackets$ = new BehaviorSubject<CzmlPath[]>([])
   selectedLine$ = new BehaviorSubject<LinePath>(undefined)
+  // array of pk_entity of the entities that are grouped by / belong to a geographical place
+  entitiesOfSelectedGeoPlace$: Observable<number[]>
 
   infoBox: InfoBox = {}
 
+  pointDisplayOptions = pointDisplayOptions;
+  pointDisplayOption$: Observable<PointDisplayOption>
+
+  defaultTimelineHeight = 300
+  timelineHeight = this.defaultTimelineHeight;
+
   i = 0
-  constructor(private p: ActiveProjectService,
+  constructor(
     private pagEntDialog: EntityPreviewsPaginatedDialogService) {
     // startLogTime()
   }
 
   ngOnInit() {
     if (!this.data$) throw new Error('You must provide a data$ input')
+    if (!this.pointDisplayMode$) this.pointDisplayMode$ = new BehaviorSubject(pointDisplayOptions[0].value);
 
-    // logTime('ngOnInit')
+    this.pointDisplayOption$ = this.pointDisplayMode$.pipe(
+      map(mode => this.pointDisplayOptions.find(o => equals(keys(o.value), keys(mode))))
+    )
 
-    this.processedData$ = this.data$.pipe(
-      map(data => this.mapAndTimeContQueryResToOutput(data)),
+    this.entitiesOfSelectedGeoPlace$ = combineLatest(this.data$, this.selectedLine$).pipe(
+      map(([data, selectedLine]) => {
+        if (!selectedLine || typeof selectedLine.lineIndex !== 'number' || !data.length || !data[selectedLine.lineIndex]) return []
+        return data[selectedLine.lineIndex].pk_entities
+      })
+    )
+    this.processedData$ = combineLatest(this.data$, this.pointDisplayMode$).pipe(
+      map(([data, pointDisplayMode]) => this.mapAndTimeContQueryResToOutput(data, pointDisplayMode)),
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 
@@ -177,7 +215,7 @@ export class MapAndTimeContComponent implements OnInit {
     colorActive = [255, 255, 255, 128],
     colorPassive = [255, 255, 255, 128],
     outlineWidthActive = 3,
-    outlineWidthPassive = 2,
+    outlineWidthPassive = 0,
     outlineColorActive = [255, 0, 0, 128],
     outlineColorPassive = [180, 180, 180, 128],
   ): {
@@ -197,28 +235,15 @@ export class MapAndTimeContComponent implements OnInit {
 
       temporalColor.push(t.iso_x)
       temporalColor.push(...(t.y === 0 ? colorPassive : colorActive))
-      // temporalColor = [
-      //   ...temporalColor, t.iso_x, ...(t.y === 0 ? colorPassive : colorActive)
-      // ]
 
       temporalOutlineColor.push(t.iso_x)
       temporalOutlineColor.push(...(t.y === 0 ? outlineColorPassive : outlineColorActive))
-      // temporalOutlineColor = [
-      //   ...temporalOutlineColor, t.iso_x, ...(t.y === 0 ? outlineColorPassive : outlineColorActive)
-      // ]
 
       temporalOutlineWidth.push(t.iso_x)
       temporalOutlineWidth.push((t.y === 0 ? outlineWidthPassive : outlineWidthActive))
 
-      // temporalOutlineWidth = [
-      //   ...temporalOutlineWidth, t.iso_x, (t.y === 0 ? outlineWidthPassive : outlineWidthActive)
-      // ]
-
       temporalPixelSize.push(t.iso_x)
-      temporalPixelSize.push(scaleRadius(t.y))
-      // temporalPixelSize = [
-      //   ...temporalPixelSize, t.iso_x, scaleRadius(t.y)
-      // ]
+      temporalPixelSize.push(t.y === 0 ? 0 : scaleRadius(t.y))
     }
 
     return {
@@ -229,7 +254,7 @@ export class MapAndTimeContComponent implements OnInit {
     };
   }
 
-  private createPoint = (
+  private createDynamicPoint = (
     outlineColorRgba: number[],
     temporalVals: TimeCzmlValue[],
     scaleRadius: d3.ScaleLinear<number, number>,
@@ -241,7 +266,7 @@ export class MapAndTimeContComponent implements OnInit {
       undefined,
       undefined,
       3,
-      2,
+      0,
       outlineColorRgba,
       undefined
     )
@@ -269,7 +294,29 @@ export class MapAndTimeContComponent implements OnInit {
       }
     }
   }
-
+  private createFixedPoint = (
+    outlineColorRgba: number[],
+  ): CzmlPoint => {
+    return {
+      color: { rgba: [255, 255, 255, 128] },
+      outlineColor: { rgba: outlineColorRgba },
+      outlineWidth: 3,
+      pixelSize: 10
+    }
+  }
+  private createStaticPoint = (
+    value: number,
+    scaleRadius: d3.ScaleLinear<number, number>,
+    outlineColorActive = [255, 0, 0, 128],
+    outlineColorPassive = [180, 180, 180, 128],
+  ): CzmlPoint => {
+    return {
+      color: { rgba: [255, 255, 255, 128] },
+      outlineColor: { rgba: value === 0 ? outlineColorPassive : outlineColorActive },
+      outlineWidth: 3,
+      pixelSize: scaleRadius(value)
+    }
+  }
   private createCzmlPacket = (
     id: string,
     point: CzmlPoint,
@@ -308,7 +355,7 @@ export class MapAndTimeContComponent implements OnInit {
    * Converts a MapAndTimeContQueryRes to a MapAndTimeContData
    * TODO
    */
-  mapAndTimeContQueryResToOutput(queryRes: MapAndTimeContOutput): MapAndTimeContData {
+  mapAndTimeContQueryResToOutput(queryRes: MapAndTimeContOutput, pointDisplayMode: PointDisplayMode): MapAndTimeContData {
 
     // logTime('conversion - start')
 
@@ -332,10 +379,16 @@ export class MapAndTimeContComponent implements OnInit {
     const minVal = 0;
     let maxVal = 0;
     queryRes.forEach(item => {
-      const max = apply(Math.max, values(item.temporal_data.data_lookup).map(x => x.length))
+      let max = 0
+      if (pointDisplayMode.proportionalDynamicSize) {
+        max = apply(Math.max, values(item.temporal_data.data_lookup).map(x => x.length))
+      } else if (pointDisplayMode.proportionalStaticSize) {
+        max = item.pk_entities.length
+      }
       if (max > maxVal) maxVal = max;
+
     })
-    const minRadius = 5;
+    const minRadius = 10;
     const maxRadius = 50;
 
     // logTime('conversion - minMaxOk')
@@ -344,17 +397,26 @@ export class MapAndTimeContComponent implements OnInit {
     const scalePoint = d3.scaleLinear()
       .domain([minVal, maxVal])
       .range([minRadius, maxRadius]);
-    const outlineColor = [255, 0, 0, 128]
+    const outlineColorActive = [255, 0, 0, 128];
+    const outlineColorPassive = [180, 180, 180, 128];
 
     queryRes.forEach((item, lineIndex) => {
       const temporalVals = item.temporal_data.timeCzmlValues
       // logTime(`conversion - item ${lineIndex} start, having ${temporalVals.length} temporalVals`)
 
-      const point: CzmlPoint = this.createPoint(
-        outlineColor,
-        temporalVals,
-        scalePoint,
-      )
+
+      const point: CzmlPoint = pointDisplayMode.fixedSize ?
+        // else create fixed point
+        this.createFixedPoint(outlineColorActive) :
+        pointDisplayMode.proportionalStaticSize ?
+          // else create static point
+          this.createStaticPoint(item.pk_entities.length, scalePoint, outlineColorActive, outlineColorPassive) :
+          pointDisplayMode.proportionalDynamicSize ?
+            // if temporal filter enabled create dynamic point
+            this.createDynamicPoint(outlineColorActive, temporalVals, scalePoint) :
+            // default
+            this.createFixedPoint(outlineColorActive);
+
 
       // logTime(`conversion - item ${lineIndex} pointCreated`)
 
@@ -381,7 +443,8 @@ export class MapAndTimeContComponent implements OnInit {
 
       const chartLine: ChartLine = {
         label: item.geo_entity_preview.entity_label,
-        linePoints: item.temporal_data.timeLinePoints
+        linePoints: item.temporal_data.timeLinePoints,
+        pkEntities: item.pk_entities
       }
       chartLines.push(chartLine)
 
@@ -429,6 +492,13 @@ export class MapAndTimeContComponent implements OnInit {
     this.selectGeometriesOfEntity(pkEntity);
     this.selectLineOfEntity(pkEntity)
     this.infoBox.geoEntity = this.pkEntityEntityPreviewMap.get(pkEntity)
+    if (pkEntity) {
+      this.showInfoBox = true
+      this.showInfoBtn = false
+    } else {
+      this.showInfoBox = false
+      this.showInfoBtn = true
+    }
   }
   selectGeometriesOfEntity(pkEntity?: number) {
     this.selectedPackets$.next(this.pkEntityCzmlsMap.get(pkEntity) || [])
@@ -478,14 +548,14 @@ export class MapAndTimeContComponent implements OnInit {
   }
 
   onShowPointDetailsClick() {
-    this.openEntitiesDialog()
+    this.openEntitiesDialogForDate()
   }
 
   onShowLineDetailsClick() {
-    this.openEntitiesDialog()
+    this.openEntitiesDialogForDate()
   }
 
-  openEntitiesDialog() {
+  openEntitiesDialogForDate() {
     this.processedData$
       .pipe(first())
       .subscribe((processedData) => {
@@ -494,5 +564,10 @@ export class MapAndTimeContComponent implements OnInit {
         const pkEntities = this.infoBox.cursorInfo.linePoint ? dataLookup[this.infoBox.cursorInfo.linePoint.data_ref] : []
         this.pagEntDialog.open(true, pkEntities, `${pkEntities.length} Entities available at ${this.infoBox.cursorInfo.cursorDateLabel}`)
       })
+  }
+  openAllEntitiesDialog() {
+    this.entitiesOfSelectedGeoPlace$.pipe(first()).subscribe(pkEntities => {
+      this.pagEntDialog.open(true, pkEntities, `${pkEntities.length} Entities`)
+    })
   }
 }

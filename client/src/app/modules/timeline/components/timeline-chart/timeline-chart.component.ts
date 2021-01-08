@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { GregorianDateTime, JulianDateTime } from 'app/core';
 import { DimensionChangeEvent } from 'app/shared/directives/dimension-change/dimension-change.directive';
-import { merge, Observable, Subject } from 'rxjs';
+import { merge, Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
@@ -76,15 +76,17 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
   yAxis: YAxisDefinition
   chartLine: ChartLineDefinition
 
+  showCursor: boolean;
 
   // Observables that change the chart
   @Input() data$: Observable<ChartLineData>;
-  @Input() showCursor: boolean;
+  @Input() showCursor$: Observable<boolean>;
   @Input() showInfoBtn = false;
   @Input() showInfoBox = true;
   @Output() cursorChange = new EventEmitter<CursorInfo>();
   @Output() chartLineDefChange = new EventEmitter<ChartLineDefinition>()
   @Output() showDetailsClick = new EventEmitter<CursorInfo>()
+  @Output() showAllItemsClick = new EventEmitter<number[]>()
 
 
   dimension$ = new Subject<DimensionChangeEvent>();
@@ -103,9 +105,19 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
 
   }
   ngOnInit() {
-    this.dimension$.pipe(first(), takeUntil(this.destroy$)).subscribe((e) => {
-      this.width = e.dimensions.width;
-      this.height = e.dimensions.height;
+    if (!this.showCursor$) this.showCursor$ = new BehaviorSubject(true);
+
+    combineLatest(
+      this.dimension$,
+      this.showCursor$
+    ).pipe(first(), takeUntil(this.destroy$)).subscribe(([
+      d,
+      showCursor
+    ]) => {
+      this.showCursor = showCursor;
+
+      this.width = d.dimensions.width;
+      this.height = d.dimensions.height;
       this.zoomer.rangeStart = 30;
       this.zoomer.rangeEnd = this.width - 30;
 
@@ -150,6 +162,10 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
         this.zoomer.rangeStart = 30;
         this.zoomer.rangeEnd = this.width - 30;
 
+        this.redraw()
+      })
+      this.showCursor$.pipe(takeUntil(this.destroy$)).subscribe((val) => {
+        this.showCursor = val;
         this.redraw()
       })
     })
@@ -300,6 +316,9 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
 
   onShowDetailsClick() {
     this.showDetailsClick.emit(this.cursorInfo)
+  }
+  onAllItemsClick(pkEntities: number[]) {
+    this.showAllItemsClick.emit(pkEntities)
   }
 }
 

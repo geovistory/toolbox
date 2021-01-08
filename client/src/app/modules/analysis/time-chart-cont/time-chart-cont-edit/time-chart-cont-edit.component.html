@@ -9,8 +9,9 @@
     <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary" *ngIf="a.loading">
       Loading
     </div>
-    <gv-timeline-chart *ngIf="!a.loading" [data$]="a.results$" [showCursor]="true"
-      (showDetailsClick)=onShowDetailsClick($event)></gv-timeline-chart>
+    <gv-timeline-chart *ngIf="!a.loading" [data$]="a.results$" (showDetailsClick)=onShowDetailsClick($event)
+      (showAllItemsClick)=onShowAllItemsClick($event)>
+    </gv-timeline-chart>
   </div>
 
 </gv-analysis-layout>

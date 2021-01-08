@@ -51,13 +51,13 @@ export class AnalysisMapAndTimeCont extends Analysis<Result>   {
 
       else {
         this.fullCount = parseInt(resultObjects[0].count, 10);
-        if (this.fullCount < 100) {
+        if (this.fullCount < 1000) {
           s$.next()
         }
         else {
           s$.next({
             error: {
-              name: `Too many results: ${this.fullCount} (max: 100)`,
+              name: `Too many results: ${this.fullCount} (max: 1000)`,
               message: `Tipp: Restrict the filter to Geographical Places or Built Works that have the properties you are looking for in the 'Path' (you defined below the filter).`
             }
           })

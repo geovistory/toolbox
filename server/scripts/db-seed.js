@@ -1,5 +1,5 @@
 require('./__dotenv');
-const chooseDB = require('./__choosedb');
+const chooseDB = require('./__chooseGvDb');
 const prompts = require('prompts');
 
 async function getUserInputs() {

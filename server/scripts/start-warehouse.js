@@ -1,5 +1,5 @@
 require('./__dotenv');
-const chooseDB = require('./__choosedb');
+const chooseGvAndWhDB = require('./__chooseGvAndWhDb');
 const prompts = require('prompts');
 
 async function chooseStartMode() {
@@ -30,7 +30,7 @@ async function chooseStartMode() {
 }
 
 async function start() {
-  await chooseDB();
+  await chooseGvAndWhDB();
   const startFn = await chooseStartMode();
 
   await startFn();
