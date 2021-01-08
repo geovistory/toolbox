@@ -168,6 +168,7 @@ export class GeovistoryApplication extends BootMixin(
     this.static(/\/backoffice.*/, path.join(__dirname, '../../client/dist'));
     this.static(/\/email-verified.*/, path.join(__dirname, '../../client/dist'));
     this.static(/\/reset-password.*/, path.join(__dirname, '../../client/dist'));
+    this.static(/\/login.*/, path.join(__dirname, '../../client/dist'));
   }
 
 }
