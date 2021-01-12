@@ -11,6 +11,65 @@ export interface WarEntityPreviewId {
   pk_entity: number,
   fk_project?: number | null
 }
+export enum Granularity {
+  '1 century' = '1 century',
+  '1 decade' = '1 decade',
+  '1 year' = '1 year',
+  '1 month' = '1 month',
+  '1 day' = '1 day',
+  '1 hour' = '1 hour',
+  '1 minute' = '1 minute',
+  '1 second' = '1 second',
+};
+export enum CalendarType {
+  'gregorian' = 'gregorian',
+  'julian' = 'julian'
+}
+@model()
+class TimePrimitiveWithCal {
+  @property({required: true})
+  julian_day: number;
+
+  @property({
+    required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(Granularity),
+    },
+  })
+  duration: Granularity;
+
+  @property({
+    required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(CalendarType),
+    },
+  }) calendar: CalendarType;
+}
+
+@model()
+export class TimeSpan {
+
+  @property({type: TimePrimitiveWithCal})
+  71?: TimePrimitiveWithCal;
+
+  @property({type: TimePrimitiveWithCal})
+  72?: TimePrimitiveWithCal;
+
+  @property({type: TimePrimitiveWithCal})
+  150?: TimePrimitiveWithCal;
+
+  @property({type: TimePrimitiveWithCal})
+  151?: TimePrimitiveWithCal;
+
+  @property({type: TimePrimitiveWithCal})
+  152?: TimePrimitiveWithCal;
+
+  @property({type: TimePrimitiveWithCal})
+  153?: TimePrimitiveWithCal;
+}
+
 
 @model({
   settings: {
@@ -69,9 +128,9 @@ export class WarEntityPreview extends Entity {
   fk_type?: number;
 
   @property({
-    type: 'object',
+    type: TimeSpan,
   })
-  time_span?: object;
+  time_span?: TimeSpan;
 
   @property({
     type: 'string',

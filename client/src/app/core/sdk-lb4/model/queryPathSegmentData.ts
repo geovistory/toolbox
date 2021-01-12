@@ -11,13 +11,10 @@
  */
 
 
-export interface DatChunkScopeFilter { 
-    offset?: number;
-    limit?: number;
-    skip?: number;
-    order?: string | Array<string>;
-    where?: { [key: string]: object; };
-    fields?: { [key: string]: object; };
-    include?: Array<{ [key: string]: object; }>;
+export interface QueryPathSegmentData { 
+    classes?: Array<number>;
+    types?: Array<number>;
+    outgoingProperties?: Array<number>;
+    ingoingProperties?: Array<number>;
 }
 

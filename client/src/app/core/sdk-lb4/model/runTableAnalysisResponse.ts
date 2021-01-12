@@ -9,15 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TableRow } from './tableRow';
 
 
-export interface DatChunkScopeFilter { 
-    offset?: number;
-    limit?: number;
-    skip?: number;
-    order?: string | Array<string>;
-    where?: { [key: string]: object; };
-    fields?: { [key: string]: object; };
-    include?: Array<{ [key: string]: object; }>;
+export interface RunTableAnalysisResponse { 
+    rows: Array<TableRow>;
+    full_count?: number;
 }
 

@@ -1,15 +1,18 @@
-import {SqlBuilder, ColDefWithAliases} from './sql-builder';
-import {QueryDefinition} from '../../common';
-import sqlFormatter from 'sql-formatter';
+import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
+import {QAnalysisBase, ColDefWithAliases} from './q-analysis-base';
+import {QueryDefinition} from '../../../models/pro-analysis.model';
+import {GeoEntityMapAndTimeCont} from '../../../models/analysis/analysis-map-response.model';
 
-export class SqlBuilderMapAndTime extends SqlBuilder {
+export class QAnalysisMap extends QAnalysisBase {
 
-  constructor() {
-    super()
+  constructor(
+    dataSource: Postgres1DataSource,
+  ) {
+    super(dataSource)
   }
 
 
-  buildQuery(query: QueryDefinition, fkProject: number) {
+  async queryMap(query: QueryDefinition, fkProject: number) {
     const rootTableAlias = this.addTableAlias();
 
     // root table where
@@ -140,15 +143,13 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
     // ${sqlFormatter.format(forLog, {language: 'pl/sql'})}
 
     // `);
-    return {
-      sql: this.sql,
-      params: this.params,
-    };
+    return this.execute<GeoEntityMapAndTimeCont[]>()
+
   }
 
 
   private createSqlForEntitiesAndTemporalData(columnsWithAliases: ColDefWithAliases[], fkProject: number) {
-    const p = columnsWithAliases[0].queryPath;
+    const p = columnsWithAliases[0].queryPathWithAlias;
     const lastSegment = p?.[p?.length - 1]
     const pathEndsWithClass = (lastSegment?.data.classes?.length ?? 0) + (lastSegment?.data?.types?.length ?? 0) > 0;
 

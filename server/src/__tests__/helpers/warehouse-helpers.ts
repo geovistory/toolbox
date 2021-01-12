@@ -8,7 +8,7 @@ import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
 import {getWarehouseConfig} from '../../warehouse/startScripts';
 import {Warehouse} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
-import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
+import {createWarEntityPreviewRepo} from './atomic/war-entity-preview.helper';
 
 
 

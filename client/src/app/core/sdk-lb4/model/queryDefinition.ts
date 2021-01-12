@@ -9,15 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { QueryFilter } from './queryFilter';
+import { ColDef } from './colDef';
 
 
-export interface DatChunkScopeFilter { 
-    offset?: number;
+export interface QueryDefinition { 
+    filter: QueryFilter;
+    columns: Array<ColDef>;
     limit?: number;
-    skip?: number;
-    order?: string | Array<string>;
-    where?: { [key: string]: object; };
-    fields?: { [key: string]: object; };
-    include?: Array<{ [key: string]: object; }>;
+    offset?: number;
 }
 

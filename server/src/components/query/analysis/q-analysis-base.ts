@@ -1,16 +1,13 @@
-import sqlFormatter from 'sql-formatter';
-import { ColDef, QueryDefinition, QueryFilterData, QueryPathSegment } from '../../common/interfaces/query-filter.interface';
-import { SqlBuilderBase } from '../utils/sql-builder-base';
+import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
+import {ColDef, QueryDefinition, QueryFilterData, QueryPathSegment, QueryFilter} from '../../../models/pro-analysis.model';
+import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
+
 
 interface QueryNode {
   data: QueryFilterData
 }
 
-
-interface NestedQueryNode extends QueryNode {
-  children: NestedQueryNode[]
-}
-interface NestedQueryNodeWithAlias extends NestedQueryNode {
+interface NestedQueryNodeWithAlias extends QueryFilter {
   _tableAlias: string
 
   // this keeps record of the next parent table that is joining entities
@@ -27,7 +24,7 @@ interface QueryNodeWithAlias extends QueryNode {
 
 // createdby query builder on the fly, not for storage
 // use ColDef for storing query definition in db
-export interface ColDefWithAliases extends ColDef {
+export class ColDefWithAliases extends ColDef {
 
   // database column names assigned to that query column
   colNames?: string[]
@@ -35,7 +32,7 @@ export interface ColDefWithAliases extends ColDef {
   // database column name assigned to that query column
   colName?: string;
 
-  queryPath?: QueryPathSegmentWithAlias[];
+  queryPathWithAlias?: QueryPathSegmentWithAlias[];
 
 }
 
@@ -46,18 +43,18 @@ export interface QueryPathSegmentWithAlias extends QueryPathSegment {
 }
 
 export interface QueryDefinitionWithAliases extends QueryDefinition {
-  columns: ColDefWithAliases[]
+  columnsWithAlias: ColDefWithAliases[]
 }
 
 
 
-export class SqlBuilder extends SqlBuilderBase {
-
+export class QAnalysisBase extends SqlBuilderLb4Models {
   PK_HISTC8_GEOGRAPHICAL_PLACE = 363;
   PK_HISTC11_BUILT_WORK = 441;
+
   GEO_CLASSES = {
-    [this.PK_HISTC8_GEOGRAPHICAL_PLACE]: true,
-    [this.PK_HISTC11_BUILT_WORK]: true,
+    [363]: true,
+    [441]: true,
   };
 
   // Properties inherited from 'P166 was a presence of'
@@ -82,11 +79,13 @@ export class SqlBuilder extends SqlBuilderBase {
   offset = '';
 
 
-  constructor() {
-    super()
+  constructor(
+    dataSource: Postgres1DataSource,
+  ) {
+    super(dataSource)
   }
 
-  buildQuery(query: QueryDefinition, fkProject: number) {
+  async query<M>(query: QueryDefinition, fkProject: number) {
     const rootTableAlias = this.addTableAlias();
 
     // root table where
@@ -147,10 +146,7 @@ export class SqlBuilder extends SqlBuilderBase {
 
     //     `);
 
-    return {
-      sql: this.sql,
-      params: this.params,
-    };
+    return this.execute<M>()
   }
 
 
@@ -158,7 +154,7 @@ export class SqlBuilder extends SqlBuilderBase {
    * Build Sql query for counting the number of resulting rows
    * when only the query filter is applied
    */
-  buildCountQuery(query: QueryDefinition, fkProject: number) {
+  async countResultingRows(query: QueryDefinition, fkProject: number) {
     const rootTableAlias = this.addTableAlias();
 
     // root table where
@@ -185,7 +181,7 @@ export class SqlBuilder extends SqlBuilderBase {
           ${this.joinWheres(this.filterWheres, 'AND')}
       )
       SELECT
-       count(*)
+       count(*)::int
       FROM
         ${this.joinFroms(this.froms)}
         `;
@@ -202,10 +198,8 @@ export class SqlBuilder extends SqlBuilderBase {
 
     //     `);
 
-    return {
-      sql: this.sql,
-      params: this.params,
-    };
+    const res = await this.execute<{count: number}[]>()
+    return res?.[0]?.count ?? 0;
   }
 
   /**
@@ -237,11 +231,11 @@ export class SqlBuilder extends SqlBuilderBase {
   createColumnFroms(column: ColDef, leftTableAlias: string, fkProject: number): ColDefWithAliases {
     const colWithAliases: ColDefWithAliases = {
       ...column,
-      queryPath: undefined
+      queryPathWithAlias: undefined
     }
-    if (column && column.queryPath && !column.ofRootTable) {
+    if (column?.queryPath && !column.ofRootTable) {
       let thisTableAlias: string;
-      colWithAliases.queryPath = column.queryPath.map((segment) => {
+      colWithAliases.queryPathWithAlias = column.queryPath.map((segment) => {
         thisTableAlias = this.addTableAlias();
         const node: QueryNodeWithAlias = {
           ...segment,
@@ -313,7 +307,7 @@ export class SqlBuilder extends SqlBuilderBase {
           );
 
         }
-      } else if (column.queryPath && column.queryPath.length) {
+      } else if (column.queryPathWithAlias && column.queryPathWithAlias.length) {
         if (column.defaultType === 'space_and_time_cont') {
 
           this.selects.push(
@@ -327,7 +321,7 @@ export class SqlBuilder extends SqlBuilderBase {
 
           // create a select for the last segment in the queryPath
           this.createColumnSelect(
-            column.queryPath[column.queryPath.length - 1],
+            column.queryPathWithAlias[column.queryPathWithAlias.length - 1],
             column.id
           );
         }
@@ -336,10 +330,8 @@ export class SqlBuilder extends SqlBuilderBase {
   }
 
   createColumnSelect(segment: QueryNodeWithAlias, columnLabel: string) {
-    if (this.isStatementsJoin(segment)) {
-    }
 
-    else if (this.isEntitesJoin(segment)) {
+    if (!this.isStatementsJoin(segment) && this.isEntitesJoin(segment)) {
       this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
             'pk_entity', ${segment._tableAlias}.pk_entity,
             'entity_type', ${segment._tableAlias}.entity_type,
@@ -353,7 +345,7 @@ export class SqlBuilder extends SqlBuilderBase {
     }
   }
 
-  createFilterFroms(node: NestedQueryNode, leftTableAlias: string, parentEntityTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
+  createFilterFroms(node: QueryFilter, leftTableAlias: string, parentEntityTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
     let parEntTabAlias = parentEntityTableAlias;
 
     const nodeWithAlias = {
@@ -390,7 +382,7 @@ export class SqlBuilder extends SqlBuilderBase {
 
     const nestedNodeWithAlias = {
       ...nodeWithAlias,
-      children: node.children.map(childNode => {
+      children: (node.children ?? []).map(childNode => {
         return this.createFilterFroms(childNode, leftTableAlias, parEntTabAlias, fkProject, level + 1);
       })
     }
@@ -508,7 +500,7 @@ export class SqlBuilder extends SqlBuilderBase {
 
         // const n = node;
         // console.log(n)
-        where = `${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm || ''}%`)}`;
+        where = `${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm ?? ''}%`)}`;
       }
 
 
@@ -564,7 +556,7 @@ export class SqlBuilder extends SqlBuilderBase {
    */
   isStatementsJoin(node: QueryNode) {
     if (!node || typeof node.data !== 'object') return false;
-    return node.data.ingoingProperties || node.data.outgoingProperties;
+    return node.data.ingoingProperties ?? node.data.outgoingProperties;
   }
   /**
    * Returns true, if given node is for joining entities

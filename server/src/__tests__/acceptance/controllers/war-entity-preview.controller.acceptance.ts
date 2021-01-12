@@ -9,7 +9,7 @@ import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
 import {WarEntityPreview} from '../../../models';
 import {GeovistoryServer} from '../../../server';
-import {createWarEntityPreview, deleteWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity_preview.helper';
+import {createWarEntityPreview, deleteWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {wait} from '../../helpers/warehouse-helpers';

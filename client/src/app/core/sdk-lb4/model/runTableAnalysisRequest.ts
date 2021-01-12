@@ -9,15 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AnalysisDefinition } from './analysisDefinition';
 
 
-export interface DatChunkScopeFilter { 
-    offset?: number;
-    limit?: number;
-    skip?: number;
-    order?: string | Array<string>;
-    where?: { [key: string]: object; };
-    fields?: { [key: string]: object; };
-    include?: Array<{ [key: string]: object; }>;
+export interface RunTableAnalysisRequest { 
+    analysisDefinition: AnalysisDefinition;
+    fkProject: number;
 }
 

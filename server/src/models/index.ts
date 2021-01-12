@@ -1,3 +1,4 @@
+export * from './war-statement.model';
 export * from './war-entity-preview.model';
 export * from './war-class-preview.model';
 export * from './dat-chunk.model';
@@ -43,3 +44,6 @@ export * from './pub-role.model';
 export * from './pro-entity-label-config.model';
 export * from './tab-row.model';
 export * from './inf-dimension.model';
+
+// analysis models
+export * from './analysis'

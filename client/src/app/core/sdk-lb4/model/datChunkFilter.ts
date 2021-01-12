@@ -17,7 +17,7 @@ export interface DatChunkFilter {
     offset?: number;
     limit?: number;
     skip?: number;
-    order?: Array<string>;
+    order?: string | Array<string>;
     fields?: DatChunkFields;
     include?: Array<DatChunkIncludeFilterItems>;
 }

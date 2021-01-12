@@ -9,15 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { QueryDefinition } from './queryDefinition';
 
 
-export interface DatChunkScopeFilter { 
-    offset?: number;
-    limit?: number;
-    skip?: number;
-    order?: string | Array<string>;
-    where?: { [key: string]: object; };
-    fields?: { [key: string]: object; };
-    include?: Array<{ [key: string]: object; }>;
+export interface AnalysisDefinition { 
+    queryDefinition?: QueryDefinition;
 }
 

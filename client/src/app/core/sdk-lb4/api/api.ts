@@ -1,5 +1,7 @@
 export * from './account.service';
 import { AccountService } from './account.service';
+export * from './analysis.service';
+import { AnalysisService } from './analysis.service';
 export * from './datChunk.service';
 import { DatChunkService } from './datChunk.service';
 export * from './datChunkController.service';
@@ -80,4 +82,4 @@ export * from './warEntityPreview.service';
 import { WarEntityPreviewService } from './warEntityPreview.service';
 export * from './warEntityPreviewController.service';
 import { WarEntityPreviewControllerService } from './warEntityPreviewController.service';
-export const APIS = [AccountService, DatChunkService, DatChunkControllerService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassService, DfhLabelService, DfhProfileService, DfhPropertyService, FactoidControllerService, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginationObjectService, PingControllerService, ProAnalysisService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, RamListService, SchemaObjectService, SysAnalysisTypeService, SysAppContextService, SysClassFieldService, SysClassHasTypePropertyService, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TableService, WarEntityPreviewService, WarEntityPreviewControllerService];
+export const APIS = [AccountService, AnalysisService, DatChunkService, DatChunkControllerService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassService, DfhLabelService, DfhProfileService, DfhPropertyService, FactoidControllerService, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginationObjectService, PingControllerService, ProAnalysisService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, RamListService, SchemaObjectService, SysAnalysisTypeService, SysAppContextService, SysClassFieldService, SysClassHasTypePropertyService, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TableService, WarEntityPreviewService, WarEntityPreviewControllerService];
