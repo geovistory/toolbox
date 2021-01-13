@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
-import {clone} from 'ramda';
-import {TableOutput, MapAndTimeContOutput} from '../../../lb3/common';
-import {AnalysisTableExportRequest, TableExportFileType} from '../../../models';
+import {clone, omit, pick} from 'ramda';
+import {TableOutput, MapAndTimeContOutput, TimeChartContOutput} from '../../../lb3/common';
+import {AnalysisTableExportRequest, TableExportFileType, ProAnalysis} from '../../../models';
 import {AnalysisTableExportResponse} from '../../../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-request.model';
 import {AnalysisTableResponse} from '../../../models/analysis/analysis-table-response.model';
@@ -12,6 +13,11 @@ import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-h
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {AnalysisMapRequest} from '../../../models/analysis/analysis-map-request.model';
 import {AnalysisMapResponse} from '../../../models/analysis/analysis-map-response.model';
+import {AnalysisTimeChartRequest} from '../../../models/analysis/analysis-time-chart-request.model';
+import {AnalysisTimeChartResponse} from '../../../models/analysis/analysis-time-chart-response.model';
+import {createProAnalysis, createProAnalysisRepo} from '../../helpers/atomic/pro-analysis.helper';
+import {createSysSystemType} from '../../helpers/atomic/sys-system-type.helper';
+import {SysSystemTypeMock} from '../../helpers/data/gvDB/SysSystemTypeMock';
 
 describe('AnaylsisController', () => {
     let server: GeovistoryServer;
@@ -228,7 +234,201 @@ describe('AnaylsisController', () => {
         })
     });
 
+    describe('POST /lb3-api/ProAnalyses/run (time)', () => {
 
+        it('should reject the request because inputs are wrong', async () => {
+            const queryTimeChart = ProAnalysisMock.TIME_BIRTHS;
+            const corruptAnalysisDefinition = clone(queryTimeChart.analysis_definition);
+            delete corruptAnalysisDefinition.lines?.[0].queryDefinition?.filter;
+            const res = await client.post('/lb3-api/ProAnalyses/run')
+                .set('Authorization', lb3Token)
+                .query({pkProject, analysisType: queryTimeChart.fk_analysis_type})
+                .send(corruptAnalysisDefinition)
+            expect(res.status).equal(500)
+        })
+
+        it('should respond with data for a time chart visualization', async () => {
+            const queryTimeChart = ProAnalysisMock.TIME_BIRTHS;
+            const res = await client.post('/lb3-api/ProAnalyses/run')
+                .set('Authorization', lb3Token)
+                .query({pkProject, analysisType: queryTimeChart.fk_analysis_type})
+                .send(queryTimeChart.analysis_definition)
+            const result: TimeChartContOutput = res.body
+            expect(result.chartLines.length).equal(1)
+
+        })
+    });
+
+    describe('POST analysis/time-chart-run', () => {
+
+        it('should reject the request because inputs are wrong', async () => {
+            const proAnalysis = ProAnalysisMock.TIME_BIRTHS;
+            const corruptAnalysisDefinition = clone(proAnalysis.analysis_definition);
+            delete corruptAnalysisDefinition.lines?.[0]?.queryDefinition.filter;
+            const req: AnalysisMapRequest = {
+                fkProject: pkProject,
+                analysisDefinition: corruptAnalysisDefinition
+            }
+            const res = await client.post('/analysis/time-chart-run')
+                .set('Authorization', lb4Token)
+                .send(req)
+            expect(res.body.error.code).equal('VALIDATION_FAILED')
+        })
+
+        it('should respond with data for time chart with one line', async () => {
+            const proAnalysis = ProAnalysisMock.TIME_BIRTHS;
+            const req: AnalysisTimeChartRequest = {
+                fkProject: pkProject,
+                lines: proAnalysis.analysis_definition.lines ?? []
+            }
+            const res = await client.post('/analysis/time-chart-run')
+                .set('Authorization', lb4Token)
+                .send(req)
+            const result: AnalysisTimeChartResponse = res.body
+
+            await validateAgainstSchema(result, AnalysisTimeChartResponse, server)
+            expect(result.chartLines.length).equal(1)
+
+        })
+    });
+
+
+    describe('GET /lb3-api/ProAnalyses/find-per-id-and-project', () => {
+
+        it('should respond with latest version of ProAnalysis', async () => {
+            const res = await client.get('/lb3-api/ProAnalyses/find-per-id-and-project')
+                .set('Authorization', lb3Token)
+                .query({
+                    pkProject,
+                    pkEntity: ProAnalysisMock.MAP_GEO_PLACES.pk_entity
+                })
+                .send()
+            const result: ProAnalysis[] = res.body
+            expect(result[0].analysis_definition)
+                .deepEqual(ProAnalysisMock.MAP_GEO_PLACES.analysis_definition)
+
+        })
+    });
+    describe('GET /analysis/get-version', () => {
+
+        it('should respond with latest version of ProAnalysis', async () => {
+
+
+            const res = await client.get('/analysis/get-version')
+                .set('Authorization', lb4Token)
+                .query({
+                    pkProject,
+                    pkEntity: ProAnalysisMock.MAP_GEO_PLACES.pk_entity,
+                })
+                .send()
+            const result: ProAnalysis = res.body
+            expect(result.analysis_definition)
+                .deepEqual(ProAnalysisMock.MAP_GEO_PLACES.analysis_definition)
+            expect(result.name).equal('My Places 2')
+
+        })
+        it('should respond with latest version 1 of ProAnalysis', async () => {
+
+            const res = await client.get('/analysis/get-version')
+                .set('Authorization', lb4Token)
+                .query({
+                    pkProject,
+                    pkEntity: ProAnalysisMock.MAP_GEO_PLACES.pk_entity,
+                    version: 1
+                })
+                .send()
+            const result: ProAnalysis = res.body
+            expect(result.analysis_definition)
+                .deepEqual(ProAnalysisMock.MAP_GEO_PLACES.analysis_definition)
+            expect(result.name).equal(ProAnalysisMock.MAP_GEO_PLACES.name)
+
+        })
+    });
+
+    describe('GET /lb3-api/ProAnalyses/bulk-upsert', () => {
+
+        it('should create two ProAnalyses', async () => {
+            const reqBody = [
+                omit(['pk_entity'], ProAnalysisMock.TIME_BIRTHS),
+                omit(['pk_entity'], ProAnalysisMock.MAP_GEO_PLACES)
+            ]
+            const res = await client.put('/lb3-api/ProAnalyses/bulk-upsert')
+                .set('Authorization', lb3Token)
+                .query({pkProject})
+                .send(reqBody)
+            expect(res.status).equal(200)
+
+        })
+
+    });
+
+
+    describe('GET /analysis/bulk-upsert', () => {
+
+        it('should create two ProAnalyses', async () => {
+            const reqBody = [
+                omit(['pk_entity'], ProAnalysisMock.TIME_BIRTHS),
+                ProAnalysisMock.MAP_GEO_PLACES
+            ]
+
+            const res = await client.put('/analysis/bulk-upsert')
+                .set('Authorization', lb4Token)
+                .query({pkProject})
+                .send(reqBody)
+            expect(res.status).equal(200)
+            expect(res.body[0].fk_last_modifier).not.to.be.undefined()
+
+        })
+        it('should reject upserting a ProAnalysis for another project', async () => {
+            const proAnalysis = ProAnalysisMock.MAP_GEO_PLACES
+            proAnalysis.fk_project = 99;
+            const reqBody = [
+                proAnalysis
+            ]
+            const res = await client.put('/analysis/bulk-upsert')
+                .set('Authorization', lb4Token)
+                .query({pkProject})
+                .send(reqBody)
+            expect(res.status).equal(401)
+
+        })
+
+    });
+
+    describe('GET /lb3-api/ProAnalyses/bulk-delete', () => {
+
+        it('should delete ProAnalysis', async () => {
+            const reqBody = [
+                ProAnalysisMock.MAP_GEO_PLACES.pk_entity
+            ]
+            const res = await client.put('/lb3-api/ProAnalyses/bulk-delete')
+                .set('Authorization', lb3Token)
+                .query({pkProject})
+                .send(reqBody)
+            expect(res.status).equal(200)
+
+        })
+
+    });
+    describe('GET /analysis/bulk-delete', () => {
+
+        it('should delete ProAnalysis', async () => {
+            const repo = createProAnalysisRepo()
+            await repo.deleteAll()
+            await createProAnalysis(ProAnalysisMock.MAP_GEO_PLACES)
+            await createProAnalysis(ProAnalysisMock.TIME_BIRTHS)
+            const reqBody = [
+                ProAnalysisMock.MAP_GEO_PLACES.pk_entity
+            ]
+            const res = await client.put('/analysis/bulk-delete')
+                .set('Authorization', lb4Token)
+                .query({pkProject})
+                .send(reqBody)
+            expect(res.body.count).equal(1)
+            const available = await repo.find()
+            expect(available.length).to.equal(1)
+        })
+    });
 
 });
 

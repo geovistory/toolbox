@@ -8,8 +8,8 @@ export function createWarStatementRepo() {
   )
 }
 
-export async function createWarStatement(entityPreview: Partial<WarStatement>) {
-  return createWarStatementRepo().create(entityPreview);
+export async function createWarStatement(stmt: Partial<WarStatement>) {
+  return createWarStatementRepo().create(stmt);
 }
 
 export async function getWarStatement(pkEntity: number, fkProject?: number) {

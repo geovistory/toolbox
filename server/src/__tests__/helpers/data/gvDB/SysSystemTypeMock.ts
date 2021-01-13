@@ -41,6 +41,19 @@ export class SysSystemTypeMock {
   })
 
 
+  static readonly ANALYSIS_TYPE_TIME_CHART = new SysSystemType({
+    pk_entity: 3331,
+    definition: 'Analysis of type time chart'
+  })
+  static readonly ANALYSIS_TYPE_TABLE = new SysSystemType({
+    pk_entity: 3332,
+    definition: 'Analysis of type table'
+  })
+  static readonly ANALYSIS_TYPE_MAP = new SysSystemType({
+    pk_entity: 3333,
+    definition: 'Analysis of type map'
+  })
+
 }
 
 

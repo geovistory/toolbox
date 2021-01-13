@@ -68,11 +68,11 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
     ) `;
   }
 
-  protected async executeAndReturnFirstData<M>(): Promise<M> {
+  async executeAndReturnFirstData<M>(): Promise<M> {
     const res = await this.dataSource.execute(this.sql, this.params);
     return res?.[0]?.data ?? {};
   }
-  protected async execute<M>(): Promise<M> {
+  async execute<M>(): Promise<M> {
     const res = await this.dataSource.execute(this.sql, this.params);
     return res;
   }

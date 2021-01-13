@@ -1,6 +1,7 @@
 import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
 import {ColDef, QueryDefinition, QueryFilterData, QueryPathSegment, QueryFilter} from '../../../models/pro-analysis.model';
 import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
+import {AnalysisTableRow} from '../../../models/analysis/analysis-table-response.model';
 
 
 interface QueryNode {
@@ -85,7 +86,7 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
     super(dataSource)
   }
 
-  async query<M>(query: QueryDefinition, fkProject: number) {
+  async query(query: QueryDefinition, fkProject: number) {
     const rootTableAlias = this.addTableAlias();
 
     // root table where
@@ -146,7 +147,7 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
 
     //     `);
 
-    return this.execute<M>()
+    return this.execute<AnalysisTableRow[]>()
   }
 
 

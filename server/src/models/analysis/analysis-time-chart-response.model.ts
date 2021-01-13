@@ -18,6 +18,7 @@ export class ChartLinePoint {
   data_ref?: string
 }
 
+@model()
 export class ChartLine {
 
   @property({required: true})
@@ -31,7 +32,7 @@ export class ChartLine {
 }
 
 @model()
-export class ChartLineData {
+export class AnalysisTimeChartResponse {
 
   @property({required: true})
   activeLine: number
@@ -42,8 +43,3 @@ export class ChartLineData {
   @property()
   mouseX?: number // the mouse x position
 }
-@model()
-export class AnalysisTimeChartResponse {
-  @property.array(ChartLineData, {required: true})
-  lines: ChartLineData[]
-};

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {ProAnalysis, ColDefDefaultType} from '../../../../models';
-import {PK_DEFAULT_CONFIG_PROJECT} from '../../../../warehouse/Warehouse';
 import {SysConfig} from '../../../../lb3/common';
 import {DfhApiClassMock} from './DfhApiClassMock';
+import {ProProjectMock} from './ProProjectMock';
+import {SysSystemTypeMock} from './SysSystemTypeMock';
 
 /**
  * pk_entity prefix: 800
@@ -12,8 +13,9 @@ export class ProAnalysisMock {
 
   static readonly TABLE_GEO_PLACES = new ProAnalysis({
     pk_entity: 8001,
-    fk_project: PK_DEFAULT_CONFIG_PROJECT,
-    fk_analysis_type: SysConfig.PK_ANALYSIS_TYPE__TABLE,
+    name: 'My Geographical Places on a table',
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_analysis_type: SysSystemTypeMock.ANALYSIS_TYPE_TABLE.pk_entity,
     analysis_definition: {
       queryDefinition: {
         columns: [
@@ -26,7 +28,11 @@ export class ProAnalysisMock {
         ],
         filter: {
           children: [],
-          data: {}
+          data: {
+            classes: [
+              DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class
+            ]
+          }
         }
       }
     }
@@ -36,8 +42,9 @@ export class ProAnalysisMock {
 
   static readonly MAP_GEO_PLACES = new ProAnalysis({
     pk_entity: 8002,
-    fk_project: PK_DEFAULT_CONFIG_PROJECT,
-    fk_analysis_type: SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT,
+    name: 'My Geographical Places',
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_analysis_type: SysSystemTypeMock.ANALYSIS_TYPE_MAP.pk_entity,
     analysis_definition: {
       queryDefinition: {
         columns: [
@@ -50,7 +57,11 @@ export class ProAnalysisMock {
         ],
         filter: {
           children: [],
-          data: {}
+          data: {
+            classes: [
+              DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class
+            ]
+          }
         }
       }
     }
@@ -58,27 +69,33 @@ export class ProAnalysisMock {
 
   static readonly TIME_BIRTHS = new ProAnalysis({
     pk_entity: 8003,
-    fk_project: PK_DEFAULT_CONFIG_PROJECT,
-    fk_analysis_type: SysConfig.PK_ANALYSIS_TYPE__TIME_CONT,
+    name: 'My births on a timeline',
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_analysis_type: SysSystemTypeMock.ANALYSIS_TYPE_TIME_CHART.pk_entity,
     analysis_definition: {
-      queryDefinition: {
-        columns: [
-          {
-            id: 'col_0',
-            ofRootTable: true,
-            preventGroupBy: true,
-            defaultType: ColDefDefaultType.temporal_distribution
-          }
-        ],
-        filter: {
-          children: [],
-          data: {
-            classes: [
-              DfhApiClassMock.EN_61_BIRTH.dfh_pk_class
-            ]
+      lines: [{
+        visualizationDefinition: {
+          label: 'Births'
+        },
+        queryDefinition: {
+          columns: [
+            {
+              id: 'col_0',
+              ofRootTable: true,
+              preventGroupBy: true,
+              defaultType: ColDefDefaultType.temporal_distribution
+            }
+          ],
+          filter: {
+            children: [],
+            data: {
+              classes: [
+                DfhApiClassMock.EN_61_BIRTH.dfh_pk_class
+              ]
+            }
           }
         }
-      }
+      }]
     }
   })
 

@@ -3,6 +3,7 @@ import {Entity, model, property} from '@loopback/repository';
 import {ProEntity} from '.';
 import {ProProject} from './pro-project.model';
 import {PubAccount} from './pub-account.model';
+import {TimeChartContLine} from './analysis/analysis-time-chart-request.model';
 
 enum Operator {
   'IS' = 'IS',
@@ -58,7 +59,11 @@ export class QueryPathSegment {
 }
 
 
-@model()
+@model({
+  settings:{
+
+  }
+})
 export class ColDef {
   // has to be true on columns of the root table (the first entity_preview table)
   @property()
@@ -81,7 +86,7 @@ export class ColDef {
   label?: string;
 
   // identifier for the column
-  @property({required: true})
+  @property({required: true, id: true, generated: false})
   id: string;
 
   @property.array(QueryPathSegment)
@@ -129,12 +134,6 @@ export class QueryFilterData {
 }
 
 // registerType(QueryFilterData)
-@model()
-export class Foo {
-  @property()
-  bar?: string
-
-}
 
 @model()
 export class QueryFilter {
@@ -144,6 +143,13 @@ export class QueryFilter {
   @property({type: QueryFilterData, required: true})
   data: QueryFilterData
 
+}
+@model()
+export class TimeChartContQueryDef {
+  @property({type: QueryFilter, required: true})
+  filter: QueryFilter;
+  @property.array(ColDef, {required: true})
+  columns: ColDef[];
 }
 
 @model()
@@ -169,8 +175,8 @@ export class AnalysisDefinition {
   queryDefinition?: QueryDefinition;
 
   // for analysis type time chart
-  // @property.array(TimeChartContLine,{})
-  // lines: TimeChartContLine[]
+  @property.array(TimeChartContLine)
+  lines?: TimeChartContLine[]
 }
 
 

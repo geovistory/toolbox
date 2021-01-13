@@ -1,16 +1,25 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
-import {post, requestBody, RequestContext, RestBindings, RestServer, HttpErrors} from '@loopback/rest';
+import {repository, Count} from '@loopback/repository';
+import {get, HttpErrors, param, post, put, requestBody} from '@loopback/rest';
 import * as json2csv from 'json2csv';
+import {Roles} from '../components/authorization';
 import {QAnalysisBase} from '../components/query/analysis/q-analysis-base';
+import {QAnalysisMap} from '../components/query/analysis/q-analysis-map';
 import {Postgres1DataSource} from '../datasources/postgres1.datasource';
-import {AnalysisTableExportRequest, AnalysisTableResponse, AnalysisTableRow, ColDef, TableExportFileType} from '../models';
+import {AnalysisTableExportRequest, AnalysisTableResponse, AnalysisTableRow, ColDef, ProAnalysis, ProAnalysisRelations, TableExportFileType} from '../models';
+import {AnalysisMapRequest} from '../models/analysis/analysis-map-request.model';
+import {AnalysisMapResponse} from '../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../models/analysis/analysis-table-request.model';
-import {AnalysisMapResponse} from '../models/analysis/analysis-map-response.model';
-import {AnalysisMapRequest} from '../models/analysis/analysis-map-request.model';
-import {QAnalysisMap} from '../components/query/analysis/q-analysis-map';
+import {AnalysisTimeChartRequest} from '../models/analysis/analysis-time-chart-request.model';
+import {AnalysisTimeChartResponse, ChartLine, ChartLinePoint} from '../models/analysis/analysis-time-chart-response.model';
+import {ProAnalysisRepository} from '../repositories';
+import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 
 
 
@@ -19,11 +28,14 @@ import {QAnalysisMap} from '../components/query/analysis/q-analysis-map';
 export class AnalysisController {
   constructor(
     @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
-    @inject(RestBindings.SERVER) private restServer: RestServer,
-    @inject(RestBindings.Http.CONTEXT) private requestContext: RequestContext,
+    @repository(ProAnalysisRepository) protected proAnalysisRepo: ProAnalysisRepository,
+    @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
   ) { }
 
 
+
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   @post('analysis/table-run', {
     description: 'Run the analysis of type table',
     responses: {
@@ -47,7 +59,7 @@ export class AnalysisController {
 
     // get rows
     const rows = await new QAnalysisBase(this.dataSource)
-      .query<AnalysisTableRow[]>(req.analysisDefinition.queryDefinition, req.fkProject)
+      .query(req.analysisDefinition.queryDefinition, req.fkProject)
 
     const res: AnalysisTableResponse = {
       full_count: fullCount,
@@ -59,7 +71,8 @@ export class AnalysisController {
 
 
 
-
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   @post('analysis/table-export', {
     description: 'Export the analysis of type table',
     responses: {
@@ -86,7 +99,8 @@ export class AnalysisController {
 
 
 
-
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   @post('analysis/map-run', {
     description: 'Run the analysis of type map',
     responses: {
@@ -118,6 +132,132 @@ export class AnalysisController {
 
     return {geoPlaces}
   }
+
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @post('analysis/time-chart-run', {
+    description: 'Run the analysis of type time-chart',
+    responses: {
+      '200': {
+        description: 'Analysis has been successfully run.',
+        content: {'application/json': {schema: {'x-ts-type': AnalysisTimeChartResponse}}},
+      },
+    },
+  })
+  async timeChartRun(
+    @requestBody() req: AnalysisTimeChartRequest,
+  ): Promise<AnalysisTimeChartResponse> {
+    const defaultResponse = {
+      activeLine: 0,
+      chartLines: []
+    }
+
+    if (req.lines.length > 100) throw new Error('Too many lines');
+    else if (req.lines.length < 1) return defaultResponse;
+
+    // count items per line
+    const counts = await Promise.all(req.lines.map(item => {
+      return new QAnalysisBase(this.dataSource).countResultingRows(item.queryDefinition, req.fkProject)
+    }))
+
+
+    // check feasibility
+    counts.forEach((count, i) => {
+      if (count > 100000) {
+        throw new Error(`Your query gives too large result. Please narrow down the filter for line nr. ${i + 1}`);
+      }
+    })
+
+    // get data
+    const lines = await Promise.all(req.lines.map(item => {
+      return new QAnalysisBase(this.dataSource).query(item.queryDefinition, req.fkProject)
+    }))
+    const chartLines: ChartLine[] = lines.map((line, i) => ({
+      label: req.lines[i].visualizationDefinition.label,
+      linePoints: line?.[0].temporal_distribution as ChartLinePoint[]
+    }))
+    return {
+      activeLine: 0,
+      chartLines
+    }
+  }
+
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @get('analysis/get-version', {
+    description: 'Get a ProAnalysis version. If no version specified, latest version is returned.',
+    responses: {
+      '200': {
+        description: 'Ok.',
+        content: {'application/json': {schema: {'x-ts-type': ProAnalysis}}},
+      },
+    },
+  })
+  async getVersion(
+    @param.query.number('pkProject') pkProject: number,
+    @param.query.number('pkEntity') pkEntity: number,
+    @param.query.number('version') version: number,
+  ): Promise<ProAnalysis> {
+    let res: (ProAnalysis & ProAnalysisRelations) | null
+    if (!version) {
+      res = await this.proAnalysisRepo.findOne({
+        where: {
+          pk_entity: {eq: pkEntity},
+          fk_project: {eq: pkProject}
+        }
+      })
+    } else {
+      const b = new SqlBuilderLb4Models(this.dataSource)
+      b.sql = `
+      SELECT ${b.createSelect('t1', ProAnalysis.definition)}
+      FROM projects.analysis t1
+      WHERE t1.pk_entity = ${b.addParam(pkEntity)}
+      AND t1.fk_project = ${b.addParam(pkProject)}
+      AND t1.entity_version = ${b.addParam(version)}
+      UNION
+      SELECT ${b.createSelect('t1', ProAnalysis.definition)}
+      FROM projects.analysis_vt t1
+      WHERE t1.pk_entity = ${b.addParam(pkEntity)}
+      AND t1.fk_project = ${b.addParam(pkProject)}
+      AND t1.entity_version = ${b.addParam(version)}
+      `
+      res = (await b.execute<ProAnalysis[]>())?.[0]
+    }
+    if (!res) throw new HttpErrors.NotFound()
+    return res
+  }
+
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @put('analysis/bulk-upsert',)
+  async bulkUpsert(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody.array({schema: {type: ProAnalysis}}) items: ProAnalysis[],
+  ): Promise<ProAnalysis[]> {
+    const accountId = this.user[securityId];
+    const promiseArray = items.map(item => {
+      item.fk_last_modifier = parseInt(accountId, 10)
+      if (item.fk_project !== pkProject) {
+        throw new HttpErrors.Unauthorized(`It is not allowed to upsert a ProAnalysis with different fk_project (${item.fk_project}) from authorizes pkProject (${pkProject}).`);
+      } return this.proAnalysisRepo.upsert(item);
+    });
+    return Promise.all(promiseArray)
+  }
+
+
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @put('analysis/bulk-delete',)
+  async bulkDelete(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody.array({schema: {type: Number}}) pkEntities: number[],
+  ): Promise<Count> {
+    return this.proAnalysisRepo.deleteAll({
+      pk_entity: {inq: pkEntities},
+      fk_project: {eq: pkProject}
+    });
+  }
+
 
 
 
