@@ -9,18 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AnalysisDefinition } from './analysisDefinition';
 
 
 export interface ProAnalysis { 
+    pk_entity?: number;
     name: string;
-    description?: string;
-    analysis_definition: object;
+    description?: string | null;
+    analysis_definition: AnalysisDefinition;
     fk_project: number;
     fk_analysis_type: number;
-    pk_entity?: number;
-    entity_version?: number;
-    tmsp_creation?: string;
-    tmsp_last_modification?: string;
-    fk_last_modifier?: number;
+    fk_last_modifier?: number | null;
 }
 

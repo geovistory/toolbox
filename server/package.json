@@ -118,7 +118,7 @@
     "@loopback/eslint-config": "^8.0.3",
     "@loopback/testlab": "^3.2.0",
     "@mean-expert/loopback-sdk-builder": "kleiolab/loopback-sdk-builder#fix-missing-targetClass",
-    "@openapitools/openapi-generator-cli": "^1.0.13-4.3.1",
+    "@openapitools/openapi-generator-cli": "^2.1.16",
     "@types/archiver": "^3.1.0",
     "@types/async": "^3.2.3",
     "@types/bcrypt": "^3.0.0",

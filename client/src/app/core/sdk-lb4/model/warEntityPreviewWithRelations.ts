@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TimeSpanWithRelations } from './timeSpanWithRelations';
 
 
 /**
@@ -24,7 +25,7 @@ export interface WarEntityPreviewWithRelations {
     entity_type?: string;
     type_label?: string;
     fk_type?: number;
-    time_span?: object;
+    time_span?: TimeSpanWithRelations;
     first_second?: string;
     last_second?: string;
     full_text?: string;

@@ -9,11 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AnalysisDefinition } from './analysisDefinition';
+import { TimeChartContVisualSettings } from './timeChartContVisualSettings';
 
 
-export interface RunTableAnalysisRequest { 
-    analysisDefinition: AnalysisDefinition;
-    fkProject: number;
+export interface TimeChartContLine { 
+    visualizationDefinition: TimeChartContVisualSettings;
+    queryDefinition: object;
 }
 

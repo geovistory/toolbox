@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { AnalysisService } from '../../services/analysis.service';
+import { GvAnalysisService } from '../../services/analysis.service';
 import { takeUntil, switchMap, first, tap, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActiveProjectService, IAppState } from 'app/core';
@@ -34,7 +34,7 @@ export class AnalysisLayoutComponent implements OnInit, OnDestroy {
   constructor(
     ts: TabLayoutService,
     p: ActiveProjectService,
-    public a: AnalysisService<any, any>
+    public a: GvAnalysisService<any, any>
   ) {
     this.t = ts.t;
     this.t.defaultSizeRight = 50;

@@ -1,12 +1,13 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService, SysConfig } from 'app/core';
-import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
+import { AnalysisDefinition, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition } from 'app/core/sdk-lb4/model/models';
+import { GvAnalysisService } from 'app/modules/analysis/services/analysis.service';
+import { saveAs } from 'file-saver';
 import { Table } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../server/src/lb3/common/interfaces';
-import { ResultingEntitiesDialogComponent, EntitiesDialogData } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { EntitiesDialogData, ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 
 export interface Example {
   id: number;
@@ -46,7 +47,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    public a: AnalysisService<TableInput, TableOutput>,
+    public a: GvAnalysisService<AnalysisTableRequest, AnalysisTableResponse>,
     private ref: ChangeDetectorRef
   ) {
 
@@ -95,18 +96,44 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
   private load(definition: QueryDefinition, offset: number, rows: number) {
+    const analysisDefinition: AnalysisDefinition = {
+      queryDefinition: {
+        filter: definition.filter,
+        columns: definition.columns,
+        offset: offset || 0,
+        limit: rows
+      }
+    }
 
-    const queryDefinition = {
-      filter: definition.filter,
-      columns: definition.columns,
-      offset: offset || 0,
-      limit: rows
-    };
-    this.a.callRunApi({ queryDefinition })
+    this.a.callRunApi((fkProject => this.a.analysisApi.analysisControllerTableRun({
+      fkProject,
+      analysisDefinition
+    })))
   }
 
-  download(fileType: string) {
-    this.a.callDownloadApi({ queryDefinition: this.definition }, fileType)
+  download(fileType: AnalysisTableExportRequest.FileTypeEnum) {
+    this.a.callDownloadApi((fkProject => this.a.analysisApi.analysisControllerTableExport(
+      {
+        fkProject,
+        fileType,
+        analysisDefinition: { queryDefinition: this.definition },
+      })
+    ))
+      .subscribe((data) => {
+
+        if (fileType === 'json') {
+          const blob = new Blob([data.res], {
+            type: 'text/json'
+          });
+          saveAs(blob, `table-export-${new Date().getTime()}.json`)
+
+        } else if (fileType === 'csv') {
+          const blob = new Blob([data.res], {
+            type: 'text/comma-separated-values'
+          });
+          saveAs(blob, `table-export-${new Date().getTime()}.csv`)
+        }
+      })
   }
 
 

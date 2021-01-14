@@ -1,44 +1,42 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { SchemaObject } from '../../models/SchemaObject';
-import { PaginationObject } from '../../models/PaginationObject';
-import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
-import { SysClassField } from '../../models/SysClassField';
-import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
-import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
-import { SysAnalysisType } from '../../models/SysAnalysisType';
-import { ProAnalysis } from '../../models/ProAnalysis';
-import { PubAccount } from '../../models/PubAccount';
-import { Email } from '../../models/Email';
-import { ProProject } from '../../models/ProProject';
-import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
-import { ProTextProperty } from '../../models/ProTextProperty';
-import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { DfhProfile } from '../../models/DfhProfile';
-import { DfhClass } from '../../models/DfhClass';
-import { DfhProperty } from '../../models/DfhProperty';
-import { DfhLabel } from '../../models/DfhLabel';
 import { DatChunk } from '../../models/DatChunk';
 import { DatColumn } from '../../models/DatColumn';
-import { DatTextProperty } from '../../models/DatTextProperty';
 import { DatDigital } from '../../models/DatDigital';
-import { WarEntityPreview } from '../../models/WarEntityPreview';
-import { SysAppContext } from '../../models/SysAppContext';
+import { DatNamespace } from '../../models/DatNamespace';
+import { DatTextProperty } from '../../models/DatTextProperty';
+import { DfhClass } from '../../models/DfhClass';
+import { DfhLabel } from '../../models/DfhLabel';
+import { DfhProfile } from '../../models/DfhProfile';
+import { DfhProperty } from '../../models/DfhProperty';
+import { Email } from '../../models/Email';
+import { InfAppellation } from '../../models/InfAppellation';
+import { InfDimension } from '../../models/InfDimension';
+import { InfLangString } from '../../models/InfLangString';
+import { InfLanguage } from '../../models/InfLanguage';
+import { InfPersistentItem } from '../../models/InfPersistentItem';
+import { InfPlace } from '../../models/InfPlace';
+import { InfStatement } from '../../models/InfStatement';
+import { InfTemporalEntity } from '../../models/InfTemporalEntity';
+import { InfTextProperty } from '../../models/InfTextProperty';
+import { InfTimePrimitive } from '../../models/InfTimePrimitive';
+import { PaginationObject } from '../../models/PaginationObject';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
-import { InfAppellation } from '../../models/InfAppellation';
-import { InfLangString } from '../../models/InfLangString';
-import { InfDimension } from '../../models/InfDimension';
-import { InfTemporalEntity } from '../../models/InfTemporalEntity';
-import { InfStatement } from '../../models/InfStatement';
-import { InfLanguage } from '../../models/InfLanguage';
-import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { InfTimePrimitive } from '../../models/InfTimePrimitive';
-import { InfPlace } from '../../models/InfPlace';
-import { DatNamespace } from '../../models/DatNamespace';
-import { InfTextProperty } from '../../models/InfTextProperty';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
+import { ProProject } from '../../models/ProProject';
+import { ProTextProperty } from '../../models/ProTextProperty';
+import { PubAccount } from '../../models/PubAccount';
+import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
+import { SchemaObject } from '../../models/SchemaObject';
+import { SysAppContext } from '../../models/SysAppContext';
+import { SysClassField } from '../../models/SysClassField';
+import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
+import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
+import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { SysSystemType } from '../../models/SysSystemType';
+import { WarEntityPreview } from '../../models/WarEntityPreview';
 
 export interface Models { [name: string]: any }
 
@@ -52,8 +50,6 @@ export class SDKModels {
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,
     SysSystemRelevantClass: SysSystemRelevantClass,
-    SysAnalysisType: SysAnalysisType,
-    ProAnalysis: ProAnalysis,
     PubAccount: PubAccount,
     Email: Email,
     ProProject: ProProject,
@@ -85,7 +81,7 @@ export class SDKModels {
     DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,
     SysSystemType: SysSystemType,
-    
+
   };
 
   public get(modelName: string): any {

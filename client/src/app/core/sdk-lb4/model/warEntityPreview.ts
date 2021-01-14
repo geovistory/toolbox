@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TimeSpan } from './timeSpan';
 
 
 export interface WarEntityPreview { 
@@ -21,7 +22,7 @@ export interface WarEntityPreview {
     entity_type?: string;
     type_label?: string;
     fk_type?: number;
-    time_span?: object;
+    time_span?: TimeSpan;
     first_second?: string;
     last_second?: string;
     full_text?: string;

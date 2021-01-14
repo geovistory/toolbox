@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService, DfhProfile } from 'app/core';
-import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
+import { GvAnalysisService } from 'app/modules/analysis/services/analysis.service';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
@@ -26,7 +26,7 @@ export interface ProfileItem {
   selector: 'gv-ontome-profiles-settings',
   templateUrl: './ontome-profiles-settings.component.html',
   styleUrls: ['./ontome-profiles-settings.component.scss'],
-  providers: [TabLayoutService, AnalysisService],
+  providers: [TabLayoutService, GvAnalysisService],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),

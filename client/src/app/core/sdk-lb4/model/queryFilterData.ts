@@ -28,11 +28,11 @@ export namespace QueryFilterData {
     };
     export type OperatorEnum = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS' | 'AND' | 'OR';
     export const OperatorEnum = {
-        IS: 'IS' as OperatorEnum,
-        ISNOT: 'IS NOT' as OperatorEnum,
-        ENTITYLABELCONTAINS: 'ENTITY_LABEL_CONTAINS' as OperatorEnum,
-        AND: 'AND' as OperatorEnum,
-        OR: 'OR' as OperatorEnum
+        Is: 'IS' as OperatorEnum,
+        IsNot: 'IS NOT' as OperatorEnum,
+        EntityLabelContains: 'ENTITY_LABEL_CONTAINS' as OperatorEnum,
+        And: 'AND' as OperatorEnum,
+        Or: 'OR' as OperatorEnum
     };
 }
 

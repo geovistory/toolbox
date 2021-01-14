@@ -9,10 +9,10 @@ import {ChartLinePoint} from './analysis-time-chart-response.model';
 export class CzmlSpatialValue {
 
   @property({required: true})
-  lat: number;
+  latitude: number;
 
   @property({required: true})
-  long: number;
+  longitude: number;
 
   @property()
   from?: number;
@@ -44,7 +44,11 @@ export class TimeCzmlValue {
 export class MapTemporalData {
   @property({
     jsonSchema: {
-      additionalProperties: true,
+      additionalProperties: {
+        items: {
+          type: 'number'
+        }
+      }
     }
   })
   data_lookup: {

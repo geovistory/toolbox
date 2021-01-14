@@ -11,7 +11,8 @@ export const lb4SdkConfigurationProvider = {
     const config = new Configuration(
       {
         basePath: environment.baseUrl,
-        accessToken: authService.getToken().lb4Token
+        accessToken: authService.getToken().lb4Token,
+        credentials: { accesstoken: authService.getToken().lb4Token }
       })
     return authService.setLb4SdkConfig(config)
   },

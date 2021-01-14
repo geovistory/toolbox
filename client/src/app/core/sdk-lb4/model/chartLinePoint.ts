@@ -9,11 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TableRow } from './tableRow';
 
 
-export interface RunTableAnalysisResponse { 
-    rows: Array<TableRow>;
-    full_count?: number;
+export interface ChartLinePoint { 
+    x: number;
+    y: number;
+    data?: Array<number>;
+    data_ref?: string;
 }
 

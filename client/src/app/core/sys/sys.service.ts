@@ -1,5 +1,4 @@
 import { NgRedux } from '@angular-redux/store';
-import { SysAnalysisType } from 'app/core';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
 import { SysConfig } from '../sdk-lb4';
@@ -7,7 +6,7 @@ import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { ByPk, IAppState } from '../store/model';
 import { SysActions } from './sys.actions';
 import { sysDefinitions, sysRoot } from './sys.config';
-import { SysAnalysisTypeSlice, SysConfigSlice, SysRelevantClassSlice } from './sys.models';
+import { SysConfigSlice, SysRelevantClassSlice } from './sys.models';
 
 class Selector<Slice> {
 
@@ -43,15 +42,15 @@ class SysSystemRelevantClassSelections extends Selector<SysRelevantClassSlice> {
   ) { super(ngRedux, configs, model) }
 }
 
-// AnalysisType Selectors
-class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
-  public by_pk_entity$ = this.selector<SysAnalysisType>('by_pk_entity');
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, configs, model) }
-}
+// // AnalysisType Selectors
+// class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
+//   public by_pk_entity$ = this.selector<SysAnalysisType>('by_pk_entity');
+//   constructor(
+//     public ngRedux: NgRedux<IAppState>,
+//     public configs: ReducerConfigCollection,
+//     public model: string
+//   ) { super(ngRedux, configs, model) }
+// }
 
 
 // Config Selectors
@@ -68,7 +67,7 @@ class SysConfigSelections extends Selector<SysConfigSlice> {
 
 export class SystemSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
-  analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')
+  // analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')
 
   config$ = new SysConfigSelections(this.ngRedux, sysDefinitions, 'config')
 }

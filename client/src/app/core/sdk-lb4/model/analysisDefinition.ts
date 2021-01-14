@@ -10,9 +10,11 @@
  * Do not edit the class manually.
  */
 import { QueryDefinition } from './queryDefinition';
+import { TimeChartContLine } from './timeChartContLine';
 
 
 export interface AnalysisDefinition { 
     queryDefinition?: QueryDefinition;
+    lines?: Array<TimeChartContLine>;
 }
 

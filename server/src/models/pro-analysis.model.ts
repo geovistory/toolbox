@@ -60,7 +60,7 @@ export class QueryPathSegment {
 
 
 @model({
-  settings:{
+  settings: {
 
   }
 })
@@ -206,6 +206,8 @@ export class ProAnalysis extends Entity implements ProEntity {
 
   @property({
     type: 'string',
+    required: false,
+    jsonSchema: {nullable: true}
   })
   description?: string;
 
@@ -229,6 +231,8 @@ export class ProAnalysis extends Entity implements ProEntity {
 
   @property({
     type: 'number',
+    required: false,
+    jsonSchema: {nullable: true}
   })
   fk_last_modifier?: number;
 

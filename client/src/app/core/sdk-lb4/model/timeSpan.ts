@@ -9,14 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TimePrimitiveWithCal } from './timePrimitiveWithCal';
 
 
-export interface SysAnalysisType { 
-    standard_label?: string;
-    rows_limit: number;
-    pk_entity?: number;
-    entity_version?: number;
-    tmsp_creation?: string;
-    tmsp_last_modification?: string;
+export interface TimeSpan { 
+    _71?: TimePrimitiveWithCal;
+    _72?: TimePrimitiveWithCal;
+    _150?: TimePrimitiveWithCal;
+    _151?: TimePrimitiveWithCal;
+    _152?: TimePrimitiveWithCal;
+    _153?: TimePrimitiveWithCal;
 }
 

@@ -96,8 +96,8 @@ export class QAnalysisMap extends QAnalysisBase {
               'to', t2.last_second,
               'iso_from', commons.julian_second__to_iso_8601( t2.first_second),
               'iso_to', commons.julian_second__to_iso_8601( t2.last_second),
-              'lat', t4.lat,
-              'long', t4.long
+              'latitude', t4.lat,
+              'longitude', t4.long
             )) geo_positions
           FROM
             tw2 t0,

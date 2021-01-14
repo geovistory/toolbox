@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ProAnalysis, ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
+import { ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
 import { map, first, takeUntil } from 'rxjs/operators';
 import { values } from 'd3';
 import { MatTableDataSource, MatSort } from '@angular/material';
+import { ProAnalysis } from 'app/core/sdk-lb4/model/proAnalysis';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { AnalysisService } from 'app/core/sdk-lb4';
 
 @Component({
   selector: 'gv-analysis-list',
@@ -21,12 +24,16 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sysConf = SysConfig;
 
-  constructor(public p: ActiveProjectService) { }
+  constructor(
+    public p: ActiveProjectService,
+    private s: SchemaObjectService,
+    private analysisApi: AnalysisService) { }
 
   ngOnInit() {
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.pro$.analysis.loadByIdAndVersion(pkProject, null, null)
+      this.s.storeGv(this.analysisApi.analysisControllerOfProject(pkProject), pkProject)
+
       this.items$ = this.p.pro$.analysis$.by_pk_entity$.all$.pipe(
         map(all => values(all).filter(analysis => analysis.fk_project === pkProject))
       )

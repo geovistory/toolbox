@@ -13,7 +13,7 @@ import { QueryFilterData } from './queryFilterData';
 
 
 export interface QueryFilter { 
+    children?: Array<QueryFilter>;
     data: QueryFilterData;
-    children: Array<QueryFilter>;
 }
 

@@ -20,6 +20,7 @@ import {AnalysisTimeChartResponse, ChartLine, ChartLinePoint} from '../models/an
 import {ProAnalysisRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {GvSchemaObject} from '../models/gv-schema-object.model';
 
 
 
@@ -189,7 +190,7 @@ export class AnalysisController {
     responses: {
       '200': {
         description: 'Ok.',
-        content: {'application/json': {schema: {'x-ts-type': ProAnalysis}}},
+        content: {'application/json': {schema: {'x-ts-type': GvSchemaObject}}},
       },
     },
   })
@@ -197,7 +198,7 @@ export class AnalysisController {
     @param.query.number('pkProject') pkProject: number,
     @param.query.number('pkEntity') pkEntity: number,
     @param.query.number('version') version: number,
-  ): Promise<ProAnalysis> {
+  ): Promise<GvSchemaObject> {
     let res: (ProAnalysis & ProAnalysisRelations) | null
     if (!version) {
       res = await this.proAnalysisRepo.findOne({
@@ -224,16 +225,69 @@ export class AnalysisController {
       res = (await b.execute<ProAnalysis[]>())?.[0]
     }
     if (!res) throw new HttpErrors.NotFound()
-    return res
+    return {pro: {analysis: [res]}}
   }
 
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
-  @put('analysis/bulk-upsert',)
+  @get('analysis/of-project', {
+    description: 'Get all ProAnalysis of a project.',
+    responses: {
+      '200': {
+        description: 'Ok.',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaObject,
+            }
+          }
+        },
+      },
+    },
+  })
+  async ofProject(
+    @param.query.number('pkProject', {required: true}) pkProject: number
+  ): Promise<GvSchemaObject> {
+    const analysis = await this.proAnalysisRepo.find({
+      where: {
+        fk_project: {eq: pkProject}
+      }
+    })
+    return {pro: {analysis}}
+  }
+
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @put('analysis/bulk-upsert', {
+    description: 'Update or insert array of ProAnalysis of a project.',
+    responses: {
+      '200': {
+        description: 'Ok.',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaObject,
+            }
+          }
+        },
+      },
+    },
+  })
   async bulkUpsert(
     @param.query.number('pkProject') pkProject: number,
-    @requestBody.array({schema: {type: ProAnalysis}}) items: ProAnalysis[],
-  ): Promise<ProAnalysis[]> {
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: {
+              'x-ts-type': ProAnalysis,
+            },
+          }
+        }
+      },
+    }) items: ProAnalysis[],
+  ): Promise<GvSchemaObject> {
     const accountId = this.user[securityId];
     const promiseArray = items.map(item => {
       item.fk_last_modifier = parseInt(accountId, 10)
@@ -241,7 +295,8 @@ export class AnalysisController {
         throw new HttpErrors.Unauthorized(`It is not allowed to upsert a ProAnalysis with different fk_project (${item.fk_project}) from authorizes pkProject (${pkProject}).`);
       } return this.proAnalysisRepo.upsert(item);
     });
-    return Promise.all(promiseArray)
+    const analysis = await Promise.all(promiseArray)
+    return {pro: {analysis}}
   }
 
 
@@ -250,12 +305,25 @@ export class AnalysisController {
   @put('analysis/bulk-delete',)
   async bulkDelete(
     @param.query.number('pkProject') pkProject: number,
-    @requestBody.array({schema: {type: Number}}) pkEntities: number[],
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: {
+              type: 'number',
+            },
+          }
+        }
+      },
+    }) pkEntities: number[],
   ): Promise<Count> {
     return this.proAnalysisRepo.deleteAll({
       pk_entity: {inq: pkEntities},
       fk_project: {eq: pkProject}
     });
+
+    // Todo: return GvNegativeSchemaObject instead
   }
 
 
