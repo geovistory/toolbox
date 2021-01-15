@@ -1,5 +1,5 @@
 import {testdb} from "../testdb";
-import {WarEntityPreview, WarEntityPreviewId} from '../../../models';
+import {WarEntityPreviewWithFulltext, WarEntityPreviewId} from '../../../models';
 import {WarEntityPreviewRepository} from '../../../repositories';
 
 export function createWarEntityPreviewRepo() {
@@ -8,7 +8,7 @@ export function createWarEntityPreviewRepo() {
   )
 }
 
-export async function createWarEntityPreview(entityPreview: Partial<WarEntityPreview>) {
+export async function createWarEntityPreview(entityPreview: Partial<WarEntityPreviewWithFulltext>) {
   return createWarEntityPreviewRepo().create(entityPreview);
 }
 
@@ -24,12 +24,12 @@ export async function getWarEntityPreview(pkEntity: number, fkProject?: number) 
 }
 
 
-export async function updateWarEntityPreview(id: WarEntityPreviewId, item: Partial<WarEntityPreview>) {
-  const where = WarEntityPreview.buildWhereForId(id)
+export async function updateWarEntityPreview(id: WarEntityPreviewId, item: Partial<WarEntityPreviewWithFulltext>) {
+  const where = WarEntityPreviewWithFulltext.buildWhereForId(id)
   return createWarEntityPreviewRepo().updateAll(item, where);
 }
 
 export async function deleteWarEntityPreview(id: WarEntityPreviewId) {
-  const where = WarEntityPreview.buildWhereForId(id)
+  const where = WarEntityPreviewWithFulltext.buildWhereForId(id)
   return createWarEntityPreviewRepo().deleteAll(where);
 }

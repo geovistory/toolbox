@@ -3,7 +3,6 @@ import {Entity, model, property} from '@loopback/repository';
 import {ProEntity} from '.';
 import {ProProject} from './pro-project.model';
 import {PubAccount} from './pub-account.model';
-import {TimeChartContLine} from './analysis/analysis-time-chart-request.model';
 
 enum Operator {
   'IS' = 'IS',
@@ -24,7 +23,7 @@ export enum ColDefDefaultType {
   'temporal_distribution' = 'temporal_distribution',
   'space_and_time_cont' = 'space_and_time_cont'
 }
-enum QueryPathSegmentType {
+export enum QueryPathSegmentType {
   'properties' = 'properties',
   'classes' = 'classes'
 };
@@ -166,6 +165,29 @@ export class QueryDefinition {
   @property({type: 'number'})
   offset?: number
 }
+
+
+
+
+
+@model()
+class TimeChartContVisualSettings {
+  @property()
+  label: string;
+}
+
+@model()
+export class TimeChartContLine {
+  @property({type: TimeChartContVisualSettings, required: true})
+  visualizationDefinition: TimeChartContVisualSettings;
+
+  @property({type: TimeChartContQueryDef, required: true})
+  queryDefinition: TimeChartContQueryDef;
+
+}
+
+
+
 
 
 @model()

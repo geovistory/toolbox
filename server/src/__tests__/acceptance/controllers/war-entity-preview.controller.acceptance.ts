@@ -7,7 +7,7 @@
 
 import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
-import {WarEntityPreview} from '../../../models';
+import {WarEntityPreviewWithFulltext} from '../../../models';
 import {GeovistoryServer} from '../../../server';
 import {createWarEntityPreview, deleteWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
@@ -27,10 +27,10 @@ describe('WarEntityPreviewController', () => {
   describe('websockets', () => {
 
     describe('addToStream', () => {
-      let entityPreview: WarEntityPreview;
+      let entityPreview: WarEntityPreviewWithFulltext;
       beforeEach(async () => {
         await cleanDb();
-        entityPreview = await createWarEntityPreview(new WarEntityPreview({
+        entityPreview = await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: 4,
           fk_project: 8,
           entity_label: 'foo',
@@ -107,13 +107,13 @@ describe('WarEntityPreviewController', () => {
         await wait(10)
 
         // add repo variant
-        await createWarEntityPreview(new WarEntityPreview({
+        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: undefined,
           entity_label: 'foo repo',
         }))
         // add project variant
-        await createWarEntityPreview(new WarEntityPreview({
+        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: pkProject,
           entity_label: 'foo',
@@ -147,7 +147,7 @@ describe('WarEntityPreviewController', () => {
         await wait(10)
 
         // add repo variant
-        await createWarEntityPreview(new WarEntityPreview({
+        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: undefined,
           entity_label: 'foo repo',
@@ -158,7 +158,7 @@ describe('WarEntityPreviewController', () => {
         expect(reply.entity_label).to.equal('foo repo');
 
         // add project variant
-        await createWarEntityPreview(new WarEntityPreview({
+        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: pkProject,
           entity_label: 'foo',

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {ProAnalysis, ColDefDefaultType} from '../../../../models';
-import {SysConfig} from '../../../../lb3/common';
+import {ColDefDefaultType, ProAnalysis} from '../../../../models';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {ProProjectMock} from './ProProjectMock';
 import {SysSystemTypeMock} from './SysSystemTypeMock';

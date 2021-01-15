@@ -2,7 +2,10 @@ import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
 import {ColDef, QueryDefinition, QueryFilterData, QueryPathSegment, QueryFilter} from '../../../models/pro-analysis.model';
 import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
 import {AnalysisTableRow} from '../../../models/analysis/analysis-table-response.model';
+import {WarEntityPreviewWithFulltext} from '../../../models';
 
+
+const STATAMENT_TABLE = 'war.statement' // 'war.vm_statement'
 
 interface QueryNode {
   data: QueryFilterData
@@ -330,19 +333,21 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
     });
   }
 
-  createColumnSelect(segment: QueryNodeWithAlias, columnLabel: string) {
-
+  createColumnSelect(segment: QueryNodeWithAlias, columnId: string) {
     if (!this.isStatementsJoin(segment) && this.isEntitesJoin(segment)) {
-      this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
-            'pk_entity', ${segment._tableAlias}.pk_entity,
-            'entity_type', ${segment._tableAlias}.entity_type,
-            'entity_label', ${segment._tableAlias}.entity_label,
-            'class_label', ${segment._tableAlias}.class_label,
-            'type_label', ${segment._tableAlias}.type_label,
-            'time_span', ${segment._tableAlias}.time_span,
-            'fk_project', ${segment._tableAlias}.fk_project
-          )
-       ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnLabel}"`);
+      this.selects.push(`COALESCE(json_agg( distinct
+
+        ${this.createBuildObject(segment._tableAlias, WarEntityPreviewWithFulltext.definition)        }
+--        jsonb_build_object(
+--            'pk_entity', ${segment._tableAlias}.pk_entity,
+--            'entity_type', ${segment._tableAlias}.entity_type,
+--            'entity_label', ${segment._tableAlias}.entity_label,
+--            'class_label', ${segment._tableAlias}.class_label,
+--            'type_label', ${segment._tableAlias}.type_label,
+--            'time_span', ${segment._tableAlias}.time_span,
+--            'fk_project', ${segment._tableAlias}.fk_project
+--          )
+       ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnId}"`);
     }
   }
 
@@ -427,7 +432,7 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
                     )`);
     }
     fromsArray.push(`
-                LEFT JOIN war.vm_statement ${thisTableAlias} ON
+                LEFT JOIN ${STATAMENT_TABLE} ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
   }

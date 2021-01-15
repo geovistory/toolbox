@@ -5,7 +5,7 @@ import {get, getModelSchemaRef, HttpErrors, param} from '@loopback/rest';
 import _ from 'lodash';
 import {Socket} from 'socket.io';
 import {ws} from '../decorators/websocket.decorator';
-import {WarEntityPreview, WarEntityPreviewWithRelations} from '../models';
+import {WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations} from '../models';
 import {Streams} from '../realtime/streams/streams';
 import {WarEntityPreviewRepository} from '../repositories';
 import {logSql} from '../utils/helpers';
@@ -30,7 +30,7 @@ const log = true;
 
 // Fields to include in streamed WarEntityPreviews
 // see about Lb4 filters: https://loopback.io/doc/en/lb4/Fields-filter.html
-const includeFieldsForSteam: Fields<WarEntityPreview> = {
+const includeFieldsForSteam: Fields<WarEntityPreviewWithFulltext> = {
   pk_entity: true,
   fk_project: true,
   fk_class: true,
@@ -425,7 +425,7 @@ export class WarEntityPreviewController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(WarEntityPreview, {includeRelations: true}),
+              items: getModelSchemaRef(WarEntityPreviewWithFulltext, {includeRelations: true}),
             },
           },
         },
@@ -443,7 +443,7 @@ export class WarEntityPreviewController {
     @param.query.string('entityType') entityType: string,
     @param.query.number('limit') limit = 10,
     @param.query.number('page') page = 1,
-  ): Promise<WarEntityPreview[]> {
+  ): Promise<WarEntityPreviewWithFulltext[]> {
 
     // throw an error when the parameter is not a natural number
     if (!Number.isInteger(limit) || limit < 1) {

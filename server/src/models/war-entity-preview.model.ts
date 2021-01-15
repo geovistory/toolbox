@@ -70,16 +70,6 @@ export class TimeSpan {
   153?: TimePrimitiveWithCal;
 }
 
-
-@model({
-  settings: {
-    forceId: false,
-    id: ['pk_entity', 'fk_project'],
-    postgresql: {schema: 'war', table: 'entity_preview'},
-    validateUpsert: true,
-    idInjection: false
-  }
-})
 export class WarEntityPreview extends Entity {
   @property({
     type: 'number',
@@ -145,6 +135,32 @@ export class WarEntityPreview extends Entity {
   @property({
     type: 'string',
   })
+  tmsp_last_modification?: string;
+
+  // Define well-known properties here
+
+  // // Indexer property to allow additional data
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // [prop: string]: any;
+
+  constructor(data?: Partial<WarEntityPreview>) {
+    super(data);
+  }
+}
+@model({
+  settings: {
+    forceId: false,
+    id: ['pk_entity', 'fk_project'],
+    postgresql: {schema: 'war', table: 'entity_preview'},
+    validateUpsert: true,
+    idInjection: false
+  }
+})
+export class WarEntityPreviewWithFulltext extends WarEntityPreview {
+
+  @property({
+    type: 'string',
+  })
   full_text?: string;
 
   @property({
@@ -152,18 +168,8 @@ export class WarEntityPreview extends Entity {
   })
   ts_vector?: string;
 
-  @property({
-    type: 'string',
-  })
-  tmsp_last_modification?: string;
 
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
-
-  constructor(data?: Partial<WarEntityPreview>) {
+  constructor(data?: Partial<WarEntityPreviewWithFulltext>) {
     super(data);
   }
 }
@@ -172,4 +178,4 @@ export interface WarEntityPreviewRelations {
   // describe navigational properties here
 }
 
-export type WarEntityPreviewWithRelations = WarEntityPreview & WarEntityPreviewRelations;
+export type WarEntityPreviewWithRelations = WarEntityPreviewWithFulltext & WarEntityPreviewRelations;

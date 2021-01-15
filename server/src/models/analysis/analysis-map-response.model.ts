@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository'
-import {WarEntityPreview} from '../war-entity-preview.model'
+import {WarEntityPreviewWithFulltext} from '../war-entity-preview.model'
 import {ChartLinePoint} from './analysis-time-chart-response.model';
 
 
@@ -68,8 +68,8 @@ export class GeoEntityMapAndTimeCont {
   @property({required: true})
   geo_entity_pk: number;
 
-  @property({required: true, type: WarEntityPreview})
-  geo_entity_preview: WarEntityPreview;
+  @property({required: true, type: WarEntityPreviewWithFulltext})
+  geo_entity_preview: WarEntityPreviewWithFulltext;
 
   @property.array(CzmlSpatialValue, {required: true})
   geo_positions: CzmlSpatialValue[];

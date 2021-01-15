@@ -73,54 +73,54 @@ describe('REntityTimeSpanService', function () {
     })
 
 
-    it('should create timespanval of time primitive', async () => {
-        const {shipVoyage} = await createMock();
+    // it('should create timespanval of time primitive', async () => {
+    //     const {shipVoyage} = await createMock();
 
-        const expectedTimeSpan: REntityTimeSpan = {
-            "p81": {
-                "calendar": "gregorian",
-                "duration": "1 day",
-                "julianDay": 2362729
-            },
-            "p82": {
-                "calendar": "gregorian",
-                "duration": "1 day",
-                "julianDay": 2362730
-            },
-            "p81a": {
-                "calendar": "gregorian",
-                "duration": "1 day",
-                "julianDay": 2362731
-            },
-            "p81b": {
-                "calendar": "gregorian",
-                "duration": "1 day",
-                "julianDay": 2362732
-            },
-            "p82a": {
-                "calendar": "julian",
-                "duration": "1 day",
-                "julianDay": 2362733
-            },
-            "p82b": {
-                "calendar": "julian",
-                "duration": "1 day",
-                "julianDay": 2362734
-            }
-        }
-        const expectedFirstSec = '204139785600';
-        const expectedLastSec = '204140303999';
+    //     const expectedTimeSpan: REntityTimeSpan = {
+    //         "p81": {
+    //             "calendar": "gregorian",
+    //             "duration": "1 day",
+    //             "julianDay": 2362729
+    //         },
+    //         "p82": {
+    //             "calendar": "gregorian",
+    //             "duration": "1 day",
+    //             "julianDay": 2362730
+    //         },
+    //         "p81a": {
+    //             "calendar": "gregorian",
+    //             "duration": "1 day",
+    //             "julianDay": 2362731
+    //         },
+    //         "p81b": {
+    //             "calendar": "gregorian",
+    //             "duration": "1 day",
+    //             "julianDay": 2362732
+    //         },
+    //         "p82a": {
+    //             "calendar": "julian",
+    //             "duration": "1 day",
+    //             "julianDay": 2362733
+    //         },
+    //         "p82b": {
+    //             "calendar": "julian",
+    //             "duration": "1 day",
+    //             "julianDay": 2362734
+    //         }
+    //     }
+    //     const expectedFirstSec = '204139785600';
+    //     const expectedLastSec = '204140303999';
 
-        const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
-            return entPreview.pk_entity === shipVoyage.pk_entity
-                && entPreview.fk_project === null
-                && equals(entPreview.time_span, expectedTimeSpan)
-                && entPreview.first_second === expectedFirstSec
-                && entPreview.last_second === expectedLastSec
-        })
+    //     const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
+    //         return entPreview.pk_entity === shipVoyage.pk_entity
+    //             && entPreview.fk_project === null
+    //             && equals(entPreview.time_span, expectedTimeSpan)
+    //             && entPreview.first_second === expectedFirstSec
+    //             && entPreview.last_second === expectedLastSec
+    //     })
 
-        expect(result.time_span).to.deepEqual(expectedTimeSpan);
-    })
+    //     expect(result.time_span).to.deepEqual(expectedTimeSpan);
+    // })
 
     it('should create empty time span object {}', async () => {
         // - Langage and Project

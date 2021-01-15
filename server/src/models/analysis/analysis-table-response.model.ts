@@ -1,6 +1,6 @@
 import {model, property} from '@loopback/repository'
 import {registerType} from '../../components/spec-enhancer/model.spec.enhancer'
-import {WarEntityPreview} from '../war-entity-preview.model'
+import {WarEntityPreviewWithFulltext} from '../war-entity-preview.model'
 import {ChartLinePoint} from './analysis-time-chart-response.model'
 
 @model({
@@ -10,7 +10,7 @@ import {ChartLinePoint} from './analysis-time-chart-response.model'
 })
 export class AnalysisTableRow {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: string | WarEntityPreview | ChartLinePoint[];
+  [key: string]: string | WarEntityPreviewWithFulltext | ChartLinePoint[];
 
 }
 

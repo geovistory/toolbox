@@ -2,7 +2,7 @@
 import {Client, expect} from '@loopback/testlab';
 import {clone, omit} from 'ramda';
 import {TableOutput} from '../../../lb3/common';
-import {AnalysisTableExportRequest, TableExportFileType} from '../../../models';
+import {AnalysisTableExportRequest, ColDefDefaultType, QueryPathSegmentType, TableExportFileType} from '../../../models';
 import {AnalysisMapRequest} from '../../../models/analysis/analysis-map-request.model';
 import {AnalysisMapResponse} from '../../../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../../../models/analysis/analysis-table-export-response.model';
@@ -13,7 +13,10 @@ import {AnalysisTimeChartResponse} from '../../../models/analysis/analysis-time-
 import {GvSchemaObject} from '../../../models/gv-schema-object.model';
 import {GeovistoryServer} from '../../../server';
 import {createProAnalysis, createProAnalysisRepo} from '../../helpers/atomic/pro-analysis.helper';
+import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../../helpers/data/gvDB/DfhApiPropertyMock';
 import {ProAnalysisMock} from '../../helpers/data/gvDB/ProAnalysisMock';
+import {WarEntityPreviewMock} from '../../helpers/data/gvDB/WarEntityPreviewMock';
 import {forAnalysis} from '../../helpers/graphs/analysis.helper';
 import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
@@ -75,6 +78,75 @@ describe('AnaylsisController', () => {
             expect(result.rows).deepEqual([
                 {"col1": 'Basel'},
                 {"col1": 'Zürich'},
+            ])
+        })
+
+        it('should respond with a table with col for geo entity labels and one for birth entity labels', async () => {
+            const req: AnalysisTableRequest = {
+                fkProject: pkProject,
+                analysisDefinition: {
+                    queryDefinition: {
+                        filter: {
+                            data: {
+                                classes: [
+                                    DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class
+                                ]
+                            },
+                            children: []
+                        },
+                        columns: [
+                            {
+                                id: 'col1',
+                                ofRootTable: true,
+                                defaultType: ColDefDefaultType.entity_label,
+                                label: 'Geo-Places',
+                            },
+                            {
+                                id: 'col2',
+                                label: 'Births',
+                                queryPath: [
+                                    {
+                                        type: QueryPathSegmentType.properties,
+                                        data: {
+                                            ingoingProperties: [
+                                                DfhApiPropertyMock.EN_7_BIRTH_TOOK_PLACE_IN_GEO_PLACE.dfh_pk_property
+                                            ]
+                                        },
+                                    },
+                                    {
+                                        type: QueryPathSegmentType.classes,
+                                        data: {
+                                            classes: [
+                                                DfhApiClassMock.EN_61_BIRTH.dfh_pk_class
+                                            ],
+                                        },
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+            const res = await client.post('/analysis/table-run')
+                .set('Authorization', lb4Token)
+                .send(req)
+            const result: TableOutput = res.body
+
+            await validateAgainstSchema(result, AnalysisTableResponse, server)
+            expect(result.full_count).equal(2)
+            expect(result.rows).containDeep([
+                {
+                    "col1": 'Basel',
+                    "col2": [
+                        WarEntityPreviewMock.BIRTH_OEKOLOMBAD
+                    ]
+                },
+                {
+                    "col1": 'Zürich',
+                    "col2": [
+                        WarEntityPreviewMock.BIRTH_ZWINGLI
+                    ]
+                },
             ])
         })
     });

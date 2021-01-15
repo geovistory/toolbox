@@ -16,7 +16,6 @@ export class WarEntityPreviewMock {
         class_label: 'Geographical Place',
         entity_label: 'Basel',
         entity_type: 'peIt',
-        full_text: 'Geographical Place – Basel',
     })
 
     static readonly GEO_PLACE_ZURICH = new WarEntityPreview({
@@ -27,7 +26,6 @@ export class WarEntityPreviewMock {
         class_label: 'Geographical Place',
         entity_label: 'Zürich',
         entity_type: 'peIt',
-        full_text: 'Geographical Place – Zürich',
     })
 
 
@@ -39,7 +37,6 @@ export class WarEntityPreviewMock {
         class_label: 'Birth',
         entity_label: 'Johannes Oekolampad',
         entity_type: 'teEn',
-        full_text: 'Birth – Johannes Oekolampad',
         time_span: {
             "72": {
                 julian_day: 123123123,
@@ -57,7 +54,6 @@ export class WarEntityPreviewMock {
         class_label: 'Birth',
         entity_label: 'Ulrich Zwingli',
         entity_type: 'teEn',
-        full_text: 'Birth – Ulrich Zwingli',
         time_span: {
             "72": {
                 julian_day: 123123123,
