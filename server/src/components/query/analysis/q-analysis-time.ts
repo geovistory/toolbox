@@ -55,7 +55,6 @@ export class QAnalysisTime extends QAnalysisBase {
         ${this.joinSelects(this.selects)}
       FROM
         ${this.joinFroms(this.froms)}
-        ${this.groupByRootTable()}
         ${this.limit}
         ${this.offset}
         `;
