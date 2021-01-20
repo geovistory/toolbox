@@ -83,7 +83,7 @@ export class PostgresNotificationsManager {
     // react to notifications
     this.reactOnNotifications()
 
-    this.startVmStatementsUpdateJob().catch(e => console.log(e))
+    // this.startVmStatementsUpdateJob().catch(e => console.log(e))
 
     // start listening on pg notifications
     await this.listenToPgNotifyChannels()
@@ -107,24 +107,24 @@ export class PostgresNotificationsManager {
   /**
    * Starts a job that periodically updates war.vm_statement
    */
-  async startVmStatementsUpdateJob() {
+  // async startVmStatementsUpdateJob() {
 
-    const changes = await this.client2.query<{count: number, now: string}>(`
-      Select   count(*),  to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') now
-      From     projects.info_proj_rel t1
-      Where    t1.tmsp_last_modification::timestamp >=$1;
-    	`, [this.vmStatementUpdated])
+  //   const changes = await this.client2.query<{count: number, now: string}>(`
+  //     Select   count(*),  to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') now
+  //     From     projects.info_proj_rel t1
+  //     Where    t1.tmsp_last_modification::timestamp >=$1;
+  //   	`, [this.vmStatementUpdated])
 
-    this.vmStatementUpdated = changes.rows?.[0].now;
+  //   this.vmStatementUpdated = changes.rows?.[0].now;
 
-    if (changes.rows?.[0].count > 0) {
-      await this.client2.query('REFRESH MATERIALIZED VIEW CONCURRENTLY war.vm_statement;')
-    }
+  //   if (changes.rows?.[0].count > 0) {
+  //     await this.client2.query('REFRESH MATERIALIZED VIEW CONCURRENTLY war.vm_statement;')
+  //   }
 
-    setTimeout(() => {
-      this.startVmStatementsUpdateJob().catch(e => console.log(e))
-    }, 3000)
+  //   setTimeout(() => {
+  //     this.startVmStatementsUpdateJob().catch(e => console.log(e))
+  //   }, 3000)
 
-  }
+  // }
 }
 

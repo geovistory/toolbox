@@ -16,7 +16,7 @@
 * ============================================================================
 * import { NgModule }       from '@angular/core';
 * import { BrowserModule }  from '@angular/platform-browser';
-* // App Root 
+* // App Root
 * import { AppComponent }   from './app.component';
 * // Feature Modules
 * import { SDK[Browser|Node|Native]Module } from './shared/sdk/sdk.module';
@@ -54,8 +54,6 @@ import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldProp
 import { SysClassFieldApi } from './services/custom/SysClassField';
 import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
 import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
-import { SysAnalysisTypeApi } from './services/custom/SysAnalysisType';
-import { ProAnalysisApi } from './services/custom/ProAnalysis';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
 import { ProProjectApi } from './services/custom/ProProject';
@@ -97,10 +95,10 @@ import { SysSystemTypeApi } from './services/custom/SysSystemType';
 *  3.- Progressive applications (Angular Mobile, Ionic, WebViews, etc)
 **/
 @NgModule({
-  imports:      [ CommonModule, HttpClientModule ],
-  declarations: [ ],
-  exports:      [ ],
-  providers:    [
+  imports: [CommonModule, HttpClientModule],
+  declarations: [],
+  exports: [],
+  providers: [
     ErrorHandler,
     SocketConnection
   ]
@@ -111,8 +109,8 @@ export class SDKBrowserModule {
     useClass: CookieBrowser
   }): ModuleWithProviders {
     return {
-      ngModule  : SDKBrowserModule,
-      providers : [
+      ngModule: SDKBrowserModule,
+      providers: [
         LoopBackAuth,
         LoggerService,
         SDKModels,
@@ -123,8 +121,6 @@ export class SDKBrowserModule {
         SysClassFieldApi,
         SysClassHasTypePropertyApi,
         SysSystemRelevantClassApi,
-        SysAnalysisTypeApi,
-        ProAnalysisApi,
         PubAccountApi,
         EmailApi,
         ProProjectApi,

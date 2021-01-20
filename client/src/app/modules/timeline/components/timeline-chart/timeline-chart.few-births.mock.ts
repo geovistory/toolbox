@@ -1,4 +1,4 @@
-import { ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
+import { ChartLinePoint } from 'app/core/sdk-lb4/model/chartLinePoint';
 
 export const few_births: ChartLinePoint[] = [
   {

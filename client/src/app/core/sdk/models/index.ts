@@ -5,8 +5,6 @@ export * from './SysClassFieldPropertyRel';
 export * from './SysClassField';
 export * from './SysClassHasTypeProperty';
 export * from './SysSystemRelevantClass';
-export * from './SysAnalysisType';
-export * from './ProAnalysis';
 export * from './PubAccount';
 export * from './Email';
 export * from './ProProject';

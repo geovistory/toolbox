@@ -16,25 +16,10 @@ import { DimensionListType } from './dimensionListType';
  * If present, defines a specific list type for the class.
  */
 export interface ListType { 
-    /**
-     * This list type allows to create / view / edit strings.
-     */
     appellation?: ListType.AppellationEnum;
-    /**
-     * This list type allows to select / view a language.
-     */
     language?: ListType.LanguageEnum;
-    /**
-     * This list type allows to create / view / edit geo-point-coordinates.
-     */
     place?: ListType.PlaceEnum;
-    /**
-     * This list type allows to create / view / edit time primitives.
-     */
     timePrimitive?: ListType.TimePrimitiveEnum;
-    /**
-     * This list type allows to create / view / edit a string with language.
-     */
     langString?: ListType.LangStringEnum;
     dimension?: DimensionListType;
 }

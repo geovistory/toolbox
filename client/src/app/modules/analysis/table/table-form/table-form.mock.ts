@@ -1,4 +1,4 @@
-import { QueryDefinition } from '../../../../../../../server/src/lb3/common/interfaces';
+import { QueryDefinition } from 'app/core/sdk-lb4/model/queryDefinition';
 
 export const mockQuery: QueryDefinition = {
   'filter': {

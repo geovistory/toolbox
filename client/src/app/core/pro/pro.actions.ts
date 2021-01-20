@@ -2,11 +2,12 @@
 import { filter } from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, ProInfoProjRel, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, U, ProAnalysis, ProProject, ProDfhProfileProjRel } from 'app/core';
+import { IAppState, ProInfoProjRel, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, U, ProProject, ProDfhProfileProjRel } from 'app/core';
 import { LoadActionMeta, StandardActionsFactory, ActionResultObservable, SucceedActionMeta, LoadByPkANsVersionActionMeta } from 'app/core/store/actions';
 import { proRoot } from './pro.config';
 import { ProInfoProjRelSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProAnalysisSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
+import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 type Payload = ProInfoProjRelSlice;
 

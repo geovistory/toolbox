@@ -6,8 +6,9 @@ import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty, InfLangString, InfDimension } from '../sdk';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty, InfLangString, InfDimension } from '../sdk';
 import { StandardActionsFactory } from './actions';
+import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 export class ModelFlattener<Payload, Model> {
   items: Model[]
@@ -247,11 +248,9 @@ export class Flattener {
 
   analysis = new ModelFlattener<ProAnalysisSlice, ProAnalysis>(
     this.proActions.analysis,
-    ProAnalysis.getModelDefinition(),
+    { relations: [] },
     (items) => {
-      items.forEach(item => {
-        item = new ProAnalysis(item);
-      })
+      items.forEach(item => { })
     })
   constructor(
     public infActions: InfActions,

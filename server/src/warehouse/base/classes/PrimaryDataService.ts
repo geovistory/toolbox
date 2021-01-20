@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {PoolClient} from 'pg';
+import {sum} from 'ramda';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {CHANGES_CONSIDERED_UNTIL_SUFFIX, Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
@@ -5,9 +8,7 @@ import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Logger} from './Logger';
-import {PgDataReplicator} from './PgDataReplicator';
-import {sum} from 'ramda';
-import {PoolClient} from 'pg';
+import {DataReplicatorSqlFn, PgDataReplicator} from './PgDataReplicator';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -22,8 +23,11 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
     index: DataIndexPostgres<KeyModel, ValueModel>
 
-    // // a meta index where each primary data service can store its catchup date
-    // meta: IndexDBGeneric<string, string>
+    // List of data replication requests that can be executed by calling executeQueries()
+    updateReplications: {
+        targetTable: string,
+        sqlFn: DataReplicatorSqlFn
+    }[] = []
 
     constructor(
         public wh: Warehouse,
@@ -225,6 +229,19 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const upserted = sum(stats.map(s => s.rows?.[0].count))
 
         Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
+
+        if (this.updateReplications.length > 0) {
+            const replicationRequest = this.updateReplications.map(repl => {
+                return new PgDataReplicator<{count: number}>(
+                    {client: pool1, table: tmpTable},
+                    {client: pool1, table: repl.targetTable},
+                    [this.index.keyCols, 'val'],
+                    repl.sqlFn
+                ).replicateTable()
+            })
+            await Promise.all(replicationRequest)
+        }
+
         return upserted
 
     }
@@ -294,6 +311,11 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX);
         const isoDate = val?.tmsp;
         return isoDate ? new Date(isoDate) : undefined
+    }
+
+
+    registerUpdateReplication(targetTable: string, sqlFn: DataReplicatorSqlFn) {
+        this.updateReplications.push({targetTable, sqlFn})
     }
 
 }

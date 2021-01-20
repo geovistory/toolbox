@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { StandardActionsFactory } from 'app/core/store/actions';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SysConfig } from '../sdk-lb4';
-import { SysAnalysisType } from '../sdk/models';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { IAppState } from '../store/model';
 import { sysRoot } from './sys.config';
@@ -21,8 +20,8 @@ export class SysActions {
   system_relevant_class = new StandardActionsFactory<Payload, SysSystemRelevantClass>
     (this.ngRedux).createCrudActions(sysRoot, 'system_relevant_class');
 
-  analysis_type = new StandardActionsFactory<Payload, SysAnalysisType>
-    (this.ngRedux).createCrudActions(sysRoot, 'analysis_type');
+  // analysis_type = new StandardActionsFactory<Payload, SysAnalysisType>
+  //   (this.ngRedux).createCrudActions(sysRoot, 'analysis_type');
 
 
   config = new StandardActionsFactory<Payload, SysConfig>

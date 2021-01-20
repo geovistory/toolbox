@@ -1,7 +1,7 @@
 import {Postgres1DataSource} from '../../datasources';
 import {GvSchemaObject} from '../../models/gv-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {WarEntityPreview, ProInfoProjRel, InfStatement, InfLangString, DatChunk, DatDigital} from '../../models';
+import {WarEntityPreviewWithFulltext, ProInfoProjRel, InfStatement, InfLangString, DatChunk, DatDigital} from '../../models';
 import {Streams} from '../../realtime/streams/streams';
 import {TabCell} from '../../models/tab-cell.model';
 
@@ -276,7 +276,7 @@ export class QRamList extends SqlBuilderLb4Models {
       -- entity_previews (Expression Portions or Expressions)
       tw1 AS (
         SELECT DISTINCT ON (t1.pk_entity)
-          ${this.createSelect('t1', WarEntityPreview.definition)},
+          ${this.createSelect('t1', WarEntityPreviewWithFulltext.definition)},
           ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           war.entity_preview t1
@@ -297,7 +297,7 @@ export class QRamList extends SqlBuilderLb4Models {
       -- entity_previews (Expression Portions or Expressions)
       tw2 AS (
         SELECT DISTINCT ON (t1.pk_entity)
-          ${this.createSelect('t1', WarEntityPreview.definition)},
+          ${this.createSelect('t1', WarEntityPreviewWithFulltext.definition)},
           ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           war.entity_preview t1
@@ -393,7 +393,7 @@ export class QRamList extends SqlBuilderLb4Models {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', WarEntityPreview.definition)} as objects
+          ${this.createBuildObject('t1', WarEntityPreviewWithFulltext.definition)} as objects
           FROM (
             SELECT * FROM tw1
             UNION ALL

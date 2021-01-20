@@ -4,11 +4,13 @@ import { GregorianDateTime, JulianDateTime } from 'app/core';
 import { DimensionChangeEvent } from 'app/shared/directives/dimension-change/dimension-change.directive';
 import { merge, Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';
 import { ChartLineDefinition } from '../chart-line-visual/chart-line-visual.component';
+import { ChartLine } from 'app/core/sdk-lb4/model/chartLine';
+import { ChartLinePoint } from 'app/core/sdk-lb4/model/chartLinePoint';
+import { AnalysisTimeChartResponse } from 'app/core/sdk-lb4';
 export class CursorInfo {
   readonly switchBetweenCalendars = 2299161 * 24 * 60 * 60;
 
@@ -62,7 +64,7 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
   xMax: number;
   yMin: number;
   yMax: number;
-  data: ChartLineData;
+  data: AnalysisTimeChartResponse;
 
   zoomer = new Zoomer(0, 200)
 
@@ -79,7 +81,7 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
   showCursor: boolean;
 
   // Observables that change the chart
-  @Input() data$: Observable<ChartLineData>;
+  @Input() data$: Observable<AnalysisTimeChartResponse>;
   @Input() showCursor$: Observable<boolean>;
   @Input() showInfoBtn = false;
   @Input() showInfoBox = true;

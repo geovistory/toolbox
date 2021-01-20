@@ -26,6 +26,7 @@ import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimiti
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {WarEntityPreviewTimeSpan, CalendarType, Granularity} from '../../../../../models';
 const rEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,
@@ -75,36 +76,35 @@ describe('REntityTimeSpanService', function () {
 
     it('should create timespanval of time primitive', async () => {
         const {shipVoyage} = await createMock();
-
-        const expectedTimeSpan: REntityTimeSpan = {
+        const expectedTimeSpan: WarEntityPreviewTimeSpan = {
             "p81": {
-                "calendar": "gregorian",
-                "duration": "1 day",
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
                 "julianDay": 2362729
             },
             "p82": {
-                "calendar": "gregorian",
-                "duration": "1 day",
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
                 "julianDay": 2362730
             },
             "p81a": {
-                "calendar": "gregorian",
-                "duration": "1 day",
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
                 "julianDay": 2362731
             },
             "p81b": {
-                "calendar": "gregorian",
-                "duration": "1 day",
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
                 "julianDay": 2362732
             },
             "p82a": {
-                "calendar": "julian",
-                "duration": "1 day",
+                "calendar": CalendarType.julian,
+                "duration": Granularity['1 day'],
                 "julianDay": 2362733
             },
             "p82b": {
-                "calendar": "julian",
-                "duration": "1 day",
+                "calendar": CalendarType.julian,
+                "duration": Granularity['1 day'],
                 "julianDay": 2362734
             }
         }

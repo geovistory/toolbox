@@ -7,7 +7,7 @@ import { ByPk } from 'app/core/store/model';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { flatten, indexBy, keys, sort, uniq, values } from 'ramda';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, of, BehaviorSubject } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import * as Config from '../../../../../../server/lb3app/common/config/Config';
 import { cache, spyTag } from '../../../shared';
@@ -1242,4 +1242,13 @@ export class ConfigurationPipesService {
       })
     )
   }
+}
+
+/**
+ * Creates a FieldDefinition out of the list definition, assuming that
+ * the field has only one target class, namely the one defined by the list
+ * definition
+ */
+function listDefToFieldDef(listDef: ListDefinition): FieldDefinition {
+  return { ...listDef, listDefinitions: [listDef] }
 }

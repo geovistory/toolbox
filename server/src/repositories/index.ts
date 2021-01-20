@@ -1,3 +1,4 @@
+export * from './war-statement.repository';
 export * from './war-entity-preview.repository';
 export * from './war-class-preview.repository';
 export * from './dat-chunk.repository';

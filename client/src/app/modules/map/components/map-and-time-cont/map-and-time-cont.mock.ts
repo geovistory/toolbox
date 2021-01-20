@@ -1,6 +1,6 @@
-import { MapAndTimeContQueryRes } from '../../../../../../../server/src/lb3/common/interfaces';
+import { GeoEntityMapAndTimeCont } from 'app/core/sdk-lb4';
 
-export const queryResults1: MapAndTimeContQueryRes = [
+export const queryResults1: Array<GeoEntityMapAndTimeCont> = [
   {
     'geo_entity_pk': 206099,
     'geo_positions': [
@@ -9,22 +9,24 @@ export const queryResults1: MapAndTimeContQueryRes = [
         'to': null,
         'iso_from': null,
         'iso_to': null,
-        'lat': 6.93194,
-        'long': 79.84778
+        'latitude': 6.93194,
+        'longitude': 79.84778
       },
       {
         'from': null,
         'to': null,
         'iso_from': null,
         'iso_to': null,
-        'lat': 7,
-        'long': 80
+        'latitude': 7,
+        'longitude': 80
       }
     ],
     'geo_entity_preview': {
       'pk_entity': 206099,
       'time_span': null,
       'fk_project': 84760,
+      'project': 84760,
+      'fk_class': 365,
       'type_label': null,
       'class_label': 'Geographical Place',
       'entity_type': 'peIt',
@@ -1025,14 +1027,16 @@ export const queryResults1: MapAndTimeContQueryRes = [
         'to': null,
         'iso_from': null,
         'iso_to': null,
-        'lat': 13.41612,
-        'long': 80.31685
+        'latitude': 13.41612,
+        'longitude': 80.31685
       }
     ],
     'geo_entity_preview': {
       'pk_entity': 208782,
       'time_span': null,
       'fk_project': 84760,
+      'project': 84760,
+      'fk_class': 365,
       'type_label': null,
       'class_label': 'Geographical Place',
       'entity_type': 'peIt',
@@ -1742,12 +1746,14 @@ export const queryResults1: MapAndTimeContQueryRes = [
     geo_entity_preview: {
       'pk_entity': 742832,
       'fk_project': 591,
+      'project': 591,
+      'fk_class': 365,
       'type_label': 'Parrocchia',
       'class_label': 'Geographical Place',
       'entity_type': 'peIt',
       'entity_label': 'S. Agnese'
     },
-    geo_positions: [{ 'lat': 45.42979, 'long': 12.32818 }],
+    geo_positions: [{ 'latitude': 45.42979, 'longitude': 12.32818 }],
     pk_entities: [],
     temporal_data: {
       'data_lookup': {},

@@ -3,8 +3,8 @@ import { ActiveProjectService, U } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { QueryPathSegment } from '../../../../../../server/src/lb3/common/interfaces';
 import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
+import { QueryPathSegment } from 'app/core/sdk-lb4/model/queryPathSegment';
 
 @Injectable({
   providedIn: 'root'

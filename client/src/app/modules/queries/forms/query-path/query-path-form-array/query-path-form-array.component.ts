@@ -5,8 +5,8 @@ import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-an
 import { switchMap, map, first, mergeMap, shareReplay } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';
 import { PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
-import { QueryPathSegment } from '../../../../../../../../server/src/lb3/common/interfaces';
 import { BehaviorSubject } from 'rxjs';
+import { QueryPathSegment } from 'app/core/sdk-lb4/model/queryPathSegment';
 
 @Component({
   selector: 'gv-query-path-form-array',

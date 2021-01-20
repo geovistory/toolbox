@@ -15,9 +15,6 @@
  * This list type allows to create / view / edit a numeric value with a measurement unit.
  */
 export interface DimensionListType { 
-    /**
-     * Defines the class providing the measurement unit types.
-     */
     measurementUnitClass: number;
 }
 
