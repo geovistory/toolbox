@@ -1,12 +1,12 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SysConfig, ActiveProjectService } from 'app/core';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ActiveProjectService, SysConfig } from 'app/core';
+import { AnalysisTableRequest, AnalysisTableResponse } from 'app/core/sdk-lb4';
+import { QueryDefinition } from 'app/core/sdk-lb4/model/queryDefinition';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { Subject, of, Observable } from 'rxjs';
-import { AnalysisService } from '../../services/analysis.service';
-import { TableFormComponent } from '../table-form/table-form.component';
-import { QueryDefinition, TableInput, TableOutput } from '../../../../../../../server/src/lb3/common/interfaces'
+import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GvAnalysisService } from '../../services/analysis.service';
+import { TableFormComponent } from '../table-form/table-form.component';
 
 @Component({
   selector: 'gv-table-edit',
@@ -25,14 +25,14 @@ export class TableEditComponent implements OnInit, OnDestroy {
   queryDefinition$ = new Subject<QueryDefinition>()
 
   constructor(
-    public a: AnalysisService<TableInput, TableOutput>,
+    public a: GvAnalysisService<AnalysisTableRequest, AnalysisTableResponse>,
     private ts: TabLayoutService,
     p: ActiveProjectService
   ) {
     if (this.a.pkEntity) {
       this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
         map(i => i.analysis_definition),
-        map((def: TableInput) => def.queryDefinition)
+        map((def) => def.queryDefinition)
       )
     }
 

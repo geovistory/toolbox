@@ -111,7 +111,7 @@ export class ActiveProjectEpics {
         this.dfh.label.loadOfProject(action.meta.pk_project);
 
         this.sys.system_relevant_class.load();
-        this.sys.analysis_type.load();
+        // this.sys.analysis_type.load();
         this.sys.config.load();
 
         this.dat.namespace.load('', action.meta.pk_project);
@@ -131,7 +131,7 @@ export class ActiveProjectEpics {
           this.dfh.label$.by_fks$.noPause.all$,
 
           this.sys.system_relevant_class$.by_fk_class$.all$,
-          this.sys.analysis_type$.slice$,
+          // this.sys.analysis_type$.slice$,
           this.sys.config$.main$,
 
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),

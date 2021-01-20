@@ -140,7 +140,7 @@ export class GeovistoryServer extends Context implements RestApplicationLike {
 
       await this.lbApp.stop();
       this.server.close();
-      await once(this.server, 'close');
+      // await once(this.server, 'close');
       this.server = undefined;
     }
 

@@ -2,16 +2,15 @@ import { Component, OnInit, HostBinding, OnDestroy, Input, ChangeDetectorRef } f
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { Subject, Observable } from 'rxjs';
-import { ActiveProjectService, SysAnalysisType, SysConfig } from 'app/core';
-import { takeUntil, filter } from 'rxjs/operators';
+import { ActiveProjectService, SysConfig } from 'app/core';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { AnalysisService } from '../../services/analysis.service';
+import { GvAnalysisService } from '../../services/analysis.service';
 
 @Component({
   selector: 'gv-analysis-detail',
   templateUrl: './analysis-detail.component.html',
   styleUrls: ['./analysis-detail.component.scss'],
-  providers: [TabLayoutService, AnalysisService]
+  providers: [TabLayoutService, GvAnalysisService]
 
 })
 export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
@@ -24,8 +23,6 @@ export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComp
   @Input() pkEntity: number;
   @Input() fkAnalysisType: number;
 
-  analysisType$: Observable<SysAnalysisType>
-
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
@@ -35,7 +32,7 @@ export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComp
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
     private ts: TabLayoutService,
-    private a: AnalysisService<any, any>
+    private a: GvAnalysisService<any, any>
   ) { }
 
   ngOnInit() {

@@ -24,7 +24,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     @repository(PubAccountProjectRelRepository) private pubAccountProjectRelRepo: PubAccountProjectRelRepository,
     @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository,
     @repository(DatNamespaceRepository) private datNamespaceRepository: DatNamespaceRepository
-  ) {}
+  ) { }
 
   async authorize(
     context: AuthorizationContext,
@@ -129,7 +129,11 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   private extractPkProject(context: AuthorizationContext) {
     const requestContext = context.invocationContext?.parent as RequestContext;
     const request = requestContext?.request;
-    const pkProject = request?.query?.pkProject || request?.body?.pkProject || request?.body?.fk_project;
+    const pkProject = request?.query?.pkProject ??
+      request?.query?.fkProject ??
+      request?.body?.pkProject ??
+      request?.body?.fkProject ??
+      request?.body?.fk_project;
     if (typeof pkProject === 'string') {
       const pk = parseInt(pkProject)
       if (isInteger(pk)) return pk;
@@ -143,7 +147,8 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   private extractPkNamespace(context: AuthorizationContext) {
     const requestContext = context.invocationContext?.parent as RequestContext;
     const request = requestContext?.request;
-    const pkNamespace = request?.query?.pkNamespace || request?.body?.pkNamespace;
+    const pkNamespace = request?.query?.pkNamespace ??
+      request?.body?.pkNamespace;
     if (typeof pkNamespace === 'string') {
       const pk = parseInt(pkNamespace)
       if (isInteger(pk)) return pk;

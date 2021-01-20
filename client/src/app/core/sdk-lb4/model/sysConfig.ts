@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ClassConfig } from './classConfig';
+import { ClassesIndex } from './classesIndex';
 
 
+/**
+ * Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.dataforhistory.org/class/21) 
+ */
 export interface SysConfig { 
-    /**
-     * Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.dataforhistory.org/class/21) 
-     */
-    classes?: { [key: string]: ClassConfig; };
+    classes: ClassesIndex;
 }
 

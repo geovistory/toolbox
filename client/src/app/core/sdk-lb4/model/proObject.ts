@@ -10,9 +10,11 @@
  * Do not edit the class manually.
  */
 import { ProInfoProjRel } from './proInfoProjRel';
+import { ProAnalysis } from './proAnalysis';
 
 
 export interface ProObject { 
     info_proj_rel?: Array<ProInfoProjRel>;
+    analysis?: Array<ProAnalysis>;
 }
 

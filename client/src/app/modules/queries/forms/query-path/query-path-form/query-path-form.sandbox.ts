@@ -2,8 +2,8 @@ import { sandboxOf } from 'angular-playground';
 import { QueriesModule } from 'app/modules/queries/queries.module';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject, of } from 'rxjs';
-import { QueryPathSegment } from '../../../../../../../../server/src/lb3/common/interfaces';
 import { QueryPathFormComponent } from './query-path-form.component';
+import { QueryPathSegment } from 'app/core/sdk-lb4/model/queryPathSegment';
 
 const initVal1: QueryPathSegment[] = [{
   type: 'classes',

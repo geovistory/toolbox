@@ -11,6 +11,9 @@
       (closeLeft)="t.setLayoutMode('right-only')" (openRight)="t.setLayoutMode('both'); run();">
       <span class="ml-2 mat-caption mat-text-secondary">
         Analysis Configuration
+        <span *ngIf="pkAnalysis">
+          , ID {{pkAnalysis}}
+        </span>
       </span>
       <ng-content select="[settingsTopBar]"> </ng-content>
 

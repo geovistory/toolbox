@@ -4,10 +4,11 @@ import { ByPk, IAppState } from 'app/core/store/model';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
 import { filter } from '../../../../node_modules/rxjs/operators';
-import { ProInfoProjRel, ProDfhClassProjRel, ProClassFieldConfig, ProTextProperty, ProAnalysis, ProProject, ProDfhProfileProjRel } from '../sdk';
+import { ProInfoProjRel, ProDfhClassProjRel, ProClassFieldConfig, ProTextProperty, ProProject, ProDfhProfileProjRel } from '../sdk';
 import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
 import { toString } from 'ramda';
+import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 
 class Selector {

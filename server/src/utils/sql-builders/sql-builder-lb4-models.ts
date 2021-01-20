@@ -62,17 +62,17 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
    */
   createBuildObject(alias: string, model: ModelDefinition) {
     const columns = this.getColumns(model);
-    return ` jsonb_build_object(
+    return ` jsonb_strip_nulls(jsonb_build_object(
       ${columns.map(c => `'${c}',${alias}.${c}`).join(`,
       `)}
-    ) `;
+    )) `;
   }
 
-  protected async executeAndReturnFirstData<M>(): Promise<M> {
+  async executeAndReturnFirstData<M>(): Promise<M> {
     const res = await this.dataSource.execute(this.sql, this.params);
     return res?.[0]?.data ?? {};
   }
-  protected async execute<M>(): Promise<M> {
+  async execute<M>(): Promise<M> {
     const res = await this.dataSource.execute(this.sql, this.params);
     return res;
   }

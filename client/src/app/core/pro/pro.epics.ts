@@ -6,13 +6,16 @@ import { proRoot } from 'app/core/pro/pro.config';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProAnalysis, ProAnalysisApi, ProProject, ProProjectApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi } from '../sdk';
+import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProProject, ProProjectApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi } from '../sdk';
 import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../store/actions';
 import { StandardEpicsFactory } from '../store/StandardEpicsFactory';
 import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkStatementAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
 import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { SchemaObject } from '../store/model';
 import { SchemaObjectService } from '../store/schema-object.service';
+import { AnalysisService } from '../sdk-lb4/api/analysis.service';
+import { map } from 'rxjs/operators';
+import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 
 @Injectable()
@@ -28,7 +31,7 @@ export class ProEpics {
     public profileProjRelApi: ProDfhProfileProjRelApi,
     public classFieldConfApi: ProClassFieldConfigApi,
     public textPropertyApi: ProTextPropertyApi,
-    public analysisApi: ProAnalysisApi,
+    public analysisApi: AnalysisService,
     private schemaObjectService: SchemaObjectService
   ) { }
 
@@ -180,25 +183,25 @@ export class ProEpics {
       /**
       * ProAnalysis
       */
-      proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
-        (meta) => this.analysisApi.findPerIdAndVersionAndProject(meta.pk, meta.pkEntity, meta.version),
-        ProAnalysisActionFactory.BY_PK_AND_VERSION,
-        (results) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.analysis.flatten(results);
-          storeFlattened(flattener.getFlattened());
-        }
-      ),
-      proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
-        (meta) => this.analysisApi.bulkUpsert(meta.pk, meta.items),
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.analysis.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
+      // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
+      //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
+      //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
+      //   (results) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.analysis.flatten(results);
+      //     storeFlattened(flattener.getFlattened());
+      //   }
+      // ),
+      // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
+      //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.analysis.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+      //   }
+      // ),
       proAnalysisEpicsFactory.createDeleteEpic(
-        (meta) => this.analysisApi.bulkDelete(meta.items.map(item => item.pk_entity), meta.pk),
+        (meta) => this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map(item => item.pk_entity)),
       ),
     )
   }

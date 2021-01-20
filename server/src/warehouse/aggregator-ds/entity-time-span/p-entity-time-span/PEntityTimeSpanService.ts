@@ -1,5 +1,6 @@
 import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PoolClient} from 'pg';
+import {WarEntityPreviewTimeSpan} from '../../../../models';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
 import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';
@@ -7,8 +8,6 @@ import {EntityFields, EntityTimePrimitive} from "../../../primary-ds/edge/edge.c
 import {PEdgeService} from '../../../primary-ds/edge/PEdgeService';
 import {PEntity, PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
-import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
-import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -18,7 +17,7 @@ export type TimeSpanKeys =
     | 'p81b'    // begin of the end | right inner bound | surely to
     | 'p82b'    // end of the end | right outer bound | not after
 export type PEntityTimeSpanVal = {
-    timeSpan?: PEntityTimeSpan;
+    timeSpan?: WarEntityPreviewTimeSpan//PEntityTimeSpan;
     firstSecond?: number
     lastSecond?: number
 }
@@ -46,8 +45,6 @@ export type PEntityTimeSpan = {
  */
 @Injectable()
 export class PEntityTimeSpanService extends AggregatedDataService2<PEntityId, PEntityTimeSpanVal>{
-    aggregator = PEntityTimeSpanAggregator;
-    providers = PEntityTimeSpanProviders;
 
     depPEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>
     depPEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>

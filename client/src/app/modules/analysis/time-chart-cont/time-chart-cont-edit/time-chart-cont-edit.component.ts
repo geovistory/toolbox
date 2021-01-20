@@ -1,16 +1,16 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SysConfig, ActiveProjectService } from 'app/core';
+import { ActiveProjectService, SysConfig } from 'app/core';
+import { AnalysisDefinition, AnalysisTimeChartRequest, AnalysisTimeChartResponse } from 'app/core/sdk-lb4';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
+import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { values } from 'ramda';
-import { BehaviorSubject, Subject, of, Observable } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
-import { ChartLineData, TimeChartContInput, TimeChartContOutput, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
-import { AnalysisService } from '../../services/analysis.service';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { GvAnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent } from '../time-chart-cont-form/time-chart-cont-form.component';
-import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
-import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 
 @Component({
   selector: 'gv-time-chart-cont-edit',
@@ -27,7 +27,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
   @ViewChild('c', { static: false }) formComponent: TimeChartContFormComponent
   // filter$ = new BehaviorSubject<FilterDefinition>(null);
 
-  visualData$ = new BehaviorSubject<ChartLineData>({
+  visualData$ = new BehaviorSubject<AnalysisTimeChartResponse>({
     activeLine: 0,
     chartLines: [
       {
@@ -37,12 +37,12 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
     ]
   })
 
-  initVal$: Observable<TimeChartContInput>
+  initVal$: Observable<AnalysisDefinition>
 
 
   constructor(
     private c: ConfigurationPipesService,
-    public a: AnalysisService<TimeChartContInput, TimeChartContOutput>,
+    public a: GvAnalysisService<AnalysisTimeChartRequest, AnalysisTimeChartResponse>,
     private ts: TabLayoutService,
     p: ActiveProjectService,
     private pagEntDialog: EntityPreviewsPaginatedDialogService
@@ -51,13 +51,16 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
     if (this.a.pkEntity) {
       this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
         map(i => i.analysis_definition),
-        map((def: TimeChartContInput) => def)
+        map((def) => def)
       )
     }
     this.a.registerRunAnalysis(() => {
       if (this.formComponent.formFactory.formGroup.valid) {
-        const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
-        this.a.callRunApi(q)
+        const analysisDefinition = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
+        this.a.callRunApi((fkProject => this.a.analysisApi.analysisControllerTimeChartRun({
+          fkProject,
+          lines: analysisDefinition.lines || []
+        })))
         this.ts.t.setLayoutMode('both');
       } else {
         this.formComponent.formFactory.markAllAsTouched()

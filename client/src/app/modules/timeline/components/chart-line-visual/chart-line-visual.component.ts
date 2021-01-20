@@ -1,8 +1,10 @@
 import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { ScaleLinear } from 'd3';
 import { Subject } from 'rxjs';
-import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 import { D3Service } from '../../shared/d3.service';
+import { AnalysisTimeChartResponse } from 'app/core/sdk-lb4/model/analysisTimeChartResponse';
+import { ChartLine } from 'app/core/sdk-lb4/model/chartLine';
+import { ChartLinePoint } from 'app/core/sdk-lb4/model/chartLinePoint';
 
 
 export interface ActiveLineClickEvent {
@@ -19,7 +21,7 @@ export interface CursorValues {
 
 export type ChartLineXAxisValueLabel = (domainX: number, domainY?: number, linePoint?: ChartLinePoint, activeLine?: ChartLine) => string
 export interface ChartLineDefinitionConfig {
-  data: ChartLineData;
+  data: AnalysisTimeChartResponse;
   scaleX: ScaleLinear<number, number>;
   scaleY: ScaleLinear<number, number>;
   marginTop?: number;

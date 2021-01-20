@@ -11,10 +11,11 @@ import { QueryPathInjectData } from 'app/modules/queries/forms/query-path/query-
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { QueryDefinition, TableInput } from '../../../../../../../server/src/lb3/common/interfaces';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { QueryDefinition } from 'app/core/sdk-lb4/model/queryDefinition';
+import { AnalysisDefinition } from 'app/core/sdk-lb4/model/analysisDefinition';
 
 
 export interface TableFormGroupData {
@@ -80,8 +81,8 @@ export class TableFormComponent implements OnInit, OnDestroy, AfterViewInit, For
     }
     this.formFactory$.pipe(
       switchMap(ff => ff.formGroupFactory.valueChanges$),
-      filter((value: TableInput) => (!!value && !!value.queryDefinition && !!value.queryDefinition.filter && !!value.queryDefinition.filter.data && !!value.queryDefinition.filter.data.classes)),
-      map((value: TableInput) => value.queryDefinition.filter.data),
+      filter((value: AnalysisDefinition) => (!!value && !!value.queryDefinition && !!value.queryDefinition.filter && !!value.queryDefinition.filter.data && !!value.queryDefinition.filter.data.classes)),
+      map((value: AnalysisDefinition) => value.queryDefinition.filter.data),
       switchMap((classesAndTypes: ClassAndTypeSelectModel) => this.i.pipeClassesFromClassesAndTypes(classesAndTypes)),
       distinctUntilChanged<number[]>(equals),
       takeUntil(this.destroy$)

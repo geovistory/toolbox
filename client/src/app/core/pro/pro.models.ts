@@ -1,5 +1,6 @@
 import { ByPk } from "app/core/store/model";
-import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProAnalysis, ProProject, ProDfhProfileProjRel } from "../sdk";
+import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProProject, ProDfhProfileProjRel } from "../sdk";
+import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 export interface ProProjectSlice {
   by_pk_entity?: ByPk<ProProject>;

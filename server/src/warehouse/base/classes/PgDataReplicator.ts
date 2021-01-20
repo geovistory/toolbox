@@ -4,14 +4,24 @@ import {Logger} from './Logger';
 import {brkOnErr, pgLogOnErr} from '../../../utils/helpers';
 
 export interface PgTable {
+    // pool client connected to the database of the table
     client: PoolClient,
+
+    // provide full name. Pattern: 'schema.table', e.g. 'war.entity_preview'
     table: string
 }
 export type DataReplicatorSqlFn = (insertClause: string, fromClause: string) => string
 
 export class PgDataReplicator<M> {
 
-
+    /**
+     * create a data replicator
+     * the getInsertState
+     * @param source PgTable object containing information source table
+     * @param target PgTable object containing information source table
+     * @param columns Optional array of col names of the source table to read from
+     * @param getInsertStatement Optional function that creates the replication sql
+     */
     constructor(
         private source: PgTable,
         private target: PgTable,
@@ -20,10 +30,10 @@ export class PgDataReplicator<M> {
 
     ) { }
     /**
-     * replicates table 'from' to table 'to'
-     * tables must have same structure (column names and data types)
-     *
-     * returns statitistics about batches and time (miliseconds) used per batch
+     * Loops over source table for batches of given batchSize and
+     * executes statement given by this.getInsertStatement
+     * @param batchSize max number of rows considered by one batch.
+     * @returns statitistics about batches and time (miliseconds) used per batch
      */
     async replicateTable(batchSize = 10000) {
         const res = await brkOnErr(this.source.client.query<{count: number}>(`SELECT count(*):: integer From ${this.source.table} `))

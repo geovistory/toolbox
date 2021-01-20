@@ -25,7 +25,7 @@ import { MapAndTimeContFormArrayComponent } from './map-and-time-cont/map-and-ti
 import { MapAndTimeContFormControlComponent } from './map-and-time-cont/map-and-time-cont-form-control/map-and-time-cont-form-control.component';
 import { MapAndTimeContFormGroupComponent } from './map-and-time-cont/map-and-time-cont-form-group/map-and-time-cont-form-group.component';
 import { MapAndTimeContFormComponent } from './map-and-time-cont/map-and-time-cont-form/map-and-time-cont-form.component';
-import { AnalysisService } from './services/analysis.service';
+import { GvAnalysisService } from './services/analysis.service';
 import { TableEditComponent } from './table/table-edit/table-edit.component';
 import { ColtypePipe, TableFormArrayComponent } from './table/table-form-array/table-form-array.component';
 import { TableFormControlComponent } from './table/table-form-control/table-form-control.component';
@@ -67,7 +67,7 @@ const components = [
 @NgModule({
   declarations: components,
   providers: [
-    AnalysisService,
+    GvAnalysisService,
     TableFormService,
     ColtypePipe
   ],

@@ -10,8 +10,10 @@ import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries
 import { values } from 'ramda';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { TimeChartContInput, TimeChartContLine } from '../../../../../../../server/src/lb3/common/interfaces';
-
+import { TimeChartContLine } from 'app/core/sdk-lb4/model/timeChartContLine';
+export interface TimeChartContInput {
+  lines: TimeChartContLine[]
+}
 interface LineControlInitVal {
   queryFilter: QueryFilterInjectData,
   lineLabel: string

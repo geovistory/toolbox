@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {Where} from '@loopback/repository';
+import {Where} from '@loopback/filter';
 import 'reflect-metadata';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {filter, first, switchMap, startWith} from 'rxjs/operators';
-import {WarClassPreview, WarEntityPreview} from '../../models';
+import {WarClassPreview, WarEntityPreviewWithFulltext} from '../../models';
 import {createWarehouse, WarehouseStubs} from '../../warehouse/createWarehouse';
 import {getWarehouseConfig} from '../../warehouse/startScripts';
 import {Warehouse} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
-import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
+import {createWarEntityPreviewRepo} from './atomic/war-entity-preview.helper';
 
 
 
@@ -73,8 +73,8 @@ export async function waitUntilNext<M>(observable$: Observable<M>) {
  * that machtches the given whereFilter.
  * @param observable$
  */
-export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
-    return new Promise<WarEntityPreview>((res, rej) => {
+export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreviewWithFulltext>[]) {
+    return new Promise<WarEntityPreviewWithFulltext>((res, rej) => {
         const sub = wh.gvPgNotifications$.subscribe((msg) => {
             if (msg.channel === 'entity_previews_updated') {
 
@@ -107,8 +107,8 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
  * that machtches the given whereFilter.
  * @param observable$
  */
-export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarEntityPreview) => boolean) {
-    return new Promise<WarEntityPreview>((res, rej) => {
+export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarEntityPreviewWithFulltext) => boolean) {
+    return new Promise<WarEntityPreviewWithFulltext>((res, rej) => {
         const sub = wh.gvPgNotifications$.subscribe((msg) => {
             if (msg.channel === 'entity_previews_updated') {
 
@@ -143,8 +143,8 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
  * repeats the search every time the gvDB emits a entity preview
  * @param observable$
  */
-export function searchForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
-    return new Promise<WarEntityPreview>((res, rej) => {
+export function searchForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreviewWithFulltext>[]) {
+    return new Promise<WarEntityPreviewWithFulltext>((res, rej) => {
         const sub = wh.gvPgNotifications$
             .pipe(startWith({channel: 'entity_previews_updated'}))
             .subscribe((msg) => {
