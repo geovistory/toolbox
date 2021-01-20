@@ -30,6 +30,9 @@ export async function forAnalysis() {
   await createWarStatement(WarStatementMock.BIRTH_OF_ZWINGLI_TOOK_PLACE_IN)
   await createWarStatement(WarStatementMock.BIRTH_OF_OEKOLOMBAD_TOOK_PLACE_IN)
 
+  // statement to time primitive
+  await createWarStatement(WarStatementMock.BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN)
+
   await createSysSystemType(SysSystemTypeMock.ANALYSIS_TYPE_MAP)
   await createSysSystemType(SysSystemTypeMock.ANALYSIS_TYPE_TIME_CHART)
   await createSysSystemType(SysSystemTypeMock.ANALYSIS_TYPE_TABLE)

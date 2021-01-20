@@ -3,6 +3,7 @@ import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/test
 import ajv, {Ajv} from 'ajv';
 import {GeovistoryServer} from '../../server';
 import {testdb} from './testdb';
+import {path} from 'ramda';
 const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
 
 export async function setupApplication(): Promise<AppWithClient> {
@@ -80,7 +81,7 @@ async function validateValueAgainstSchema(
 
   const error = `
   JSON schema validation failed:
-  ${JSON.stringify(buildErrorDetails(validationErrors), null, 2)}
+  ${JSON.stringify(buildErrorDetails(validationErrors, value), null, 2)}
   `
   throw error;
 }
@@ -123,15 +124,19 @@ function convertToJsonSchema(openapiSchema: SchemaObject) {
 
 function buildErrorDetails(
   validationErrors: ajv.ErrorObject[],
-): RestHttpErrors.ValidationErrorDetails[] {
+  value: unknown
+) {
   return validationErrors.map(
-    (e: ajv.ErrorObject): RestHttpErrors.ValidationErrorDetails => {
+    (e: ajv.ErrorObject) => {
+      const givenValueAtPath = path([e.dataPath], value)
       return {
         path: e.dataPath,
         code: e.keyword,
         message: e.message ?? `must pass validation rule ${e.keyword}`,
         info: e.params,
+        givenValueAtPath
       };
     },
   );
 }
+

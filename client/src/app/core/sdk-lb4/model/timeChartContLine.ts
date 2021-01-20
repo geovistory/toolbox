@@ -9,11 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TimeChartContQueryDef } from './timeChartContQueryDef';
 import { TimeChartContVisualSettings } from './timeChartContVisualSettings';
 
 
 export interface TimeChartContLine { 
     visualizationDefinition: TimeChartContVisualSettings;
-    queryDefinition: object;
+    queryDefinition: TimeChartContQueryDef;
 }
 

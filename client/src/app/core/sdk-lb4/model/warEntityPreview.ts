@@ -9,24 +9,22 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TimeSpan } from './timeSpan';
+import { WarEntityPreviewTimeSpan } from './warEntityPreviewTimeSpan';
 
 
 export interface WarEntityPreview { 
     pk_entity?: number;
     fk_project?: number;
-    project?: number;
-    fk_class?: number;
+    project: number;
+    fk_class: number;
     class_label?: string;
     entity_label?: string;
     entity_type?: string;
     type_label?: string;
     fk_type?: number;
-    time_span?: TimeSpan;
+    time_span?: WarEntityPreviewTimeSpan;
     first_second?: string;
     last_second?: string;
-    full_text?: string;
-    ts_vector?: string;
     tmsp_last_modification?: string;
 }
 

@@ -1,13 +1,12 @@
-import { Component, OnInit, Input, Optional, Inject, OnDestroy, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
-import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
-import { QueryPathSegment } from '../../../../../../../server/src/lb3/common/interfaces';
-import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
+import { MatFormFieldAppearance, MatInput } from '@angular/material';
 import { InfPlace } from 'app/core';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
-import { first, takeUntil, map } from 'rxjs/operators';
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
+import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { MatFormFieldAppearance, MatInput } from '@angular/material';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 
 type FgPlaceNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgPlaceInjectData extends FormFactoryCompontentInjectData<Observable<InfPlace>> {

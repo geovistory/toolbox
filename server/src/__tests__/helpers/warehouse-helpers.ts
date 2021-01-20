@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {Where} from '@loopback/repository';
+import {Where} from '@loopback/filter';
 import 'reflect-metadata';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {filter, first, switchMap, startWith} from 'rxjs/operators';

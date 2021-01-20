@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState, InfStatement, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
+import { ActiveProjectService, IAppState, InfStatement, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U, SysConfig } from 'app/core';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 import { InfModelName } from 'app/core/inf/inf.config';
@@ -1287,25 +1287,50 @@ export class InformationPipesService {
 
   @cache({ refCount: false })
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
-    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeFieldDefinitionsSpecificFirst(pkClass)
-      .pipe(switchMap(classFields => {
-        const fields = classFields.filter(f => !!f.property.pkProperty);
+    return combineLatestOrEmpty(classes.map(pkClass => this.p.dfh$.class$.by_pk_class$.key(pkClass).pipe(
+      map(c => c.basic_type === 9),
+      switchMap(isTeEn => this.c.pipeFieldDefinitionsSpecificFirst(pkClass)
+        .pipe(
+          map(classFields => classFields
+            .filter(f => !!f.property.pkProperty)
+            .map(f => ({
+              isOutgoing: f.isOutgoing,
+              fkPropertyDomain: f.isOutgoing ? f.sourceClass : null,
+              fkPropertyRange: f.isOutgoing ? null : f.sourceClass,
+              pkProperty: f.property.pkProperty
+            }))),
+          switchMap(items => {
+            if (isTeEn) {
+              // add time properties (at some time within, ...)
+              DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(pkProperty => {
+                items.push({
+                  pkProperty,
+                  fkPropertyDomain: pkClass,
+                  fkPropertyRange: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+                  isOutgoing: true
+                })
+              })
+            }
 
-        return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfPropertyField(
-          field.property.pkProperty,
-          field.isOutgoing ? field.sourceClass : null,
-          field.isOutgoing ? null : field.sourceClass,
-        ).pipe(map(label => {
-          const isOutgoing = field.isOutgoing;
-          const o: PropertyOption = {
-            isOutgoing,
-            label,
-            pk: field.property.pkProperty,
-            propertyFieldKey: propertyOptionFieldKey(field.property.pkProperty, isOutgoing)
-          };
-          return o;
-        }))));
-      })))).pipe(map(y => flatten<PropertyOption>(y)));
+            return combineLatestOrEmpty(items.map(item => this.c.pipeLabelOfPropertyField(
+              item.pkProperty,
+              item.fkPropertyDomain,
+              item.fkPropertyRange,
+            ).pipe(map(label => {
+              const isOutgoing = item.isOutgoing;
+              const o: PropertyOption = {
+                isOutgoing,
+                label,
+                pk: item.pkProperty,
+                propertyFieldKey: propertyOptionFieldKey(item.pkProperty, isOutgoing)
+              };
+              return o;
+            }))));
+          })))
+    )
+
+
+    )).pipe(map(y => flatten<PropertyOption>(y)));
   }
 
   @cache({ refCount: false })

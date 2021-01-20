@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { WarEntityPreviewWithRelations } from '../model/models';
+import { WarEntityPreviewWithFulltextWithRelations } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -94,9 +94,9 @@ export class WarEntityPreviewControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<WarEntityPreviewWithRelations>>;
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<WarEntityPreviewWithRelations>>>;
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<WarEntityPreviewWithRelations>>>;
+    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<WarEntityPreviewWithFulltextWithRelations>>;
+    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<WarEntityPreviewWithFulltextWithRelations>>>;
+    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<WarEntityPreviewWithFulltextWithRelations>>>;
     public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -158,7 +158,7 @@ export class WarEntityPreviewControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<WarEntityPreviewWithRelations>>(`${this.configuration.basePath}/war-entity-previews`,
+        return this.httpClient.get<Array<WarEntityPreviewWithFulltextWithRelations>>(`${this.configuration.basePath}/war-entity-previews`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

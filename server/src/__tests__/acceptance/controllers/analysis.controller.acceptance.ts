@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
 import {clone, omit} from 'ramda';
-import {TableOutput} from '../../../lb3/common';
 import {AnalysisTableExportRequest, ColDefDefaultType, QueryPathSegmentType, TableExportFileType} from '../../../models';
 import {AnalysisMapRequest} from '../../../models/analysis/analysis-map-request.model';
 import {AnalysisMapResponse} from '../../../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../../../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-request.model';
-import {AnalysisTableResponse} from '../../../models/analysis/analysis-table-response.model';
+import {AnalysisTableCell, AnalysisTableResponse} from '../../../models/analysis/analysis-table-response.model';
 import {AnalysisTimeChartRequest} from '../../../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse} from '../../../models/analysis/analysis-time-chart-response.model';
 import {GvSchemaObject} from '../../../models/gv-schema-object.model';
@@ -17,6 +16,7 @@ import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../helpers/data/gvDB/DfhApiPropertyMock';
 import {ProAnalysisMock} from '../../helpers/data/gvDB/ProAnalysisMock';
 import {WarEntityPreviewMock} from '../../helpers/data/gvDB/WarEntityPreviewMock';
+import {WarStatementMock} from '../../helpers/data/gvDB/WarStatementMock';
 import {forAnalysis} from '../../helpers/graphs/analysis.helper';
 import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
@@ -71,14 +71,17 @@ describe('AnaylsisController', () => {
             const res = await client.post('/analysis/table-run')
                 .set('Authorization', lb4Token)
                 .send(req)
-            const result: TableOutput = res.body
+            const result = res.body
+            const expected: AnalysisTableResponse = {
+                full_count: 2,
+                rows: [
+                    {"col1": {entityLabel: 'Basel'}},
+                    {"col1": {entityLabel: 'Zürich'}},
+                ]
+            }
 
             await validateAgainstSchema(result, AnalysisTableResponse, server)
-            expect(result.full_count).equal(2)
-            expect(result.rows).deepEqual([
-                {"col1": 'Basel'},
-                {"col1": 'Zürich'},
-            ])
+            expect(result).deepEqual(expected)
         })
 
         it('should respond with a table with col for geo entity labels and one for birth entity labels', async () => {
@@ -130,26 +133,126 @@ describe('AnaylsisController', () => {
             const res = await client.post('/analysis/table-run')
                 .set('Authorization', lb4Token)
                 .send(req)
-            const result: TableOutput = res.body
+            const result: AnalysisTableResponse = res.body
 
             await validateAgainstSchema(result, AnalysisTableResponse, server)
-            expect(result.full_count).equal(2)
-            expect(result.rows).containDeep([
-                {
-                    "col1": 'Basel',
-                    "col2": [
-                        WarEntityPreviewMock.BIRTH_OEKOLOMBAD
-                    ]
-                },
-                {
-                    "col1": 'Zürich',
-                    "col2": [
-                        WarEntityPreviewMock.BIRTH_ZWINGLI
-                    ]
-                },
-            ])
+            const expected: AnalysisTableResponse = {
+                full_count: 2,
+                rows: [
+                    {
+                        "col1": {entityLabel: 'Basel'},
+                        "col2": {entities: [WarEntityPreviewMock.BIRTH_OEKOLOMBAD]}
+
+                    },
+                    {
+                        "col1": {entityLabel: 'Zürich'},
+                        "col2": {entities: [WarEntityPreviewMock.BIRTH_ZWINGLI]}
+                    },
+                ]
+            }
+            expect(result).containDeep(expected)
         })
+
+
+        it('should return statement object info value timePrimitive', async function () {
+            const req: AnalysisTableRequest = {
+                fkProject: pkProject,
+                analysisDefinition: {
+                    queryDefinition: {
+                        filter: {
+                            data: {
+                                classes: [
+                                    DfhApiClassMock.EN_61_BIRTH.dfh_pk_class
+                                ],
+                            },
+                            children: [
+                                // {
+                                //     data: {
+                                //         operator: Operator.ENTITY_LABEL_CONTAINS,
+                                //         searchTerm: 'Zwingli'
+                                //     }
+                                // }
+                            ]
+                        },
+                        columns: [
+                            {
+                                id: 'col1',
+                                label: 'At some time within time primitives',
+                                queryPath: [
+                                    {
+                                        type: QueryPathSegmentType.properties,
+                                        data: {
+                                            outgoingProperties: [
+                                                DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN.dfh_pk_property
+                                            ]
+                                        },
+                                    },
+                                    {
+                                        type: QueryPathSegmentType.classes,
+                                        data: {
+                                            classes: [
+                                                DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class
+                                            ],
+                                        },
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+
+
+
+            const res = await client.post('/analysis/table-run')
+                .set('Authorization', lb4Token)
+                .send(req)
+            const result: AnalysisTableResponse = res.body
+            await validateAgainstSchema(result.rows?.[0]?.['col1'], AnalysisTableCell, server)
+
+
+            await validateAgainstSchema(result, AnalysisTableResponse, server)
+            const expected: AnalysisTableResponse = {
+                full_count: 2,
+                rows: [
+                    {
+                        "col1": {values: []}
+
+                    },
+                    {
+                        "col1": {
+                            values: [
+                                {
+                                    pkStatement: WarStatementMock.BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN.pk_entity ?? -1,
+                                    fkSubjectInfo: WarStatementMock.BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN.fk_subject_info ?? -1,
+                                    fkObjectInfo: WarStatementMock.BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN.fk_object_info ?? -1,
+                                    value: WarStatementMock.BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN.object_info_value ?? {}
+                                }
+                            ]
+                        }
+                    },
+                ]
+            }
+            expect(result).containDeep(expected)
+        })
+        it('should return statement object info value geometry', async function () {
+
+        })
+        it('should return statement object info value language', async function () {
+
+        })
+        it('should return statement object info value string (appellation)', async function () {
+
+        })
+        it('should return statement object info value langString', async function () {
+
+        })
+        it('should return statement object info value dimension', async function () {
+
+        })
+
     });
+
 
 
 

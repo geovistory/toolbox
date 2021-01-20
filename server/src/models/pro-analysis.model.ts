@@ -4,7 +4,7 @@ import {ProEntity} from '.';
 import {ProProject} from './pro-project.model';
 import {PubAccount} from './pub-account.model';
 
-enum Operator {
+export enum Operator {
   'IS' = 'IS',
   'IS NOT' = 'IS NOT',
   'ENTITY_LABEL_CONTAINS' = 'ENTITY_LABEL_CONTAINS',

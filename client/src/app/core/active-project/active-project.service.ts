@@ -465,12 +465,13 @@ export class ActiveProjectService {
   getTabLoading(path: string[]): Observable<boolean> {
     return this.ngRedux.select<boolean>([...['activeProject', 'tabLayouts', path[2]], 'loading']);
   }
-
+  addEntityTabWithoutClass(pkEntity: number) {
+    this.streamEntityPreview(pkEntity).pipe(first(x => !!x)).subscribe(x => {
+      this.addEntityTab(x.pk_entity, x.fk_class)
+    })
+  }
   addEntityTab(pkEntity: number, pkClass: number, entityType?: EntityType) {
-    // if (entityType === 'teEn') {
-    //   this.addEntityTeEnTab(pkEntity)
-    // }
-    // else
+
     if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
       this.addSourceExpressionPortionTab(pkEntity)
     }

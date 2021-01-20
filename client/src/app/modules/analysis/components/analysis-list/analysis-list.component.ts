@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatSort, MatTableDataSource } from '@angular/material';
 import { ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
-import { map, first, takeUntil } from 'rxjs/operators';
-import { values } from 'd3';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import { AnalysisService } from 'app/core/sdk-lb4';
 import { ProAnalysis } from 'app/core/sdk-lb4/model/proAnalysis';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
-import { AnalysisService } from 'app/core/sdk-lb4';
+import { values } from 'd3';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-analysis-list',
@@ -16,9 +16,12 @@ import { AnalysisService } from 'app/core/sdk-lb4';
 export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   items$: Observable<ProAnalysis[]>;
+  filter$ = new BehaviorSubject<string>('');
   displayedColumns: string[] = ['fk_analysis_type', 'name'];
   dataSource = new MatTableDataSource([]);
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+
+  showDetails$ = new BehaviorSubject(false);
 
   loading$
 
@@ -37,8 +40,23 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.items$ = this.p.pro$.analysis$.by_pk_entity$.all$.pipe(
         map(all => values(all).filter(analysis => analysis.fk_project === pkProject))
       )
-      this.items$.pipe(takeUntil(this.destroy$)).subscribe(items => {
-        this.dataSource.data = items;
+      combineLatest(
+        this.items$,
+        this.filter$,
+        this.showDetails$
+      ).pipe(takeUntil(this.destroy$)).subscribe(([items, filterValue, showDetails]) => {
+        const term = filterValue.trim().toLowerCase();
+        const filtered = items.filter(item => {
+          if (item.name.toLowerCase().search(term) > -1) return true
+          if (showDetails) {
+            if (item.pk_entity.toString().search(term) > -1) return true
+            if (!!item.description) {
+              if (item.description.toString().search(term) > -1) return true
+            }
+          }
+          return false
+        })
+        this.dataSource.data = filtered;
       })
     })
   }
@@ -47,6 +65,9 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sort.direction = 'asc'
     this.sort.disableClear = true;
     this.dataSource.sort = this.sort;
+  }
+  applyFilter(filterValue: string) {
+    this.filter$.next(filterValue)
   }
 
   newTimelineContinuous() {

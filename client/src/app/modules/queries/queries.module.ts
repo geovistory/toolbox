@@ -48,28 +48,16 @@ import { QueryPathFormArrayComponent } from './forms/query-path/query-path-form-
 import { QueryPathFormControlComponent } from './forms/query-path/query-path-form-control/query-path-form-control.component';
 import { QueryPathFormGroupComponent } from './forms/query-path/query-path-form-group/query-path-form-group.component';
 import { QueryPathFormComponent } from './forms/query-path/query-path-form/query-path-form.component';
+import { ResultingValuesDialogComponent } from './components/resulting-values-dialog/resulting-values-dialog.component';
 
 const components = [
-  // QueryListComponent,
-  // QueryDetailComponent,
   PropertySelectComponent,
-  // SubgroupComponent,
   ColDefTitleComponent,
   ResultTableComponent,
   ResultingEntitiesDialogComponent,
+  ResultingValuesDialogComponent,
   ClassOrTypeRequiredValidatorDirective,
   PropertiesRequiredValidatorDirective,
-  // PropertyFilterComponent,
-  // ColDefEditorComponent,
-  // ColDefComponent,
-  // ClassAndTypeFilterComponent,
-  // ClassAndTypePathSegmentComponent,
-  // PropertyPathSegmentComponent,
-  // QueryPathControlComponent,
-  // PropertyFilterRequiredValidatorDirective,
-  // PropertyPathSegmentRequiredValidatorDirective,
-  // ClassAndTypeFilterRequiredValidatorDirective,
-  // ClassAndTypePathSegmentRequiredValidatorDirective,
   QueryFilterComponent,
   QfFormGroupComponent,
   QfFormArrayComponent,
@@ -79,7 +67,6 @@ const components = [
   QueryPathFormArrayComponent,
   QueryPathFormControlComponent,
   ClassAndTypeSelectComponent
-
 ]
 
 @NgModule({
@@ -119,6 +106,7 @@ const components = [
   exports: components,
   entryComponents: [
     ResultingEntitiesDialogComponent,
+    ResultingValuesDialogComponent,
     QueryFilterComponent,
     QueryPathFormComponent
   ]

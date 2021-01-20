@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
+import 'reflect-metadata';
+import {CalendarType, Granularity, WarEntityPreviewTimeSpan} from '../../../../../models';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
-import {PEntityTimeSpan, PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+import {PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
 import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
@@ -16,7 +17,6 @@ import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-e
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
@@ -25,6 +25,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 const pEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
@@ -74,54 +75,54 @@ describe('PEntityTimeSpanService', function () {
     })
 
 
-    // it('should create timespanval of time primitive', async () => {
-    //     const {shipVoyage, project} = await PEntityTimeSpanMock.createMock();
+    it('should create timespanval of time primitive', async () => {
+        const {shipVoyage, project} = await PEntityTimeSpanMock.createMock();
 
-    //     const expectedTimeSpan: PEntityTimeSpan = {
-    //         "p81": {
-    //             "calendar": "gregorian",
-    //             "duration": "1 day",
-    //             "julianDay": 2362729
-    //         },
-    //         "p82": {
-    //             "calendar": "gregorian",
-    //             "duration": "1 day",
-    //             "julianDay": 2362730
-    //         },
-    //         "p81a": {
-    //             "calendar": "gregorian",
-    //             "duration": "1 day",
-    //             "julianDay": 2362731
-    //         },
-    //         "p81b": {
-    //             "calendar": "gregorian",
-    //             "duration": "1 day",
-    //             "julianDay": 2362732
-    //         },
-    //         "p82a": {
-    //             "calendar": "julian",
-    //             "duration": "1 day",
-    //             "julianDay": 2362733
-    //         },
-    //         "p82b": {
-    //             "calendar": "julian",
-    //             "duration": "1 day",
-    //             "julianDay": 2362734
-    //         }
-    //     }
-    //     const expectedFirstSec = '204139785600';
-    //     const expectedLastSec = '204140303999';
+        const expectedTimeSpan: WarEntityPreviewTimeSpan = {
+            "p81": {
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
+                "julianDay": 2362729
+            },
+            "p82": {
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
+                "julianDay": 2362730
+            },
+            "p81a": {
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
+                "julianDay": 2362731
+            },
+            "p81b": {
+                "calendar": CalendarType.gregorian,
+                "duration": Granularity['1 day'],
+                "julianDay": 2362732
+            },
+            "p82a": {
+                "calendar": CalendarType.julian,
+                "duration": Granularity['1 day'],
+                "julianDay": 2362733
+            },
+            "p82b": {
+                "calendar": CalendarType.julian,
+                "duration": Granularity['1 day'],
+                "julianDay": 2362734
+            }
+        }
+        const expectedFirstSec = '204139785600';
+        const expectedLastSec = '204140303999';
 
-    //     const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
-    //         return entPreview.pk_entity === shipVoyage.pk_entity
-    //             && entPreview.fk_project === project.pk_entity
-    //             && equals(entPreview.time_span, expectedTimeSpan)
-    //             && entPreview.first_second === expectedFirstSec
-    //             && entPreview.last_second === expectedLastSec
-    //     })
+        const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
+            return entPreview.pk_entity === shipVoyage.pk_entity
+                && entPreview.fk_project === project.pk_entity
+                && equals(entPreview.time_span, expectedTimeSpan)
+                && entPreview.first_second === expectedFirstSec
+                && entPreview.last_second === expectedLastSec
+        })
 
-    //     expect(result.time_span).to.deepEqual(expectedTimeSpan);
-    // })
+        expect(result.time_span).to.deepEqual(expectedTimeSpan);
+    })
 
     it('should create empty time span object {}', async () => {
         // - Langage and Project

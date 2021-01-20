@@ -9,10 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AnalysisTableCell } from './analysisTableCell';
 
 
 export interface AnalysisTableResponse { 
-    rows: Array<{ [key: string]: object; }>;
+    rows: Array<{ [key: string]: AnalysisTableCell; }>;
     full_count?: number;
 }
 

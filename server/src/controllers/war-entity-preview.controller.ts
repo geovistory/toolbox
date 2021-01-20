@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {inject, Subscription} from '@loopback/core';
-import {repository, Fields} from '@loopback/repository';
+import {repository} from '@loopback/repository';
+import {Fields} from '@loopback/filter'
+
 import {get, getModelSchemaRef, HttpErrors, param} from '@loopback/rest';
 import _ from 'lodash';
 import {Socket} from 'socket.io';

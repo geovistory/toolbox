@@ -12,7 +12,7 @@
 
 
 export interface TimePrimitiveWithCal { 
-    julian_day: number;
+    julianDay: number;
     duration: TimePrimitiveWithCal.DurationEnum;
     calendar: TimePrimitiveWithCal.CalendarEnum;
 }

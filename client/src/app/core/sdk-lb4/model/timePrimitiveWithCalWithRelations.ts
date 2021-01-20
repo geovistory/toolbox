@@ -15,7 +15,7 @@
  * (tsType: TimePrimitiveWithCalWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface TimePrimitiveWithCalWithRelations { 
-    julian_day: number;
+    julianDay: number;
     duration: TimePrimitiveWithCalWithRelations.DurationEnum;
     calendar: TimePrimitiveWithCalWithRelations.CalendarEnum;
 }

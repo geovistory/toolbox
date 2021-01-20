@@ -28,7 +28,7 @@ export enum CalendarType {
 @model()
 class TimePrimitiveWithCal {
   @property({required: true})
-  julian_day: number;
+  julianDay: number;
 
   @property({
     required: true,
@@ -49,27 +49,27 @@ class TimePrimitiveWithCal {
 }
 
 @model()
-export class TimeSpan {
+export class WarEntityPreviewTimeSpan {
 
   @property({type: TimePrimitiveWithCal})
-  71?: TimePrimitiveWithCal;
+  p82?: TimePrimitiveWithCal;
 
   @property({type: TimePrimitiveWithCal})
-  72?: TimePrimitiveWithCal;
+  p81?: TimePrimitiveWithCal;
 
   @property({type: TimePrimitiveWithCal})
-  150?: TimePrimitiveWithCal;
+  p81a?: TimePrimitiveWithCal;
 
   @property({type: TimePrimitiveWithCal})
-  151?: TimePrimitiveWithCal;
+  p82a?: TimePrimitiveWithCal;
 
   @property({type: TimePrimitiveWithCal})
-  152?: TimePrimitiveWithCal;
+  p81b?: TimePrimitiveWithCal;
 
   @property({type: TimePrimitiveWithCal})
-  153?: TimePrimitiveWithCal;
+  p82b?: TimePrimitiveWithCal;
 }
-
+@model()
 export class WarEntityPreview extends Entity {
   @property({
     type: 'number',
@@ -80,57 +80,59 @@ export class WarEntityPreview extends Entity {
   @property({
     type: 'number',
   })
-  fk_project?: number;
+  fk_project?: number | null;
 
   @property({
     type: 'number',
+    required: true
   })
   project?: number;
 
   @property({
     type: 'number',
+    required: true
   })
   fk_class?: number;
 
   @property({
     type: 'string',
   })
-  class_label?: string;
+  class_label?: string | null;
 
   @property({
     type: 'string',
   })
-  entity_label?: string;
+  entity_label?: string | null;
 
   @property({
     type: 'string',
   })
-  entity_type?: string;
+  entity_type?: string | null;
 
   @property({
     type: 'string',
   })
-  type_label?: string;
+  type_label?: string | null;
 
   @property({
     type: 'number',
   })
-  fk_type?: number;
+  fk_type?: number | null;
 
   @property({
-    type: TimeSpan,
+    type: WarEntityPreviewTimeSpan,
   })
-  time_span?: TimeSpan;
-
-  @property({
-    type: 'string',
-  })
-  first_second?: string;
+  time_span?: WarEntityPreviewTimeSpan;
 
   @property({
     type: 'string',
   })
-  last_second?: string;
+  first_second?: string | null;
+
+  @property({
+    type: 'string',
+  })
+  last_second?: string | null;
 
   @property({
     type: 'string',

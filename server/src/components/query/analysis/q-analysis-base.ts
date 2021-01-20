@@ -1,13 +1,11 @@
 import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
-import {ColDef, QueryDefinition, QueryFilterData, QueryPathSegment, QueryFilter} from '../../../models/pro-analysis.model';
+import {ColDef, QueryDefinition, QueryFilter, QueryFilterData, QueryPathSegment} from '../../../models/pro-analysis.model';
 import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
-import {AnalysisTableRow} from '../../../models/analysis/analysis-table-response.model';
-import {WarEntityPreviewWithFulltext} from '../../../models';
+import {WarEntityPreview} from '../../../models';
 
 
-const STATAMENT_TABLE = 'war.statement' // 'war.vm_statement'
 
-interface QueryNode {
+export interface QueryNode {
   data: QueryFilterData
 }
 
@@ -20,7 +18,7 @@ interface NestedQueryNodeWithAlias extends QueryFilter {
   children: NestedQueryNodeWithAlias[]
 }
 
-interface QueryNodeWithAlias extends QueryNode {
+export interface QueryNodeWithAlias extends QueryNode {
   _tableAlias: string
 }
 
@@ -52,7 +50,7 @@ export interface QueryDefinitionWithAliases extends QueryDefinition {
 
 
 
-export class QAnalysisBase extends SqlBuilderLb4Models {
+export abstract class QAnalysisBase extends SqlBuilderLb4Models {
   PK_HISTC8_GEOGRAPHICAL_PLACE = 363;
   PK_HISTC11_BUILT_WORK = 441;
 
@@ -82,6 +80,7 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
   limit = '';
   offset = '';
 
+  readonly STATAMENT_TABLE = 'war.statement' // 'war.vm_statement'
 
   constructor(
     dataSource: Postgres1DataSource,
@@ -89,122 +88,6 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
     super(dataSource)
   }
 
-  async query(query: QueryDefinition, fkProject: number) {
-    const rootTableAlias = this.addTableAlias();
-
-    // root table where
-    this.filterWheres.push(
-      this.createEntityWhere(query.filter, rootTableAlias, fkProject)
-    );
-
-    // root table from
-    this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
-    this.froms.push(`tw1 ${rootTableAlias}`);
-
-    // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
-    this.createFilterWheres(filterWithAliases);
-
-    // create froms and selects according to column definition
-    const columnsWithAliases = this.createColumnsFroms(query.columns, rootTableAlias, fkProject);
-    this.createColumnsSelects(columnsWithAliases, rootTableAlias, fkProject);
-    this.createColumnGroupBys(columnsWithAliases, rootTableAlias);
-
-    // create limit, offset
-    this.createLimitAndOffset(query);
-
-    this.sql = `
-      WITH tw1 AS (
-        -- apply the query filter
-        SELECT DISTINCT
-          t_1.pk_entity,
-          t_1.entity_type,
-          t_1.entity_label,
-          t_1.class_label,
-          t_1.type_label,
-          t_1.time_span,
-          t_1.fk_project
-        FROM
-          ${this.joinFroms(this.filterFroms)}
-        WHERE
-          ${this.joinWheres(this.filterWheres, 'AND')}
-      )
-      SELECT
-        ${this.joinSelects(this.selects)}
-      FROM
-        ${this.joinFroms(this.froms)}
-        ${this.joinGroupBys(this.groupBys)}
-        ${this.limit}
-        ${this.offset}
-        `;
-
-    // console.log('params', this.params);
-    // let forLog = this.sql;
-    // this.params.forEach((param, i) => {
-    //   const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g');
-    //   forLog = forLog.replace(replaceStr, param);
-    // });
-    // console.log(`
-    //     "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
-    //     ${sqlFormatter.format(forLog, { language: 'pl/sql' })}
-
-    //     `);
-
-    return this.execute<AnalysisTableRow[]>()
-  }
-
-
-  /**
-   * Build Sql query for counting the number of resulting rows
-   * when only the query filter is applied
-   */
-  async countResultingRows(query: QueryDefinition, fkProject: number) {
-    const rootTableAlias = this.addTableAlias();
-
-    // root table where
-    this.filterWheres.push(
-      this.createEntityWhere(query.filter, rootTableAlias, fkProject)
-    );
-
-    // root table from
-    this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
-    this.froms.push(`tw1 ${rootTableAlias}`);
-
-    // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
-    this.createFilterWheres(filterWithAliases);
-
-    this.sql = `
-      WITH tw1 AS (
-        -- apply the query filter
-        SELECT DISTINCT
-          t_1.pk_entity
-        FROM
-          ${this.joinFroms(this.filterFroms)}
-        WHERE
-          ${this.joinWheres(this.filterWheres, 'AND')}
-      )
-      SELECT
-       count(*)::int
-      FROM
-        ${this.joinFroms(this.froms)}
-        `;
-
-    // console.log('params', this.params);
-    // let forLog = this.sql;
-    // this.params.forEach((param, i) => {
-    //   const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g');
-    //   forLog = forLog.replace(replaceStr, param);
-    // });
-    // console.log(`
-    //     "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
-    //     ${sqlFormatter.format(forLog, { language: 'pl/sql' })}
-
-    //     `);
-
-    const res = await this.execute<{count: number}[]>()
-    return res?.[0]?.count ?? 0;
-  }
 
   /**
    * if there is limit and offset provided, this function adds:
@@ -220,13 +103,9 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
     if (typeof query.offset === 'number' && query.offset >= 0) {
       this.offset = `OFFSET ${this.addParam(query.offset)}`;
     }
-
-    // this.createFullCount();
   }
 
-  // createFullCount() {
-  //   this.selects.push('(count(*) OVER())::Int AS full_count');
-  // }
+
 
   createColumnsFroms(columns: ColDef[], leftTableAlias: string, fkProject: number): ColDefWithAliases[] {
     return columns.map(column => this.createColumnFroms(column, leftTableAlias, fkProject));
@@ -256,6 +135,8 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
             this.froms
           );
         }
+        // JOIN values
+
         // JOIN entities
         else if (this.isEntitesJoin(segment)) {
           this.joinEntities(
@@ -277,79 +158,41 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
   createColumnsSelects(columns: ColDefWithAliases[], leftTableAlias: string, fkProject: number) {
     columns.forEach(column => {
       if (column.ofRootTable) {
-        if (column.defaultType === 'entity_label') {
-          this.selects.push(`${leftTableAlias}.entity_label AS "${column.id}"`);
-        } else if (column.defaultType === 'class_label') {
-          this.selects.push(`${leftTableAlias}.class_label AS "${column.id}"`);
-        } else if (column.defaultType === 'type_label') {
-          this.selects.push(`${leftTableAlias}.type_label AS "${column.id}"`);
-        } else if (column.defaultType === 'entity_preview') {
-
-          column.colNames = [
-            'pk_entity',
-            'entity_type',
-            'entity_label',
-            'class_label',
-            'type_label',
-            'time_span',
-            'fk_project'
-          ];
-          this.selects.push(`jsonb_build_object(
-                        'pk_entity', ${leftTableAlias}.pk_entity,
-                        'entity_type', ${leftTableAlias}.entity_type,
-                        'entity_label', ${leftTableAlias}.entity_label,
-                        'class_label', ${leftTableAlias}.class_label,
-                        'type_label', ${leftTableAlias}.type_label,
-                        'time_span', ${leftTableAlias}.time_span,
-                        'fk_project', ${leftTableAlias}.fk_project
-                      ) AS "${column.id}"`);
-
-        } else if (column.defaultType === 'temporal_distribution') {
-
-          this.selects.push(
-            `commons.analysis__create_temporal_distribution(array_agg( ${leftTableAlias}.pk_entity), ${fkProject}) as temporal_distribution`
-          );
-
-        }
+        this.createSelectFromRootTable(column, leftTableAlias, fkProject);
       } else if (column.queryPathWithAlias && column.queryPathWithAlias.length) {
-        if (column.defaultType === 'space_and_time_cont') {
-
-          this.selects.push(
-            `commons.analysis__czml_and_temporal_distribution(
-                ${leftTableAlias}.pk_entity,
-                COALESCE( array_agg( ${column.id}.pk_entity ) FILTER ( WHERE ${column.id}.pk_entity IS NOT NULL ), ARRAY[]::integer[]  ),
-                ${fkProject}
-             ) as space_and_time_cont`
-          );
-        } else {
-
-          // create a select for the last segment in the queryPath
-          this.createColumnSelect(
-            column.queryPathWithAlias[column.queryPathWithAlias.length - 1],
-            column.id
-          );
-        }
+        this.createSelectFromJoinedTable(column, leftTableAlias, fkProject);
       }
     });
   }
 
-  createColumnSelect(segment: QueryNodeWithAlias, columnId: string) {
-    if (!this.isStatementsJoin(segment) && this.isEntitesJoin(segment)) {
-      this.selects.push(`COALESCE(json_agg( distinct
+  abstract createSelectFromJoinedTable(column: ColDefWithAliases, leftTableAlias: string, fkProject: number): void
+  // {
+  //   // if (column.defaultType === 'space_and_time_cont') {
 
-        ${this.createBuildObject(segment._tableAlias, WarEntityPreviewWithFulltext.definition)        }
---        jsonb_build_object(
---            'pk_entity', ${segment._tableAlias}.pk_entity,
---            'entity_type', ${segment._tableAlias}.entity_type,
---            'entity_label', ${segment._tableAlias}.entity_label,
---            'class_label', ${segment._tableAlias}.class_label,
---            'type_label', ${segment._tableAlias}.type_label,
---            'time_span', ${segment._tableAlias}.time_span,
---            'fk_project', ${segment._tableAlias}.fk_project
---          )
-       ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnId}"`);
-    }
-  }
+  //   //   this.selects.push(
+  //   //     `commons.analysis__czml_and_temporal_distribution(
+  //   //             ${leftTableAlias}.pk_entity,
+  //   //             COALESCE( array_agg( ${column.id}.pk_entity ) FILTER ( WHERE ${column.id}.pk_entity IS NOT NULL ), ARRAY[]::integer[]  ),
+  //   //             ${fkProject}
+  //   //          ) as space_and_time_cont`
+  //   //   );
+  //   // }
+  //   // else
+  //   const lastSegment = column.queryPathWithAlias?.[column?.queryPathWithAlias.length - 1];
+  //   if (lastSegment) {
+  //     // create a select for the last segment in the queryPath
+  //     this.createColumnSelect(lastSegment, column.id
+  //     );
+  //   }
+  //   else {
+  //     console.warn('To select from a column, it should have at least one item in the query path')
+  //   }
+  // }
+
+  abstract createSelectFromRootTable(column: ColDefWithAliases, leftTableAlias: string, fkProject: number): void
+
+
+
 
   createFilterFroms(node: QueryFilter, leftTableAlias: string, parentEntityTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
     let parEntTabAlias = parentEntityTableAlias;
@@ -395,6 +238,12 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
     return nestedNodeWithAlias
   }
 
+  getLastQPathSegment(colDef?: ColDefWithAliases) {
+    const p = colDef?.queryPathWithAlias;
+    const lastSegment = p?.[p?.length - 1];
+    return lastSegment;
+  }
+
   joinEntities(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
     fromsArray.push(`
                     LEFT JOIN war.entity_preview ${thisTableAlias} ON
@@ -432,7 +281,7 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
                     )`);
     }
     fromsArray.push(`
-                LEFT JOIN ${STATAMENT_TABLE} ${thisTableAlias} ON
+                LEFT JOIN ${this.STATAMENT_TABLE} ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
   }
@@ -574,6 +423,8 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
     return node.data.classes || node.data.types;
   }
 
+
+
   // /**
   //  * Returns true, if given node is for joining GeoEntities (and no other classes)
   //  * @param {*} node
@@ -599,25 +450,25 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
   //   return false;
   // }
 
-  createColumnGroupBys(columns: ColDefWithAliases[], parentTableAlias: string) {
-    columns.forEach(column => {
-      if (column.ofRootTable && !column.preventGroupBy) {
+  // createColumnGroupBys(columns: ColDefWithAliases[], parentTableAlias: string) {
+  //   columns.forEach(column => {
+  //     if (column.ofRootTable && !column.preventGroupBy) {
 
-        if (column.defaultType === 'entity_label') {
-          this.groupBys.push(`${parentTableAlias}.entity_label`);
-        } else if (column.defaultType === 'class_label') {
-          this.groupBys.push(`${parentTableAlias}.class_label`);
-        } else if (column.defaultType === 'type_label') {
-          this.groupBys.push(`${parentTableAlias}.type_label`);
-        }
-        else if (column.colNames) {
-          column.colNames.forEach(name => {
-            this.groupBys.push(`${parentTableAlias}.${name}`);
-          });
-        }
-      }
-    });
-  }
+  //       if (column.defaultType === 'entity_label') {
+  //         this.groupBys.push(`${parentTableAlias}.entity_label`);
+  //       } else if (column.defaultType === 'class_label') {
+  //         this.groupBys.push(`${parentTableAlias}.class_label`);
+  //       } else if (column.defaultType === 'type_label') {
+  //         this.groupBys.push(`${parentTableAlias}.type_label`);
+  //       }
+  //       else if (column.colNames) {
+  //         column.colNames.forEach(name => {
+  //           this.groupBys.push(`${parentTableAlias}.${name}`);
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
 
   // generic
 
@@ -635,6 +486,11 @@ export class QAnalysisBase extends SqlBuilderLb4Models {
         `);
   }
 
+  groupByRootTable() {
+    const groupBys = this.getColumns(WarEntityPreview.definition)
+    .map(col=>`t_1.${col}`)
+    return this.joinGroupBys(groupBys);
+  }
   joinGroupBys(groupBys: string[]) {
     return !!groupBys && groupBys.length
       ? `GROUP BY

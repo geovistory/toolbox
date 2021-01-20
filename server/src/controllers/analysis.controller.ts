@@ -3,12 +3,15 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
-import {repository, Count} from '@loopback/repository';
+import {Count, repository} from '@loopback/repository';
 import {get, HttpErrors, param, post, put, requestBody} from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import * as json2csv from 'json2csv';
 import {Roles} from '../components/authorization';
-import {QAnalysisBase} from '../components/query/analysis/q-analysis-base';
+import {QAnalysisCount} from '../components/query/analysis/q-analysis-count';
 import {QAnalysisMap} from '../components/query/analysis/q-analysis-map';
+import {QAnalysisTable} from '../components/query/analysis/q-analysis-table';
+import {QAnalysisTime} from '../components/query/analysis/q-analysis-time';
 import {Postgres1DataSource} from '../datasources/postgres1.datasource';
 import {AnalysisTableExportRequest, AnalysisTableResponse, AnalysisTableRow, ColDef, ProAnalysis, ProAnalysisRelations, TableExportFileType} from '../models';
 import {AnalysisMapRequest} from '../models/analysis/analysis-map-request.model';
@@ -16,11 +19,11 @@ import {AnalysisMapResponse} from '../models/analysis/analysis-map-response.mode
 import {AnalysisTableExportResponse} from '../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../models/analysis/analysis-table-request.model';
 import {AnalysisTimeChartRequest} from '../models/analysis/analysis-time-chart-request.model';
-import {AnalysisTimeChartResponse, ChartLine, ChartLinePoint} from '../models/analysis/analysis-time-chart-response.model';
+import {AnalysisTimeChartResponse, ChartLine} from '../models/analysis/analysis-time-chart-response.model';
+import {GvSchemaObject} from '../models/gv-schema-object.model';
 import {ProAnalysisRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {GvSchemaObject} from '../models/gv-schema-object.model';
+import {SysConfigController} from './sys-config.controller';
 
 
 
@@ -30,6 +33,7 @@ export class AnalysisController {
   constructor(
     @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
     @repository(ProAnalysisRepository) protected proAnalysisRepo: ProAnalysisRepository,
+    @inject('controllers.SysConfigController') protected sysConfigController: SysConfigController,
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
   ) { }
 
@@ -55,11 +59,11 @@ export class AnalysisController {
     if (!req.analysisDefinition.queryDefinition) throw new Error('queryDefinition is required');
 
     // count rows
-    const fullCount = await new QAnalysisBase(this.dataSource)
+    const fullCount = await new QAnalysisCount(this.dataSource)
       .countResultingRows(req.analysisDefinition.queryDefinition, req.fkProject);
 
     // get rows
-    const rows = await new QAnalysisBase(this.dataSource)
+    const rows = await new QAnalysisTable(this.dataSource, this.sysConfigController)
       .query(req.analysisDefinition.queryDefinition, req.fkProject)
 
     const res: AnalysisTableResponse = {
@@ -119,7 +123,7 @@ export class AnalysisController {
     if (!req.analysisDefinition.queryDefinition) throw new Error('queryDefinition is required');
 
     // count rows
-    const fullCount = await new QAnalysisBase(this.dataSource)
+    const fullCount = await new QAnalysisCount(this.dataSource)
       .countResultingRows(req.analysisDefinition.queryDefinition, req.fkProject);
 
     // check feasibility
@@ -158,7 +162,7 @@ export class AnalysisController {
 
     // count items per line
     const counts = await Promise.all(req.lines.map(item => {
-      return new QAnalysisBase(this.dataSource).countResultingRows(item.queryDefinition, req.fkProject)
+      return new QAnalysisCount(this.dataSource).countResultingRows(item.queryDefinition, req.fkProject)
     }))
 
 
@@ -171,11 +175,11 @@ export class AnalysisController {
 
     // get data
     const lines = await Promise.all(req.lines.map(item => {
-      return new QAnalysisBase(this.dataSource).query(item.queryDefinition, req.fkProject)
+      return new QAnalysisTime(this.dataSource).query(item.queryDefinition, req.fkProject)
     }))
     const chartLines: ChartLine[] = lines.map((line, i) => ({
       label: req.lines[i].visualizationDefinition.label,
-      linePoints: line?.[0].temporal_distribution as ChartLinePoint[]
+      linePoints: line?.[0].linePoints
     }))
     return {
       activeLine: 0,
@@ -347,7 +351,8 @@ export class AnalysisController {
         }, null, 2)
       };
 
-    } else if (fileType === 'csv') {
+    }
+    else if (fileType === 'csv') {
 
       const {fields, data} = this.flattenResults(rows, columns);
       try {
@@ -395,29 +400,70 @@ export class AnalysisController {
     const fieldObj: {[key: string]: boolean} = {};
     const columnLabelMap = this.getColumnLabelMap(columns)
 
-    const flatResults = rows.map(obj => {
+    const flatResults = rows.map(row => {
       const flat: {[key: string]: number | string | object} = {};
 
-      for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          const element = obj[key];
-          const colLabel = columnLabelMap[key]
+      for (const colId in row) {
+        if (Object.prototype.hasOwnProperty.call(row, colId)) {
+          const cell = row[colId];
+          if (cell) {
 
-          if (typeof element === 'object') {
-            if (Array.isArray(element)) {
-              flat[colLabel] = element.length;
+            const colLabel = columnLabelMap[colId]
+
+            // from joined table (zero to many)
+            if (cell.entities) {
+              flat[colLabel] = cell.entities.length;
               fieldObj[colLabel] = true;
             }
-            else if (
-              Object.prototype.hasOwnProperty.call(element, 'entity_label')
-            ) {
-              flat[colLabel] = [element.class_label, element.entity_label].filter(x => !!x).join(' ');
+            else if (cell.values) {
+              flat[colLabel] = cell.values.length;
               fieldObj[colLabel] = true;
-              // ignore {} objects
             }
-          } else {
-            flat[colLabel] = element;
-            fieldObj[colLabel] = true;
+
+            // from root table (zero or one)
+            else if (cell.entity) {
+              flat[colLabel] = [cell.entity?.class_label, cell.entity?.entity_label].filter(x => !!x).join(' ');
+              fieldObj[colLabel] = true;
+            }
+            else if (cell.entityLabel) {
+              flat[colLabel] = cell.entityLabel;
+              fieldObj[colLabel] = true;
+            }
+            else if (cell.entityClassLabel) {
+              flat[colLabel] = cell.entityClassLabel;
+              fieldObj[colLabel] = true;
+            }
+            else if (cell.entityTypeLabel) {
+              flat[colLabel] = cell.entityTypeLabel;
+              fieldObj[colLabel] = true;
+            }
+            else if (cell.value) {
+              const v = cell.value.value
+              if (v.string) {
+                flat[colLabel] = v.string.string;
+              }
+              else if (v.geometry) {
+                flat[colLabel] = v.geometry.geoJSON.coordinates.join(', ');
+              }
+              else if (v.language) {
+                flat[colLabel] = v.language.label;
+              }
+              else if (v.timePrimitive) {
+                flat[colLabel] = v.timePrimitive.label;
+              }
+              else if (v.langString) {
+                flat[colLabel] = v.langString.string;
+              }
+              else if (v.dimension) {
+                flat[colLabel] = v.dimension.numericValue;
+              }
+
+              fieldObj[colLabel] = true;
+            }
+            // else {
+            //   flat[colLabel] = cell;
+            //   fieldObj[colLabel] = true;
+            // }
           }
         }
       }

@@ -1,12 +1,11 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActiveProjectService, SysConfig } from 'app/core';
+import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from 'app/core/sdk-lb4';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MapAndTimeContInput, MapAndTimeContOutput } from '../../../../../../../server/src/lb3/common/interfaces';
 import { GvAnalysisService } from '../../services/analysis.service';
 import { MapAndTimeContFormComponent } from '../map-and-time-cont-form/map-and-time-cont-form.component';
-import { AnalysisMapRequest, AnalysisMapResponse, AnalysisDefinition } from 'app/core/sdk-lb4';
 
 
 @Component({

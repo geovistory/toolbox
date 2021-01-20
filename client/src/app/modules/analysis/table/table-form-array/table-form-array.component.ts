@@ -4,10 +4,10 @@ import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-an
 import { FilterDefinition } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { Observable, of } from 'rxjs';
 import { map, first } from 'rxjs/operators';
-import { ColDef, ColDefDefaultType } from '../../../../../../../server/src/lb3/common/interfaces';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 import { TableFormService } from '../table-form/table-form.service';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
+import { ColDef } from 'app/core/sdk-lb4/model/colDef';
 
 /*
  * Returns a column type label for a ColDef
@@ -55,7 +55,7 @@ export class TableFormArrayComponent implements OnInit {
     this.formArrayFactory.remove(index)
   }
 
-  addDefaultColumn(defaultType: ColDefDefaultType) {
+  addDefaultColumn(defaultType: ColDef.DefaultTypeEnum) {
     const colDef: Partial<ColDef> = {
       defaultType,
       label: getLabelForDefaulType(defaultType),
@@ -97,7 +97,7 @@ export class TableFormArrayComponent implements OnInit {
   getLabelForDefaulType$(d$: Observable<ColDef>) { d$.pipe(map(d => this.getLabelForDefaulType(d))) }
 }
 
-export function getLabelForDefaulType(defaultType?: ColDefDefaultType): string {
+export function getLabelForDefaulType(defaultType?: ColDef.DefaultTypeEnum): string {
   if (defaultType === 'entity_preview') {
 
     return 'Entity Preview'

@@ -38,8 +38,8 @@ export class WarEntityPreviewMock {
         entity_label: 'Johannes Oekolampad',
         entity_type: 'teEn',
         time_span: {
-            "72": {
-                julian_day: 123123123,
+            "p82": {
+                julianDay: 123123123,
                 calendar: CalendarType.gregorian,
                 duration: Granularity['1 year']
             }
@@ -55,10 +55,10 @@ export class WarEntityPreviewMock {
         entity_label: 'Ulrich Zwingli',
         entity_type: 'teEn',
         time_span: {
-            "72": {
-                julian_day: 123123123,
+            "p82": {
+                julianDay: 123123123,
                 calendar: CalendarType.gregorian,
-                duration: Granularity['1 year']
+                duration: Granularity['1 day'],
             }
         }
     })

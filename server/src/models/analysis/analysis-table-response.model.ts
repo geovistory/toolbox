@@ -1,17 +1,50 @@
 import {model, property} from '@loopback/repository'
 import {registerType} from '../../components/spec-enhancer/model.spec.enhancer'
-import {WarEntityPreviewWithFulltext} from '../war-entity-preview.model'
-import {ChartLinePoint} from './analysis-time-chart-response.model'
+import {WarEntityPreview} from '../war-entity-preview.model'
+import {WarStatementObjectValue} from '../war-statement.model'
+@model()
+export class AnalysisTableCellValue {
+  @property({type: WarStatementObjectValue})
+  value: WarStatementObjectValue
+  @property()
+  pkStatement: number
+  @property()
+  fkSubjectInfo: number
+  @property()
+  fkObjectInfo: number
+}
+@model()
+export class AnalysisTableCell {
+
+  // from root table
+  @property({type: WarEntityPreview})
+  entity?: WarEntityPreview
+  @property()
+  entityLabel?: string
+  @property()
+  entityClassLabel?: string
+  @property()
+  entityTypeLabel?: string
+  @property({type: AnalysisTableCellValue})
+  value?: AnalysisTableCellValue
+
+  // from joined table
+  @property.array(WarEntityPreview)
+  entities?: WarEntityPreview[]
+  @property.array(AnalysisTableCellValue)
+  values?: AnalysisTableCellValue[]
+}
 
 @model({
   jsonSchema: {
-    additionalProperties: true
+    additionalProperties: {
+      $ref: registerType(AnalysisTableCell)
+    }
   }
 })
 export class AnalysisTableRow {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: string | WarEntityPreviewWithFulltext | ChartLinePoint[];
-
+  col1?: AnalysisTableCell
+  [key: string]: AnalysisTableCell | undefined
 }
 
 @model()

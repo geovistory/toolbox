@@ -1,6 +1,5 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { EntityPreview } from 'app/core';
-import { AnalysisMapResponse, GeoEntityMapAndTimeCont, CzmlSpatialValue, WarEntityPreview } from 'app/core/sdk-lb4';
+import { AnalysisMapResponse, AnalysisTimeChartResponse, ChartLine, CzmlSpatialValue, GeoEntityMapAndTimeCont, TimeCzmlValue, WarEntityPreview } from 'app/core/sdk-lb4';
 import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
@@ -8,13 +7,13 @@ import * as d3 from 'd3';
 import { apply, equals, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
-import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue, TimeChartContOutput, TimeCzmlValue } from '../../../../../../../server/src/lb3/common/interfaces';
+import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../../../../../../server/src/lb3/common/interfaces';
 import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 
 export interface MapAndTimeContLayer {
   data_lookups: { [key: string]: number[] }[]
   map: MapLayer
-  time: TimeChartContOutput
+  time: AnalysisTimeChartResponse
 }
 export interface MapAndTimeContData {
   layers: MapAndTimeContLayer[]
@@ -91,7 +90,7 @@ export class MapAndTimeContComponent implements OnInit {
   @Input() showFullscreenExitBtn = false;
 
   processedData$: Observable<MapAndTimeContData>;
-  chartLines$: Observable<Observable<ChartLineData>[]>
+  chartLines$: Observable<Observable<AnalysisTimeChartResponse>[]>
   mapData$: Observable<MapLayers>
   julianSecondOfCursor$ = new ReplaySubject();
   selectedGeoEntityPk$ = new ReplaySubject<number>();
@@ -469,7 +468,7 @@ export class MapAndTimeContComponent implements OnInit {
 
 
     const map: MapLayer = { czml }
-    const time: TimeChartContOutput = {
+    const time: AnalysisTimeChartResponse = {
       activeLine: undefined,
       chartLines
     }
