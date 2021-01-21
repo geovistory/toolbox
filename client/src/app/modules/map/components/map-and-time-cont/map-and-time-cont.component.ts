@@ -126,15 +126,19 @@ export class MapAndTimeContComponent implements OnInit {
     this.pointDisplayOption$ = this.pointDisplayMode$.pipe(
       map(mode => this.pointDisplayOptions.find(o => equals(keys(o.value), keys(mode))))
     )
-
-    this.entitiesOfSelectedGeoPlace$ = combineLatest(this.data$, this.selectedLine$).pipe(
-      map(([data, selectedLine]) => {
-        if (!selectedLine || typeof selectedLine.lineIndex !== 'number' || !data.geoPlaces || !data.geoPlaces.length || !data.geoPlaces[selectedLine.lineIndex]) return []
-        return data[selectedLine.lineIndex].pk_entities
+    const geoPlaces$ = this.data$.pipe(
+      map((data) => {
+        const geoPlaces = data && data.geoPlaces ? data.geoPlaces : []
+        return geoPlaces
+      }))
+    this.entitiesOfSelectedGeoPlace$ = combineLatest(geoPlaces$, this.selectedLine$).pipe(
+      map(([geoPlaces, selectedLine]) => {
+        if (!selectedLine || typeof selectedLine.lineIndex !== 'number' || !geoPlaces || !geoPlaces.length || !geoPlaces[selectedLine.lineIndex]) return []
+        else return geoPlaces[selectedLine.lineIndex].pk_entities
       })
     )
-    this.processedData$ = combineLatest(this.data$, this.pointDisplayMode$).pipe(
-      map(([data, pointDisplayMode]) => this.mapAndTimeContQueryResToOutput(data.geoPlaces, pointDisplayMode)),
+    this.processedData$ = combineLatest(geoPlaces$, this.pointDisplayMode$).pipe(
+      map(([geoPlaces, pointDisplayMode]) => this.mapAndTimeContQueryResToOutput(geoPlaces, pointDisplayMode)),
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 

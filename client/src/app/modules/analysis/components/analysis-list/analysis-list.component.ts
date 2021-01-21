@@ -59,12 +59,19 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataSource.data = filtered;
       })
     })
-  }
-  ngAfterViewInit() {
-    this.sort.active = 'fk_analysis_type'
+    this.sort.active = 'name'
     this.sort.direction = 'asc'
     this.sort.disableClear = true;
     this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+      if (typeof data[sortHeaderId] === 'string') {
+        return data[sortHeaderId].toLocaleLowerCase();
+      }
+
+      return data[sortHeaderId];
+    };
+  }
+  ngAfterViewInit() {
   }
   applyFilter(filterValue: string) {
     this.filter$.next(filterValue)
