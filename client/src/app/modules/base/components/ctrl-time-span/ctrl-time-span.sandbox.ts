@@ -24,7 +24,7 @@ export default sandboxOf(CtrlTimeSpanComponent, {
       parentPath: ''
     },
     template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <gv-init-state [projectFromApi]="591" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">

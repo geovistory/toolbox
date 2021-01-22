@@ -11,7 +11,7 @@ import { FormChildFactory } from 'app/modules/form-factory/core/form-child-facto
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { equals, flatten, groupBy, indexBy, sum, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, indexBy, sum, uniq, values, keys } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { BasicModel, ConfigurationPipesService } from '../../services/configuration-pipes.service';
@@ -835,11 +835,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
-          const value: InfStatement[] = Object.keys(v).map(key => {
+          const value: InfStatement[] = keys(v).map(key => {
+            const timePrim = v[key]
             const statement: InfStatement = {
-              fk_property: parseInt(key, 10),
+              entity_version_project_rels: [
+                {
+                  is_in_project: true,
+                  calendar: timePrim.calendar
+                }
+              ],
+              fk_property: key,
               object_time_primitive: {
-                ...v[key],
+                ...timePrim,
                 fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
               },
               ...{} as any
