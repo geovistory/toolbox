@@ -54,13 +54,17 @@ export class InfTextPropertySlice {
 }
 
 
-
-export class InfSlices {
-  persistent_item?: InfPersistentItemSlice;
-}
-
 export interface Inf {
-  by_project?: ByPk<InfSlices>
+  persistent_item?: InfPersistentItemSlice;
+  temporal_entity?: InfTemporalEntitySlice;
+  statement?: InfStatementSlice;
+  place?: InfPlaceSlice;
+  time_primitive?: InfTimePrimitiveSlice;
+  language?: InfLanguageSlice;
+  appellation?: InfAppellationSlice;
+  lang_string?: InfLangStringSlice;
+  dimension?: InfDimensionSlice;
+  text_property?: InfTextPropertySlice;
 }
 
 
