@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { leafItemListTypes, valueObjectListTypes } from '../../base.module';

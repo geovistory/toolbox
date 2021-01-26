@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { DatDigital } from '../sdk';
 import { DatClassColumnMapping } from '../sdk-lb4';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';

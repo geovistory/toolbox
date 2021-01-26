@@ -6,7 +6,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService, EntityPreview, InfPersistentItem, InfTemporalEntity, SysConfig } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { FieldProperty } from '../properties-tree/properties-tree.models';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';

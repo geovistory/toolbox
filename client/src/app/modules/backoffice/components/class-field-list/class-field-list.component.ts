@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent, SysClassField } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { ClassFieldList } from './api/class-field-list.models';
 import { ClassFieldListAPIEpics } from './api/class-field-list.epics';
 import { ClassFieldListAPIActions } from './api/class-field-list.actions';

@@ -1,4 +1,4 @@
-import { ByPk } from "app/core/store/model";
+import { ByPk } from "app/core/redux-store/model";
 import { DatDigital, DatNamespace } from "../sdk";
 import { DatClassColumnMapping } from '../sdk-lb4/model/datClassColumnMapping';
 import { DatColumn } from '../sdk/models/DatColumn';

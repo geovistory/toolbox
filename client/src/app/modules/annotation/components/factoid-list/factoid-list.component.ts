@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular
 import { ActiveProjectService } from 'app/core/active-project';
 import { FactoidControllerService } from 'app/core/sdk-lb4';
 import { FactoidEntity } from 'app/core/sdk-lb4/model/factoidEntity';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

@@ -2,14 +2,14 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysConfig, InfPersistentItem, InfTemporalEntity, EntityType } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InformationAPIActions } from './api/entity-list.actions';
 import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 @WithSubStore({

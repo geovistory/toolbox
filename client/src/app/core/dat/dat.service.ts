@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, IAppState } from 'app/core/store/model';
-import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { ByPk, IAppState } from 'app/core/redux-store/model';
+import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
 import { map } from '../../../../node_modules/rxjs/operators';
 import { DatChunk, DatDigital, DatNamespace } from '../sdk';

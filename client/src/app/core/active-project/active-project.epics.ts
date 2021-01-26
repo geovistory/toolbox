@@ -12,7 +12,7 @@ import { InfActions } from '../inf/inf.actions';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { ProSelector } from '../pro/pro.service';
 import { DatChunk, DatChunkApi, InfPersistentItemApi, ProInfoProjRelApi, ProProject, ProProjectApi } from '../sdk';
-import { IAppState } from '../store/model';
+import { IAppState } from '../redux-store/model';
 import { SysSelector } from '../sys/sys.service';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
@@ -138,7 +138,7 @@ export class ActiveProjectEpics {
 
 
           this.pro.project.loadBasics(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
+          this.pro.class_field_config$.by_pk_entity$.all$,
           this.pro.dfh_class_proj_rel$.by_fk_project$.all$,
           this.pro.dfh_profile_proj_rel$.by_fk_project$.all$
         )

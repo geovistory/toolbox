@@ -1,10 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { StandardActionsFactory } from 'app/core/store/actions';
+import { StandardActionsFactory } from 'app/core/redux-store/actions';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SysConfig } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
-import { IAppState } from '../store/model';
+import { IAppState } from '../redux-store/model';
 import { sysRoot } from './sys.config';
 import { Sys } from './sys.models';
 

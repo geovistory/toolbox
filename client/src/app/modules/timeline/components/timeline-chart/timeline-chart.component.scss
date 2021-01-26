@@ -1,5 +1,3 @@
-@import '../../../../../styles.scss';
-
 :host {
   height: 100%;
   display: flex;
@@ -32,9 +30,9 @@
   right: 0;
 }
 
-:host ::ng-deep .empty-select .mat-select-value-text {
-  color: $mat-color-secondary-text;
-}
+// :host ::ng-deep .empty-select .mat-select-value-text {
+//   color: $mat-color-secondary-text;
+// }
 
 .x-axis {
   user-select: none;

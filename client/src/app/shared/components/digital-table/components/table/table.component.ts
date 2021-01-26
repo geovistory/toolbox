@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { MatDialog } from '@angular/material';
 import { DatColumn } from 'app/core';
 import { ActiveProjectService } from 'app/core/active-project';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../../server/src/lb3/server/table/interfaces';
@@ -23,7 +23,7 @@ export interface Header {
 
 @Component({
   selector: 'gv-table',
-  templateUrl: './table.component.html',  
+  templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {

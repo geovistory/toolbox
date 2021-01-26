@@ -1,5 +1,3 @@
-@import '../../../../../styles.scss';
-
 // .field-content {
 //   margin-left: 40px;
 // }
@@ -8,11 +6,11 @@
   // display: block;
   background: white;
 
-  &.expanded {
-    .left-col {
-      color: $primary;
-    }
-  }
+  // &.expanded {
+  //   .left-col {
+  //     @extend .mat-text-primary;
+  //   }
+  // }
   // mat-divider {
   //   margin-top: 3px;
   // }

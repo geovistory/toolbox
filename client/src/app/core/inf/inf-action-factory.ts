@@ -1,4 +1,4 @@
-import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "app/core/store/actions";
+import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "app/core/redux-store/actions";
 import { Observable } from "rxjs";
 import { NgRedux } from "@angular-redux/store";
 import { IAppState, U } from "app/core";

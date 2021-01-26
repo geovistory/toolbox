@@ -7,7 +7,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { AccountListComponent } from '../account-list.component';
 import { AccountListAPIActions, AccountListAPIAction } from './account-list.actions';
-import { ofSubstore } from 'app/core/store/module';
+import { ofSubstore } from 'app/core/redux-store/redux-store.module';
 
 @Injectable()
 export class AccountListAPIEpics {

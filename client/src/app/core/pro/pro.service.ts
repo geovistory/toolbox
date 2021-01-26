@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, IAppState } from 'app/core/store/model';
-import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { ByPk, IAppState } from 'app/core/redux-store/model';
+import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
 import { filter } from '../../../../node_modules/rxjs/operators';
 import { ProInfoProjRel, ProDfhClassProjRel, ProClassFieldConfig, ProTextProperty, ProProject, ProDfhProfileProjRel } from '../sdk';
@@ -80,9 +80,7 @@ class ProDfhProfileProjRelSelector extends Selector {
 
 class ProClassFieldConfigSelector extends Selector {
   public by_fk_project__fk_class$ = this.selector<ByPk<ProClassFieldConfig>>('by_fk_project__fk_class')
-  public by_fk_class__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('by_fk_class__fk_app_context')
-  public by_fk_property__fk_domain_class__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('fk_property__fk_domain_class__fk_app_context')
-  public by_fk_property__fk_range_class__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('fk_property__fk_range_class__fk_app_context')
+  public by_pk_entity$ = this.selector<ProClassFieldConfig>('by_pk_entity')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

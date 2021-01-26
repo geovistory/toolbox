@@ -5,7 +5,7 @@ import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-facto
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormArrayConfig, FormFactory, FormFactoryConfig, FormFactoryService, FormGroupConfig, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { values } from 'd3';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil, filter, switchMap, distinctUntilChanged } from 'rxjs/operators';

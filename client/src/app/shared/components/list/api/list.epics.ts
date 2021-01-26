@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadingBarActions, WarEntityPreviewApi } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { ofSubstore } from 'app/core/store/module';
+import { ofSubstore } from 'app/core/redux-store/redux-store.module';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';

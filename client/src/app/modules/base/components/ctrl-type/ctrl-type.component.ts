@@ -7,7 +7,7 @@ import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from '../../../../../../node_modules/rxjs/operators';
 import { sortAbc, ActiveProjectService } from '../../../../core';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../../services/information-basic-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';

@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../..
 import { first, map, mergeMap, takeUntil, filter } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, InfLanguage, ProTextProperty } from '../../../../core';
 import { ProActions } from '../../../../core/pro/pro.actions';
-import { ConfigurationPipesService } from '../../../base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { values } from 'd3';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { InfActions } from 'app/core/inf/inf.actions';

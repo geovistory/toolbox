@@ -32,7 +32,7 @@ import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 import { MaterialModule } from './core/material/material.module';
 import { NotificationsModule } from './core/notifications/notifications.module';
 import { RepoModule } from './core/repo/repo.module';
-import { StoreModule } from './core/store/module';
+import { ReduxStoreModule } from './core/redux-store/redux-store.module';
 import { SysModule } from './core/sys/sys.module';
 import { AccountModule } from './modules/account/account.module';
 import { BackofficeModule } from './modules/backoffice/backoffice.module';
@@ -68,7 +68,7 @@ registerLocaleData(localeDeCh);
   ],
   imports: [
     BasicModule,
-    StoreModule,
+    ReduxStoreModule,
     NotificationsModule,
     LoadingBarModule,
     SysModule,

@@ -1,4 +1,4 @@
-import { ByPk } from 'app/core/store/model';
+import { ByPk } from 'app/core/redux-store/model';
 import { TabCell } from '../sdk-lb4';
 
 export class TabCellSlice {

@@ -29,6 +29,7 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     singleRun: false,
     files: ["**/*.spec.ts"],
+
     // exclude: ['*app/modules/*']
   });
 };

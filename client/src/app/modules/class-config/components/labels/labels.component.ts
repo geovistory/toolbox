@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActiveProjectService, SysConfig } from 'app/core';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({

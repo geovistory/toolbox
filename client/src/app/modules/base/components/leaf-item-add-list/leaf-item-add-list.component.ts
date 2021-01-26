@@ -3,7 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { PaginationObject } from 'app/core/store/model';
+import { PaginationObject } from 'app/core/redux-store/model';
 import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';

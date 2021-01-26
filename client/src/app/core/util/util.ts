@@ -1,6 +1,6 @@
 import { FormArray, FormGroup } from '@angular/forms';
 import { ProjectPreview } from 'app/core/active-project/active-project.models';
-import { ByPk } from 'app/core/store/model';
+import { ByPk } from 'app/core/redux-store/model';
 import { TimeSpan } from 'app/core/time-span/time-span';
 import { QuillDoc } from 'app/modules/quill';
 import { SysConfig } from '../../../../../server/src/lb3/common/config/sys-config';

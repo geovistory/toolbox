@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
-import { ByPk, IAppState } from 'app/core/store/model';
-import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollection, PR_ENTITY_MODEL_MAP, EntityModelAndClass } from 'app/core/store/reducer-factory';
+import { ByPk, IAppState } from 'app/core/redux-store/model';
+import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollection, PR_ENTITY_MODEL_MAP, EntityModelAndClass } from 'app/core/redux-store/reducer-factory';
 import { Observable, combineLatest, pipe, of } from 'rxjs';
 import { filter, first, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel, InfDimension } from '../sdk';
-import { PaginateByParam } from '../store/actions';
+import { PaginateByParam } from '../redux-store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 import { infDefinitions, infRoot, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementByObject, indexStatementByObject, InfModelName } from './inf.config';
 import { values } from 'd3';

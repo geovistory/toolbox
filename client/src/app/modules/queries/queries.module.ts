@@ -19,7 +19,7 @@ import { KeysModule } from 'app/shared/pipes/keys.module';
 import { TableModule } from 'primeng/table';
 import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
-import { ConfigurationPipesService } from '../base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../base/services/information-basic-pipes.service';
 import { InformationPipesService } from '../base/services/information-pipes.service';
 // import { ClassAndTypeFilterComponent, ClassAndTypeFilterRequiredValidatorDirective } from './components/class-and-type-filter/class-and-type-filter.component';

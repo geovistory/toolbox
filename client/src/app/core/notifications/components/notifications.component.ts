@@ -3,7 +3,7 @@ import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { Notifications } from './api/notifications.models';
 import { NotificationsAPIEpics } from './api/notifications.epics';
 import { notificationsReducer } from './api/notifications.reducer';

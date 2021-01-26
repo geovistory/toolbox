@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { equals } from 'ramda';

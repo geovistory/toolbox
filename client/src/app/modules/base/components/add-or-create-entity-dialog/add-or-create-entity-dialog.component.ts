@@ -4,9 +4,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgForm } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import { DfhConfig } from '../../../information/shared/dfh-config';
-import { SchemaObject } from 'app/core/store/model';
+import { SchemaObject } from 'app/core/redux-store/model';
 import { InfPersistentItem, InfTemporalEntity, ActiveProjectService } from 'app/core';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 
 
 export interface AddOrCreateEntityDialogData {

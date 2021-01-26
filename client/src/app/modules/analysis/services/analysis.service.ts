@@ -9,7 +9,7 @@ import { ErrorDialogComponent, ErrorDialogData } from 'app/shared/components/err
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 @Injectable({
   providedIn: 'root'
 })

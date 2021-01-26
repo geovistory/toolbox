@@ -4,7 +4,7 @@ import { ActiveProjectService, IAppState, sortAbc, SysConfig } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
@@ -18,7 +18,7 @@ import { typesReducer } from './api/types.reducer';
 import { FieldDefinition, TemporalEntityItem } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { createPaginateBy } from 'app/modules/base/components/temporal-entity-list/temporal-entity-list.component';
 import { PaginationService } from 'app/modules/base/services/pagination.service';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 
 interface TypeItem {
   pkEntity: number

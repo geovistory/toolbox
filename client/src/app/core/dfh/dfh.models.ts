@@ -1,4 +1,4 @@
-import { ByPk } from 'app/core/store/model';
+import { ByPk } from 'app/core/redux-store/model';
 import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '../sdk';
 
 export class DfhProfileSlice {

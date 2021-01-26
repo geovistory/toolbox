@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from 'app/core/store/StandardEpicsFactory';
+import { StandardEpicsFactory } from 'app/core/redux-store/StandardEpicsFactory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { SysConfig, SystemConfigurationService } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { SysSystemRelevantClassApi } from '../sdk/services/custom/SysSystemRelevantClass';
-import { ModifyActionMeta } from '../store/actions';
+import { ModifyActionMeta } from '../redux-store/actions';
 import { SysActions } from './sys.actions';
 import { sysRoot } from './sys.config';
 import { SysConfigSlice, SysRelevantClassSlice } from './sys.models';

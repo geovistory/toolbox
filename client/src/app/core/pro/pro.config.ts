@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from "app/core/store/reducer-factory";
+import { ReducerConfigCollection } from "app/core/redux-store/reducer-factory";
 import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjRel } from "../sdk";
 import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 

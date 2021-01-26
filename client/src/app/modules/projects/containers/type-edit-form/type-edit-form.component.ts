@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, Inject, HostBinding } from '@angular/core';
 import { IAppState, InfPersistentItem, EntityDetail } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { Observable, Subject } from 'rxjs';
 import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';

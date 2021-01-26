@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../node_modules/@a
 import { combineLatest, Observable } from '../../../../../../node_modules/rxjs';
 import { map } from '../../../../../../node_modules/rxjs/operators';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 export interface ChooseClassDialogData {
   title: string;
   pkClasses: number[]

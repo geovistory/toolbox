@@ -6,7 +6,7 @@ import {
 import { ActiveAccountService } from '../active-account/active-account.service';
 import { Observable, of } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from '../store/model';
+import { IAppState } from '../redux-store/model';
 import { tap } from 'rxjs/operators';
 
 

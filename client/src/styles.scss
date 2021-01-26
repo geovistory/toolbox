@@ -914,12 +914,6 @@ gv-tile-header {
   }
 }
 
-// .gv-field {
-//     /* nested field level 2 */
-//     .gv-field .gv-field-header-label {
-//         font-size: $font-size-xs
-//     }
-// }
 /***************************
 * TeEnt
 ****************************/
@@ -945,6 +939,330 @@ gv-tile-header {
   right: 0;
 }
 
+/***************************
+ * project edit component
+ ***************************/
+$tabs-height: 32px;
+
+gv-project-edit {
+  .gv-drawer-list {
+    background-color: $gv-bg-drawer-list;
+  }
+  .tab-list {
+    max-width: 100%; // border: solid 1px #ccc;
+    min-height: $tabs-height;
+    display: flex;
+    flex-direction: row;
+    background: white;
+    border-radius: 0px;
+    overflow: hidden;
+    background: $gray-200;
+  }
+  .focus {
+    .tab-box {
+      color: inherit;
+    }
+  }
+
+  .tab-box {
+    color: $gray-500;
+    padding: 5px 10px;
+    border-right: solid 1px #ccc;
+    background: $gray-200;
+    font-size: $font-size-sm;
+    min-width: 100px;
+    display: flex;
+  }
+
+  .tab-box.active {
+    background: $white;
+  }
+
+  .panel-body {
+    @extend .gv-flex-fh;
+    position: relative;
+    .split-panel-drop-zone {
+      $active-color: rgba(122, 237, 255, 0.256);
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      .split {
+        position: absolute; // border: 1px solid blue;
+        width: 33.33%;
+        height: 100%;
+        &.left {
+          margin-left: 0;
+        }
+        &.center {
+          margin-left: 33.33%;
+        }
+        &.right {
+          margin-left: 66.66%;
+        }
+      }
+      .highlight {
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        &.left {
+          margin-left: 0;
+        }
+        &.right {
+          margin-left: 50%;
+        }
+        &.active {
+          background-color: $active-color;
+          z-index: 99999;
+        }
+      }
+      &.active {
+        background-color: $active-color;
+        z-index: 99999;
+      }
+      &.enabled {
+        pointer-events: initial;
+      }
+    }
+  }
+}
+/***************************
+ * tab handle component
+ ***************************/
+gv-tab-handle {
+  .left {
+    cursor: grab;
+    display: flex;
+    overflow: hidden;
+    .icon {
+      min-width: 1rem;
+      padding-right: 0.2rem;
+    }
+    .label {
+      max-width: 160px;
+      text-overflow: ellipsis;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+  .left :active {
+    cursor: grabbing;
+  }
+  .right {
+    cursor: pointer;
+    width: 1rem;
+    line-height: initial;
+    padding: 0 0.7rem 0 0.5rem;
+    margin-left: auto;
+    font-size: $font-size-sm;
+    @extend .btn;
+    @extend .btn-link-gray;
+  }
+}
+/***************************
+ * qf form array
+ ***************************/
+gv-qf-form-array {
+  $top-horizontal-line: 30px;
+
+  .full-with {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .left-col {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    flex: 1 1 0;
+    /* background: #6EAFF7; */
+    flex-direction: column;
+    /* overflow: hidden; */
+  }
+
+  .right-col {
+    display: flex;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qf-arr-classes,
+  .qf-arr-properties {
+    display: block;
+    position: relative;
+    /*temp*/
+  }
+  .qf-arr-classes {
+    // border: 1px dashed rgb(194, 48, 121);
+    // margin: 5px;
+    // padding: 5px;
+  }
+
+  .qf-arr-properties {
+    /*temp*/
+    // border: 1px dashed rgb(48, 82, 194);
+
+    .qf-prop-controls {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  .gv-condition-block {
+    border: 1px solid $success;
+    padding: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .qf-arr-subgroup {
+    /*temp*/
+    // border: 1px dashed rgb(18, 173, 52);
+    // padding: 5px;
+
+    position: relative;
+    display: flex;
+    margin-bottom: 40px;
+
+    .zero {
+      width: 0.75rem;
+      height: 31px;
+      flex-shrink: 0;
+      &.line {
+        border-bottom: 1px solid $success;
+      }
+    }
+
+    // .zero.line {
+    //   border-bottom: 1px solid $success;
+    //   border-left: 1px solid $success;
+    // }
+
+    .first {
+      width: 1px;
+      flex-shrink: 0;
+      // margin-top: $top-horizontal-line;
+      margin-bottom: 34px;
+      position: relative;
+      background-color: $success;
+      z-index: 1;
+      .subgroup-operation-container {
+        position: absolute;
+        bottom: 0;
+        top: 45px;
+        width: 46px;
+        left: -23px;
+        display: flex;
+        flex-direction: column;
+      }
+      .subgroup-operation-select {
+        font-size: 14px;
+        background: $white;
+        @extend .border;
+        @extend .border-success;
+        @extend .rounded;
+        @extend .px-1;
+        z-index: 1;
+        &::ng-deep .mat-select-arrow {
+          margin: 0;
+        }
+      }
+      .add-sibling-button {
+        position: absolute;
+        bottom: -24px;
+        left: -12px;
+      }
+      &.top-cut {
+        margin-top: 30px;
+      }
+    }
+
+    .second {
+      display: flex;
+      flex-direction: column;
+      flex: 1 0 0%;
+      .sub-query-item {
+        position: relative;
+        display: flex;
+        align-items: start;
+        .subquery-left {
+          position: relative;
+          width: 35px;
+          padding: 0 0 0 5px;
+          .horizontal-line {
+            position: absolute;
+            top: $top-horizontal-line;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: $success;
+            &.is-subgroup {
+              top: 62px;
+            }
+          }
+          .add-subgroup-button {
+            margin-top: 18px;
+          }
+        }
+        gv-qf-form-array {
+          // margin-left: 0.75rem;
+          flex: 1 0 0%;
+          &.is-subgroup {
+            margin-top: 2rem;
+          }
+        }
+      }
+    }
+  }
+
+  .gv-qf-button-absolute-1 {
+    position: absolute;
+    right: -31px;
+    top: 20px;
+    mat-icon-btn {
+      line-height: 20px;
+    }
+  }
+  .gv-qf-button-absolute-2 {
+    position: absolute;
+    left: 12px;
+    bottom: -10px;
+    mat-icon-btn {
+      line-height: 20px;
+    }
+  }
+  .gv-qf-button-absolute-3 {
+    position: absolute;
+    right: -31px;
+    top: 54px;
+    mat-icon-btn {
+      line-height: 20px;
+    }
+  }
+  .gv-mat-icon-button-sm {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 20px;
+    svg {
+      width: 20px !important;
+      height: 20px !important;
+    }
+    &::ng-deep .mat-button-wrapper {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      height: 100% !important;
+
+      .mat-icon {
+        font-size: 20px !important;
+      }
+    }
+  }
+}
 /***************************
  * Timeline
  ***************************/
@@ -2181,27 +2499,6 @@ $mat-color-divider: mat-color($foreground, divider);
 mat-checkbox {
   label {
     margin-bottom: 0;
-  }
-}
-
-.gv-mat-icon-button-sm {
-  width: 24px !important;
-  height: 24px !important;
-
-  svg {
-    width: 20px !important;
-    height: 20px !important;
-  }
-  &::ng-deep .mat-button-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-
-    .mat-icon {
-      font-size: 20px !important;
-    }
   }
 }
 

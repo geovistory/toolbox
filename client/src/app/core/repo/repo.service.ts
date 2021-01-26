@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { InfSelector } from '../inf/inf.service';
 import { BehaviorSubject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from '../store/model';
+import { IAppState } from '../redux-store/model';
 
 @Injectable({
   providedIn: 'root'

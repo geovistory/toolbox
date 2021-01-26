@@ -4,14 +4,14 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { ActiveProjectService, DatDigital, InfStatement, latestVersion, switchMapOr, SysConfig, EntityPreview, ActiveAccountService } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
-import { ByPk } from 'app/core/store/model';
+import { ByPk } from 'app/core/redux-store/model';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject, pipe } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';

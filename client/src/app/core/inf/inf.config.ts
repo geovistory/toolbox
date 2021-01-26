@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from "app/core/store/reducer-factory";
+import { ReducerConfigCollection } from "app/core/redux-store/reducer-factory";
 import { InfStatement, InfTextProperty, InfDimension } from "../sdk";
 import { U } from '../util/util';
 

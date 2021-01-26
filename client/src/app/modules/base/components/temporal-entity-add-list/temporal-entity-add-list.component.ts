@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActiveProjectService, IAppState, InfStatement, ProInfoProjRel } from 'app/core';
-import { PaginateByParam } from 'app/core/store/actions';
+import { PaginateByParam } from 'app/core/redux-store/actions';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
@@ -9,14 +9,14 @@ import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InfSelector } from '../../../../core/inf/inf.service';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
-import { ByPk } from 'app/core/store/model';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { ByPk } from 'app/core/redux-store/model';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',

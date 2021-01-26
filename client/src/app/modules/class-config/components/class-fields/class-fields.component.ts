@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, combineLatest, of, pipe, Subject } from 'rxjs';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
 import { FieldDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { MatDialog } from '@angular/material';

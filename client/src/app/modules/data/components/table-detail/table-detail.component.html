@@ -1,6 +1,6 @@
 <div class="gv-td-menu-container">
 
-  <div class="gv-td-menu-item gv-td-col-toggler orange">
+  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
     <div class="gv-td-menu-label mat-text-secondary">
       Columns:
     </div>
@@ -10,7 +10,7 @@
     </mat-select-autocomplete>
 
   </div>
-  <div class="gv-td-menu-item gv-td-col-checkbox orange">
+  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-checkbox orange">
 
     <!-- Filter Toggler -->
     <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
@@ -18,7 +18,7 @@
     <!-- Metadata Toggler -->
     <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
   </div>
-  <div class="gv-td-menu-item gv-td-paginator orange">
+  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-paginator orange">
 
     <!-- Paginator -->
     <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"

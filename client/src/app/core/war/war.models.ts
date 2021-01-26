@@ -1,4 +1,4 @@
-import { ByPk } from '../store/model';
+import { ByPk } from '../redux-store/model';
 import { WarEntityPreview } from '..';
 
 export interface WarEntityPreviewSlice {

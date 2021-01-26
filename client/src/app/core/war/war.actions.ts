@@ -2,7 +2,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState, WarEntityPreview } from 'app/core';
-import { StandardActionsFactory } from '../store/actions';
+import { StandardActionsFactory } from '../redux-store/actions';
 import { WarEntityPreviewSlice } from './war.models';
 import { warRoot } from './war.config';
 

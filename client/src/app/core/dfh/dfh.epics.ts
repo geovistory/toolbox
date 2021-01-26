@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from 'app/core/store/StandardEpicsFactory';
+import { StandardEpicsFactory } from 'app/core/redux-store/StandardEpicsFactory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { DfhClass, DfhClassApi, DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi, DfhProperty, DfhPropertyApi } from '../sdk';
-import { LoadActionMeta } from '../store/actions';
+import { LoadActionMeta } from '../redux-store/actions';
 import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory, DfhProfileActionFactory, DfhPropertyActionFactory } from './dfh.actions';
 import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from './dfh.models';
 

@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/c
 import { FormControl } from '@angular/forms';
 import { ActiveProjectService, SysConfig } from 'app/core';
 import { AnalysisDefinition, AnalysisTimeChartRequest, AnalysisTimeChartResponse } from 'app/core/sdk-lb4';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';

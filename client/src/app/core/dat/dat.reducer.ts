@@ -1,4 +1,4 @@
-import { ReducerFactory } from 'app/core/store/reducer-factory';
+import { ReducerFactory } from 'app/core/redux-store/reducer-factory';
 import { datDefinitions, datRoot } from './dat.config';
 
 export function createDatReducer() {

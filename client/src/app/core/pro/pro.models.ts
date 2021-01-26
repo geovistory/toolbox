@@ -1,5 +1,5 @@
-import { ByPk } from "app/core/store/model";
-import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProProject, ProDfhProfileProjRel } from "../sdk";
+import { ByPk } from "app/core/redux-store/model";
+import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProProject, ProDfhProfileProjRel, ProClassFieldConfig } from "../sdk";
 import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 export interface ProProjectSlice {
@@ -23,8 +23,7 @@ export interface ProDfhProfileProjRelSlice {
 }
 
 export interface ProClassFieldConfigSlice {
-  by_pk_entity?: ByPk<ProInfoProjRel>;
-  by_fk_entity?: ByPk<ByPk<ProInfoProjRel>>;
+  by_fk_project__fk_class?: ByPk<ProClassFieldConfig>;
   loading?: boolean
 }
 

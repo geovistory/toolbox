@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectService, IAppState } from 'app/core';
-import { paginatedBy, paginateKey, paginateName } from 'app/core/store/reducer-factory';
+import { paginatedBy, paginateKey, paginateName } from 'app/core/redux-store/reducer-factory';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, takeUntil, first } from 'rxjs/operators';
 import { ListDefinition } from '../components/properties-tree/properties-tree.models';
 import { createPaginateBy } from '../components/temporal-entity-list/temporal-entity-list.component';
-import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/core/store/actions';
+import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/core/redux-store/actions';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { PaginatedStatementList } from 'app/core/inf/inf.actions';

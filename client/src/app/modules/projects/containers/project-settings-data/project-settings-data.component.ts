@@ -7,7 +7,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActiveProjectService, IAppState, U, SysSystemRelevantClass } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 import { equals, values, indexBy, intersection } from 'ramda';
@@ -22,7 +22,7 @@ import { EntityType, ProjectSettingsData } from './api/project-settings-data.mod
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 import { ClassConfigDialogData, ClassConfigDialogComponent } from 'app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 interface Profile {
   label: string,

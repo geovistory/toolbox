@@ -1,4 +1,4 @@
-import { ByPk } from "app/core/store/model";
+import { ByPk } from "app/core/redux-store/model";
 import { SysConfig } from '../sdk-lb4';
 import { SysSystemRelevantClass } from "../sdk/models/SysSystemRelevantClass";
 

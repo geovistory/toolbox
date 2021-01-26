@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
-import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
 import { SysConfig } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
-import { ByPk, IAppState } from '../store/model';
+import { ByPk, IAppState } from '../redux-store/model';
 import { SysActions } from './sys.actions';
 import { sysDefinitions, sysRoot } from './sys.config';
 import { SysConfigSlice, SysRelevantClassSlice } from './sys.models';

@@ -5,7 +5,7 @@ import { ProjectConfigurationService, ProEntityLabelConfig, LabelPartField, Labe
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { first, map, take, takeUntil } from 'rxjs/operators';
 import { FieldComponent } from 'app/modules/base/components/field/field.component';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 export interface EntityLabelConfigDialogData {

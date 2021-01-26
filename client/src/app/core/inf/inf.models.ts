@@ -1,4 +1,4 @@
-import { ByPk } from 'app/core/store/model';
+import { ByPk } from 'app/core/redux-store/model';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, InfDimension } from '../sdk';
 
 export class InfPersistentItemSlice {

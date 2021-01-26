@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActiveProjectService, DatChunk, EntityPreview, IAppState, SubstoreComponent, DatDigital, latestVersion, InfStatement } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { flatten, indexBy, values } from 'ramda';
@@ -10,7 +10,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
 import { MatSort, MatTableDataSource, MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ByPk } from '../../../../core/store/model';
+import { ByPk } from '../../../../core/redux-store/model';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
 import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';

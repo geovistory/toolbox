@@ -3,7 +3,7 @@ import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
+import { RootEpics } from 'app/core/redux-store/epics';
 import { NamespaceList } from './api/namespace-list.models';
 import { NamespaceListAPIEpics } from './api/namespace-list.epics';
 import { NamespaceListAPIActions } from './api/namespace-list.actions';

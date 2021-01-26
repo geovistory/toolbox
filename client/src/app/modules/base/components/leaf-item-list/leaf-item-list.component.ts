@@ -12,7 +12,7 @@ import { InformationPipesService } from '../../services/information-pipes.servic
 import { PaginationService } from '../../services/pagination.service';
 import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
 import { equals } from 'ramda';
-import { PaginateByParam } from 'app/core/store/actions';
+import { PaginateByParam } from 'app/core/redux-store/actions';
 import { PageEvent, MatDialog } from '@angular/material';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 

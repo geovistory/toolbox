@@ -1,4 +1,4 @@
-import { ReducerFactory } from '../store/reducer-factory';
+import { ReducerFactory } from '../redux-store/reducer-factory';
 import { sysDefinitions, sysRoot } from './sys.config';
 
 export function createSysReducer() {

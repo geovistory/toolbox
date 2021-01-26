@@ -1,5 +1,5 @@
 
-import { ReducerFactory } from 'app/core/store/reducer-factory';
+import { ReducerFactory } from 'app/core/redux-store/reducer-factory';
 import { dfhDefinitions } from './dfh.config';
 
 export function createDfhReducer() {

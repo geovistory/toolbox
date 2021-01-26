@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from "app/core/store/reducer-factory";
+import { ReducerConfigCollection } from "app/core/redux-store/reducer-factory";
 import { SysSystemRelevantClass } from "../sdk";
 
 export const sysRoot = 'sys';

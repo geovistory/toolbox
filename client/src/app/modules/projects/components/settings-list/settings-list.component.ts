@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { Observable } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../core';

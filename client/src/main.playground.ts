@@ -20,7 +20,7 @@ import { InfModule } from 'app/core/inf/inf.module';
 import { LoadingBarModule } from 'app/core/loading-bar/loading-bar.module';
 import { NotificationsModule } from 'app/core/notifications/notifications.module';
 import { ProModule } from 'app/core/pro/pro.module';
-import { StoreModule } from 'app/core/store/module';
+import { ReduxStoreModule } from 'app/core/redux-store/redux-store.module';
 import { SysModule } from 'app/core/sys/sys.module';
 import { WarModule } from 'app/core/war/war.module';
 import { FormFactoryModule } from 'app/modules/form-factory/form-factory.module';
@@ -53,7 +53,7 @@ PlaygroundModule
     selector: 'gv-root',
     overlay: false,
     modules: [
-      StoreModule,
+      ReduxStoreModule,
       SysModule,
       InfModule,
       DatModule,

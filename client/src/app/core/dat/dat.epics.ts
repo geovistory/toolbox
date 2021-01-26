@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
+import { StandardEpicsFactory } from "app/core/redux-store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, DatChunk, DatChunkApi } from '../sdk';
 import { DatActions, DigitalActionsFactory, LoadVersionAction, ChunkActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, ColumnActionsFactory } from './dat.actions';
 import { datRoot } from './dat.config';
 import { DigitalSlice, NamespaceSlice, ChunkSlice, TextPropertySlice, ColumnSlice } from './dat.models';
-import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
+import { ModifyActionMeta, LoadActionMeta } from '../redux-store/actions';
 import { LoadByPkMeta, InfActions } from '../inf/inf.actions';
-import { Flattener, storeFlattened } from 'app/core/store/flattener';
+import { Flattener, storeFlattened } from 'app/core/redux-store/flattener';
 import { ProActions } from '../pro/pro.actions';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
 import { DatColumn } from '../sdk/models/DatColumn';
-import { SchemaObjectService } from '../store/schema-object.service';
-import { SchemaObject } from '../store/model';
+import { SchemaObjectService } from '../redux-store/schema-object.service';
+import { SchemaObject } from '../redux-store/model';
 import { DatColumnApi } from '../sdk/services/custom/DatColumn';
 
 

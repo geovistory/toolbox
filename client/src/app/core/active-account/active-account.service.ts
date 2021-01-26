@@ -9,7 +9,7 @@ import { GvAuthService, GvAuthToken } from '../auth/auth.service';
 import { PubAccountApi, SDKToken } from '../sdk';
 import { LoginRequest, LoginResponse, PubAccount, AccountService } from '../sdk-lb4';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { IAppState } from '../store/model';
+import { IAppState } from '../redux-store/model';
 
 
 

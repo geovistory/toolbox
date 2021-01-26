@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActiveProjectService, InfStatement, switchMapOr, EntityPreview, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { values, equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
 import { GraphPathSegment, GraphPathEntity } from '../graph-path/graph-path.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { ByPk } from 'app/core/store/model';
+import { ByPk } from 'app/core/redux-store/model';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';

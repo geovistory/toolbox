@@ -7,7 +7,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ClassFieldListComponent } from '../class-field-list.component';
 import { ClassFieldListAPIActions, ClassFieldListAPIAction } from './class-field-list.actions';
-import { ofSubstore } from 'app/core/store/module';
+import { ofSubstore } from 'app/core/redux-store/redux-store.module';
 
 @Injectable()
 export class ClassFieldListAPIEpics {

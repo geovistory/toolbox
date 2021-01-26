@@ -7,6 +7,8 @@
     "serve": "node --max_old_space_size=2048 node_modules/@angular/cli/bin/ng serve",
     "start": "ng serve",
     "build": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --prod",
+    "build:stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --stats-json",
+    "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -114,6 +116,7 @@
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
     "typescript": "~3.5.3",
-    "typings-quill-delta": "0.0.2"
+    "typings-quill-delta": "0.0.2",
+    "webpack-bundle-analyzer": "^4.4.0"
   }
 }

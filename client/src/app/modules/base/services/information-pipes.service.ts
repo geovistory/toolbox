@@ -16,12 +16,12 @@ import { equals, flatten, groupBy, omit, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { PaginateByParam } from '../../../core/store/actions';
+import { PaginateByParam } from '../../../core/redux-store/actions';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LangStringItem, LanguageItem, ListDefinition, PlaceItem, StatementItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ListType } from '../components/properties-tree/properties-tree.models';
-import { ConfigurationPipesService } from './configuration-pipes.service';
+import { ConfigurationPipesService } from '../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 
 @Injectable()

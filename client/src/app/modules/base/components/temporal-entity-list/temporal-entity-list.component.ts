@@ -6,8 +6,8 @@ import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { PaginateByParam } from '../../../../core/store/actions';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { PaginateByParam } from '../../../../core/redux-store/actions';
+import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
