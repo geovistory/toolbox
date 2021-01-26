@@ -3,7 +3,7 @@
 // extensions that sync form and route location state between
 // our store and Angular.
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
-import { NgModule } from '@angular/core';
+import { Inject, InjectionToken, NgModule } from '@angular/core';
 import { AccountActions } from 'app/modules/account/api/account.actions';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { equals } from 'ramda';
@@ -12,11 +12,20 @@ import { createEpicMiddleware } from 'redux-observable-es6-compat';
 import { ActiveProjectModule } from '../active-project/active-project.module';
 import { StandardActionsFactory } from './actions';
 import { RootEpics } from './epics';
-import { INITIAL_STATE } from './initial-state';
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
 import { SchemaObjectService } from './schema-object.service';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { LoadingBarModule } from '../loading-bar/loading-bar.module';
+import { SysModule } from '../sys/sys.module';
+import { InfModule } from '../inf/inf.module';
+import { DatModule } from '../dat/dat.module';
+import { ProModule } from '../pro/pro.module';
+import { WarModule } from '../war/war.module';
+import { TabModule } from '../tab/tab.module';
+import { DfhModule } from '../dfh/dfh.module';
+import { SocketsModule } from '../sockets/sockets.module';
 
 /**
  * Function to use in combination with rxjs/operator .filter()
@@ -38,13 +47,22 @@ export const ofSubstore = (path: string[]) => (action): boolean => {
   return bool;
 }
 
-
+export const INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STATE');
 
 @NgModule({
   imports: [
     NgReduxModule,
-    // NgReduxRouterModule.forRoot(),
-    ActiveProjectModule
+    NotificationsModule,
+    LoadingBarModule,
+    SysModule,
+    DfhModule,
+    InfModule,
+    DatModule,
+    ProModule,
+    WarModule,
+    TabModule,
+    ActiveProjectModule,
+    SocketsModule,
   ],
   providers: [
     // NgReduxRouter,
@@ -52,7 +70,8 @@ export const ofSubstore = (path: string[]) => (action): boolean => {
     AccountEpics,
     AccountActions,
     StandardActionsFactory,
-    SchemaObjectService
+    SchemaObjectService,
+    { provide: INITIAL_STATE, useValue: {} }
   ]
 })
 export class StoreModule {
@@ -60,7 +79,8 @@ export class StoreModule {
     public ngRedux: NgRedux<IAppState>,
     devTools: DevToolsExtension,
     // ngReduxRouter: NgReduxRouter,
-    rootEpics: RootEpics
+    rootEpics: RootEpics,
+    @Inject(INITIAL_STATE) initialState: IAppState
   ) {
 
     const epicMiddleware = createEpicMiddleware();
@@ -73,7 +93,7 @@ export class StoreModule {
       rootReducer,
 
       // Initial state
-      INITIAL_STATE,
+      initialState,
 
       // Middleware
       [

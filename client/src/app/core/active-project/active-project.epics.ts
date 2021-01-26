@@ -13,7 +13,7 @@ import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { ProSelector } from '../pro/pro.service';
 import { DatChunk, DatChunkApi, InfPersistentItemApi, ProInfoProjRelApi, ProProject, ProProjectApi } from '../sdk';
 import { IAppState } from '../store/model';
-import { SystemSelector } from '../sys/sys.service';
+import { SysSelector } from '../sys/sys.service';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 
@@ -22,7 +22,7 @@ import { ActiveProjectAction, ActiveProjectActions } from './active-project.acti
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private sys: SystemSelector,
+    private sys: SysSelector,
     private dat: DatSelector,
     private dfh: DfhSelector,
     private pro: ProSelector,

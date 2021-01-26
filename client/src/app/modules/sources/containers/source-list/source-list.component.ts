@@ -3,7 +3,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ActiveProjectService, EntityPreview, IAppState, ProjectCrm, SubstoreComponent, SysConfig, U, InfPersistentItem } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { SystemSelector } from 'app/core/sys/sys.service';
+import { SysSelector } from 'app/core/sys/sys.service';
 import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, tap, takeUntil } from 'rxjs/operators';
@@ -52,7 +52,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     public ngRedux: NgRedux<IAppState>,
     public router: Router,
     public p: ActiveProjectService,
-    public sys: SystemSelector
+    public sys: SysSelector
   ) {
     super();
     this.pkClassesOfAddBtn$ = this.sys.system_relevant_class$.by_required_by_sources$.all$.pipe(

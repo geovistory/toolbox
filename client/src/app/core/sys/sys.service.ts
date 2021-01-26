@@ -65,7 +65,7 @@ class SysConfigSelections extends Selector<SysConfigSlice> {
 }
 
 
-export class SystemSelector extends SysActions {
+export class SysSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
   // analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')
 

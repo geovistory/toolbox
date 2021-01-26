@@ -3,12 +3,19 @@ import { NgModule } from '@angular/core';
 import { ActiveProjectActions } from './active-project.action';
 import { ActiveProjectEpics } from './active-project.epics';
 import { ActiveProjectService } from './active-project.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ShouldPauseService } from '../services/should-pause.service';
 
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    MatDialogModule
   ],
-  providers: [ActiveProjectActions, ActiveProjectEpics, ActiveProjectService]
+  providers: [
+    ShouldPauseService,
+    ActiveProjectActions,
+    ActiveProjectEpics,
+    ActiveProjectService]
 })
 export class ActiveProjectModule { }

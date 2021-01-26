@@ -4,6 +4,7 @@ import {DatTextProperty} from './dat-text-property.model';
 import {DatColumn} from './dat-column.model';
 import {DatClassColumnMapping} from './dat-class-column-mapping.model';
 import {ProAnalysis} from './pro-analysis.model';
+import {ProClassFieldConfig} from './pro-class-field-config.model';
 
 
 @model()
@@ -24,6 +25,8 @@ class InfObject {
 class ProObject {
   @property.array(ProInfoProjRel) info_proj_rel?: Partial<ProInfoProjRel>[]
   @property.array(ProAnalysis) analysis?: Partial<ProAnalysis>[]
+  @property.array(ProClassFieldConfig) class_field_config?: Partial<ProClassFieldConfig>[]
+
 }
 
 @model()

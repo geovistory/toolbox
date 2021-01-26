@@ -24,7 +24,7 @@ import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityDetail, EntityPreview, EntityType } from '../state/models';
 import { IAppState, SchemaObject } from '../store/model';
 import { SchemaObjectService } from '../store/schema-object.service';
-import { SystemSelector } from '../sys/sys.service';
+import { SysSelector } from '../sys/sys.service';
 import { WarActions } from '../war/war.actions';
 import { ActiveProjectActions } from './active-project.action';
 import { ListType, Panel, ProjectDetail, RamSource, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
@@ -91,7 +91,7 @@ export class ActiveProjectService {
     private entityPreviewSocket: EntityPreviewSocket,
     public dialog: MatDialog,
     public dfh$: DfhSelector,
-    public sys$: SystemSelector,
+    public sys$: SysSelector,
     public inf: InfActions,
     public shouldPause: ShouldPauseService,
     private s: SchemaObjectService,
