@@ -4,6 +4,9 @@ import { SysSystemRelevantClass } from "../sdk/models/SysSystemRelevantClass";
 
 export interface SysRelevantClassSlice {
   by_pk_entity?: ByPk<SysSystemRelevantClass>;
+  by_fk_class?: ByPk<ByPk<SysSystemRelevantClass>>;
+  by_required_by_sources?: ByPk<ByPk<SysSystemRelevantClass>>;
+  by_required?: ByPk<ByPk<SysSystemRelevantClass>>;
   loading?: boolean;
 }
 
@@ -11,11 +14,13 @@ export interface SysRelevantClassSlice {
 //   by_pk_entity?: ByPk<SysAnalysisType>;
 // }
 export interface SysConfigSlice {
-  by_main?: SysConfig;
+  by_main?: ByPk<SysConfig>;
+  loading?: boolean;
 }
 
 export interface Sys {
   system_relevant_class?: SysRelevantClassSlice
-  // analysis_type?: SysAnalysisTypeSlice
   config?: SysConfigSlice
+
+  pkEntityModelMap: ByPk<{ modelName: string }>
 }

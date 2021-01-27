@@ -2,17 +2,17 @@ import { TestBed } from '@angular/core/testing';
 
 import { SchemaSelectorsService } from './schema-selectors.service';
 import { ReduxStoreModule } from 'app/core/redux-store/redux-store.module';
-import { SDKBrowserModule, ProClassFieldConfig } from 'app/core/sdk';
+import { SDKBrowserModule, } from 'app/core/sdk';
 import { ReduxQueriesModule } from '../redux-queries.module';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core';
 import { ConfigurationPipesService } from './configuration-pipes.service';
-import { GvSchemaObject } from 'app/core/sdk-lb4';
+import { GvSchemaObject, ProClassFieldConfig } from 'app/core/sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
 import { ByPk } from 'app/core/redux-store/model';
-import { ProClassFieldConfigMock } from 'app/__test__/helpers/data/ProClassFieldConfigMock';
+import { ProClassFieldConfigMock } from '__tests__/helpers/data/ProClassFieldConfigMock';
 
 fdescribe('SchemaSelectorsService', () => {
   let ngRedux: NgRedux<IAppState>;

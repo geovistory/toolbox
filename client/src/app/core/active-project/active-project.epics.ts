@@ -42,15 +42,15 @@ export class ActiveProjectEpics {
       this.createLoadProjectBasicsEpic(),
       this.createLoadProjectConfigEpic(),
       this.createLoadProjectUpdatedEpic(),
-      this.createLoadChunkEpic(),
-      this.createLoadTypesEpic(),
+      // this.createLoadChunkEpic(),
+      // this.createLoadTypesEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
       this.createClosePanelFocusPanelEpic(),
       this.createSplitPanelActivateTabEpic(),
       this.createAddTabCloseListEpic(),
-      this.createUpsertEntityProjRelEpic()
+      // this.createUpsertEntityProjRelEpic()
     );
   }
 
@@ -157,88 +157,88 @@ export class ActiveProjectEpics {
     )
   }
 
-  private createLoadTypesEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_TYPES),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  // private createLoadTypesEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_TYPES),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          this.peItApi.typesOfClassesAndProject(action.meta.pk_project, action.meta.pk_classes)
-            .subscribe((data) => {
-              globalStore.next(this.actions.loadTypesSucceeded(data, action.meta.pk_classes));
-              globalStore.next(this.loadingBarActions.completeLoading());
-            }, error => {
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
+  //         this.peItApi.typesOfClassesAndProject(action.meta.pk_project, action.meta.pk_classes)
+  //           .subscribe((data) => {
+  //             globalStore.next(this.actions.loadTypesSucceeded(data, action.meta.pk_classes));
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //           }, error => {
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
 
-              globalStore.next(this.actions.loadTypesFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
-  private createLoadChunkEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_CHUNK),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.chunkApi.findById(action.meta.pk_entity)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: DatChunk) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.actions.loadTypesFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
+  // private createLoadChunkEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_CHUNK),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.chunkApi.findById(action.meta.pk_entity)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: DatChunk) => {
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadChunkSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadChunkSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadChunkFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadChunkFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
   // private createLoadPeItGraphEpic(): Epic {
   //   return (action$, store) => {
@@ -425,61 +425,61 @@ export class ActiveProjectEpics {
   }
 
 
-  /**
-   * Update Entity Project Relation
-   * @param c
-   */
-  private createUpsertEntityProjRelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL),
-        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  // /**
+  //  * Update Entity Project Relation
+  //  * @param c
+  //  */
+  // private createUpsertEntityProjRelEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL),
+  //       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          /**
-           * Prepare api call
-           */
-          let apiCall;
-          // update existing infProjRel
-          if (action.meta.infProjRel.fk_entity) apiCall = this.infProjRelApi.updateEprAttributes(
-            action.meta.infProjRel.fk_project,
-            action.meta.infProjRel.fk_entity,
-            action.meta.infProjRel
-          );
-          // create new infProjRel
-          else apiCall = this.infProjRelApi.create(action.meta.infProjRel);
+  //         /**
+  //          * Prepare api call
+  //          */
+  //         let apiCall;
+  //         // update existing infProjRel
+  //         if (action.meta.infProjRel.fk_entity) apiCall = this.infProjRelApi.updateEprAttributes(
+  //           action.meta.infProjRel.fk_project,
+  //           action.meta.infProjRel.fk_entity,
+  //           action.meta.infProjRel
+  //         );
+  //         // create new infProjRel
+  //         else apiCall = this.infProjRelApi.create(action.meta.infProjRel);
 
-          /**
-           * Subscribe to the api call
-           */
-          apiCall.subscribe((data) => {
-            /**
-             * Emit the global action that completes the loading bar
-             */
-            globalStore.next(this.loadingBarActions.completeLoading());
-            /**
-             * Emit the local action on loading succeeded
-             */
-            globalStore.next(this.actions.upsertEntityProjRelSucceeded(data));
+  //         /**
+  //          * Subscribe to the api call
+  //          */
+  //         apiCall.subscribe((data) => {
+  //           /**
+  //            * Emit the global action that completes the loading bar
+  //            */
+  //           globalStore.next(this.loadingBarActions.completeLoading());
+  //           /**
+  //            * Emit the local action on loading succeeded
+  //            */
+  //           globalStore.next(this.actions.upsertEntityProjRelSucceeded(data));
 
-          }, error => {
-            /**
-             * Emit the global action that shows some loading error message
-             */
-            // globalStore.next(this.loadingBarActions.completeLoading());
-            /**
-            * Emit the local action on loading failed
-            */
-            globalStore.next(this.actions.upsertEntityProjRelFailed({ status: '' + error.status }))
-          })
-        }))
-      )
-    }
-  }
+  //         }, error => {
+  //           /**
+  //            * Emit the global action that shows some loading error message
+  //            */
+  //           // globalStore.next(this.loadingBarActions.completeLoading());
+  //           /**
+  //           * Emit the local action on loading failed
+  //           */
+  //           globalStore.next(this.actions.upsertEntityProjRelFailed({ status: '' + error.status }))
+  //         })
+  //       }))
+  //     )
+  //   }
+  // }
 }

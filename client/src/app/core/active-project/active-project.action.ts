@@ -272,38 +272,38 @@ export class ActiveProjectActions {
   //   }
   // }
 
-  // EntityPreviews
-  static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';
-  static LOAD_TYPES_SUCCEEDED = 'ActiveProject::LOAD_TYPES_SUCCEEDED';
-  static LOAD_TYPES_FAILED = 'ActiveProject::LOAD_TYPES_FAILED';
-  loadTypes(pk_project: number, pk_classes: number[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_TYPES,
-      payload: null,
-      meta: {
-        pk_project, pk_classes
-      }
-    }
-  }
+  // // EntityPreviews
+  // static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';
+  // static LOAD_TYPES_SUCCEEDED = 'ActiveProject::LOAD_TYPES_SUCCEEDED';
+  // static LOAD_TYPES_FAILED = 'ActiveProject::LOAD_TYPES_FAILED';
+  // loadTypes(pk_project: number, pk_classes: number[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_TYPES,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_classes
+  //     }
+  //   }
+  // }
 
-  loadTypesSucceeded(types: TypePeIt[], pk_classes: number[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_TYPES_SUCCEEDED,
-      payload: null,
-      meta: {
-        types, pk_classes
-      },
-    }
-  }
+  // loadTypesSucceeded(types: TypePeIt[], pk_classes: number[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_TYPES_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       types, pk_classes
+  //     },
+  //   }
+  // }
 
-  loadTypesFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_TYPES_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadTypesFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_TYPES_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
 
 
@@ -343,108 +343,108 @@ export class ActiveProjectActions {
   }
 
 
-  // Chunks
-  static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
-  static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
-  static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
+  // // Chunks
+  // static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
+  // static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
+  // static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
 
-  loadChunk(pk_project: number, pk_entity: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_CHUNK,
-      payload: null,
-      meta: {
-        pk_project, pk_entity
-      }
-    }
-  }
+  // loadChunk(pk_project: number, pk_entity: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_CHUNK,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entity
+  //     }
+  //   }
+  // }
 
-  loadChunkSucceeded(chunk: DatChunk): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_CHUNK_SUCCEEDED,
-      payload: null,
-      meta: {
-        chunk
-      },
-    }
-  }
+  // loadChunkSucceeded(chunk: DatChunk): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_CHUNK_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       chunk
+  //     },
+  //   }
+  // }
 
-  loadChunkFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_CHUNK_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadChunkFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_CHUNK_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
-  // PeIt Graphs
-  static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
-  static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
-  static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
+  // // PeIt Graphs
+  // static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
+  // static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
+  // static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
 
 
-  loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
-      payload: null,
-      meta: {
-        pk_project, pk_entities
-      }
-    }
-  }
+  // loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entities
+  //     }
+  //   }
+  // }
 
-  loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
-      payload: null,
-      meta: {
-        peItGraphs
-      },
-    }
-  }
+  // loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       peItGraphs
+  //     },
+  //   }
+  // }
 
-  loadPeItGraphsFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadPeItGraphsFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
-  // TeEn Graphs
-  static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
-  static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
-  static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
+  // // TeEn Graphs
+  // static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
+  // static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
+  // static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
 
-  loadTeEnGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_TEEN_GRAPHS,
-      payload: null,
-      meta: {
-        pk_project, pk_entities
-      }
-    }
-  }
+  // loadTeEnGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_TEEN_GRAPHS,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entities
+  //     }
+  //   }
+  // }
 
-  loadTeEnGraphsSucceeded(teEnGraphs: InfTemporalEntity[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED,
-      payload: null,
-      meta: {
-        teEnGraphs
-      },
-    }
-  }
+  // loadTeEnGraphsSucceeded(teEnGraphs: InfTemporalEntity[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       teEnGraphs
+  //     },
+  //   }
+  // }
 
-  loadTeEnGraphsFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadTeEnGraphsFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
 
   // // Queries
@@ -670,31 +670,31 @@ export class ActiveProjectActions {
   // })
 
 
-  /*********************************************************************
-   *  Methods to manage enabling and disabling an entity for the project
-   *********************************************************************/
-  static readonly UPSERT_ENTITY_PROJ_REL = 'ActiveProject::UPSERT_ENTITY_PROJ_REL';
-  static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
-  static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
+  // /*********************************************************************
+  //  *  Methods to manage enabling and disabling an entity for the project
+  //  *********************************************************************/
+  // static readonly UPSERT_ENTITY_PROJ_REL = 'ActiveProject::UPSERT_ENTITY_PROJ_REL';
+  // static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
+  // static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
 
-  upsertEntityProjRel = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
-    type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
-    meta: { infProjRel },
-    payload: null,
-  });
+  // upsertEntityProjRel = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
+  //   meta: { infProjRel },
+  //   payload: null,
+  // });
 
-  upsertEntityProjRelSucceeded = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
-    type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
-    meta: { infProjRel },
-    payload: null
-  })
+  // upsertEntityProjRelSucceeded = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
+  //   meta: { infProjRel },
+  //   payload: null
+  // })
 
-  upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
-    type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
+  // upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
+  //   meta: null,
+  //   payload: null,
+  //   error,
+  // })
 
 
   /************************************************************************************

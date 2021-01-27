@@ -292,109 +292,109 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     /***************************************************
     * Reducers to load Types
     ****************************************************/
-    case ActiveProjectActions.LOAD_TYPES_SUCCEEDED:
-      state = {
-        ...state,
-        typesByPk: {
-          ...state.typesByPk,
-          ...indexBy<TypePeIt>((type) => (type.pk_entity.toString()), action.meta.types)
-        },
-        typesByClass: {
-          ...zipObj(action.meta.pk_classes.map(pk => pk.toString()), action.meta.pk_classes.map(x => [])),
-          ...state.typesByClass,
-          ...groupBy<TypePeIt>((type) => (type.fk_typed_class.toString()), action.meta.types)
-        }
-      };
-      break;
+    // case ActiveProjectActions.LOAD_TYPES_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     typesByPk: {
+    //       ...state.typesByPk,
+    //       ...indexBy<TypePeIt>((type) => (type.pk_entity.toString()), action.meta.types)
+    //     },
+    //     typesByClass: {
+    //       ...zipObj(action.meta.pk_classes.map(pk => pk.toString()), action.meta.pk_classes.map(x => [])),
+    //       ...state.typesByClass,
+    //       ...groupBy<TypePeIt>((type) => (type.fk_typed_class.toString()), action.meta.types)
+    //     }
+    //   };
+    //   break;
 
     /*****************************************************
     * Load a Entity Details for display in Modals
     *****************************************************/
 
-    // case ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL:
+    // // case ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL:
+    // //   state = {
+    // //     ...state,
+    // //     peItModals: {
+    // //       ...state.peItModals,
+    // //       [action.meta.pk_entity]: {
+    // //         loading: true
+    // //       }
+    // //     }
+    // //   };
+    // //   break;
+
+    // case ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED:
     //   state = {
     //     ...state,
     //     peItModals: {
     //       ...state.peItModals,
-    //       [action.meta.pk_entity]: {
-    //         loading: true
-    //       }
+    //       [action.meta.peItDetail.pkEntity]: action.meta.peItDetail
     //     }
     //   };
     //   break;
 
-    case ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED:
-      state = {
-        ...state,
-        peItModals: {
-          ...state.peItModals,
-          [action.meta.peItDetail.pkEntity]: action.meta.peItDetail
-        }
-      };
-      break;
+    // // TODO: add reducer for LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED
 
-    // TODO: add reducer for LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED
+    // /***************************************************
+    // * Reducers to load chunk
+    // ****************************************************/
 
-    /***************************************************
-    * Reducers to load chunk
-    ****************************************************/
+    // case ActiveProjectActions.LOAD_CHUNK_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     chunks: {
+    //       ...state.chunks,
+    //       [action.meta.chunk.pk_entity]: action.meta.chunk
+    //     }
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_CHUNK_SUCCEEDED:
-      state = {
-        ...state,
-        chunks: {
-          ...state.chunks,
-          [action.meta.chunk.pk_entity]: action.meta.chunk
-        }
-      };
-      break;
+    // case ActiveProjectActions.LOAD_CHUNK_FAILED:
+    //   state = {
+    //     ...state,
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_CHUNK_FAILED:
-      state = {
-        ...state,
-      };
-      break;
+    // /***************************************************
+    // * Reducers to load peIt-Graphs
+    // ****************************************************/
 
-    /***************************************************
-    * Reducers to load peIt-Graphs
-    ****************************************************/
+    // case ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     peItGraphs: {
+    //       ...state.peItGraphs,
+    //       ...indexBy(((peIt: InfPersistentItem) => peIt.pk_entity.toString()), action.meta.peItGraphs)
+    //     }
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED:
-      state = {
-        ...state,
-        peItGraphs: {
-          ...state.peItGraphs,
-          ...indexBy(((peIt: InfPersistentItem) => peIt.pk_entity.toString()), action.meta.peItGraphs)
-        }
-      };
-      break;
-
-    case ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED:
-      state = {
-        ...state,
-      };
-      break;
+    // case ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED:
+    //   state = {
+    //     ...state,
+    //   };
+    //   break;
 
 
-    /***************************************************
-    * Reducers to load teEn-Graphs
-    ****************************************************/
+    // /***************************************************
+    // * Reducers to load teEn-Graphs
+    // ****************************************************/
 
-    case ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED:
-      state = {
-        ...state,
-        teEnGraphs: {
-          ...state.teEnGraphs,
-          ...indexBy(((teEn: InfTemporalEntity) => teEn.pk_entity.toString()), action.meta.teEnGraphs)
-        }
-      };
-      break;
+    // case ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     teEnGraphs: {
+    //       ...state.teEnGraphs,
+    //       ...indexBy(((teEn: InfTemporalEntity) => teEn.pk_entity.toString()), action.meta.teEnGraphs)
+    //     }
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED:
-      state = {
-        ...state,
-      };
-      break;
+    // case ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED:
+    //   state = {
+    //     ...state,
+    //   };
+    //   break;
 
 
 

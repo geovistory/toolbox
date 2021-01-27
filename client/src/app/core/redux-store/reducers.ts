@@ -74,6 +74,13 @@ export const cleanupResolved = (state = {}, action) => {
   }
   return state;
 }
+export const SET_APP_STATE = 'SET_APP_STATE';
+export const setAppState = (state = {}, action) => {
+  if (action && action.type === SET_APP_STATE) {
+    state = action.payload
+  }
+  return state;
+}
 
 export const rootReducer = composeReducers(
   defaultFormReducer(),
@@ -95,5 +102,6 @@ export const rootReducer = composeReducers(
     tab: createTabReducer(),
     pending: pendingRequestReducer,
     resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
-  })
+  }),
+  setAppState
 )

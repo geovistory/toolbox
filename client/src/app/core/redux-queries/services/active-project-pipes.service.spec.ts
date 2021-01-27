@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { ReduxQueriesModule } from '../redux-queries.module';
 import { toArray, first } from 'rxjs/operators';
-import { IAppStateMock } from 'app/__test__/helpers/data/IAppStateMock';
+import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
 import { APP_INITIAL_STATE } from 'app/core/redux-store/redux-store.module';
 import { SDKBrowserModule } from 'app/core/sdk';
 

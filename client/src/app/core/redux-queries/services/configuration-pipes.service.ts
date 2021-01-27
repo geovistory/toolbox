@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig } from 'app/core';
+import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProTextProperty, SysConfig } from 'app/core';
 import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
 import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'app/core/pro/pro.config';
 import { ByPk } from 'app/core/redux-store/model';
@@ -13,6 +13,7 @@ import * as Config from '../../../../../../server/lb3app/common/config/Config';
 import { cache, spyTag } from '../../../shared';
 import { FieldDefinition, ListDefinition, ListType } from '../../../modules/base/components/properties-tree/properties-tree.models';
 import { SchemaSelectorsService } from './schema-selectors.service';
+import { ProClassFieldConfig } from 'app/core/sdk-lb4';
 
 export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'persistent_item' | 'temporal_entity'
 

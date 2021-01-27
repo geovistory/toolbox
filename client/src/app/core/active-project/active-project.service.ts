@@ -259,19 +259,19 @@ export class ActiveProjectService {
 
 
 
-  /**
-   * Loads a chunk, if it is not yet available in state or if
-   * forceReload is true;
-   *
-   * @param pkEntity
-   * @param forceReload
-   */
-  loadChunk(pkEntity: number, forceReload?: boolean) {
-    const state = this.ngRedux.getState();
-    if (!(((state || {}).activeProject || {}).chunks || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadChunk(state.activeProject.pk_project, pkEntity))
-    }
-  }
+  // /**
+  //  * Loads a chunk, if it is not yet available in state or if
+  //  * forceReload is true;
+  //  *
+  //  * @param pkEntity
+  //  * @param forceReload
+  //  */
+  // loadChunk(pkEntity: number, forceReload?: boolean) {
+  //   const state = this.ngRedux.getState();
+  //   if (!(((state || {}).activeProject || {}).chunks || {})[pkEntity] || forceReload) {
+  //     this.ngRedux.dispatch(this.actions.loadChunk(state.activeProject.pk_project, pkEntity))
+  //   }
+  // }
 
 
 

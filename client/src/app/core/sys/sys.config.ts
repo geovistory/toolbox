@@ -26,14 +26,6 @@ export const sysDefinitions: ReducerConfigCollection = {
       }
     ]
   },
-  analysis_type: {
-    indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item) => {
-        return item.pk_entity.toString()
-      }
-    }
-  },
   config: {
     indexBy: {
       keyInStore: 'main',

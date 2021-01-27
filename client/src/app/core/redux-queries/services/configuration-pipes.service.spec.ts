@@ -6,10 +6,11 @@ import { SchemaObjectService } from 'app/core/redux-store/schema-object.service'
 import { first, toArray, take } from 'rxjs/operators';
 import { ReduxQueriesModule } from '../redux-queries.module';
 import { ConfigurationPipesService } from './configuration-pipes.service';
-import { IAppStateMock } from 'app/__test__/helpers/data/IAppStateMock';
+import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
 import { GvSchemaObject } from 'app/core/sdk-lb4/model/gvSchemaObject';
 import { of, BehaviorSubject } from 'rxjs';
-import { ProClassFieldConfigMock } from 'app/__test__/helpers/data/ProClassFieldConfigMock';
+import { ProClassFieldConfigMock } from '__tests__/helpers/data/ProClassFieldConfigMock';
+import { setAppState } from '__tests__/helpers/set-app-state';
 
 fdescribe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
@@ -23,14 +24,10 @@ fdescribe('ConfigurationPipeService', () => {
         ReduxQueriesModule
       ]
     });
-    TestBed.overrideProvider(APP_INITIAL_STATE, {
-      useValue: {
-        ...IAppStateMock.state1,
-      }
-    })
     service = TestBed.get(ConfigurationPipesService);
     schemaObjServcie = TestBed.get(SchemaObjectService);
     ngRedux = TestBed.get(NgRedux);
+
 
   });
   it('should be created', () => {
@@ -39,12 +36,40 @@ fdescribe('ConfigurationPipeService', () => {
 
 
   it('#pipeClassFieldConfigs should return class config for class 21 and project 100', (done) => {
-
+    setAppState(ngRedux, IAppStateMock.state1)
+    // seeding data
     const gvSchemaObj: GvSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.proClassFieldConfig] } }
     schemaObjServcie.storeGv(new BehaviorSubject(gvSchemaObj), 100)
 
+
+    // using pipe
     const q$ = service.pipeClassFieldConfigs(21)
+
+    // testing pipe
     const expectedSequence = [[ProClassFieldConfigMock.proClassFieldConfig]]
+
+    q$.pipe(first(), toArray())
+      .subscribe(
+        actualSequence => {
+          expect(actualSequence).toEqual(expectedSequence)
+        },
+        null,
+        done);
+
+  });
+
+
+
+  it('#pipeClassFieldConfigs should return class config for class 21 and project 100', (done) => {
+    setAppState(ngRedux, IAppStateMock.state2)
+    const x = ngRedux.getState()
+
+    // using pipe
+    const q$ = service.pipeClassFieldConfigs(21)
+
+    // testing pipe
+    const expectedSequence = [[ProClassFieldConfigMock.proClassFieldConfig]]
+
     q$.pipe(first(), toArray())
       .subscribe(
         actualSequence => {

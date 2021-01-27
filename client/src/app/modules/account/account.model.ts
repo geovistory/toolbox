@@ -6,5 +6,5 @@ export interface AccountRole {
 }
 export interface IAccount {
   account: PubAccount,
-  roles: AccountRole[]
+  roles?: AccountRole[]
 }

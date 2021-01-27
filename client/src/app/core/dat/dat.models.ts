@@ -1,12 +1,14 @@
 import { ByPk } from "app/core/redux-store/model";
-import { DatDigital, DatNamespace } from "../sdk";
+import { DatNamespace } from "../sdk";
 import { DatClassColumnMapping } from '../sdk-lb4/model/datClassColumnMapping';
 import { DatColumn } from '../sdk/models/DatColumn';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
+import { DatDigital } from '../sdk-lb4/model/models';
 
 export class DigitalSlice {
-  pk_entity__entity_version?: ByPk<DatDigital>;
-  by_pk_entity?: ByPk<DatDigital>;
+  by_pk_entity__entity_version?: ByPk<DatDigital>;
+  by_pk_entity?: ByPk<ByPk<DatDigital>>;
+  by_pk_text?: ByPk<ByPk<DatDigital>>;
   loading?: boolean
 }
 export class ChunkSlice {
