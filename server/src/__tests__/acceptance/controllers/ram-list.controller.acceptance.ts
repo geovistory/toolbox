@@ -24,7 +24,7 @@ describe('RamListController', () => {
     describe('GET /get-ram-list', () => {
         const pwd = PubCredentialMock.GAETAN_PASSWORD.password;
         const project = ProProjectMock.SANDBOX_PROJECT;
-        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const accountInProject = PubAccountMock.GAETAN_VERIFIED
         const entity = InfPersistentItemMock.RUDOLF
 
         const cell = TabCellXMock.FEATURE_X_2_1;

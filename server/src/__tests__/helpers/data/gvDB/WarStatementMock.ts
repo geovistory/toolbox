@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import {WarStatement, CalendarType, Granularity} from '../../../../models'
-import {DfhApiPropertyMock} from './DfhApiPropertyMock'
-import {ProProjectMock} from './ProProjectMock'
-import {WarEntityPreviewMock} from './WarEntityPreviewMock'
-import {DfhApiClassMock} from './DfhApiClassMock'
+import { WarStatement, CalendarType, Granularity } from '../../../../models'
+import { DfhApiPropertyMock } from './DfhApiPropertyMock'
+import { ProProjectMock } from './ProProjectMock'
+import { WarEntityPreviewMock } from './WarEntityPreviewMock'
+import { DfhApiClassMock } from './DfhApiClassMock'
 
 /**
  * pk_entity prefix: 200
  */
 export class WarStatementMock {
-    static readonly BIRTH_OF_ZWINGLI_TOOK_PLACE_IN = new WarStatement({
+    static readonly BIRTH_OF_ZWINGLI_TOOK_PLACE_IN: Partial<WarStatement> = ({
         pk_entity: 2000,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -18,7 +18,7 @@ export class WarStatementMock {
         fk_subject_info: WarEntityPreviewMock.BIRTH_ZWINGLI.pk_entity,
         fk_object_info: WarEntityPreviewMock.GEO_PLACE_ZURICH.pk_entity,
     })
-    static readonly BIRTH_OF_OEKOLOMBAD_TOOK_PLACE_IN = new WarStatement({
+    static readonly BIRTH_OF_OEKOLOMBAD_TOOK_PLACE_IN: Partial<WarStatement> = ({
         pk_entity: 2001,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -27,7 +27,7 @@ export class WarStatementMock {
         fk_object_info: WarEntityPreviewMock.GEO_PLACE_BASEL.pk_entity,
     })
 
-    static readonly BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN = new WarStatement({
+    static readonly BIRTH_OF_ZWINGLI_AT_SOME_TIME_WITHIN: Partial<WarStatement> = ({
         pk_entity: 2002,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,

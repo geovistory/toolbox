@@ -155,10 +155,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "WarEntityPreview": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "SysAppContext": {
     "dataSource": "postgres1",
     "public": true

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Client, expect } from '@loopback/testlab';
 import { GetTablePageOptions, SortDirection } from '../../../components/query/q-table-page';
-import { PubAccount } from '../../../models';
 import { GvSchemaObject } from '../../../models/gv-schema-object.model';
 import { GeovistoryServer } from '../../../server';
 import { DatClassColumnMappingMock } from '../../helpers/data/gvDB/DatClassColumnMappingMock';
@@ -26,7 +25,7 @@ describe('TableController', () => {
     describe('GET /get-columns-of-table', () => {
         const pwd = PubCredentialMock.GAETAN_PASSWORD.password;
         const project = ProProjectMock.SANDBOX_PROJECT;
-        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const accountInProject = PubAccountMock.GAETAN_VERIFIED
         const digital = DatDigitalMock.DIGITAL_BIRTHDATES
         // const namespace = DatNamespaceMock.SANDBOX_NAMESPACE
 
@@ -77,11 +76,11 @@ describe('TableController', () => {
             const expected: GvSchemaObject = {
                 dat: {
                     column: [
-                        DatColumnMock.COL_NAMES.toObject(),
-                        DatColumnMock.COL_BIRTHDATES.toObject()
+                        DatColumnMock.COL_NAMES,
+                        DatColumnMock.COL_BIRTHDATES
                     ],
                     class_column_mapping: [
-                        DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON.toObject()
+                        DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON
                     ],
                     text_property: [
                         {

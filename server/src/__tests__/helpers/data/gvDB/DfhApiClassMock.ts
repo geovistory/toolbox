@@ -1,4 +1,4 @@
-import { DfhApiClass } from '../../atomic/dfh-api-class.helper';
+import { DfhApiClass } from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -270,7 +270,7 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "F2"
-}
+  }
 }
 
 

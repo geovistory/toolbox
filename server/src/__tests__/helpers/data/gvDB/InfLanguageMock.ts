@@ -6,7 +6,7 @@ import { InfLanguage } from '../../../../models';
  */
 
 export class InfLanguageMock {
-  static readonly ENGLISH = new InfLanguage({
+  static readonly ENGLISH: Partial<InfLanguage> = ({
     "notes": "English",
     "iso6391": "en ",
     "iso6392b": "eng",
@@ -14,7 +14,7 @@ export class InfLanguageMock {
     "pk_entity": 18889,
     "pk_language": "eng"
   })
-  static readonly GERMAN = new InfLanguage({
+  static readonly GERMAN: Partial<InfLanguage> = ({
     "notes": "German",
     "iso6391": "de ",
     "iso6392b": "ger",
@@ -23,7 +23,7 @@ export class InfLanguageMock {
     "pk_language": "deu"
   })
 
-  static readonly ITALIAN = new InfLanguage({
+  static readonly ITALIAN: Partial<InfLanguage> = ({
     "notes": "Italian",
     "iso6391": "it ",
     "iso6392b": "ita",
@@ -32,7 +32,7 @@ export class InfLanguageMock {
     "pk_language": "ita"
   })
 
-  static readonly FRENCH = new InfLanguage({
+  static readonly FRENCH: Partial<InfLanguage> = ({
     "notes": "French",
     "iso6391": "fr ",
     "iso6392b": "fre",

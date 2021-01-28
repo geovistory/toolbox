@@ -9,6 +9,7 @@
     "build": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --prod",
     "build:stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
+    "pretest": "node ../server/scripts/build-mock.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

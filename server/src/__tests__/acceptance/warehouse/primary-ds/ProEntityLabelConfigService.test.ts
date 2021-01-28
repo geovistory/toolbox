@@ -69,7 +69,7 @@ describe('ProEntityLabelConfigService', () => {
       compare: (val) => equals(val, ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
     });
     const modified = clone(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
-    modified.config.labelParts = [{
+    if(modified?.config) modified.config.labelParts = [{
       ordNum: 0,
       field: {
         fkProperty: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,

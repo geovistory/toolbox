@@ -9,7 +9,7 @@ import { ConfigurationPipesService } from './configuration-pipes.service';
 import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
 import { GvSchemaObject } from 'app/core/sdk-lb4/model/gvSchemaObject';
 import { of, BehaviorSubject } from 'rxjs';
-import { ProClassFieldConfigMock } from '__tests__/helpers/data/ProClassFieldConfigMock';
+import { ProClassFieldConfigMock } from '__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
 import { setAppState } from '__tests__/helpers/set-app-state';
 
 fdescribe('ConfigurationPipeService', () => {
@@ -38,7 +38,7 @@ fdescribe('ConfigurationPipeService', () => {
   it('#pipeClassFieldConfigs should return class config for class 21 and project 100', (done) => {
     setAppState(ngRedux, IAppStateMock.state1)
     // seeding data
-    const gvSchemaObj: GvSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.proClassFieldConfig] } }
+    const gvSchemaObj: GvSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] } }
     schemaObjServcie.storeGv(new BehaviorSubject(gvSchemaObj), 100)
 
 
@@ -46,7 +46,7 @@ fdescribe('ConfigurationPipeService', () => {
     const q$ = service.pipeClassFieldConfigs(21)
 
     // testing pipe
-    const expectedSequence = [[ProClassFieldConfigMock.proClassFieldConfig]]
+    const expectedSequence = [[ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]]
 
     q$.pipe(first(), toArray())
       .subscribe(
@@ -68,7 +68,7 @@ fdescribe('ConfigurationPipeService', () => {
     const q$ = service.pipeClassFieldConfigs(21)
 
     // testing pipe
-    const expectedSequence = [[ProClassFieldConfigMock.proClassFieldConfig]]
+    const expectedSequence = [[ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]]
 
     q$.pipe(first(), toArray())
       .subscribe(

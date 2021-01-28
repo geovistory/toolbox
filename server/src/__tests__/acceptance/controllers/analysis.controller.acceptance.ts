@@ -51,8 +51,8 @@ describe('AnaylsisController', () => {
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
             const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
-            delete corruptAnalysisDefinition.queryDefinition?.filter;
-            const req: AnalysisTableRequest = {
+            delete corruptAnalysisDefinition?.queryDefinition?.filter;
+            const req = {
                 fkProject: pkProject,
                 analysisDefinition: corruptAnalysisDefinition
             }
@@ -64,7 +64,7 @@ describe('AnaylsisController', () => {
 
         it('should respond with a table of one column for entity labels', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
-            const req: AnalysisTableRequest = {
+            const req = {
                 fkProject: pkProject,
                 analysisDefinition: queryGeoPlaces.analysis_definition
             }
@@ -136,7 +136,7 @@ describe('AnaylsisController', () => {
             const result: AnalysisTableResponse = res.body
 
             await validateAgainstSchema(result, AnalysisTableResponse, server)
-            const expected: AnalysisTableResponse = {
+            const expected = {
                 full_count: 2,
                 rows: [
                     {
@@ -261,8 +261,8 @@ describe('AnaylsisController', () => {
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
             const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
-            delete corruptAnalysisDefinition.queryDefinition?.filter;
-            const req: AnalysisTableExportRequest = {
+            delete corruptAnalysisDefinition?.queryDefinition?.filter;
+            const req = {
                 fkProject: pkProject,
                 analysisDefinition: corruptAnalysisDefinition,
                 fileType: TableExportFileType.json
@@ -275,7 +275,7 @@ describe('AnaylsisController', () => {
 
         it('should respond with a table of one column for entity labels', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
-            const req: AnalysisTableExportRequest = {
+            const req = {
                 fkProject: pkProject,
                 analysisDefinition: queryGeoPlaces.analysis_definition,
                 fileType: TableExportFileType.json
@@ -293,8 +293,8 @@ describe('AnaylsisController', () => {
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.MAP_GEO_PLACES;
             const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
-            delete corruptAnalysisDefinition.queryDefinition?.filter;
-            const req: AnalysisMapRequest = {
+            delete corruptAnalysisDefinition?.queryDefinition?.filter;
+            const req = {
                 fkProject: pkProject,
                 analysisDefinition: corruptAnalysisDefinition
             }
@@ -306,7 +306,7 @@ describe('AnaylsisController', () => {
 
         it('should respond with a table of one column for entity labels', async () => {
             const queryGeoPlaces = ProAnalysisMock.MAP_GEO_PLACES;
-            const req: AnalysisMapRequest = {
+            const req = {
                 fkProject: pkProject,
                 analysisDefinition: queryGeoPlaces.analysis_definition
             }
@@ -326,10 +326,10 @@ describe('AnaylsisController', () => {
         it('should reject the request because inputs are wrong', async () => {
             const proAnalysis = ProAnalysisMock.TIME_BIRTHS;
             const corruptAnalysisDefinition = clone(proAnalysis.analysis_definition);
-            delete corruptAnalysisDefinition.lines?.[0]?.queryDefinition.filter;
+            delete corruptAnalysisDefinition?.lines?.[0]?.queryDefinition.filter;
             const req: AnalysisTimeChartRequest = {
                 fkProject: pkProject,
-                lines: corruptAnalysisDefinition.lines ?? []
+                lines: corruptAnalysisDefinition?.lines ?? []
             }
             const res = await client.post('/analysis/time-chart-run')
                 .set('Authorization', lb4Token)
@@ -341,7 +341,7 @@ describe('AnaylsisController', () => {
             const proAnalysis = ProAnalysisMock.TIME_BIRTHS;
             const req: AnalysisTimeChartRequest = {
                 fkProject: pkProject,
-                lines: proAnalysis.analysis_definition.lines ?? []
+                lines: proAnalysis.analysis_definition?.lines ?? []
             }
             const res = await client.post('/analysis/time-chart-run')
                 .set('Authorization', lb4Token)

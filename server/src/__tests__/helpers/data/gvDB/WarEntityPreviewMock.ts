@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import {WarEntityPreview, CalendarType, Granularity} from '../../../../models'
-import {ProProjectMock} from './ProProjectMock'
-import {DfhApiClassMock} from './DfhApiClassMock'
+import { WarEntityPreview, CalendarType, Granularity } from '../../../../models'
+import { ProProjectMock } from './ProProjectMock'
+import { DfhApiClassMock } from './DfhApiClassMock'
 
 /**
  * pk_entity prefix: 100
  */
 export class WarEntityPreviewMock {
-    static readonly GEO_PLACE_BASEL = new WarEntityPreview({
+    static readonly GEO_PLACE_BASEL: Partial<WarEntityPreview> = ({
         pk_entity: 1000,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -18,7 +18,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly GEO_PLACE_ZURICH = new WarEntityPreview({
+    static readonly GEO_PLACE_ZURICH: Partial<WarEntityPreview> = ({
         pk_entity: 1001,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -29,7 +29,7 @@ export class WarEntityPreviewMock {
     })
 
 
-    static readonly BIRTH_OEKOLOMBAD = new WarEntityPreview({
+    static readonly BIRTH_OEKOLOMBAD: Partial<WarEntityPreview> = ({
         pk_entity: 1002,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -46,7 +46,7 @@ export class WarEntityPreviewMock {
         }
     })
 
-    static readonly BIRTH_ZWINGLI = new WarEntityPreview({
+    static readonly BIRTH_ZWINGLI: Partial<WarEntityPreview> = ({
         pk_entity: 1003,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,

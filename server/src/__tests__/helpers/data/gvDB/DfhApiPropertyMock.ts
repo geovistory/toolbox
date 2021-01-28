@@ -1,3 +1,4 @@
+import { DfhApiProperty } from "./local-model.helpers"
 
 export class DfhApiPropertyMock {
   static readonly EN_1111_IS_APPE_OF: DfhApiProperty = {
@@ -590,34 +591,3 @@ export class DfhApiPropertyMock {
 // FROM data_for_history.api_property t1
 // WHERE dfh_pk_property = 365
 // AND dfh_profile_association_type='selected'
-
-export interface DfhApiProperty {
-  pk_entity: number,
-  tmsp_last_dfh_update: string,
-  is_enabled_in_profile: boolean | null,
-  removed_from_api: boolean,
-  requested_language: string,
-  dfh_pk_property: number,
-  dfh_property_label_language: string,
-  dfh_property_label: string,
-  dfh_property_scope_note_language: string,
-  dfh_property_scope_note: string,
-  dfh_is_inherited: boolean,
-  dfh_property_domain: number,
-  dfh_domain_instances_min_quantifier: number | null,
-  dfh_domain_instances_max_quantifier: number | null,
-  dfh_property_range: number,
-  dfh_range_instances_min_quantifier: number | null,
-  dfh_range_instances_max_quantifier: number | null,
-  dfh_identity_defining: boolean,
-  dfh_is_has_type_subproperty: boolean,
-  dfh_property_identifier_in_namespace: string,
-  dfh_namespace_uri: string | null,
-  dfh_fk_namespace: number,
-  dfh_namespace_label_language: string,
-  dfh_namespace_label: string,
-  dfh_profile_association_type: string | null,
-  dfh_fk_profile: number,
-  dfh_profile_label_language: string,
-  dfh_profile_label: string,
-}

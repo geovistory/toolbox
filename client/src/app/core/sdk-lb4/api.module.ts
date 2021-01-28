@@ -40,7 +40,6 @@ import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.serv
 import { SysSystemTypeService } from './api/sysSystemType.service';
 import { SystemConfigurationService } from './api/systemConfiguration.service';
 import { TableService } from './api/table.service';
-import { WarEntityPreviewService } from './api/warEntityPreview.service';
 import { WarEntityPreviewControllerService } from './api/warEntityPreviewController.service';
 
 @NgModule({

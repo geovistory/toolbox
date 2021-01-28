@@ -32,7 +32,7 @@
       "type": "number"
     },
     "is_imported": {
-      "type": "number"
+      "type": "boolean"
     }
   },
   "validations": [],

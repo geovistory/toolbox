@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { DatFactoidPropertyMapping } from '../../atomic/dat-factoid.helper'
+import { DatFactoidPropertyMapping } from './local-model.helpers'
 import { DatColumnMock } from './DatColumnMock'
 import { DatFactoidMappingMock } from './DatFactoidMappingMock'
 import { DfhApiPropertyMock } from './DfhApiPropertyMock'
