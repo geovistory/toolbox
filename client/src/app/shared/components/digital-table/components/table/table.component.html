@@ -26,16 +26,18 @@
       <tr>
         <ng-container *ngFor="let col of headers; let i = index">
           <ng-container *ngIf="!col.mapping">
-            <th class="gv-pointer gv-td-col-header" (click)="sort(i)" colspan="1">
+            <th class="gv-pointer gv-td-col-header" colspan="1">
               <!-- Column title-->
               <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
-                <span></span>
-                {{col.colLabel}}
-                <!-- sort icon -->
-                <span *ngIf="!(sortingEnabled && curSort.colNb == i)"></span>
-                <mat-icon class="col-1" *ngIf="sortingEnabled && curSort.colNb == i"
+                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i" (click)="sort(i)"
                   [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                 </mat-icon>
+                <mat-icon></mat-icon>
+                <span (click)="sort(i)">{{col.colLabel}}</span>
+                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i"></mat-icon>
+                <mat-icon *ngIf="i != 0" svgIcon="link"
+                  (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
+                <mat-icon *ngIf="i == 0"></mat-icon>
               </div>
               <!-- Column comment-->
               <div class="d-flex justify-content-center mat-caption"
@@ -46,16 +48,18 @@
           </ng-container>
 
           <ng-container *ngIf="col.mapping">
-            <th class="gv-pointer gv-td-col-header" (click)="sort(i)" colspan="2">
+            <th class="gv-pointer gv-td-col-header" colspan="2">
               <!-- Column title-->
               <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
-                <span></span>
-                {{col.colLabel}}
-                <!-- sort icon -->
-                <span *ngIf="!(sortingEnabled && curSort.colNb == i)"></span>
-                <mat-icon class="col-1" *ngIf="sortingEnabled && curSort.colNb == i"
+                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i" (click)="sort(i)"
                   [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                 </mat-icon>
+                <mat-icon></mat-icon>
+                <span (click)="sort(i)">{{col.colLabel}}</span>
+                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i"></mat-icon>
+                <mat-icon *ngIf="i != 0" svgIcon="link"
+                  (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
+                <mat-icon *ngIf="i == 0"></mat-icon>
               </div>
               <!-- Column comment-->
               <div class="d-flex justify-content-center mat-caption"
@@ -121,7 +125,8 @@
               class="text-center align-self-center" pResizableColumn colspan="1">
               {{value.text}}
             </td>
-            <td *ngIf="headers[j].mapping" pResizableColumn colspan="1" [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
+            <td *ngIf="headers[j].mapping" pResizableColumn colspan="1"
+              [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
               <gv-entity-matcher [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>
             </td>
           </ng-container>

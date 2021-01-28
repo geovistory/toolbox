@@ -15,8 +15,9 @@ export interface DatChunkScopeFilter {
     offset?: number;
     limit?: number;
     skip?: number;
-    order?: Array<string>;
+    order?: string | Array<string>;
     where?: { [key: string]: object; };
     fields?: { [key: string]: object; };
+    include?: Array<{ [key: string]: object; }>;
 }
 

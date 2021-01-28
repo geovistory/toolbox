@@ -241,32 +241,29 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.headers$ = this.columns$.pipe(
       switchMap((cols) => {
         const obs$ = cols.map(col => this.p.dat$.class_column_mapping$.by_fk_column$.key(col.datColumn.pk_entity).pipe(
-          // extract the fkClass
-          map((mappings) => {
-            const mapArr = values(mappings);
-            let toReturn: number | undefined;
-            if (mapArr.length) toReturn = mapArr[0].fk_class;
-            return toReturn;
-          }),
+          // format the mappings
+          map((indexedMappings) => values(indexedMappings)),
           // create the header for that column
-          switchMap((fkClass: number | undefined) => {
+          switchMap((mappings) => {
             const header: Header = {
               colLabel: col.display,
               comment: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
               type: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
               pk_column: col.datColumn.pk_entity,
             };
-            if (!fkClass) return of(header);
+            if (!mappings[0]) return of(header);
             // get the class and the class label
-            return combineLatest(
-              this.p.dfh$.class$.by_pk_class$.key(fkClass),
-              this.c.pipeClassLabel(fkClass)
-            ).pipe(
+            return combineLatest([
+              this.p.dfh$.class$.by_pk_class$.key(mappings[0].fk_class),
+              this.c.pipeClassLabel(mappings[0].fk_class)
+            ]).pipe(
               map(([dfhClass, classLabels]) => {
                 header.mapping = {
-                  fkClass: fkClass,
+                  fkClass: mappings[0].fk_class,
                   className: classLabels,
-                  icon: dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn'
+                  icon: dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn',
+                  pkEntity: mappings[0].pk_entity,
+                  pkColumn: col.datColumn.pk_entity
                 }
                 return header;
               }

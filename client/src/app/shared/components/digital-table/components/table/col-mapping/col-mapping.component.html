@@ -1,0 +1,54 @@
+<div mat-dialog-title>
+    <h2>Map column <i>{{data.colLabel}}</i> <small> (id:{{data.pkColumn}}) </small> to ...</h2>
+
+    <mat-form-field [ngStyle]="{'width': '48%'}" appearance="outline" dense>
+        <input matInput autocomplete="off" (keyup)="filter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+</div>
+<mat-dialog-content>
+    <form [formGroup]="form">
+
+        <mat-radio-group aria-label="Select a class" [formControl]="selectedClassCtrl" (change)="mapColumn($event)"
+            class="d-flex flex-column w-100">
+
+            <mat-radio-button class="ml-2 mb-4" value="-1" [checked]="this.selectedClass == -1">
+                Nothing
+            </mat-radio-button>
+            <div class="d-flex">
+
+                <div class="d-flex flex-column w-50" style="flex: 1 1 1px; overflow:hidden; text-overflow:ellipsis;">
+                    <h5 class="d-flex align-items-center">
+                        <mat-icon class="gv-entity-color" svgIcon="ruler-square"></mat-icon>
+                        <span class="ml-1">VALUE CLASSES</span>
+                    </h5>
+                    <mat-radio-button *ngFor="let class of (filteredClasses$ | async).specialClasses"
+                        [checked]="this.selectedClass == class.pkClass" value="{{class.pkClass}}">
+                        {{class.label}}
+                    </mat-radio-button>
+                </div>
+
+                <div class="d-flex flex-column" style="flex: 1 1 1px; overflow:hidden; text-overflow:ellipsis;">
+                    <h5 class="d-flex align-items-center">
+                        <span class="fa-2x gv-icon gv-icon-entity gv-entity-color"></span>
+                        <span class="ml-1">NORMAL CLASSES</span>
+                    </h5>
+                    <mat-radio-button *ngFor="let class of (filteredClasses$ | async).normalClasses"
+                        [checked]="this.selectedClass == class.pkClass" value="{{class.pkClass}}">
+                        {{class.label}}
+                    </mat-radio-button>
+                </div>
+            </div>
+
+        </mat-radio-group>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="btn btn-secondary mt-1" [mat-dialog-close]="">Cancel</button>
+    <button class="btn btn-primary ml-2 mt-1" [mat-dialog-close]=""
+        *ngIf="!data.mapping && selectedClass != -1 || (data.mapping && data.mapping.fkClass != selectedClass)"
+        (click)="changeColumnMapping()">
+        Map column <i>{{data.colLabel}}</i> to <i>{{this.selectedClassLabel}}</i>
+    </button>
+</mat-dialog-actions>

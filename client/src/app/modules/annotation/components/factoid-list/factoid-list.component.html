@@ -63,21 +63,21 @@
 
             <!-- principal property -->
             <mat-grid-tile [colspan]="3" [rowspan]="1">
-                <div class="content bold gv-one-liner gv-fade-out-right ">
+                <div class="content mat-text-secondary gv-one-liner gv-fade-out-right ">
                     {{c.pipeLabelOfPropertyField(factoidEntity.headerStatements[0].fkProperty, factoidEntity.headerStatements[0].isOutgoing ? factoidEntity.pkClass : null, factoidEntity.headerStatements[0].isOutgoing ? null : factoidEntity.pkClass) | async}}
                 </div>
             </mat-grid-tile>
 
             <!-- principal cell content -->
             <mat-grid-tile [colspan]="3" [rowspan]="1">
-                <div class="content bold italic gv-one-liner gv-fade-out-right">
+                <div class="content mat-text-secondary italic gv-one-liner gv-fade-out-right">
                     {{factoidEntity.headerStatements[0].value}}
                 </div>
             </mat-grid-tile>
 
             <!-- principal entity entity -->
             <mat-grid-tile [colspan]="3" [rowspan]="1">
-                <div class="content bold">
+                <div class="content mat-text-secondary">
                     <gv-entity-preview *ngIf="factoidEntity.headerStatements[0].pkEntity"
                         class="gv-one-liner gv-fade-out-right" [pkEntity]="factoidEntity.headerStatements[0].pkEntity"
                         class="left-col"></gv-entity-preview>
@@ -86,7 +86,7 @@
 
             <!-- principal locations-->
             <mat-grid-tile [colspan]="2" [rowspan]="1">
-                <div class="content bold gv-one-liner gv-fade-out-right">
+                <div class="content mat-text-secondary gv-one-liner gv-fade-out-right">
                     <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
                         [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
                     </mat-icon>

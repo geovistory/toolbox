@@ -9,14 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvSchemaObject } from './gvSchemaObject';
 import { TableRow } from './tableRow';
+import { GvPositiveSchemaObject } from './gvPositiveSchemaObject';
 
 
 export interface TablePageResponse { 
     rows?: Array<TableRow>;
     columns?: Array<string>;
     length?: number;
-    schemaObject?: GvSchemaObject;
+    schemaObject?: GvPositiveSchemaObject;
 }
 

@@ -2,7 +2,7 @@ import { model, property } from '@loopback/repository';
 import { without } from 'ramda';
 import { Postgres1DataSource } from '../../datasources';
 import { DatColumn, InfStatement, ProInfoProjRel } from '../../models';
-import { GvSchemaObject } from '../../models/gv-schema-object.model';
+import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
 import { logSql } from '../../utils/helpers';
 import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 import { registerType } from '../spec-enhancer/model.spec.enhancer';
@@ -115,7 +115,7 @@ export class TablePageResponse {
   @property.array(TableRow) rows: TableRow[];
   @property.array(String) columns: string[];
   @property() length: number;
-  @property() schemaObject: GvSchemaObject
+  @property() schemaObject: GvPositiveSchemaObject
 }
 
 interface ColBatchWith { name: string, columns: string[] }
@@ -256,7 +256,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     const res = await this.executeAndReturnFirstData<{
       rows: TableRow[],
       length: number,
-      schemaObject: GvSchemaObject
+      schemaObject: GvPositiveSchemaObject
     }>()
 
     return {

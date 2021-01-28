@@ -1,16 +1,21 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DatColumn } from 'app/core';
+import { DatColumn, SysConfig } from 'app/core';
 import { ActiveProjectService } from 'app/core/active-project';
+import { SystemConfigurationService } from 'app/core/sdk-lb4';
+import { SystemSelector } from 'app/core/sys/sys.service';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../../server/src/lb3/server/table/interfaces';
+import { ColMappingComponent } from './col-mapping/col-mapping.component';
 
 export interface ColumnMapping {
   fkClass: number,
   className: string,
   icon: 'teEn' | 'peIt',
+  pkEntity?: number,
+  pkColumn?: number
 }
 
 export interface Header {
@@ -23,7 +28,7 @@ export interface Header {
 
 @Component({
   selector: 'gv-table',
-  templateUrl: './table.component.html',  
+  templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {
@@ -47,13 +52,19 @@ export class TableComponent implements OnInit, OnDestroy {
 
   // private parameters
   isThereMappings$: Observable<boolean>;
-  headers: { colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[];
+  headers: Header[];
   table: Array<Array<string | { text: string, pkCell: number }>>;
   curSort: { colNb: number, direction: string };
   filters: Array<{ col: number, value: string }>;
 
+  // mapping options
+  valuesObjectTypes: Array<{ pkClass: number, label: string }> = [];
+  classes: Array<{ pkClass: number, label: string }> = [];
+
+
   constructor(
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -78,6 +89,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     // listen to sortBy option (from parent or from html)
     if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => this.curSort = sort);
+
   }
 
   ngOnDestroy() {
@@ -108,4 +120,17 @@ export class TableComponent implements OnInit, OnDestroy {
   cellClick(row: number, col: number) {
     this.cellClicked.emit({ col, row });
   }
+
+  openMappingDialog(colLabel: string, pkColumn: number, mapping: ColumnMapping) {
+
+    const indexOfCol = this.headers.map(h => h.pk_column).indexOf(pkColumn) - 1;
+    const pkCells: Array<number> = this.table.map(row => { if (typeof row[indexOfCol] !== 'string') return (row[indexOfCol] as any).pkCell });
+
+    this.dialog.open<ColMappingComponent, { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> }>(ColMappingComponent, {
+      height: 'calc(100% - 100px)',
+      width: '30%',
+      data: { colLabel, pkColumn, mapping, pkCells }
+    });
+  }
+
 }

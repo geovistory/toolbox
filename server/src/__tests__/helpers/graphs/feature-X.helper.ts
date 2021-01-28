@@ -1,33 +1,33 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {createDatChunk} from '../atomic/dat-chunk.helper';
-import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
-import {createDatColumn} from '../atomic/dat-column.helper';
-import {createDatDigital} from '../atomic/dat-digital.helper';
-import {createDatFactoidMapping, createDatFactoidPropertyMapping} from '../atomic/dat-factoid.helper';
-import {createDatTextProperty} from '../atomic/dat-text-property.helper';
-import {createInfStatement} from '../atomic/inf-statement.helper';
-import {addProfilesToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
-import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
-import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
-import {createCellTable_old, createTabCell} from '../atomic/tab-cell-X.helper';
-import {createTabRow} from '../atomic/tab-row.helper';
-import {DatChunkMock} from '../data/gvDB/DatChunkMock';
-import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
-import {DatColumnMock} from '../data/gvDB/DatColumnMock';
-import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
-import {DatFactoidMappingMock} from '../data/gvDB/DatFactoidMappingMock';
-import {DatFactoidPropertyMappingMock} from '../data/gvDB/DatFactoidPropertyMappingMock';
-import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
-import {InfStatementMock} from '../data/gvDB/InfStatementMock';
-import {ProProjectMock} from '../data/gvDB/ProProjectMock';
-import {PubAccountMock} from '../data/gvDB/PubAccountMock';
-import {TabCellXMock} from '../data/gvDB/TabCellXMock';
-import {TabRowMock} from '../data/gvDB/TabRowMock';
-import {createModel} from '../meta/model.helper';
-import {createGaetanMuck} from './account.helper';
-import {createBunchOfPersons} from './person.helper';
-import {createSandBoxProject} from './project.helper';
-import {createBunchOfSources} from './source.helper';
+import { createDatChunk } from '../atomic/dat-chunk.helper';
+import { createDatClassColumnMapping } from '../atomic/dat-class-mapping.helper';
+import { createDatColumn } from '../atomic/dat-column.helper';
+import { createDatDigital } from '../atomic/dat-digital.helper';
+import { createDatFactoidMapping, createDatFactoidPropertyMapping } from '../atomic/dat-factoid.helper';
+import { createDatTextProperty } from '../atomic/dat-text-property.helper';
+import { createInfStatement } from '../atomic/inf-statement.helper';
+import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper';
+import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
+import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
+import { createCellTable_old, createTabCell } from '../atomic/tab-cell-X.helper';
+import { createTabRow } from '../atomic/tab-row.helper';
+import { DatChunkMock } from '../data/gvDB/DatChunkMock';
+import { DatClassColumnMappingMock } from '../data/gvDB/DatClassColumnMappingMock';
+import { DatColumnMock } from '../data/gvDB/DatColumnMock';
+import { DatDigitalMock } from '../data/gvDB/DatDigitalMock';
+import { DatFactoidMappingMock } from '../data/gvDB/DatFactoidMappingMock';
+import { DatFactoidPropertyMappingMock } from '../data/gvDB/DatFactoidPropertyMappingMock';
+import { DatTextPropertyMock } from '../data/gvDB/DatTextPropertyMock';
+import { InfStatementMock } from '../data/gvDB/InfStatementMock';
+import { ProProjectMock } from '../data/gvDB/ProProjectMock';
+import { PubAccountMock } from '../data/gvDB/PubAccountMock';
+import { TabCellXMock } from '../data/gvDB/TabCellXMock';
+import { TabRowMock } from '../data/gvDB/TabRowMock';
+import { createModel } from '../meta/model.helper';
+import { createGaetanMuck } from './account.helper';
+import { createBunchOfPersons } from './person.helper';
+import { createSandBoxProject } from './project.helper';
+import { createBunchOfSources } from './source.helper';
 
 
 export async function forFeatureX() {
@@ -57,6 +57,7 @@ export async function forFeatureX() {
     await createTabCell(TabCellXMock.FEATURE_X_2_2, row2);
     //create the related mapping
     await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON);
+    await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_BIRTHDATE_TO_CLASS_TIMEPRIMITIVE);
     const statementMapping = await createInfStatement(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF);
 
     //create the digital and related (not mapped)

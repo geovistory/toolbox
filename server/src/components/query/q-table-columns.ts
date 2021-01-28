@@ -1,6 +1,6 @@
 import {Postgres1DataSource} from '../../datasources';
 import {DatColumn, DatTextProperty} from '../../models';
-import {GvSchemaObject} from '../../models/gv-schema-object.model';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {DatClassColumnMapping} from '../../models/dat-class-column-mapping.model';
 
@@ -16,7 +16,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
    * @param fkProject project
    * @param fkTable pkEntity of the digital table to which the columns belong
    */
-  async query(fkProject: number, fkTable: number): Promise<GvSchemaObject> {
+  async query(fkProject: number, fkTable: number): Promise<GvPositiveSchemaObject> {
 
     this.sql = `
     WITH tw1 AS (
@@ -103,7 +103,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
 
     this.getBuiltQuery()
 
-    return this.executeAndReturnFirstData<GvSchemaObject>();
+    return this.executeAndReturnFirstData<GvPositiveSchemaObject>();
   }
 
 

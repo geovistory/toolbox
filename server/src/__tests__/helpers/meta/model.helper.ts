@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {DfhApiProfile, InfLanguage} from '../../../models';
-import {createDfhApiClass, DfhApiClass} from '../atomic/dfh-api-class.helper';
-import {createDfhApiProfile} from '../atomic/dfh-api-profile.helper';
-import {createDfhApiProperty, DfhApiProperty} from '../atomic/dfh-api-property.helper';
-import {createInfLanguage} from '../atomic/inf-language.helper';
-import {createSysSystemType} from '../atomic/sys-system-type.helper';
-import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
-import {DfhApiProfileMock} from '../data/gvDB/DfhApiProfileMock';
-import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
-import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
-import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
+import { DfhApiProfile, InfLanguage } from '../../../models';
+import { createDfhApiClass, DfhApiClass } from '../atomic/dfh-api-class.helper';
+import { createDfhApiProfile } from '../atomic/dfh-api-profile.helper';
+import { createDfhApiProperty, DfhApiProperty } from '../atomic/dfh-api-property.helper';
+import { createInfLanguage } from '../atomic/inf-language.helper';
+import { createSysSystemType } from '../atomic/sys-system-type.helper';
+import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
+import { DfhApiProfileMock } from '../data/gvDB/DfhApiProfileMock';
+import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
+import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
+import { SysSystemTypeMock } from '../data/gvDB/SysSystemTypeMock';
 
 export async function createModel() {
     await createTypes();
@@ -18,7 +18,7 @@ export async function createModel() {
     const classes = await createClasses();
     const properties = await createProperties();
 
-    return {languages, profiles, classes, properties};
+    return { languages, profiles, classes, properties };
 }
 
 //is this still needed?
@@ -54,7 +54,13 @@ export async function createClasses(): Promise<Array<DfhApiClass>> {
         await createDfhApiClass(DfhApiClassMock.EN_218_EXPRESSION),
         await createDfhApiClass(DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE),
         await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH),
-        await createDfhApiClass(DfhApiClassMock.EN_633_UNION)
+        await createDfhApiClass(DfhApiClassMock.EN_633_UNION),
+        await createDfhApiClass(DfhApiClassMock.EN_40_APPELLATION),
+        await createDfhApiClass(DfhApiClassMock.EN_51_PLACE),
+        await createDfhApiClass(DfhApiClassMock.EN_52_DIMENSION),
+        await createDfhApiClass(DfhApiClassMock.EN_54_LANGUAGE),
+        await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE),
+        await createDfhApiClass(DfhApiClassMock.EN_657_REFERENCE),
     ]);
 }
 
@@ -77,8 +83,6 @@ export async function createProperties(): Promise<Array<DfhApiProperty>> {
         await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
         await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END),
         await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
-        await createDfhApiProperty(DfhApiPropertyMock.EN_1409_INVOLVES_PARTNER),
-        // await createDfhApiProperty(DfhApiPropertyMock.),
-
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1409_INVOLVES_PARTNER)
     ]);
 }

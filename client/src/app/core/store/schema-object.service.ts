@@ -7,7 +7,7 @@ import { SchemaObjectApi } from '../sdk';
 import { Observable, Subject } from 'rxjs';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { WarActions } from '../war/war.actions';
-import { GvSchemaObject } from '../sdk-lb4';
+import { GvNegativeSchemaObject, GvPositiveSchemaObject, GvSchemaModifier } from '../sdk-lb4';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { TabActions } from '../tab/tab.actions';
 
@@ -66,13 +66,68 @@ export class SchemaObjectService {
    * @param apiCall$
    * @param pkProject primary key of project or 'ofRepo', if repo versions
    */
-  storeGv(apiCall$: Observable<GvSchemaObject>, pkProject: number | 'ofRepo'): Observable<GvSchemaObject> {
+  storeGv(apiCall$: Observable<GvPositiveSchemaObject>, pkProject: number | 'ofRepo'): Observable<GvPositiveSchemaObject> {
 
-    const s$ = new Subject<GvSchemaObject>()
+    const s$ = new Subject<GvPositiveSchemaObject>()
     apiCall$.subscribe(
       result => {
         this.storeSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject)
         s$.next(result)
+      },
+      error => {
+        this.notifications.addToast({
+          type: 'error',
+          options: { title: error.message }
+        })
+        s$.error(error)
+      }
+    )
+    return s$
+  }
+
+  /**
+ * watches an Observable<SchemaObject>
+ * on success stores the parts of the object at right place of store
+ * on error emits error message
+ *
+ * @param apiCall$
+ * @param pkProject primary key of project or 'ofRepo', if repo versions
+ */
+  deleteGv(apiCall$: Observable<GvNegativeSchemaObject>, pkProject: number | 'ofRepo'): Observable<GvNegativeSchemaObject> {
+
+    const s$ = new Subject<GvNegativeSchemaObject>()
+    apiCall$.subscribe(
+      result => {
+        this.deleteSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject)
+        s$.next(result)
+      },
+      error => {
+        this.notifications.addToast({
+          type: 'error',
+          options: { title: error.message }
+        })
+        s$.error(error)
+      }
+    )
+    return s$
+  }
+
+  /**
+   * watches an Observable<GvSchemaModifier>
+   * on success stores the parts of the object at right place of store
+   * on error emits error message
+   *
+   * @param apiCall$
+   * @param pkProject primary key of project or 'ofRepo', if repo versions
+   */
+  modifyGvSchema(apiCall$: Observable<GvSchemaModifier>, pkProject: number | 'ofRepo'): Observable<GvSchemaModifier> {
+
+    const s$ = new Subject<GvSchemaModifier>();
+    apiCall$.subscribe(
+      result => {
+        this.storeSchemaObjectGv(result.positive, pkProject === 'ofRepo' ? null : pkProject);
+        this.deleteSchemaObjectGv(result.negative, pkProject === 'ofRepo' ? null : pkProject);
+        s$.next(result);
       },
       error => {
         this.notifications.addToast({
@@ -112,7 +167,7 @@ export class SchemaObjectService {
    * @param object
    * @param pkProject primary key of project or null, if repo versions
    */
-  storeSchemaObjectGv(object: GvSchemaObject, pkProject: number | null) {
+  storeSchemaObjectGv(object: GvPositiveSchemaObject, pkProject: number | null) {
     if (object && Object.keys(object).length > 0) {
       Object.keys(object).forEach(schema => {
         let actions;
@@ -132,11 +187,32 @@ export class SchemaObjectService {
   }
 
   /**
+   *
+   * @param object
+   * @param pkProject primary key of project or null, if repo versions
+   */
+  deleteSchemaObjectGv(object: GvNegativeSchemaObject, pkProject: number | null) {
+    if (object && Object.keys(object).length > 0) {
+      Object.keys(object).forEach(schema => {
+        let actions;
+        if (schema === 'dat') actions = this.datActions;
+        if (schema === 'inf') actions = this.infActions;
+        if (schema === 'pro') actions = this.proActions;
+        if (actions) {
+          Object.keys(object[schema]).forEach(model => {
+            actions[model].deleteSucceeded(object[schema][model], undefined, pkProject);
+          });
+        }
+      });
+    }
+  }
+
+  /**
    * Adds the entity previews to the streamed entity previews (for ws communication)
    * @param object
    * @param pkProject
    */
-  private extendEntityPreviewStream(object: GvSchemaObject, pkProject: number) {
+  private extendEntityPreviewStream(object: GvPositiveSchemaObject, pkProject: number) {
     if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
       this.entityPreviewSocket.emit('extendStream', {
         pkProject,

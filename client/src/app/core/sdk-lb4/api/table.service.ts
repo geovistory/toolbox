@@ -18,8 +18,12 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { GetTablePageOptions } from '../model/models';
-import { GvSchemaObject } from '../model/models';
+import { GvPositiveSchemaObject } from '../model/models';
+import { GvSchemaModifier } from '../model/models';
+import { MapColumnBody } from '../model/models';
 import { TablePageResponse } from '../model/models';
+import { UnMapCheckResponse } from '../model/models';
+import { UnmapColumnBody } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -94,9 +98,9 @@ export class TableService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
-    public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
-    public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
     public tableControllerGetTableColumns(pkProject: number, pkDigital: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling tableControllerGetTableColumns.');
@@ -150,7 +154,7 @@ export class TableService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<GvSchemaObject>(`${this.configuration.basePath}/get-columns-of-table`,
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/get-columns-of-table`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
@@ -237,6 +241,240 @@ export class TableService {
 
         return this.httpClient.post<TablePageResponse>(`${this.configuration.basePath}/get-table-page`,
             getTablePageOptions,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Set the mapping of a column
+     * @param pkNamespace 
+     * @param mapColumnBody 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerMapColumn(pkNamespace: number, mapColumnBody?: MapColumnBody, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public tableControllerMapColumn(pkNamespace: number, mapColumnBody?: MapColumnBody, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public tableControllerMapColumn(pkNamespace: number, mapColumnBody?: MapColumnBody, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
+    public tableControllerMapColumn(pkNamespace: number, mapColumnBody?: MapColumnBody, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkNamespace === null || pkNamespace === undefined) {
+            throw new Error('Required parameter pkNamespace was null or undefined when calling tableControllerMapColumn.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkNamespace !== undefined && pkNamespace !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkNamespace, 'pkNamespace');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (accesstoken) required
+        if (this.configuration.apiKeys) {
+            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
+            if (key) {
+                headers = headers.set('authorization', key);
+            }
+        }
+
+        // authentication (jwt) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvPositiveSchemaObject>(`${this.configuration.basePath}/map-column`,
+            mapColumnBody,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Reset the mapping of a column
+     * @param pkNamespace 
+     * @param unmapColumnBody 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerUnMapColumn(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public tableControllerUnMapColumn(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public tableControllerUnMapColumn(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public tableControllerUnMapColumn(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkNamespace === null || pkNamespace === undefined) {
+            throw new Error('Required parameter pkNamespace was null or undefined when calling tableControllerUnMapColumn.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkNamespace !== undefined && pkNamespace !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkNamespace, 'pkNamespace');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (accesstoken) required
+        if (this.configuration.apiKeys) {
+            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
+            if (key) {
+                headers = headers.set('authorization', key);
+            }
+        }
+
+        // authentication (jwt) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvSchemaModifier>(`${this.configuration.basePath}/unmap-column`,
+            unmapColumnBody,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Check if the mapping of a column can be removed
+     * @param pkNamespace 
+     * @param unmapColumnBody 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerUnMapColumnCheck(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<UnMapCheckResponse>;
+    public tableControllerUnMapColumnCheck(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<UnMapCheckResponse>>;
+    public tableControllerUnMapColumnCheck(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<UnMapCheckResponse>>;
+    public tableControllerUnMapColumnCheck(pkNamespace: number, unmapColumnBody?: UnmapColumnBody, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkNamespace === null || pkNamespace === undefined) {
+            throw new Error('Required parameter pkNamespace was null or undefined when calling tableControllerUnMapColumnCheck.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkNamespace !== undefined && pkNamespace !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkNamespace, 'pkNamespace');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (accesstoken) required
+        if (this.configuration.apiKeys) {
+            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
+            if (key) {
+                headers = headers.set('authorization', key);
+            }
+        }
+
+        // authentication (jwt) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<UnMapCheckResponse>(`${this.configuration.basePath}/unmap-column-check`,
+            unmapColumnBody,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

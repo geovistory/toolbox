@@ -2,18 +2,24 @@
 import { Client, expect } from '@loopback/testlab';
 import { GetTablePageOptions, SortDirection } from '../../../components/query/q-table-page';
 import { PubAccount } from '../../../models';
-import { GvSchemaObject } from '../../../models/gv-schema-object.model';
+import { GvPositiveSchemaObject } from '../../../models/gv-positive-schema-object.model';
 import { GeovistoryServer } from '../../../server';
+import { createDatNamespace } from '../../helpers/atomic/dat-namespace.helper';
 import { DatClassColumnMappingMock } from '../../helpers/data/gvDB/DatClassColumnMappingMock';
 import { DatColumnMock } from '../../helpers/data/gvDB/DatColumnMock';
 import { DatDigitalMock } from '../../helpers/data/gvDB/DatDigitalMock';
+import { DatNamespaceMock } from '../../helpers/data/gvDB/DatNamespaceMock';
+import { DfhApiClassMock } from '../../helpers/data/gvDB/DfhApiClassMock';
+import { InfStatementMock } from '../../helpers/data/gvDB/InfStatementMock';
 import { ProProjectMock } from '../../helpers/data/gvDB/ProProjectMock';
 import { PubAccountMock } from '../../helpers/data/gvDB/PubAccountMock';
 import { PubCredentialMock } from '../../helpers/data/gvDB/PubCredentialMock';
 import { createJonasSchneider } from '../../helpers/graphs/account.helper';
 import { forFeatureX } from '../../helpers/graphs/feature-X.helper';
+import { createProject2 } from '../../helpers/graphs/project.helper';
 import { setupApplication } from '../../helpers/gv-server-helpers';
 import { cleanDb } from '../../helpers/meta/clean-db.helper';
+const qs = require('querystring');
 
 
 describe('TableController', () => {
@@ -22,6 +28,281 @@ describe('TableController', () => {
 
     before(async () => { ({ server, client } = await setupApplication()); });
     after(async () => { await server.stop(); });
+
+
+
+    describe('POST /map-column', async () => {
+        const project = ProProjectMock.SANDBOX_PROJECT;
+        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const pwdInProject = PubCredentialMock.GAETAN_PASSWORD.password;
+        const namespaceInProject = DatNamespaceMock.SANDBOX_NAMESPACE
+
+        const namespaceOUT = DatNamespaceMock.NAMESPACE_2
+
+        let query: { pkProject: number };
+
+        beforeEach(async () => {
+            await cleanDb();
+            await forFeatureX();
+            await createJonasSchneider();
+            await createProject2()
+            await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
+            query = { pkProject: project.pk_entity ?? -1 }
+        })
+
+        //AUTHORIZATION
+
+        it('AUTH: should reject the request because the user is not authenticated', async () => {
+            const res = await client.post('/map-column').send();
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+        })
+
+        it('AUTH: should reject the request because the authorization header is wrong', async () => {
+            const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
+            const res = await client.post('/map-column').set('Authorization', randomJWT).query(query);
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+        })
+
+        it('AUTH: should reject the request because the user is not in the namespace', async () => {
+            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const jwt = x.body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1, pkClass: -1 });
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        });
+
+        // MISSING PARAMETERS
+
+        it('MISS-PARAM: should reject the request: the namespace is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column').set('Authorization', jwt).send({});
+            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+        })
+
+        it('MISS-PARAM: should reject the request: the class and the column are absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({});
+            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+            expect(res.body.error.details[1]).to.containEql({ message: "should have required property \'pkClass\'" });
+        })
+
+        it('MISS-PARAM: should reject the request: the class is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
+            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkClass\'" });
+        })
+
+        it('MISS-PARAM: should reject the request: the column is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkClass: -1 });
+            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+        })
+
+        // CORE
+
+        it('CORE: should reject the request: the namespace is wrong', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class });
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        })
+
+        it('CORE: should reject the request: the column does not exists', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: 9998, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class });
+            expect(res.body.error).to.containEql({ statusCode: 404, message: "Entity not found: DatColumn with id " + 9998 });
+        })
+
+        it('CORE: should reject the request: the class does not exists', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, pkClass: 9998 });
+            expect(res.body.error).to.containEql({ statusCode: 404, message: "Entity not found: DfhClass with id " + 9998 });
+        })
+
+        it('CORE: should reject the request: the column is already mapped to this class', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class });
+            expect(res.body.error).to.containEql({ message: "The column is already mapped to this class" });
+        })
+
+        it('CORE: should accept the request: column has been mapped', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity, pkClass: DfhApiClassMock.EN_61_BIRTH.dfh_pk_class });
+
+            expect(res.body.dat.class_column_mapping[0].pk_entity).to.be.a.Number();
+            expect(res.body.dat.class_column_mapping[0].fk_class).to.be.a.equal(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class);
+            expect(res.body.dat.class_column_mapping[0].fk_column).to.be.a.equal(DatColumnMock.COL_BIRTHDATES.pk_entity);
+        })
+
+    })
+
+    describe('POST /unmap-column a', async () => {
+        const project = ProProjectMock.SANDBOX_PROJECT;
+        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const pwdInProject = PubCredentialMock.GAETAN_PASSWORD.password;
+        const namespaceInProject = DatNamespaceMock.SANDBOX_NAMESPACE
+
+        const namespaceOUT = DatNamespaceMock.NAMESPACE_2
+
+        let query: { pkProject: number };
+
+        beforeEach(async () => {
+            await cleanDb();
+            await forFeatureX();
+            await createJonasSchneider();
+            await createProject2()
+            await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
+            query = { pkProject: project.pk_entity ?? -1 }
+        })
+
+        //AUTHORIZATION
+
+        it('AUTH: should reject the request because the user is not authenticated', async () => {
+            const res = await client.post('/unmap-column').send();
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+        })
+
+        it('AUTH: should reject the request because the authorization header is wrong', async () => {
+            const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
+            const res = await client.post('/unmap-column').set('Authorization', randomJWT).query(query);
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+        })
+
+        it('AUTH: should reject the request because the user is not in the namespace', async () => {
+            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const jwt = x.body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        });
+
+        it('AUTH: should reject the request: the namespace is wrong', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        })
+
+        // MISSING PARAMETERS
+
+        it('MISS-PARAM: should reject the request: the namespace is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column').set('Authorization', jwt).send({});
+            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+        })
+
+        it('MISS-PARAM: should reject the request: the pkEntity is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({});
+            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+        })
+
+        // CORE
+
+        it('CORE: should reject the request: the pkEntity does not exists', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: 9998 });
+            expect(res.body.error).to.containEql({ message: "The mapping does not exists" });
+        })
+
+        it('CORE: should reject the request: the column has cells that are matched with entities', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_NAMES.pk_entity });
+            expect(res.body.error).to.containEql({ message: 'Can not delete the mapping, the column has cells that are matched with entities (1 matchings)' });
+        })
+
+        it('CORE: should accept the request: the column has cells that are matched with entities, but force deletion', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_NAMES.pk_entity, deleteAll: true });
+            expect(res.body.negative.dat.class_column_mapping[0].pk_entity).to.be.equal(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON.pk_entity);
+            expect(res.body.negative.inf.statement[0].pk_entity).to.be.equal(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF.pkEntity);
+            expect(res.body.negative.dat.class_column_mapping[0].pk_entity).to.be.equal(5056); // the pkEntity of the inf_proj_rel of the statement
+        })
+
+        it('CORE: should accept the request: column mapping has been removed', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity });
+            expect(res.body.negative.dat.class_column_mapping[0].pk_entity).to.be.equal(DatClassColumnMappingMock.MAPPING_COL_BIRTHDATE_TO_CLASS_TIMEPRIMITIVE.pk_entity);
+        })
+
+    })
+
+
+    describe('POST /unmap-column-check', async () => {
+        const project = ProProjectMock.SANDBOX_PROJECT;
+        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const pwdInProject = PubCredentialMock.GAETAN_PASSWORD.password;
+        const namespaceInProject = DatNamespaceMock.SANDBOX_NAMESPACE
+
+        const namespaceOUT = DatNamespaceMock.NAMESPACE_2
+
+        let query: { pkProject: number };
+
+        beforeEach(async () => {
+            await cleanDb();
+            await forFeatureX();
+            await createJonasSchneider();
+            await createProject2()
+            await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
+            query = { pkProject: project.pk_entity ?? -1 }
+        })
+
+        //AUTHORIZATION
+
+        it('AUTH: should reject the request because the user is not authenticated', async () => {
+            const res = await client.post('/unmap-column-check').send();
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+        })
+
+        it('AUTH: should reject the request because the authorization header is wrong', async () => {
+            const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
+            const res = await client.post('/unmap-column-check').set('Authorization', randomJWT).query(query);
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+        })
+
+        it('AUTH: should reject the request because the user is not in the namespace', async () => {
+            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const jwt = x.body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        });
+
+        it('AUTH: should reject the request: the namespace is wrong', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        })
+
+        // MISSING PARAMETERS
+
+        it('MISS-PARAM: should reject the request: the namespace is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column-check').set('Authorization', jwt).send({});
+            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+        })
+
+        it('MISS-PARAM: should reject the request: the pkEntity is absent', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({});
+            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+        })
+
+        // CORE
+
+        it('CORE: should reject the request: the pkEntity does not exists', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: 9998 });
+            expect(res.body.error).to.containEql({ message: "The mapping does not exists" });
+        })
+
+        it('CORE: should accept the request: the columns has matching', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_NAMES.pk_entity, deleteAll: true });
+            expect(res.body.ok).to.be.false();
+            expect(res.body.matchingNb).to.be.a.Number();
+        })
+
+
+    })
+
+
+
 
     describe('GET /get-columns-of-table', () => {
         const pwd = PubCredentialMock.GAETAN_PASSWORD.password;
@@ -74,7 +355,7 @@ describe('TableController', () => {
         it('should return a valid object', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
             const res = await client.get('/get-columns-of-table').set('Authorization', jwt).query(query);
-            const expected: GvSchemaObject = {
+            const expected: GvPositiveSchemaObject = {
                 dat: {
                     column: [
                         DatColumnMock.COL_NAMES.toObject(),

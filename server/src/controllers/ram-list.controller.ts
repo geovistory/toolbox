@@ -5,7 +5,7 @@ import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import {get, param} from '@loopback/rest';
 import {Roles} from '../components/authorization/keys';
 import {Postgres1DataSource} from '../datasources';
-import {GvSchemaObject} from '../models/gv-schema-object.model';
+import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
 import {QRamList} from '../components/query/q-ram-list';
 import {Streams} from '../realtime/streams/streams';
 
@@ -26,7 +26,7 @@ export class RamListController {
     responses: {
       '200': {
         description: 'Ok',
-        content: {'application/json': {schema: {'x-ts-type': GvSchemaObject}}},
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
       },
     },
   })
@@ -49,7 +49,7 @@ export class RamListController {
       required: false,
       description: '"Chunk" or "Cell" to restrict query to Chunk or Cell as subject of referst to statements'
     }) refersTo?: 'Chunk' | 'Cell',
-  ): Promise<GvSchemaObject> {
+  ): Promise<GvPositiveSchemaObject> {
     return new QRamList(this.dataSource, this.streams).query(pkEntity, pkProject, fkProperty, refersTo)
   }
 
