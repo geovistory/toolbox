@@ -9,7 +9,7 @@ import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-requ
 import {AnalysisTableCell, AnalysisTableResponse} from '../../../models/analysis/analysis-table-response.model';
 import {AnalysisTimeChartRequest} from '../../../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse} from '../../../models/analysis/analysis-time-chart-response.model';
-import {GvSchemaObject} from '../../../models/gv-schema-object.model';
+import { GvPositiveSchemaObject } from '../../../models/gv-positive-schema-object.model';
 import {GeovistoryServer} from '../../../server';
 import {createProAnalysis, createProAnalysisRepo} from '../../helpers/atomic/pro-analysis.helper';
 import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
@@ -51,7 +51,7 @@ describe('AnaylsisController', () => {
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
             const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
-            delete corruptAnalysisDefinition.queryDefinition?.filter;
+            delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req: AnalysisTableRequest = {
                 fkProject: pkProject,
                 analysisDefinition: corruptAnalysisDefinition
@@ -366,7 +366,7 @@ describe('AnaylsisController', () => {
                     pkEntity: ProAnalysisMock.MAP_GEO_PLACES.pk_entity,
                 })
                 .send()
-            const result: GvSchemaObject = res.body
+            const result: GvPositiveSchemaObject = res.body
             expect(result.pro?.analysis?.[0].analysis_definition)
                 .deepEqual(ProAnalysisMock.MAP_GEO_PLACES.analysis_definition)
             expect(result.pro?.analysis?.[0]?.name).equal('My Places 2')
@@ -382,7 +382,7 @@ describe('AnaylsisController', () => {
                     version: 1
                 })
                 .send()
-            const result: GvSchemaObject = res.body
+            const result: GvPositiveSchemaObject = res.body
             expect(result.pro?.analysis?.[0].analysis_definition)
                 .deepEqual(ProAnalysisMock.MAP_GEO_PLACES.analysis_definition)
             expect(result.pro?.analysis?.[0]?.name).equal(ProAnalysisMock.MAP_GEO_PLACES.name)
@@ -404,7 +404,7 @@ describe('AnaylsisController', () => {
                 .query({pkProject})
                 .send(reqBody)
             expect(res.status).equal(200)
-            const result: GvSchemaObject = res.body
+            const result: GvPositiveSchemaObject = res.body
             expect(result.pro?.analysis?.[0]?.fk_last_modifier).not.to.be.undefined()
 
         })
