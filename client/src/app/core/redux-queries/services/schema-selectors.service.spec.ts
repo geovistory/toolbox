@@ -12,7 +12,7 @@ import { GvSchemaObject, ProClassFieldConfig } from 'app/core/sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
 import { ByPk } from 'app/core/redux-store/model';
-import { ProClassFieldConfigMock } from '__tests__/helpers/data/ProClassFieldConfigMock';
+import { ProClassFieldConfigMock } from '__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
 
 fdescribe('SchemaSelectorsService', () => {
   let ngRedux: NgRedux<IAppState>;
