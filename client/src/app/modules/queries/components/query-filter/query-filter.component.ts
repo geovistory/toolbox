@@ -13,18 +13,21 @@ import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
 import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
-import { ClassFilterCondition, SubgroupOperator, SubGroupType } from '../../../../../../../server/src/lb3/common/interfaces';
 import { QueryFilterService } from './query-filter.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { equals } from 'ramda';
+import { QueryFilterData } from 'app/core/sdk-lb4/model/queryFilterData';
+import { QueryFilter } from 'app/core/sdk-lb4';
+
+export type ClassFilterCondition = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS';
+export type SubgroupOperator = 'AND' | 'OR';
 
 export interface ArrSubgroupData {
   operator?: SubgroupOperator,
-  subgroup?: SubGroupType
+  subgroup?: QueryFilterData.SubgroupEnum
 }
 
 export type ArrClassesData = ClassAndTypeSelectModel;
-
 export interface ArrConditionData {
   operator?: ClassFilterCondition
 
@@ -46,10 +49,11 @@ export interface FilterDefNode {
   children: FilterDefNode[]
 }
 
-export interface FilterDefinition {
-  data: ArrClassesData
-  children: FilterDefNode[]
-}
+// export interface FilterDefinition {
+//   data: ArrClassesData
+//   children: FilterDefNode[]
+// }
+export type FilterDefinition = QueryFilter
 
 export interface QfArrayConditionInitVal {
   data: ArrConditionData

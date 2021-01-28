@@ -23,8 +23,8 @@ export interface GetTablePageOptions {
 export namespace GetTablePageOptions {
     export type SortDirectionEnum = 'ASC' | 'DESC';
     export const SortDirectionEnum = {
-        ASC: 'ASC' as SortDirectionEnum,
-        DESC: 'DESC' as SortDirectionEnum
+        Asc: 'ASC' as SortDirectionEnum,
+        Desc: 'DESC' as SortDirectionEnum
     };
 }
 

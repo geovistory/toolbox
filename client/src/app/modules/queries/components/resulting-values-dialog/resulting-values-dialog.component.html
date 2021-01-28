@@ -1,0 +1,10 @@
+<mat-list>
+  <h3 mat-subheader> {{data?.values?.length === 0 ? 'No ':''}} Values</h3>
+  <mat-list-item *ngFor="let v of data?.values; let i = index;">
+    <div class="mr-3">{{i+1}}</div>
+    <div>
+      {{v.label}}
+    </div>
+    <button mat-button class="ml-auto" (click)="openEntity(v.fkSubjectInfo)">open</button>
+  </mat-list-item>
+</mat-list>

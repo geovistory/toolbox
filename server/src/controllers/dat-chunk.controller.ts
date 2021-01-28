@@ -1,8 +1,8 @@
 import {inject} from '@loopback/core';
 import {
-  FilterExcludingWhere,
   repository
 } from '@loopback/repository';
+import {FilterExcludingWhere} from '@loopback/filter'
 import {
   get,
   getModelSchemaRef, param
@@ -18,7 +18,7 @@ export class DatChunkController {
     public datChunkRepository: DatChunkRepository,
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
-  ) {}
+  ) { }
 
   @get('/dat-chunks/{id}', {
     responses: {

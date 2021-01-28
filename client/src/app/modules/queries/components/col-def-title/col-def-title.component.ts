@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ColDef } from '../../../../../../../server/src/lb3/common/interfaces';
+import { ColDef } from 'app/core/sdk-lb4/model/models';
 
 @Component({
   selector: 'gv-col-def-title',

@@ -1,5 +1,6 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProAnalysis, ProDfhProfileProjRel } from "../sdk";
+import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjRel } from "../sdk";
+import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 export const proRoot = 'pro';
 

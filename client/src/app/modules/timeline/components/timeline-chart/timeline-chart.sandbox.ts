@@ -4,9 +4,11 @@ import { TimelineModule } from '../../timeline.module';
 import { TimelineChartComponent } from './timeline-chart.component';
 import { ship_voyages, ship_voyages_by_place, births_40k } from './timeline-chart.mock';
 import { few_births } from './timeline-chart.few-births.mock';
-import { ChartLineData, ChartLinePoint, ChartLine } from '../../../../../../../server/src/lb3/common/interfaces';
+import { ChartLinePoint } from 'app/core/sdk-lb4/model/chartLinePoint';
+import { ChartLine } from 'app/core/sdk-lb4/model/chartLine';
+import { AnalysisTimeChartResponse } from 'app/core/sdk-lb4';
 
-const data1$ = new BehaviorSubject<ChartLineData>({
+const data1$ = new BehaviorSubject<AnalysisTimeChartResponse>({
   activeLine: null,
   chartLines: [
     {
@@ -22,7 +24,7 @@ const data1$ = new BehaviorSubject<ChartLineData>({
 
 
 const hugeLine: ChartLinePoint[] = JSON.parse(ship_voyages);
-const data2$ = new BehaviorSubject<ChartLineData>({
+const data2$ = new BehaviorSubject<AnalysisTimeChartResponse>({
   activeLine: 0,
   chartLines: [
     {
@@ -33,13 +35,13 @@ const data2$ = new BehaviorSubject<ChartLineData>({
 })
 
 const shipVoyagesByPlace: ChartLine[] = JSON.parse(ship_voyages_by_place);
-const data3$ = new BehaviorSubject<ChartLineData>({
+const data3$ = new BehaviorSubject<AnalysisTimeChartResponse>({
   activeLine: null,
   chartLines: shipVoyagesByPlace
 })
 
 const births: ChartLinePoint[] = JSON.parse(births_40k);
-const data4$ = new BehaviorSubject<ChartLineData>({
+const data4$ = new BehaviorSubject<AnalysisTimeChartResponse>({
   activeLine: 0,
   chartLines: [
     {
@@ -49,7 +51,7 @@ const data4$ = new BehaviorSubject<ChartLineData>({
   ]
 })
 
-const data5$ = new BehaviorSubject<ChartLineData>({
+const data5$ = new BehaviorSubject<AnalysisTimeChartResponse>({
   activeLine: 0,
   chartLines: [
     {

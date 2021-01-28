@@ -1,8 +1,8 @@
-import {testdb} from "../testdb";
-import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository} from '../../../repositories';
+import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, WarStatementRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
 import {PubRoleRepository} from '../../../repositories/pub-role.repository';
+import {testdb} from "../testdb";
 
 export async function cleanDb() {
     //because we update it to create an information.language
@@ -38,7 +38,7 @@ export async function cleanDb() {
     const pubCredentialRepository = new PubCredentialRepository(testdb);
     const pubRoleMappingRepository = new PubRoleMappingRepository(testdb, async () => pubRoleRepository);
     const pubRoleRepository = new PubRoleRepository(testdb);
-    const sysAnalysisTypeRepository = new SysAnalysisTypeRepository(testdb);
+    // const sysAnalysisTypeRepository = new SysAnalysisTypeRepository(testdb);
     const sysAppContextRepository = new SysAppContextRepository(testdb);
     const sysClassFieldPropertyRelRepository = new SysClassFieldPropertyRelRepository(testdb);
     const sysClassFieldRepository = new SysClassFieldRepository(testdb);
@@ -46,6 +46,7 @@ export async function cleanDb() {
     const sysSystemTypeRepository = new SysSystemTypeRepository(testdb);
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
     const warClassPreviewRepository = new WarClassPreviewRepository(testdb);
+    const warStatementRepository = new WarStatementRepository(testdb);
 
     await testdb.execute('ALTER TABLE data.factoid_property_mapping DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM data.factoid_property_mapping');
@@ -181,9 +182,9 @@ export async function cleanDb() {
 
     await pubRoleRepository.deleteAll();
 
-    await testdb.execute('ALTER TABLE system.analysis_type DISABLE TRIGGER versioning_trigger');
-    await sysAnalysisTypeRepository.deleteAll();
-    await testdb.execute('ALTER TABLE system.analysis_type ENABLE TRIGGER versioning_trigger');
+    // await testdb.execute('ALTER TABLE system.analysis_type DISABLE TRIGGER versioning_trigger');
+    // await sysAnalysisTypeRepository.deleteAll();
+    // await testdb.execute('ALTER TABLE system.analysis_type ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE system.app_context DISABLE TRIGGER versioning_trigger');
     await sysAppContextRepository.deleteAll();
@@ -207,6 +208,7 @@ export async function cleanDb() {
 
     await warEntityPreviewRepository.deleteAll();
     await warClassPreviewRepository.deleteAll();
+    await warStatementRepository.deleteAll();
 
     await testdb.execute('ALTER TABLE information.language DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.language'); //update or delete on table "language" violates foreign key constraint "project_fk_language_fkey" on table "project"

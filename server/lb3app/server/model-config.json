@@ -38,14 +38,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "SysAnalysisType": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "ProAnalysis": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "PubAccount": {
     "dataSource": "postgres1",
     "public": true,

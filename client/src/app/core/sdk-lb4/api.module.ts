@@ -2,8 +2,8 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
-
 import { AccountService } from './api/account.service';
+import { AnalysisService } from './api/analysis.service';
 import { DatChunkService } from './api/datChunk.service';
 import { DatChunkControllerService } from './api/datChunkController.service';
 import { DatColumnService } from './api/datColumn.service';
@@ -23,7 +23,6 @@ import { InfTemporalEntityService } from './api/infTemporalEntity.service';
 import { InfTextPropertyService } from './api/infTextProperty.service';
 import { PaginationObjectService } from './api/paginationObject.service';
 import { PingControllerService } from './api/pingController.service';
-import { ProAnalysisService } from './api/proAnalysis.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';
 import { ProDfhClassProjRelService } from './api/proDfhClassProjRel.service';
 import { ProDfhProfileProjRelService } from './api/proDfhProfileProjRel.service';
@@ -34,7 +33,6 @@ import { ProjectConfigurationService } from './api/projectConfiguration.service'
 import { PubAccountService } from './api/pubAccount.service';
 import { RamListService } from './api/ramList.service';
 import { SchemaObjectService } from './api/schemaObject.service';
-import { SysAnalysisTypeService } from './api/sysAnalysisType.service';
 import { SysAppContextService } from './api/sysAppContext.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';

@@ -7,15 +7,16 @@ import { QueryPathFormComponent } from 'app/modules/queries/forms/query-path/que
 import { values } from 'd3';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ColDef, ColDefDefaultType, QueryFilter, QueryPathSegment, TableInput } from '../../../../../../../server/src/lb3/common/interfaces';
 import { TableFormNodeConfig } from './table-form.component';
+import { ColDef } from 'app/core/sdk-lb4/model/colDef';
+import { QueryFilter, AnalysisDefinition, QueryPathSegment } from 'app/core/sdk-lb4/model/models';
 
 interface PathColumn {
   rootClasses$: Observable<number[]>,
   initVal$: Observable<QueryPathSegment[]>
 }
 interface RootColumn {
-  defaultType: ColDefDefaultType
+  defaultType: ColDef.DefaultTypeEnum
 }
 export interface TableFormArrayData {
   root?: boolean;
@@ -47,7 +48,7 @@ export class TableFormService {
       },
       placeholder: '',
       validators: [ValidationService.arrayLengthValidator(2, Number.POSITIVE_INFINITY)],
-      mapValue: ([rootClasses, columns, filter]: [ClassAndTypeSelectModel, ColDef[], QueryFilter]): TableInput => {
+      mapValue: ([rootClasses, columns, filter]: [ClassAndTypeSelectModel, ColDef[], QueryFilter]): AnalysisDefinition => {
         return ({
           queryDefinition: {
             columns,

@@ -1,19 +1,19 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { EntityPreview } from 'app/core';
+import { AnalysisMapResponse, AnalysisTimeChartResponse, ChartLine, CzmlSpatialValue, GeoEntityMapAndTimeCont, TimeCzmlValue, WarEntityPreview } from 'app/core/sdk-lb4';
 import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import * as d3 from 'd3';
-import { apply, values, keys, equals } from 'ramda';
+import { apply, equals, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
-import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue } from '../../../../../../../server/src/lb3/common/interfaces';
+import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../../../../../../server/src/lb3/common/interfaces';
 import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 
 export interface MapAndTimeContLayer {
   data_lookups: { [key: string]: number[] }[]
   map: MapLayer
-  time: TimeChartContOutput
+  time: AnalysisTimeChartResponse
 }
 export interface MapAndTimeContData {
   layers: MapAndTimeContLayer[]
@@ -47,7 +47,7 @@ interface LinePath {
 
 interface InfoBox {
   cursorInfo?: CursorInfo
-  geoEntity?: EntityPreview
+  geoEntity?: WarEntityPreview
 }
 // interface for display settings of the point display
 // (extensible for adding e.g. the min and max radius sizes)
@@ -79,7 +79,7 @@ export const pointDisplayOptions: PointDisplayOption[] = [
 })
 export class MapAndTimeContComponent implements OnInit {
 
-  @Input() data$: Observable<MapAndTimeContOutput>
+  @Input() data$: Observable<AnalysisMapResponse>
   @Input() pointDisplayMode$: BehaviorSubject<PointDisplayMode>
   @Input() showInfoBtn = true;
   @Input() showInfoBox = false;
@@ -90,14 +90,14 @@ export class MapAndTimeContComponent implements OnInit {
   @Input() showFullscreenExitBtn = false;
 
   processedData$: Observable<MapAndTimeContData>;
-  chartLines$: Observable<Observable<ChartLineData>[]>
+  chartLines$: Observable<Observable<AnalysisTimeChartResponse>[]>
   mapData$: Observable<MapLayers>
   julianSecondOfCursor$ = new ReplaySubject();
   selectedGeoEntityPk$ = new ReplaySubject<number>();
 
   pkEntityCzmlsMap = new Map<number, CzmlPath[]>()
   pkEntityLineMap = new Map<number, LinePath>()
-  pkEntityEntityPreviewMap = new Map<number, EntityPreview>()
+  pkEntityEntityPreviewMap = new Map<number, WarEntityPreview>()
   linePkEntityMap = new Map<string, number>()
 
   selectedPackets$ = new BehaviorSubject<CzmlPath[]>([])
@@ -126,15 +126,19 @@ export class MapAndTimeContComponent implements OnInit {
     this.pointDisplayOption$ = this.pointDisplayMode$.pipe(
       map(mode => this.pointDisplayOptions.find(o => equals(keys(o.value), keys(mode))))
     )
-
-    this.entitiesOfSelectedGeoPlace$ = combineLatest(this.data$, this.selectedLine$).pipe(
-      map(([data, selectedLine]) => {
-        if (!selectedLine || typeof selectedLine.lineIndex !== 'number' || !data.length || !data[selectedLine.lineIndex]) return []
-        return data[selectedLine.lineIndex].pk_entities
+    const geoPlaces$ = this.data$.pipe(
+      map((data) => {
+        const geoPlaces = data && data.geoPlaces ? data.geoPlaces : []
+        return geoPlaces
+      }))
+    this.entitiesOfSelectedGeoPlace$ = combineLatest(geoPlaces$, this.selectedLine$).pipe(
+      map(([geoPlaces, selectedLine]) => {
+        if (!selectedLine || typeof selectedLine.lineIndex !== 'number' || !geoPlaces || !geoPlaces.length || !geoPlaces[selectedLine.lineIndex]) return []
+        else return geoPlaces[selectedLine.lineIndex].pk_entities
       })
     )
-    this.processedData$ = combineLatest(this.data$, this.pointDisplayMode$).pipe(
-      map(([data, pointDisplayMode]) => this.mapAndTimeContQueryResToOutput(data, pointDisplayMode)),
+    this.processedData$ = combineLatest(geoPlaces$, this.pointDisplayMode$).pipe(
+      map(([geoPlaces, pointDisplayMode]) => this.mapAndTimeContQueryResToOutput(geoPlaces, pointDisplayMode)),
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 
@@ -345,7 +349,7 @@ export class MapAndTimeContComponent implements OnInit {
       //   text: 'A'
       // },
       position: {
-        cartographicDegrees: [spatialVal.long, spatialVal.lat, 0]
+        cartographicDegrees: [spatialVal.longitude, spatialVal.latitude, 0]
       },
     }
   }
@@ -355,7 +359,7 @@ export class MapAndTimeContComponent implements OnInit {
    * Converts a MapAndTimeContQueryRes to a MapAndTimeContData
    * TODO
    */
-  mapAndTimeContQueryResToOutput(queryRes: MapAndTimeContOutput, pointDisplayMode: PointDisplayMode): MapAndTimeContData {
+  mapAndTimeContQueryResToOutput(queryRes: GeoEntityMapAndTimeCont[], pointDisplayMode: PointDisplayMode): MapAndTimeContData {
 
     // logTime('conversion - start')
 
@@ -468,7 +472,7 @@ export class MapAndTimeContComponent implements OnInit {
 
 
     const map: MapLayer = { czml }
-    const time: TimeChartContOutput = {
+    const time: AnalysisTimeChartResponse = {
       activeLine: undefined,
       chartLines
     }

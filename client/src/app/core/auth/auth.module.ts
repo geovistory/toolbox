@@ -10,8 +10,10 @@ export const lb4SdkConfigurationProvider = {
   useFactory: (authService: GvAuthService) => {
     const config = new Configuration(
       {
+        apiKeys: {},
         basePath: environment.baseUrl,
-        accessToken: authService.getToken().lb4Token
+        accessToken: authService.getToken().lb4Token,
+        credentials: { accesstoken: authService.getToken().lb4Token }
       })
     return authService.setLb4SdkConfig(config)
   },

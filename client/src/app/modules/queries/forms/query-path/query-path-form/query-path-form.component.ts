@@ -11,7 +11,7 @@ import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modul
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { QueryPathSegment } from '../../../../../../../../server/src/lb3/common/interfaces';
+import { QueryPathSegment } from 'app/core/sdk-lb4/model/queryPathSegment';
 
 export interface QueryPathFormArrayData {
   type: 'root'

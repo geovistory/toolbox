@@ -520,10 +520,40 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P15"
-}
-}
+  }
 
 
+  static readonly EN_7_BIRTH_TOOK_PLACE_IN_GEO_PLACE: DfhApiProperty = {
+    "pk_entity": 3910,
+    "dfh_fk_profile": 12,
+    "dfh_pk_property": 7,
+    "dfh_fk_namespace": 1,
+    "dfh_is_inherited": true,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Biographical basics and family",
+    "dfh_property_label": "took place on or within",
+    "dfh_property_range": 363,
+    "requested_language": "en",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_property_domain": 61,
+    "tmsp_last_dfh_update": "2020-12-24T05:23:51.081+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property describes the location of an instance of E4 Period with respect to an E19 Physical Object. P8 took place on or\n            within (witnessed) is a shortcut of the more fully developed path from E4 Period through P7 took place at, E53 Place, P156 occupies (is\n            occupied by) to E18 Physical Thing. It describes a period that can be located with respect to the space defined by an E19 Physical Object\n            such as a ship or a building. The precise geographical location of the object during the period in question may be unknown or unimportant.\n            For example, the French and German armistice of 22 June 1940 was signed in the same railway carriage as the armistice of 11 November 1918. ",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 0,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P8"
+  }
+}
 /**
  * SQL to create mock items
  */

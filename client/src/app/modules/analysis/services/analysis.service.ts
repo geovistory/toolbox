@@ -1,19 +1,19 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService, ProAnalysis, ProAnalysisApi, IAppState, AnalysisTabData } from 'app/core';
-import { ErrorDialogComponent, ErrorDialogData } from 'app/shared/components/error-dialog/error-dialog.component';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { NgRedux } from '@angular-redux/store';
+import { ActiveProjectService, AnalysisTabData, IAppState } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { AnalysisService as LbAnalysisService, ProAnalysis } from 'app/core/sdk-lb4';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ErrorDialogComponent, ErrorDialogData } from 'app/shared/components/error-dialog/error-dialog.component';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
-import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
-import { saveAs } from 'file-saver';
-
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AnalysisService<I, O> {
+export class GvAnalysisService<I, O> {
 
   results$ = new BehaviorSubject<O>(null)
 
@@ -23,9 +23,10 @@ export class AnalysisService<I, O> {
   pkEntity: number
 
   constructor(
-    private analysisApi: ProAnalysisApi,
+    public analysisApi: LbAnalysisService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
+    private s: SchemaObjectService,
     private not: NotificationsAPIActions,
     private ngRedux: NgRedux<IAppState>
   ) { }
@@ -80,35 +81,6 @@ export class AnalysisService<I, O> {
   }
 
 
-  callRunApi(q: I) {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-      this.loading = true;
-
-      this.analysisApi.run(pkProject, this.fkAnalysisType, q).subscribe((r: O) => {
-        this.results$.next(r);
-        this.loading = false;
-        // dialog.close();
-      }, error => {
-        this.loading = false;
-
-        // dialog.close();
-        const d: ErrorDialogData = {
-          title: 'Oops, something went wrong ...',
-          subtitle: 'There was an error when creating the analysis. Sorry!',
-          errorReport: {
-            title: error.name,
-            json: error.message
-          }
-        }
-        this.dialog.open(ErrorDialogComponent, {
-          data: d
-        });
-
-        // alert(`Ooops. Something went wrong: ${error}`)
-      })
-    })
-  }
-
 
   /**
    * Saves an ProAnalysis in the persistent data layer.
@@ -131,25 +103,25 @@ export class AnalysisService<I, O> {
 
         this.p.pkProject$.pipe(first()).subscribe(pkProject => {
           this.saving = true;
-          const proAnalysis = {
+          const proAnalysis: ProAnalysis = {
             fk_analysis_type: this.fkAnalysisType,
             fk_project: pkProject,
             analysis_definition,
             name: dialogResult.name,
             description: dialogResult.description
-          } as ProAnalysis;
-          this.p.pro$.analysis.upsert([proAnalysis], pkProject)
-            .resolved$.pipe(first(x => !!x)).subscribe((data) => {
+          };
+          this.upsert(proAnalysis, pkProject)
+            .subscribe((data) => {
               this.saving = false;
               this.ngRedux.dispatch(this.not.addToast({
                 type: 'success',
                 options: {
                   title: 'Success',
-                  msg: `Analysis has been saved. Name: '${data.items[0].name}'`
+                  msg: `Analysis has been saved. Name: '${data.pro.analysis[0].name}'`
                 }
               }))
-              this.pkEntity = data.items[0].pk_entity;
-              pkEntity$.next(data.items[0].pk_entity)
+              this.pkEntity = data.pro.analysis[0].pk_entity;
+              pkEntity$.next(data.pro.analysis[0].pk_entity)
               // dialog.close();
             }, error => {
               this.saving = false;
@@ -191,8 +163,8 @@ export class AnalysisService<I, O> {
           ...proAnalysis,
           analysis_definition
         };
-        this.p.pro$.analysis.upsert([proAnalysis], proAnalysis.fk_project)
-          .resolved$.pipe(first(x => !!x)).subscribe((data) => {
+        this.upsert(proAnalysis, proAnalysis.fk_project)
+          .subscribe((data) => {
             this.saving = false;
             this.ngRedux.dispatch(this.not.addToast({
               type: 'success',
@@ -254,47 +226,46 @@ export class AnalysisService<I, O> {
               name: dialogResult.name,
               description: dialogResult.description
             } as ProAnalysis;
-            this.p.pro$.analysis.upsert([proAnalysis], currentData.fk_project)
-              .resolved$.pipe(first(x => !!x)).subscribe((data) => {
-                this.saving = false;
-                this.ngRedux.dispatch(this.not.addToast({
-                  type: 'success',
-                  options: {
-                    title: 'Success',
-                    msg: `Analysis has been saved. Name: '${data.items[0].name}'`
-                  }
-                }))
-                this.pkEntity = data.items[0].pk_entity;
-                pkEntity$.next(data.items[0].pk_entity)
-                this.p.addTab<AnalysisTabData>({
-                  active: true,
-                  component: 'analysis-detail',
-                  icon: 'analysis',
-                  pathSegment: 'analysisDetails',
-                  data: {
-                    pkEntity: data.items[0].pk_entity,
-                    fkAnalysisType: this.fkAnalysisType
-                  }
-                })
-                // dialog.close();
-              }, error => {
-                this.saving = false;
-
-                // dialog.close();
-                const errorDialogData: ErrorDialogData = {
-                  title: 'Oops, something went wrong ...',
-                  subtitle: 'There was an error when saving the analysis. Sorry!',
-                  errorReport: {
-                    title: error.name,
-                    json: error.message
-                  }
+            this.upsert(proAnalysis, currentData.fk_project).subscribe((data) => {
+              this.saving = false;
+              this.ngRedux.dispatch(this.not.addToast({
+                type: 'success',
+                options: {
+                  title: 'Success',
+                  msg: `Analysis has been saved. Name: '${data.pro.analysis[0].name}'`
                 }
-                this.dialog.open(ErrorDialogComponent, {
-                  data: errorDialogData
-                });
-
-                // alert(`Ooops. Something went wrong: ${error}`)
+              }))
+              // this.pkEntity = data.pro.analysis[0].pk_entity;
+              // pkEntity$.next(data.pro.analysis[0].pk_entity)
+              this.p.addTab<AnalysisTabData>({
+                active: true,
+                component: 'analysis-detail',
+                icon: 'analysis',
+                pathSegment: 'analysisDetails',
+                data: {
+                  pkEntity: data.pro.analysis[0].pk_entity,
+                  fkAnalysisType: this.fkAnalysisType
+                }
               })
+              // dialog.close();
+            }, error => {
+              this.saving = false;
+
+              // dialog.close();
+              const errorDialogData: ErrorDialogData = {
+                title: 'Oops, something went wrong ...',
+                subtitle: 'There was an error when saving the analysis. Sorry!',
+                errorReport: {
+                  title: error.name,
+                  json: error.message
+                }
+              }
+              this.dialog.open(ErrorDialogComponent, {
+                data: errorDialogData
+              });
+
+              // alert(`Ooops. Something went wrong: ${error}`)
+            })
           }
         })
       })
@@ -331,14 +302,14 @@ export class AnalysisService<I, O> {
               name: dialogResult.name,
               description: dialogResult.description
             } as ProAnalysis;
-            this.p.pro$.analysis.upsert([proAnalysis], currentData.fk_project)
-              .resolved$.pipe(first(x => !!x)).subscribe((data) => {
+            this.upsert(proAnalysis, currentData.fk_project)
+              .subscribe((data) => {
                 this.saving = false;
                 this.ngRedux.dispatch(this.not.addToast({
                   type: 'success',
                   options: {
                     title: 'Success',
-                    msg: `Analysis has been saved. Name: '${data.items[0].name}'`
+                    msg: `Analysis has been saved. Name: '${data.pro.analysis[0].name}'`
                   }
                 }))
               }, error => {
@@ -362,6 +333,10 @@ export class AnalysisService<I, O> {
   }
 
 
+
+  private upsert(proAnalysis: ProAnalysis, pkProject: number) {
+    return this.s.storeGv(this.analysisApi.analysisControllerBulkUpsert(pkProject, [proAnalysis]), pkProject);
+  }
 
   /**
    * Delete a ProAnalysis in the persistent data layer.
@@ -423,34 +398,21 @@ export class AnalysisService<I, O> {
   }
 
 
-  callDownloadApi(q: I, fileType: string) {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-      this.loading = true;
 
-      this.analysisApi.runAndExport(pkProject, this.fkAnalysisType, q, fileType).subscribe((r: O) => {
+  callRunApi(apiCall: (fkProject: number) => Observable<O>) {
+    this.loading = true;
+    this.p.pkProject$.pipe(switchMap(fkProject => apiCall(fkProject)))
+      .subscribe((r: O) => {
+        this.results$.next(r);
         this.loading = false;
-
-        const data = r as any;
-
-        if (fileType === 'json') {
-          const blob = new Blob([data], {
-            type: 'text/json'
-          });
-          saveAs(blob, `table-export-${new Date().getTime()}.json`)
-
-        } else if (fileType === 'csv') {
-          const blob = new Blob([data], {
-            type: 'text/comma-separated-values'
-          });
-          saveAs(blob, `table-export-${new Date().getTime()}.csv`)
-        }
-
-
+        // dialog.close();
       }, error => {
         this.loading = false;
+
+        // dialog.close();
         const d: ErrorDialogData = {
           title: 'Oops, something went wrong ...',
-          subtitle: 'There was an error when downloading the data. Sorry!',
+          subtitle: 'There was an error when creating the analysis. Sorry!',
           errorReport: {
             title: error.name,
             json: error.message
@@ -459,10 +421,38 @@ export class AnalysisService<I, O> {
         this.dialog.open(ErrorDialogComponent, {
           data: d
         });
-      })
-    })
 
+        // alert(`Ooops. Something went wrong: ${error}`)
+      })
   }
 
+  callDownloadApi<DownloadResult>(apiCall: (fkProject: number) => Observable<DownloadResult>) {
+    return this.p.pkProject$
+      .pipe(first(pkProject => !!pkProject))
+      .pipe(
+        tap(() => this.loading = true),
+        switchMap(pkProject => apiCall(pkProject)
+          .pipe(
+            catchError((error) => {
+              this.loading = false;
+              const d: ErrorDialogData = {
+                title: 'Oops, something went wrong ...',
+                subtitle: 'There was an error when downloading the data. Sorry!',
+                errorReport: {
+                  title: error.name,
+                  json: error.message
+                }
+              }
+              this.dialog.open(ErrorDialogComponent, {
+                data: d
+              });
+              return of<DownloadResult>()
+            })
+          )
+        ),
+        tap(() => this.loading = false)
+      )
+
+  }
 
 }

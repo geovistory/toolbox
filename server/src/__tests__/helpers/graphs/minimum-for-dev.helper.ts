@@ -31,17 +31,18 @@ import {createTextAndAnnotation} from './feature-X.helper';
 export async function minimumForDev() {
   const pkProject = ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1;
 
-  await createTypes();
+
+  //create the model
+  const {profiles} = await createModel()
+
   await createSysClassFields();
 
   //create account, namespace and project
   await createSandBoxProject();
+
   await createProProject(ProProjectMock.DEFAULT_PROJECT);
   await createGaetanMuck();
   await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.SANDBOX_PROJECT);
-
-  //create the model
-  const {profiles} = await createModel()
 
   // add profiles to project
   await addProfilesToProject(pkProject, profiles.map(p => p.dfh_pk_profile))

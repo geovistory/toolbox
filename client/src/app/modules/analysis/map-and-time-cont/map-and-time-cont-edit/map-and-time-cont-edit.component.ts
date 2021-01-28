@@ -1,10 +1,10 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActiveProjectService, SysConfig } from 'app/core';
+import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from 'app/core/sdk-lb4';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MapAndTimeContInput, MapAndTimeContOutput } from '../../../../../../../server/src/lb3/common/interfaces';
-import { AnalysisService } from '../../services/analysis.service';
+import { GvAnalysisService } from '../../services/analysis.service';
 import { MapAndTimeContFormComponent } from '../map-and-time-cont-form/map-and-time-cont-form.component';
 
 
@@ -20,11 +20,11 @@ export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
 
   @ViewChild('c', { static: false }) formComponent: MapAndTimeContFormComponent
 
-  initVal$: Observable<MapAndTimeContInput>
+  initVal$: Observable<AnalysisDefinition>
 
   constructor(
     p: ActiveProjectService,
-    public a: AnalysisService<MapAndTimeContInput, MapAndTimeContOutput>,
+    public a: GvAnalysisService<AnalysisMapRequest, AnalysisMapResponse>,
     private ts: TabLayoutService
   ) {
 
@@ -36,8 +36,11 @@ export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
 
     this.a.registerRunAnalysis(() => {
       if (this.formComponent.formFactory.formGroup.valid) {
-        const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
-        this.a.callRunApi(q)
+        const analysisDefinition = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
+        this.a.callRunApi((fkProject => this.a.analysisApi.analysisControllerMapRun({
+          fkProject,
+          analysisDefinition
+        })))
         this.ts.t.setLayoutMode('both');
       } else {
         this.formComponent.formFactory.markAllAsTouched()
