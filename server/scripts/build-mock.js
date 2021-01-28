@@ -3,14 +3,14 @@ const fs = require('fs');
 const fromPathMock = __dirname + '/../src/__tests__/helpers/data/gvDB/';
 const toPathMock = __dirname + '/../../client/src/__tests__/helpers/data/auto-gen';
 
-// if I am correct, these MOCK are usefull only for the backend 
+// if I am correct, these MOCK are usefull only for the backend
 // (not exhaustive, they are the ones that had errors in it in the client because an import was not in the SDK)
 // because there are from lb4, and they are required in no endpoint
 const blacklist = ['DfhApiProfileMock', 'PubCredentialMock', 'TabRowMock', 'WarStatementMock'];
 
 /** pb in:
  * ProAnalysisMock > enum ColDefDefaultType
- * WarEntityPreviewMock > enum CalendarType and Granularity 
+ * WarEntityPreviewMock > enum CalendarType and Granularity
  */
 
 
@@ -78,5 +78,5 @@ function changeImportModelToSdk(content) {
 // CalendarType.gregorian >> 'gregorian' as TimePrimitiveWithCal.CalendarEnum,
 
 
-// Granularity >> 
-// Granularity['1 year']
+// Granularity >>
+// duration: Granularity['1 year'] >>  duration: '1 year' as TimePrimitiveWithCal.DurationEnum
