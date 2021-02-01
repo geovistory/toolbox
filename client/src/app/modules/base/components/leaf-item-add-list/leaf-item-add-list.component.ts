@@ -10,7 +10,7 @@ import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, ta
 import { ActiveProjectService, EntityPreview, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTextProperty, PaginationObjectApi } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, ListDefinition, PlaceItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, Subfield, PlaceItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { leafItemListTypes } from '../../base.module';
 
@@ -33,7 +33,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   @Input() pkEntity: number;
 
-  @Input() listDefinition: ListDefinition;
+  @Input() listDefinition: Subfield;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

@@ -1,5 +1,6 @@
 import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
-import { DfhClass, DfhLabel, DfhProperty, DfhProfile } from '../sdk';
+import { DfhClass, DfhLabel, DfhProfile } from '../sdk';
+import { DfhProperty } from '../sdk-lb4/model/dfhProperty';
 
 export const dfhRoot = 'dfh';
 

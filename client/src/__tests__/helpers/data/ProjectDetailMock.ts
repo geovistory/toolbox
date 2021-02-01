@@ -1,18 +1,10 @@
 import { ProjectDetail } from 'app/core/active-project/active-project.models';
+import { ProProjectMock } from './auto-gen/ProProjectMock';
+import { InfLanguageMock } from './auto-gen/InfLanguageMock';
 
 export namespace ProjectDetailMock {
   export const project1: ProjectDetail = {
-    pk_project: 100,
-    default_language: {
-      notes: 'English',
-      iso6391: 'en ',
-      iso6392b: 'eng',
-      iso6392t: 'eng',
-      pk_entity: 18889,
-      pk_language: 'eng',
-      fk_class: 54,
-      lang_type: '',
-      scope: ''
-    }
+    pk_project: ProProjectMock.PROJECT_1.pk_entity,
+    default_language: InfLanguageMock.GERMAN
   }
 }

@@ -2,75 +2,138 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { ActiveProjectService, EntityPreview, InfLanguage, InfStatement, InfTemporalEntity, InfTextProperty, ProInfoProjRel, TimePrimitive } from 'app/core';
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
-import { ProClassFieldConfig } from 'app/core/sdk-lb4';
+import { ProClassFieldConfig, ValueObjectType } from 'app/core/sdk-lb4';
 
 export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'timePrimitive' | 'langString' | 'text-property' | 'dimension' | 'entity-preview' | 'has-type';
-export type ListType = ItemType | 'temporal-entity' | 'persistent-item';
+export interface SubfieldType extends ValueObjectType {
+  temporalEntity?: 'true'
+  entityPreview?: 'true'
+  typeItem?: 'true'
+
+  timeSpan?: 'true' // TODO remove
 
 
-// /**
-//  * This interface is a intermediate solution, useful as long as
-//  * the identity of properties is not changed to always using the
-//  * identifier of the property of origin
-//  */
-// export interface ProClassFieldConfig extends ProClassFieldConfig {
-//   fk_property_of_origin: number
-// }
+  textProperty?: 'true' // TODO remove
+}
 
 export interface FieldProperty {
   pkProperty?: number;
   pkPropertyOfProperty?: number;
 }
 
-export interface FieldDefinition {
-  listType: ListType
+interface FieldBase {
+  // the label of the field (taken from the corresponding property label)
   label: string;
+
+  // url to property on ontome
   ontoInfoUrl: string
+
+  // short label (= ontome identifier in namespace)
   ontoInfoLabel: string
 
-  fkClassField: number
-
+  // reference to the dfh_property or dfh_property_of_property
   property: FieldProperty
 
-  // pkProperty: number
-  isOutgoing: boolean
-  sourceClass: number
-  targetClasses?: number[]
-  targetMaxQuantity?: number
-  targetMinQuantity?: number
-  listDefinitions: ListDefinition[]
-  identityDefiningForSource: boolean
-  fieldConfig?: ProClassFieldConfig
-  removedFromAllProfiles: boolean
-}
+  // true if the property of that field has dfh_has_type_subproperty
+  isHasTypeField: boolean;
 
-export interface ListDefinition {
-  listType: ListType
-  label: string;
-  ontoInfoUrl: string
-  ontoInfoLabel: string
-
-  fkClassField: number
-
-  property: FieldProperty
-
-  // pkProperty: number
+  // direction of the property in this field (true if sourceClass = property domain)
   isOutgoing: boolean
 
-  identityDefiningForSource: boolean
-
-  identityDefiningForTarget: boolean
-
+  // the source class of the field (if is outgoing domain else range)
   sourceClass: number
+
+  // label of the source class
   sourceClassLabel: string
 
-  targetClass: number
-  targetClassLabel?: string
-  targetMaxQuantity: number
+  // minimum number of statements having the property of this field and the same entity as source
+  // (and thus different targets)
   targetMinQuantity: number
-  sourceMaxQuantity: number
+
+  // maximum number of statements having the property of this field and the same entity as source
+  // (and thus different targets). Value -1 stands for n (infinit)
+  targetMaxQuantity: number
+
+  // minimum number of statements having the property of this field and the same entity as target
+  // (and thus different sources)
   sourceMinQuantity: number
 
+  // maximum number of statements having the property of this field and the same entity as target
+  // (and thus different sources). Value -1 stands for n (infinit)
+  sourceMaxQuantity: number
+
+  // if true, the identity of the source entity is defined by the statement(s) of this field
+  identityDefiningForSource: boolean
+
+  // if true, the identity of the target entity is defined by the statement(s) of this field
+  identityDefiningForTarget: boolean
+}
+
+interface FieldPosition {
+  position?: number;
+}
+export interface FieldPlaceOfDisplay {
+  basicFields?: FieldPosition;
+  specificFields?: FieldPosition;
+  hidden?: true;
+};
+
+/**
+ * A Field contains all information to create the different GUI's to display and edit
+ * statements of an entity.
+ *
+ * The Fields of an entity depend on the properties of its class. Each Field contains or represents
+ * the properties that have the given class as as domain or range and share the same pk_property.
+ *
+ * Explanation:
+ * The identity (uniqueness) of a property is defined by its domain, pk_propery and its range,
+ * It is possible that one class has two outgoing properties with the same pk_property but different
+ * ranges. The Field then contains both of them.
+ *
+ * The Subfields (listDefinitions) are then representing only one property with a uniqur domain, pk_propery and range
+ * All Subfields of a Field share all properties defined in FieldBase.
+ *
+ * In practice the Field a wrapper for SubFileds containing all information that is equal amongst all Subfields.
+ */
+export interface Field extends FieldBase {
+
+  // defines where the field is being displayed
+  placeOfDisplay: FieldPlaceOfDisplay
+  // configuration of the field (containing position in list), given by the project or the default-configuration-project
+  fieldConfig?: ProClassFieldConfig
+
+  // the target classes of the field (if is outgoing range else domain)
+  targetClasses: number[]
+
+  // subfields (they share the source class and property but have different target class and thus list type)
+  listDefinitions: Subfield[]
+
+  // true if all subfields are removed from all profiles activated by the project
+  allSubfieldsRemovedFromAllProfiles: boolean
+}
+/**
+ * A Subfiel contains contains information to create the different GUI's to display and edit
+ * statements of an entity.
+ *
+ * Each Subfield stands for one property with a unique domain, pk_propery and range.
+ *
+ * Since the display of the statement and its target value depends on the target class, the Subfield
+ * has a SubfieldType. This SubfieldType determines what components are used to create, edit or display
+ * the statement and its target.
+ */
+export interface Subfield extends FieldBase {
+
+  // determines what components are used to create, edit or display
+  // the statement and its target.
+  listType: SubfieldType
+
+  // the target class of the sub-field (if is outgoing range else domain)
+  targetClass: number
+
+  // label of the target class
+  targetClassLabel: string
+
+  // true if the property is removed from all profiles activated by the project
   removedFromAllProfiles: boolean
 }
 
@@ -125,7 +188,7 @@ export interface TimePrimitiveItem extends BasicStatementItem {
 
 export interface TemporalEntityTableI {
   rows$: Observable<TemporalEntityItem[]>
-  columns$: Observable<FieldDefinition[]>
+  columns$: Observable<Field[]>
 }
 export interface TemporalEntityItem extends BasicStatementItem {
   // fkClass: number; // fk_class of TemporalEntity
@@ -133,11 +196,7 @@ export interface TemporalEntityItem extends BasicStatementItem {
   pkEntity: number; // pk of TemporalEntity
   teEnProjRel: ProInfoProjRel
 }
-// export interface TemporalEntityCellDefinition {
-//   fieldDefinition: FieldDefinition,
-//   lists: EntityProperties[]
-//   cellValue: TemporalEntityCellValue
-// }
+
 export interface TemporalEntityRow { [key: string]: TemporalEntityCell }
 export interface TemporalEntityCell {
   pkProperty: number
@@ -156,7 +215,7 @@ export interface EntityPreviewItem extends BasicStatementItem {
 }
 
 export interface EntityProperties {
-  listDefinition: ListDefinition,
+  listDefinition: Subfield,
   items: ItemList
 }
 
@@ -171,7 +230,7 @@ export interface TimeSpanItem {
 }
 
 export interface TimeSpanProperty {
-  listDefinition: ListDefinition,
+  listDefinition: Subfield,
   items: TimePrimitiveItem[]
 }
 export type StatementItem = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TimePrimitiveItem;
@@ -180,8 +239,8 @@ export type ItemList = Item[];
 
 export interface PropertyListComponentInterface {
   pkEntity: number;
-  listDefinition: ListDefinition;
-  treeControl: NestedTreeControl<ListDefinition>;
+  listDefinition: Subfield;
+  treeControl: NestedTreeControl<Subfield>;
   showOntoInfo$;
   readonly$;
   addButtonVisible;
@@ -196,7 +255,7 @@ export interface PropertyListComponentInterface {
 
 export interface AddListComponentInterface {
   pkEntity: number;
-  listDefinition: ListDefinition;
+  listDefinition: Subfield;
   showOntoInfo$;
   readonly$;
   addButtonVisible;

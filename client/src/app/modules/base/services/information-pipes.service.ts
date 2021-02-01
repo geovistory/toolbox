@@ -20,7 +20,7 @@ import { PaginateByParam } from '../../../core/redux-store/actions';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LangStringItem, LanguageItem, ListDefinition, PlaceItem, StatementItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ListType } from '../components/properties-tree/properties-tree.models';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, ItemType, LangStringItem, LanguageItem, Subfield, PlaceItem, StatementItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, SubfieldType } from '../components/properties-tree/properties-tree.models';
 import { ConfigurationPipesService } from '../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 
@@ -58,7 +58,7 @@ export class InformationPipesService {
    * Pipe the project entities
    *********************************************************************/
 
-  @spyTag pipeListLength(l: ListDefinition, pkEntity: number): Observable<number> {
+  @spyTag pipeListLength(l: Subfield, pkEntity: number): Observable<number> {
     switch (l.listType) {
       case 'appellation':
       case 'entity-preview':
@@ -92,7 +92,7 @@ export class InformationPipesService {
     }
   }
 
-  @spyTag pipeList(l: ListDefinition, pkEntity, limit?: number): Observable<ItemList> {
+  @spyTag pipeList(l: Subfield, pkEntity, limit?: number): Observable<ItemList> {
     if (l.listType === 'appellation') return this.pipeListAppellation(l, pkEntity, limit)
     else if (l.listType === 'entity-preview') return this.pipeListEntityPreview(l, pkEntity, limit)
     else if (l.listType === 'language') return this.pipeListLanguage(l, pkEntity, limit)
@@ -109,7 +109,7 @@ export class InformationPipesService {
     else console.warn('unsupported listType')
   }
 
-  @spyTag pipeListBasicStatementItems(listDefinition: ListDefinition, pkEntity: number, pkProject: number): Observable<BasicStatementItem[]> {
+  @spyTag pipeListBasicStatementItems(listDefinition: Subfield, pkEntity: number, pkProject: number): Observable<BasicStatementItem[]> {
     return (listDefinition.isOutgoing ?
       this.b.pipeOutgoingBasicStatementItemsByProperty(listDefinition.property.pkProperty, pkEntity, pkProject) :
       this.b.pipeIngoingBasicStatementItemsByProperty(listDefinition.property.pkProperty, pkEntity, pkProject)
@@ -119,7 +119,7 @@ export class InformationPipesService {
   /**
    * Pipe the items in appellation field
    */
-  @spyTag pipeListAppellation<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<AppellationItem[]> {
+  @spyTag pipeListAppellation<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<AppellationItem[]> {
     return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
         switchMap((statements) => {
@@ -134,7 +134,7 @@ export class InformationPipesService {
   /**
  * Pipe the items in entity preview field
  */
-  @spyTag pipeListEntityPreview<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<EntityPreviewItem[]> {
+  @spyTag pipeListEntityPreview<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<EntityPreviewItem[]> {
 
     return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
@@ -155,7 +155,7 @@ export class InformationPipesService {
   }
 
 
-  @spyTag pipeListLanguage<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LanguageItem[]> {
+  @spyTag pipeListLanguage<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<LanguageItem[]> {
 
     return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
@@ -171,7 +171,7 @@ export class InformationPipesService {
   /**
    * Pipe the items in place list
    */
-  @spyTag pipeListPlace<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<PlaceItem[]> {
+  @spyTag pipeListPlace<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<PlaceItem[]> {
 
     return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
@@ -187,7 +187,7 @@ export class InformationPipesService {
   /**
    * Pipe the items in place list
    */
-  @spyTag pipeListDimension<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<DimensionItem[]> {
+  @spyTag pipeListDimension<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<DimensionItem[]> {
 
     return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
@@ -203,7 +203,7 @@ export class InformationPipesService {
   /**
  * Pipe the items in langString list
  */
-  @spyTag pipeListLangString<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LangStringItem[]> {
+  @spyTag pipeListLangString<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<LangStringItem[]> {
 
     return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
@@ -217,7 +217,7 @@ export class InformationPipesService {
 
   }
 
-  @spyTag pipeListTextProperty<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<TextPropertyItem[]> {
+  @spyTag pipeListTextProperty<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<TextPropertyItem[]> {
     return this.p.pkProject$.pipe(
       switchMap(pkProject => this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field_indexed$(pkEntity + '_' + listDefinition.fkClassField)
         .pipe(
@@ -253,7 +253,7 @@ export class InformationPipesService {
     limit: number,
     offset: number,
     pkProject: number,
-    listDefinition: ListDefinition,
+    listDefinition: Subfield,
     alternative = false): Observable<EntityPreviewItem[]> {
 
     // prepare page loader
@@ -301,8 +301,8 @@ export class InformationPipesService {
     limit: number,
     offset: number,
     pkProject: number,
-    listDefinition: ListDefinition,
-    fieldDefinitions: FieldDefinition[],
+    listDefinition: Subfield,
+    fieldDefinitions: Field[],
     alternative = false): Observable<TemporalEntityItem[]> {
 
     // const propertyItemType = this.propertyItemType(fieldDefinitions)
@@ -367,7 +367,7 @@ export class InformationPipesService {
 
 
 
-  @spyTag pipeItemTeEnRow(pkEntity: number, fieldDefinitions: FieldDefinition[], pkProject: number, repo: boolean): Observable<TemporalEntityRow> {
+  @spyTag pipeItemTeEnRow(pkEntity: number, fieldDefinitions: Field[], pkProject: number, repo: boolean): Observable<TemporalEntityRow> {
 
     // pipe outgoing statements
     const outgoingStatements$ = repo ? this.b.pipeRepoOutgoingStatements(pkEntity) : this.b.pipeOutgoingStatements(pkEntity);
@@ -519,7 +519,7 @@ export class InformationPipesService {
   }
 
 
-  @spyTag pipeEntityProperties(listDef: ListDefinition, fkEntity: number, limit?: number): Observable<EntityProperties> {
+  @spyTag pipeEntityProperties(listDef: Subfield, fkEntity: number, limit?: number): Observable<EntityProperties> {
 
     if (listDef.listType === 'appellation') {
       return this.pipeListAppellation(listDef, fkEntity, limit)
@@ -583,7 +583,7 @@ export class InformationPipesService {
     )
   }
 
-  getEntityProperties(listDefinition: ListDefinition, items): EntityProperties {
+  getEntityProperties(listDefinition: Subfield, items): EntityProperties {
     return {
       listDefinition,
       items,
@@ -597,7 +597,7 @@ export class InformationPipesService {
 
     return this.p.pkProject$.pipe(
       switchMap(pkProject => {
-        return this.c.pipeSpecificFieldDefinitions(
+        return this.c.pipeSpecificFieldOfClass(
           DfhConfig.ClASS_PK_TIME_SPAN
         ).pipe(
           switchMap(fieldDefs => {
@@ -824,7 +824,7 @@ export class InformationPipesService {
   /*********************************************************************
   * Pipe alternatives (not in project)
   *********************************************************************/
-  @spyTag pipeAltListLength(l: ListDefinition, pkEntity: number): Observable<number> {
+  @spyTag pipeAltListLength(l: Subfield, pkEntity: number): Observable<number> {
     switch (l.listType) {
       case 'appellation':
       case 'entity-preview':
@@ -844,7 +844,7 @@ export class InformationPipesService {
     }
   }
 
-  @spyTag pipeAltList(l: ListDefinition, pkEntity): Observable<ItemList> {
+  @spyTag pipeAltList(l: Subfield, pkEntity): Observable<ItemList> {
     if (l.listType === 'appellation') return this.pipeAltListAppellation(l, pkEntity)
     else if (l.listType === 'entity-preview') return this.pipeAltListEntityPreview(l, pkEntity)
     else if (l.listType === 'language') return this.pipeAltListLanguage(l, pkEntity)
@@ -856,7 +856,7 @@ export class InformationPipesService {
     else console.warn('unsupported listType')
   }
 
-  @spyTag pipeAltListStatements(listDefinition: ListDefinition, pkEntity: number): Observable<InfStatement[]> {
+  @spyTag pipeAltListStatements(listDefinition: Subfield, pkEntity: number): Observable<InfStatement[]> {
     return (listDefinition.isOutgoing ?
       this.b.pipeAlternativeIngoingStatements(listDefinition.property.pkProperty, pkEntity) :
       this.b.pipeAlternativeIngoingStatements(listDefinition.property.pkProperty, pkEntity)
@@ -866,7 +866,7 @@ export class InformationPipesService {
   /**
   * Pipe the items in entity preview field
   */
-  @spyTag pipeAltListEntityPreview<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
+  @spyTag pipeAltListEntityPreview<T>(listDefinition: Subfield, pkEntity): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
       this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity) :
@@ -887,7 +887,7 @@ export class InformationPipesService {
   /**
    * Pipe the alternative items in place list
    */
-  @spyTag pipeAltListPlace<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
+  @spyTag pipeAltListPlace<T>(listDefinition: Subfield, pkEntity): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -904,7 +904,7 @@ export class InformationPipesService {
   /**
    * Pipe the alternative items in dimension list
    */
-  @spyTag pipeAltListDimension<T>(listDefinition: ListDefinition, pkEntity): Observable<DimensionItem[]> {
+  @spyTag pipeAltListDimension<T>(listDefinition: Subfield, pkEntity): Observable<DimensionItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -921,7 +921,7 @@ export class InformationPipesService {
   /**
    * Pipe the alternative items in langString list
    */
-  @spyTag pipeAltListLangString<T>(listDefinition: ListDefinition, pkEntity): Observable<LangStringItem[]> {
+  @spyTag pipeAltListLangString<T>(listDefinition: Subfield, pkEntity): Observable<LangStringItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -937,7 +937,7 @@ export class InformationPipesService {
   /**
    * Pipe the alternative items in appellation field
    */
-  @spyTag pipeAltListAppellation<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
+  @spyTag pipeAltListAppellation<T>(listDefinition: Subfield, pkEntity): Observable<AppellationItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -953,7 +953,7 @@ export class InformationPipesService {
   /**
    * Pipe the alternative items in language field
    */
-  @spyTag pipeAltListLanguage<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
+  @spyTag pipeAltListLanguage<T>(listDefinition: Subfield, pkEntity): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -966,7 +966,7 @@ export class InformationPipesService {
     }
   }
 
-  @spyTag pipeAltListTextProperty<T>(listDefinition: ListDefinition, pkEntity): Observable<TextPropertyItem[]> {
+  @spyTag pipeAltListTextProperty<T>(listDefinition: Subfield, pkEntity): Observable<TextPropertyItem[]> {
 
     const key = pkEntity + '_' + listDefinition.fkClassField;
     return combineLatest(
@@ -1010,7 +1010,7 @@ export class InformationPipesService {
   /**
    * Pipe appellation list in the way it is defined by the repository
    */
-  @spyTag pipeRepoListAppellation<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
+  @spyTag pipeRepoListAppellation<T>(listDefinition: Subfield, pkEntity): Observable<AppellationItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -1026,7 +1026,7 @@ export class InformationPipesService {
   /**
   * Pipe language list in the way it is defined by the repository
   */
-  @spyTag pipeRepoListLanguage<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
+  @spyTag pipeRepoListLanguage<T>(listDefinition: Subfield, pkEntity): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -1042,7 +1042,7 @@ export class InformationPipesService {
   /**
    * Pipe place list in the way it is defined by the repository
    */
-  @spyTag pipeRepoListPlace<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
+  @spyTag pipeRepoListPlace<T>(listDefinition: Subfield, pkEntity): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -1058,7 +1058,7 @@ export class InformationPipesService {
   /**
   * Pipe place list in the way it is defined by the repository
   */
-  @spyTag pipeRepoListDimension<T>(listDefinition: ListDefinition, pkEntity): Observable<DimensionItem[]> {
+  @spyTag pipeRepoListDimension<T>(listDefinition: Subfield, pkEntity): Observable<DimensionItem[]> {
 
     if (listDefinition.isOutgoing) {
       return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
@@ -1073,7 +1073,7 @@ export class InformationPipesService {
   /**
   * Pipe the items in entity preview field, connected by community favorite statements
   */
-  @spyTag pipeRepoListEntityPreview<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
+  @spyTag pipeRepoListEntityPreview<T>(listDefinition: Subfield, pkEntity): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
       this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity) :
@@ -1312,7 +1312,7 @@ export class InformationPipesService {
               })
             }
 
-            return combineLatestOrEmpty(items.map(item => this.c.pipeLabelOfPropertyField(
+            return combineLatestOrEmpty(items.map(item => this.c.pipeFieldLabel(
               item.pkProperty,
               item.fkPropertyDomain,
               item.fkPropertyRange,

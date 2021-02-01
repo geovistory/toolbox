@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { InfStatement, ActiveProjectService } from 'app/core';
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
-import { FieldDefinition, ListDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
+import { Field, Subfield } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -24,7 +24,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  fieldDefinition: FieldDefinition;
+  fieldDefinition: Field;
   readonly$ = new BehaviorSubject(true);
   showOntoInfo$ = new BehaviorSubject(false)
   constructor(
@@ -34,7 +34,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: RamListRemoveDialogData,
   ) {
 
-    const listDef: ListDefinition = {
+    const listDef: Subfield = {
       listType: 'langString',
       label: 'at reference',
       ontoInfoUrl: '[ontoInfoUrl]',

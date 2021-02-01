@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ListType } from './listType';
+import { ValueObjectType } from './valueObjectType';
 
 
 /**
  * System wide configuration for the class.
  */
 export interface ClassConfig { 
-    mapsToListType?: ListType;
+    valueObjectType?: ValueObjectType;
 }
 

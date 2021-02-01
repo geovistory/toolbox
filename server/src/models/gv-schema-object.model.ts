@@ -1,10 +1,11 @@
-import {InfPersistentItem, InfTemporalEntity, InfStatement, InfPlace, InfLanguage, InfAppellation, InfTimePrimitive, InfTextProperty, InfLangString, InfDimension, ProInfoProjRel, DatDigital, WarEntityPreviewWithFulltext} from '.';
-import {property, model} from '@loopback/repository';
-import {DatTextProperty} from './dat-text-property.model';
-import {DatColumn} from './dat-column.model';
+import {model, property} from '@loopback/repository';
+import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreviewWithFulltext, ProDfhClassProjRel, ProTextProperty} from '.';
 import {DatClassColumnMapping} from './dat-class-column-mapping.model';
+import {DatColumn} from './dat-column.model';
+import {DatTextProperty} from './dat-text-property.model';
 import {ProAnalysis} from './pro-analysis.model';
 import {ProClassFieldConfig} from './pro-class-field-config.model';
+import {ProDfhProfileProjRel} from './pro-dfh-profile-proj-rel.model';
 
 
 @model()
@@ -26,7 +27,9 @@ class ProObject {
   @property.array(ProInfoProjRel) info_proj_rel?: Partial<ProInfoProjRel>[]
   @property.array(ProAnalysis) analysis?: Partial<ProAnalysis>[]
   @property.array(ProClassFieldConfig) class_field_config?: Partial<ProClassFieldConfig>[]
-
+  @property.array(ProDfhClassProjRel) dfh_class_proj_rel?: Partial<ProDfhClassProjRel>[];
+  @property.array(ProTextProperty) text_property?: Partial<ProTextProperty>[];
+  @property.array(ProDfhProfileProjRel) dfh_profile_proj_rel?: Partial<ProDfhProfileProjRel>[];
 }
 
 @model()
@@ -41,6 +44,13 @@ class DatObject {
 @model()
 class WarObject {
   @property.array(WarEntityPreviewWithFulltext) entity_preview?: Partial<WarEntityPreviewWithFulltext>[]
+}
+@model()
+class DfhObject {
+  @property.array(DfhApiProfile) profile?: DfhApiProfile[];
+  @property.array(DfhClass) klass?: DfhClass[];
+  @property.array(DfhProperty) property?: DfhProperty[];
+  @property.array(DfhLabel) label?: DfhLabel[];
 }
 
 /**
@@ -59,4 +69,5 @@ export class GvSchemaObject {
   @property() pro?: ProObject
   @property() dat?: DatObject
   @property() war?: WarObject
+  @property() dfh?: DfhObject
 }

@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   SysClassField,
-  DfhProperty
+  // DfhProperty
 } from '../index';
 
 declare var Object: any;
@@ -12,7 +12,7 @@ export interface SysClassFieldPropertyRelInterface {
   "property_is_outgoing"?: boolean;
   "ord_num"?: number;
   class_field?: SysClassField;
-  property?: DfhProperty;
+  // property?: DfhProperty;
 }
 
 export class SysClassFieldPropertyRel implements SysClassFieldPropertyRelInterface {
@@ -22,7 +22,7 @@ export class SysClassFieldPropertyRel implements SysClassFieldPropertyRelInterfa
   "property_is_outgoing": boolean;
   "ord_num": number;
   class_field?: SysClassField;
-  property?: DfhProperty;
+  // property?: DfhProperty;
   constructor(data?: SysClassFieldPropertyRelInterface) {
     Object.assign(this, data);
   }
@@ -39,7 +39,7 @@ export class SysClassFieldPropertyRel implements SysClassFieldPropertyRelInterfa
   * @license MIT
   * This method creates an instance of SysClassFieldPropertyRel for dynamic purposes.
   **/
-  public static factory(data: SysClassFieldPropertyRelInterface): SysClassFieldPropertyRel{
+  public static factory(data: SysClassFieldPropertyRelInterface): SysClassFieldPropertyRel {
     return new SysClassFieldPropertyRel(data);
   }
   /**
@@ -83,7 +83,7 @@ export class SysClassFieldPropertyRel implements SysClassFieldPropertyRelInterfa
           type: 'SysClassField',
           model: 'SysClassField',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_class_field',
+          keyFrom: 'fk_class_field',
           keyTo: 'pk_entity'
         },
         property: {
@@ -91,7 +91,7 @@ export class SysClassFieldPropertyRel implements SysClassFieldPropertyRelInterfa
           type: 'DfhProperty',
           model: 'DfhProperty',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_property',
+          keyFrom: 'fk_property',
           keyTo: 'pk_property'
         },
       }

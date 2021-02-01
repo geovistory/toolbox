@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory } from 'app/core/redux-store/actions';
 import { FluxStandardAction } from 'flux-standard-action';
-import { SysConfig } from '../sdk-lb4';
+import { SysConfigValue } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { IAppState } from '../redux-store/model';
 import { sysRoot } from './sys.config';
@@ -24,7 +24,7 @@ export class SysActions {
   //   (this.ngRedux).createCrudActions(sysRoot, 'analysis_type');
 
 
-  config = new StandardActionsFactory<Payload, SysConfig>
+  config = new StandardActionsFactory<Payload, SysConfigValue>
     (this.ngRedux).createCrudActions(sysRoot, 'config');
 
   constructor(public ngRedux: NgRedux<IAppState>) { }

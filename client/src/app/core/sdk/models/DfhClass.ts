@@ -1,11 +1,11 @@
 /* tslint:disable */
 import {
-  DfhProperty,
   ProClassFieldConfig,
   SysClassField,
   ProDfhClassProjRel,
   InfPersistentItem
 } from '../index';
+import { DfhProperty } from 'app/core/sdk-lb4';
 
 declare var Object: any;
 export interface DfhClassInterface {
@@ -48,7 +48,7 @@ export class DfhClass implements DfhClassInterface {
   * @license MIT
   * This method creates an instance of DfhClass for dynamic purposes.
   **/
-  public static factory(data: DfhClassInterface): DfhClass{
+  public static factory(data: DfhClassInterface): DfhClass {
     return new DfhClass(data);
   }
   /**
@@ -88,7 +88,7 @@ export class DfhClass implements DfhClassInterface {
           type: 'DfhProperty[]',
           model: 'DfhProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_class',
+          keyFrom: 'pk_class',
           keyTo: 'has_range'
         },
         outgoing_properties: {
@@ -96,7 +96,7 @@ export class DfhClass implements DfhClassInterface {
           type: 'DfhProperty[]',
           model: 'DfhProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_class',
+          keyFrom: 'pk_class',
           keyTo: 'has_domain'
         },
         class_field_configs: {
@@ -104,7 +104,7 @@ export class DfhClass implements DfhClassInterface {
           type: 'ProClassFieldConfig[]',
           model: 'ProClassFieldConfig',
           relationType: 'hasMany',
-                  keyFrom: 'pk_class',
+          keyFrom: 'pk_class',
           keyTo: 'fk_class_for_class_field'
         },
         class_fields: {
@@ -122,7 +122,7 @@ export class DfhClass implements DfhClassInterface {
           type: 'ProDfhClassProjRel[]',
           model: 'ProDfhClassProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_class',
+          keyFrom: 'pk_class',
           keyTo: 'fk_class'
         },
         persistent_items: {
@@ -130,7 +130,7 @@ export class DfhClass implements DfhClassInterface {
           type: 'InfPersistentItem[]',
           model: 'InfPersistentItem',
           relationType: 'hasMany',
-                  keyFrom: 'pk_class',
+          keyFrom: 'pk_class',
           keyTo: 'fk_class'
         },
       }

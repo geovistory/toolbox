@@ -15,15 +15,15 @@ import { DimensionListType } from './dimensionListType';
 /**
  * If present, defines a specific list type for the class.
  */
-export interface ListType { 
-    appellation?: ListType.AppellationEnum;
-    language?: ListType.LanguageEnum;
-    place?: ListType.PlaceEnum;
-    timePrimitive?: ListType.TimePrimitiveEnum;
-    langString?: ListType.LangStringEnum;
+export interface ValueObjectType { 
+    appellation?: ValueObjectType.AppellationEnum;
+    language?: ValueObjectType.LanguageEnum;
+    place?: ValueObjectType.PlaceEnum;
+    timePrimitive?: ValueObjectType.TimePrimitiveEnum;
+    langString?: ValueObjectType.LangStringEnum;
     dimension?: DimensionListType;
 }
-export namespace ListType {
+export namespace ValueObjectType {
     export type AppellationEnum = 'true';
     export const AppellationEnum = {
         True: 'true' as AppellationEnum

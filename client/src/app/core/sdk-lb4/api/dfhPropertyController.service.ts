@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { DfhClass } from '../model/models';
+import { DfhProperty } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class DfhPropertyService {
+export class DfhPropertyControllerService {
 
     protected basePath = 'http://0.0.0.0:3000';
     public defaultHeaders = new HttpHeaders();
@@ -85,15 +85,14 @@ export class DfhPropertyService {
     }
 
     /**
-     * Get all properties that are selected by at least one of the profiles used by the given project.
-     * @param pkProject Project pk
+     * @param pkProject 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public dfhPropertyOfProject(pkProject?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<DfhClass>>;
-    public dfhPropertyOfProject(pkProject?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<DfhClass>>>;
-    public dfhPropertyOfProject(pkProject?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<DfhClass>>>;
-    public dfhPropertyOfProject(pkProject?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
+    public dfhPropertyControllerOfProject(pkProject?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<DfhProperty>>;
+    public dfhPropertyControllerOfProject(pkProject?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<DfhProperty>>>;
+    public dfhPropertyControllerOfProject(pkProject?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<DfhProperty>>>;
+    public dfhPropertyControllerOfProject(pkProject?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (pkProject !== undefined && pkProject !== null) {
@@ -120,11 +119,7 @@ export class DfhPropertyService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -138,7 +133,7 @@ export class DfhPropertyService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<DfhClass>>(`${this.configuration.basePath}/lb3-api/DfhProperties/of-project`,
+        return this.httpClient.get<Array<DfhProperty>>(`${this.configuration.basePath}/of-project`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

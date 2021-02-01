@@ -6,7 +6,7 @@ const toPathMock = __dirname + '/../../client/src/__tests__/helpers/data/auto-ge
 // if I am correct, these MOCK are usefull only for the backend
 // (not exhaustive, they are the ones that had errors in it in the client because an import was not in the SDK)
 // because there are from lb4, and they are required in no endpoint
-const blacklist = ['DfhApiProfileMock', 'PubCredentialMock', 'TabRowMock', 'WarStatementMock'];
+const blacklist = ['DfhApiProfileMock', 'PubCredentialMock', 'TabRowMock', 'WarStatementMock', 'TabCellXMock'];
 
 /** pb in:
  * ProAnalysisMock > enum ColDefDefaultType

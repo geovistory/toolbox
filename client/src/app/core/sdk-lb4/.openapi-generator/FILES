@@ -13,7 +13,7 @@ api/datNamespace.service.ts
 api/dfhClass.service.ts
 api/dfhLabel.service.ts
 api/dfhProfile.service.ts
-api/dfhProperty.service.ts
+api/dfhPropertyController.service.ts
 api/factoidController.service.ts
 api/importTableController.service.ts
 api/infLanguage.service.ts
@@ -41,7 +41,6 @@ api/sysSystemRelevantClass.service.ts
 api/sysSystemType.service.ts
 api/systemConfiguration.service.ts
 api/table.service.ts
-api/warEntityPreview.service.ts
 api/warEntityPreviewController.service.ts
 configuration.ts
 encoder.ts
@@ -78,9 +77,12 @@ model/datNamespace.ts
 model/datNamespaceWithRelations.ts
 model/datObject.ts
 model/datTextProperty.ts
+model/dfhApiProfile.ts
 model/dfhClass.ts
 model/dfhLabel.ts
+model/dfhObject.ts
 model/dfhProfile.ts
+model/dfhProperty.ts
 model/dimensionListType.ts
 model/entityLabelConfig.ts
 model/factoidEntity.ts
@@ -109,7 +111,6 @@ model/infTextProperty.ts
 model/infTimePrimitive.ts
 model/labelPart.ts
 model/labelPartField.ts
-model/listType.ts
 model/loginRequest.ts
 model/loginResponse.ts
 model/mapTemporalData.ts
@@ -134,6 +135,7 @@ model/queryFilter.ts
 model/queryFilterData.ts
 model/queryPathSegment.ts
 model/queryPathSegmentData.ts
+model/relatedProfile.ts
 model/resetPasswordRequest.ts
 model/responseWithMsg.ts
 model/role.ts
@@ -143,7 +145,12 @@ model/signupResponse.ts
 model/signupValidationError.ts
 model/sysClassField.ts
 model/sysClassHasTypeProperty.ts
-model/sysConfig.ts
+model/sysConfigFieldDisplay.ts
+model/sysConfigFieldPosition.ts
+model/sysConfigFieldsByProperty.ts
+model/sysConfigFieldsBySourceClass.ts
+model/sysConfigSpecialFields.ts
+model/sysConfigValue.ts
 model/sysSystemRelevantClass.ts
 model/sysSystemType.ts
 model/tColFilter.ts
@@ -160,6 +167,7 @@ model/timeChartContVisualSettings.ts
 model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
 model/timePrimitiveWithCalWithRelations.ts
+model/valueObjectType.ts
 model/warEntityPreview.ts
 model/warEntityPreviewTimeSpan.ts
 model/warEntityPreviewTimeSpanWithRelations.ts

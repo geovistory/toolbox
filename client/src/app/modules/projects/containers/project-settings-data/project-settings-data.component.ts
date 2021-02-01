@@ -157,7 +157,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
   constructor(
     protected rootEpics: RootEpics,
-    private epics: ProjectSettingsDataAPIEpics,
+    // private epics: ProjectSettingsDataAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
     private highilghtPipe: HighlightPipe,
     public p: ActiveProjectService,
@@ -178,7 +178,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 

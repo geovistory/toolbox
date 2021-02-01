@@ -9,6 +9,7 @@ import {get, HttpErrors, post, requestBody} from '@loopback/rest';
 import {Roles} from '../components/authorization';
 import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
 import {Postgres1DataSource} from '../datasources/postgres1.datasource';
+import {SysConfigSpecialFields} from '../models/sys-config/sys-config-special-fields.model';
 export interface NumericIndex {[key: number]: true;}
 
 const SYS_CONFIG_KEY = 'SYS_CONFIG';
@@ -22,7 +23,7 @@ export class DimensionListType {
   @property({required: true}) measurementUnitClass: number
 }
 
-enum TrueEnum {true = 'true'}
+export enum TrueEnum {true = 'true'}
 @model({
   jsonSchema: {
     description: "If present, defines a specific list type for the class.",
@@ -31,24 +32,24 @@ enum TrueEnum {true = 'true'}
 
   }
 })
-export class ListType {
+export class ValueObjectType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  appellation: TrueEnum
+  appellation?: TrueEnum
 
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  language: TrueEnum
+  language?: TrueEnum
 
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  place: TrueEnum
+  place?: TrueEnum
 
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  timePrimitive: TrueEnum
+  timePrimitive?: TrueEnum
 
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  langString: TrueEnum
+  langString?: TrueEnum
 
   @property({type: DimensionListType, })
-  dimension: DimensionListType
+  dimension?: DimensionListType
 }
 
 @model({
@@ -57,15 +58,9 @@ export class ListType {
   }
 })
 export class ClassConfig {
-  @property({type: ListType}) mapsToListType?: ListType
+  @property({type: ValueObjectType}) valueObjectType?: ValueObjectType
 }
-@model({
-  jsonSchema: {
-    additionalProperties: {
-      $ref: registerType(ClassConfig)
-    },
-  }
-})
+@model({jsonSchema: {additionalProperties: {$ref: registerType(ClassConfig)}, }})
 export class ClassesIndex {
   [key: number]: ClassConfig | undefined;
   @property({type: ClassConfig}) 1?: ClassConfig
@@ -78,44 +73,85 @@ export class ClassesIndex {
     example: {
       classes: {
         40: {
-          mapsToListType: {
+          valueObjectType: {
             appellation: "true"
           }
         },
         51: {
-          mapsToListType: {
+          valueObjectType: {
             place: "true"
           }
         },
         52: {
-          mapsToListType: {
+          valueObjectType: {
             dimension: {
               measurementUnitClass: 56
             }
           }
         },
         54: {
-          mapsToListType: {
+          valueObjectType: {
             language: "true"
           }
         },
         335: {
-          mapsToListType: {
+          valueObjectType: {
             timePrimitive: "true"
           }
         },
         657: {
-          mapsToListType: {
+          valueObjectType: {
             langString: "true"
           }
+        }
+      },
+      specialFields: {
+        incomingProperties: {
+          1761: {
+            comment: 'has short title',
+            displayInBasicFields: {position: 1}
+          },
+          1111: {
+            comment: 'has appellation for language',
+            displayInBasicFields: {position: 2}
+          },
+          1762: {
+            comment: 'P18 has definition (is definition of)',
+            displayInBasicFields: {position: 4}
+          },
+          1760: {
+            comment: 'has web address (is web addess of) – P16',
+            displayInBasicFields: {position: 5}
+          },
+          1763: {
+            comment: 'P19 has comment (is comment about)',
+            displayInBasicFields: {position: 6}
+          },
+        },
+        outgoingProperties: {
+          [4]: {
+            comment: 'has time-span (When)',
+            displayInBasicFields: {position: 1000}
+          }
+        },
+        hasTypeSubproperties: {
+          comment: 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
+          displayInBasicFields: {position: 3}
         }
       }
     }
   }
 })
-export class SysConfig {
+
+
+
+
+
+export class SysConfigValue {
   @property({type: ClassesIndex, required: true})
   classes: ClassesIndex
+  @property({type: SysConfigSpecialFields, required: true})
+  specialFields: SysConfigSpecialFields
 }
 
 
@@ -129,13 +165,13 @@ export class SysConfigController {
         description: 'System Configuration',
         content: {
           'application/json': {
-            schema: {'x-ts-type': SysConfig}// SYS_CONFIG_REQUEST
+            schema: {'x-ts-type': SysConfigValue}
           },
         },
       },
     },
   })
-  async getSystemConfig(): Promise<SysConfig> {
+  async getSystemConfig(): Promise<SysConfigValue> {
 
     const res = await this.dataSource.execute(
       `SELECT config FROM system.config WHERE key = $1`,
@@ -156,7 +192,7 @@ export class SysConfigController {
       description: 'Validates the configuration without persisting it.',
       content: {
         'application/json': {
-          schema: {'x-ts-type': SysConfig}// SYS_CONFIG_REQUEST
+          schema: {'x-ts-type': SysConfigValue}// SYS_CONFIG_REQUEST
         },
       },
       required: true
@@ -175,7 +211,7 @@ export class SysConfigController {
       Hint: You can download the current cofiguration using "/get-system-config", modify it and upload the modified version here.`,
       content: {
         'application/json': {
-          schema: {'x-ts-type': SysConfig}// SYS_CONFIG_REQUEST
+          schema: {'x-ts-type': SysConfigValue}// SYS_CONFIG_REQUEST
         },
       },
       required: true
@@ -205,7 +241,7 @@ export class SysConfigController {
     for (const pkClass in sysConfig.classes) {
       if (Object.prototype.hasOwnProperty.call(sysConfig.classes, pkClass)) {
         const specialClass = sysConfig.classes[pkClass];
-        if (specialClass?.mapsToListType) {
+        if (specialClass?.valueObjectType) {
           valueObjectClasses[pkClass] = true
         }
       }

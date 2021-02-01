@@ -11,6 +11,7 @@
  */
 import { DatObject } from './datObject';
 import { InfObject } from './infObject';
+import { DfhObject } from './dfhObject';
 import { WarObject } from './warObject';
 import { ProObject } from './proObject';
 
@@ -20,5 +21,6 @@ export interface GvSchemaObject {
     pro?: ProObject;
     dat?: DatObject;
     war?: WarObject;
+    dfh?: DfhObject;
 }
 

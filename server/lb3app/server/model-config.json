@@ -123,10 +123,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhProperty": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "DfhLabel": {
     "dataSource": "postgres1",
     "public": true

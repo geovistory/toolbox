@@ -1,3 +1,15 @@
+/**
+ * this class mirrors {Entity} from '@loopback/repository'
+ */
+declare abstract class Entity {
+    getId(): unknown;
+    getIdObject(): Object;
+    toJSON(): Object;
+    toObject(): Object;
+}
+
+// use this generic type to omit the properties from a model that extends Entity
+export type OmitEntity<T> = Omit<T, keyof Entity>;
 
 export interface DatFactoidMapping {
     pk_entity: number,

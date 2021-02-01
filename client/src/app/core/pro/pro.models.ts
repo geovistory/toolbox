@@ -38,6 +38,7 @@ export interface ProAnalysisSlice {
 
 export interface Pro {
   info_proj_rel?: ProInfoProjRelSlice;
+  dfh_profile_proj_rel?: ProDfhProfileProjRelSlice;
   dfh_class_proj_rel?: ProDfhClassProjRelSlice;
   class_field_config?: ProClassFieldConfigSlice;
   text_property?: ProTextPropertySlice;

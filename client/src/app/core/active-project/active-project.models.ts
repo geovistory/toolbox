@@ -1,12 +1,12 @@
-import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
-import { EntityPreview, EntityPreviewList, EntityDetail, PeItDetailList, } from 'app/core/state/models';
+import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
+import { EntityDetail, EntityPreview } from 'app/core/state/models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
 // import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
 import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
 import { TabBase } from '../../shared/components/tab-layout/tab-layout.models';
-import { Inf } from '../inf/inf.models';
+import { InfLanguage, DfhProperty } from '../sdk-lb4';
 
 export interface ProjectPreview {
   label?: string,

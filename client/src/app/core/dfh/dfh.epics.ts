@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from 'app/core/redux-store/StandardEpicsFactory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { DfhClass, DfhClassApi, DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi, DfhProperty, DfhPropertyApi } from '../sdk';
+import { DfhClass, DfhClassApi, DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi, } from '../sdk';
 import { LoadActionMeta } from '../redux-store/actions';
 import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory, DfhProfileActionFactory, DfhPropertyActionFactory } from './dfh.actions';
 import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from './dfh.models';
+import { DfhPropertyControllerService } from '../sdk-lb4/api/dfhPropertyController.service';
+import { DfhProperty } from '../sdk-lb4';
 
 
 
@@ -16,7 +18,7 @@ export class DfhEpics {
     private notification: NotificationsAPIActions,
     private profileApi: DfhProfileApi,
     private classApi: DfhClassApi,
-    private propertyApi: DfhPropertyApi,
+    private propertyApi: DfhPropertyControllerService,
     private labelApi: DfhLabelApi,
   ) { }
 
@@ -32,7 +34,7 @@ export class DfhEpics {
         DfhProfileActionFactory.OF_PROJECT
       ),
       // Property Loaders
-      dfhPropertyEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.propertyApi.ofProject(meta.pk),
+      dfhPropertyEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.propertyApi.dfhPropertyControllerOfProject(meta.pk),
         DfhPropertyActionFactory.OF_PROJECT
       ),
       // Class Loaders

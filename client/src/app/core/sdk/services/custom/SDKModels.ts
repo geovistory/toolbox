@@ -8,7 +8,7 @@ import { DatTextProperty } from '../../models/DatTextProperty';
 import { DfhClass } from '../../models/DfhClass';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhProfile } from '../../models/DfhProfile';
-import { DfhProperty } from '../../models/DfhProperty';
+// import { DfhProperty } from '../../models/DfhProperty';
 import { Email } from '../../models/Email';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfDimension } from '../../models/InfDimension';
@@ -58,7 +58,7 @@ export class SDKModels {
     ProInfoProjRel: ProInfoProjRel,
     DfhProfile: DfhProfile,
     DfhClass: DfhClass,
-    DfhProperty: DfhProperty,
+    // DfhProperty: DfhProperty,
     DfhLabel: DfhLabel,
     DatChunk: DatChunk,
     DatColumn: DatColumn,

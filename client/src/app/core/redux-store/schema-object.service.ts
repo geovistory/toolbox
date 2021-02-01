@@ -10,6 +10,7 @@ import { WarActions } from '../war/war.actions';
 import { GvSchemaObject } from '../sdk-lb4';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { TabActions } from '../tab/tab.actions';
+import { DfhActions } from '../dfh/dfh.actions';
 
 
 @Injectable()
@@ -25,6 +26,7 @@ export class SchemaObjectService {
     public datActions: DatActions,
     public warActions: WarActions,
     public tabActions: TabActions,
+    public dfhActions: DfhActions,
     public notifications: NotificationsAPIActions,
     private entityPreviewSocket: EntityPreviewSocket
   ) { }
@@ -121,6 +123,7 @@ export class SchemaObjectService {
         else if (schema === 'dat') actions = this.datActions;
         else if (schema === 'war') actions = this.warActions;
         else if (schema === 'tab') actions = this.tabActions;
+        else if (schema === 'dfh') actions = this.dfhActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
             actions[model].loadSucceeded(object[schema][model], undefined, pkProject);

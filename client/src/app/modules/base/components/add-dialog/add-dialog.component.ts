@@ -4,14 +4,14 @@ import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/co
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
-import { ListDefinition, ListType } from '../properties-tree/properties-tree.models';
+import { Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { leafItemListTypes, valueObjectListTypes } from '../../base.module';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
 export interface AddDialogData {
-  listDefinition: ListDefinition;
+  listDefinition: Subfield;
 
   // primary key of the source entity
   pkEntity: number;
@@ -93,7 +93,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
     combineLatest(
       this.p.pkProject$,
-      this.c.pipeModelOfClass(lDef.targetClass)
+      this.c.pipeTableNameOfClass(lDef.targetClass)
     )
       .pipe(
         first(([pk, model]) => (!!pk && !!model)),

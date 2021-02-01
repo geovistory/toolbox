@@ -14,21 +14,21 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { equals, flatten, groupBy, indexBy, sum, uniq, values, keys } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { BasicModel, ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
+import { TableName, ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextPropertyComponent, FgTextPropertyInjectData } from '../fg-text-property/fg-text-property.component';
-import { FieldDefinition, FieldProperty, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
+import { Field, FieldProperty, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
   pkClass: number
   // fieldDefinition?: FieldDefinition
-  // listDefinition?: ListDefinition
+  // listDefinition?: Subfield
   customCtrlLabel?: string
   stringPartId?: number
   hideFieldTitle: boolean;
@@ -40,20 +40,20 @@ export interface FormArrayData {
 
   lists?: {
     parentModel?: EntityModel;
-    fieldDefinition: FieldDefinition
+    fieldDefinition: Field
     minLength: number
     maxLength: number
   }
 
   controls?: {
-    listDefinition: ListDefinition
+    listDefinition: Subfield
   }
 
   /**
    * if the entry point is a statement
    */
   addStatement?: {
-    listDefinition: ListDefinition
+    listDefinition: Subfield
   }
 
 
@@ -62,15 +62,15 @@ export interface FormArrayData {
 }
 interface FormGroupData {
   pkClass?: number
-  listDefinition?: ListDefinition
+  listDefinition?: Subfield
 }
 export interface FormControlData {
   controlType: ControlType
-  listDefinition?: ListDefinition
+  listDefinition?: Subfield
   nodeConfigs?: LocalNodeConfig[]
   appearance: MatFormFieldAppearance
   ctrlEntity?: {
-    model: BasicModel
+    model: TableName
   }
 }
 
@@ -99,7 +99,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   @Input() pkClass: number
 
   @Input() pkSourceEntity: number;
-  @Input() listDefinition: ListDefinition;
+  @Input() listDefinition: Subfield;
 
   @Input() hideButtons: boolean;
   @Input() hideTitle: boolean;
@@ -199,7 +199,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * returns true if control is required
    * TODO!
    */
-  private ctrlRequired(lDef: ListDefinition | FieldDefinition): boolean {
+  private ctrlRequired(lDef: Subfield | Field): boolean {
     return (
       lDef &&
       lDef.isOutgoing &&
@@ -304,7 +304,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
 
-  private getChildNodesOfClassAndListDef(pkTargetClass: number, listDef?: ListDefinition): Observable<LocalNodeConfig[]> {
+  private getChildNodesOfClassAndListDef(pkTargetClass: number, listDef?: Subfield): Observable<LocalNodeConfig[]> {
 
     if (listDef && listDef.listType == 'text-property') {
       const c = this.getListNode(listDef, false, null);
@@ -313,7 +313,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       return of([c]);
     }
     return combineLatest(
-      this.c.pipeModelOfClass(pkTargetClass),
+      this.c.pipeTableNameOfClass(pkTargetClass),
       this.c.pipeClassLabel(pkTargetClass)
     ).pipe(auditTime(10), map(([parentModel, label]) => {
       const mapValue = (items: InfTemporalEntity[] | InfPersistentItem[]): CtrlEntityModel => {
@@ -386,12 +386,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         filter(([klass]) => !!klass),
         switchMap(([dfhClass, initValEntity]) => {
 
-          let fields$: Observable<FieldDefinition[]>;
+          let fields$: Observable<Field[]>;
           let initPeIt: InfPersistentItem;
           let initTeEn: InfTemporalEntity;
 
           if (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) {
-            fields$ = this.c.pipeDefaultFieldDefinitions(arrayConfig.data.pkClass)
+            fields$ = this.c.pipeBasicFieldsOfClass(arrayConfig.data.pkClass)
             initPeIt = initValEntity
           } else {
             // For temporal_entity
@@ -477,7 +477,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   }
-  getListNodes(arrayConfig: FormArrayConfig<FormArrayData>, listType: ListType): Observable<LocalNodeConfig[]> {
+  getListNodes(arrayConfig: FormArrayConfig<FormArrayData>, listType: SubfieldType): Observable<LocalNodeConfig[]> {
     const initialValue = arrayConfig.initValue || [];
     const textProps: InfTextProperty[] = initialValue.filter((v) => !!v.fk_class_field)
     const statements: InfStatement[] = initialValue.filter((v) => !v.fk_class_field)
@@ -539,7 +539,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     * gets the init value for the ctrl target class that is shown when
     * FieldDefinition has multiple target classes
     */
-  getInitValueForTargetClassCtrl(fDef: FieldDefinition, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): Observable<ListDefinition> {
+  getInitValueForTargetClassCtrl(fDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): Observable<Subfield> {
 
     if (fDef.listType == 'time-span' || fDef.listType === 'text-property') {
       return;
@@ -565,7 +565,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
 
-  private getInitListDef(fDef: FieldDefinition, statements: InfStatement[]): Observable<ListDefinition> {
+  private getInitListDef(fDef: Field, statements: InfStatement[]): Observable<Subfield> {
     const statement = statements.find(r => this.sameProperty(r, fDef) && !!((r.fk_subject_info || r.fk_object_info)))
     if (!statement) return of(undefined);
 
@@ -582,7 +582,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   /**
    * gets the init value for the field definition out of the initial entity value
    */
-  getInitValueForFieldNode(lDef: FieldDefinition, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfStatement[] | InfTextProperty[] {
+  getInitValueForFieldNode(lDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfStatement[] | InfTextProperty[] {
     if (lDef.listType == 'time-span') {
       if (initVal.initTeEn && initVal.initTeEn.outgoing_statements) {
         return initVal.initTeEn.outgoing_statements.filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
@@ -620,7 +620,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * @param r
    * @param lDef
    */
-  sameProperty(r: InfStatement, lDef: ListDefinition | FieldDefinition): boolean {
+  sameProperty(r: InfStatement, lDef: Subfield | Field): boolean {
     return r.fk_property ?
       r.fk_property === lDef.property.pkProperty :
       r.fk_property_of_property ? r.fk_property_of_property === lDef.property.pkPropertyOfProperty : false
@@ -631,7 +631,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * It defines how to map the values of the controls to an array of statements
    */
   getListNode(
-    listDefinition: ListDefinition,
+    listDefinition: Subfield,
     hideFieldTitle: boolean,
     initValue: any,
     customCtrlLabel?: string,
@@ -692,7 +692,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   };
 
 
-  private getControlNodes(arrayConfig: LocalArrayConfig, listType: ListType): Observable<LocalNodeConfig[]> {
+  private getControlNodes(arrayConfig: LocalArrayConfig, listType: SubfieldType): Observable<LocalNodeConfig[]> {
 
     if (listType === 'time-span') {
 
@@ -1119,7 +1119,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private entityCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.controls.listDefinition;
     const initItems = arrayConfig.initValue || [{}];
-    return this.c.pipeModelOfClass(listDefinition.targetClass).pipe(
+    return this.c.pipeTableNameOfClass(listDefinition.targetClass).pipe(
       map(basicModel => {
 
         const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {

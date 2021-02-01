@@ -10,7 +10,7 @@ import { CalendarType } from '../../../core/date-time/time-primitive';
 import { InfSelector } from '../../../core/inf/inf.service';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { switchMapOr } from '../../../core/util/switchMapOr';
-import { BasicStatementItem, ListDefinition } from '../components/properties-tree/properties-tree.models';
+import { BasicStatementItem, Subfield } from '../components/properties-tree/properties-tree.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 
@@ -79,7 +79,7 @@ export class InformationBasicPipesService {
   }
 
 
-  pipeStatementsOfList(listDefinition: ListDefinition, pkEntity): Observable<InfStatement[]> {
+  pipeStatementsOfList(listDefinition: Subfield, pkEntity): Observable<InfStatement[]> {
     if (listDefinition.isOutgoing) {
       return this.p.inf$.statement$.by_subject_and_property$({
         fk_property: listDefinition.property.pkProperty,

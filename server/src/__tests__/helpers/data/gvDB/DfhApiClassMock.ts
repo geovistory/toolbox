@@ -1,4 +1,4 @@
-import { DfhApiClass } from "./local-model.helpers"
+import {DfhApiClass} from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -231,6 +231,27 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "F4"
   }
+
+  static readonly EN_450_MANIFESTATION_SINGLETON_TYPE: DfhApiClass = {
+    "pk_entity": 3740,
+    "dfh_pk_class": 450,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Manifestation singleton type",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of 'F4 Manifestation Singleton'.",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C10"
+  }
   static readonly EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE: DfhApiClass = {
     "pk_entity": 3741,
     "dfh_pk_class": 452,
@@ -271,6 +292,48 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "F2"
   }
+  static readonly EN_244_EXPRESSION_CREATION: DfhApiClass = {
+    "pk_entity": 3661,
+    "dfh_pk_class": 244,
+    "dfh_basic_type": 9,
+    "dfh_fk_profile": 4,
+    "dfh_class_label": "Expression Creation",
+    "dfh_fk_namespace": 6,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+    "dfh_namespace_label": "FRBRoo version 2.4",
+    "dfh_basic_type_label": "Temporal Entity",
+    "dfh_class_scope_note": "This class comprises activities that result in instances of F2 Expression coming into existence. This class characterises the\n\t\t\texternalisation of an Individual Work. Although F2 Expression is an abstract entity, a conceptual object, the creation of an expression\n\t\t\tinevitably also affects the physical world: when you scribble the first draft of a poem on a sheet of paper, you produce an instance of F4\n\t\t\tManifestation Singleton; F28 Expression Creation is a subclass of E12 Production because the recording of the expression causes a physical\n\t\t\tmodification of the carrying E18 Physical Thing. The work becomes manifest by being expressed on a physical carrier different from the\n\t\t\tcreator’s brain. The spatio-temporal circumstances under which the expression is created are necessarily the same spatio-temporal\n\t\t\tcircumstances under which the first instance of F4 Manifestation Singleton is produced. The mechanisms through which oral tradition (of\n\t\t\tmyths, tales, music, etc.) operates are not further investigated in this model. As far as bibliographic practice is concerned, only those\n\t\t\tinstances of F2 Expression that are externalised on physical carriers other than both the creator’s brain and the auditor’s brain are\n\t\t\ttaken into account (for a discussion of the modelling of oral traditions, see: Nicolas, Yann. ‘Folklore Requirements for Bibliographic\n\t\t\tRecords: oral traditions and FRBR.’ In: Cataloging Classification Quarterly (2005). Vol. 39, No. 3-4. P. 179-195). It is possible to use\n\t\t\tthe P2 has type (is type of) property in order to specify that the creation of a given expression of a given work played a particular role\n\t\t\twith regard to the overall bibliographic history of that work (e.g., that it was the creation of the progenitor expression on which all\n\t\t\tother expressions of the same work are based; or that it was the creation of the critical edition that served as the basis for canonical\n\t\t\treferences to the work). ",
+    "tmsp_last_modification": "2020-11-19T08:56:59.307795+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "F28"
+  }
+
+  static readonly EN_784_SHORT_TITLE: DfhApiClass = {
+    "pk_entity": 8422,
+    "dfh_pk_class": 784,
+    "dfh_basic_type": 0,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Short title",
+    "dfh_fk_namespace": 30,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_basic_type_label": null,
+    "dfh_class_scope_note": "An abbreviated form of an appellation or name by which an entity is commonly known and cited, contrasting with the full one which is more descriptive but is too long to be of use in most purposes.\r\nA short title should be used as metadata in the information system while the full appellation is the historical or identifying one.",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C15"
+  }
+
 }
 
 

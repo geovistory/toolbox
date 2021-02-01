@@ -2,7 +2,7 @@ import { indexBy, mapObjIndexed } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { FieldDefinition, TemporalEntityItem, TemporalEntityTableI, ListDefinition } from '../properties-tree/properties-tree.models';
+import { Field, TemporalEntityItem, TemporalEntityTableI, Subfield } from '../properties-tree/properties-tree.models';
 
 
 
@@ -10,14 +10,14 @@ export class TemporalEntityTable {
   public dataSource = new MatTableDataSource<TemporalEntityItem>();
   // table view
   dataColumnsMap$ = new BehaviorSubject<{ [key: string]: boolean; }>({});
-  dataColumns$ = new BehaviorSubject<{ name: string, fieldDefinition: FieldDefinition }[]>([]);
+  dataColumns$ = new BehaviorSubject<{ name: string, fieldDefinition: Field }[]>([]);
   displayedColumns$: Observable<string[]>;
 
   constructor(
     public rows$: Observable<TemporalEntityItem[]>,
-    public columDefs$: Observable<FieldDefinition[]>,
+    public columDefs$: Observable<Field[]>,
     public destroy$,
-    public listDefinition: ListDefinition,
+    public listDefinition: Subfield,
     customColumns: {
       columnsBefore: string[];
       columnsAfter: string[];

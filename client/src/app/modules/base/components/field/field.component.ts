@@ -11,12 +11,12 @@ import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
-import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
+import { Field, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 import { valueObjectListTypes } from '../../base.module';
 
-interface ListDefinitionWithItemCount extends ListDefinition {
+interface SubfieldWithItemCount extends Subfield {
   itemsCount: number
 }
 
@@ -31,13 +31,13 @@ export class FieldComponent implements OnInit {
 
   @Input() pkEntity: number;
 
-  @Input() fieldDefinition: FieldDefinition
+  @Input() fieldDefinition: Field
   // @Input() appContext: number
-  @Input() treeControl: NestedTreeControl<FieldDefinition>;
+  @Input() treeControl: NestedTreeControl<Field>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
 
-  listsWithCounts$: Observable<ListDefinitionWithItemCount[]>
+  listsWithCounts$: Observable<SubfieldWithItemCount[]>
   showAddButton$
   itemsCount$: Observable<number>;
 
@@ -55,7 +55,7 @@ export class FieldComponent implements OnInit {
    * returns a unique key for each list definition,
    * used by angular *ngFor directive to track items in DOM
    */
-  getKey(index, item: ListDefinitionWithItemCount) {
+  getKey(index, item: SubfieldWithItemCount) {
     return item.listType + item.fkClassField + item.property.pkProperty + item.sourceClass + item.targetClass
   }
 
@@ -90,7 +90,7 @@ export class FieldComponent implements OnInit {
           map((itemsCount) => ({ ...l, itemsCount }))
         )
       })).pipe(
-        map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0)),
+        map(lists => lists.filter((list: SubfieldWithItemCount) => list.itemsCount > 0)),
         shareReplay({ refCount: true, bufferSize: 1 }),
       )
 
@@ -114,7 +114,7 @@ export class FieldComponent implements OnInit {
 
   }
 
-  is = (node: ListDefinition, type: ListType) => {
+  is = (node: Subfield, type: SubfieldType) => {
     return node.listType === type
   };
 
@@ -154,7 +154,7 @@ export class FieldComponent implements OnInit {
     }
   }
 
-  private openAddDialog(listDef: ListDefinition) {
+  private openAddDialog(listDef: Subfield) {
     const isValueLike = valueObjectListTypes.includes(listDef.listType);
     const showAddList = (!isValueLike && !listDef.identityDefiningForTarget)
     const data: AddDialogData = {

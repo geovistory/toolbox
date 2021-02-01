@@ -2,10 +2,11 @@
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { ListDefinition } from '../../properties-tree/properties-tree.models';
-import { InfLanguage, U, InfStatement, InfTextProperty, InfAppellation, InfPlace, InfLangString } from 'app/core';
+import { Subfield } from '../../properties-tree/properties-tree.models';
+import { U, InfStatement, InfTextProperty, InfAppellation, InfPlace, InfLangString } from 'app/core';
 import { shareReplay, map } from 'rxjs/operators';
 import { CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog.component';
+import { InfLanguage } from 'app/core/sdk-lb4';
 
 export interface MergeDef {
   // path of the property in the parent, where the child needs to be appended
@@ -47,7 +48,7 @@ export class FormPart {
   constructor(
     public formGroup: FormGroup,
     public title: string,
-    public listDefinitions: ListDefinition[],
+    public listDefinitions: Subfield[],
     public initVal: FormPartInitValue,
     public resultTemplate,
     public mergeDef: MergeDef,
@@ -55,11 +56,11 @@ export class FormPart {
     public defaultLanguage: InfLanguage
   ) {
     // Q: is there an initial value
-    if (this.initVal && this.initVal.initListDefinition) {
+    if (this.initVal && this.initVal.initSubfield) {
 
 
       this.listDefinitions.forEach(thisList => {
-        if (initVal.initListDefinition.listType === 'time-span') {
+        if (initVal.initSubfield.listType === 'time-span') {
           if (initVal.initTimeSpan && initVal.initTimeSpan[thisList.property.pkProperty]) {
             // Yes. It is matching a listDefinition, add a form item with initial (language) value
             this.items.push({
@@ -87,7 +88,7 @@ export class FormPart {
         // Q: is this list a statement list ??
         else {
           // Q: This is a list that connects one statement per item
-          const initList = this.initVal.initListDefinition
+          const initList = this.initVal.initSubfield
           const initProperty = initList.property.pkProperty;
 
           // we neet to flip source and target, when the list type is a temporal entity
@@ -138,7 +139,7 @@ export class FormPart {
     this.this$.next(this);
   }
 
-  classSelected(item: FormItem, listDefinition: ListDefinition) {
+  classSelected(item: FormItem, listDefinition: Subfield) {
     item.classSelect = 'disabled';
     item.formControlDef = this.addFormControlDef(listDefinition, null)
     this.this$.next(this);
@@ -162,7 +163,7 @@ export class FormPart {
     this.formGroup.removeControl(formControlName)
   }
 
-  private addFormControlDef(listDefinition: ListDefinition, initialValue): FormControlDefinition {
+  private addFormControlDef(listDefinition: Subfield, initialValue): FormControlDefinition {
     const formControlName = U.uuid();
 
     const validators = this.isRequired(listDefinition) ? [Validators.required] : []
@@ -186,9 +187,9 @@ export class FormPart {
    * - belongs to a temproal-entity or time-span (because there it can have not required fields)
    * - and the field itself is not an identity defining property
    */
-  private isRequired(listDefinition: ListDefinition): boolean {
+  private isRequired(listDefinition: Subfield): boolean {
 
-    if (this.initVal && this.initVal.initListDefinition && ['temporal-entity', 'time-span'].includes(this.initVal.initListDefinition.listType)) {
+    if (this.initVal && this.initVal.initSubfield && ['temporal-entity', 'time-span'].includes(this.initVal.initSubfield.listType)) {
       return listDefinition.identityDefiningForSource ? true : false;
     }
     else {
@@ -197,7 +198,7 @@ export class FormPart {
   }
 
 
-  private mapValue(val, listDefinition: ListDefinition): any {
+  private mapValue(val, listDefinition: Subfield): any {
     if (!listDefinition) throw console.error('No listDefinition provided')
 
     if (listDefinition.listType === 'appellation') {
@@ -318,7 +319,7 @@ export class FormPart {
 
 
 export interface FormPartInitValue {
-  initListDefinition: ListDefinition
+  initSubfield: Subfield
   initTextProperty?: FormPartInitValueTextProperty
   initStatement?: FormPartInitValueStatement
   initTimeSpan?: CtrlTimeSpanDialogResult
@@ -360,7 +361,7 @@ export interface FormItem {
  * to a form control (using the name of the formControl within a formGroup)
  */
 export interface FormControlDefinition {
-  listDefinition: ListDefinition
+  listDefinition: Subfield
   formControlName: string
   sourceValue$: Observable<any>
 }

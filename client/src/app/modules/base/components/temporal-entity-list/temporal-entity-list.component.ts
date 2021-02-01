@@ -10,7 +10,7 @@ import { PaginateByParam } from '../../../../core/redux-store/actions';
 import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
-import { ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
+import { Subfield, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
@@ -33,8 +33,8 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
   @Input() pkEntity: number;
 
-  @Input() listDefinition: ListDefinition;
-  @Input() treeControl: NestedTreeControl<ListDefinition>;
+  @Input() listDefinition: Subfield;
+  @Input() treeControl: NestedTreeControl<Subfield>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;
@@ -177,7 +177,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 }
 
 
-export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number, alternatives = false): PaginateByParam[] {
+export function createPaginateBy(listDefinition: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
   if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
     return [
       { fk_property: listDefinition.property.pkProperty },

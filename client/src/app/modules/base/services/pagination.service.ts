@@ -4,7 +4,7 @@ import { paginatedBy, paginateKey, paginateName } from 'app/core/redux-store/red
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, takeUntil, first } from 'rxjs/operators';
-import { ListDefinition } from '../components/properties-tree/properties-tree.models';
+import { Subfield } from '../components/properties-tree/properties-tree.models';
 import { createPaginateBy } from '../components/temporal-entity-list/temporal-entity-list.component';
 import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/core/redux-store/actions';
 import { NgRedux } from '@angular-redux/store';
@@ -31,7 +31,7 @@ class StatementPageLoader {
       offset: number) => ActionResultObservable<PaginatedStatementList>
   ) { }
 
-  public addPageLoader(pkProject: number, l: ListDefinition, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
+  public addPageLoader(pkProject: number, l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
 
     const paginateBy = createPaginateBy(l, pkEntity, alternatives);
     const triggerKey = paginatedBy(paginateName(paginateBy)) + '_' + paginateKey(paginateBy);
@@ -99,7 +99,7 @@ class StatementPageLoader {
 
   }
 
-  private getTrigger(triggerKey: string, l: ListDefinition, pkEntity: number, alternatives: boolean) {
+  private getTrigger(triggerKey: string, l: Subfield, pkEntity: number, alternatives: boolean) {
     if (!this.paginationTriggers.has(triggerKey)) {
       const ofProject = !alternatives;
       const t = combineLatest([

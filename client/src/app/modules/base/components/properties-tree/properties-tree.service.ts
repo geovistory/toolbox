@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from '../../../../../../node_modules/rxjs';
-import { ListDefinition, ItemBasics } from './properties-tree.models';
+import { Subfield, ItemBasics } from './properties-tree.models';
 import { CdkDragDrop, moveItemInArray } from '../../../../../../node_modules/@angular/cdk/drag-drop';
 import { first } from '../../../../../../node_modules/rxjs/operators';
 import { ProInfoProjRel, ActiveProjectService } from '../../../../core';

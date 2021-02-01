@@ -10,12 +10,14 @@
  * Do not edit the class manually.
  */
 import { ClassesIndex } from './classesIndex';
+import { SysConfigSpecialFields } from './sysConfigSpecialFields';
 
 
 /**
  * Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.dataforhistory.org/class/21) 
  */
-export interface SysConfig { 
+export interface SysConfigValue { 
     classes: ClassesIndex;
+    specialFields: SysConfigSpecialFields;
 }
 

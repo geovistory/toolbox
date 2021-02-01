@@ -42,18 +42,6 @@
       "primaryKey": "pk_class",
       "foreignKey": "fk_class"
     },
-    "ingoing_properties": {
-      "type": "hasMany",
-      "model": "DfhProperty",
-      "foreignKey": "has_range",
-      "primaryKey": "pk_class"
-    },
-    "outgoing_properties": {
-      "type": "hasMany",
-      "model": "DfhProperty",
-      "foreignKey": "has_domain",
-      "primaryKey": "pk_class"
-    },
     "class_field_configs": {
       "type": "hasMany",
       "model": "ProClassFieldConfig",

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from 'app/core/redux-store/StandardEpicsFactory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { SysConfig, SystemConfigurationService } from '../sdk-lb4';
+import { SysConfigValue, SystemConfigurationService } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { SysSystemRelevantClassApi } from '../sdk/services/custom/SysSystemRelevantClass';
 import { ModifyActionMeta } from '../redux-store/actions';
@@ -29,7 +29,7 @@ export class SysEpics {
     // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
     //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
 
-    const configEpicsFactory = new StandardEpicsFactory<SysConfigSlice, SysConfig>
+    const configEpicsFactory = new StandardEpicsFactory<SysConfigSlice, SysConfigValue>
       (sysRoot, 'config', this.actions.config, this.notification);
 
 

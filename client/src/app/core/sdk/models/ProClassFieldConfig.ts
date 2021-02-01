@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  DfhProperty,
+  // DfhProperty,
   SysClassField,
   ProProject
 } from '../index';
@@ -15,7 +15,7 @@ export interface ProClassFieldConfigInterface {
   "fk_range_class"?: number;
   "ord_num"?: number;
   "fk_class_for_class_field"?: number;
-  property?: DfhProperty;
+  // property?: DfhProperty;
   class_field?: SysClassField;
   project?: ProProject;
 }
@@ -29,7 +29,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
   "fk_range_class": number;
   "ord_num": number;
   "fk_class_for_class_field": number;
-  property?: DfhProperty;
+  // property?: DfhProperty;
   class_field?: SysClassField;
   project?: ProProject;
   constructor(data?: ProClassFieldConfigInterface) {
@@ -48,7 +48,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
   * @license MIT
   * This method creates an instance of ProClassFieldConfig for dynamic purposes.
   **/
-  public static factory(data: ProClassFieldConfigInterface): ProClassFieldConfig{
+  public static factory(data: ProClassFieldConfigInterface): ProClassFieldConfig {
     return new ProClassFieldConfig(data);
   }
   /**
@@ -104,7 +104,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           type: 'DfhProperty',
           model: 'DfhProperty',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_property',
+          keyFrom: 'fk_property',
           keyTo: 'pk_property'
         },
         class_field: {
@@ -112,7 +112,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           type: 'SysClassField',
           model: 'SysClassField',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_class_field',
+          keyFrom: 'fk_class_field',
           keyTo: 'pk_entity'
         },
         project: {
@@ -120,7 +120,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           type: 'ProProject',
           model: 'ProProject',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_project',
+          keyFrom: 'fk_project',
           keyTo: 'pk_entity'
         },
       }

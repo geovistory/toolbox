@@ -15,7 +15,7 @@ import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
-import { FieldDefinition, TemporalEntityItem } from 'app/modules/base/components/properties-tree/properties-tree.models';
+import { Field, TemporalEntityItem } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { createPaginateBy } from 'app/modules/base/components/temporal-entity-list/temporal-entity-list.component';
 import { PaginationService } from 'app/modules/base/services/pagination.service';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
@@ -94,7 +94,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
     const appeAndDefFields$ = this.c.pipeFieldDefinitions(this.pkClass).pipe(
       map(fieldDefinitions => {
-        let appeField: FieldDefinition, definitionField: FieldDefinition;
+        let appeField: Field, definitionField: Field;
         fieldDefinitions.forEach(f => {
           // take only appellation for language, or ...
           if (f.listDefinitions[0].property.pkProperty === 1111) {

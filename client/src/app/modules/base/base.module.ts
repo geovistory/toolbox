@@ -56,7 +56,7 @@ import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-strin
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
 import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
-import { ListType } from './components/properties-tree/properties-tree.models';
+import { SubfieldType } from './components/properties-tree/properties-tree.models';
 
 const components = [
   PropertiesTreeComponent,
@@ -147,5 +147,5 @@ const baseModules = [
 export class BaseModule { }
 
 
-export const leafItemListTypes: ListType[] = ['appellation', 'language', 'place', 'text-property', 'langString', 'dimension', 'entity-preview']
-export const valueObjectListTypes: ListType[] = ['appellation', 'language', 'place', 'text-property', 'langString', 'dimension']
+export const leafItemListTypes: SubfieldType[] = ['appellation', 'language', 'place', 'text-property', 'langString', 'dimension', 'entity-preview']
+export const valueObjectListTypes: SubfieldType[] = ['appellation', 'language', 'place', 'text-property', 'langString', 'dimension']

@@ -15,7 +15,7 @@ export class ProProject extends Entity {
     generated: true,
     updateOnly: true,
   })
-  pk_entity?: number;
+  pk_entity: number;
 
   @property({
     type: 'number',

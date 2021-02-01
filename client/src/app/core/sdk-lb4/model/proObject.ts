@@ -10,13 +10,19 @@
  * Do not edit the class manually.
  */
 import { ProInfoProjRel } from './proInfoProjRel';
+import { ProDfhProfileProjRel } from './proDfhProfileProjRel';
 import { ProClassFieldConfig } from './proClassFieldConfig';
+import { ProDfhClassProjRel } from './proDfhClassProjRel';
 import { ProAnalysis } from './proAnalysis';
+import { ProTextProperty } from './proTextProperty';
 
 
 export interface ProObject { 
     info_proj_rel?: Array<ProInfoProjRel>;
     analysis?: Array<ProAnalysis>;
     class_field_config?: Array<ProClassFieldConfig>;
+    dfh_class_proj_rel?: Array<ProDfhClassProjRel>;
+    text_property?: Array<ProTextProperty>;
+    dfh_profile_proj_rel?: Array<ProDfhProfileProjRel>;
 }
 

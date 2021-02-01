@@ -5,13 +5,13 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
+import { LoopBackFilter, } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DfhClass } from '../../models/DfhClass';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { DfhProperty } from '../../models/DfhProperty';
+// import { DfhProperty } from '../../models/DfhProperty';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { SysClassField } from '../../models/SysClassField';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
@@ -31,7 +31,7 @@ export class DfhClassApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**
@@ -51,7 +51,7 @@ export class DfhClassApi extends BaseLoopBackApi {
   public ofProject(pkProject: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhClasses/of-project";
+      "/DfhClasses/of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

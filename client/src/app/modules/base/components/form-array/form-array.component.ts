@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { FormArrayData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig, LocalFormChildFactory, FormChildData } from '../form-create-entity/form-create-entity.component';
-import { FieldDefinition, ListDefinition } from '../properties-tree/properties-tree.models';
+import { Field, Subfield } from '../properties-tree/properties-tree.models';
 import { ListType } from 'app/core';
 import { FormArray } from '@angular/forms';
 import { first } from 'rxjs/operators';
@@ -180,7 +180,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   //   config.disabled = true;
 
   // }
-  addItemInChildListDef(lDef: ListDefinition) {
+  addItemInChildListDef(lDef: Subfield) {
     // try to find the existing child FormArray containing the controls
     let childList = this.formArrayFactory.children.find(c => {
       if (c.factoryType == 'array') {

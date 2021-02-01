@@ -58,8 +58,8 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
       filter(c => !!c),
       map(config => {
         const classConfig = config.classes[this.pkClassOfDimension]
-        if (classConfig.mapsToListType && classConfig.mapsToListType.dimension) {
-          return classConfig.mapsToListType.dimension.measurementUnitClass
+        if (classConfig.valueObjectType && classConfig.valueObjectType.dimension) {
+          return classConfig.valueObjectType.dimension.measurementUnitClass
         }
       })
     )

@@ -96,6 +96,11 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
+            "sourceMap": {
+              "scripts": false,
+              "styles": false,
+              "vendor": false
+            },
             "scripts": [
               "node_modules/cesium/Build/Cesium/Cesium.js"
             ],

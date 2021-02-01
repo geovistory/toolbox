@@ -5,7 +5,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ListDefinition, TimeSpanItem } from '../properties-tree/properties-tree.models';
+import { Subfield, TimeSpanItem } from '../properties-tree/properties-tree.models';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { TimeSpanService } from '../../services/time-span.service';
 
@@ -20,7 +20,7 @@ export class TimeSpanListComponent implements OnInit {
 
   @Input() pkEntity: number;
 
-  @Input() treeControl: NestedTreeControl<ListDefinition>;
+  @Input() treeControl: NestedTreeControl<Subfield>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

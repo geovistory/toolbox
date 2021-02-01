@@ -21,7 +21,7 @@ export class FieldConfigComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.fieldLabel$ = this.c.pipeLabelOfPropertyField(this.fkProperty, this.fkPropertyDomain, this.fkPropertyRange)
+    this.fieldLabel$ = this.c.pipeFieldLabel(this.fkProperty, this.fkPropertyDomain, this.fkPropertyRange)
 
   }
 

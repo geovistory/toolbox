@@ -5,13 +5,13 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
+import { LoopBackFilter, } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { DfhProperty } from '../../models/DfhProperty';
+// import { DfhProperty } from '../../models/DfhProperty';
 import { SysClassField } from '../../models/SysClassField';
 import { ProProject } from '../../models/ProProject';
 
@@ -29,7 +29,7 @@ export class ProClassFieldConfigApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**
@@ -51,7 +51,7 @@ export class ProClassFieldConfigApi extends BaseLoopBackApi {
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProClassFieldConfigs";
+      "/ProClassFieldConfigs";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -78,7 +78,7 @@ export class ProClassFieldConfigApi extends BaseLoopBackApi {
   public ofProject(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProClassFieldConfigs/of-project";
+      "/ProClassFieldConfigs/of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -108,7 +108,7 @@ export class ProClassFieldConfigApi extends BaseLoopBackApi {
   public bulkUpsert(pkProject: any, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProClassFieldConfigs/bulk-upsert";
+      "/ProClassFieldConfigs/bulk-upsert";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -138,7 +138,7 @@ export class ProClassFieldConfigApi extends BaseLoopBackApi {
   public bulkDelete(pks: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProClassFieldConfigs/bulk-delete";
+      "/ProClassFieldConfigs/bulk-delete";
     let _routeParams: any = {};
     let _postBody: any = {
       pks: pks

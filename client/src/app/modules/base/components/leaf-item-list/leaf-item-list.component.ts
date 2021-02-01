@@ -6,7 +6,7 @@ import { Observable, Subject, BehaviorSubject, combineLatest, merge } from '../.
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { EntityPreviewItem, Item, ItemList, Subfield, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
@@ -27,8 +27,8 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
   @Input() pkEntity: number;
 
-  @Input() listDefinition: ListDefinition;
-  @Input() treeControl: NestedTreeControl<ListDefinition>;
+  @Input() listDefinition: Subfield;
+  @Input() treeControl: NestedTreeControl<Subfield>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

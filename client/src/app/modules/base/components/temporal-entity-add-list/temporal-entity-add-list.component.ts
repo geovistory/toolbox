@@ -12,7 +12,7 @@ import { InfSelector } from '../../../../core/inf/inf.service';
 import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
-import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
+import { AddListComponentInterface, Subfield, TemporalEntityItem } from '../properties-tree/properties-tree.models';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
 import { ByPk } from 'app/core/redux-store/model';
@@ -29,7 +29,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   @Input() pkEntity: number;
 
-  @Input() listDefinition: ListDefinition;
+  @Input() listDefinition: Subfield;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfStatement, EntityPreview } from 'app/core';
-import { FieldDefinition, ListDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
+import { Field, Subfield } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
 import { BehaviorSubject } from 'rxjs';
@@ -23,7 +23,7 @@ export interface RamListEditDialogData {
 })
 export class RamListEditDialogComponent implements OnInit {
 
-  fieldDefinition: FieldDefinition;
+  fieldDefinition: Field;
   readonly$ = new BehaviorSubject(false);
   showOntoInfo$ = new BehaviorSubject(false)
   constructor(
@@ -32,7 +32,7 @@ export class RamListEditDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: RamListEditDialogData,
   ) {
 
-    const listDef: ListDefinition = {
+    const listDef: Subfield = {
       listType: 'langString',
       label: 'at reference',
       ontoInfoUrl: '[ontoInfoUrl]',

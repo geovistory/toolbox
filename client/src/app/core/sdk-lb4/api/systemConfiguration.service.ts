@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { SysConfig } from '../model/models';
+import { SysConfigValue } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -88,9 +88,9 @@ export class SystemConfigurationService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sysConfigControllerGetSystemConfig(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SysConfig>;
-    public sysConfigControllerGetSystemConfig(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SysConfig>>;
-    public sysConfigControllerGetSystemConfig(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SysConfig>>;
+    public sysConfigControllerGetSystemConfig(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SysConfigValue>;
+    public sysConfigControllerGetSystemConfig(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SysConfigValue>>;
+    public sysConfigControllerGetSystemConfig(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SysConfigValue>>;
     public sysConfigControllerGetSystemConfig(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -126,7 +126,7 @@ export class SystemConfigurationService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<SysConfig>(`${this.configuration.basePath}/get-system-config`,
+        return this.httpClient.get<SysConfigValue>(`${this.configuration.basePath}/get-system-config`,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -138,16 +138,16 @@ export class SystemConfigurationService {
     }
 
     /**
-     * @param sysConfig Sets or updates the system configuration. This affects the basic behavior of geovistory (i.e. for all projects).       The provided (json) value is validated against the json schema. If invalid, the request is rejected and the current configuration stays unchanged.       Hint: You can download the current cofiguration using \&quot;/get-system-config\&quot;, modify it and upload the modified version here.
+     * @param sysConfigValue Sets or updates the system configuration. This affects the basic behavior of geovistory (i.e. for all projects).       The provided (json) value is validated against the json schema. If invalid, the request is rejected and the current configuration stays unchanged.       Hint: You can download the current cofiguration using \&quot;/get-system-config\&quot;, modify it and upload the modified version here.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sysConfigControllerSetSystemConfig(sysConfig: SysConfig, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public sysConfigControllerSetSystemConfig(sysConfig: SysConfig, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public sysConfigControllerSetSystemConfig(sysConfig: SysConfig, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public sysConfigControllerSetSystemConfig(sysConfig: SysConfig, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
-        if (sysConfig === null || sysConfig === undefined) {
-            throw new Error('Required parameter sysConfig was null or undefined when calling sysConfigControllerSetSystemConfig.');
+    public sysConfigControllerSetSystemConfig(sysConfigValue: SysConfigValue, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public sysConfigControllerSetSystemConfig(sysConfigValue: SysConfigValue, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public sysConfigControllerSetSystemConfig(sysConfigValue: SysConfigValue, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public sysConfigControllerSetSystemConfig(sysConfigValue: SysConfigValue, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+        if (sysConfigValue === null || sysConfigValue === undefined) {
+            throw new Error('Required parameter sysConfigValue was null or undefined when calling sysConfigControllerSetSystemConfig.');
         }
 
         let headers = this.defaultHeaders;
@@ -192,7 +192,7 @@ export class SystemConfigurationService {
         }
 
         return this.httpClient.post<any>(`${this.configuration.basePath}/set-system-config`,
-            sysConfig,
+            sysConfigValue,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -204,16 +204,16 @@ export class SystemConfigurationService {
     }
 
     /**
-     * @param sysConfig Validates the configuration without persisting it.
+     * @param sysConfigValue Validates the configuration without persisting it.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sysConfigControllerValidateSystemConfig(sysConfig: SysConfig, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public sysConfigControllerValidateSystemConfig(sysConfig: SysConfig, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public sysConfigControllerValidateSystemConfig(sysConfig: SysConfig, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public sysConfigControllerValidateSystemConfig(sysConfig: SysConfig, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
-        if (sysConfig === null || sysConfig === undefined) {
-            throw new Error('Required parameter sysConfig was null or undefined when calling sysConfigControllerValidateSystemConfig.');
+    public sysConfigControllerValidateSystemConfig(sysConfigValue: SysConfigValue, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public sysConfigControllerValidateSystemConfig(sysConfigValue: SysConfigValue, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public sysConfigControllerValidateSystemConfig(sysConfigValue: SysConfigValue, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public sysConfigControllerValidateSystemConfig(sysConfigValue: SysConfigValue, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+        if (sysConfigValue === null || sysConfigValue === undefined) {
+            throw new Error('Required parameter sysConfigValue was null or undefined when calling sysConfigControllerValidateSystemConfig.');
         }
 
         let headers = this.defaultHeaders;
@@ -258,7 +258,7 @@ export class SystemConfigurationService {
         }
 
         return this.httpClient.post<any>(`${this.configuration.basePath}/validate-system-config`,
-            sysConfig,
+            sysConfigValue,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,

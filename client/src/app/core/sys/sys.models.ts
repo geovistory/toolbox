@@ -1,5 +1,5 @@
 import { ByPk } from "app/core/redux-store/model";
-import { SysConfig } from '../sdk-lb4';
+import { SysConfigValue } from '../sdk-lb4';
 import { SysSystemRelevantClass } from "../sdk/models/SysSystemRelevantClass";
 
 export interface SysRelevantClassSlice {
@@ -14,7 +14,7 @@ export interface SysRelevantClassSlice {
 //   by_pk_entity?: ByPk<SysAnalysisType>;
 // }
 export interface SysConfigSlice {
-  by_main?: ByPk<SysConfig>;
+  by_main?: ByPk<SysConfigValue>;
   loading?: boolean;
 }
 

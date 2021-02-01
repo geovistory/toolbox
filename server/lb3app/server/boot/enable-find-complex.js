@@ -14,7 +14,6 @@ var include = [
   'ProPropertyLabel',
   'DfhClass',
   'DfhLabel',
-  'DfhProperty',
   'InfPersistentItem',
   'InfStatement',
   'InfAppellation',

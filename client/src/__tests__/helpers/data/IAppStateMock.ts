@@ -924,34 +924,34 @@ export namespace IAppStateMock {
           main: {
             classes: {
               '40': {
-                mapsToListType: {
+                valueObjectType: {
                   appellation: 'true'
                 }
               },
               '51': {
-                mapsToListType: {
+                valueObjectType: {
                   place: 'true'
                 }
               },
               '52': {
-                mapsToListType: {
+                valueObjectType: {
                   dimension: {
                     measurementUnitClass: 56
                   }
                 }
               },
               '54': {
-                mapsToListType: {
+                valueObjectType: {
                   language: 'true'
                 }
               },
               '335': {
-                mapsToListType: {
+                valueObjectType: {
                   timePrimitive: 'true'
                 }
               },
               '657': {
-                mapsToListType: {
+                valueObjectType: {
                   langString: 'true'
                 }
               }

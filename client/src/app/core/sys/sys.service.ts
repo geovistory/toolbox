@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
-import { SysConfig } from '../sdk-lb4';
+import { SysConfigValue } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { ByPk, IAppState } from '../redux-store/model';
 import { SysActions } from './sys.actions';
@@ -55,7 +55,7 @@ class SysSystemRelevantClassSelections extends Selector<SysRelevantClassSlice> {
 
 // Config Selectors
 class SysConfigSelections extends Selector<SysConfigSlice> {
-  public main$ = this.ngRedux.select<SysConfig>([sysRoot, this.model, 'by_main', 'main'])
+  public main$ = this.ngRedux.select<SysConfigValue>([sysRoot, this.model, 'by_main', 'main'])
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

@@ -115,7 +115,7 @@ import { EntityLabelConfigModule } from 'app/shared/modules/entity-label-config/
 
   providers: [
     ProjectsActions,
-    ProjectSettingsDataAPIEpics,
+    // ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
     TypesAPIActions,
     TypesAPIEpics,

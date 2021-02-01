@@ -7,7 +7,7 @@ import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
 import { APP_INITIAL_STATE } from 'app/core/redux-store/redux-store.module';
 import { SDKBrowserModule } from 'app/core/sdk';
 
-describe('ActiveProjectPipesService', () => {
+fdescribe('ActiveProjectPipesService', () => {
   let service: ActiveProjectPipesService;
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('ActiveProjectPipesService', () => {
     q$.pipe(toArray())
       .subscribe(
         actualSequence => {
-          expect(actualSequence).toEqual([100])
+          expect(actualSequence).toEqual([IAppStateMock.state1.activeProject.pk_project])
         },
         null,
         done);

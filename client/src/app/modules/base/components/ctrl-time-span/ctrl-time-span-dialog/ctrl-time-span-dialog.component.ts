@@ -9,7 +9,7 @@ import { debounceTime, first, mergeMap, takeUntil, map } from '../../../../../..
 import { ConfigurationPipesService } from '../../../../../core/redux-queries/services/configuration-pipes.service';
 import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
 
-import { FieldDefinition } from '../../properties-tree/properties-tree.models';
+import { Field } from '../../properties-tree/properties-tree.models';
 import { FormPart, MergeDef } from './FormPart';
 
 export interface CtrlTimeSpanDialogResult {
@@ -44,7 +44,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
   mode$ = new BehaviorSubject<ExTimeModalMode>('one-date')
 
   formGroup: FormGroup;
-  fieldDefinitions$: Observable<ByPk<FieldDefinition>>
+  fieldDefinitions$: Observable<ByPk<Field>>
 
   formDef$ = new BehaviorSubject<TimeSpanFormDef>(null)
 
@@ -167,7 +167,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
 
 
 
-    const formParts$ = this.c.pipeSpecificFieldDefinitions(50).pipe(
+    const formParts$ = this.c.pipeSpecificFieldOfClass(50).pipe(
       debounceTime(20),
       map(fields => fields.filter(f => f.listType === 'timePrimitive')),
       mergeMap(fields => {
@@ -181,7 +181,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
           // mergeDef = { target: ['te_statements'],  }
 
           return new FormPart(this.formGroup, field.label, field.listDefinitions, {
-            initListDefinition: {
+            initSubfield: {
               listType: 'time-span',
               ...{} as any
             },

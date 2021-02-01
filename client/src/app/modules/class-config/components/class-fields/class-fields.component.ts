@@ -2,14 +2,14 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, combineLatest, of, pipe, Subject } from 'rxjs';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
-import { FieldDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
+import { Field } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { MatDialog } from '@angular/material';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
 import { ActiveProjectService } from 'app/core';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ProClassFieldConfig } from 'app/core/sdk-lb4';
 
-interface FieldConfig extends FieldDefinition {
+interface FieldConfig extends Field {
   propertyField?: {
     identityDefiningForSource: boolean,
     // labelTable: {
@@ -56,21 +56,21 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.defaultFields$ = this.c.pipeDefaultFieldDefinitions(this.fkClass)
+    this.defaultFields$ = this.c.pipeBasicFieldsOfClass(this.fkClass)
       .pipe(
-        map((fields: FieldDefinition[]) => this.mapFields(fields))
+        map((fields: Field[]) => this.mapFields(fields))
       )
 
-    this.specificFields$ = this.c.pipeSpecificFieldDefinitions(this.fkClass)
+    this.specificFields$ = this.c.pipeSpecificFieldOfClass(this.fkClass)
       .pipe(
-        map((fields: FieldDefinition[]) => this.mapFields(fields))
+        map((fields: Field[]) => this.mapFields(fields))
       )
 
 
 
   }
 
-  mapFields = (fields: FieldDefinition[]) => fields
+  mapFields = (fields: Field[]) => fields
     .map(field => {
 
       // If this field is a class Field

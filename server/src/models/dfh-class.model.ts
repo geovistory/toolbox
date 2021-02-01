@@ -1,8 +1,8 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
-import {ProDfhClassProjRel} from './pro-dfh-class-proj-rel.model';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {DfhProperty} from './dfh-property.model';
 import {ProClassFieldConfig} from './pro-class-field-config.model';
-import {InfPersistentItem} from './inf-persistent-item.model';
+import {ProDfhClassProjRel} from './pro-dfh-class-proj-rel.model';
+import {RelatedProfile} from './related-profile';
 
 @model({
   settings: {
@@ -32,11 +32,8 @@ export class DfhClass extends Entity {
   })
   basic_type?: number;
 
-  @property({
-    type: 'array',
-    itemType: 'object',
-  })
-  profiles?: object[];
+  @property.array(RelatedProfile)
+  profiles?: RelatedProfile[];
 
   @hasMany(() => ProDfhClassProjRel, {keyTo: 'fk_class'})
   proj_rels: ProDfhClassProjRel[];

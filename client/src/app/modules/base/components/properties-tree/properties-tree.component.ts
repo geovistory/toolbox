@@ -4,7 +4,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ActiveProjectService, SysConfig } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { FieldDefinition } from './properties-tree.models';
+import { Field } from './properties-tree.models';
 import { PropertiesTreeService } from './properties-tree.service';
 import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 
@@ -27,14 +27,14 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   // @Input() appContext: number;
   @Input() readonly$ = new BehaviorSubject(false);
 
-  generalTree$: Observable<FieldDefinition[]>
-  generalTreeControl = new NestedTreeControl<FieldDefinition>(node => ([]));
-  generalDataSource = new MatTreeNestedDataSource<FieldDefinition>();
+  generalTree$: Observable<Field[]>
+  generalTreeControl = new NestedTreeControl<Field>(node => ([]));
+  generalDataSource = new MatTreeNestedDataSource<Field>();
   generalShowEmptyFields = false;
 
-  specificTree$: Observable<FieldDefinition[]>
-  specificTreeControl = new NestedTreeControl<FieldDefinition>(node => ([]));
-  specificDataSource = new MatTreeNestedDataSource<FieldDefinition>();
+  specificTree$: Observable<Field[]>
+  specificTreeControl = new NestedTreeControl<Field>(node => ([]));
+  specificDataSource = new MatTreeNestedDataSource<Field>();
   specificShowEmptyFields = true;
 
   constructor(
@@ -49,12 +49,12 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
     combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
       .subscribe(([pkClass]) => {
 
-        this.generalTree$ = this.c.pipeDefaultFieldDefinitions(pkClass);
+        this.generalTree$ = this.c.pipeBasicFieldsOfClass(pkClass);
         this.generalTree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
           this.generalDataSource.data = data;
         })
 
-        this.specificTree$ = this.c.pipeSpecificFieldDefinitions(pkClass);
+        this.specificTree$ = this.c.pipeSpecificFieldOfClass(pkClass);
         this.specificTree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
           this.specificDataSource.data = data;
         })

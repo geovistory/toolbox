@@ -21,7 +21,7 @@ fdescribe('SchemaSelectorsService', () => {
 
   const gvSchemaObj: GvSchemaObject = {
     pro: {
-      class_field_config: [ProClassFieldConfigMock.proClassFieldConfig]
+      class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]
     }
   }
   beforeEach(() => {
@@ -42,9 +42,11 @@ fdescribe('SchemaSelectorsService', () => {
     expect(service).toBeTruthy();
   });
   it('#pro.class_field_config.by_pk_entity$.key() should get item', (done) => {
+    const x = ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME
+    const key = x.pk_entity + ''
 
-    const q$ = service.pro$.class_field_config$.by_pk_entity$.key('4001')
-    const expectedSequence: ProClassFieldConfig[] = [ProClassFieldConfigMock.proClassFieldConfig]
+    const q$ = service.pro$.class_field_config$.by_pk_entity$.key(key)
+    const expectedSequence: ProClassFieldConfig[] = [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]
     q$.pipe(first(), toArray())
       .subscribe(
         actualSequence => {
@@ -53,9 +55,11 @@ fdescribe('SchemaSelectorsService', () => {
         null,
         done);
   });
-  fit('#pro.class_field_config.by_fk_project__fk_class$.key() should get item', (done) => {
-    const q$ = service.pro$.class_field_config$.by_fk_project__fk_class$.key('100_21')
-    const expectedSequence: ByPk<ProClassFieldConfig>[] = [{ '4001': ProClassFieldConfigMock.proClassFieldConfig }]
+  it('#pro.class_field_config.by_fk_project__fk_class$.key() should get item', (done) => {
+    const x = ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME
+    const key = x.fk_project + '_' + x.fk_domain_class
+    const q$ = service.pro$.class_field_config$.by_fk_project__fk_class$.key(key)
+    const expectedSequence: ByPk<ProClassFieldConfig>[] = [{ [x.pk_entity.toString()]: x }]
     q$.pipe(first(), toArray())
       .subscribe(
         actualSequence => {
