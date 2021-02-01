@@ -2,7 +2,6 @@
 import {
   ProInfoProjRel,
   InfStatement,
-  DfhClass,
   InfTextProperty
 } from '../index';
 
@@ -13,7 +12,6 @@ export interface InfPersistentItemInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   incoming_statements?: InfStatement[];
   outgoing_statements?: InfStatement[];
-  dfh_class?: DfhClass;
   text_properties?: InfTextProperty[];
 }
 
@@ -23,7 +21,6 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   incoming_statements?: InfStatement[];
   outgoing_statements?: InfStatement[];
-  dfh_class?: DfhClass;
   text_properties?: InfTextProperty[];
   constructor(data?: InfPersistentItemInterface) {
     Object.assign(this, data);
@@ -41,7 +38,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   * @license MIT
   * This method creates an instance of InfPersistentItem for dynamic purposes.
   **/
-  public static factory(data: InfPersistentItemInterface): InfPersistentItem{
+  public static factory(data: InfPersistentItemInterface): InfPersistentItem {
     return new InfPersistentItem(data);
   }
   /**
@@ -73,7 +70,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         incoming_statements: {
@@ -81,7 +78,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfStatement[]',
           model: 'InfStatement',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_object_info'
         },
         outgoing_statements: {
@@ -89,7 +86,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfStatement[]',
           model: 'InfStatement',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_subject_info'
         },
         dfh_class: {
@@ -97,7 +94,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'DfhClass',
           model: 'DfhClass',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_class',
+          keyFrom: 'fk_class',
           keyTo: 'pk_class'
         },
         text_properties: {
@@ -105,7 +102,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfTextProperty[]',
           model: 'InfTextProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_concerned_entity'
         },
       }

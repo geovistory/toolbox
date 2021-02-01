@@ -1,7 +1,7 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { DfhClass } from 'app/core/sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
-import { DfhClass } from 'app/core';
 import { ProDfhClassProjRel } from '../../../../../core/sdk/models/ProDfhClassProjRel';
 import { ProjectSettingsData } from './project-settings-data.models';
 
@@ -9,16 +9,16 @@ type Payload = ProjectSettingsData;
 interface MetaData {
   itemsArray?: DfhClass[],
   projRel?: ProDfhClassProjRel,
-  tabTitle?:string
+  tabTitle?: string
 };
 export type ProjectSettingsDataAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class ProjectSettingsDataAPIActions {
   static readonly SET_TAB_TITLE = 'ProjectSettingsData::SET_TAB_TITLE';
-  
+
   static readonly DESTROY = 'ProjectSettingsData::DESTROY';
-  
+
   /*********************************************************************
    *  Set tab title
    *********************************************************************/

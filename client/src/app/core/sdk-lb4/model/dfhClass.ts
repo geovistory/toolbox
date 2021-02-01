@@ -9,12 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { RelatedProfile } from './relatedProfile';
 
 
 export interface DfhClass { 
     pk_class?: number;
     identifier_in_namespace?: string;
     basic_type?: number;
-    profiles?: Array<object>;
+    profiles?: Array<RelatedProfile>;
 }
 

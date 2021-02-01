@@ -12,7 +12,6 @@ var include = [
   'ProDfhClassProjRel',
   'ProDfhProfileProjRel',
   'ProPropertyLabel',
-  'DfhClass',
   'DfhLabel',
   'InfPersistentItem',
   'InfStatement',

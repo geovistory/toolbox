@@ -5,10 +5,10 @@ import { IAppState, U } from 'app/core';
 import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/redux-store/actions';
 import { filter } from 'rxjs/operators';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
-import { DfhClass, DfhLabel, DfhProfile } from '../sdk';
+import { DfhLabel, DfhProfile } from '../sdk';
 import { dfhRoot } from './dfh.config';
 import { DfhClassSlice } from './dfh.models';
-import { DfhProperty } from '../sdk-lb4/model/dfhProperty';
+import { DfhClass, DfhProperty } from '../sdk-lb4';
 
 
 export class DfhProfileActionFactory extends StandardActionsFactory<Payload, DfhProfile> {

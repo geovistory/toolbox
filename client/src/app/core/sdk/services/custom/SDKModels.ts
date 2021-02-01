@@ -5,7 +5,6 @@ import { DatColumn } from '../../models/DatColumn';
 import { DatDigital } from '../../models/DatDigital';
 import { DatNamespace } from '../../models/DatNamespace';
 import { DatTextProperty } from '../../models/DatTextProperty';
-import { DfhClass } from '../../models/DfhClass';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhProfile } from '../../models/DfhProfile';
 // import { DfhProperty } from '../../models/DfhProperty';
@@ -57,8 +56,6 @@ export class SDKModels {
     ProTextProperty: ProTextProperty,
     ProInfoProjRel: ProInfoProjRel,
     DfhProfile: DfhProfile,
-    DfhClass: DfhClass,
-    // DfhProperty: DfhProperty,
     DfhLabel: DfhLabel,
     DatChunk: DatChunk,
     DatColumn: DatColumn,

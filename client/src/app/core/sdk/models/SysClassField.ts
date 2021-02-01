@@ -2,7 +2,6 @@
 import {
   SysClassFieldPropertyRel,
   ProClassFieldConfig,
-  DfhClass
 } from '../index';
 
 declare var Object: any;
@@ -14,7 +13,6 @@ export interface SysClassFieldInterface {
   "used_table"?: string;
   class_field_property_rel?: SysClassFieldPropertyRel[];
   class_field_configs?: ProClassFieldConfig[];
-  classes?: DfhClass[];
 }
 
 export class SysClassField implements SysClassFieldInterface {
@@ -25,7 +23,6 @@ export class SysClassField implements SysClassFieldInterface {
   "used_table": string;
   class_field_property_rel?: SysClassFieldPropertyRel[];
   class_field_configs?: ProClassFieldConfig[];
-  classes?: DfhClass[];
   constructor(data?: SysClassFieldInterface) {
     Object.assign(this, data);
   }
@@ -42,7 +39,7 @@ export class SysClassField implements SysClassFieldInterface {
   * @license MIT
   * This method creates an instance of SysClassField for dynamic purposes.
   **/
-  public static factory(data: SysClassFieldInterface): SysClassField{
+  public static factory(data: SysClassFieldInterface): SysClassField {
     return new SysClassField(data);
   }
   /**
@@ -86,7 +83,7 @@ export class SysClassField implements SysClassFieldInterface {
           type: 'SysClassFieldPropertyRel[]',
           model: 'SysClassFieldPropertyRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_class_field'
         },
         class_field_configs: {
@@ -94,7 +91,7 @@ export class SysClassField implements SysClassFieldInterface {
           type: 'ProClassFieldConfig[]',
           model: 'ProClassFieldConfig',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_class_field'
         },
         classes: {

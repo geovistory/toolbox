@@ -9,7 +9,7 @@ import { DatChunkControllerService } from './api/datChunkController.service';
 import { DatColumnService } from './api/datColumn.service';
 import { DatDigitalService } from './api/datDigital.service';
 import { DatNamespaceService } from './api/datNamespace.service';
-import { DfhClassService } from './api/dfhClass.service';
+import { DfhClassControllerService } from './api/dfhClassController.service';
 import { DfhLabelService } from './api/dfhLabel.service';
 import { DfhProfileService } from './api/dfhProfile.service';
 import { DfhPropertyControllerService } from './api/dfhPropertyController.service';
@@ -33,7 +33,6 @@ import { ProjectConfigurationService } from './api/projectConfiguration.service'
 import { PubAccountService } from './api/pubAccount.service';
 import { RamListService } from './api/ramList.service';
 import { SchemaObjectService } from './api/schemaObject.service';
-import { SysAppContextService } from './api/sysAppContext.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';

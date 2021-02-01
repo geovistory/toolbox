@@ -10,7 +10,7 @@ api/datChunkController.service.ts
 api/datColumn.service.ts
 api/datDigital.service.ts
 api/datNamespace.service.ts
-api/dfhClass.service.ts
+api/dfhClassController.service.ts
 api/dfhLabel.service.ts
 api/dfhProfile.service.ts
 api/dfhPropertyController.service.ts
@@ -34,7 +34,6 @@ api/projectConfiguration.service.ts
 api/pubAccount.service.ts
 api/ramList.service.ts
 api/schemaObject.service.ts
-api/sysAppContext.service.ts
 api/sysClassField.service.ts
 api/sysClassHasTypeProperty.service.ts
 api/sysSystemRelevantClass.service.ts

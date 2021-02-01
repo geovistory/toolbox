@@ -9,7 +9,6 @@ import { LoopBackFilter, } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DfhClass } from '../../models/DfhClass';
 import { SocketConnection } from '../../sockets/socket.connections';
 // import { DfhProperty } from '../../models/DfhProperty';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';

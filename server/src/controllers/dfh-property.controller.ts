@@ -17,7 +17,7 @@ export class DfhPropertyController {
     public datasource: Postgres1DataSource,
   ) { }
 
-  @get('/of-project', {
+  @get('properties/of-project', {
     responses: {
       '200': {
         description: "Get all properties that are selected by at least one of the profiles used by the given project.",

@@ -4,7 +4,7 @@ import { ActiveProjectService, SysConfig } from 'app/core';
 import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
 import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'app/core/pro/pro.config';
 import { ByPk } from 'app/core/redux-store/model';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfig as SysConf } from 'app/core/sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigValue, SysConfigSpecialFields, SysConfigFieldDisplay } from 'app/core/sdk-lb4';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { flatten, indexBy, sort, uniq, values } from 'ramda';
@@ -93,62 +93,62 @@ type Profiles = {
 //   ]
 // }
 
-interface SysConfigFieldPosition {
-  position?: number;
-}
-export interface SysConfigFieldDisplay {
-  comment: string,
-  displayInBasicFields?: SysConfigFieldPosition;
-  hidden?: true;
-};
-interface SysConfigFieldsByProperty {
-  [pkProperty: number]: SysConfigFieldDisplay
-}
-interface SysConfigSpecialFields {
-  incomingProperties: SysConfigFieldsByProperty,
-  outgoingProperties: SysConfigFieldsByProperty,
-  bySourceClass: {
-    [pkSource: number]: {
-      incomingProperties?: SysConfigFieldsByProperty,
-      outgoingProperties?: SysConfigFieldsByProperty,
-    }
-  },
-  hasTypeSubproperties?: SysConfigFieldDisplay
-}
-const specialFields: SysConfigSpecialFields = {
-  incomingProperties: {
-    1761: {
-      comment: 'has short title',
-      displayInBasicFields: { position: 1 }
-    },
-    1111: {
-      comment: 'has appellation for language',
-      displayInBasicFields: { position: 2 }
-    },
-    1762: {
-      comment: 'P18 has definition (is definition of)',
-      displayInBasicFields: { position: 4 }
-    },
-    1760: {
-      comment: 'has web address (is web addess of) – P16',
-      displayInBasicFields: { position: 5 }
-    },
-    1763: {
-      comment: 'P19 has comment (is comment about)',
-      displayInBasicFields: { position: 6 }
-    },
-  },
-  outgoingProperties: {
-    [4]: {
-      comment: 'has time-span (When)',
-      displayInBasicFields: { position: 1000 }
-    }
-  },
-  hasTypeSubproperties: {
-    comment: 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-    displayInBasicFields: { position: 3 }
-  }
-}
+// interface SysConfigFieldPosition {
+//   position?: number;
+// }
+// export interface SysConfigFieldDisplay {
+//   comment: string,
+//   displayInBasicFields?: SysConfigFieldPosition;
+//   hidden?: true;
+// };
+// interface SysConfigFieldsByProperty {
+//   [pkProperty: number]: SysConfigFieldDisplay
+// }
+// interface SysConfigSpecialFields {
+//   incomingProperties: SysConfigFieldsByProperty,
+//   outgoingProperties: SysConfigFieldsByProperty,
+//   bySourceClass: {
+//     [pkSource: number]: {
+//       incomingProperties?: SysConfigFieldsByProperty,
+//       outgoingProperties?: SysConfigFieldsByProperty,
+//     }
+//   },
+//   hasTypeSubproperties?: SysConfigFieldDisplay
+// }
+// const specialFields: SysConfigSpecialFields = {
+//   incomingProperties: {
+//     1761: {
+//       comment: 'has short title',
+//       displayInBasicFields: { position: 1 }
+//     },
+//     1111: {
+//       comment: 'has appellation for language',
+//       displayInBasicFields: { position: 2 }
+//     },
+//     1762: {
+//       comment: 'P18 has definition (is definition of)',
+//       displayInBasicFields: { position: 4 }
+//     },
+//     1760: {
+//       comment: 'has web address (is web addess of) – P16',
+//       displayInBasicFields: { position: 5 }
+//     },
+//     1763: {
+//       comment: 'P19 has comment (is comment about)',
+//       displayInBasicFields: { position: 6 }
+//     },
+//   },
+//   outgoingProperties: {
+//     [4]: {
+//       comment: 'has time-span (When)',
+//       displayInBasicFields: { position: 1000 }
+//     }
+//   },
+//   hasTypeSubproperties: {
+//     comment: 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
+//     displayInBasicFields: { position: 3 }
+//   }
+// }
 
 
 @Injectable({
@@ -259,7 +259,7 @@ export class ConfigurationPipesService {
                   targetClasses: [s.targetClass],
                   listDefinitions: [s],
                   fieldConfig,
-                  placeOfDisplay: getPlaceOfDisplay(specialFields, s, fieldConfig)
+                  placeOfDisplay: getPlaceOfDisplay(sysConfig.specialFields, s, fieldConfig)
                 }
               } else {
                 uniqFields[uid].allSubfieldsRemovedFromAllProfiles === false ?
@@ -357,7 +357,7 @@ export class ConfigurationPipesService {
     properties: DfhProperty[],
     isOutgoing: boolean,
     enabledProfiles: number[],
-    sysConfig: SysConf
+    sysConfig: SysConfigValue
   ): Observable<Subfield[]> {
     return combineLatestOrEmpty(
       properties.map(p => {
@@ -434,7 +434,7 @@ export class ConfigurationPipesService {
    * (and thus Subfields) because the UI then does not allow to choose
    * the right target class.
    */
-  @spyTag @cache({ refCount: false }) private pipeSubfieldTypeOfClass(config: SysConf, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
+  @spyTag @cache({ refCount: false }) private pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
     return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
       map((klass) => getSubfieldType(config, klass, targetMaxQuantity))
@@ -1417,7 +1417,7 @@ export class ConfigurationPipesService {
 }
 
 
-function getSubfieldType(config: SysConf, klass: DfhClass, targetMaxQuantity: number): SubfieldType {
+function getSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number): SubfieldType {
   const classConfig: ClassConfig = config.classes[klass.pk_class];
   if (classConfig && classConfig.valueObjectType) {
     return classConfig.valueObjectType

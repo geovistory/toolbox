@@ -133,7 +133,7 @@ export class DfhPropertyControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<DfhProperty>>(`${this.configuration.basePath}/of-project`,
+        return this.httpClient.get<Array<DfhProperty>>(`${this.configuration.basePath}/properties/of-project`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

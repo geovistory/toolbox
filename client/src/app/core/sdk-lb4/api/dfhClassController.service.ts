@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class SysAppContextService {
+export class DfhClassControllerService {
 
     protected basePath = 'http://0.0.0.0:3000';
     public defaultHeaders = new HttpHeaders();
@@ -85,25 +85,19 @@ export class SysAppContextService {
     }
 
     /**
-     * Get the App Configuration for classes.
-     * @param pkAppContext pk_entity of app_context
-     * @param pkProject pk_project of project
+     * @param pkProject 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sysAppContextAppContext(pkAppContext?: number, pkProject?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<DfhClass>>;
-    public sysAppContextAppContext(pkAppContext?: number, pkProject?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<DfhClass>>>;
-    public sysAppContextAppContext(pkAppContext?: number, pkProject?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<DfhClass>>>;
-    public sysAppContextAppContext(pkAppContext?: number, pkProject?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
+    public dfhClassControllerOfProject(pkProject?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<DfhClass>>;
+    public dfhClassControllerOfProject(pkProject?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<DfhClass>>>;
+    public dfhClassControllerOfProject(pkProject?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<DfhClass>>>;
+    public dfhClassControllerOfProject(pkProject?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkAppContext !== undefined && pkAppContext !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkAppContext, 'pk_app_context');
-        }
         if (pkProject !== undefined && pkProject !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkProject, 'pk_project');
+            <any>pkProject, 'pkProject');
         }
 
         let headers = this.defaultHeaders;
@@ -125,11 +119,7 @@ export class SysAppContextService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -143,7 +133,7 @@ export class SysAppContextService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<DfhClass>>(`${this.configuration.basePath}/lb3-api/SysAppContexts/app-context`,
+        return this.httpClient.get<Array<DfhClass>>(`${this.configuration.basePath}/classes/of-project`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

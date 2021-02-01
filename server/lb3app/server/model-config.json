@@ -119,10 +119,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhClass": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "DfhLabel": {
     "dataSource": "postgres1",
     "public": true
