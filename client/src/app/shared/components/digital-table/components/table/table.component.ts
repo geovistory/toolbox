@@ -44,6 +44,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() sortingEnabled = false;
   @Input() lineBreak = false;
   @Input() sortBy$: Observable<{ colNb: number, direction: string }>;
+  @Input() origin: 'classic';
 
   // outputs
   @Output() sortDemanded = new EventEmitter<{ colNb: number, direction: string }>();

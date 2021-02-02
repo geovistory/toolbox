@@ -85,7 +85,7 @@
     <mat-progress-bar mode="indeterminate" *ngIf="mode=='load'"></mat-progress-bar>
 
     <!-- [columnComments$]="dataTypes$" -->
-    <gv-table [headers$]="headers$" [table$]="previewTable$" [loading]="mode=='parsing'"
+    <gv-table [headers$]="headers$" [table$]="previewTable$" [loading]="mode=='parsing'" [origin]='"importer"'
         [sortingEnabled]="true" [filteringEnabled]="true" class="gv-overflow-hidden"
         *ngIf="mode=='parsing' || mode=='preview' || mode == 'uploading'" (sortDemanded)="sort($event)"
         (filterDemanded)="filter($event)">
