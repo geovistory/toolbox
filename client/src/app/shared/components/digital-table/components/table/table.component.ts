@@ -23,7 +23,7 @@ export interface Header {
 
 @Component({
   selector: 'gv-table',
-  templateUrl: './table.component.html',  
+  templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {
@@ -77,7 +77,7 @@ export class TableComponent implements OnInit, OnDestroy {
     });
 
     // listen to sortBy option (from parent or from html)
-    if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => this.curSort = sort);
+    if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => { this.curSort = sort; });
   }
 
   ngOnDestroy() {

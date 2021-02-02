@@ -91,6 +91,9 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   // for stupid table component:
   headers$: Observable<Header[]>;
   table$: Observable<Array<Array<string | { text: string, pkCell: number }>>>;
+  // sortByIndex$: Observable<{ colNb: number, direction: string }>;
+  sortByIndex$ = new BehaviorSubject({ colNb: -1, direction: 'ASC' });
+  currentSortIndex: { colNb: number, direction: string, colName: string };
   colFiltersEnabled = false;
   lineBrakeInCells = false;
 
@@ -213,26 +216,26 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 
+    // on activation/desactivation of a column: reset the sorting
+    // these lines of code are necessary, because act/desact a colum does not fire res$
+    this.colToggleCtrl.valueChanges.subscribe(() => {
+      this.sortBy$.next('');
+      this.sortByIndex$.next({ colNb: -1, direction: 'ASC' })
+    })
+
+
     this.columns$ = combineLatest(
       this.colToggleCtrl.valueChanges,
       this.colToggleOptions$
     ).pipe(
       map(([cols, colToggleOptions]) => {
         const colInd = indexBy(c => c.toString(), cols);
-        this.colMapping = ['pk_row'];
-        const result: {
-          display: string;
-          value: number;
-          datColumn: DatColumn;
-        }[] = []
-        for (const option of colToggleOptions) {
-          if (!!colInd[option.value]) {
-            result.push(option)
-            this.colMapping.push(option.value.toString())
-          }
+        if (this.currentSortIndex) {
+          this.currentSortIndex.colNb = Object.keys(colInd).findIndex(k => k === this.currentSortIndex.colName)
+          if (this.currentSortIndex.colNb !== -1) this.currentSortIndex.colNb++ // + 1 because first column is pk_row
+          else if (this.currentSortIndex.colName === 'pk_row') this.currentSortIndex.colNb = 0;
         }
-        // return colToggleOptions.filter(o => !!colInd[o.value])
-        return result
+        return colToggleOptions.filter(o => !!colInd[o.value])
       }),
       shareReplay({ bufferSize: 1, refCount: true })
     );
@@ -286,33 +289,31 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     // creating the table and the data mapping
 
 
-
     this.table$ = combineLatest([res$, this.headers$]).pipe(
       map(([res, headers]) => {
-
-        this.dataMapping = [];
+        const colsToKeep: Array<number> = headers.slice(1).map(h => h.pk_column);
         const rows: TableRow[] = res.rows;
+        this.colMapping = ['pk_row'].concat(colsToKeep.map(c => c + ''));
+        this.dataMapping = [];
         const table: Array<Array<string | { text: string, pkCell: number }>> = [];
 
         for (let i = 0; i < rows.length; i++) {
           const row = rows[i];
-          const keys = Object.keys(row);
           table[i] = [];
           this.dataMapping[i] = [];
           table[i][0] = row.pk_row.toString();
           this.dataMapping[i][0] = { pk_row: row.pk_row };
-          for (let j = 0; j < keys.length; j++) {
-            const key = keys[j];
-            if (this.colMapping.indexOf(key) == -1) continue;
+          for (let j = 0; j < colsToKeep.length; j++) {
+            const key = colsToKeep[j];
+            if (!row[key]) continue;
             const str: string = row[key].string_value ? row[key].string_value : row[key].numeric_value == 0 || row[key].numeric_value ? row[key].numeric_value : '';
-            const theCol = headers.filter(h => h.pk_column == parseInt(key, 10))[0];
-            if (!theCol) continue;
+            const theCol = headers.find(h => h.pk_column == key);
             if (!theCol.mapping) table[i].push(str);
             else table[i].push({ text: str, pkCell: row[key].pk_cell as number });
 
             this.dataMapping[i].push({
               pk_row: row.pk_row,
-              pk_col: parseInt(res.columns[j], 10),
+              pk_col: colsToKeep[j],
               pk_cell: row[key].pk_cell,
               refersTo: -1
             })
@@ -322,6 +323,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       }),
       takeUntil(this.destroy$)
     );
+
 
     if (this.filterOnRow) {
       // this.colFiltersEnabled = true;
@@ -388,7 +390,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   onSortChangesort(sortOpt: { colNb: number, direction: string }) {
     const colName = this.colMapping[sortOpt.colNb]
-
+    this.currentSortIndex = { colNb: sortOpt.colNb, direction: sortOpt.direction, colName };
 
     if (this.sortBy$.value === colName) {
       this.sortDirection$.next(this.sortDirection$.value === 'ASC' ? 'DESC' : 'ASC')
@@ -396,7 +398,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       this.sortBy$.next(colName);
       this.sortDirection$.next('ASC')
     }
-
   }
 
   click(cell: { col: number, row: number }) { }
