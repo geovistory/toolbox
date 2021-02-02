@@ -129,7 +129,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     this.dialog.open<ColMappingComponent, { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> }>(ColMappingComponent, {
       height: 'calc(100% - 100px)',
-      width: '30%',
+      width: '40%',
       data: { colLabel, pkColumn, mapping, pkCells }
     });
   }

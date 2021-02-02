@@ -90,7 +90,9 @@ export class ColMappingComponent implements OnInit, OnDestroy {
           if (config.classes[c.pkClass] && config.classes[c.pkClass].mapsToListType) specialClasses.push(c);
           else normalClasses.push(c);
         })
-        this.allClasses = specialClasses.concat(normalClasses);
+        normalClasses.sort((a, b) => a.label < b.label ? -1 : 1);
+        specialClasses.sort((a, b) => a.label < b.label ? -1 : 1);
+        this.allClasses = specialClasses.concat(normalClasses).sort((a, b) => a.label < b.label ? -1 : 1);
         return { specialClasses, normalClasses }
       })
     )
