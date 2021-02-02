@@ -32,7 +32,7 @@ function csvIntoTable(binaries: string, separator: string): string[][] {
 function removeQuotes(str: string) {
     if (str.charAt(0) == '"' || str.charAt(0) == '\'') str = str.slice(1);
     if (str.charAt(str.length - 1) == '"' || str.charAt(str.length - 1) == '\'') str = str.slice(0, str.length - 1);
-    return str;
+    return str.trim();
 }
 
 /**

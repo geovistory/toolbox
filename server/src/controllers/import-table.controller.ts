@@ -78,7 +78,7 @@ export class ImportTableController {
       for (let j = 0; j < table.rows[i].length; j++) {
         //number
         if (table.headers[j].type === 'number') {
-          if (isNaN(parseFloat(table.rows[i][j] + ''))) {
+          if (table.rows[i][j] && isNaN(parseFloat(table.rows[i][j] + ''))) {
             return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a number." };
           }
         } else if (table.headers[j].type === 'string') {
