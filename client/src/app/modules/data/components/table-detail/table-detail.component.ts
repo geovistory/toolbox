@@ -319,6 +319,13 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
             })
           }
         }
+        if (table.length == 0) {
+          const mappingNb = colsToKeep.filter(c => {
+            const header = headers.find(h => h.pk_column == c);
+            return header && header.mapping;
+          }).length;
+          table.push(new Array(1).fill({ type: 'no records', size: 1 + colsToKeep.length + mappingNb }));
+        }
         return table;
       }),
       takeUntil(this.destroy$)

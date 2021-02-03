@@ -108,26 +108,39 @@
     <ng-template pTemplate="body" let-row let-i="rowIndex">
       <tr>
         <ng-container *ngFor="let value of row; let j = index">
-          <!-- Cell content -->
-          <ng-container *ngIf="!headers[j]?.mapping">
+
+          <ng-container *ngIf="value.type != 'no records'">
+            <!-- Cell content -->
+            <ng-container *ngIf="!headers[j]?.mapping">
+              <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
+                class="text-center align-self-center" pResizableColumn colspan="1">
+                {{value}}
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="headers[j]?.mapping">
+              <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
+                class="text-center align-self-center" pResizableColumn colspan="1">
+                {{value.text}}
+              </td>
+              <td *ngIf="headers[j].mapping" pResizableColumn colspan="1"
+                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
+                <gv-entity-matcher [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>
+              </td>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="value.type == 'no records'">
             <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-              class="text-center align-self-center" pResizableColumn colspan="1">
-              {{value}}
+              class="text-center align-self-center" pResizableColumn [colSpan]="value.size">
+              No records
             </td>
           </ng-container>
 
-          <ng-container *ngIf="headers[j]?.mapping">
-            <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-              class="text-center align-self-center" pResizableColumn colspan="1">
-              {{value.text}}
-            </td>
-            <td *ngIf="headers[j].mapping" pResizableColumn colspan="1" [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
-              <gv-entity-matcher [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>
-            </td>
-          </ng-container>
         </ng-container>
       </tr>
     </ng-template>
+
   </p-table>
 </div>
 
