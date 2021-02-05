@@ -17,7 +17,7 @@ import { InfActions } from 'app/core/inf/inf.actions';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
 import { Field, TemporalEntityItem } from 'app/modules/base/components/properties-tree/properties-tree.models';
-import { createPaginateBy } from 'app/modules/base/components/temporal-entity-list/temporal-entity-list.component';
+import { createPaginateBy } from 'app/modules/base/base.helpers';
 import { PaginationService } from 'app/modules/base/services/pagination.service';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';

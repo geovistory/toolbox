@@ -15,7 +15,9 @@ import { ConfigurationPipesService } from 'app/core/redux-queries/services/confi
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { AddListComponentInterface, Subfield, TemporalEntityItem } from '../properties-tree/properties-tree.models';
-import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
+import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
+import { temporalEntityListDefaultLimit } from "../../base.helpers";
+import { createPaginateBy } from "../../base.helpers";
 import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
 import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';

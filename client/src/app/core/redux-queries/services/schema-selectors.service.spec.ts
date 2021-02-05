@@ -6,12 +6,11 @@ import { SDKBrowserModule, } from 'app/core/sdk';
 import { ReduxQueriesModule } from '../redux-queries.module';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from 'app/core';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { GvSchemaObject, ProClassFieldConfig } from 'app/core/sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
-import { ByPk } from 'app/core/redux-store/model';
+import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { ProClassFieldConfigMock } from '__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
 
 describe('SchemaSelectorsService', () => {

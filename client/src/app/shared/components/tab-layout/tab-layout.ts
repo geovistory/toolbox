@@ -1,10 +1,10 @@
-import { dispatch, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { dispatch, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef } from '@angular/core';
 import { Tab } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TabBase } from './tab-layout.models';
+import { TabLayoutAcitons } from './tab-layout.actions';
 import { tabBaseReducer } from './tab-layout.reducer';
 
 export type TabLayoutMode = 'left-only' | 'right-only' | 'both';
@@ -97,21 +97,13 @@ export class TabLayout {
    * Stuff for handling split area rendering
    */
 
-  static readonly SET_TAB_TITLE = 'TabBase::SET_TAB_TITLE';
 
-  static readonly SET_TAB_TOOLTIP = 'TabBase::SET_TAB_TOOLTIP';
-
-  static readonly SET_TAB_LOADING = 'TabBase::SET_TAB_LOADING';
-
-  static readonly SET_LAYOUT_MODE = 'TabBase::SET_LAYOUT_MODE';
-
-  static readonly DESTROY = 'TabBase::DESTROY';
   /*********************************************************************
   *  Set tab title
   *********************************************************************/
   @dispatch()
   setTabTitle = (tabTitle: string): TabBaseAPIAction => ({
-    type: TabLayout.SET_TAB_TITLE,
+    type: TabLayoutAcitons.SET_TAB_TITLE,
     meta: { tabTitle },
     payload: null,
   });
@@ -121,7 +113,7 @@ export class TabLayout {
   *********************************************************************/
   @dispatch()
   setTabTooltip = (tabTooltip: string): TabBaseAPIAction => ({
-    type: TabLayout.SET_TAB_TOOLTIP,
+    type: TabLayoutAcitons.SET_TAB_TOOLTIP,
     meta: { tabTooltip },
     payload: null,
   });
@@ -131,7 +123,7 @@ export class TabLayout {
   *********************************************************************/
   @dispatch()
   setTabLoading = (loading: boolean): TabBaseAPIAction => ({
-    type: TabLayout.SET_TAB_LOADING,
+    type: TabLayoutAcitons.SET_TAB_LOADING,
     meta: { loading },
     payload: null,
   });
@@ -141,7 +133,7 @@ export class TabLayout {
   *********************************************************************/
   @dispatch()
   setLayoutMode = (layoutMode: TabLayoutMode): TabBaseAPIAction => ({
-    type: TabLayout.SET_LAYOUT_MODE,
+    type: TabLayoutAcitons.SET_LAYOUT_MODE,
     meta: { layoutMode: layoutMode },
     payload: null,
   });
@@ -152,7 +144,7 @@ export class TabLayout {
   *********************************************************************/
   @dispatch()
   destroy = (): TabBaseAPIAction => ({
-    type: TabLayout.DESTROY,
+    type: TabLayoutAcitons.DESTROY,
     meta: null,
     payload: null
   })

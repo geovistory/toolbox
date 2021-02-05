@@ -4,7 +4,8 @@ import { FormGroup, ValidatorFn, Validators, FormControl, AbstractControl } from
 import { QueryFilterComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { Subject, ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
-import { FormChildFactoryConfig, FormFactoryGlobal } from '../services/form-factory.service';
+import { FormFactoryGlobal } from "../services/FormFactoryGlobal";
+import { FormChildFactoryConfig } from "../services/FormChildFactoryConfig";
 import { FormArrayFactory } from './form-array-factory';
 import { AbstractControlFactory, FactoryType, FormFactoryComponent } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';

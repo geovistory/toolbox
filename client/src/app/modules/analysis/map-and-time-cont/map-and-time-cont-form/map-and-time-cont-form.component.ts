@@ -1,6 +1,8 @@
 import { Component, Input, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
-import { FormFactory, FormFactoryConfig, FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from "app/modules/form-factory/services/FormFactoryConfig";
+import { FormFactory } from "app/modules/form-factory/core/form-factory";
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';

@@ -6,13 +6,16 @@ import { InfLangString } from "app/core/sdk";
 import { InfLanguage } from "app/core/sdk";
 import { InfAppellation } from "app/core/sdk";
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
-import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { QuillDoc } from 'app/modules/quill';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from "app/modules/form-factory/services/FormFactoryConfig";
+import { FormNodeConfig } from "app/modules/form-factory/services/FormNodeConfig";
+import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
+import { FormFactory } from 'app/modules/form-factory/core/form-factory';
 
 type FgLangStringNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgLangStringInjectData extends FormFactoryCompontentInjectData<Observable<InfLangString>> {

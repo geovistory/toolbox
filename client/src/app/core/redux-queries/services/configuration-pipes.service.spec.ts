@@ -1,6 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState } from 'app/core';
 import { SDKBrowserModule } from "app/core/sdk";
 import { ProClassFieldConfig } from "app/core/sdk";
 import { APP_INITIAL_STATE } from 'app/core/redux-store/redux-store.module';
@@ -20,6 +19,7 @@ import { DfhApiPropertyMock } from '__tests__/helpers/data/auto-gen/DfhApiProper
 import { transformDfhApiPropertyToDfhProperty } from '__tests__/helpers/data/transformers';
 import { fieldsOfManifestationSingleton } from '__tests__/helpers/data/positive-schema-objects/fields-of-manifestation-singleton';
 import { project1 } from '__tests__/helpers/data/positive-schema-objects/project-1';
+import { IAppState } from 'app/core/redux-store/model';
 
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;

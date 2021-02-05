@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QfFormControlFactory, QfFormControlData } from '../query-filter/query-filter.component';
-import { FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { FormControlConfig } from "app/modules/form-factory/services/FormControlConfig";
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({

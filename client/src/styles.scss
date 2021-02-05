@@ -1187,7 +1187,7 @@ gv-qf-form-array {
       .sub-query-item {
         position: relative;
         display: flex;
-        align-items: start;
+        align-items: flex-start;
         .subquery-left {
           position: relative;
           width: 35px;
@@ -2057,7 +2057,7 @@ $switch-sm-box-width: calc(
 ************************************/
 $border: 1px solid #000;
 
-.dnd-drag-start {
+.dnd-drag-flex-start {
   -moz-transform: scale(0.8);
   -webkit-transform: scale(0.8);
   transform: scale(0.8);
@@ -2257,7 +2257,7 @@ $gv-typography: mat-typography-config(
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat-core($gv-typography);
-// Custom color Palette for primary colors (starting with $purple)
+// Custom color Palette for primary colors (flex-starting with $purple)
 $gv-mat-purple: (
   50: #f2e7f5,
   100: #dfc3e8,

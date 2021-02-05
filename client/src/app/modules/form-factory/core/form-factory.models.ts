@@ -1,7 +1,7 @@
 import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { AbstractControl, ValidationErrors } from "@angular/forms";
-import { FormFactory } from '../services/form-factory.service';
+import { FormFactory } from "./form-factory";
 
 export type FactoryType = 'array' | 'control' | 'group' | 'childFactory'
 

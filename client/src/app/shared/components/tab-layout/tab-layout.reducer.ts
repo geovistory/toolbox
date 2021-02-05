@@ -1,6 +1,7 @@
 import { Action } from 'redux';
+import { TabBaseAPIAction } from './tab-layout';
+import { TabLayoutAcitons } from './tab-layout.actions';
 import { TabBase } from './tab-layout.models';
-import { TabBaseAPIAction, TabLayout } from './tab-layout';
 
 const INITIAL_STATE = new TabBase();
 
@@ -12,7 +13,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set tab title
     *****************************************************/
-    case TabLayout.SET_TAB_TITLE:
+    case TabLayoutAcitons.SET_TAB_TITLE:
       state = {
         ...state,
         tabTitle: action.meta.tabTitle
@@ -22,7 +23,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set tab tooltip
     *****************************************************/
-    case TabLayout.SET_TAB_TOOLTIP:
+    case TabLayoutAcitons.SET_TAB_TOOLTIP:
       state = {
         ...state,
         tabTooltip: action.meta.tabTooltip
@@ -31,7 +32,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set tab loading
     *****************************************************/
-    case TabLayout.SET_TAB_LOADING:
+    case TabLayoutAcitons.SET_TAB_LOADING:
       state = {
         ...state,
         loading: action.meta.loading
@@ -40,7 +41,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set show right panel
     *****************************************************/
-    case TabLayout.SET_LAYOUT_MODE:
+    case TabLayoutAcitons.SET_LAYOUT_MODE:
       state = {
         ...state,
         layoutMode: action.meta.layoutMode
@@ -51,7 +52,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
-    case TabLayout.DESTROY:
+    case TabLayoutAcitons.DESTROY:
       state = undefined;
       break;
 

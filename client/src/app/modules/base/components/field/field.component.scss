@@ -59,7 +59,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -80,7 +80,7 @@
   flex: 0 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
-  justify-content: start;
+  justify-content: flex-start;
   white-space: nowrap;
 }
 

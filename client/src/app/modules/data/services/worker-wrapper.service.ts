@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 })
 export class WorkerWrapperService {
 
-  worker: Worker = new Worker('./geov.worker', { type: 'module' });
+  worker = new Worker('./geov.worker', { type: 'module' });
   busy: boolean = false;
   callback: Function;
 
@@ -16,7 +16,7 @@ export class WorkerWrapperService {
 
   /**
    * Function that call the right worker function.
-   * 
+   *
    * @param taskName Name you specified in the worker code (in addEventListener).
    * @param params Parameters needed to execute your function
    * @returns Promise: Resolve with the result (object) of the worker. Reject if the worker is busy.

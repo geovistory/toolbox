@@ -15,11 +15,9 @@ import { Subfield, PropertyListComponentInterface, TemporalEntityItem, TemporalE
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
+import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../../base.helpers';
 
 
-
-export const temporalEntityListDefaultLimit = 5;
-export const temporalEntityListDefaultPageIndex = 0;
 
 @Component({
   selector: 'gv-temporal-entity-list',
@@ -174,17 +172,5 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
-  }
-}
-
-
-export function createPaginateBy(listDefinition: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
-  if (listDefinition.listType.temporalEntity || listDefinition.listType.entityPreview) {
-    return [
-      { fk_property: listDefinition.property.pkProperty },
-      { fk_target_class: listDefinition.targetClass },
-      { [listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
-      { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
-    ]
   }
 }

@@ -1,4 +1,5 @@
-import { SubfieldType } from './components/properties-tree/properties-tree.models';
+import { SubfieldType, Subfield } from './components/properties-tree/properties-tree.models';
+import { PaginateByParam } from 'app/core/redux-store/actions';
 
 /**
  * returns true if the subfield type is representing a value object type
@@ -27,3 +28,20 @@ export function isLeafItemSubfield(subfieldType: SubfieldType): boolean {
   else if (subfieldType.entityPreview) return true
   return false
 }
+
+
+
+export function createPaginateBy(listDefinition: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
+  if (listDefinition.listType.temporalEntity || listDefinition.listType.entityPreview) {
+    return [
+      { fk_property: listDefinition.property.pkProperty },
+      { fk_target_class: listDefinition.targetClass },
+      { [listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
+      { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
+    ]
+  }
+}
+
+
+export const temporalEntityListDefaultLimit = 5;
+export const temporalEntityListDefaultPageIndex = 0;

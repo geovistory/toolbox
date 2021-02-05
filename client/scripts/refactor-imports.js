@@ -16,11 +16,13 @@ async function refactor(path) {
       "-p",
       path,
       "-s",
-      "app/core",
+      "../temporal-entity-list/temporal-entity-list.component",
       "-t",
-      "app/core/validation/validation.directives",
+      "../../base.helpers",
       "-e",
-      "ValidationDirectivesModule",
+      "temporalEntityListDefaultLimit",
+      "temporalEntityListDefaultPageIndex",
+      "createPaginateBy",
       // "-d",
     ]);
 

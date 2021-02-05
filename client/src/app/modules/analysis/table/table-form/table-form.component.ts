@@ -4,7 +4,10 @@ import { FormChildFactory } from 'app/modules/form-factory/core/form-child-facto
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
-import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from "app/modules/form-factory/services/FormFactoryConfig";
+import { FormNodeConfig } from "app/modules/form-factory/services/FormNodeConfig";
+import { FormFactory } from "app/modules/form-factory/core/form-factory";
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { QueryFilterInjectData, CtrlClasses } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathInjectData } from 'app/modules/queries/forms/query-path/query-path-form/query-path-form.component';

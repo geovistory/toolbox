@@ -5,12 +5,12 @@ import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, takeUntil, first } from 'rxjs/operators';
 import { Subfield } from '../components/properties-tree/properties-tree.models';
-import { createPaginateBy } from '../components/temporal-entity-list/temporal-entity-list.component';
 import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/core/redux-store/actions';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { PaginatedStatementList } from 'app/core/inf/inf.actions';
 import { IAppState } from 'app/core/redux-store/model';
+import { createPaginateBy } from '../base.helpers';
 
 
 class StatementPageLoader {

@@ -10,7 +10,9 @@ import { EntityPreviewItem, Item, ItemList, Subfield, PropertyListComponentInter
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
-import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
+import { createPaginateBy } from "../../base.helpers";
+import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
+import { temporalEntityListDefaultLimit } from "../../base.helpers";
 import { equals } from 'ramda';
 import { PaginateByParam } from 'app/core/redux-store/actions';
 import { PageEvent, MatDialog } from '@angular/material';

@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArrayConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { FormArrayConfig } from "app/modules/form-factory/services/FormArrayConfig";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';

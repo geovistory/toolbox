@@ -14,7 +14,10 @@ import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.comp
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { Field, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
+import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
+
+import { temporalEntityListDefaultLimit } from "../../base.helpers";
+import { createPaginateBy } from "../../base.helpers";
 
 interface SubfieldWithItemCount extends Subfield {
   itemsCount: number

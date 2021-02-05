@@ -5,7 +5,10 @@ import { CONTAINER_DATA, FormChildFactory } from 'app/modules/form-factory/core/
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
-import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from "app/modules/form-factory/services/FormFactoryConfig";
+import { FormNodeConfig } from "app/modules/form-factory/services/FormNodeConfig";
+import { FormFactory } from "app/modules/form-factory/core/form-factory";
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';

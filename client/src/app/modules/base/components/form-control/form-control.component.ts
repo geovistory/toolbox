@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { FormControlConfig } from "app/modules/form-factory/services/FormControlConfig";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CtrlEntityComponent, CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';

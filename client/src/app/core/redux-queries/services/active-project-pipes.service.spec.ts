@@ -7,13 +7,13 @@ import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
 import { APP_INITIAL_STATE } from 'app/core/redux-store/redux-store.module';
 import { SDKBrowserModule } from 'app/core/sdk';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from 'app/core';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { setAppState } from '__tests__/helpers/set-app-state';
 import { BehaviorSubject } from 'rxjs';
 import { project1 } from '__tests__/helpers/data/positive-schema-objects/project-1';
 import { fieldsOfManifestationSingleton } from '__tests__/helpers/data/positive-schema-objects/fields-of-manifestation-singleton';
 import { PK_DEFAULT_CONFIG_PROJECT } from '__tests__/helpers/data/auto-gen/local-model.helpers';
+import { IAppState } from 'app/core/redux-store/model';
 
 describe('ActiveProjectPipesService', () => {
   let service: ActiveProjectPipesService;

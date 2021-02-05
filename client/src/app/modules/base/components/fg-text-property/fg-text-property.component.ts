@@ -5,13 +5,16 @@ import { ActiveProjectService } from "app/core/active-project";
 import { InfTextProperty } from "app/core/sdk";
 import { InfLanguage } from "app/core/sdk";
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
-import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { QuillDoc } from 'app/modules/quill';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlAppellationModel, CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageModel, CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from "app/modules/form-factory/services/FormFactoryConfig";
+import { FormNodeConfig } from "app/modules/form-factory/services/FormNodeConfig";
+import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
+import { FormFactory } from 'app/modules/form-factory/core/form-factory';
 
 type FgTextPropertyNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgTextPropertyInjectData extends FormFactoryCompontentInjectData<Observable<InfTextProperty>> {
