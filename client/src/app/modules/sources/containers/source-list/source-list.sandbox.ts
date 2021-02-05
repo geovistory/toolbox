@@ -1,6 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { sandboxOf } from 'angular-playground';
-import { DatDigital } from 'app/core';
+import { DatDigital } from "app/core/sdk";
 
 import { QuillModule } from 'app/modules/quill';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';

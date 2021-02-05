@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
-import { MatDialog, MatDialogConfig } from '../../../../../../node_modules/@angular/material';
-import { sum } from '../../../../../../node_modules/ramda';
-import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { first, map, shareReplay, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService } from '../../../../core';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { sum } from 'ramda';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from 'app/core';
 import { isValueObjectSubfield } from '../../base.module';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { InfStatement } from 'app/core';
+import { InfStatement } from "app/core/sdk";
 import { Field, FieldBase, Subfield } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';

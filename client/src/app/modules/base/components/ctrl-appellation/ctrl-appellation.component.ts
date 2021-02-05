@@ -3,7 +3,7 @@ import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
-import { InfAppellation } from '../../../../core';
+import { InfAppellation } from "app/core/sdk";
 import { QuillDoc } from 'app/modules/quill';
 import { QuillEditComponent } from 'app/modules/quill/quill-edit/quill-edit.component';
 

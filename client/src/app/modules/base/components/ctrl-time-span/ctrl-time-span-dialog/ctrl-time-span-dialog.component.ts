@@ -2,11 +2,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService, ActiveProjectService } from 'app/core';
 import { ByPk } from 'app/core/redux-store/model';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';
-import { AbstractControl, FormBuilder, FormControl, FormGroup } from '../../../../../../../node_modules/@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../../node_modules/@angular/material';
-import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../../node_modules/rxjs';
-import { debounceTime, first, mergeMap, takeUntil, map } from '../../../../../../../node_modules/rxjs/operators';
-import { ConfigurationPipesService } from '../../../../../core/redux-queries/services/configuration-pipes.service';
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, first, mergeMap, takeUntil, map } from 'rxjs/operators';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
 
 import { Field } from '../../properties-tree/properties-tree.models';

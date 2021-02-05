@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ProClassFieldConfig, ProInfoProjRel, ProInfoProjRelApi } from 'app/core';
+import { ProInfoProjRelApi } from "app/core/sdk";
+import { ProInfoProjRel } from "app/core/sdk";
+import { ProClassFieldConfig } from "app/core/sdk";
 import { DatActions } from 'app/core/dat/dat.actions';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { proRoot } from 'app/core/pro/pro.config';

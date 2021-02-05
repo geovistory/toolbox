@@ -1,10 +1,8 @@
 import { GvSchemaObject } from 'app/core/sdk-lb4';
 import { DfhApiClassMock } from '../auto-gen/DfhApiClassMock';
-import { transformDfhApiClassToDfhClass, transformDfhApiPropertyToDfhProperty, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel } from '../transformers';
-import { ProDfhProfileProjRel } from 'app/core';
-import { ProDfhProfileProjRelMock } from '../auto-gen/ProDfhProfileProjRelMock';
 import { DfhApiPropertyMock } from '../auto-gen/DfhApiPropertyMock';
-import { InfLanguageMock } from '../auto-gen/InfLanguageMock';
+import { ProDfhProfileProjRelMock } from '../auto-gen/ProDfhProfileProjRelMock';
+import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../transformers';
 
 
 export const fieldsOfManifestationSingleton: GvSchemaObject = {

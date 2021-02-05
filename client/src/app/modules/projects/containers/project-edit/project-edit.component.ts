@@ -5,10 +5,11 @@ import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, 
 import { MatDialog } from '@angular/material';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
-import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
+import { ActiveProjectService, ListType, Tab } from 'app/core';
+import { SDKStorage } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { BasicService } from '../../../../core/basic/basic.service';
+import { BasicService } from 'app/core/basic/basic.service';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 

@@ -1,4 +1,4 @@
-import { ClassConfig } from '../../../../../core';
+import { ClassConfig } from 'app/core';
 
 export type EntityType = 'teEnt' | 'peIt' | 'other';
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { DfhProfileApi } from 'app/core';
+import { DfhProfileApi } from "app/core/sdk";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProfileActivationReport } from '../../../../../../../server/src/lb3/common/interfaces/profile-activation-report.interface'

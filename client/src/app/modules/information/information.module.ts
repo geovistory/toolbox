@@ -17,8 +17,8 @@ import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-pr
 import { DndModule } from 'ng2-dnd';
 import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
-import { AngularCesiumModule } from '../../../../node_modules/angular-cesium';
-import { AngularSplitModule } from '../../../../node_modules/angular-split';
+import { AngularCesiumModule } from 'angular-cesium';
+import { AngularSplitModule } from 'angular-split';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';

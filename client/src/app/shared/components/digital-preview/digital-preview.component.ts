@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DatDigital, ActiveProjectService } from '../../../core';
+import { ActiveProjectService } from 'app/core';
+
+import { DatDigital } from "app/core/sdk";
 
 @Component({
   selector: 'gv-digital-preview',
@@ -18,7 +20,7 @@ export class DigitalPreviewComponent implements OnInit {
     this.label = this.digital.string.substr(0, 20) + (this.digital.string.length > 20 ? '...' : '');
   }
 
-  click(){
-    if(this.openTabOnClick) this.p.addTextTab(this.digital.pk_entity)
+  click() {
+    if (this.openTabOnClick) this.p.addTextTab(this.digital.pk_entity)
   }
 }

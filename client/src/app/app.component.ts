@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { environment } from 'environments/environment';
-import { LoopBackConfig } from './core';
-import { SysStatusSocket } from './core/sockets/sockets.module';
+import { LoopBackConfig } from 'app/core/sdk';
+import { SysStatusSocket } from 'app/core/sockets/sockets.module';
 
 @Component({
   selector: 'gv-root',

@@ -1,4 +1,4 @@
-import { DatDigital } from 'app/core';
+import { DatDigital } from "app/core/sdk";
 import { IVersion } from 'app/modules/data/components/version-picker/version-picker.component';
 import Delta from 'quill/node_modules/quill-delta';
 import { List } from 'app/shared/components/list/api/list.models';

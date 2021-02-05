@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ErrorHandler, LoopBackConfig } from 'app/core';
+import { LoopBackConfig } from "app/core/sdk";
+import { ErrorHandler } from "app/core/sdk";
 import { AccountService, ResetPasswordRequest } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
-import { HttpClient } from '../../../../../../node_modules/@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 
 

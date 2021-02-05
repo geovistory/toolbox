@@ -1,4 +1,4 @@
-/// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
+/// <reference path="@types/cesium/index.d.ts" />
 
 import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { TimeSpan } from 'app/core/state/models';

@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { InfLanguage, InfLanguageApi, LoopBackAuth, LoopBackConfig, ProProjectApi } from 'app/core';
+import { LoopBackConfig } from "app/core/sdk";
+import { LoopBackAuth } from "app/core/sdk";
+import { ProProjectApi } from "app/core/sdk";
+import { InfLanguageApi } from "app/core/sdk";
+import { InfLanguage } from "app/core/sdk";
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
@@ -11,7 +15,7 @@ export class ProjectLabelDescription {
   'language': InfLanguage;
   'text_property': String;
   test: any; // TODO REMOVE
-};
+}
 
 @Component({
   selector: 'gv-project-create',

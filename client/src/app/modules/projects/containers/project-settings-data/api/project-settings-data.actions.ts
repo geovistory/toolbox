@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhClass } from 'app/core/sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProDfhClassProjRel } from '../../../../../core/sdk/models/ProDfhClassProjRel';
+import { ProDfhClassProjRel } from 'app/core/sdk/models/ProDfhClassProjRel';
 import { ProjectSettingsData } from './project-settings-data.models';
 
 type Payload = ProjectSettingsData;

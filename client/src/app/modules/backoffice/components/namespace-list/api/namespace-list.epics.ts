@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, DatNamespace } from 'app/core';
+import { LoadingBarActions } from 'app/core';
+import { DatNamespace } from "app/core/sdk";
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';

@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { Field } from './properties-tree.models';
 import { PropertiesTreeService } from './properties-tree.service';
-import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 
 @Component({
   selector: 'gv-properties-tree',

@@ -6,7 +6,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components
 import Quill from 'quill';
 import Delta from 'quill/node_modules/quill-delta';
 import { clone } from 'ramda';
-import { asapScheduler, asyncScheduler, Observable, Subject } from '../../../../node_modules/rxjs';
+import { asapScheduler, asyncScheduler, Observable, Subject } from 'rxjs';
 import { DeltaI } from './quill.models';
 import { QuillEditorRegistryService } from './services/quill-editor-registry.service';
 

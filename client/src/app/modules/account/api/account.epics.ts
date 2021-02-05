@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, PubAccountApi } from 'app/core';
+import { LoadingBarActions } from 'app/core';
+import { PubAccountApi } from "app/core/sdk";
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';

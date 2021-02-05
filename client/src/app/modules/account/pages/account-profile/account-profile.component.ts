@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoopBackAuth } from 'app/core';
+import { LoopBackAuth } from "app/core/sdk";
 
 @Component({
   selector: 'gv-account-profile',

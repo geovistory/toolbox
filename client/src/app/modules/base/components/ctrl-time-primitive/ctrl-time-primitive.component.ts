@@ -5,9 +5,10 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { Subject } from 'rxjs';
-import { GregorianDateTime, InfTimePrimitive, JulianDateTime, ValidationService } from '../../../../core';
-import { CalendarType, TimePrimitive } from '../../../../core/date-time/time-primitive';
-import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { GregorianDateTime, JulianDateTime, ValidationService } from 'app/core';
+import { InfTimePrimitive } from "app/core/sdk";
+import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
+import { takeUntil } from 'rxjs/operators';
 
 export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
   calendar: CalendarType

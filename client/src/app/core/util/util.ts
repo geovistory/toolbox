@@ -4,7 +4,7 @@ import { ByPk } from 'app/core/redux-store/model';
 import { TimeSpan } from 'app/core/time-span/time-span';
 import { QuillDoc } from 'app/modules/quill';
 import { SysConfig } from '../../../../../server/src/lb3/common/config/sys-config';
-import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/angular-cesium';
+import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';

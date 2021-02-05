@@ -18,9 +18,12 @@ async function refactor(path) {
       "-s",
       "app/core",
       "-t",
-      "app/core/time-span/time-span",
+      "app/core/date-time",
       "-e",
-      "TimeSpan",
+      "DateTimeCommons",
+      "GregorianDateTime",
+      "JulianDateTime",
+      "TimePrimitive",
       // "-d",
     ]);
 

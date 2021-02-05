@@ -5,12 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ProSelector } from 'app/core/pro/pro.service';
 import { AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DatSelector } from '../dat/dat.service';
 import { DfhSelector } from '../dfh/dfh.service';
@@ -19,6 +18,7 @@ import { InfSelector } from '../inf/inf.service';
 import { IAppState, SchemaObject } from '../redux-store/model';
 import { SchemaObjectService } from '../redux-store/schema-object.service';
 import { DatNamespace, InfLanguage } from '../sdk';
+import { ProProject, WarEntityPreview } from '../sdk-lb4';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
@@ -28,7 +28,6 @@ import { TabSelector } from '../tab/tab.service';
 import { WarActions } from '../war/war.actions';
 import { ActiveProjectActions } from './active-project.action';
 import { ListType, Panel, ProjectDetail, RamSource, Tab, TypesByPk } from './active-project.models';
-import { WarEntityPreview, ProProject } from '../sdk-lb4';
 
 
 

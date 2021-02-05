@@ -1,7 +1,6 @@
-import { Injectable } from '../../../../../../../node_modules/@angular/core';
-import { FluxStandardAction } from '../../../../../../../node_modules/flux-standard-action';
-import { dispatch } from '../../../../../../../node_modules/@angular-redux/store';
-import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
+import { dispatch } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
+import { FluxStandardAction } from 'flux-standard-action';
 import { PeItTimeline } from './pe-it-timeline.models';
 
 

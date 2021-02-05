@@ -1,11 +1,11 @@
 
 import { map, shareReplay, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
-import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
-import { Observable, Subject, BehaviorSubject, combineLatest, merge } from '../../../../../../node_modules/rxjs';
-import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService } from '../../../../core';
-import { InfActions } from '../../../../core/inf/inf.actions';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { Observable, Subject, BehaviorSubject, combineLatest, merge } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from 'app/core';
+import { InfActions } from 'app/core/inf/inf.actions';
 import { EntityPreviewItem, Item, ItemList, Subfield, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { InformationPipesService } from '../../services/information-pipes.service';

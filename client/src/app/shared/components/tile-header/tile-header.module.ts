@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TileHeaderComponent } from './tile-header.component';
-import { MatTooltipModule } from '../../../../../node_modules/@angular/material';
+import { MatTooltipModule } from '@angular/material';
 
 @NgModule({
   imports: [

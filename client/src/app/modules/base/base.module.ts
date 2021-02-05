@@ -45,7 +45,7 @@ import { TemporalEntityAddListComponent } from './components/temporal-entity-add
 import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
 import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
-import { ConfigurationPipesService } from '../../core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { InformationBasicPipesService } from './services/information-basic-pipes.service';
 import { InformationPipesService } from './services/information-pipes.service';
 import { PaginationService } from './services/pagination.service';

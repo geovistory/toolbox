@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { empty, Observable } from 'rxjs';
-import { switchMap } from '../../../../node_modules/rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '../sdk-lb4';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { ReducerConfigCollection } from '../redux-store/reducer-factory';

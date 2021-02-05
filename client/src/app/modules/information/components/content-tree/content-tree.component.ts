@@ -2,7 +2,9 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveAccountService, ActiveProjectService, DatDigital, InfStatement, SysConfig } from 'app/core';
+import { ActiveAccountService, ActiveProjectService, SysConfig } from 'app/core';
+import { InfStatement } from "app/core/sdk";
+import { DatDigital } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ByPk } from 'app/core/redux-store/model';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
@@ -15,7 +17,7 @@ import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { DatSelector } from '../../../../core/dat/dat.service';
+import { DatSelector } from 'app/core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { LoopBackConfig } from 'app/core';
+import { LoopBackConfig } from "app/core/sdk";
 import { AccountService } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
 

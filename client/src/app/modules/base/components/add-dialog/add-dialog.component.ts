@@ -1,9 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { InfTemporalEntityApi } from "app/core/sdk";
+import { InfStatement } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.module';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { Subfield } from '../properties-tree/properties-tree.models';

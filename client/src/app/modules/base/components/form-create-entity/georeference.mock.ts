@@ -1,4 +1,4 @@
-import { InfTemporalEntity } from 'app/core';
+import { InfTemporalEntity } from "app/core/sdk";
 
 export const mockGeoreference: InfTemporalEntity = {
   outgoing_statements: [

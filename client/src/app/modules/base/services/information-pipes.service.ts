@@ -1,15 +1,9 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import {
-  ActiveProjectService,
-  InfStatement,
-  InfTextProperty,
-  limitTo,
-  sortAbc,
-  switchMapOr,
-  TimePrimitive,
-} from 'app/core';
+import { ActiveProjectService, limitTo, sortAbc, switchMapOr, TimePrimitive } from 'app/core';
+import { InfTextProperty } from "app/core/sdk";
+import { InfStatement } from "app/core/sdk";
 import { TimeSpan } from "app/core/time-span/time-span";
 import { U } from "app/core/util/util";
 import { Granularity } from 'app/core/date-time/date-time-commons';
@@ -26,9 +20,9 @@ import { equals, flatten, groupBy, omit, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../../core/redux-queries/services/configuration-pipes.service';
-import { PaginateByParam } from '../../../core/redux-store/actions';
-import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
+import { PaginateByParam } from 'app/core/redux-store/actions';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../components/properties-tree/properties-tree.models';

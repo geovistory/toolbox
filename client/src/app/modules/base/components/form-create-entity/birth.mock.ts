@@ -1,4 +1,4 @@
-import { InfTemporalEntity } from 'app/core';
+import { InfTemporalEntity } from "app/core/sdk";
 
 export const mockBirth: InfTemporalEntity = {
   outgoing_statements: [

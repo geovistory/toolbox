@@ -3,9 +3,10 @@ import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { InfTextProperty, InfLanguage } from '../../../../core';
+import { InfLanguage } from "app/core/sdk";
+import { InfTextProperty } from "app/core/sdk";
 import { QuillDoc } from '../../../quill';
-import { takeUntil, filter, distinctUntilChanged, debounceTime, map, tap } from '../../../../../../node_modules/rxjs/operators';
+import { takeUntil, filter, distinctUntilChanged, debounceTime, map, tap } from 'rxjs/operators';
 
 type CtrlModel = InfTextProperty
 

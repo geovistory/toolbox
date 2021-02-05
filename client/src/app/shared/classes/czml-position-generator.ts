@@ -1,4 +1,4 @@
-/// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
+/// <reference path="@types/cesium/index.d.ts" />
 
 import { CzmlPosition } from '../../../../../server/src/lb3/common/interfaces/czml-types';
 import { QueryPoint } from './czml-label-generator';

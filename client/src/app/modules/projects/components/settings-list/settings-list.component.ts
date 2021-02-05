@@ -3,7 +3,7 @@ import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { Observable } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../core';
+import { ActiveProjectService } from 'app/core';
 
 @Component({
   selector: 'gv-settings-list',

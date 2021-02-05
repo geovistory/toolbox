@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '../../../../../../node_modules/@angular/forms';
-import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { first, map, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfStatement, ProInfoProjRel } from '../../../../core';
-import { InfActions } from '../../../../core/inf/inf.actions';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from 'app/core';
+import { ProInfoProjRel } from "app/core/sdk";
+import { InfStatement } from "app/core/sdk";
+import { InfActions } from 'app/core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
 
 @Component({

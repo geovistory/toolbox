@@ -7,7 +7,8 @@ import { WorkBook } from 'xlsx/types';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 import { first, takeUntil, switchMap } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../server/src/lb3/server/table/interfaces'
-import { InfLanguage, ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { InfLanguage } from "app/core/sdk";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { values } from 'ramda';
 import { ImportTableControllerService, ImportTable } from 'app/core/sdk-lb4';

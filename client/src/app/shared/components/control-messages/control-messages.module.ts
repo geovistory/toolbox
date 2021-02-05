@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlMessagesComponent } from './control-messages.component';
-import { MatFormFieldModule } from '../../../../../node_modules/@angular/material';
+import { MatFormFieldModule } from '@angular/material';
 
 @NgModule({
   imports: [

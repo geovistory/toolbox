@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { JulianDateTime, GregorianDateTime } from '../../../core';
+import { JulianDateTime, GregorianDateTime } from 'app/core';
 import { DatePipe } from '@angular/common';
 import { Granularity, DateTimeCommons } from 'app/core/date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';

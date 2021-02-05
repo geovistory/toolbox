@@ -4,7 +4,7 @@ import { LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
 import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
 import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 import { TableModule } from 'primeng/table';
-import { ReactiveFormsModule } from '../../../../node_modules/@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BaseModule } from '../base/base.module';
 import { InformationModule } from '../information/information.module';
 import { ClassConfigDialogComponent } from './components/class-config-dialog/class-config-dialog.component';

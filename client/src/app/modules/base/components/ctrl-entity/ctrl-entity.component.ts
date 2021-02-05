@@ -3,10 +3,12 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, SysConfig } from 'app/core';
+import { ActiveProjectService, SysConfig } from 'app/core';
+import { InfTemporalEntity } from "app/core/sdk";
+import { InfPersistentItem } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { FieldProperty } from '../properties-tree/properties-tree.models';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';

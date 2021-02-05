@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { U } from "app/core/util/util";
 import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/redux-store/actions';
 import { filter } from 'rxjs/operators';
-import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
+import { FluxStandardAction } from 'flux-standard-action';
 import { DfhLabel, DfhProfile } from '../sdk';
 import { dfhRoot } from './dfh.config';
 import { DfhClassSlice } from './dfh.models';

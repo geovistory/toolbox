@@ -1,6 +1,6 @@
 import { sandboxOf } from 'angular-playground';
 import { MentioningCreateCtrlComponent } from './mentioning-create-ctrl.component';
-import { DatChunk } from 'app/core';
+import { DatChunk } from "app/core/sdk";
 import { AnnotationModule } from '../../annotation.module';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { QuillDoc } from '../../../quill';

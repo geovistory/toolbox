@@ -3,8 +3,9 @@ import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, BehaviorSubject, of, Observable } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap, catchError } from '../../../../../../node_modules/rxjs/operators';
-import { InfLanguage, InfLanguageApi } from '../../../../core';
+import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
+import { InfLanguage } from "app/core/sdk";
+import { InfLanguageApi } from "app/core/sdk";
 import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 
 export type CtrlLanguageModel = InfLanguage;

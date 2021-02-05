@@ -1,4 +1,4 @@
-/// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
+/// <reference path="@types/cesium/index.d.ts" />
 
 import { CzmlLabelGenerator, QueryPoint } from './czml-label-generator';
 import { CzmlPointGenerator } from './czml-point-generator';

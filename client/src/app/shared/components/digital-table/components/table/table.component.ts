@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DatColumn } from 'app/core';
+import { DatColumn } from "app/core/sdk";
 import { ActiveProjectService } from 'app/core/active-project';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { Observable, Subject, ReplaySubject } from 'rxjs';

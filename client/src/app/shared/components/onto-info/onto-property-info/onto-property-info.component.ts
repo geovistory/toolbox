@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ActiveProjectService } from '../../../../core';
+import { ActiveProjectService } from 'app/core';
 import { map, filter } from 'rxjs/operators';
 import { values } from 'ramda';
 

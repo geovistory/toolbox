@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../node_modules/@angular/material';
-import { combineLatest, Observable } from '../../../../../../node_modules/rxjs';
-import { map } from '../../../../../../node_modules/rxjs/operators';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 export interface ChooseClassDialogData {
   title: string;
   pkClasses: number[]

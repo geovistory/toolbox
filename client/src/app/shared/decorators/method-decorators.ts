@@ -1,5 +1,5 @@
-import { shareReplay } from "../../../../node_modules/rxjs/operators";
-import { tag } from "../../../../node_modules/rxjs-spy/operators";
+import { shareReplay } from "rxjs/operators";
+import { tag } from "rxjs-spy/operators";
 
 export interface CacheOptions {
   refCount: boolean

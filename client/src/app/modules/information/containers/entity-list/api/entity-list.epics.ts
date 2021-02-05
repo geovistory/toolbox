@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions } from 'app/core';
+import { LoadingBarActions } from 'app/core';
+import { ProInfoProjRelApi } from "app/core/sdk";
+import { ProInfoProjRel } from "app/core/sdk";
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { startsWith } from 'ramda';
 import { Action } from 'redux';

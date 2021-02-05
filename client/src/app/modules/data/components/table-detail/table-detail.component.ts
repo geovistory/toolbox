@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectService, DatColumn, DatDigitalApi, SysConfig } from 'app/core';
+import { ActiveProjectService, SysConfig } from 'app/core';
+import { DatDigitalApi } from "app/core/sdk";
+import { DatColumn } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { TableRow, TableService } from 'app/core/sdk-lb4';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';

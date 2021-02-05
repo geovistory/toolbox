@@ -11,7 +11,7 @@ import { TabLayoutComponentInterface } from 'app/modules/projects/containers/pro
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { InfActions } from '../../../../core/inf/inf.actions';
+import { InfActions } from 'app/core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { slideInOut } from '../../shared/animations';
 import { EntityDetailAPIActions } from './api/entity-detail.actions';

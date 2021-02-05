@@ -1,6 +1,6 @@
 import { sandboxOf } from 'angular-playground';
-import { FormsModule } from '../../../../../../node_modules/@angular/forms';
-import { MatFormFieldModule } from '../../../../../../node_modules/@angular/material';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material';
 import { CtrlLangStringComponent } from './ctrl-lang-string.component';
 import { BaseModule } from '../../base.module';
 

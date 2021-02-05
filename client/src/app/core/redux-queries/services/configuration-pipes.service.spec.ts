@@ -1,6 +1,8 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState, SDKBrowserModule, ProClassFieldConfig } from 'app/core';
+import { IAppState } from 'app/core';
+import { SDKBrowserModule } from "app/core/sdk";
+import { ProClassFieldConfig } from "app/core/sdk";
 import { APP_INITIAL_STATE } from 'app/core/redux-store/redux-store.module';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { first, toArray, take } from 'rxjs/operators';

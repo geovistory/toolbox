@@ -1,5 +1,10 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ActiveProjectService, InfLanguage, InfStatement, InfTemporalEntity, InfTextProperty, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { ActiveProjectService, TimePrimitive } from 'app/core';
+import { ProInfoProjRel } from "app/core/sdk";
+import { InfTextProperty } from "app/core/sdk";
+import { InfTemporalEntity } from "app/core/sdk";
+import { InfStatement } from "app/core/sdk";
+import { InfLanguage } from "app/core/sdk";
 import { ProClassFieldConfig, SysConfigValueObjectType, WarEntityPreview } from 'app/core/sdk-lb4';
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
@@ -75,7 +80,7 @@ export interface FieldPlaceOfDisplay {
   basicFields?: FieldPosition;
   specificFields?: FieldPosition;
   hidden?: true;
-};
+}
 
 export type SpecialFieldType = 'time-span' | 'has-type' | false;
 

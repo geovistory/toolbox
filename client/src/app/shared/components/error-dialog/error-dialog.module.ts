@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatDialogModule, MatDividerModule, MatIconModule } from '../../../../../node_modules/@angular/material';
+import { MatButtonModule, MatDialogModule, MatDividerModule, MatIconModule } from '@angular/material';
 import { ErrorDialogComponent } from './error-dialog.component';
 
 @NgModule({

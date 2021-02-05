@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
-import { filter } from '../../../../node_modules/rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { WarActions } from './war.actions';
 import { warDefinitions, warRoot } from './war.config';
 import { toString } from 'ramda';

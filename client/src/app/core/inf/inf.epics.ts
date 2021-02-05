@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Flattener, storeFlattened } from 'app/core/redux-store/flattener';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
-import { Action } from '../../../../node_modules/redux';
-import { Observable } from '../../../../node_modules/rxjs';
-import { mergeMap } from '../../../../node_modules/rxjs/operators';
+import { Action } from 'redux';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { DatActions } from '../dat/dat.actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProActions } from '../pro/pro.actions';

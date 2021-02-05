@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatest } from '../../../../../../node_modules/rxjs';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { Subfield, ItemBasics } from './properties-tree.models';
-import { CdkDragDrop, moveItemInArray } from '../../../../../../node_modules/@angular/cdk/drag-drop';
-import { first } from '../../../../../../node_modules/rxjs/operators';
-import { ProInfoProjRel, ActiveProjectService } from '../../../../core';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { first } from 'rxjs/operators';
+import { ActiveProjectService } from 'app/core';
+
+import { ProInfoProjRel } from "app/core/sdk";
 
 @Injectable()
 export class PropertiesTreeService {

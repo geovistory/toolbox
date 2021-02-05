@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { equals } from 'ramda';
-import { MatDialog } from '../../../../../node_modules/@angular/material';
-import { combineLatest, of } from '../../../../../node_modules/rxjs';
-import { mergeMap, map } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfStatement } from '../../../core';
-import { InfActions } from '../../../core/inf/inf.actions';
+import { MatDialog } from '@angular/material';
+import { combineLatest, of } from 'rxjs';
+import { mergeMap, map } from 'rxjs/operators';
+import { ActiveProjectService } from 'app/core';
+import { InfStatement } from "app/core/sdk";
+import { InfActions } from 'app/core/inf/inf.actions';
 import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { TimeSpanItem } from '../components/properties-tree/properties-tree.models';

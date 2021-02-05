@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { ProProject } from 'app/core';
+import { ProProject } from "app/core/sdk";
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { InformationModule } from '../../information.module';

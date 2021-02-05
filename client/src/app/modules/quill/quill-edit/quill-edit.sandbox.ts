@@ -5,7 +5,7 @@ import { QuillModule } from '..';
 import { QuillDoc } from '../quill.models';
 import { QuillEditComponent, IndexedCharids } from './quill-edit.component';
 import { textBüchel, _33095characters, wikiRats } from './quill-edit.sandbox.mock';
-import { ChangeDetectorRef } from '../../../../../node_modules/@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { ConfirmDialogModule } from 'app/shared/components/confirm-dialog/confirm-dialog.module';
 import { isValidQuillDoc } from 'app/core/quill-doc-validation/validate-quill-doc';
 

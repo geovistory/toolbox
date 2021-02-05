@@ -1,6 +1,6 @@
 import { merge, Observable, partition, iif, of } from 'rxjs';
 import { mapTo, switchMap, delay, auditTime } from 'rxjs/operators';
-import { tag } from '../../../../node_modules/rxjs-spy/operators';
+import { tag } from 'rxjs-spy/operators';
 
 
 /**
@@ -15,7 +15,7 @@ export function switchMapOr<I, O>(defaultValue: O, elseOutput: (s: I) => Observa
     return source.pipe(
       // auditTime(1),
       switchMap(value => {
-         return iif(()=>conditionForDefault(value), of(defaultValue), elseOutput(value))
+        return iif(() => conditionForDefault(value), of(defaultValue), elseOutput(value))
       }),
       tag(`switchMapOr`)
     )

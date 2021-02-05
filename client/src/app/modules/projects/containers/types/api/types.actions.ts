@@ -1,6 +1,8 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatNamespace, InfPersistentItem, EntityDetail } from 'app/core';
+import { EntityDetail } from 'app/core';
+import { InfPersistentItem } from "app/core/sdk";
+import { DatNamespace } from "app/core/sdk";
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
 import { DfhClass } from 'app/core/sdk-lb4';
@@ -15,7 +17,7 @@ interface MetaData {
   pkTypeClass?: number;
   pkProject?: number;
   tabTitle?: string;
-};
+}
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()

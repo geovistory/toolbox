@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService, InfStatement, SysConfig } from 'app/core';
+import { ActiveProjectService, SysConfig } from 'app/core';
+import { InfStatement } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { DatDigital, RamListService, WarEntityPreview } from 'app/core/sdk-lb4';

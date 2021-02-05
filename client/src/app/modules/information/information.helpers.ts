@@ -1,4 +1,6 @@
-import { InfStatement, InfTimePrimitive, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { InfTimePrimitive } from "app/core/sdk";
+import { InfStatement } from "app/core/sdk";
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 
 

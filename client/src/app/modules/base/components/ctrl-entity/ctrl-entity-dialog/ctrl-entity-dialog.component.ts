@@ -1,7 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectService, InfPersistentItem, InfTemporalEntity } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { InfTemporalEntity } from "app/core/sdk";
+import { InfPersistentItem } from "app/core/sdk";
 import { U } from "app/core/util/util";
 import { SchemaObject } from 'app/core/redux-store/model';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';

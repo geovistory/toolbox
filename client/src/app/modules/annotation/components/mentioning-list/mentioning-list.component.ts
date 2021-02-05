@@ -1,19 +1,22 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, SubstoreComponent, DatDigital, latestVersion, InfStatement } from 'app/core';
+import { ActiveProjectService, SubstoreComponent, latestVersion } from 'app/core';
+import { InfStatement } from "app/core/sdk";
+import { DatDigital } from "app/core/sdk";
+import { DatChunk } from "app/core/sdk";
 import { RootEpics } from 'app/core/redux-store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
-import { MatSort, MatTableDataSource, MatDialog } from '../../../../../../node_modules/@angular/material';
-import { InfActions } from '../../../../core/inf/inf.actions';
-import { ByPk, IAppState } from '../../../../core/redux-store/model';
+import { MatSort, MatTableDataSource, MatDialog } from '@angular/material';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
-import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { WarEntityPreview } from 'app/core/sdk-lb4';
 
@@ -41,7 +44,7 @@ export interface Row {
 export interface MentioningListOf {
   type: 'digital-text' | 'digital-table' | 'f2-expresion' | 'geovC5-expression-portion' | 'entity'
   pkEntity: number
-};
+}
 
 
 @Component({

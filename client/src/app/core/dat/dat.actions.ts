@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatDigital } from 'app/core';
+import { DatDigital } from "app/core/sdk";
 import { U } from "app/core/util/util";
 import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/redux-store/actions';
-import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
+import { FluxStandardAction } from 'flux-standard-action';
 import { DatChunk, DatNamespace } from '../sdk';
 import { DatColumn } from '../sdk/models/DatColumn';
 import { datRoot } from './dat.config';

@@ -1,4 +1,4 @@
-/// <reference path="../../../../../../node_modules/@types/color/index.d.ts" />
+/// <reference path="@types/color/index.d.ts" />
 import { Component, DoCheck, Input } from '@angular/core';
 import { TimeSpan } from "app/core/time-span/time-span";
 import Color from 'color';

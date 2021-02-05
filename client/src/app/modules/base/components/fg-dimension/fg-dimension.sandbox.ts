@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { InfDimension } from 'app/core';
+import { InfDimension } from "app/core/sdk";
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';

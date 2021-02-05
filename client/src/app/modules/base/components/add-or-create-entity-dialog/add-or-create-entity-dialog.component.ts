@@ -5,7 +5,9 @@ import { NgForm } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import { DfhConfig } from '../../../information/shared/dfh-config';
 import { SchemaObject } from 'app/core/redux-store/model';
-import { InfPersistentItem, InfTemporalEntity, ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { InfTemporalEntity } from "app/core/sdk";
+import { InfPersistentItem } from "app/core/sdk";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 
 
@@ -17,7 +19,7 @@ export interface AddOrCreateEntityDialogData {
   notInProjectClickBehavior: NotInProjectClickBehavior
 }
 
-export interface ClassAndTypePk { pkClass: number, pkType: number };
+export interface ClassAndTypePk { pkClass: number, pkType: number }
 
 export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
 export type NotInProjectClickBehavior = 'addToProject' | 'selectOnly';

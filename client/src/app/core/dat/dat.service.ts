@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
-import { map } from '../../../../node_modules/rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DatChunk, DatDigital, DatNamespace } from '../sdk';
 import { DatClassColumnMapping } from '../sdk-lb4';
 import { DatColumn } from '../sdk/models/DatColumn';

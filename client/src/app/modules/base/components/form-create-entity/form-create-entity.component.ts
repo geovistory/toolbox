@@ -1,16 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
-import {
-  ActiveProjectService,
-  InfLangString,
-  InfPersistentItem,
-  InfTemporalEntity,
-  InfTextProperty,
-  SysConfig,
-  ValidationService,
-  InfDimension,
-} from 'app/core';
+import { ActiveProjectService, SysConfig, ValidationService } from 'app/core';
+import { InfDimension } from "app/core/sdk";
+import { InfTextProperty } from "app/core/sdk";
+import { InfTemporalEntity } from "app/core/sdk";
+import { InfPersistentItem } from "app/core/sdk";
+import { InfLangString } from "app/core/sdk";
 import { U } from "app/core/util/util";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { InfStatement } from 'app/core/sdk/models/InfStatement';
@@ -24,7 +20,7 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { equals, flatten, groupBy, indexBy, sum, uniq, values, keys } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { TableName, ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
+import { TableName, ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';

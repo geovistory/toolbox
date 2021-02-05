@@ -1,6 +1,7 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { InfLanguage, InfLanguageApi } from 'app/core';
+import { InfLanguageApi } from "app/core/sdk";
+import { InfLanguage } from "app/core/sdk";
 import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap, switchMap, catchError, mergeMap, merge } from 'rxjs/operators';
 

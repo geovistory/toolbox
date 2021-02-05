@@ -1,4 +1,4 @@
-import { InfTextProperty } from 'app/core';
+import { InfTextProperty } from "app/core/sdk";
 
 export const fgTextPropertyMock: InfTextProperty = {
   fk_concerned_entity: undefined,

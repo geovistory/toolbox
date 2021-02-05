@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoopBackConfig } from 'app/core';
+import { LoopBackConfig } from "app/core/sdk";
 import { DatEpics } from 'app/core/dat/dat.epics';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { environment } from 'environments/environment';

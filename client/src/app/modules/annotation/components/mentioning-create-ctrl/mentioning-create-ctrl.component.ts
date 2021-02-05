@@ -1,6 +1,7 @@
 import { Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DatChunk, InfStatement } from 'app/core';
+import { InfStatement } from "app/core/sdk";
+import { DatChunk } from "app/core/sdk";
 import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Subject } from 'rxjs';
