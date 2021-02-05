@@ -70,7 +70,7 @@ export class ValidationService {
   static hexColorValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       return /^#[0-9A-F]{6}$/i.test(control.value)
-        ? null : { 'invalidHexColor': { value: control.value } }
+        ? null : { 'invalidHexColor': { value: control.value } };
     };
   }
 

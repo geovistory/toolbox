@@ -1,7 +1,8 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ProjectCrm, SubstoreComponent, SysConfig, U } from 'app/core';
+import { ActiveProjectService, ProjectCrm, SubstoreComponent, SysConfig } from 'app/core';
+import { U } from "app/core/util/util";
 import { RootEpics } from 'app/core/redux-store/epics';
 import { SysSelector } from 'app/core/sys/sys.service';
 import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';

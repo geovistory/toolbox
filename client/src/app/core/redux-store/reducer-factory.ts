@@ -1,4 +1,4 @@
-import { U } from "app/core";
+import { U } from "app/core/util/util";
 import { FluxStandardAction } from "flux-standard-action";
 import { clone, equals, indexBy, omit, values, keys } from "ramda";
 import { combineReducers, Reducer, AnyAction } from "redux";

@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit } from '@angular/core';
-import { U } from 'app/core';
+import { U } from "app/core/util/util";
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { CONTAINER_DATA, FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';

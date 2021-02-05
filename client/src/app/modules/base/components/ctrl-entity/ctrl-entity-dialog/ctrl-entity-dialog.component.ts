@@ -1,7 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, U } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfTemporalEntity } from 'app/core';
+import { U } from "app/core/util/util";
 import { SchemaObject } from 'app/core/redux-store/model';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -25,7 +26,7 @@ export interface CtrlEntityDialogData {
   disableIfHasStatement: DisableIfHasStatement
 }
 
-export interface ClassAndTypePk { pkClass: number, pkType: number };
+export interface ClassAndTypePk { pkClass: number, pkType: number }
 
 export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
 export type NotInProjectClickBehavior = 'addToProject' | 'selectOnly';

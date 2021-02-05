@@ -1,6 +1,6 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional, AfterViewInit } from '@angular/core';
 import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor, Validators } from '@angular/forms';
-import { U } from 'app/core';
+import { U } from "app/core/util/util";
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';

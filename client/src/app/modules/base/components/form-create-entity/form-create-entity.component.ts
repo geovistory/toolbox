@@ -1,7 +1,17 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
-import { ActiveProjectService, InfLangString, InfPersistentItem, InfTemporalEntity, InfTextProperty, SysConfig, U, ValidationService, InfDimension } from 'app/core';
+import {
+  ActiveProjectService,
+  InfLangString,
+  InfPersistentItem,
+  InfTemporalEntity,
+  InfTextProperty,
+  SysConfig,
+  ValidationService,
+  InfDimension,
+} from 'app/core';
+import { U } from "app/core/util/util";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { InfStatement } from 'app/core/sdk/models/InfStatement';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';

@@ -2,7 +2,16 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { LoopBackAuth, LoopBackConfig, ProjectPreview, ProProject, ProTextProperty, PubAccount, PubAccountApi, U } from 'app/core';
+import {
+  LoopBackAuth,
+  LoopBackConfig,
+  ProjectPreview,
+  ProProject,
+  ProTextProperty,
+  PubAccount,
+  PubAccountApi,
+} from 'app/core';
+import { U } from "app/core/util/util";
 import { ProActions } from 'app/core/pro/pro.actions';
 import { ProSelector } from 'app/core/pro/pro.service';
 import { environment } from 'environments/environment';

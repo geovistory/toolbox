@@ -1,7 +1,17 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, InfStatement, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
+import {
+  ActiveProjectService,
+  InfStatement,
+  InfTextProperty,
+  limitTo,
+  sortAbc,
+  switchMapOr,
+  TimePrimitive,
+  TimeSpan,
+} from 'app/core';
+import { U } from "app/core/util/util";
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 import { InfModelName } from 'app/core/inf/inf.config';
@@ -1209,8 +1219,8 @@ export class InformationPipesService {
           switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses))
         )
     return typedClasses$.pipe(
-      map(typedClasses => uniq([...typedClasses, ...(classesAndTypes || { classes: [] }).classes || []]))
-    )
+      map(typedClasses => uniq([...typedClasses, ...((classesAndTypes || { classes: [] }).classes || [])]))
+    );
   }
 
   pipePropertyOptionsFromClassesAndTypes(classesAndTypes: ClassAndTypeSelectModel): Observable<PropertyOption[]> {
@@ -1305,7 +1315,7 @@ export class InformationPipesService {
           filter((pks) => !!pks),
           switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses).pipe(
             switchMap(typedClasses => {
-              const classes = uniq([...typedClasses, ...x.classes || []]);
+              const classes = uniq([...typedClasses, ...(x.classes || [])]);
               return this.pipePropertyOptionsFormClasses(classes)
             }))
           )

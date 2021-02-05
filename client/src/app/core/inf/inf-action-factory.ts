@@ -1,7 +1,7 @@
 import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "app/core/redux-store/actions";
 import { Observable } from "rxjs";
 import { NgRedux } from "@angular-redux/store";
-import { U } from "app/core";
+import { U } from "app/core/util/util";
 import { FluxStandardAction } from "flux-standard-action";
 import { Injectable } from "@angular/core";
 import { IAppState } from '../redux-store/model';

@@ -1,6 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatDigital, U } from 'app/core';
+import { DatDigital } from 'app/core';
+import { U } from "app/core/util/util";
 import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/redux-store/actions';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
 import { DatChunk, DatNamespace } from '../sdk';
@@ -11,7 +12,7 @@ import { DatTextProperty } from '../sdk/models/DatTextProperty';
 import { DatClassColumnMapping } from '../sdk-lb4';
 import { IAppState } from '../redux-store/model';
 
-export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number };
+export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number }
 
 export class DigitalActionsFactory extends StandardActionsFactory<DigitalSlice, DatDigital> {
 
@@ -47,7 +48,7 @@ export class DigitalActionsFactory extends StandardActionsFactory<DigitalSlice, 
   }
 }
 
-export interface LoadChunksOfDigitalAction extends LoadActionMeta { pkDigital: number };
+export interface LoadChunksOfDigitalAction extends LoadActionMeta { pkDigital: number }
 
 export class ChunkActionsFactory extends StandardActionsFactory<ChunkSlice, DatChunk> {
 
@@ -83,7 +84,7 @@ export class ChunkActionsFactory extends StandardActionsFactory<ChunkSlice, DatC
   }
 }
 
-export interface LoadColumnsOfTableAction extends LoadActionMeta { pkDigital: number };
+export interface LoadColumnsOfTableAction extends LoadActionMeta { pkDigital: number }
 
 export class ColumnActionsFactory extends StandardActionsFactory<ColumnSlice, DatColumn> {
 
