@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository';
-import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreviewWithFulltext, ProDfhClassProjRel, ProTextProperty} from '.';
+import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreviewWithFulltext, ProDfhClassProjRel, ProTextProperty, ProProject} from '.';
 import {DatClassColumnMapping} from './dat-class-column-mapping.model';
 import {DatColumn} from './dat-column.model';
 import {DatTextProperty} from './dat-text-property.model';
@@ -30,6 +30,7 @@ class ProObject {
   @property.array(ProDfhClassProjRel) dfh_class_proj_rel?: Partial<ProDfhClassProjRel>[];
   @property.array(ProTextProperty) text_property?: Partial<ProTextProperty>[];
   @property.array(ProDfhProfileProjRel) dfh_profile_proj_rel?: Partial<ProDfhProfileProjRel>[];
+  @property.array(ProProject) project?: Partial<ProProject>[];
 }
 
 @model()

@@ -4,12 +4,12 @@ import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
 import { filter } from '../../../../node_modules/rxjs/operators';
-import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProProject, ProDfhProfileProjRel } from '../sdk';
+import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjRel } from '../sdk';
 import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
 import { toString } from 'ramda';
 import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
-import { ProClassFieldConfig } from '../sdk-lb4';
+import { ProClassFieldConfig, ProProject } from '../sdk-lb4';
 
 
 class Selector {

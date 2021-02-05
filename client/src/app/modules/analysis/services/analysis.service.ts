@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService, AnalysisTabData, IAppState } from 'app/core';
+import { ActiveProjectService, AnalysisTabData } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from 'app/core/sdk-lb4';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -10,6 +10,7 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
+import { IAppState } from 'app/core/redux-store/model';
 @Injectable({
   providedIn: 'root'
 })

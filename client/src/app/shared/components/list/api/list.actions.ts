@@ -2,8 +2,8 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { List, SearchResponse } from './list.models';
-import { EntityType } from 'app/core/state/models/entity-preview';
 
+type EntityType = 'teEn' | 'peIt'
 type Payload = List;
 interface MetaData {
   pkProject?: number, searchString?: string, pkClasses?: number[], entityType?: EntityType, limit?: number, page?: number,

@@ -6,6 +6,7 @@ import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { first, map, shareReplay, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
+import { isValueObjectSubfield } from '../../base.module';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
@@ -14,7 +15,6 @@ import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-cla
 import { Field, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
-import { valueObjectListTypes } from '../../base.module';
 
 interface SubfieldWithItemCount extends Subfield {
   itemsCount: number
@@ -51,12 +51,9 @@ export class FieldComponent implements OnInit {
     private pag: PaginationService
   ) { }
 
-  /**
-   * returns a unique key for each list definition,
-   * used by angular *ngFor directive to track items in DOM
-   */
-  getKey(index, item: SubfieldWithItemCount) {
-    return item.listType + item.fkClassField + item.property.pkProperty + item.sourceClass + item.targetClass
+
+  getKey(_, item) {
+    return _;
   }
 
   ngOnInit() {
@@ -67,21 +64,20 @@ export class FieldComponent implements OnInit {
      */
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.fieldDefinition.listDefinitions.forEach(l => {
-        if (l.listType === 'temporal-entity') {
+        if (l.listType.temporalEntity) {
           this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
-        else if (l.listType === 'entity-preview') {
+        else if (l.listType.entityPreview) {
           this.pag.statements.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
       })
     })
 
-
-    if (this.fieldDefinition.listType !== 'has-type') {
+    if (this.fieldDefinition.isSpecialField !== 'has-type') {
 
       this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
         let obs$: Observable<number>;
-        if (l.listType === 'temporal-entity' || l.listType === 'entity-preview') {
+        if (l.listType.temporalEntity || l.listType.entityPreview) {
           obs$ = this.p.inf$.statement$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
         } else {
           obs$ = this.i.pipeListLength(l, this.pkEntity)
@@ -103,7 +99,7 @@ export class FieldComponent implements OnInit {
 
           if (this.fieldDefinition.targetMaxQuantity === -1) return true;
           if (this.fieldDefinition.targetMaxQuantity <= n) return false
-          if (this.fieldDefinition.listType == 'time-span' && 1 <= n) return false
+          if (this.fieldDefinition.isSpecialField === 'time-span' && 1 <= n) return false
           return true;
         }))
     } else {
@@ -114,12 +110,8 @@ export class FieldComponent implements OnInit {
 
   }
 
-  is = (node: Subfield, type: SubfieldType) => {
-    return node.listType === type
-  };
-
   addClick() {
-    if (this.fieldDefinition.listType === 'time-span') {
+    if (this.fieldDefinition.isSpecialField === 'time-span') {
       this.i.pipeItemTimeSpan(this.pkEntity).pipe(first(), takeUntil(this.destroy$)).subscribe(item => {
         this.timeSpan.openModal(item, this.pkEntity)
       })
@@ -155,7 +147,7 @@ export class FieldComponent implements OnInit {
   }
 
   private openAddDialog(listDef: Subfield) {
-    const isValueLike = valueObjectListTypes.includes(listDef.listType);
+    const isValueLike = isValueObjectSubfield(listDef.listType);
     const showAddList = (!isValueLike && !listDef.identityDefiningForTarget)
     const data: AddDialogData = {
       listDefinition: listDef,

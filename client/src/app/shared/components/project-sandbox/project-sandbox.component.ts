@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { ActiveProjectService, IAppState } from 'app/core';
+import { ActiveProjectService, } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
+import { IAppState } from 'app/core/redux-store/model';
 
 @Component({
   selector: 'gv-project-sandbox',

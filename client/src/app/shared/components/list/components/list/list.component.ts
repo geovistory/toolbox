@@ -1,13 +1,15 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IAppState, SubstoreComponent } from 'app/core';
+import { SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ListAPIActions } from '../../api/list.actions';
 import { ListAPIEpics } from '../../api/list.epics';
-import { EntitySearchHit, List } from '../../api/list.models';
+import { List } from '../../api/list.models';
 import { listReducer } from '../../api/list.reducer';
+import { EntitySearchHit } from 'app/core/sdk-lb4';
+import { IAppState } from 'app/core/redux-store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

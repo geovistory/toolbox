@@ -1,9 +1,10 @@
 import { sandboxOf } from 'angular-playground';
 import { MentioningCreateCtrlComponent } from './mentioning-create-ctrl.component';
-import { EntityPreview, DatChunk } from 'app/core';
+import { DatChunk } from 'app/core';
 import { AnnotationModule } from '../../annotation.module';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { QuillDoc } from '../../../quill';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 const chunk = {
   fk_text: 13,
@@ -35,28 +36,28 @@ export default sandboxOf(MentioningCreateCtrlComponent, {
         type_label: 'Person',
         pk_entity: 3421,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       band1: {
         fk_class: 220,
         entity_label: 'Helvetisches Lexikon Band 1',
         type_label: 'Book',
         pk_entity: 22,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       sectionXI: {
         fk_class: 218,
         entity_label: 'XI',
         type_label: 'Page',
         pk_entity: 23,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       sourceEntity: {
         fk_class: 219,
         entity_label: 'Helvetisches Lexikon',
         type_label: 'Lexikon',
         pk_entity: 12345,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       chunk,
       parentPath: ''
     },
@@ -115,28 +116,28 @@ export default sandboxOf(MentioningCreateCtrlComponent, {
         type_label: 'Person',
         pk_entity: 3421,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       band1: {
         fk_class: 220,
         entity_label: 'Helvetisches Lexikon Band 1',
         type_label: 'Book',
         pk_entity: 22,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       sectionXI: {
         fk_class: 218,
         entity_label: 'XI',
         type_label: 'Page',
         pk_entity: 23,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       sourceEntity: {
         fk_class: 219,
         entity_label: 'Helvetisches Lexikon',
         type_label: 'Lexikon',
         pk_entity: 12345,
         entity_type: 'peIt'
-      } as EntityPreview,
+      } as WarEntityPreview,
       chunk,
       selectedChunk: undefined,
       parentPath: ''

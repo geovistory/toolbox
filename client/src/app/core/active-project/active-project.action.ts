@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
-import { EntityPreview, EntityDetail } from '../state/models';
 import { ListType, Panel, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
 
 // export interface ComQueryV extends ProQuery {
@@ -23,9 +22,9 @@ interface MetaData {
   pk_ui_context?: number;
   entity_version?: number;
 
-  // return vals for Data Cache
-  entityPreview?: EntityPreview;
-  peItDetail?: EntityDetail;
+  // // return vals for Data Cache
+  // entityPreview?: EntityPreview;
+  // peItDetail?: EntityDetail;
   chunk?: DatChunk
   teEnGraphs?: InfTemporalEntity[]
   peItGraphs?: InfPersistentItem[]
@@ -307,40 +306,40 @@ export class ActiveProjectActions {
 
 
 
-  // Entities Details for display in Modals
-  static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';
-  static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
-  static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
-  static LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED';
+  // // Entities Details for display in Modals
+  // static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';
+  // static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
+  // static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
+  // static LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED';
 
-  loadEntityDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL,
-      payload: null,
-      meta: {
-        pk_project, pk_entity, pk_ui_context
-      }
-    }
-  }
+  // loadEntityDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entity, pk_ui_context
+  //     }
+  //   }
+  // }
 
-  loadPeItDetailsForModalSucceeded(peItDetail: EntityDetail): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED,
-      payload: null,
-      meta: {
-        peItDetail
-      },
-    }
-  }
+  // loadPeItDetailsForModalSucceeded(peItDetail: EntityDetail): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       peItDetail
+  //     },
+  //   }
+  // }
 
-  loaEntitytDetailsForModalFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loaEntitytDetailsForModalFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
 
   // // Chunks

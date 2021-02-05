@@ -35,7 +35,6 @@ import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel'
 import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { SysSystemType } from '../../models/SysSystemType';
-import { WarEntityPreview } from '../../models/WarEntityPreview';
 
 export interface Models { [name: string]: any }
 
@@ -61,7 +60,6 @@ export class SDKModels {
     DatColumn: DatColumn,
     DatTextProperty: DatTextProperty,
     DatDigital: DatDigital,
-    WarEntityPreview: WarEntityPreview,
     SysAppContext: SysAppContext,
     ProClassFieldConfig: ProClassFieldConfig,
     ProDfhClassProjRel: ProDfhClassProjRel,

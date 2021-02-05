@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { WarEntityPreviewApi, WarEntityPreview, EntityPreview } from 'app/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material';
+import { WarEntityPreview, WarEntityPreviewControllerService } from 'app/core/sdk-lb4';
 
 @Component({
   selector: 'gv-entity-previews-paginated',
@@ -20,8 +20,8 @@ export class EntityPreviewsPaginatedComponent implements OnInit {
 
   loading = false;
 
-  items: EntityPreview[]
-  constructor(private api: WarEntityPreviewApi) { }
+  items: WarEntityPreview[]
+  constructor(private api: WarEntityPreviewControllerService) { }
 
   ngOnInit() {
     if (!this.pkEntities) throw new Error('You must provide pkEntities input')
@@ -37,7 +37,12 @@ export class EntityPreviewsPaginatedComponent implements OnInit {
 
   load() {
     if (this.pkEntities && this.pkEntities.length) {
-      this.api.paginatedListByPks(this.pkProject, this.pkEntities, this.limit, this.offset)
+      this.api.warEntityPreviewControllerPaginatedListByPks({
+        pkProject: this.pkProject,
+        pkEntities: this.pkEntities,
+        limit: this.limit,
+        offset: this.offset
+      })
         .subscribe(results => {
           this.items = results;
         })

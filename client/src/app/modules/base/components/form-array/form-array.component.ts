@@ -28,7 +28,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     // else {
     //   const c = child as LocalFormArrayFactory
     //   return (
-    //     c.config.data.fieldDefinition.listType === 'temporal-entity' &&
+    //     c.config.data.fieldDefinition.listType.temporalEntity &&
     //     c.config.isList === false
     //   )
     // }
@@ -88,10 +88,10 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     return this.formArrayFactory.config.isList && !this.formArrayFactory.config.data.hideFieldTitle;
   }
 
-  get isTemporalEntityList() {
-    return (this.formArrayFactory.config.data.lists &&
-      this.formArrayFactory.config.data.lists.fieldDefinition.listType === 'temporal-entity')
-  }
+  // get isTemporalEntityList() {
+  //   return (this.formArrayFactory.config.data.lists &&
+  //     this.formArrayFactory.config.data.lists.fieldDefinition.listType.temporalEntity)
+  // }
 
   get itemNumberFlexible() {
     return (this.formArrayFactory.config.isList &&

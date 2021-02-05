@@ -6,8 +6,8 @@ import { ProSelector } from 'app/core/pro/pro.service';
 import { DfhSelector } from 'app/core/dfh/dfh.service';
 import { SysSelector } from 'app/core/sys/sys.service';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from 'app/core';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
+import { IAppState } from 'app/core/redux-store/model';
 
 /**
  * This class provides access to the part of the redux store

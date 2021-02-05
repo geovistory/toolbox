@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActiveProjectService, EntityPreview } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 export interface GraphPathEntity {
   label: string;
   icon: string;
   tooltip: string;
   fkClass?: number;
   pkEntity?: number;
-  preview?: EntityPreview;
+  preview?: WarEntityPreview;
   isDigitalText?: boolean;
   isDigitalTable?: boolean;
   fkRow?: string;
@@ -40,8 +41,8 @@ export class GraphPathComponent implements OnInit {
     this.mode = this.mode ? this.mode : 'mini';
   }
 
-  openEntityInNewTab(preview: EntityPreview) {
-    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
+  openEntityInNewTab(preview: WarEntityPreview) {
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class)
   }
 
   openTextInNewTab(pkEntity: number) {

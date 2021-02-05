@@ -1,5 +1,6 @@
-import { IAppState } from 'app/core';
 import { ProjectDetailMock } from './ProjectDetailMock';
+import { SysConfigValueMock } from './auto-gen/SysConfigValueMock';
+import { IAppState } from 'app/core/redux-store/model';
 
 export namespace IAppStateMock {
   export const state1: IAppState = {
@@ -955,7 +956,8 @@ export namespace IAppStateMock {
                   langString: 'true'
                 }
               }
-            }
+            },
+            specialFields: SysConfigValueMock.SYS_CONFIC_VALID.specialFields
           }
         }
       },

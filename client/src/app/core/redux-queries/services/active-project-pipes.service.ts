@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, ProProject, InfLanguage } from 'app/core';
 import { filter, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { cache } from 'app/shared';
 import { SchemaSelectorsService } from './schema-selectors.service';
+import { ProProject, InfLanguage } from 'app/core/sdk-lb4';
+import { IAppState } from 'app/core/redux-store/model';
+import { cache } from 'app/shared/decorators/method-decorators';
 
 @Injectable({
   providedIn: 'root'

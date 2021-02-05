@@ -177,7 +177,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
       else if (nodeConfig.array.data.lists) {
 
-        return this.getListNodes(arrayConfig, arrayConfig.data.lists.fieldDefinition.listType)
+        return this.getListNodes(arrayConfig, arrayConfig.data.lists.fieldDefinition)
 
       }
       else if (nodeConfig.array.data.controls) {
@@ -395,7 +395,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             initPeIt = initValEntity
           } else {
             // For temporal_entity
-            fields$ = this.c.pipeFieldDefinitionsForTeEnForm(arrayConfig.data.pkClass)
+            fields$ = this.c.pipeFieldsForTeEnForm(arrayConfig.data.pkClass)
             initTeEn = initValEntity;
           }
 
@@ -419,7 +419,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               return combineLatestOrEmpty(fieldDefs.map(fDef => {
 
                 // make one definition required for each persistent item
-                if (parentModel === 'persistent_item' && fDef.fkClassField === SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION) {
+                if (parentModel === 'persistent_item' && fDef.property.pkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
                   fDef.targetMinQuantity = 1;
                   fDef.identityDefiningForSource = true;
                 }
@@ -446,12 +446,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                     ],
                     mapValue: (x) => {
                       const items = flatten(x) // Flattens the values of the lists of this field
-                      if (fDef.listType == 'text-property') {
-                        return { text_properties: items }
-                      } else {
-                        const key = getStatementKey(parentModel, fDef.isOutgoing)
-                        return { [key]: items }
-                      }
+                      const key = getStatementKey(parentModel, fDef.isOutgoing)
+                      return { [key]: items }
                     },
                     data: {
                       lists: {
@@ -477,7 +473,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   }
-  getListNodes(arrayConfig: FormArrayConfig<FormArrayData>, listType: SubfieldType): Observable<LocalNodeConfig[]> {
+  getListNodes(arrayConfig: FormArrayConfig<FormArrayData>, field: Field): Observable<LocalNodeConfig[]> {
     const initialValue = arrayConfig.initValue || [];
     const textProps: InfTextProperty[] = initialValue.filter((v) => !!v.fk_class_field)
     const statements: InfStatement[] = initialValue.filter((v) => !v.fk_class_field)
@@ -485,14 +481,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const parentModel = arrayConfig.data.lists.parentModel;
     const listDefIdx = indexBy((lDef) => (lDef.targetClass || 0).toString(), listDefinitions)
     const isOutgoing = arrayConfig.data.lists.fieldDefinition.isOutgoing
-    if (listType == 'text-property') {
-      return of([this.getListNode(
-        listDefinitions[0],
-        false,
-        textProps
-      )])
-    }
-    else if (listType == 'time-span') {
+
+    if (field.isSpecialField === 'time-span') {
       return of([this.getListNode(
         listDefinitions[0],
         false,
@@ -541,7 +531,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     */
   getInitValueForTargetClassCtrl(fDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): Observable<Subfield> {
 
-    if (fDef.listType == 'time-span' || fDef.listType === 'text-property') {
+    if (fDef.isSpecialField == 'time-span') {
       return;
     }
     else if (initVal.initTeEn) {
@@ -582,18 +572,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   /**
    * gets the init value for the field definition out of the initial entity value
    */
-  getInitValueForFieldNode(lDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfStatement[] | InfTextProperty[] {
-    if (lDef.listType == 'time-span') {
+  getInitValueForFieldNode(lDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfStatement[] {
+    if (lDef.isSpecialField == 'time-span') {
       if (initVal.initTeEn && initVal.initTeEn.outgoing_statements) {
         return initVal.initTeEn.outgoing_statements.filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
-      }
-    }
-    if (lDef.listType === 'text-property') {
-      if (initVal.initTeEn && initVal.initTeEn.text_properties) {
-        return initVal.initTeEn.text_properties.filter(t => t.fk_class_field == lDef.fkClassField)
-      }
-      else if (initVal.initPeIt && initVal.initPeIt.text_properties) {
-        return initVal.initPeIt.text_properties.filter(t => t.fk_class_field == lDef.fkClassField)
       }
     }
     else if (initVal.initTeEn) {
@@ -654,12 +636,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const minLength = listDefinition.targetMinQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMinQuantity;
     let addOnInit = required ? minLength : 0;
 
-    if (childListType === 'has-type') {
+    if (childListType.typeItem) {
       maxLength = 1;
       addOnInit = 1;
     }
-    if (childListType === 'temporal-entity' && !listDefinition.identityDefiningForTarget) {
-      childListType = 'entity-preview';
+    if (childListType.temporalEntity && !listDefinition.identityDefiningForTarget) {
+      childListType = { entityPreview: 'true' };
     }
 
 
@@ -694,42 +676,39 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   private getControlNodes(arrayConfig: LocalArrayConfig, listType: SubfieldType): Observable<LocalNodeConfig[]> {
 
-    if (listType === 'time-span') {
+    if (listType.timeSpan) {
 
       return this.timeSpanCtrl(arrayConfig)
 
-    } else if (listType === 'place') {
+    } else if (listType.place) {
 
       return this.placeCtrl(arrayConfig)
 
-    } else if (listType === 'entity-preview' || listType === 'temporal-entity') {
+    } else if (listType.entityPreview || listType.temporalEntity) {
 
       return this.entityCtrl(arrayConfig)
 
-    } else if (listType === 'text-property') {
-
-      return this.textPropertyCtrl(arrayConfig)
-
-    } else if (listType === 'language') {
+    }
+    else if (listType.language) {
 
       return this.languageCtrl(arrayConfig)
 
-    } else if (listType === 'appellation') {
+    } else if (listType.appellation) {
 
       return this.appellationCtrl(arrayConfig)
 
     }
-    else if (listType === 'langString') {
+    else if (listType.langString) {
 
       return this.langStringCtrl(arrayConfig)
 
     }
-    else if (listType === 'dimension') {
+    else if (listType.dimension) {
 
       return this.dimensionCtrl(arrayConfig)
 
     }
-    else if (listType === 'has-type') {
+    else if (listType.typeItem) {
 
       return this.typeCtrl(arrayConfig)
 
@@ -1008,37 +987,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   }
 
-  private textPropertyCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.controls.listDefinition;
-
-    // with [{}] we make sure at least one item is added
-    const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((textProperty: InfTextProperty) => ({
-      childFactory: {
-        component: FgTextPropertyComponent,
-        getInjectData: (d) => {
-          return d.textProperty
-        },
-        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
-        data: {
-          textProperty: {
-            appearance: this.appearance,
-            initVal$: of(textProperty)
-          }
-        },
-        mapValue: (val: InfTextProperty) => {
-          if (!val) return null;
-          const value: InfTextProperty = {
-            ...val,
-            fk_class_field: listDefinition.fkClassField,
-          };
-          return value;
-        }
-      }
-    }));
-    return of(controlConfigs);
-
-  }
 
   private langStringCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.controls.listDefinition;

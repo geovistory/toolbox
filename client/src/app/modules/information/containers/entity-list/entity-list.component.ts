@@ -1,16 +1,18 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysConfig, InfPersistentItem, InfTemporalEntity, EntityType } from 'app/core';
+import { ActiveProjectService, SubstoreComponent, SysConfig } from 'app/core';
+import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { RootEpics } from 'app/core/redux-store/epics';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
+import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InformationAPIActions } from './api/entity-list.actions';
 import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
-import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { IAppState } from 'app/core/redux-store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -37,7 +39,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
   @select() loading$: Observable<boolean>;
 
-  selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
+  selectedEntity$ = new BehaviorSubject<WarEntityPreview>(undefined);
 
   pkClassesInProject;
   pkUiContextCreate = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
@@ -65,8 +67,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   }
 
 
-  openEntity(preview: EntityPreview) {
-    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
+  openEntity(preview: WarEntityPreview) {
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class)
   }
 
 
@@ -83,8 +85,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }).subscribe(result => {
-          const entityType: EntityType = [8, 30].includes(klass.basic_type) ? 'peIt' : 'teEn';
-          this.p.addEntityTab(result.pkEntity, result.pkClass, entityType)
+          this.p.addEntityTab(result.pkEntity, result.pkClass)
         })
 
       })

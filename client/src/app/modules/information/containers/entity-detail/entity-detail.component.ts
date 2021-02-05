@@ -1,7 +1,9 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { ActiveProjectService, IAppState, IconType, PeItTabData, Tab } from 'app/core';
-import { EntityPreview, EntityDetail, SubstoreComponent } from 'app/core/state/models';
+import { ActiveProjectService, IconType, PeItTabData, Tab } from 'app/core';
+import { IAppState } from 'app/core/redux-store/model';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
+import { EntityDetail, SubstoreComponent } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
@@ -9,7 +11,6 @@ import { TabLayoutComponentInterface } from 'app/modules/projects/containers/pro
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { slideInOut } from '../../shared/animations';
@@ -72,7 +73,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   tabTooltip$: Observable<string>;
   fkClass$: Observable<number>;
   pkEntity$: Observable<number>
-  preview$: Observable<EntityPreview>
+  preview$: Observable<WarEntityPreview>
 
   t: TabLayout;
   listOf: MentioningListOf;
@@ -86,7 +87,6 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
     public ngRedux: NgRedux<IAppState>,
     protected actions: EntityDetailAPIActions,
-    private matDialog: MatDialog,
     public ref: ChangeDetectorRef,
     private p: ActiveProjectService,
     private i: InformationPipesService,

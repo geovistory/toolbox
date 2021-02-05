@@ -1,12 +1,12 @@
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
-import { EntityDetail, EntityPreview } from 'app/core/state/models';
+import { EntityDetail } from 'app/core/state/models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
 // import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
 import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
 import { TabBase } from '../../shared/components/tab-layout/tab-layout.models';
-import { InfLanguage, DfhProperty } from '../sdk-lb4';
+import { DfhProperty, InfLanguage, WarEntityPreview } from '../sdk-lb4';
 
 export interface ProjectPreview {
   label?: string,
@@ -36,7 +36,7 @@ export interface TypePeIt extends InfPersistentItem { fk_typed_class: number; } 
 export interface TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
 export interface TypesByPk { [pk_entity: string]: TypePeIt; }
 
-export interface TypePreview extends EntityPreview { fk_typed_class: number; }
+export interface TypePreview extends WarEntityPreview { fk_typed_class: number; }
 export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
 export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
 // export interface ComQueryByPk { [key: string]: ProQuery }

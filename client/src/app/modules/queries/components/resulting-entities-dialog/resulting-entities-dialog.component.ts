@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EntityPreview, ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 export interface EntitiesDialogData {
-  entityPreviews: EntityPreview[];
+  entityPreviews: WarEntityPreview[];
 }
 @Component({
   selector: 'gv-resulting-entities-dialog',
@@ -21,8 +22,8 @@ export class ResultingEntitiesDialogComponent {
     this.dialogRef.close();
   }
 
-  openInTab(preview: EntityPreview) {
-    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
+  openInTab(preview: WarEntityPreview) {
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class)
     this.dialogRef.close()
   }
 }

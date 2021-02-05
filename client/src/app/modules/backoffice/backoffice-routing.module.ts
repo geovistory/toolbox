@@ -6,7 +6,6 @@ import { MainComponent } from './components/main/main.component';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
-import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
 
 
 const routes: Routes = [
@@ -17,28 +16,6 @@ const routes: Routes = [
       {
         path: '',
         component: LandingPageComponent
-      },
-      // {
-      //   path: 'classes',
-      //   component: ClassListComponent
-      // },
-      // {
-      //   path: 'classes/:pk_class',
-      //   component: ClassComponent,
-      //   children: [
-      //     {
-      //       path: '',
-      //       component: ClassMainComponent
-      //     }
-      //   ]
-      // },
-      // {
-      //   path: 'properties',
-      //   component: PropertyListComponent
-      // },
-      {
-        path: 'class-fields',
-        component: ClassFieldListComponent
       },
       {
         path: 'namespaces',

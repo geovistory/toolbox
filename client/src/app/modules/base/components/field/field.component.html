@@ -1,6 +1,6 @@
 <!-- Field Header, in case there are multiple different lists in this field (inherited properties) -->
 
-<div *ngIf="fieldDefinition.listType==='has-type'" class="mat-tree-node field-node mat-border-bottom">
+<div *ngIf="fieldDefinition.isSpecialField==='has-type'" class="mat-tree-node field-node mat-border-bottom">
   <div class="full-width">
 
     <div class="left-col field-margin-left">
@@ -41,7 +41,7 @@
   <!-- <mat-divider></mat-divider> -->
 </div>
 
-<div *ngIf="fieldDefinition.listType!=='has-type'" class="mat-tree-node field-node mat-border-bottom" [ngClass]="{
+<div *ngIf="fieldDefinition.isSpecialField!=='has-type'" class="mat-tree-node field-node mat-border-bottom" [ngClass]="{
   'expanded': (!treeControl || treeControl.isExpanded(fieldDefinition)),
   'collapsed': (treeControl && !treeControl.isExpanded(fieldDefinition))
   }">
@@ -63,7 +63,7 @@
           *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
         </span>
-        <mat-icon *ngIf="fieldDefinition.removedFromAllProfiles" svgIcon="alert" color="warn"
+        <mat-icon *ngIf="fieldDefinition.allSubfieldsRemovedFromAllProfiles" svgIcon="alert" color="warn"
           matTooltip="This property of this field has been removed from the OntoMe profile(s) you have activated. Activate a profile that contains this property if you still want to use it. Otherwise refactor your data to not use this property anymore.">
         </mat-icon>
       </span>
@@ -95,16 +95,17 @@
   <div class="child-content" *ngFor="let listDefWithCount of (listsWithCounts$ |async); trackBy:getKey">
 
     <gv-leaf-item-list fxLayout="column"
-      *ngIf="!is(listDefWithCount, 'temporal-entity') && !is(listDefWithCount, 'time-span')"
+      *ngIf="!listDefWithCount.listType.temporalEntity && !listDefWithCount.listType.timeSpan"
       fxLayoutAlign="space-between stretch" [listDefinition]="listDefWithCount" [treeControl]="treeControl"
       [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [pkEntity]="pkEntity"></gv-leaf-item-list>
-    <gv-temporal-entity-list *ngIf="is(listDefWithCount, 'temporal-entity')" fxLayout="column"
+    <gv-temporal-entity-list *ngIf="listDefWithCount.listType.temporalEntity" fxLayout="column"
       fxLayoutAlign="space-between stretch" [listDefinition]="listDefWithCount" [treeControl]="treeControl"
       [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [pkEntity]="pkEntity">
     </gv-temporal-entity-list>
 
-    <gv-time-span-list *ngIf="is(listDefWithCount, 'time-span')" fxLayout="column" fxLayoutAlign="space-between stretch"
-      [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [pkEntity]="pkEntity">
+    <gv-time-span-list *ngIf="listDefWithCount.listType.timeSpan" fxLayout="column"
+      fxLayoutAlign="space-between stretch" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
+      [readonly$]="readonly$" [pkEntity]="pkEntity">
     </gv-time-span-list>
 
   </div>

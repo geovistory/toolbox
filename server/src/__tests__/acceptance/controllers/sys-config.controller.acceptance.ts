@@ -1,7 +1,7 @@
 import {Client, expect} from '@loopback/testlab';
 import {GeovistoryServer} from '../../../server';
 import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
-import {SysConfigValue, TrueEnum} from '../../../controllers/sys-config.controller';
+import {SysConfigValue} from "../../../models/sys-config/sys-config-value.model";
 import {SysConfigValueMock} from '../../helpers/data/gvDB/SysConfigValueMock';
 
 describe('SysConfigController', () => {

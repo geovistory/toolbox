@@ -1,7 +1,5 @@
-import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntityPreview, IAppState } from 'app/core';
-import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
+import { EntitySearchHit, WarEntityPreview } from 'app/core/sdk-lb4';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -28,7 +26,7 @@ export class EntitySearchHitComponent implements OnInit {
 
   @Output() onAdd: EventEmitter<number> = new EventEmitter();
   @Output() onOpen: EventEmitter<number> = new EventEmitter();
-  @Output() onOpenEntityPreview: EventEmitter<EntityPreview> = new EventEmitter();
+  @Output() onOpenEntityPreview: EventEmitter<WarEntityPreview> = new EventEmitter();
   @Output() onSelect: EventEmitter<number> = new EventEmitter();
 
   headlineItems: Array<string> = [];
@@ -36,13 +34,11 @@ export class EntitySearchHitComponent implements OnInit {
 
   projectsCount: number;
 
-  entityPreview: EntityPreview;
+  entityPreview: WarEntityPreview;
 
 
 
-  constructor(
-    private ngRedux: NgRedux<IAppState>
-  ) { }
+  constructor() { }
 
   ngOnInit() {
     this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
@@ -57,6 +53,7 @@ export class EntitySearchHitComponent implements OnInit {
     this.entityPreview = {
       pk_entity: this.hit.pk_entity,
       fk_project: this.hit.fk_project,
+      project: this.hit.fk_project,
       fk_class: this.hit.fk_class,
       entity_label: this.hit.entity_label,
       entity_type: this.hit.entity_type,

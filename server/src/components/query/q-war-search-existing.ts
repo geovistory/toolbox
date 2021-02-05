@@ -1,19 +1,26 @@
-import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
+import {Postgres1DataSource} from '../../datasources';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import {model, property} from '@loopback/repository';
+import {InfStatement} from '../../models';
+import {WareEntityPreviewPage} from '../../controllers';
+@model()
+class SearchExistingRelatedStatementFilter {
+  @property({type: String, required: true}) key: 'fk_property' | 'fk_property_of_property';
+  @property({required: true}) value: number;
+};
 
-import { Lb3Models } from '../utils/interfaces';
-import { logSql } from '../utils';
-export interface SearchExistingRelatedStatement {
-  relateBy: 'fk_object_info' | 'fk_subject_info',
-  filter: {
-    key: 'fk_property' | 'fk_property_of_property',
-    value: number
-  }
+@model()
+export class SearchExistingRelatedStatement {
+  @property({type: String, required: true}) relateBy: 'fk_object_info' | 'fk_subject_info'
+  @property() filter: SearchExistingRelatedStatementFilter
 }
 
-export class SqlWarSearchExisiting extends SqlBuilderLbModels {
+export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
 
-  constructor(lb3models: Lb3Models) {
-    super(lb3models)
+  constructor(
+    dataSource: Postgres1DataSource
+  ) {
+    super(dataSource)
   }
 
   /**
@@ -21,54 +28,34 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
    * EntityPreview, related to the given source entity
    *
    */
-  create(
+  query(
     pkProject: number,
     searchString: string,
     pkClasses: number[],
     entityType: string,
     limit: number,
-    page: number,
+    offset: number,
     relatedStatement?: SearchExistingRelatedStatement,
   ) {
 
-    // set default if undefined
-    var limit = limit ? limit : 10;
-
-    var offset = limit * (page - 1);
-
-    if (searchString) {
-      var queryString = searchString
-        .trim()
-        .replace('\n', '')
-        .split(' ')
-        .map(word => {
-          return `'${word}':*`.toLowerCase();
-        })
-        .join(' & ');
-    } else {
-      var queryString = '';
-    }
-
-    var params = [];
 
     // basic type filter
     let whereEntityType = '';
     if (entityType) {
-      params.push(entityType);
-      whereEntityType = 'AND entity_type = $' + params.length;
+      whereEntityType = `AND entity_type = ${this.addParam(entityType)}`;
     }
 
 
 
 
 
-    var sql = `
+    this.sql = `
       WITH
       -- filter the repo versions, add the fk_project of given project, if is_in_project
       -- this ensures we allways search in the full repo full-text (finds more)
       -- and it includes the information, whether the entity is in project or not
       tw0 AS (
-        SELECT  to_tsquery(${this.addParam(queryString)}) q
+        SELECT  to_tsquery(${this.addParam(searchString)}) q
       ),
       tw1 AS (
         SELECT
@@ -91,7 +78,7 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
             AND t2.fk_project = ${this.addParam(pkProject)}
             AND t2.is_in_project = true
           WHERE t1.fk_project IS NULL
-          ${queryString ? `
+          ${searchString ? `
           AND (
             t1.ts_vector @@ t0.q
             OR
@@ -99,7 +86,7 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
           )
           ` : ''}
           ${whereEntityType}
-          ${pkClasses && pkClasses.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
+          ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
         ),
         tw2 AS (
           select
@@ -149,7 +136,7 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
             t1.type_label_headline,
             ${relatedStatement ? `
               COALESCE(
-                json_agg(${this.createBuildObject('t2', 'InfStatement')})
+                json_agg(${this.createBuildObject('t2', InfStatement.definition)})
                 FILTER (WHERE t2.pk_entity IS NOT NULL),
                 '[]'
               )  related_statements,
@@ -213,8 +200,6 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
         LEFT JOIN items ON true
         LEFT JOIN count ON true;
     `;
-
-    logSql(sql, this.params)
-    return { sql, params: this.params };
+    return this.executeAndReturnFirstData<WareEntityPreviewPage>()
   }
 }

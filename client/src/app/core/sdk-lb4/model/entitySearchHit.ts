@@ -9,13 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { WarEntityPreviewTimeSpanWithRelations } from './warEntityPreviewTimeSpanWithRelations';
+import { InfStatement } from './infStatement';
+import { WarEntityPreviewTimeSpan } from './warEntityPreviewTimeSpan';
 
 
-/**
- * (tsType: WarEntityPreviewWithFulltextWithRelations, schemaOptions: { includeRelations: true })
- */
-export interface WarEntityPreviewWithFulltextWithRelations { 
+export interface EntitySearchHit { 
     pk_entity?: number;
     fk_project?: number;
     project: number;
@@ -25,11 +23,15 @@ export interface WarEntityPreviewWithFulltextWithRelations {
     entity_type?: string;
     type_label?: string;
     fk_type?: number;
-    time_span?: WarEntityPreviewTimeSpanWithRelations;
+    time_span?: WarEntityPreviewTimeSpan;
     first_second?: string;
     last_second?: string;
     tmsp_last_modification?: string;
-    full_text?: string;
-    ts_vector?: string;
+    full_text_headline?: string;
+    class_label_headline?: string;
+    entity_label_headline?: string;
+    type_label_headline?: string;
+    projects?: Array<number>;
+    related_statements?: Array<InfStatement>;
 }
 

@@ -100,7 +100,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
       )
     })
 
-    const columns$ = this.c.pipeFieldDefinitionsSpecificFirst(this.listDefinition.targetClass)
+    const columns$ = this.c.pipeSpecificAndBasicFields(this.listDefinition.targetClass)
 
     this.rows$ = combineLatest(pagination$, columns$).pipe(
       distinctUntilChanged(equals),
@@ -155,7 +155,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   }
 
   openInNewTab(item: TemporalEntityItem) {
-    this.p.addEntityTab(item.pkEntity, this.listDefinition.targetClass, 'teEn')
+    this.p.addEntityTab(item.pkEntity, this.listDefinition.targetClass)
   }
 
   addAndOpenInNewTab(item: TemporalEntityItem) {
@@ -178,7 +178,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
 
 export function createPaginateBy(listDefinition: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
-  if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
+  if (listDefinition.listType.temporalEntity || listDefinition.listType.entityPreview) {
     return [
       { fk_property: listDefinition.property.pkProperty },
       { fk_target_class: listDefinition.targetClass },

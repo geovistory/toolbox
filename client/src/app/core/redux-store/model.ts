@@ -9,10 +9,11 @@ import { Dfh } from '../dfh/dfh.models';
 import { Inf } from '../inf/inf.models';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
 import { Pro } from '../pro/pro.models';
-import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreview, InfLangString, InfDimension } from '../sdk';
+import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLangString, InfDimension } from '../sdk';
 import { Sys } from '../sys/sys.models';
 import { War } from '../war/war.models';
 import { Tab } from '../tab/tab.models';
+import { WarEntityPreview } from '../sdk-lb4';
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]

@@ -1,7 +1,7 @@
-import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DatChunk, EntityPreview, IAppState, InfStatement } from 'app/core';
+import { DatChunk, InfStatement } from 'app/core';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Subject } from 'rxjs';
 
@@ -30,7 +30,7 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
 
   // Domain: F2 Expression / geovC5 Expression Portion.
   // Provide a value to set this field onInit
-  @Input() domainInfoEntity: EntityPreview;
+  @Input() domainInfoEntity: WarEntityPreview;
   domainInfoEntityFixed: boolean;
 
   // Domain: Chunk. Provide a value to set this field onInit
@@ -39,7 +39,7 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
 
   // Range Entity. Provide a value to set this field onInit
   // Any PeIt or TeEn
-  @Input() rangeInfoEntity: EntityPreview;
+  @Input() rangeInfoEntity: WarEntityPreview;
   rangeInfoEntityFixed: boolean;
 
   domainInfoEntityEditing;
@@ -66,9 +66,7 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
     }
   }
 
-  constructor(
-    private ngRedux: NgRedux<IAppState>
-  ) {
+  constructor() {
   }
 
   ngOnInit() {
@@ -122,7 +120,7 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
     this.validateAndEmit()
   }
 
-  onDropDomainInfoEntity(entity: EntityPreview) {
+  onDropDomainInfoEntity(entity: WarEntityPreview) {
     this.domainInfoEntity = entity;
 
     this.validateAndEmit()
@@ -140,13 +138,13 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
 
 
   allowDropDomainInfoEntity() {
-    return (entity: EntityPreview) => [
+    return (entity: WarEntityPreview) => [
       DfhConfig.CLASS_PK_EXPRESSION, DfhConfig.CLASS_PK_EXPRESSION_PORTION
     ].includes(entity.fk_class);
   }
 
   allowDropRangeInfoEntity() {
-    return (entity: EntityPreview) => ['peIt', 'teEn'].includes(entity.entity_type)
+    return (entity: WarEntityPreview) => ['peIt', 'teEn'].includes(entity.entity_type)
   }
 
   // /**

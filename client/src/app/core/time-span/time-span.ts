@@ -1,5 +1,6 @@
 import { TimePrimitive } from 'app/core';
 import { CtrlTimeSpanDialogResult } from 'app/modules/base/components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { WarEntityPreviewTimeSpan } from '../sdk-lb4';
 
 export class TimeSpan {
 
@@ -73,7 +74,7 @@ export class TimeSpan {
     return new TimeSpan(x)
   }
 
-  constructor(data?) {
+  constructor(data?: WarEntityPreviewTimeSpan) {
     if (data) {
       Object.keys(data).forEach(key => data[key] === undefined ? delete data[key] : '');
       Object.assign(this, data);

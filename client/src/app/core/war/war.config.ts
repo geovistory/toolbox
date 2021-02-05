@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from 'app/core/redux-store/reducer-factory';
-import { WarEntityPreview } from '../sdk';
+import { WarEntityPreview } from '../sdk-lb4';
 
 export const warRoot = 'war';
 

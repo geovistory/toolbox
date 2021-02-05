@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {inject, Subscription} from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {Fields} from '@loopback/filter'
-
-import {get, getModelSchemaRef, HttpErrors, param} from '@loopback/rest';
+import {Fields} from '@loopback/filter';
+import {model, property, repository} from '@loopback/repository';
+import {get, HttpErrors, param, requestBody, post} from '@loopback/rest';
 import _ from 'lodash';
+import {indexBy, keys} from 'ramda';
 import {Socket} from 'socket.io';
+import {QWarEntityPreviewSearchExisiting, SearchExistingRelatedStatement} from '../components/query/q-war-search-existing';
+import {Postgres1DataSource} from '../datasources';
 import {ws} from '../decorators/websocket.decorator';
-import {WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations} from '../models';
+import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations, InfStatement} from '../models';
 import {Streams} from '../realtime/streams/streams';
 import {WarEntityPreviewRepository} from '../repositories';
-import {logSql} from '../utils/helpers';
-import {SqlBuilderBase} from '../utils/sql-builders/sql-builder-base';
-import {indexBy, keys} from 'ramda';
+import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
+
 /**
  * TODO-LB3-LB4
  *
@@ -52,6 +53,39 @@ interface AddToStreamMsg {
   pks: (number | string)[];
 }
 
+@model() export class EntitySearchHit extends WarEntityPreview {
+  @property() full_text_headline?: string;
+  @property() class_label_headline?: string;
+  @property() entity_label_headline?: string;
+  @property() type_label_headline?: string;
+  @property.array(Number) projects?: number[]
+  @property.array(InfStatement) related_statements?: InfStatement[]
+}
+@model() export class WareEntityPreviewPage {
+  @property() totalCount: number
+  @property.array(EntitySearchHit) data: EntitySearchHit[]
+
+}
+@model() export class WarEntityPreviewSearchReq {
+  @property({required: true}) projectId: number
+  @property({required: true}) searchString: string
+  @property.array(Number, {required: true}) pkClasses: number[]
+  @property({required: true}) entityType: string
+  @property({required: true}) limit: number
+  @property({required: true}) page: number
+}
+@model() export class WarEntityPreviewSearchExistingReq extends WarEntityPreviewSearchReq {
+  @property() relatedStatement?: SearchExistingRelatedStatement
+}
+
+
+@model() export class WarEntityPreviewPaginatedByPkReq {
+  @property({required: true}) pkProject: number
+  @property.array(Number, {required: true}) pkEntities: number[]
+  @property({required: true}) limit: number
+  @property({required: true}) offset: number
+}
+
 /**
  * EntityPreview Controller
  * Handlentity_typees also websockets
@@ -72,6 +106,7 @@ export class WarEntityPreviewController {
   constructor(
     @repository(WarEntityPreviewRepository)
     public warEntityPreviewRepository: WarEntityPreviewRepository,
+    @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
     @inject('streams')
     private streams: Streams
   ) {
@@ -419,7 +454,107 @@ export class WarEntityPreviewController {
   /************************ RestAPI ****************************/
   // everything from here until 'Generics' is about RestAPI
 
-  @get('/war-entity-previews', {
+  @post('/war-entity-previews/search', {
+    responses: {
+      '200': {
+        description: 'Array of WarEntityPreview model instances',
+        content: {'application/json': {schema: {'x-ts-type': WareEntityPreviewPage}}},
+      },
+    },
+  })
+  async search(
+    @requestBody() req: WarEntityPreviewSearchExistingReq
+  ): Promise<WareEntityPreviewPage> {
+
+    const {queryString, offset, limit} = this.prepareSearchInputs(req.limit, req.page, req.searchString);
+
+    const q = new SqlBuilderLb4Models(this.dataSource)
+
+    q.sql = `
+      WITH tw1 AS (
+          select
+          ${q.createSelect('t1', WarEntityPreview.definition)},
+          ts_headline(full_text, q) as full_text_headline,
+          ts_headline(class_label, q) as class_label_headline,
+          ts_headline(entity_label, q) as entity_label_headline,
+          ts_headline(type_label, q) as type_label_headline,
+          count(pk_entity) OVER() AS total_count
+          from war.entity_preview t1,
+          to_tsquery(${q.addParam(queryString)}) q
+          WHERE 1=1
+          ${
+      queryString
+        ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
+          queryString
+        )})`
+        : ''
+      }
+          ${
+      req.projectId
+        ? `AND fk_project = ${q.addParam(req.projectId)}`
+        : `AND fk_project IS NULL`
+      }
+          ${req.entityType ? `AND entity_type = ${q.addParam(req.entityType)}` : ''}
+          ${
+      req.pkClasses?.length
+        ? `AND fk_class IN (${q.addParams(req.pkClasses)})`
+        : ''
+      }
+          ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
+          LIMIT ${q.addParam(limit)}
+          OFFSET ${q.addParam(offset)}
+        ),
+        ------------------------------------
+        --- group parts by model
+        ------------------------------------
+        items AS  (
+          SELECT json_agg(${q.createBuildObject('t1', EntitySearchHit.definition, ['projects', 'related_statements'])}) as json
+          FROM tw1 t1
+          GROUP BY true
+        ),
+        count AS  (
+          SELECT total_count
+          FROM tw1
+          LIMIT 1
+        )
+        ------------------------------------
+        --- build final response object
+        ------------------------------------
+        SELECT
+        json_build_object (
+          'totalCount', coalesce(count.total_count, 0),
+          'data', coalesce(items.json, '[]'::json)
+        ) as data
+        FROM
+        (select 0 ) as one_row
+        LEFT JOIN items ON true
+        LEFT JOIN count ON true;
+        `;
+
+    // if (log) logSql(q.sql, q.params);
+
+    return q.executeAndReturnFirstData<WareEntityPreviewPage>()
+  }
+
+
+
+  @post('/war-entity-previews/search-existing', {
+    responses: {
+      '200': {
+        description: 'Array of WarEntityPreview model instances',
+        content: {'application/json': {schema: {'x-ts-type': WareEntityPreviewPage}}},
+      },
+    },
+  })
+  async searchExisting(
+    @requestBody() req: WarEntityPreviewSearchExistingReq
+  ): Promise<WareEntityPreviewPage> {
+    const i = this.prepareSearchInputs(req.limit, req.page, req.searchString)
+    const q = new QWarEntityPreviewSearchExisiting(this.dataSource)
+    return q.query(req.projectId, i.queryString, req.pkClasses, req.entityType, i.limit, i.offset, req.relatedStatement)
+  }
+
+  @post('/war-entity-previews/paginated-list-by-pks', {
     responses: {
       '200': {
         description: 'Array of WarEntityPreview model instances',
@@ -427,30 +562,57 @@ export class WarEntityPreviewController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(WarEntityPreviewWithFulltext, {includeRelations: true}),
-            },
-          },
+              items: {
+                'x-ts-type': WarEntityPreview,
+              },
+            }
+          }
         },
       },
     },
   })
-  // TODO: put all query parameters into one requestBody object
-  // This will allow to properly type
-  // - pkClasses as number[]
-  // - entityType as 'peIt'|'teEn'
-  async find(
-    @param.query.number('projectId') projectId: number,
-    @param.query.string('searchString') searchString: string,
-    @param.query.object('pkClasses') pkClasses: number[],
-    @param.query.string('entityType') entityType: string,
-    @param.query.number('limit') limit = 10,
-    @param.query.number('page') page = 1,
-  ): Promise<WarEntityPreviewWithFulltext[]> {
+  async paginatedListByPks(
+    @requestBody() req: WarEntityPreviewPaginatedByPkReq
+  ): Promise<WarEntityPreview[]> {
+    const {pkProject, pkEntities, offset} = req;
+    let {limit} = req;
 
-    // throw an error when the parameter is not a natural number
+    if (!limit) limit = 10;
+    if (limit > 200) limit = 200;
+    const q = new SqlBuilderLb4Models(this.dataSource)
+    q.sql = `
+    WITH tw1 AS (
+      SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+      FROM war.entity_preview
+      WHERE pk_entity IN (${q.addParams(pkEntities)})
+      AND fk_project = ${q.addParam(pkProject)}
+      UNION
+      SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+      FROM war.entity_preview
+      WHERE pk_entity IN (${q.addParams(pkEntities)})
+      AND fk_project IS NULL
+    ),
+    tw2 AS (
+      SELECT DISTINCT ON (pk_entity) *
+      FROM tw1
+      ORDER BY pk_entity, fk_project
+    )
+    SELECT *
+    FROM tw2
+    ORDER BY entity_label, class_label
+    LIMIT ${q.addParam(limit)}
+    OFFSET ${q.addParam(offset)}
+  `;
+    return q.execute<WarEntityPreview[]>()
+  }
+
+
+  private prepareSearchInputs(limit: number, page: number, searchString: string) {
     if (!Number.isInteger(limit) || limit < 1) {
+      // throw an error when the parameter is not a natural number
       throw new HttpErrors.UnprocessableEntity('limit is not a natural number');
-    } else if (limit > 200) {
+    }
+    else if (limit > 200) {
       limit = 200;
     }
 
@@ -470,58 +632,8 @@ export class WarEntityPreviewController {
         })
         .join(' & ')
       : '';
-
-    const q = new SqlBuilderBase()
-
-    q.sql = `
-        select
-        fk_project,
-        pk_entity,
-        fk_class,
-        entity_label,
-        class_label,
-        entity_type,
-        type_label,
-        fk_type,
-        time_span,
-        ts_headline(full_text, q) as full_text_headline,
-        ts_headline(class_label, q) as class_label_headline,
-        ts_headline(entity_label, q) as entity_label_headline,
-        ts_headline(type_label, q) as type_label_headline,
-        count(pk_entity) OVER() AS total_count
-        from war.entity_preview,
-        to_tsquery(${q.addParam(queryString)}) q
-        WHERE 1=1
-        ${
-      queryString
-        ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
-          searchString
-        )})`
-        : ''
-      }
-        ${
-      projectId
-        ? `AND fk_project = ${q.addParam(projectId)}`
-        : `AND fk_project IS NULL`
-      }
-        ${entityType ? `AND entity_type = ${q.addParam(entityType)}` : ''}
-        ${
-      pkClasses?.length
-        ? `AND fk_class IN (${q.addParams(pkClasses)})`
-        : ''
-      }
-        ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
-        LIMIT ${q.addParam(limit)}
-        OFFSET ${q.addParam(offset)};
-        `;
-
-    if (log) logSql(q.sql, q.params);
-
-    return this.warEntityPreviewRepository.dataSource.execute(q.sql, q.params)
+    return {queryString, offset, limit};
   }
-
-
-
 
   /************************ Generics ****************************/
 

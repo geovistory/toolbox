@@ -17,8 +17,9 @@ import { Field } from 'app/modules/base/components/properties-tree/properties-tr
 import { DfhApiPropertyMock } from '__tests__/helpers/data/auto-gen/DfhApiPropertyMock';
 import { transformDfhApiPropertyToDfhProperty } from '__tests__/helpers/data/transformers';
 import { fieldsOfManifestationSingleton } from '__tests__/helpers/data/positive-schema-objects/fields-of-manifestation-singleton';
+import { project1 } from '__tests__/helpers/data/positive-schema-objects/project-1';
 
-fdescribe('ConfigurationPipeService', () => {
+describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: ConfigurationPipesService;
   let schemaObjServcie: SchemaObjectService;
@@ -70,40 +71,34 @@ fdescribe('ConfigurationPipeService', () => {
 
   })
 
-  describe('#pipePropertiesOfClassWhereTargetEnabled', () => {
-    fit('should return correct outgoing properties of manifestation singleton', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(fieldsOfManifestationSingleton), PK_DEFAULT_CONFIG_PROJECT)
+  describe('#pipeFields', () => {
 
-      const x = ngRedux.getState()
+    it('should return correct fields of manifestation singleton', (done) => {
+      setAppState(ngRedux, IAppStateMock.state1)
+      schemaObjServcie.storeGv(new BehaviorSubject({
+        ...project1,
+        ...fieldsOfManifestationSingleton
+      }), PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
-      const isOutgoing = true
-      const q$ = service.pipePropertiesOfClass(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class, isOutgoing)
+      const q$ = service.pipeFields(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
 
       // testing pipe
-      const expectedSequence: DfhPropertyStatus[][] = [[
-        {
-          ...transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
-          removedFromAllProfiles: false
-        },
-        {
-          ...transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE),
-          removedFromAllProfiles: false
-        }
-      ]]
+      const expectedSequence: Field[][] = [[]]
 
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence).toEqual(expectedSequence)
+            console.log('Hi')
+            console.log(actualSequence)
+            expect(actualSequence[0].length).toEqual(4)
           },
           null,
           done);
 
     });
   })
-  describe('#pipeFieldDefinitions', () => {
+  describe('#pipeBasicAndSpecificFields', () => {
     it('should return correct fields of temporal entity', (done) => {
       // setAppState(ngRedux, IAppStateMock.state2)
       // const x = ngRedux.getState()
@@ -123,12 +118,12 @@ fdescribe('ConfigurationPipeService', () => {
       //     done);
 
     });
-    fit('should return correct fields of manifestation singleton', (done) => {
-      setAppState(ngRedux, IAppStateMock.state2)
+    it('should return correct fields of manifestation singleton', (done) => {
+      setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(fieldsOfManifestationSingleton), PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
-      const q$ = service.pipeFieldDefinitions(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
+      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]
@@ -136,12 +131,15 @@ fdescribe('ConfigurationPipeService', () => {
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
+            console.log(actualSequence)
             expect(actualSequence).toEqual(expectedSequence)
           },
           null,
           done);
 
     });
+
+
   })
 
 

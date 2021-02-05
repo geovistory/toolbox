@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, WarEntityPreviewApi } from 'app/core';
-import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
+import { ActiveProjectService } from 'app/core';
+import { SearchExistingRelatedStatement, WarEntityPreviewControllerService } from 'app/core/sdk-lb4';
+import { EntitySearchHit } from 'app/core/sdk-lb4/model/entitySearchHit';
+import { WarEntityPreviewSearchExistingReq } from 'app/core/sdk-lb4/model/warEntityPreviewSearchExistingReq';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
-import { SearchExistingRelatedStatement } from '../../../../../../../server/src/lb3/server/sql-builders/sql-war-search-existing';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 export interface DisableIfHasStatement {
@@ -65,7 +66,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     // protected rootEpics: RootEpics,
     // private epics: SearchExistingEntityAPIEpics,
     // public ngRedux: NgRedux<IAppState>,
-    private entityPreviewApi: WarEntityPreviewApi,
+    private entityPreviewApi: WarEntityPreviewControllerService,
     private p: ActiveProjectService
   ) {
   }
@@ -123,10 +124,19 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   }
 
   search() {
-
+    const relatedStatement = !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined;
+    const req: WarEntityPreviewSearchExistingReq = {
+      projectId: this.pkProject,
+      searchString: this.searchString,
+      pkClasses: [this.pkClass],
+      entityType: null,
+      limit: this.limit,
+      page: this.page,
+      relatedStatement: relatedStatement
+    }
     if (this.disableIfHasStatement) {
 
-      this.entityPreviewApi.searchExistingWithRelatedStatement(this.pkProject, this.searchString, [this.pkClass], null, this.limit, this.page, this.disableIfHasStatement.relatedStatement)
+      this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
         .subscribe((result) => {
           const res: EntitySearchHit[] = result.data;
 
@@ -147,7 +157,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
           this.collectionSize$.next(0)
         })
     } else {
-      this.entityPreviewApi.searchExisting(this.pkProject, this.searchString, [this.pkClass], null, this.limit, this.page)
+      this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
         .subscribe((result) => {
           const res: EntitySearchHit[] = result.data;
           this.persistentItems$.next(res)

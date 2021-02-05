@@ -14,7 +14,7 @@ import { first, toArray } from 'rxjs/operators';
 import { ByPk } from 'app/core/redux-store/model';
 import { ProClassFieldConfigMock } from '__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
 
-fdescribe('SchemaSelectorsService', () => {
+describe('SchemaSelectorsService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: SchemaSelectorsService;
   let schemaObjService: SchemaObjectService;

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, IAppState, SubstoreComponent, DatDigital, latestVersion, InfStatement } from 'app/core';
+import { ActiveProjectService, DatChunk, SubstoreComponent, DatDigital, latestVersion, InfStatement } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -10,21 +10,22 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
 import { MatSort, MatTableDataSource, MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ByPk } from '../../../../core/redux-store/model';
+import { ByPk, IAppState } from '../../../../core/redux-store/model';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
 import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 
 // this is not for state, only for the table view
 export interface Row {
   // data for actions
   statement: InfStatement;
-  domainInfoEntity: EntityPreview;
+  domainInfoEntity: WarEntityPreview;
   domainChunk: DatChunk;
   digital: DatDigital; // the digital
-  rangeInfoEntity: EntityPreview;
+  rangeInfoEntity: WarEntityPreview;
 
   // for highlight
   highlight: boolean;
@@ -200,7 +201,6 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
             const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
             return combineLatestOrEmpty(pks.map(pk => this.p.streamEntityPreview(pk)))
               .pipe(
-                filter(previews => !previews.find(p => p.loading)),
                 map(previews => {
                   const prevs = indexBy((i) => i.pk_entity.toString(), previews)
                   rows = rows.map(row => ({
@@ -271,7 +271,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
     this.dataSource.sort = this.sort;
   }
 
-  private getRangeLabel(prevs: ByPk<EntityPreview>, row: Row): string {
+  private getRangeLabel(prevs: ByPk<WarEntityPreview>, row: Row): string {
     if (row.statement && row.statement.fk_object_info) {
       const e = prevs[row.statement.fk_object_info];
       return [e.entity_label, e.class_label, e.type_label].join(' ');
@@ -324,8 +324,8 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
         }
       })
   }
-  openEntity(entity: EntityPreview) {
-    this.p.addEntityTab(entity.pk_entity, entity.fk_class, entity.entity_type)
+  openEntity(entity: WarEntityPreview) {
+    this.p.addEntityTab(entity.pk_entity, entity.fk_class)
   }
 
   ngOnDestroy() {

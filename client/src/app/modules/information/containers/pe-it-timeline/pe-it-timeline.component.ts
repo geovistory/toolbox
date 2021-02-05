@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IAppState, SubstoreComponent, TeEntAccentuation } from 'app/core';
+import { SubstoreComponent, TeEntAccentuation } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from 'app/modules/timeline/models/timeline';
 import { Observable, Subject } from 'rxjs';
@@ -9,6 +9,7 @@ import { PeItTimelineAPIActions } from './api/pe-it-timeline.actions';
 import { PeItTimeline } from './api/pe-it-timeline.models';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
+import { IAppState } from 'app/core/redux-store/model';
 
 // @WithSubStore({
 //   basePathMethodName: 'getBasePath',

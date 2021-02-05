@@ -1,23 +1,22 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveProjectService, DatDigital, InfStatement, latestVersion, switchMapOr, SysConfig, EntityPreview, ActiveAccountService } from 'app/core';
+import { ActiveAccountService, ActiveProjectService, DatDigital, InfStatement, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/redux-store/model';
-import { equals, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, pipe } from 'rxjs';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
+import { RepoService } from 'app/core/repo/repo.service';
+import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { ImporterComponent, ImporterDialogData } from 'app/modules/data/components/importer/importer.component';
+import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { equals } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
-import { MatDialog } from '@angular/material';
-import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
-import { ImporterComponent, ImporterDialogData } from 'app/modules/data/components/importer/importer.component';
-import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
-import { ImportTableSocket } from 'app/core/sockets/sockets.module';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 
 /**
@@ -696,7 +695,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.p.addEntityTab(
       node.statement.fk_subject_info,
       DfhConfig.CLASS_PK_EXPRESSION_PORTION,
-      'peIt'
     )
   }
 

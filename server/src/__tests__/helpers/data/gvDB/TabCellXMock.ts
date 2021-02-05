@@ -12,7 +12,7 @@ export class TabCellXMock {
     pk_cell: 2000, //pk_entity
     fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     fk_column: DatColumnMock.COL_NAMES.pk_entity as number, //fk_column
-    fk_row: TabRowMock.ROW_ALBERT.pk_row ?? -1, //fk_row
+    fk_row: TabRowMock.ROW_ALBERT.pk_row, //fk_row
     string_value: 'Albert IV' //content
   }
   )
@@ -21,7 +21,7 @@ export class TabCellXMock {
     pk_cell: 2001,
     fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES.pk_entity as number,
-    fk_row: TabRowMock.ROW_ALBERT.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_ALBERT.pk_row,
     numeric_value: 1180
   })
 
@@ -29,7 +29,7 @@ export class TabCellXMock {
     pk_cell: 2002,
     fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number,
     fk_column: DatColumnMock.COL_NAMES.pk_entity as number,
-    fk_row: TabRowMock.ROW_RUDOLF.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_RUDOLF.pk_row,
     string_value: 'Rudolf of Habsbourg'
   })
 
@@ -37,7 +37,7 @@ export class TabCellXMock {
     pk_cell: 2003,
     fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES.pk_entity as number,
-    fk_row: TabRowMock.ROW_RUDOLF.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_RUDOLF.pk_row,
     numeric_value: 1218
   })
 
@@ -45,7 +45,7 @@ export class TabCellXMock {
     pk_cell: 2004,
     fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity as number,
     fk_column: DatColumnMock.COL_RND1.pk_entity as number,
-    fk_row: TabRowMock.ROW_RND_VAL1.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_RND_VAL1.pk_row,
     numeric_value: Math.random()
   })
 
@@ -53,7 +53,7 @@ export class TabCellXMock {
     pk_cell: 2005,
     fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity as number,
     fk_column: DatColumnMock.COL_RND2.pk_entity as number,
-    fk_row: TabRowMock.ROW_RND_VAL1.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_RND_VAL1.pk_row,
     numeric_value: Math.random()
   })
 
@@ -61,7 +61,7 @@ export class TabCellXMock {
     pk_cell: 2006,
     fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity as number,
     fk_column: DatColumnMock.COL_RND1.pk_entity as number,
-    fk_row: TabRowMock.ROW_RND_VAL2.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_RND_VAL2.pk_row,
     numeric_value: Math.random()
   })
 
@@ -69,7 +69,7 @@ export class TabCellXMock {
     pk_cell: 2007,
     fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity as number,
     fk_column: DatColumnMock.COL_RND2.pk_entity as number,
-    fk_row: TabRowMock.ROW_RND_VAL2.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_RND_VAL2.pk_row,
     numeric_value: Math.random()
   })
 
@@ -77,7 +77,7 @@ export class TabCellXMock {
     pk_cell: 2008,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
     string_value: 'Albert'
   })
 
@@ -85,7 +85,7 @@ export class TabCellXMock {
     pk_cell: 2009,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_RUDOLPH.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_RUDOLPH.pk_row,
     string_value: 'Rudolph'
   })
 
@@ -93,7 +93,7 @@ export class TabCellXMock {
     pk_cell: 2010,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_JEAN.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_JEAN.pk_row,
     string_value: 'Jean'
   })
 
@@ -101,7 +101,7 @@ export class TabCellXMock {
     pk_cell: 2011,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_HANS.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_HANS.pk_row,
     string_value: 'Hans'
   })
 
@@ -109,7 +109,7 @@ export class TabCellXMock {
     pk_cell: 2012,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
     string_value: 'Pierre'
   })
 
@@ -117,7 +117,7 @@ export class TabCellXMock {
     pk_cell: 2013,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_ANGELA.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_ANGELA.pk_row,
     string_value: 'Angela'
   })
 
@@ -125,7 +125,7 @@ export class TabCellXMock {
     pk_cell: 2014,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_UNION.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
     string_value: 'Josepha'
   })
 
@@ -133,7 +133,7 @@ export class TabCellXMock {
     pk_cell: 2015,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_UNION.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_RUDOLPH.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_RUDOLPH.pk_row,
     string_value: 'Angelina'
   })
 
@@ -141,7 +141,7 @@ export class TabCellXMock {
     pk_cell: 2016,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_UNION.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_JEAN.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_JEAN.pk_row,
     string_value: 'Margueritte'
   })
 
@@ -149,7 +149,7 @@ export class TabCellXMock {
     pk_cell: 2017,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_UNION.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_HANS.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_HANS.pk_row,
     string_value: 'Micheline'
   })
 
@@ -157,7 +157,7 @@ export class TabCellXMock {
     pk_cell: 2018,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_UNION.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
     string_value: 'Michelle'
   })
 
@@ -165,7 +165,7 @@ export class TabCellXMock {
     pk_cell: 2019,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_UNION.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_ANGELA.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_ANGELA.pk_row,
     string_value: 'Marc'
   })
 
@@ -173,7 +173,7 @@ export class TabCellXMock {
     pk_cell: 2020,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES2.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_JEAN.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_JEAN.pk_row,
     string_value: '1'
   })
 
@@ -181,7 +181,7 @@ export class TabCellXMock {
     pk_cell: 2021,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES2.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_HANS.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_HANS.pk_row,
     string_value: '2'
   })
 
@@ -189,7 +189,7 @@ export class TabCellXMock {
     pk_cell: 2022,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES2.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
     string_value: '3'
   })
 
@@ -197,7 +197,7 @@ export class TabCellXMock {
     pk_cell: 2023,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES2.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_ANGELA.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_ANGELA.pk_row,
     string_value: '4'
   })
 
@@ -205,7 +205,7 @@ export class TabCellXMock {
     pk_cell: 2024,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES2.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
     string_value: '5'
   })
 
@@ -213,7 +213,7 @@ export class TabCellXMock {
     pk_cell: 2025,
     fk_digital: DatDigitalMock.DIGITAL_UNIONS.pk_entity as number,
     fk_column: DatColumnMock.COL_BIRTHDATES2.pk_entity as number,
-    fk_row: TabRowMock.ROW_UNIONS_RUDOLPH.pk_row ?? -1,
+    fk_row: TabRowMock.ROW_UNIONS_RUDOLPH.pk_row,
     string_value: '6'
   })
 }

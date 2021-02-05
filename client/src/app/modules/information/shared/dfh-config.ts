@@ -42,6 +42,8 @@ export class DfhConfig {
 
   static PROPERTY_PK_HAS_TIME_SPAN = 4;
 
+  static PROPERTY_PK_P18_HAS_DEFINITION = 1762;
+
   // static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
   // static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
   // static PROPERTY_PK_BEGIN_OF_BEGIN = 152;

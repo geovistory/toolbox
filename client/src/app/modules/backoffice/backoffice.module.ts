@@ -18,7 +18,6 @@ import { BackofficeRoutingModule } from './backoffice-routing.module';
 import { AccountListComponent } from './components/account-list/account-list.component';
 import { AccountListAPIActions } from './components/account-list/api/account-list.actions';
 import { AccountListAPIEpics } from './components/account-list/api/account-list.epics';
-import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
 
 // import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
 // import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
@@ -81,7 +80,6 @@ import { MaterialModule } from 'app/core/material/material.module';
     // DfhLabelCreateComponent,
     LandingPageComponent,
     // UiElementWidgetComponent,
-    ClassFieldListComponent,
     // ClassMainComponent,
     AccountListComponent,
     WarehouseComponent,

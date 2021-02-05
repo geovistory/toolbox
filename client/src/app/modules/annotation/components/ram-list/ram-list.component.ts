@@ -1,20 +1,18 @@
-import { Component, OnDestroy, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActiveProjectService, InfStatement, switchMapOr, EntityPreview, SysConfig } from 'app/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActiveProjectService, InfStatement, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
-import { values, equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
-import { GraphPathSegment, GraphPathEntity } from '../graph-path/graph-path.component';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { ByPk } from 'app/core/redux-store/model';
-import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-import { MatDialog } from '@angular/material/dialog';
-import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
-import { RamListRemoveDialogData, RamListRemoveDialogComponent } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
+import { DatDigital, RamListService, WarEntityPreview } from 'app/core/sdk-lb4';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
-import { RamListService, DatChunk, DatDigital } from 'app/core/sdk-lb4';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { equals, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { GraphPathEntity, GraphPathSegment } from '../graph-path/graph-path.component';
+import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
+import { RamListRemoveDialogComponent, RamListRemoveDialogData } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
 
 interface GraphPath {
   segments: GraphPathSegment[];
@@ -71,7 +69,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   filtersVisible = false;
 
   // the entity giving the context for the ram list
-  rootEntity$: Observable<EntityPreview>
+  rootEntity$: Observable<WarEntityPreview>
 
   loading$ = new BehaviorSubject(true);
 
@@ -390,7 +388,6 @@ export class RamListComponent implements OnInit, OnDestroy {
         }),
         switchMap(pk => {
           return this.p.streamEntityPreview(pk).pipe(
-            filter((ep) => !ep.loading),
             map(ep => {
               let icon: string;
 

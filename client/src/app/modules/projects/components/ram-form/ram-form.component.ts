@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, InfLangString, InfStatement, InfTextProperty } from 'app/core';
+import { ActiveProjectService, DatChunk, InfLangString, InfStatement, InfTextProperty } from 'app/core';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
@@ -20,9 +21,9 @@ import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rx
 export class RamFormComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  source$: Observable<{ chunk?: DatChunk, ep?: EntityPreview }>;
+  source$: Observable<{ chunk?: DatChunk, ep?: WarEntityPreview }>;
 
-  targetEntityPreview$: Observable<EntityPreview>;
+  targetEntityPreview$: Observable<WarEntityPreview>;
 
   showExactReference$: Observable<boolean>
 
@@ -186,16 +187,16 @@ export class RamFormComponent implements OnInit, OnDestroy {
       )
   }
 
-  onDropSource(entity: EntityPreview) {
+  onDropSource(entity: WarEntityPreview) {
     this.p.ramSource$.next({ pkEntity: entity.pk_entity });
   }
-  onDropTarget(entity: EntityPreview) {
+  onDropTarget(entity: WarEntityPreview) {
     this.p.ramTarget$.next(entity.pk_entity);
   }
 
 
   verifyIsSourceOrSection() {
-    return (entity: EntityPreview) => [
+    return (entity: WarEntityPreview) => [
       DfhConfig.CLASS_PK_EXPRESSION,
       DfhConfig.CLASS_PK_EXPRESSION_PORTION,
       DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
@@ -206,7 +207,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
   }
 
   verifyIsEntity() {
-    return (entity: EntityPreview) => !!entity.pk_entity;
+    return (entity: WarEntityPreview) => !!entity.pk_entity;
   }
   ngOnDestroy() {
     this.destroy$.next(true);

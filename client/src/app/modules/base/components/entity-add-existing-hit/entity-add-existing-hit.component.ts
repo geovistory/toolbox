@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntityPreview, InfStatement } from 'app/core';
-import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
+import { EntitySearchHit, WarEntityPreview } from 'app/core/sdk-lb4';
 
 export interface HitPreview extends EntitySearchHit {
   btnDisabled?: boolean
@@ -41,7 +40,7 @@ export class EntityAddExistingHitComponent implements OnInit {
 
   projectsCount: number;
 
-  entityPreview: EntityPreview;
+  entityPreview: WarEntityPreview;
 
 
 
@@ -63,6 +62,7 @@ export class EntityAddExistingHitComponent implements OnInit {
     this.entityPreview = {
       pk_entity: this.hit.pk_entity,
       fk_project: this.hit.fk_project,
+      project: this.hit.project,
       fk_class: this.hit.fk_class,
       entity_label: this.hit.entity_label,
       entity_type: this.hit.entity_type,

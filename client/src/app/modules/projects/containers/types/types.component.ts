@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, IAppState, sortAbc, SysConfig } from 'app/core';
+import { ActiveProjectService, sortAbc, SysConfig } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
@@ -19,6 +19,8 @@ import { Field, TemporalEntityItem } from 'app/modules/base/components/propertie
 import { createPaginateBy } from 'app/modules/base/components/temporal-entity-list/temporal-entity-list.component';
 import { PaginationService } from 'app/modules/base/services/pagination.service';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { IAppState } from 'app/core/redux-store/model';
 
 interface TypeItem {
   pkEntity: number
@@ -92,16 +94,16 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
     this.typePks$ = this.b.pipePersistentItemPksByClass(this.pkClass)
 
-    const appeAndDefFields$ = this.c.pipeFieldDefinitions(this.pkClass).pipe(
+    const appeAndDefFields$ = this.c.pipeBasicAndSpecificFields(this.pkClass).pipe(
       map(fieldDefinitions => {
         let appeField: Field, definitionField: Field;
         fieldDefinitions.forEach(f => {
           // take only appellation for language, or ...
-          if (f.listDefinitions[0].property.pkProperty === 1111) {
+          if (f.listDefinitions[0].property.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
             appeField = f;
           }
           // ... entit definition
-          else if (f.listDefinitions[0].fkClassField === 219) {
+          else if (f.listDefinitions[0].property.pkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
             definitionField = f;
           }
         })
@@ -109,10 +111,12 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
       })
     )
 
+
+
     const appeAndLangFields$ = appeAndDefFields$.pipe(
       switchMap(appeAndDefFields =>
-        this.c.pipeFieldDefinitions(appeAndDefFields.appeField.listDefinitions[0].targetClass).pipe(
-          map(fieldDefs => fieldDefs.filter(f => f.listType === 'language' || f.listType === 'appellation'))
+        this.c.pipeBasicAndSpecificFields(appeAndDefFields.appeField.listDefinitions[0].targetClass).pipe(
+          map(fieldDefs => fieldDefs.filter(f => f.listDefinitions[0].listType.language || f.listDefinitions[0].listType.appellation))
         )
       )
     )
@@ -158,18 +162,14 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
                 return !rs.includes(undefined);
               }))
             )
-
-            const definition$ = this.p.inf$.text_property$
-              .by_fk_concerned_entity__fk_class_field_indexed$(pkEntity + '_'
-                + appeAndDefFields.definitionField.listDefinitions[0].fkClassField).pipe(
-                  map(d => {
-                    const definitions = values(d);
-                    if (!definitions || !definitions.length) return { string: undefined }
-                    let definition = definitions.find(def => !!def && def.fk_language === defaultLanguage.pk_entity);
-                    definition = definition ? definition : definitions[0];
-                    return definition;
-                  })
-                )
+            const definition$ = this.i.pipeListLangString(appeAndDefFields.definitionField.listDefinitions[0], pkEntity, 1).pipe(
+              map(definitions => {
+                if (!definitions || !definitions.length) return ''
+                let definition = definitions.find(def => !!def && def.fkLanguage === defaultLanguage.pk_entity);
+                definition = definition ? definition : definitions[0];
+                return definition.label
+              })
+            )
 
             return combineLatest(namings$, definition$).pipe(
               map(([namings, definition]) => {
@@ -190,7 +190,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
                   label: spelling,
                   labelLanguage: language,
                   pkEntity,
-                  definition: definition.string
+                  definition
                 }
 
                 return item;
@@ -201,6 +201,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
       )),
       sortAbc(n => n.label),
     )
+
 
 
   }

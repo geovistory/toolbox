@@ -17,7 +17,10 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { WarEntityPreviewWithFulltextWithRelations } from '../model/models';
+import { WarEntityPreview } from '../model/models';
+import { WarEntityPreviewPaginatedByPkReq } from '../model/models';
+import { WarEntityPreviewSearchExistingReq } from '../model/models';
+import { WareEntityPreviewPage } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -85,45 +88,14 @@ export class WarEntityPreviewControllerService {
     }
 
     /**
-     * @param projectId 
-     * @param searchString 
-     * @param pkClasses 
-     * @param entityType 
-     * @param limit 
-     * @param page 
+     * @param warEntityPreviewPaginatedByPkReq 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<WarEntityPreviewWithFulltextWithRelations>>;
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<WarEntityPreviewWithFulltextWithRelations>>>;
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<WarEntityPreviewWithFulltextWithRelations>>>;
-    public warEntityPreviewControllerFind(projectId?: number, searchString?: string, pkClasses?: { [key: string]: object; }, entityType?: string, limit?: number, page?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (projectId !== undefined && projectId !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>projectId, 'projectId');
-        }
-        if (searchString !== undefined && searchString !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>searchString, 'searchString');
-        }
-        if (pkClasses !== undefined && pkClasses !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkClasses, 'pkClasses');
-        }
-        if (entityType !== undefined && entityType !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>entityType, 'entityType');
-        }
-        if (limit !== undefined && limit !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>limit, 'limit');
-        }
-        if (page !== undefined && page !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>page, 'page');
-        }
+    public warEntityPreviewControllerPaginatedListByPks(warEntityPreviewPaginatedByPkReq?: WarEntityPreviewPaginatedByPkReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<WarEntityPreview>>;
+    public warEntityPreviewControllerPaginatedListByPks(warEntityPreviewPaginatedByPkReq?: WarEntityPreviewPaginatedByPkReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<WarEntityPreview>>>;
+    public warEntityPreviewControllerPaginatedListByPks(warEntityPreviewPaginatedByPkReq?: WarEntityPreviewPaginatedByPkReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<WarEntityPreview>>>;
+    public warEntityPreviewControllerPaginatedListByPks(warEntityPreviewPaginatedByPkReq?: WarEntityPreviewPaginatedByPkReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -153,14 +125,151 @@ export class WarEntityPreviewControllerService {
         }
 
 
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
         let responseType: 'text' | 'json' = 'json';
         if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<WarEntityPreviewWithFulltextWithRelations>>(`${this.configuration.basePath}/war-entity-previews`,
+        return this.httpClient.post<Array<WarEntityPreview>>(`${this.configuration.basePath}/war-entity-previews/paginated-list-by-pks`,
+            warEntityPreviewPaginatedByPkReq,
             {
-                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param warEntityPreviewSearchExistingReq 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public warEntityPreviewControllerSearch(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<WareEntityPreviewPage>;
+    public warEntityPreviewControllerSearch(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<WareEntityPreviewPage>>;
+    public warEntityPreviewControllerSearch(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<WareEntityPreviewPage>>;
+    public warEntityPreviewControllerSearch(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<WareEntityPreviewPage>(`${this.configuration.basePath}/war-entity-previews/search`,
+            warEntityPreviewSearchExistingReq,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param warEntityPreviewSearchExistingReq 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public warEntityPreviewControllerSearchExisting(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<WareEntityPreviewPage>;
+    public warEntityPreviewControllerSearchExisting(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<WareEntityPreviewPage>>;
+    public warEntityPreviewControllerSearchExisting(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<WareEntityPreviewPage>>;
+    public warEntityPreviewControllerSearchExisting(warEntityPreviewSearchExistingReq?: WarEntityPreviewSearchExistingReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<WareEntityPreviewPage>(`${this.configuration.basePath}/war-entity-previews/search-existing`,
+            warEntityPreviewSearchExistingReq,
+            {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

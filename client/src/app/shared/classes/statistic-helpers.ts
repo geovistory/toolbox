@@ -1,8 +1,9 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { TimeSpan, WarEntityPreview } from "app/core";
+import { TimeSpan } from "app/core";
 import { indexBy, omit, sort, values } from "ramda";
 import { JulianDate } from "cesium";
+import { WarEntityPreview, WarEntityPreviewTimeSpan } from 'app/core/sdk-lb4';
 
 /**
  *
@@ -158,14 +159,14 @@ export function getTemporalDistribution(es: WarEntityPreview[]): {
 
 /**
  * Converts a TimeSpan into an TimeSpanExtremes
- * @param timeSpan TimeSpan
+ * @param t TimeSpan
  */
-export function timeSpanExtremes(timeSpan: TimeSpan): CesiumTimeSpanExtremes {
+export function timeSpanExtremes(t: WarEntityPreviewTimeSpan): CesiumTimeSpanExtremes {
 
-  if (!timeSpan || !Object.keys(timeSpan).length) return {};
+  if (!t || !Object.keys(t).length) return {};
 
-  timeSpan = new TimeSpan(timeSpan);
-  const minMax = timeSpan.getMinMaxTimePrimitive();
+  const timespan = new TimeSpan(t);
+  const minMax = timespan.getMinMaxTimePrimitive();
 
   const start = new Cesium.JulianDate(minMax.min.julianDay, -43200, Cesium.TimeStandard.UTC);
   const end = new Cesium.JulianDate(minMax.max.getDateTime()

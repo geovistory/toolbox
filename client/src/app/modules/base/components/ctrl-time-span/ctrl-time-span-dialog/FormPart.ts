@@ -60,7 +60,7 @@ export class FormPart {
 
 
       this.listDefinitions.forEach(thisList => {
-        if (initVal.initSubfield.listType === 'time-span') {
+        if (initVal.initSubfield.listType.timeSpan) {
           if (initVal.initTimeSpan && initVal.initTimeSpan[thisList.property.pkProperty]) {
             // Yes. It is matching a listDefinition, add a form item with initial (language) value
             this.items.push({
@@ -72,19 +72,6 @@ export class FormPart {
           }
 
         }
-        else if (thisList.listType === 'text-property') {
-          const initTextProperty = this.initVal.initTextProperty
-
-          if (initTextProperty && initTextProperty.fkClassField === thisList.fkClassField) {
-            // Yes. It is matching a listDefinition, add a form item with initial (language) value
-            this.items.push({
-              fixed: false,
-              required: this.isRequired(thisList),
-              classSelect: false,
-              formControlDef: this.addFormControlDef(thisList, initTextProperty.value)
-            })
-          }
-        }
         // Q: is this list a statement list ??
         else {
           // Q: This is a list that connects one statement per item
@@ -92,8 +79,8 @@ export class FormPart {
           const initProperty = initList.property.pkProperty;
 
           // we neet to flip source and target, when the list type is a temporal entity
-          const initTarget = initList.listType === 'temporal-entity' ? initList.sourceClass : initList.targetClass;
-          const initSource = initList.listType === 'temporal-entity' ? initList.targetClass : initList.sourceClass;
+          const initTarget = initList.listType.temporalEntity ? initList.sourceClass : initList.targetClass;
+          const initSource = initList.listType.temporalEntity ? initList.targetClass : initList.sourceClass;
 
           if (
             thisList.property.pkProperty === initProperty
@@ -122,7 +109,7 @@ export class FormPart {
   public addItem() {
 
     if (this.listDefinitions.length === 1) {
-      const initVal = this.listDefinitions[0].listType == 'language' ? this.defaultLanguage : null;
+      const initVal = this.listDefinitions[0].listType.language ? this.defaultLanguage : null;
       this.items.push({
         classSelect: false,
         required: this.isRequired(this.listDefinitions[0]),
@@ -189,7 +176,7 @@ export class FormPart {
    */
   private isRequired(listDefinition: Subfield): boolean {
 
-    if (this.initVal && this.initVal.initSubfield && ['temporal-entity', 'time-span'].includes(this.initVal.initSubfield.listType)) {
+    if (this.initVal && this.initVal.initSubfield && (this.initVal.initSubfield.listType.temporalEntity || this.initVal.initSubfield.listType.timeSpan)) {
       return listDefinition.identityDefiningForSource ? true : false;
     }
     else {
@@ -201,7 +188,7 @@ export class FormPart {
   private mapValue(val, listDefinition: Subfield): any {
     if (!listDefinition) throw console.error('No listDefinition provided')
 
-    if (listDefinition.listType === 'appellation') {
+    if (listDefinition.listType.appellation) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -216,7 +203,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (listDefinition.listType === 'language') {
+    else if (listDefinition.listType.language) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -231,7 +218,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (listDefinition.listType === 'langString') {
+    else if (listDefinition.listType.langString) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -246,7 +233,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (listDefinition.listType === 'place') {
+    else if (listDefinition.listType.place) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -262,9 +249,9 @@ export class FormPart {
       return value;
     }
     else if (
-      listDefinition.listType === 'temporal-entity'
-      || listDefinition.listType === 'entity-preview'
-      || listDefinition.listType === 'has-type'
+      listDefinition.listType.temporalEntity
+      || listDefinition.listType.entityPreview
+      || listDefinition.listType.typeItem
     ) {
       if (!val) return null;
 
@@ -282,17 +269,9 @@ export class FormPart {
 
       return value;
     }
-    else if (listDefinition.listType === 'text-property') {
-      if (!val) return null;
 
-      const value: InfTextProperty = {
-        ...val,
-        fk_class_field: listDefinition.fkClassField,
-      };
-      return value;
-    }
 
-    else if (listDefinition.listType === 'time-span') {
+    else if (listDefinition.listType.timeSpan) {
       if (!val) return null;
 
       const v = val as CtrlTimeSpanDialogResult;

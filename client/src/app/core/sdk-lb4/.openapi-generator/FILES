@@ -82,8 +82,9 @@ model/dfhLabel.ts
 model/dfhObject.ts
 model/dfhProfile.ts
 model/dfhProperty.ts
-model/dimensionListType.ts
+model/dimensionValueObjectType.ts
 model/entityLabelConfig.ts
+model/entitySearchHit.ts
 model/factoidEntity.ts
 model/factoidStatement.ts
 model/geoEntityMapAndTimeCont.ts
@@ -139,6 +140,8 @@ model/resetPasswordRequest.ts
 model/responseWithMsg.ts
 model/role.ts
 model/schemaObject.ts
+model/searchExistingRelatedStatement.ts
+model/searchExistingRelatedStatementFilter.ts
 model/signupRequest.ts
 model/signupResponse.ts
 model/signupValidationError.ts
@@ -150,6 +153,7 @@ model/sysConfigFieldsByProperty.ts
 model/sysConfigFieldsBySourceClass.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
+model/sysConfigValueObjectType.ts
 model/sysSystemRelevantClass.ts
 model/sysSystemType.ts
 model/tColFilter.ts
@@ -157,6 +161,7 @@ model/tColFilterNum.ts
 model/tColFilterTxt.ts
 model/tColFilters.ts
 model/tabCell.ts
+model/tabRow.ts
 model/tableCell.ts
 model/tablePageResponse.ts
 model/tableRow.ts
@@ -165,13 +170,11 @@ model/timeChartContQueryDef.ts
 model/timeChartContVisualSettings.ts
 model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
-model/timePrimitiveWithCalWithRelations.ts
-model/valueObjectType.ts
 model/warEntityPreview.ts
+model/warEntityPreviewPaginatedByPkReq.ts
+model/warEntityPreviewSearchExistingReq.ts
 model/warEntityPreviewTimeSpan.ts
-model/warEntityPreviewTimeSpanWithRelations.ts
 model/warEntityPreviewWithFulltext.ts
-model/warEntityPreviewWithFulltextWithRelations.ts
 model/warObject.ts
 model/warStatementDimensionVT.ts
 model/warStatementGeoJson.ts
@@ -182,4 +185,5 @@ model/warStatementObjectValue.ts
 model/warStatementStringVT.ts
 model/warStatementTimePrimitiveVT.ts
 model/warStatementTimePrimitiveVTPart.ts
+model/wareEntityPreviewPage.ts
 variables.ts

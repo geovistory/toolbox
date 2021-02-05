@@ -1,9 +1,10 @@
 import { EventEmitter } from '@angular/core';
-import { TimeSpan, EntityPreview } from 'app/core';
+import { TimeSpan } from 'app/core';
 
 import { XAxisDefinition, IXAxisDefinition, XAxisOptions } from './x-axis-definition';
 import { DatePipe } from '@angular/common';
 import { Zoomer } from './zoomer';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 
 
@@ -52,7 +53,7 @@ export interface TimeLineData {
 export interface TimeLineRow {
   label: string;
   existenceTime: TimeSpan;
-  entityPreview: EntityPreview;
+  entityPreview: WarEntityPreview;
   accentuation: Accentuation;
   storeConnector?: {
     path: string[];

@@ -1,13 +1,11 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { ProjectConfigurationService, ProEntityLabelConfig, LabelPartField, LabelPart } from 'app/core/sdk-lb4';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { first, map, take, takeUntil } from 'rxjs/operators';
-import { FieldComponent } from 'app/modules/base/components/field/field.component';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from 'app/core/sdk-lb4';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 export interface EntityLabelConfigDialogData {
   fkProject: number,
   fkClass: number
@@ -43,7 +41,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<EntityLabelConfigDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EntityLabelConfigDialogData,
     private projectConfigApi: ProjectConfigurationService,
-    private c: ConfigurationPipesService,
+    c: ConfigurationPipesService,
     public dialog: MatDialog
 
   ) {
@@ -54,10 +52,9 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
       'labelParts': this.labelParts
     })
 
-    this.fields$ = c.pipeFieldDefinitions(data.fkClass).pipe(
+    this.fields$ = c.pipeBasicAndSpecificFields(data.fkClass).pipe(
       map(items => {
         return items
-          .filter((item) => item.fkClassField === undefined)
           .map(item => {
             const option: SelectFieldOption = {
               label: item.label,
@@ -65,7 +62,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
                 fkProperty: item.property.pkProperty,
                 isOutgoing: item.isOutgoing
               }),
-              removedFromAllProfiles: item.removedFromAllProfiles
+              removedFromAllProfiles: item.allSubfieldsRemovedFromAllProfiles
             }
             return option
           })

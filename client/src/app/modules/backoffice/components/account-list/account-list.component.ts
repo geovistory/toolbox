@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent } from 'app/core';
+import { SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
 import { AccountList, BoAccount, BoAccounts } from './api/account-list.models';
 import { AccountListAPIEpics } from './api/account-list.epics';
@@ -11,6 +11,7 @@ import { Config } from 'protractor';
 import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { first, takeUntil } from 'rxjs/operators';
+import { IAppState } from 'app/core/redux-store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

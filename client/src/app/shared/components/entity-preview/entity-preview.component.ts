@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService, EntityPreview } from 'app/core';
+import { ActiveProjectService } from 'app/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 @Component({
   selector: 'gv-entity-preview',
@@ -12,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 export class EntityPreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  @Input() preview: EntityPreview
+  @Input() preview: WarEntityPreview
   @Input() pkEntity: number
   @Input() dragEnabled = true;
   @Input() openTabOnClick = false;
@@ -35,11 +36,11 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   }
 
   openInNewTab() {
-    this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class, this.preview.entity_type)
+    this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class)
   }
   addAndOpenInNewTab() {
     this.p.addEntityToProject(this.preview.pk_entity, () => {
-      this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class, this.preview.entity_type)
+      this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class)
     })
   }
 

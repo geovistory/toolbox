@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { WarEntityPreviewApi } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -21,25 +19,26 @@ export class WarehouseComponent implements OnInit, OnDestroy {
 
   constructor(
     protected rootEpics: RootEpics,
-    private warEntityPreviewApi: WarEntityPreviewApi) { }
+    // private warEntityPreviewApi: WarEntityPreviewApi
+  ) { }
 
 
   ngOnInit() {
   }
-  createAllEntityPreviews() {
-    this.createEntityPreviewsLoading = true;
-    this.warEntityPreviewApi.createAll().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      (res) => {
-        this.createEntityPreviewsLoading = false;
-        this.createEntityPreviewsInfo = res;
-      },
-      (err) => {
-        this.createEntityPreviewsLoading = false;
-        this.createEntityPreviewsInfo = err;
-      })
-  }
+  // createAllEntityPreviews() {
+  //   this.createEntityPreviewsLoading = true;
+  //   this.warEntityPreviewApi.createAll().pipe(
+  //     takeUntil(this.destroy$)
+  //   ).subscribe(
+  //     (res) => {
+  //       this.createEntityPreviewsLoading = false;
+  //       this.createEntityPreviewsInfo = res;
+  //     },
+  //     (err) => {
+  //       this.createEntityPreviewsLoading = false;
+  //       this.createEntityPreviewsInfo = err;
+  //     })
+  // }
 
   ngOnDestroy() {
     this.destroy$.next(true);

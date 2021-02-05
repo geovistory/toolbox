@@ -61,14 +61,11 @@ import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel'
 import { ProTextPropertyApi } from './services/custom/ProTextProperty';
 import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
 import { DfhProfileApi } from './services/custom/DfhProfile';
-import { DfhClassApi } from './services/custom/DfhClass';
-import { DfhPropertyApi } from './services/custom/DfhProperty';
 import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DatChunkApi } from './services/custom/DatChunk';
 import { DatColumnApi } from './services/custom/DatColumn';
 import { DatTextPropertyApi } from './services/custom/DatTextProperty';
 import { DatDigitalApi } from './services/custom/DatDigital';
-import { WarEntityPreviewApi } from './services/custom/WarEntityPreview';
 import { SysAppContextApi } from './services/custom/SysAppContext';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
@@ -128,14 +125,11 @@ export class SDKBrowserModule {
         ProTextPropertyApi,
         ProInfoProjRelApi,
         DfhProfileApi,
-        DfhClassApi,
-        DfhPropertyApi,
         DfhLabelApi,
         DatChunkApi,
         DatColumnApi,
         DatTextPropertyApi,
         DatDigitalApi,
-        WarEntityPreviewApi,
         SysAppContextApi,
         ProClassFieldConfigApi,
         ProDfhClassProjRelApi,

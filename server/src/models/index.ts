@@ -49,3 +49,7 @@ export * from './inf-dimension.model';
 
 // analysis models
 export * from './analysis'
+
+
+// sys-config models
+export * from './sys-config'

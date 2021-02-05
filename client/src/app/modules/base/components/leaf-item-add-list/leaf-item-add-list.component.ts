@@ -7,12 +7,13 @@ import { PaginationObject } from 'app/core/redux-store/model';
 import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ActiveProjectService, EntityPreview, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTextProperty, PaginationObjectApi } from '../../../../core';
+import { ActiveProjectService, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTextProperty, PaginationObjectApi } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { isLeafItemSubfield } from '../../base.module';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, Subfield, PlaceItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, PlaceItem, Subfield, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { leafItemListTypes } from '../../base.module';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 type Row<M> = Item & {
   store?: {
@@ -71,7 +72,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // stop initialization if this is not a leaf item list
-    if (!leafItemListTypes.includes(this.listDefinition.listType)) return;
+    if (!isLeafItemSubfield(this.listDefinition.listType)) return;
 
     const relateBy = this.listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
     const filterObject: Partial<InfStatement> = {
@@ -129,13 +130,13 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   private getItems(res: PaginationObject): ItemList {
     const relateBy = this.listDefinition.isOutgoing ? 'fk_object_info' : 'fk_subject_info';
-    if (this.listDefinition.listType === 'entity-preview') {
+    if (this.listDefinition.listType.entityPreview) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)
       return res.schemas.inf.statement.map(statement => {
-        const preview: EntityPreview = leafItems[statement[relateBy]] as EntityPreview;
+        const preview: WarEntityPreview = leafItems[statement[relateBy]];
         const item: EntityPreviewItem = {
           statement,
-          preview: !preview ? { pk_entity: statement[relateBy] } as EntityPreview : preview,
+          preview: (!preview ? { pk_entity: statement[relateBy] } : preview) as WarEntityPreview,
           fkClass: !preview ? undefined : preview.fk_class,
           label: !preview ? undefined : preview.entity_label,
           ordNum: undefined,
@@ -144,7 +145,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         return item;
       })
     }
-    else if (this.listDefinition.listType === 'appellation') {
+    else if (this.listDefinition.listType.appellation) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.appellation)
       return res.schemas.inf.statement.map(statement => {
         const appellation = leafItems[statement[relateBy]];
@@ -165,7 +166,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         return row;
       })
     }
-    else if (this.listDefinition.listType === 'place') {
+    else if (this.listDefinition.listType.place) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.place)
       return res.schemas.inf.statement.map(statement => {
         const place = leafItems[statement[relateBy]];
@@ -186,7 +187,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         return row;
       })
     }
-    else if (this.listDefinition.listType === 'langString') {
+    else if (this.listDefinition.listType.langString) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.lang_string)
       const languages = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
 
@@ -197,6 +198,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
           fkClass: langString.fk_class,
           label: langString.string,
           language: languages[langString.fk_language],
+          fkLanguage: langString.fk_language,
           ordNum: undefined,
           projRel: undefined
         }
@@ -210,7 +212,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         return row;
       })
     }
-    else if (this.listDefinition.listType === 'dimension') {
+    else if (this.listDefinition.listType.dimension) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.dimension)
       const entityPreviews = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)
 
@@ -233,7 +235,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         return row;
       })
     }
-    else if (this.listDefinition.listType === 'language') {
+    else if (this.listDefinition.listType.language) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
       return res.schemas.inf.statement.map(statement => {
         const language = leafItems[statement[relateBy]];

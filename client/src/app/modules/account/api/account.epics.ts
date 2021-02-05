@@ -1,14 +1,13 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, LoadingBarActions, PubAccountApi } from 'app/core';
+import { LoadingBarActions, PubAccountApi } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { AccountAction, AccountActions } from './account.actions';
 import { AccountRole } from '../account.model';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { AccountAction, AccountActions } from './account.actions';
 
 
 
@@ -18,7 +17,6 @@ export class AccountEpics {
   constructor(
     private actions: AccountActions,
     private loadingBarActions: LoadingBarActions,
-    private ngRedux: NgRedux<IAppState>,
     private accountApi: PubAccountApi,
     private notificationActions: NotificationsAPIActions,
   ) { }

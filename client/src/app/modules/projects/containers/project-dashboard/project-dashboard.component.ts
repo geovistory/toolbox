@@ -1,12 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, OnDestroy, OnInit, HostBinding } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegmentGroup, UrlSegment } from '@angular/router';
-import { ActiveProjectService, IAppState, ProjectCrm, ProjectDetail, WarEntityPreviewApi } from 'app/core';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { ActiveProjectService, ProjectCrm, ProjectDetail } from 'app/core';
+import { IAppState } from 'app/core/redux-store/model';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { omit } from 'ramda';
 
 
 @Component({
@@ -41,11 +40,9 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   showDashboard$: Observable<boolean>;
 
   constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
+    activatedRoute: ActivatedRoute,
     public p: ActiveProjectService,
     private ngRedux: NgRedux<IAppState>,
-    private entityPreviewApi: WarEntityPreviewApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     this.id = activatedRoute.snapshot.params['pkActiveProject'];
@@ -74,28 +71,28 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.entityPreviewApi.search(this.id, '', pkClassesInProject, null, 1, 1)
-          .subscribe(
-            (response) => {
-              this.entitiesCount = parseInt(response.totalCount, 10);
-              this.completeLoading();
-            },
-            error => {
-              this.resetLoading()
-            }
-          );
+        // this.entityPreviewApi.search(this.id, '', pkClassesInProject, null, 1, 1)
+        //   .subscribe(
+        //     (response) => {
+        //       this.entitiesCount = parseInt(response.totalCount, 10);
+        //       this.completeLoading();
+        //     },
+        //     error => {
+        //       this.resetLoading()
+        //     }
+        //   );
 
 
-        this.entityPreviewApi.search(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, null, 1, 1)
-          .subscribe(
-            (response) => {
-              this.sourcesCount = parseInt(response.totalCount, 10);
-              this.completeLoading();
-            },
-            error => {
-              this.resetLoading()
-            }
-          );
+        // this.entityPreviewApi.search(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, null, 1, 1)
+        //   .subscribe(
+        //     (response) => {
+        //       this.sourcesCount = parseInt(response.totalCount, 10);
+        //       this.completeLoading();
+        //     },
+        //     error => {
+        //       this.resetLoading()
+        //     }
+        //   );
       })
 
 

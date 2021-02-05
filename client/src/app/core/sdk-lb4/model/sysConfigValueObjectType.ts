@@ -9,21 +9,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DimensionListType } from './dimensionListType';
+import { DimensionValueObjectType } from './dimensionValueObjectType';
 
 
 /**
  * If present, defines a specific list type for the class.
  */
-export interface ValueObjectType { 
-    appellation?: ValueObjectType.AppellationEnum;
-    language?: ValueObjectType.LanguageEnum;
-    place?: ValueObjectType.PlaceEnum;
-    timePrimitive?: ValueObjectType.TimePrimitiveEnum;
-    langString?: ValueObjectType.LangStringEnum;
-    dimension?: DimensionListType;
+export interface SysConfigValueObjectType { 
+    appellation?: SysConfigValueObjectType.AppellationEnum;
+    language?: SysConfigValueObjectType.LanguageEnum;
+    place?: SysConfigValueObjectType.PlaceEnum;
+    timePrimitive?: SysConfigValueObjectType.TimePrimitiveEnum;
+    langString?: SysConfigValueObjectType.LangStringEnum;
+    dimension?: DimensionValueObjectType;
 }
-export namespace ValueObjectType {
+export namespace SysConfigValueObjectType {
     export type AppellationEnum = 'true';
     export const AppellationEnum = {
         True: 'true' as AppellationEnum

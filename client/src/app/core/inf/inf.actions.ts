@@ -4,12 +4,12 @@ import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/redux-store/actions';
 import { InfPersistentItem, InfStatement, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString, InfDimension } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, U } from 'app/core';
+import { U } from 'app/core';
 import { InfPersistentItemSlice, InfDimensionSlice } from './inf.models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { infRoot } from './inf.config';
 import { InfActionFactory } from './inf-action-factory';
-import { SchemaObject } from '../redux-store/model';
+import { SchemaObject, IAppState } from '../redux-store/model';
 
 type Payload = InfPersistentItemSlice;
 

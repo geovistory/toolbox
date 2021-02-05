@@ -48,6 +48,7 @@ import { Configuration, ConfigurationParameters } from './core/sdk-lb4/configura
 import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
 import { SocketsModule } from './core/sockets/sockets.module';
 import { TabModule } from './core/tab/tab.module';
+import { ReduxQueriesModule } from './core/redux-queries/redux-queries.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -69,6 +70,7 @@ registerLocaleData(localeDeCh);
   imports: [
     BasicModule,
     ReduxStoreModule,
+    ReduxQueriesModule,
     NotificationsModule,
     LoadingBarModule,
     SysModule,

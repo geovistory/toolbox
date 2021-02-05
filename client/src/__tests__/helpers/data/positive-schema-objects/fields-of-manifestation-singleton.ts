@@ -4,10 +4,10 @@ import { transformDfhApiClassToDfhClass, transformDfhApiPropertyToDfhProperty, t
 import { ProDfhProfileProjRel } from 'app/core';
 import { ProDfhProfileProjRelMock } from '../auto-gen/ProDfhProfileProjRelMock';
 import { DfhApiPropertyMock } from '../auto-gen/DfhApiPropertyMock';
+import { InfLanguageMock } from '../auto-gen/InfLanguageMock';
 
 
 export const fieldsOfManifestationSingleton: GvSchemaObject = {
-
   dfh: {
     klass: [
       transformDfhApiClassToDfhClass(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON),
@@ -19,7 +19,7 @@ export const fieldsOfManifestationSingleton: GvSchemaObject = {
       transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
       transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
       transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON),
-      transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE),
+      transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE),
     ],
     label: [
       transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON),
@@ -29,7 +29,7 @@ export const fieldsOfManifestationSingleton: GvSchemaObject = {
       transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
       transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
       transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON),
-      transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE),
+      transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE),
     ]
   },
   pro: {

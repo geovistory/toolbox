@@ -1,6 +1,7 @@
 import {ModelDefinition} from '@loopback/repository';
 import {SqlBuilderBase} from './sql-builder-base';
 import {Postgres1DataSource} from '../../datasources';
+import {indexBy} from 'ramda';
 
 /**
  * Abstract Class providing basic logic for building SQL
@@ -20,16 +21,17 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
    *
    * @param model the ModelDefinition of the loopback 4 model
    */
-  getColumns(model: ModelDefinition): string[] {
+  getColumns(model: ModelDefinition, except?: string[]): string[] {
 
 
     const propDefs = model.properties;
-    const hidden = model?.settings?.hiddenProperties ?? {};
+    let excluded = model?.settings?.hiddenProperties ?? {};
+    if (except) excluded = {...excluded, ...indexBy((y) => y, except)}
     const columns = [];
     for (const propName in propDefs) {
       if (
         Object.prototype.hasOwnProperty.call(propDefs, propName)
-        && !Object.prototype.hasOwnProperty.call(hidden, propName)
+        && !Object.prototype.hasOwnProperty.call(excluded, propName)
       ) {
         columns.push(propName)
       }
@@ -46,7 +48,7 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
    * @param alias the table alias
    * @param model the ModelDefinition of the loopback 4 model
    */
-  createSelect(alias: string, model: ModelDefinition) {
+  createSelect(alias: string, model: ModelDefinition, except?: string[]) {
     const columns = this.getColumns(model);
     return columns.map(c => alias + '.' + c).join(`,
     `);
@@ -60,8 +62,8 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
    * @param alias the table alias
    * @param model the ModelDefinition of the loopback 4 model
    */
-  createBuildObject(alias: string, model: ModelDefinition) {
-    const columns = this.getColumns(model);
+  createBuildObject(alias: string, model: ModelDefinition, except?: string[]) {
+    const columns = this.getColumns(model, except);
     return ` jsonb_strip_nulls(jsonb_build_object(
       ${columns.map(c => `'${c}',${alias}.${c}`).join(`,
       `)}

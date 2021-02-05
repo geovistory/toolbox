@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ValueObjectType } from './valueObjectType';
+import { SysConfigValueObjectType } from './sysConfigValueObjectType';
 
 
 /**
  * System wide configuration for the class.
  */
 export interface ClassConfig { 
-    valueObjectType?: ValueObjectType;
+    valueObjectType?: SysConfigValueObjectType;
 }
 

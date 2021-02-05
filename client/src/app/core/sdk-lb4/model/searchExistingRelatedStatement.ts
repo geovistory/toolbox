@@ -9,12 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { SearchExistingRelatedStatementFilter } from './searchExistingRelatedStatementFilter';
 
 
-/**
- * This list type allows to create / view / edit a numeric value with a measurement unit.
- */
-export interface DimensionListType { 
-    measurementUnitClass: number;
+export interface SearchExistingRelatedStatement { 
+    relateBy: string;
+    filter?: SearchExistingRelatedStatementFilter;
 }
 

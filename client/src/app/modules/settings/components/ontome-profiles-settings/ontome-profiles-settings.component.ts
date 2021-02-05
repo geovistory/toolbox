@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, DfhProfile } from 'app/core';
+import { ActiveProjectService } from 'app/core';
 import { GvAnalysisService } from 'app/modules/analysis/services/analysis.service';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 import { OntomeProfilesListDialogComponent } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
 import { OntomeProfileDeactivationReportDialogComponent, OntomeProfileDeactivationReportDialogData } from '../ontome-profile-deactivation-report-dialog/ontome-profile-deactivation-report-dialog.component';
 import { OntomeProfileUpdateDialogData, OntomeProfileUpdateDialogComponent } from '../ontome-profile-update-dialog/ontome-profile-update-dialog.component';
+import { DfhProfile } from 'app/core/sdk-lb4';
 export interface ProfileItem {
   label: string;
   ownerId: number;

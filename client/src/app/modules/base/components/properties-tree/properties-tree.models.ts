@@ -1,16 +1,15 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ActiveProjectService, EntityPreview, InfLanguage, InfStatement, InfTemporalEntity, InfTextProperty, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { ActiveProjectService, InfLanguage, InfStatement, InfTemporalEntity, InfTextProperty, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { ProClassFieldConfig, SysConfigValueObjectType, WarEntityPreview } from 'app/core/sdk-lb4';
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
-import { ProClassFieldConfig, ValueObjectType } from 'app/core/sdk-lb4';
 
 export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'timePrimitive' | 'langString' | 'text-property' | 'dimension' | 'entity-preview' | 'has-type';
-export interface SubfieldType extends ValueObjectType {
+export interface SubfieldType extends SysConfigValueObjectType {
   temporalEntity?: 'true'
   entityPreview?: 'true'
   typeItem?: 'true'
-
-  timeSpan?: 'true' // TODO remove
+  timeSpan?: 'true'
 
 
   textProperty?: 'true' // TODO remove
@@ -21,7 +20,7 @@ export interface FieldProperty {
   pkPropertyOfProperty?: number;
 }
 
-interface FieldBase {
+export interface FieldBase {
   // the label of the field (taken from the corresponding property label)
   label: string;
 
@@ -78,6 +77,8 @@ export interface FieldPlaceOfDisplay {
   hidden?: true;
 };
 
+export type SpecialFieldType = 'time-span' | 'has-type' | false;
+
 /**
  * A Field contains all information to create the different GUI's to display and edit
  * statements of an entity.
@@ -110,6 +111,10 @@ export interface Field extends FieldBase {
 
   // true if all subfields are removed from all profiles activated by the project
   allSubfieldsRemovedFromAllProfiles: boolean
+
+  // special fields are not using the default subfield approach to show/edit data
+  isSpecialField: SpecialFieldType;
+
 }
 /**
  * A Subfiel contains contains information to create the different GUI's to display and edit
@@ -177,6 +182,7 @@ export interface DimensionItem extends BasicStatementItem {
 export interface LangStringItem extends BasicStatementItem {
   fkClass: number;
   label: string
+  fkLanguage: number;
   language: InfLanguage
 }
 
@@ -202,7 +208,7 @@ export interface TemporalEntityCell {
   pkProperty: number
   isOutgoing: boolean
   label: string
-  entityPreview: EntityPreview
+  entityPreview: WarEntityPreview
   items?: StatementItem[]
   firstItem?: StatementItem
   itemsCount: number
@@ -210,7 +216,7 @@ export interface TemporalEntityCell {
 }
 
 export interface EntityPreviewItem extends BasicStatementItem {
-  preview: EntityPreview
+  preview: WarEntityPreview
   fkClass: number
 }
 

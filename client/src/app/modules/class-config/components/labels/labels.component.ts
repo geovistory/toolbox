@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ActiveProjectService, SysConfig } from 'app/core';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { map, switchMap } from 'rxjs/operators';
+import { ActiveProjectPipesService } from 'app/core/redux-queries/services/active-project-pipes.service';
 
 @Component({
   selector: 'gv-labels',
@@ -34,20 +35,20 @@ export class LabelsComponent implements OnInit {
   labelSysType = SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL;
 
   constructor(
-    private p: ActiveProjectService,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    private a: ActiveProjectPipesService,
   ) {
   }
 
   ngOnInit() {
-    this.languageIsEnglish$ = this.p.pipeActiveDefaultLanguage().pipe(
+    this.languageIsEnglish$ = this.a.pipeActiveDefaultLanguage().pipe(
       map(lang => lang.pk_entity === 18889)
     )
-    this.languageLabel$ = this.p.pipeActiveDefaultLanguage().pipe(
+    this.languageLabel$ = this.a.pipeActiveDefaultLanguage().pipe(
       map(lang => lang.notes)
     )
-    const textProperties$ = this.p.pipeActiveDefaultLanguage().pipe(
-      switchMap(language => this.c.pipeTextProperty({
+    const textProperties$ = this.a.pipeActiveDefaultLanguage().pipe(
+      switchMap(language => this.c.pipeLabels({
         pkClass: this.fkClass,
         fkProperty: this.fkProperty,
         fkPropertyDomain: this.fkPropertyDomain,

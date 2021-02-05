@@ -6,6 +6,7 @@ import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { first, takeUntil } from 'rxjs/operators';
+import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 export interface RamListRemoveDialogData {
 
   // the root statement of the dialog
@@ -34,36 +35,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: RamListRemoveDialogData,
   ) {
 
-    const listDef: Subfield = {
-      listType: 'langString',
-      label: 'at reference',
-      ontoInfoUrl: '[ontoInfoUrl]',
-      ontoInfoLabel: '[ontoInfoLabel]',
-      property: {
-        pkPropertyOfProperty: DfhConfig.P_O_P_GEOV_HAS_REFERENCE
-      },
-      isOutgoing: true,
-      identityDefiningForSource: false,
-      identityDefiningForTarget: false,
-      sourceClass: undefined,
-      sourceClassLabel: undefined,
-      sourceMinQuantity: undefined,
-      sourceMaxQuantity: undefined,
-      targetClass: 657,
-      targetClassLabel: 'Reference',
-      targetMinQuantity: undefined,
-      targetMaxQuantity: -1,
-      fkClassField: undefined,
-      removedFromAllProfiles: false
-    }
-    this.fieldDefinition = {
-      ...listDef,
-      targetClasses: [657],
-      listDefinitions: [
-        listDef
-      ],
-      fieldConfig: undefined
-    }
+    this.fieldDefinition = fieldAtReferencePoP
 
 
   }

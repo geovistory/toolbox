@@ -3,13 +3,14 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, EntityPreview, InfPersistentItem, InfTemporalEntity, SysConfig } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, SysConfig } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { FieldProperty } from '../properties-tree/properties-tree.models';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 export interface CtrlEntityModel {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side
@@ -130,7 +131,7 @@ export class CtrlEntityComponent implements OnDestroy,
 
   value$ = new BehaviorSubject<CtrlEntityModel>(null);
 
-  entityPreview$: Observable<EntityPreview>;
+  entityPreview$: Observable<WarEntityPreview>;
 
   constructor(@Optional() @Self() public ngControl: NgControl,
     private dialog: MatDialog,
@@ -163,12 +164,14 @@ export class CtrlEntityComponent implements OnDestroy,
             else {
               type = 'teEn'
             }
-            const e: EntityPreview = {
+            const e: WarEntityPreview = {
               entity_label: 'New item (click for details)',
+              fk_class: this.pkClass,
               class_label: label,
               entity_type: type,
               pk_entity: undefined,
-              fk_project: undefined
+              fk_project: undefined,
+              project: undefined,
             }
             return e
           })

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IAppState, LoopBackConfig } from 'app/core';
+import { LoopBackConfig } from 'app/core';
 import { DatEpics } from 'app/core/dat/dat.epics';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { environment } from 'environments/environment';
@@ -14,6 +14,7 @@ import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
 import { ProEpics } from '../pro/pro.epics';
 import { SysEpics } from '../sys/sys.epics';
 import { ActionResolverService } from './action-resolver.service';
+import { IAppState } from './model';
 
 @Injectable()
 export class RootEpics {
@@ -49,7 +50,7 @@ export class RootEpics {
       this.proEpics.createEpics(),
       // important: this needs to be the last epic in
       this.actionResolver.createEpics()
-      ));
+    ));
 
     this.rootEpic = (
       action$: ActionsObservable<Action>,

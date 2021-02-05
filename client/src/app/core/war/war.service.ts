@@ -7,7 +7,7 @@ import { filter } from '../../../../node_modules/rxjs/operators';
 import { WarActions } from './war.actions';
 import { warDefinitions, warRoot } from './war.config';
 import { toString } from 'ramda';
-import { WarEntityPreview } from '../sdk';
+import { WarEntityPreview } from '../sdk-lb4';
 
 
 class Selector {

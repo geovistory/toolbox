@@ -1,16 +1,18 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, EntityPreview, IAppState, ProjectCrm, SubstoreComponent, SysConfig, U, InfPersistentItem } from 'app/core';
+import { ActiveProjectService, ProjectCrm, SubstoreComponent, SysConfig, U } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
 import { SysSelector } from 'app/core/sys/sys.service';
+import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, map, tap, takeUntil } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
-import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
+import { IAppState } from 'app/core/redux-store/model';
 
 
 @WithSubStore({
@@ -38,7 +40,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
   @select() loading$: Observable<boolean>;
 
-  selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
+  selectedEntity$ = new BehaviorSubject<WarEntityPreview>(undefined);
 
   pkUiContextCreate = SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
   crm$: Observable<ProjectCrm>;
@@ -69,8 +71,8 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   }
 
 
-  openEntity(preview: EntityPreview) {
-    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
+  openEntity(preview: WarEntityPreview) {
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class)
   }
 
 
@@ -85,7 +87,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
       classAndTypePk,
       pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
     }).subscribe(result => {
-      this.p.addEntityTab(result.pkEntity, result.pkClass, 'peIt')
+      this.p.addEntityTab(result.pkEntity, result.pkClass)
     })
 
 

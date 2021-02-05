@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, WarEntityPreviewApi } from 'app/core';
+import { LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ofSubstore } from 'app/core/redux-store/redux-store.module';
 import { Action } from 'redux';
@@ -9,11 +9,12 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ListComponent } from '../components/list/list.component';
 import { ListAPIAction, ListAPIActions } from './list.actions';
 import { SearchResponse } from './list.models';
+import { WarEntityPreviewControllerService } from 'app/core/sdk-lb4';
 
 @Injectable()
 export class ListAPIEpics {
   constructor(
-    private entityPreviewApi: WarEntityPreviewApi,
+    private entityPreviewApi: WarEntityPreviewControllerService,
     private actions: ListAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationsActions: NotificationsAPIActions
@@ -43,7 +44,14 @@ export class ListAPIEpics {
           /**
            * Do some api call
            */
-          this.entityPreviewApi.search(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.entityType, action.meta.limit, action.meta.page)
+          this.entityPreviewApi.warEntityPreviewControllerSearch({
+            projectId: action.meta.pkProject,
+            searchString: action.meta.searchString,
+            pkClasses: action.meta.pkClasses,
+            entityType: action.meta.entityType,
+            limit: action.meta.limit,
+            page: action.meta.page
+          })
             /**
              * Subscribe to the api call
              */

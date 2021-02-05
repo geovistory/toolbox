@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState } from 'app/core';
+import { ActiveProjectService } from 'app/core';
 import { paginatedBy, paginateKey, paginateName } from 'app/core/redux-store/reducer-factory';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';
@@ -10,6 +10,7 @@ import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { PaginatedStatementList } from 'app/core/inf/inf.actions';
+import { IAppState } from 'app/core/redux-store/model';
 
 
 class StatementPageLoader {

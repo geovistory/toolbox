@@ -8,27 +8,27 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
-import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of as observableOf, ReplaySubject, Subject, timer } from 'rxjs';
+import { equals, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
-import { SysConfig } from '../../../../../server/src/lb3/common/config/sys-config';
 import { environment } from '../../../environments/environment';
 import { DatSelector } from '../dat/dat.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { InfActions } from '../inf/inf.actions';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, InfLanguage, InfPersistentItem, InfTemporalEntity, ProProject, WarEntityPreview } from '../sdk';
+import { IAppState, SchemaObject } from '../redux-store/model';
+import { SchemaObjectService } from '../redux-store/schema-object.service';
+import { DatNamespace, InfLanguage } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityDetail, EntityPreview, EntityType } from '../state/models';
-import { IAppState, SchemaObject } from '../redux-store/model';
-import { SchemaObjectService } from '../redux-store/schema-object.service';
+import { EntityDetail } from '../state/models';
 import { SysSelector } from '../sys/sys.service';
+import { TabSelector } from '../tab/tab.service';
 import { WarActions } from '../war/war.actions';
 import { ActiveProjectActions } from './active-project.action';
-import { ListType, Panel, ProjectDetail, RamSource, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
-import { TabSelector } from '../tab/tab.service';
+import { ListType, Panel, ProjectDetail, RamSource, Tab, TypesByPk } from './active-project.models';
+import { WarEntityPreview, ProProject } from '../sdk-lb4';
 
 
 
@@ -167,18 +167,6 @@ export class ActiveProjectService {
 
   }
 
-  @cache({ refCount: false }) pipeActiveProject(): Observable<ProProject> {
-    return this.pkProject$.pipe(
-      switchMap(pkProject => this.pro$.project$.by_pk_entity$.key(pkProject.toString()))
-    ).pipe(filter(l => !!l))
-  }
-  @cache({ refCount: false }) pipeActiveDefaultLanguage(): Observable<InfLanguage> {
-    return this.pipeActiveProject().pipe(
-      filter(p => !!p),
-      switchMap(project => this.inf$.language$.by_pk_entity$.key(project.fk_language.toString()))
-    ).pipe(filter(l => !!l))
-  }
-
 
   /************************************************************************************
   * ActiveProject init and destroy
@@ -229,7 +217,7 @@ export class ActiveProjectService {
    * @param pkEntity
    * @param forceReload
    */
-  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<EntityPreview> {
+  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
     const state = this.ngRedux.getState();
 
     if (
@@ -250,9 +238,9 @@ export class ActiveProjectService {
       })
     }
 
-    return this.ngRedux.select<EntityPreview>(['war', 'entity_preview', 'by_pk_entity', pkEntity])
+    return this.ngRedux.select<WarEntityPreview>(['war', 'entity_preview', 'by_pk_entity', pkEntity])
       .pipe(
-        distinctUntilChanged<EntityPreview>(equals),
+        distinctUntilChanged<WarEntityPreview>(equals),
         filter(prev => (!!prev))
       )
   }
@@ -470,7 +458,7 @@ export class ActiveProjectService {
       this.addEntityTab(x.pk_entity, x.fk_class)
     })
   }
-  addEntityTab(pkEntity: number, pkClass: number, entityType?: EntityType) {
+  addEntityTab(pkEntity: number, pkClass: number) {
 
     if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
       this.addSourceExpressionPortionTab(pkEntity)

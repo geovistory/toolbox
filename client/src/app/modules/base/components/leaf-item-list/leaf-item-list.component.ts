@@ -57,7 +57,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
   ngOnInit() {
 
 
-    if (this.listDefinition.listType === 'entity-preview') {
+    if (this.listDefinition.listType.entityPreview) {
 
       const pagination$ = combineLatest(
         this.limit$.pipe(),
@@ -130,7 +130,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
   }
 
   openInNewTab(item: EntityPreviewItem) {
-    this.p.addEntityTab(item.preview.pk_entity, item.preview.fk_class, item.preview.entity_type)
+    this.p.addEntityTab(item.preview.pk_entity, item.preview.fk_class)
   }
 
   openPopup(item: BasicStatementItem) {

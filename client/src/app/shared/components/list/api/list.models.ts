@@ -1,13 +1,6 @@
-import { EntityPreview, InfStatement } from 'app/core';
+import { EntitySearchHit } from 'app/core/sdk-lb4';
 
-export interface EntitySearchHit extends EntityPreview {
-  full_text_headline?: string;
-  class_label_headline?: string;
-  entity_label_headline?: string;
-  type_label_headline?: string;
-  projects?: number[]
-  related_statements?: InfStatement[]
-}
+
 
 export interface SearchResponse { data: EntitySearchHit[], totalCount: number };
 

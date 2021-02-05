@@ -1,9 +1,7 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { groupBy, indexBy, omit, zipObj } from 'ramda';
-import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
-import { EntityPreview } from '../state/models';
+import { omit } from 'ramda';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, TypePeIt } from './active-project.models';
+import { ProjectDetail } from './active-project.models';
 
 const INITIAL_STATE: ProjectDetail = {
   label: '',

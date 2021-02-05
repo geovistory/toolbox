@@ -4,9 +4,9 @@ import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/co
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../../../core/redux-queries/services/configuration-pipes.service';
-import { Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
+import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.module';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
-import { leafItemListTypes, valueObjectListTypes } from '../../base.module';
+import { Subfield } from '../properties-tree/properties-tree.models';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
@@ -47,7 +47,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     public teEnApi: InfTemporalEntityApi
   ) {
 
-    this.isLeafItemList = leafItemListTypes.includes(data.listDefinition.listType);
+    this.isLeafItemList = isLeafItemSubfield(data.listDefinition.listType);
 
 
     this.classAndTypePk = { pkClass: data.listDefinition.targetClass, pkType: undefined }
@@ -64,7 +64,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close()
   }
   onNext() {
-    const isValueLike = valueObjectListTypes.includes(this.data.listDefinition.listType)
+    const isValueLike = isValueObjectSubfield(this.data.listDefinition.listType)
 
     if (isValueLike || this.data.listDefinition.identityDefiningForTarget) {
       this.activeElement$.next('create-form')

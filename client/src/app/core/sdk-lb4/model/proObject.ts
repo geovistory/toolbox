@@ -11,6 +11,7 @@
  */
 import { ProInfoProjRel } from './proInfoProjRel';
 import { ProDfhProfileProjRel } from './proDfhProfileProjRel';
+import { ProProject } from './proProject';
 import { ProClassFieldConfig } from './proClassFieldConfig';
 import { ProDfhClassProjRel } from './proDfhClassProjRel';
 import { ProAnalysis } from './proAnalysis';
@@ -24,5 +25,6 @@ export interface ProObject {
     dfh_class_proj_rel?: Array<ProDfhClassProjRel>;
     text_property?: Array<ProTextProperty>;
     dfh_profile_proj_rel?: Array<ProDfhProfileProjRel>;
+    project?: Array<ProProject>;
 }
 

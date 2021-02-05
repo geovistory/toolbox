@@ -1,17 +1,17 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { ActiveProjectService, IconType, InfStatement, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan } from 'app/core';
+import { Granularity } from 'app/core/date-time/date-time-commons';
+import { CalendarType } from 'app/core/date-time/time-primitive';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { switchMapOr } from 'app/core/util/switchMapOr';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { spyTag } from 'app/shared';
 import { omit, values } from 'ramda';
-import { NgRedux } from '../../../../../node_modules/@angular-redux/store';
-import { combineLatest, merge, Observable, of, pipe } from '../../../../../node_modules/rxjs';
-import { auditTime, filter, map, switchMap } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, IAppState, InfStatement, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan, EntityType, IconType } from '../../../core';
-import { Granularity } from '../../../core/date-time/date-time-commons';
-import { CalendarType } from '../../../core/date-time/time-primitive';
-import { InfSelector } from '../../../core/inf/inf.service';
-import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
-import { switchMapOr } from '../../../core/util/switchMapOr';
+import { combineLatest, merge, Observable, of, pipe } from 'rxjs';
+import { auditTime, filter, map, switchMap } from 'rxjs/operators';
 import { BasicStatementItem, Subfield } from '../components/properties-tree/properties-tree.models';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { IAppState } from 'app/core/redux-store/model';
 
 
 

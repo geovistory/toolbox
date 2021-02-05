@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, IAppState, InfStatement, ProInfoProjRel } from 'app/core';
+import { ActiveProjectService, InfStatement, ProInfoProjRel } from 'app/core';
 import { PaginateByParam } from 'app/core/redux-store/actions';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
@@ -15,7 +15,7 @@ import { PaginationService } from '../../services/pagination.service';
 import { AddListComponentInterface, Subfield, TemporalEntityItem } from '../properties-tree/properties-tree.models';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
-import { ByPk } from 'app/core/redux-store/model';
+import { ByPk, IAppState } from 'app/core/redux-store/model';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 
 @Component({
@@ -131,7 +131,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
     })
 
 
-    const columns$ = this.c.pipeFieldDefinitionsSpecificFirst(this.listDefinition.targetClass)
+    const columns$ = this.c.pipeSpecificAndBasicFields(this.listDefinition.targetClass)
 
     const alternative = true;
 

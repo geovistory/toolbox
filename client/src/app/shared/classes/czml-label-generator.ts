@@ -1,9 +1,8 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
-// import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
-import { CzmlLabel } from '../../../../../server/src/lb3/common/interfaces/czml-types';
+import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { TimeSpan } from 'app/core/state/models';
-import { EntityPreview, WarEntityPreview } from 'app/core';
+import { CzmlLabel } from '../../../../../server/src/lb3/common/interfaces/czml-types';
 import { TemporalDistribution } from './statistic-helpers';
 export interface GeoPresence {
   time_span: TimeSpan,
@@ -13,7 +12,7 @@ export interface GeoPresence {
   }
 }
 
-export interface GeoEntity extends EntityPreview {
+export interface GeoEntity extends WarEntityPreview {
   presences: GeoPresence[],
 }
 export interface QueryPoint {

@@ -1,14 +1,15 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, Inject, HostBinding } from '@angular/core';
-import { IAppState, InfPersistentItem, EntityDetail } from 'app/core';
-import { SubstoreComponent } from 'app/core/state/models/substore-component';
+import { Component, EventEmitter, HostBinding, Inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { EntityDetail, InfPersistentItem } from 'app/core';
 import { RootEpics } from 'app/core/redux-store/epics';
+import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Observable, Subject } from 'rxjs';
+import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../node_modules/@angular/material';
 import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';
 import { TypeEditForm } from './api/type-edit-form.models';
 import { typeEditFormReducer } from './api/type-edit-form.reducer';
-import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../node_modules/@angular/material';
+import { IAppState } from 'app/core/redux-store/model';
 
 export interface TypeEditFormData {
   basePath: string[];
