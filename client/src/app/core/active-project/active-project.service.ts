@@ -601,31 +601,6 @@ export class ActiveProjectService {
   ************************************************************************************/
 
   /**
-   * Returns an observable that emits the added entity
-   */
-  openModalCreateOrAddEntity(config: AddOrCreateEntityDialogData) {
-    const observable = new Subject<CreateOrAddEntityEvent>();
-
-    // this.ngRedux.dispatch(this.actions.openAddForm(config));
-
-    this.dialog.open<AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent>(
-      AddOrCreateEntityDialogComponent,
-      {
-        // height: '90%',
-        // width: '90%',
-        height: 'calc(100% - 30px)',
-        width: '980px',
-        maxWidth: '100%',
-        data: config
-      })
-      .afterClosed().pipe(first()).subscribe(result => {
-        // this.ngRedux.dispatch(this.actions.closeAddForm());
-        if (result) observable.next(result)
-      });
-
-    return observable;
-  }
-  /**
    * Opens dialog to get confirmation before removing
    * entity from project. If user confirms, the dialog
    * removes entity and closes

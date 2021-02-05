@@ -57,6 +57,7 @@ import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-
 import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
 import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
 import { SubfieldType } from './components/properties-tree/properties-tree.models';
+import { BaseModalsService } from './services/base-modals.service';
 
 const components = [
   PropertiesTreeComponent,
@@ -112,7 +113,8 @@ const baseModules = [
   TruncateModule,
   QuillOpsToStrModule,
   FormFactoryModule,
-  EntityPreviewsPaginatedModule
+  EntityPreviewsPaginatedModule,
+  BaseModalsService
 ]
 
 @NgModule({
@@ -145,31 +147,3 @@ const baseModules = [
   ]
 })
 export class BaseModule { }
-
-/**
- * returns true if the subfield type is representing a value object type
- * @param subfieldType
- */
-export function isValueObjectSubfield(subfieldType: SubfieldType): boolean {
-  if (subfieldType.appellation) return true
-  else if (subfieldType.language) return true
-  else if (subfieldType.place) return true
-  else if (subfieldType.timePrimitive) return true
-  else if (subfieldType.langString) return true
-  else if (subfieldType.dimension) return true
-
-  return false
-}
-
-
-/**
- * returns true if the subfield type is a 'leaf item' meaning a
- * value object type or entity preview.
- * It returns false if the subfield type is temporalEntity, typeItem or timeSpan
- * @param subfieldType
- */
-export function isLeafItemSubfield(subfieldType: SubfieldType): boolean {
-  if (isValueObjectSubfield(subfieldType)) return true
-  else if (subfieldType.entityPreview) return true
-  return false
-}

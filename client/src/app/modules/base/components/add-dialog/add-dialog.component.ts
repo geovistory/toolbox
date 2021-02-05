@@ -6,7 +6,7 @@ import { InfStatement } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.module';
+import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.helpers';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { Subfield } from '../properties-tree/properties-tree.models';
 

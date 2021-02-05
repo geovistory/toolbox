@@ -15,6 +15,7 @@ import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
 import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { IAppState } from 'app/core/redux-store/model';
+import { BaseModalsService } from 'app/modules/base/services/base-modals.service';
 
 
 @WithSubStore({
@@ -56,7 +57,8 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     public ngRedux: NgRedux<IAppState>,
     public router: Router,
     public p: ActiveProjectService,
-    public sys: SysSelector
+    public sys: SysSelector,
+    private m: BaseModalsService
   ) {
     super();
     this.pkClassesOfAddBtn$ = this.sys.system_relevant_class$.by_required_by_sources$.all$.pipe(
@@ -82,7 +84,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
     this.p.setListType('')
 
-    this.p.openModalCreateOrAddEntity({
+    this.m.openModalCreateOrAddEntity({
       alreadyInProjectBtnText: 'Open',
       notInProjectClickBehavior: 'addToProject',
       notInProjectBtnText: 'Add and Open',

@@ -22,6 +22,7 @@ import { PaginationService } from 'app/modules/base/services/pagination.service'
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { IAppState } from 'app/core/redux-store/model';
+import { BaseModalsService } from 'app/modules/base/services/base-modals.service';
 
 interface TypeItem {
   pkEntity: number
@@ -72,7 +73,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     public b: InformationBasicPipesService,
     public i: InformationPipesService,
     private pag: PaginationService,
-    public s: SchemaObjectService
+    public s: SchemaObjectService,
+    private m: BaseModalsService
   ) {
   }
 
@@ -231,7 +233,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   */
   onAddOrCreate() {
 
-    this.p.openModalCreateOrAddEntity({
+    this.m.openModalCreateOrAddEntity({
       alreadyInProjectBtnText: 'Edit',
       notInProjectClickBehavior: 'addToProject',
       notInProjectBtnText: 'Add',

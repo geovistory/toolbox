@@ -14,6 +14,7 @@ import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
 import { IAppState } from 'app/core/redux-store/model';
+import { BaseModalsService } from 'app/modules/base/services/base-modals.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -54,7 +55,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public p: ActiveProjectService,
-    public c: ConfigurationPipesService
+    public c: ConfigurationPipesService,
+    private m: BaseModalsService
   ) {
     super()
 
@@ -79,7 +81,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
         this.p.setListType('')
 
-        this.p.openModalCreateOrAddEntity({
+        this.m.openModalCreateOrAddEntity({
           alreadyInProjectBtnText: 'Open',
           notInProjectClickBehavior: 'addToProject',
           notInProjectBtnText: 'Add and Open',

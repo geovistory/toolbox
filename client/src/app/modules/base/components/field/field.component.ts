@@ -6,7 +6,7 @@ import { sum } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from "app/core/active-project";
-import { isValueObjectSubfield } from '../../base.module';
+import { isValueObjectSubfield } from '../../base.helpers';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';

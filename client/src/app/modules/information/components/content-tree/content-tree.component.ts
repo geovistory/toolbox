@@ -22,6 +22,7 @@ import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUnt
 import { DatSelector } from 'app/core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
+import { BaseModalsService } from 'app/modules/base/services/base-modals.service';
 
 /**
  * Food data with nested structure.
@@ -136,6 +137,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     private i: InformationPipesService,
     private dialog: MatDialog,
+    private m: BaseModalsService
   ) { }
 
   ngOnInit() {
@@ -572,7 +574,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   addExpressionPortion(pkParent: number, parentIsF2Expression = false) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      this.p.openModalCreateOrAddEntity({
+      this.m.openModalCreateOrAddEntity({
         notInProjectClickBehavior: 'addToProject',
         alreadyInProjectBtnText: 'Select',
         notInProjectBtnText: 'Add',

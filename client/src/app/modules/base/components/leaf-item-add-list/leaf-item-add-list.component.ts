@@ -17,7 +17,7 @@ import { InfDimension } from "app/core/sdk";
 import { InfAppellation } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';
-import { isLeafItemSubfield } from '../../base.module';
+import { isLeafItemSubfield } from '../../base.helpers';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, PlaceItem, Subfield, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
