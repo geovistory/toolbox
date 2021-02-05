@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActiveAccountService } from 'app/core';
+import { ActiveAccountService } from "app/core/active-account";
 import { PubAccount, DatChunkControllerService, DatChunk } from 'app/core/sdk-lb4';
 
 @Component({

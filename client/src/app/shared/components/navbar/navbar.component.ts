@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { ActiveAccountService } from 'app/core';
+import { ActiveAccountService } from "app/core/active-account";
 import { LoopBackConfig } from "app/core/sdk";
 import { PubAccount } from 'app/core/sdk-lb4';
 import { IAccount } from 'app/modules/account/account.model';

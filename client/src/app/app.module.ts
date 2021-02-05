@@ -23,7 +23,8 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ActiveAccountService, AuthGuard, EntityEditorService, ValidationDirectivesModule } from 'app/core';
+import { AuthGuard, ValidationDirectivesModule } from 'app/core';
+import { ActiveAccountService } from "app/core/active-account";
 import { SystemAdminGuard } from 'app/core/auth/system-admin-guard.service';
 import { BasicModule } from 'app/core/basic/basic.module';
 import { DatModule } from 'app/core/dat/dat.module';
@@ -115,7 +116,6 @@ registerLocaleData(localeDeCh);
     SocketsModule
   ],
   providers: [
-    EntityEditorService,
     ActiveAccountService,
     AuthGuard,
     GvAuthService,

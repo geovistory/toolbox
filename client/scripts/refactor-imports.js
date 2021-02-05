@@ -18,12 +18,9 @@ async function refactor(path) {
       "-s",
       "app/core",
       "-t",
-      "app/core/date-time",
+      "app/core/active-project",
       "-e",
-      "DateTimeCommons",
-      "GregorianDateTime",
-      "JulianDateTime",
-      "TimePrimitive",
+      "ActiveProjectService",
       // "-d",
     ]);
 
@@ -36,7 +33,7 @@ async function refactor(path) {
   });
 }
 async function refactorAll() {
-  const directories = getDirectories("../src/app");
+  const directories = getDirectories("../src");
   for (const path of directories) {
     await refactor(path);
   }
