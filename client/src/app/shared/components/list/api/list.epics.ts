@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions } from "app/core/loading-bar/api/loading-bar.actions";
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ofSubstore } from 'app/core/redux-store/redux-store.module';
 import { Action } from 'redux';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions } from "app/core/loading-bar/api/loading-bar.actions";
 import { ProInfoProjRelApi } from "app/core/sdk";
 import { ProInfoProjRel } from "app/core/sdk";
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';

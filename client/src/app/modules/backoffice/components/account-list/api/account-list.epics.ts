@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions } from "app/core/loading-bar/api/loading-bar.actions";
 import { PubAccountApi } from "app/core/sdk";
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';

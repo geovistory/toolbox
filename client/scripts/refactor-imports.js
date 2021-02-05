@@ -18,9 +18,10 @@ async function refactor(path) {
       "-s",
       "app/core",
       "-t",
-      "app/core/auth/auth-guard.service",
+      "app/core/loading-bar/api/loading-bar.actions",
       "-e",
-      "AuthGuard",
+      "LoadingBarAction",
+      "LoadingBarActions",
       // "-d",
     ]);
 
