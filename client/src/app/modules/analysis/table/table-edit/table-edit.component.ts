@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { AnalysisTableRequest, AnalysisTableResponse } from 'app/core/sdk-lb4';
 import { QueryDefinition } from 'app/core/sdk-lb4/model/queryDefinition';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';

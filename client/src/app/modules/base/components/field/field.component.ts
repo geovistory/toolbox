@@ -5,7 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { sum } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { isValueObjectSubfield } from '../../base.module';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';

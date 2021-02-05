@@ -18,9 +18,9 @@ async function refactor(path) {
       "-s",
       "app/core",
       "-t",
-      "app/core/active-project",
+      "app/core/auth/auth-guard.service",
       "-e",
-      "ActiveProjectService",
+      "AuthGuard",
       // "-d",
     ]);
 

@@ -3,7 +3,7 @@ import { equals } from 'ramda';
 import { MatDialog } from '@angular/material';
 import { combineLatest, of } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfStatement } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/ctrl-time-primitive.component';

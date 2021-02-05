@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ContentTreeNode } from '../content-tree/content-tree.component';
 import { Observable } from 'rxjs';
-import { ActiveProjectService, latestVersion, SysConfig } from 'app/core';
+import { latestVersion, SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { filter, map, shareReplay } from 'rxjs/operators';
 
 @Component({

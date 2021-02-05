@@ -1,6 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { AnalysisDefinition, AnalysisTimeChartRequest, AnalysisTimeChartResponse } from 'app/core/sdk-lb4';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';

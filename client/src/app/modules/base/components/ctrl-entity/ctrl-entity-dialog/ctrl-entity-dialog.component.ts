@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfTemporalEntity } from "app/core/sdk";
 import { InfPersistentItem } from "app/core/sdk";
 import { U } from "app/core/util/util";

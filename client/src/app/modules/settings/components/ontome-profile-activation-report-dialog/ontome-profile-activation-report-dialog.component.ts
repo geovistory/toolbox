@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { DfhProfileApi } from "app/core/sdk";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

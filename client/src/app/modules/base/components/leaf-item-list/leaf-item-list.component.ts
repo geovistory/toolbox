@@ -4,7 +4,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Observable, Subject, BehaviorSubject, combineLatest, merge } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { EntityPreviewItem, Item, ItemList, Subfield, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';

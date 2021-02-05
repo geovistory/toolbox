@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { map, switchMap } from 'rxjs/operators';
 import { ActiveProjectPipesService } from 'app/core/redux-queries/services/active-project-pipes.service';

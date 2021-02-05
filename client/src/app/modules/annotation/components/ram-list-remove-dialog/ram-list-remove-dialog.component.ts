@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfStatement } from "app/core/sdk";
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
 import { Field, Subfield } from 'app/modules/base/components/properties-tree/properties-tree.models';

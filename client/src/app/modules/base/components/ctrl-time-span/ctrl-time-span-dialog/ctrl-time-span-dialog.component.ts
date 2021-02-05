@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService, ActiveProjectService } from 'app/core';
+import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { ByPk } from 'app/core/redux-store/model';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';

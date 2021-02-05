@@ -6,7 +6,7 @@ import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-setting
 import { ApiProfile } from '../../../../../../../server/src/lb3/common/interfaces';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { runInThisContext } from 'vm';
 import { values } from 'd3';
 import { indexBy } from 'ramda';

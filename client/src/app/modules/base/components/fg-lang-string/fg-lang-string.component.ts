@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfLangString } from "app/core/sdk";
 import { InfLanguage } from "app/core/sdk";
 import { InfAppellation } from "app/core/sdk";

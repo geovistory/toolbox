@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { SearchExistingRelatedStatement, WarEntityPreviewControllerService } from 'app/core/sdk-lb4';
 import { EntitySearchHit } from 'app/core/sdk-lb4/model/entitySearchHit';
 import { WarEntityPreviewSearchExistingReq } from 'app/core/sdk-lb4/model/warEntityPreviewSearchExistingReq';

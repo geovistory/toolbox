@@ -1,7 +1,8 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, SubstoreComponent, SysConfig } from 'app/core';
+import { SubstoreComponent, SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { RootEpics } from 'app/core/redux-store/epics';
 import { WarEntityPreview } from 'app/core/sdk-lb4';

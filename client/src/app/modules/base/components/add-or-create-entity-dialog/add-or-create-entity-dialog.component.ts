@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import { DfhConfig } from '../../../information/shared/dfh-config';
 import { SchemaObject } from 'app/core/redux-store/model';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfTemporalEntity } from "app/core/sdk";
 import { InfPersistentItem } from "app/core/sdk";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';

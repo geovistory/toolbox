@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { SysSystemRelevantClass } from "app/core/sdk";
 import { U } from "app/core/util/util";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';

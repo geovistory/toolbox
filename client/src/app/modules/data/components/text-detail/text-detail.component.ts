@@ -1,6 +1,7 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActiveProjectService, getSpecificVersion, latestVersion, SubstoreComponent } from 'app/core';
+import { getSpecificVersion, latestVersion, SubstoreComponent } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { DatDigital } from "app/core/sdk";
 import { DatChunk } from "app/core/sdk";
 import { SucceedActionMeta } from 'app/core/redux-store/actions';

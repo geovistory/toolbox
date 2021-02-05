@@ -1,6 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { ActiveProjectService, IconType, PeItTabData, Tab } from 'app/core';
+import { IconType, PeItTabData, Tab } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { IAppState } from 'app/core/redux-store/model';
 import { WarEntityPreview } from 'app/core/sdk-lb4';
 import { EntityDetail, SubstoreComponent } from 'app/core/state/models';

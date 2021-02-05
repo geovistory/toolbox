@@ -1,7 +1,8 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ProjectCrm, SubstoreComponent, SysConfig } from 'app/core';
+import { ProjectCrm, SubstoreComponent, SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { U } from "app/core/util/util";
 import { RootEpics } from 'app/core/redux-store/epics';
 import { SysSelector } from 'app/core/sys/sys.service';

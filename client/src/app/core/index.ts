@@ -3,7 +3,6 @@ export { SysConfig } from '../../../../server/src/lb3/common/config/sys-config';
 export { LoadingBarAction, LoadingBarActions } from './loading-bar/api/loading-bar.actions';
 export { ValidationService } from './validation/validation.service';
 export { ValidationDirectivesModule } from './validation/validation.directives';
-export { ActiveProjectService } from './active-project'
 export { AuthGuard } from './auth/auth-guard.service';
 // export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive } from './date-time';
 export * from './util/custom-rxjs-operators';

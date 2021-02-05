@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { DatDigitalApi } from "app/core/sdk";
 import { DatColumn } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';

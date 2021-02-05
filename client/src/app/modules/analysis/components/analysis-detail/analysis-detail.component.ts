@@ -2,7 +2,8 @@ import { Component, OnInit, HostBinding, OnDestroy, Input, ChangeDetectorRef } f
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { Subject, Observable } from 'rxjs';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { GvAnalysisService } from '../../services/analysis.service';
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { ActiveProjectService, } from 'app/core';
+import { ActiveProjectService, } from "app/core/active-project";
 import { NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core/redux-store/model';
 

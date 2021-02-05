@@ -1,7 +1,8 @@
 
 import { takeUntil, map } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, Tab } from 'app/core';
+import { Tab } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { Observable, Subject, combineLatest } from 'rxjs';
 
 @Component({

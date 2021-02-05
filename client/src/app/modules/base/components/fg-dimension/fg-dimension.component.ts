@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance, MatInput } from '@angular/material';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfPersistentItem } from "app/core/sdk";
 import { InfDimension } from "app/core/sdk";
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';

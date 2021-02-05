@@ -1,6 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IconType } from 'app/core';
+import { IconType } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { TimePrimitive } from "app/core/date-time";
 import { InfTimePrimitive } from "app/core/sdk";
 import { InfTemporalEntity } from "app/core/sdk";

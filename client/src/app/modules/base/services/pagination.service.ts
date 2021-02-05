@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { paginatedBy, paginateKey, paginateName } from 'app/core/redux-store/reducer-factory';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';

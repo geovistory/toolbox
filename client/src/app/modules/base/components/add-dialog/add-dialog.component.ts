@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfTemporalEntityApi } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

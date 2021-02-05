@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

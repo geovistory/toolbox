@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { first } from 'rxjs/operators';
 import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from '../entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
 

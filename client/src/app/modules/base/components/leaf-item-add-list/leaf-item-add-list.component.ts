@@ -7,7 +7,7 @@ import { PaginationObject } from 'app/core/redux-store/model';
 import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { PaginationObjectApi } from "app/core/sdk";
 import { InfTextProperty } from "app/core/sdk";
 import { InfPlace } from "app/core/sdk";

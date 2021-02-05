@@ -5,7 +5,8 @@ import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, 
 import { MatDialog } from '@angular/material';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
-import { ActiveProjectService, ListType, Tab } from 'app/core';
+import { ListType, Tab } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { SDKStorage } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';

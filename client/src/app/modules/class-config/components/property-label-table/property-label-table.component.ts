@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatTableDataSource } from '@angular/material';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, mergeMap, takeUntil, filter } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { ProTextProperty } from "app/core/sdk";
 import { InfLanguage } from "app/core/sdk";
 import { ProActions } from 'app/core/pro/pro.actions';

@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService, SysConfig, } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { AnalysisDefinition, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition, WarEntityPreview, WarStatementObjectValue, AnalysisTableCellValue } from 'app/core/sdk-lb4/model/models';
 import { GvAnalysisService } from 'app/modules/analysis/services/analysis.service';
 import { saveAs } from 'file-saver';

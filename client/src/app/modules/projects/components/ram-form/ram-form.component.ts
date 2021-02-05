@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfTextProperty } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { InfLangString } from "app/core/sdk";

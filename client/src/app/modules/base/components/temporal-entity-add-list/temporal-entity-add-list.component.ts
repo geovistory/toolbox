@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { ProInfoProjRel } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { PaginateByParam } from 'app/core/redux-store/actions';

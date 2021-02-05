@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { WarEntityPreview } from 'app/core/sdk-lb4';
 export interface GraphPathEntity {
   label: string;

@@ -1,6 +1,7 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, sortAbc, SysConfig } from 'app/core';
+import { sortAbc, SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';

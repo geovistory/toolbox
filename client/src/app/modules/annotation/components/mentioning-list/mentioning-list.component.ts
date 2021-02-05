@@ -1,7 +1,8 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, SubstoreComponent, latestVersion } from 'app/core';
+import { SubstoreComponent, latestVersion } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfStatement } from "app/core/sdk";
 import { DatDigital } from "app/core/sdk";
 import { DatChunk } from "app/core/sdk";

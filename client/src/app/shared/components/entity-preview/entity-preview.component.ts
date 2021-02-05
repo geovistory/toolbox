@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { WarEntityPreview } from 'app/core/sdk-lb4';

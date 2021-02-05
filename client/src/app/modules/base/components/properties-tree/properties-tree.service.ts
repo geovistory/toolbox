@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { Subfield, ItemBasics } from './properties-tree.models';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { first } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 
 import { ProInfoProjRel } from "app/core/sdk";
 

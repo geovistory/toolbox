@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfStatement } from "app/core/sdk";
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { first, map, takeUntil } from 'rxjs/operators';

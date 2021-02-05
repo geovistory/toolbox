@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
-import { ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
+import { AnalysisTabData, SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { AnalysisService } from 'app/core/sdk-lb4';
 import { ProAnalysis } from 'app/core/sdk-lb4/model/proAnalysis';
 import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';

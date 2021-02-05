@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { InfTemporalEntity } from "app/core/sdk";
 import { InfPersistentItem } from "app/core/sdk";
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';

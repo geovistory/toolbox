@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from 'app/core/sdk-lb4';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';

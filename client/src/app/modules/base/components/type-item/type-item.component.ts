@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { ProInfoProjRel } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';

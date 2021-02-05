@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EntityLabelConfigDialogData, EntityLabelConfigDialogComponent } from '../entity-label-config-dialog/entity-label-config-dialog.component';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from "app/core/active-project";
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 
