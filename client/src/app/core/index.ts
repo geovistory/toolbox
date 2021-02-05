@@ -9,7 +9,6 @@ export { ActiveAccountService } from './active-account/active-account.service';
 export { ActiveProjectService } from './active-project/active-project.service'
 export { AuthGuard } from './auth/auth-guard.service';
 export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive } from './date-time';
-export { U } from './util/util'
 export * from './util/custom-rxjs-operators';
 export * from './util/mergeMapOr';
 export * from './util/switchMapOr';

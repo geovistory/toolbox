@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { U } from 'app/core';
 import * as d3 from 'd3';
 import { Observable } from 'rxjs';
 import { ChartLineDefinition, CursorValues } from '../components/chart-line-visual/chart-line-visual.component';
@@ -9,6 +8,7 @@ import { RangeChangeEvent, Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
 import { YAxisDefinition } from '../models/y-axis-definition';
 import { ChartLinePoint } from 'app/core/sdk-lb4';
+import { U } from 'app/core/util/util';
 
 
 

@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimePrimitive, InfStatement, U } from 'app/core';
+import { InfStatement } from 'app/core';
+import { U } from 'app/core/util/util';
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({

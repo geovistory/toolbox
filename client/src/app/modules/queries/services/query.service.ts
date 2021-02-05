@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, U } from 'app/core';
+import { ActiveProjectService } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
 import { QueryPathSegment } from 'app/core/sdk-lb4/model/queryPathSegment';
+import { U } from 'app/core/util/util';
 
 @Injectable({
   providedIn: 'root'
