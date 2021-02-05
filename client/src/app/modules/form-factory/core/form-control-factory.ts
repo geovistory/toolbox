@@ -24,7 +24,7 @@ export class FormControlFactory<M> extends AbstractControlFactory {
     private parent?: FormGroupFactory | FormArrayFactory<any, any, any>
   ) {
     super()
-    const validators = config.required ? [Validators.required, ...config.validators || []] : config.validators
+    const validators = config.required ? [Validators.required, ...(config.validators || [])] : config.validators
     this.control = new FormControl(config.initValue || null, validators)
     merge(of(this.control.value), this.control.valueChanges).pipe(
       map(item => this.config.mapValue(item)),

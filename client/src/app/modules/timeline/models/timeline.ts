@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { TimeSpan } from 'app/core';
+import { TimeSpan } from "app/core/time-span/time-span";
 
 import { XAxisDefinition, IXAxisDefinition, XAxisOptions } from './x-axis-definition';
 import { DatePipe } from '@angular/common';

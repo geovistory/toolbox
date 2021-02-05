@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { TimeSpan } from "app/core";
+import { TimeSpan } from "app/core/time-span/time-span";
 import { indexBy, omit, sort, values } from "ramda";
 import { JulianDate } from "cesium";
 import { WarEntityPreview, WarEntityPreviewTimeSpan } from 'app/core/sdk-lb4';

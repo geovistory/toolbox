@@ -9,8 +9,8 @@ import {
   sortAbc,
   switchMapOr,
   TimePrimitive,
-  TimeSpan,
 } from 'app/core';
+import { TimeSpan } from "app/core/time-span/time-span";
 import { U } from "app/core/util/util";
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';

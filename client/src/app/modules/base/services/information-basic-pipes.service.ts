@@ -1,6 +1,14 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IconType, InfStatement, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan } from 'app/core';
+import {
+  ActiveProjectService,
+  IconType,
+  InfStatement,
+  InfTemporalEntity,
+  InfTimePrimitive,
+  TimePrimitive,
+} from 'app/core';
+import { TimeSpan } from "app/core/time-span/time-span";
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';

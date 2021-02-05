@@ -55,7 +55,7 @@ export class RegistrationComponent {
             for (let i = 0; i < error.details.length; i++) {
               const detail = error.details[i];
               if (detail.path === '/password') {
-                this.errorMessages['password'] = [...this.errorMessages['password'] || [], detail.message]
+                this.errorMessages['password'] = [...(this.errorMessages['password'] || []), detail.message]
               }
             }
           }

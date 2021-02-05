@@ -18,9 +18,9 @@ async function refactor(path) {
       "-s",
       "app/core",
       "-t",
-      "app/core/util/util",
+      "app/core/time-span/time-span",
       "-e",
-      "U",
+      "TimeSpan",
       // "-d",
     ]);
 

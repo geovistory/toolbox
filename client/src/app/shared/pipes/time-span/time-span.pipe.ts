@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimeSpan, TimePrimitive } from 'app/core';
+import { TimePrimitive } from 'app/core';
+import { TimeSpan } from "app/core/time-span/time-span";
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({

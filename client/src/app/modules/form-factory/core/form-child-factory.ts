@@ -30,7 +30,7 @@ export class FormChildFactory<Ch> extends AbstractControlFactory {
     private parent?: FormGroupFactory | FormArrayFactory<any, any, Ch>
   ) {
     super()
-    this.validators = config.required ? [Validators.required, ...config.validators || []] : config.validators
+    this.validators = config.required ? [Validators.required, ...(config.validators || [])] : config.validators
     // this.control = new FormControl()
 
     /**
