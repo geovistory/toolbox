@@ -1,5 +1,5 @@
 import { Component, Input, ElementRef, OnInit, DoCheck } from '@angular/core';
-import { TimePrimitive } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 import { XAxisDefinition } from '../../models/x-axis-definition';
 import { D3Service } from '../../shared/d3.service';
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';

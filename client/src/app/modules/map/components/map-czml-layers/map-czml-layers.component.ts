@@ -1,4 +1,4 @@
-/// <reference path="@types/cesium/index.d.ts" />
+/// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 declare var Cesium;
 
 import { Component, ElementRef, Input, OnDestroy, OnInit, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';

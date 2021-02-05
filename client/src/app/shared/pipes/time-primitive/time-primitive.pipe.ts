@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimePrimitive } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 import { DatePipe } from '@angular/common';
 
 @Pipe({

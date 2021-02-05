@@ -1,4 +1,4 @@
-/// <reference path="@types/cesium/index.d.ts" />
+/// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
 // import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
 import { CzmlDoubleI, CzmlPoint } from '../../../../../server/src/lb3/common/interfaces/czml-types';

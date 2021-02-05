@@ -1,4 +1,4 @@
-import { TimePrimitive } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 import { CtrlTimeSpanDialogResult } from 'app/modules/base/components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { WarEntityPreviewTimeSpan } from '../sdk-lb4';
 

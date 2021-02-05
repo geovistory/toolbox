@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { TimePrimitive } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 
 import { D3Service } from '../shared/d3.service';
 

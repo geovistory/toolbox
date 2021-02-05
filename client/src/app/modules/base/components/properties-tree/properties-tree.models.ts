@@ -1,5 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ActiveProjectService, TimePrimitive } from 'app/core';
+import { ActiveProjectService } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 import { ProInfoProjRel } from "app/core/sdk";
 import { InfTextProperty } from "app/core/sdk";
 import { InfTemporalEntity } from "app/core/sdk";

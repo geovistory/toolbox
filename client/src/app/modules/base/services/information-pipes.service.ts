@@ -1,7 +1,8 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, limitTo, sortAbc, switchMapOr, TimePrimitive } from 'app/core';
+import { ActiveProjectService, limitTo, sortAbc, switchMapOr } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 import { InfTextProperty } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { TimeSpan } from "app/core/time-span/time-span";

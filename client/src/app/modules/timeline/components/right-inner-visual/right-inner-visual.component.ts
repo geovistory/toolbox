@@ -1,5 +1,5 @@
 import { Component, DoCheck, ElementRef, Input, OnInit } from '@angular/core';
-import { TimePrimitive } from 'app/core';
+import { TimePrimitive } from "app/core/date-time";
 
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 import { Timeline } from '../../models/timeline';
