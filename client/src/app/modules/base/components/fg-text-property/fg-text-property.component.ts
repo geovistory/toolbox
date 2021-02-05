@@ -1,6 +1,6 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
-import { ValidationService } from 'app/core';
+import { ValidationService } from "app/core/validation/validation.service";
 import { ActiveProjectService } from "app/core/active-project";
 import { InfTextProperty } from "app/core/sdk";
 import { InfLanguage } from "app/core/sdk";

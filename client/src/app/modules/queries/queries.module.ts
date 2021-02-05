@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
-import { ValidationDirectivesModule } from 'app/core';
+import { ValidationDirectivesModule } from "app/core/validation/validation.directives";
 import { ActiveProjectService } from "app/core/active-project";
 import { MaterialModule } from 'app/core/material/material.module';
 import { PassiveLinkModule } from 'app/shared';

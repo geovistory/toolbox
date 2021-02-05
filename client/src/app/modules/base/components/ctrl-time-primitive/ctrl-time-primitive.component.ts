@@ -5,7 +5,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { Subject } from 'rxjs';
-import { ValidationService } from 'app/core';
+import { ValidationService } from "app/core/validation/validation.service";
 import { JulianDateTime } from "app/core/date-time";
 import { GregorianDateTime } from "app/core/date-time";
 import { InfTimePrimitive } from "app/core/sdk";

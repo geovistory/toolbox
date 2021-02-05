@@ -1,7 +1,5 @@
 
 export { SysConfig } from '../../../../server/src/lb3/common/config/sys-config';
-export { ValidationService } from './validation/validation.service';
-export { ValidationDirectivesModule } from './validation/validation.directives';
 export * from './util/custom-rxjs-operators';
 export * from './util/mergeMapOr';
 export * from './util/switchMapOr';

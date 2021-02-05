@@ -18,10 +18,9 @@ async function refactor(path) {
       "-s",
       "app/core",
       "-t",
-      "app/core/loading-bar/api/loading-bar.actions",
+      "app/core/validation/validation.directives",
       "-e",
-      "LoadingBarAction",
-      "LoadingBarActions",
+      "ValidationDirectivesModule",
       // "-d",
     ]);
 

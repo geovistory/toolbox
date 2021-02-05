@@ -3,7 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { BaseModule } from '../../base.module';
 import { CtrlAppellationComponent } from './ctrl-appellation.component';
-import { ValidationDirectivesModule } from 'app/core';
+import { ValidationDirectivesModule } from "app/core/validation/validation.directives";
 
 
 

@@ -21,7 +21,7 @@ import { AccountActions } from './api/account.actions';
 import { PassiveLinkModule } from 'app/shared';
 import { AccountEpics } from './api/account.epics';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
-import { ValidationDirectivesModule } from 'app/core';
+import { ValidationDirectivesModule } from "app/core/validation/validation.directives";
 
 @NgModule({
   imports: [

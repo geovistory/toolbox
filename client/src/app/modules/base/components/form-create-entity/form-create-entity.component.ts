@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
-import { SysConfig, ValidationService } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ValidationService } from "app/core/validation/validation.service";
 import { ActiveProjectService } from "app/core/active-project";
 import { InfDimension } from "app/core/sdk";
 import { InfTextProperty } from "app/core/sdk";

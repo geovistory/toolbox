@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService } from 'app/core';
+import { ExTimeHelpMode, ExTimeModalMode, SysConfig } from 'app/core';
+import { ValidationService } from "app/core/validation/validation.service";
 import { ActiveProjectService } from "app/core/active-project";
 import { ByPk } from 'app/core/redux-store/model';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { ValidationService } from 'app/core';
+import { ValidationService } from "app/core/validation/validation.service";
 
 type FrameworkTypes = 'material' | 'bootstrap'
 
