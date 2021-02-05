@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
-import { Route, Routes, RouterModule } from '@angular/router';
-import { RegistrationComponent } from './components/registration/registration.component';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'app/core/auth/auth-guard.service';
+import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { EmailVerifiedComponent } from './components/email-verified/email-verified.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutConfirmationComponent } from './components/logout-confirmation/logout-confirmation.component';
+import { RegistrationComponent } from './components/registration/registration.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-import { AuthGuard } from 'app/core';
-import { AccountComponent } from './pages/account/account.component';
-import { AccountPasswordComponent } from './pages/account-password/account-password.component';
 import { AccountEmailComponent } from './pages/account-email/account-email.component';
+import { AccountPasswordComponent } from './pages/account-password/account-password.component';
 import { AccountProfileComponent } from './pages/account-profile/account-profile.component';
-import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
+import { AccountComponent } from './pages/account/account.component';
 
 
 const routes: Routes = [

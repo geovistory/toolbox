@@ -23,7 +23,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthGuard, ValidationDirectivesModule } from 'app/core';
+import { AuthGuard } from 'app/core/auth/auth-guard.service';
 import { ActiveAccountService } from "app/core/active-account";
 import { SystemAdminGuard } from 'app/core/auth/system-admin-guard.service';
 import { BasicModule } from 'app/core/basic/basic.module';
@@ -51,6 +51,7 @@ import { SocketsModule } from 'app/core/sockets/sockets.module';
 import { TabModule } from 'app/core/tab/tab.module';
 import { ReduxQueriesModule } from 'app/core/redux-queries/redux-queries.module';
 import { LoopBackConfig, SDKBrowserModule } from './core/sdk';
+import { ValidationDirectivesModule } from './core/validation/validation.directives';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };

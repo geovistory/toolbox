@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from 'app/core';
+import { AuthGuard } from 'app/core/auth/auth-guard.service';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { SystemAdminGuard } from 'app/core/auth/system-admin-guard.service';
