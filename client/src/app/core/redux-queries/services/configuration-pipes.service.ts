@@ -2,12 +2,12 @@
 import { Injectable } from '@angular/core';
 import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
 import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'app/core/pro/pro.config';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from 'app/core/sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue, RelatedProfile } from 'app/core/sdk-lb4';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as Config from '../../../../../../server/lb3app/common/config/Config';
 import { SysConfig } from '../../../../../../server/src/lb3/common/config/sys-config';
 import { Field, FieldPlaceOfDisplay, SpecialFieldType, Subfield, SubfieldType } from '../../../modules/base/components/properties-tree/properties-tree.models';
@@ -75,7 +75,6 @@ export class ConfigurationPipesService {
    * that build on this pipe.
    */
   @cache({ refCount: false }) public pipeFields(pkClass: number): Observable<Field[]> {
-    console.log('a')
 
     return combineLatest(
       // pipe source class
@@ -85,12 +84,11 @@ export class ConfigurationPipesService {
       // pipe ingoing properties
       this.s.dfh$.property$.by_has_range$.key(pkClass).pipe(map(indexed => values(indexed))),
       // pipe sys config
-      this.s.sys$.config$.main$,
+      this.s.sys$.config$.main$.pipe(filter(x => !!x)),
       // pipe enabled profiles
       this.pipeProfilesEnabledByProject(),
     ).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
-        console.log('b')
 
         // if class is not appellation for language, add appellation for language (1111) property
         if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
@@ -100,6 +98,8 @@ export class ConfigurationPipesService {
         if (sourceKlass.basic_type === 9) {
           outgoingProps.push(createHasTimeSpanProperty(pkClass))
         }
+
+        outgoingProps.push(createHasDefinitionProperty(pkClass))
 
         return combineLatest(
           this.pipePropertiesToSubfields(outgoingProps, true, enabledProfiles, sysConfig),
@@ -157,7 +157,6 @@ export class ConfigurationPipesService {
                 uniqFields[uid].listDefinitions.push(s)
               }
             }
-            console.log('c')
 
             return values(uniqFields)
           })
@@ -179,7 +178,7 @@ export class ConfigurationPipesService {
         // filter fields that are displayd in specific fields
         .filter(field => field.placeOfDisplay.specificFields)
         // sort fields by the position defined in the specific fields
-        .sort((a, b) => a.placeOfDisplay.specificFields.position - a.placeOfDisplay.specificFields.position)
+        .sort((a, b) => a.placeOfDisplay.specificFields.position - b.placeOfDisplay.specificFields.position)
       )
     )
   }
@@ -194,7 +193,7 @@ export class ConfigurationPipesService {
         // filter fields that are displayd in basic fields
         .filter(field => field.placeOfDisplay.basicFields)
         // sort fields by the position defined in the basic fields
-        .sort((a, b) => a.placeOfDisplay.basicFields.position - a.placeOfDisplay.basicFields.position)
+        .sort((a, b) => a.placeOfDisplay.basicFields.position - b.placeOfDisplay.basicFields.position)
       )
     )
   }
@@ -279,7 +278,6 @@ export class ConfigurationPipesService {
   ): Observable<Subfield[]> {
     return combineLatestOrEmpty(
       properties.map(p => {
-        console.log('b1')
 
         const o = isOutgoing;
         const targetClass = o ? p.has_range : p.has_domain;
@@ -311,7 +309,6 @@ export class ConfigurationPipesService {
           )
         ).pipe(
           map(([sourceClassLabel, targetClassLabel, listType, label]) => {
-            console.log('b2')
 
             const node: Subfield = {
               listType,
@@ -331,7 +328,7 @@ export class ConfigurationPipesService {
               identityDefiningForTarget: o ? false : p.identity_defining, // replace false with p.identity_defining_for_range when available
               ontoInfoLabel: p.identifier_in_namespace,
               ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
-              removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles as Profiles || [])),
+              removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
             }
             return node
           })
@@ -354,7 +351,7 @@ export class ConfigurationPipesService {
    * (and thus Subfields) because the UI then does not allow to choose
    * the right target class.
    */
-  @spyTag @cache({ refCount: false }) private pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
+  @spyTag @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
     return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
       map((klass) => getSubfieldType(config, klass, targetMaxQuantity))
@@ -373,7 +370,6 @@ export class ConfigurationPipesService {
   @spyTag @cache({ refCount: false }) pipeFieldConfigs(pkClass: number): Observable<ProClassFieldConfig[]> {
     return this.a.pkProject$.pipe(
       switchMap((fkProject) => {
-        console.log('b3', fkProject)
 
         const activeProjectkey = proClassFieldConfgByProjectAndClassKey({
           fk_class_for_class_field: pkClass,
@@ -390,7 +386,6 @@ export class ConfigurationPipesService {
           .pipe(
             map(([activeProjectFields, defaultProjectFields]) => {
               if (activeProjectFields && values(activeProjectFields).length) return activeProjectFields;
-              console.log('b4')
 
               return defaultProjectFields
             }),
@@ -408,7 +403,6 @@ export class ConfigurationPipesService {
    */
   @spyTag @cache({ refCount: false }) pipeClassLabel(pkClass?: number): Observable<string> {
 
-    console.log('b1.0')
     return combineLatest(
       this.a.pkProject$,
       this.a.pipeActiveDefaultLanguage()
@@ -416,7 +410,6 @@ export class ConfigurationPipesService {
       switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
           map(items => {
-            console.log('b1.1')
 
             const i = items.find(item => !!item)
             return i ? i.text : `* no label (id: ${pkClass}) *`
@@ -908,7 +901,6 @@ export class ConfigurationPipesService {
 
 
 function getSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number): SubfieldType {
-  console.log('b1.2')
 
   let classConfig: ClassConfig
   if (config) classConfig = config.classes[klass.pk_class];
@@ -925,6 +917,32 @@ function getSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuant
   else {
     return { temporalEntity: 'true' }
   }
+}
+
+
+function createHasDefinitionProperty(domainClass: number) {
+  const profiles: Profiles = [
+    {
+      removed_from_api: false,
+      fk_profile: DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
+    }
+  ]
+
+  const hasDefinition: DfhProperty = {
+    has_domain: domainClass,
+    pk_property: DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION,
+    has_range: 785,
+    domain_instances_max_quantifier: -1,
+    domain_instances_min_quantifier: 1,
+    range_instances_max_quantifier: 1,
+    range_instances_min_quantifier: 1,
+    identifier_in_namespace: 'P18',
+    identity_defining: false,
+    is_inherited: true,
+    is_has_type_subproperty: false,
+    profiles
+  }
+  return hasDefinition
 }
 
 
@@ -979,7 +997,7 @@ function createHasTimeSpanProperty(domainClass: number) {
 }
 
 
-function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: Profiles): boolean {
+function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: RelatedProfile[]): boolean {
 
   return profiles.some(p => p.removed_from_api === false && enabledProfiles.includes(p.fk_profile))
 

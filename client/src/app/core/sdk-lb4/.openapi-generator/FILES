@@ -22,6 +22,7 @@ api/infPlace.service.ts
 api/infStatement.service.ts
 api/infTemporalEntity.service.ts
 api/infTextProperty.service.ts
+api/paginatedStatementsController.service.ts
 api/paginationObject.service.ts
 api/pingController.service.ts
 api/proClassFieldConfig.service.ts
@@ -91,6 +92,9 @@ model/geoEntityMapAndTimeCont.ts
 model/getEntityLabelConfigResponse.ts
 model/getFactoidsFromEntityResponse.ts
 model/getTablePageOptions.ts
+model/gvPaginationAlternativeLeafItemsReq.ts
+model/gvPaginationObject.ts
+model/gvPaginationStatementFilter.ts
 model/gvSchemaObject.ts
 model/header.ts
 model/httpErrorModel.ts
@@ -154,6 +158,7 @@ model/sysConfigFieldsBySourceClass.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
 model/sysConfigValueObjectType.ts
+model/sysObject.ts
 model/sysSystemRelevantClass.ts
 model/sysSystemType.ts
 model/tColFilter.ts

@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { DatActions } from '../dat/dat.actions';
-import { InfActions } from '../inf/inf.actions';
-import { ProActions } from '../pro/pro.actions';
-import { SchemaObject } from './model';
-import { SchemaObjectApi } from '../sdk';
 import { Observable, Subject } from 'rxjs';
+import { DatActions } from '../dat/dat.actions';
+import { DfhActions } from '../dfh/dfh.actions';
+import { InfActions } from '../inf/inf.actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { WarActions } from '../war/war.actions';
+import { ProActions } from '../pro/pro.actions';
+import { SchemaObjectApi } from '../sdk';
 import { GvSchemaObject } from '../sdk-lb4';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
+import { SysActions } from '../sys/sys.actions';
 import { TabActions } from '../tab/tab.actions';
-import { DfhActions } from '../dfh/dfh.actions';
+import { WarActions } from '../war/war.actions';
+import { SchemaObject } from './model';
 
 
 @Injectable()
@@ -27,6 +28,7 @@ export class SchemaObjectService {
     public warActions: WarActions,
     public tabActions: TabActions,
     public dfhActions: DfhActions,
+    public sysActions: SysActions,
     public notifications: NotificationsAPIActions,
     private entityPreviewSocket: EntityPreviewSocket
   ) { }
@@ -124,6 +126,7 @@ export class SchemaObjectService {
         else if (schema === 'war') actions = this.warActions;
         else if (schema === 'tab') actions = this.tabActions;
         else if (schema === 'dfh') actions = this.dfhActions;
+        else if (schema === 'sys') actions = this.sysActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
             actions[model].loadSucceeded(object[schema][model], undefined, pkProject);

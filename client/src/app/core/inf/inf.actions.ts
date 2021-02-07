@@ -2,7 +2,7 @@
 import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/redux-store/actions';
-import { InfPersistentItem, InfStatement, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString, InfDimension } from '../sdk';
+import { InfPersistentItem, InfStatement, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString, InfDimension } from 'app/core/sdk-lb4';
 import { NgRedux } from '@angular-redux/store';
 import { U } from "app/core/util/util";
 import { InfPersistentItemSlice, InfDimensionSlice } from './inf.models';

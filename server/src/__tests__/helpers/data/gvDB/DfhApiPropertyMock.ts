@@ -676,6 +676,38 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "R18"
   }
+
+
+  static readonly EN_1762_HAS_DEFINITION: DfhApiProperty = {
+    "pk_entity": 8592,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 1762,
+    "dfh_fk_namespace": 30,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_property_label": "has definition",
+    "dfh_property_range": 785,
+    "requested_language": "en",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_property_domain": 1,
+    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property associates to an entity a definition which describes the essential elements allowing its identification",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": 1,
+    "dfh_domain_instances_min_quantifier": 1,
+    "dfh_property_identifier_in_namespace": "P18"
+  }
 }
 /**
  * SQL to create mock items

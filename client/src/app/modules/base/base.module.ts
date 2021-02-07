@@ -114,7 +114,6 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
-  BaseModalsService
 ]
 
 @NgModule({
@@ -128,6 +127,7 @@ const baseModules = [
     TimeSpanService,
     PropertiesTreeService,
     ValidationService,
+    BaseModalsService
   ],
   exports: [
     ...components,

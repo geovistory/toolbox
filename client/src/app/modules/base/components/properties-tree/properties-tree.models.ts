@@ -1,12 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ActiveProjectService } from "app/core/active-project";
 import { TimePrimitive } from "app/core/date-time";
-import { ProInfoProjRel } from "app/core/sdk";
-import { InfTextProperty } from "app/core/sdk";
-import { InfTemporalEntity } from "app/core/sdk";
-import { InfStatement } from "app/core/sdk";
-import { InfLanguage } from "app/core/sdk";
-import { ProClassFieldConfig, SysConfigValueObjectType, WarEntityPreview } from 'app/core/sdk-lb4';
+import { ProClassFieldConfig, SysConfigValueObjectType, WarEntityPreview, InfStatement, ProInfoProjRel, InfTextProperty, InfTemporalEntity, InfLanguage } from 'app/core/sdk-lb4';
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 

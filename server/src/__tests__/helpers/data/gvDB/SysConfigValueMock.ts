@@ -34,17 +34,36 @@ export class SysConfigValueMock {
         valueObjectType: {
           langString: TrueEnum.true
         }
+      },
+      689: {
+        valueObjectType: {
+          dimension: {
+            measurementUnitClass: 690
+          }
+        }
+      },
+      784: {
+        valueObjectType: {
+          langString: TrueEnum.true
+        }
+      },
+      785: {
+        valueObjectType: {
+          langString: TrueEnum.true
+        }
       }
     },
     specialFields: {
       incomingProperties: {
-        1761: {
-          comment: 'has short title',
-          displayInBasicFields: {position: 1}
-        },
         1111: {
           comment: 'has appellation for language',
           displayInBasicFields: {position: 2}
+        },
+      },
+      outgoingProperties: {
+        1761: {
+          comment: 'has short title',
+          displayInBasicFields: {position: 1}
         },
         1762: {
           comment: 'P18 has definition (is definition of)',
@@ -58,9 +77,7 @@ export class SysConfigValueMock {
           comment: 'P19 has comment (is comment about)',
           displayInBasicFields: {position: 6}
         },
-      },
-      outgoingProperties: {
-        [4]: {
+        4: {
           comment: 'has time-span (When)',
           displayInBasicFields: {position: 1000}
         }

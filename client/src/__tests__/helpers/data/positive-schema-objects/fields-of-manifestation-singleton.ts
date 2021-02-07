@@ -9,11 +9,16 @@ export const fieldsOfManifestationSingleton: GvSchemaObject = {
   dfh: {
     klass: [
       transformDfhApiClassToDfhClass(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON),
-      transformDfhApiClassToDfhClass(DfhApiClassMock.EN_244_EXPRESSION_CREATION),
       transformDfhApiClassToDfhClass(DfhApiClassMock.EN_450_MANIFESTATION_SINGLETON_TYPE),
+      transformDfhApiClassToDfhClass(DfhApiClassMock.EN_218_EXPRESSION),
+      transformDfhApiClassToDfhClass(DfhApiClassMock.EN_244_EXPRESSION_CREATION),
       transformDfhApiClassToDfhClass(DfhApiClassMock.EN_784_SHORT_TITLE),
+      transformDfhApiClassToDfhClass(DfhApiClassMock.EN_365_NAMING),
     ],
     property: [
+      transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF),
+      transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
+
       transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
       transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
       transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON),

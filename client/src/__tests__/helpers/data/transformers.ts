@@ -48,8 +48,8 @@ export function transformDfhApiPropertyToDfhProperty(dfhApiProperty: DfhApiPrope
 export function transformDfhApiClassToDfhLabel(dfhApiClass: DfhApiClass): DfhLabel {
   return {
     fk_class: dfhApiClass.dfh_pk_class,
-    label: dfhApiClass.dfh_profile_label,
-    language: dfhApiClass.dfh_profile_label_language,
+    label: dfhApiClass.dfh_class_label,
+    language: dfhApiClass.dfh_class_label_language,
     type: 'label'
   }
 }
@@ -60,9 +60,9 @@ export function transformDfhApiClassToDfhLabel(dfhApiClass: DfhApiClass): DfhLab
 */
 export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: DfhApiProperty): DfhLabel {
   return {
-    fk_class: dfhApiProperty.dfh_pk_property,
-    label: dfhApiProperty.dfh_profile_label,
-    language: dfhApiProperty.dfh_profile_label_language,
+    fk_property: dfhApiProperty.dfh_pk_property,
+    label: dfhApiProperty.dfh_property_label,
+    language: dfhApiProperty.dfh_property_label_language,
     type: 'label'
   }
 }

@@ -1,28 +1,16 @@
-import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
+import {Postgres1DataSource} from '../../datasources';
+import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, WarEntityPreview} from '../../models';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import {GvPaginationObject} from '../../models/paginated-statements/gv-pagination-object';
+import {GvPaginationStatementFilter} from '../../models/paginated-statements/gv-pagination-statement-filter';
 
-import { Lb3Models } from '../utils/interfaces';
-import { logSql } from '../utils';
 
-interface StatementParams {
-  [index: string]: number | undefined;
-  fk_subject_info?: number;
-  fk_subject_data?: number;
-  fk_subject_tables_row?: number;
-  fk_subject_tables_cell?: number;
+export class QAlternativeLeafItems extends SqlBuilderLb4Models {
 
-  fk_property?: number;
-  fk_property_of_property?: number;
-
-  fk_object_info?: number;
-  fk_object_data?: number;
-  fk_object_tables_row?: number;
-  fk_object_tables_cell?: number;
-}
-
-export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
-
-  constructor(lb3models: Lb3Models) {
-    super(lb3models)
+  constructor(
+    dataSource: Postgres1DataSource,
+  ) {
+    super(dataSource)
   }
 
 
@@ -36,24 +24,24 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
    * @param limit page size for pagination
    * @param offset offset for pagination
    */
-  create(
+  query(
     fkProject: number,
-    filterObject: StatementParams,
+    filterObject: GvPaginationStatementFilter,
     limit: number,
     offset: number
   ) {
-    const sql = `
+    this.sql = `
       WITH
       -- alternative statements (that are in at least one other project)
       tw0 AS (
-        SELECT ${this.createSelect('t1', 'InfStatement')}
+        SELECT ${this.createSelect('t1', InfStatement.definition)}
         FROM
         information.v_statement t1
         WHERE ${[
         ...this.getFiltersByObject('t1', filterObject),
         't1.is_in_project_count > 0'].join(' AND ')}
       EXCEPT
-        SELECT ${this.createSelect('t1', 'InfStatement')}
+        SELECT ${this.createSelect('t1', InfStatement.definition)}
         FROM
         information.v_statement t1,
         projects.info_proj_rel t2
@@ -76,7 +64,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- statements
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfStatement')}
+          ${this.createSelect('t1', InfStatement.definition)}
         FROM
           tw0 t1
           LIMIT ${this.addParam(limit)} -- add limit
@@ -85,7 +73,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       --appellation
       tw3 AS (
         SELECT
-          ${this.createSelect('t1', 'InfAppellation')}
+          ${this.createSelect('t1', InfAppellation.definition)}
         FROM
           tw2
           CROSS JOIN information.v_appellation t1
@@ -95,7 +83,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       --lang_string
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfLangString')}
+          ${this.createSelect('t1', InfLangString.definition)}
         FROM
           tw2
           CROSS JOIN information.v_lang_string t1
@@ -105,7 +93,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- language of lang_string
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', 'InfLanguage')}
+          ${this.createSelect('t1', InfLanguage.definition)}
         FROM
           tw4
           CROSS JOIN information.v_language t1
@@ -115,7 +103,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- language
       tw6 AS (
         SELECT
-          ${this.createSelect('t1', 'InfLanguage')}
+          ${this.createSelect('t1', InfLanguage.definition)}
         FROM
           tw2
           CROSS JOIN information.v_language t1
@@ -125,7 +113,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- time_primitive
       tw7 AS (
         SELECT
-          ${this.createSelect('t1', 'InfTimePrimitive')}
+          ${this.createSelect('t1', InfTimePrimitive.definition)}
         FROM
           tw2
           CROSS JOIN information.v_time_primitive t1
@@ -135,7 +123,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- place
       tw8 AS (
         SELECT
-          ${this.createSelect('t1', 'InfPlace')}
+          ${this.createSelect('t1', InfPlace.definition)}
         FROM
           tw2
           CROSS JOIN information.v_place t1
@@ -145,7 +133,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- dimension
       tw9 AS (
         SELECT
-          ${this.createSelect('t1', 'InfDimension')}
+          ${this.createSelect('t1', InfDimension.definition)}
         FROM
           tw2
           CROSS JOIN information.v_dimension t1
@@ -155,7 +143,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- object entity_preview
       tw10 AS (
         SELECT
-          ${this.createSelect('t1', 'WarEntityPreview')}
+          ${this.createSelect('t1', WarEntityPreview.definition)}
         FROM
           tw2
           CROSS JOIN war.entity_preview t1
@@ -166,7 +154,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- subject entity_preview
       tw11 AS (
         SELECT
-          ${this.createSelect('t1', 'WarEntityPreview')}
+          ${this.createSelect('t1', WarEntityPreview.definition)}
         FROM
           tw2
           CROSS JOIN war.entity_preview t1
@@ -177,7 +165,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- measurement unit entity_preview
       tw12 AS (
         SELECT
-          ${this.createSelect('t1', 'WarEntityPreview')}
+          ${this.createSelect('t1', WarEntityPreview.definition)}
         FROM
           tw9
           CROSS JOIN war.entity_preview t1
@@ -193,7 +181,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfStatement')} as objects
+          ${this.createBuildObject('t1', InfStatement.definition)} as objects
           FROM
           (
             SELECT * FROM tw2
@@ -206,7 +194,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfAppellation')} as objects
+          ${this.createBuildObject('t1', InfAppellation.definition)} as objects
           FROM
           (
             SELECT * FROM tw3
@@ -219,7 +207,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfLangString')} as objects
+          ${this.createBuildObject('t1', InfLangString.definition)} as objects
           FROM
           (
             SELECT * FROM tw4
@@ -232,7 +220,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfLanguage')} as objects
+          ${this.createBuildObject('t1', InfLanguage.definition)} as objects
           FROM
           (
             SELECT * FROM tw5
@@ -247,7 +235,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfTimePrimitive')} as objects
+          ${this.createBuildObject('t1', InfTimePrimitive.definition)} as objects
           FROM
           (
             SELECT * FROM tw7
@@ -260,7 +248,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfPlace')} as objects
+          ${this.createBuildObject('t1', InfPlace.definition)} as objects
           FROM
           (
             SELECT * FROM tw8
@@ -273,7 +261,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfDimension')} as objects
+          ${this.createBuildObject('t1', InfDimension.definition)} as objects
           FROM
           (
             SELECT * FROM tw9
@@ -286,7 +274,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'WarEntityPreview')} as objects
+          ${this.createBuildObject('t1', WarEntityPreview.definition)} as objects
           FROM
           (
             SELECT * FROM tw10
@@ -335,13 +323,14 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       LEFT JOIN dimension ON true
       LEFT JOIN entity_preview ON true;
     `;
-    logSql(sql, this.params)
-    return { sql, params: this.params };
+    return this.executeAndReturnFirstData<GvPaginationObject>()
+
   }
 
-  getFiltersByObject(tableAlias: string, filterObject: StatementParams): string[] {
+  getFiltersByObject(tableAlias: string, filterObject: GvPaginationStatementFilter): string[] {
     const filters: string[] = []
-    for (const column in filterObject) {
+    let column: keyof GvPaginationStatementFilter;
+    for (column in filterObject) {
       const value = filterObject[column];
       if (value) {
         filters.push(`${tableAlias}.${column}=${this.addParam(value)}`)

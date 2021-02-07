@@ -30,9 +30,13 @@ export class ActiveProjectPipesService {
     ).pipe(filter(l => !!l))
   }
   @cache({ refCount: false }) pipeActiveDefaultLanguage(): Observable<InfLanguage> {
+
     return this.pipeActiveProject().pipe(
       filter(p => !!p),
-      switchMap(project => this.s.inf$.language$.by_pk_entity$.key(project.fk_language.toString()))
+      switchMap(project => {
+
+        return this.s.inf$.language$.by_pk_entity$.key(project.fk_language.toString())
+      })
     ).pipe(filter(l => !!l))
   }
 }

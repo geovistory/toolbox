@@ -3,25 +3,16 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { PaginationObject } from 'app/core/redux-store/model';
+import { ActiveProjectService } from "app/core/active-project";
+import { InfActions } from 'app/core/inf/inf.actions';
+import { GvPaginationObject, InfStatement, PaginatedStatementsControllerService, WarEntityPreview, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTextProperty } from 'app/core/sdk-lb4';
 import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ActiveProjectService } from "app/core/active-project";
-import { PaginationObjectApi } from "app/core/sdk";
-import { InfTextProperty } from "app/core/sdk";
-import { InfPlace } from "app/core/sdk";
-import { InfLanguage } from "app/core/sdk";
-import { InfLangString } from "app/core/sdk";
-import { InfDimension } from "app/core/sdk";
-import { InfAppellation } from "app/core/sdk";
-import { InfStatement } from "app/core/sdk";
-import { InfActions } from 'app/core/inf/inf.actions';
 import { isLeafItemSubfield } from '../../base.helpers';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, PlaceItem, Subfield, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { WarEntityPreview } from 'app/core/sdk-lb4';
 
 type Row<M> = Item & {
   store?: {
@@ -75,7 +66,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     public i: InformationPipesService,
     public t: PropertiesTreeService,
     public inf: InfActions,
-    public pagApi: PaginationObjectApi
+    public pagApi: PaginatedStatementsControllerService
   ) { }
 
   ngOnInit() {
@@ -104,7 +95,12 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         pageIndex,
         pkProject,
 
-      ]) => this.pagApi.listAlternativeLeafItems(pkProject, filterObject, pageSize, (pageSize * pageIndex))),
+      ]) => this.pagApi.paginatedStatementsControllerAlternativeLeafItems({
+        pkProject,
+        filterObject,
+        limit: pageSize,
+        offset: (pageSize * pageIndex)
+      })),
       tap(() => {
         this.loading = false
       }),
@@ -113,7 +109,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
     res$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe((res: PaginationObject) => {
+    ).subscribe((res: GvPaginationObject) => {
       if (res.count === 0) {
         this.next.emit()
       } else {
@@ -136,7 +132,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   }
 
-  private getItems(res: PaginationObject): ItemList {
+  private getItems(res: GvPaginationObject): ItemList {
     const relateBy = this.listDefinition.isOutgoing ? 'fk_object_info' : 'fk_subject_info';
     if (this.listDefinition.listType.entityPreview) {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)

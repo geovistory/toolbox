@@ -334,6 +334,26 @@ export class DfhApiClassMock {
     "dfh_class_identifier_in_namespace": "C15"
   }
 
+  static readonly EN_785_TEXT: DfhApiClass = {
+    "pk_entity": 8528,
+    "dfh_pk_class": 785,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Text",
+    "dfh_fk_namespace": 30,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "Instances of this class are all the texts written by Geovistory users, whether they are reproductions of sources, descriptive notices of entities, stories, etc.",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C16"
+}
 }
 
 

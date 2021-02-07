@@ -1,11 +1,13 @@
 import {model, property} from '@loopback/repository';
-import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreviewWithFulltext, ProDfhClassProjRel, ProTextProperty, ProProject} from '.';
+import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreviewWithFulltext, ProDfhClassProjRel, ProTextProperty, ProProject, SysConfigValue} from '.';
 import {DatClassColumnMapping} from './dat-class-column-mapping.model';
 import {DatColumn} from './dat-column.model';
 import {DatTextProperty} from './dat-text-property.model';
 import {ProAnalysis} from './pro-analysis.model';
 import {ProClassFieldConfig} from './pro-class-field-config.model';
 import {ProDfhProfileProjRel} from './pro-dfh-profile-proj-rel.model';
+import {SysConfig} from '../lb3/common';
+import {SysConfigValueMock} from '../__tests__/helpers/data/gvDB/SysConfigValueMock';
 
 
 @model()
@@ -54,6 +56,14 @@ class DfhObject {
   @property.array(DfhLabel) label?: DfhLabel[];
 }
 
+@model()
+class SysObject {
+  @property.array(SysConfigValue) config?: SysConfigValue[];
+  @property.array(DfhClass) klass?: DfhClass[];
+  @property.array(DfhProperty) property?: DfhProperty[];
+  @property.array(DfhLabel) label?: DfhLabel[];
+}
+
 /**
  * This model reflects the database schema and acts as a data exchange format
  * between geovistory server and geovistory client.
@@ -71,4 +81,5 @@ export class GvSchemaObject {
   @property() dat?: DatObject
   @property() war?: WarObject
   @property() dfh?: DfhObject
+  @property() sys?: SysObject
 }

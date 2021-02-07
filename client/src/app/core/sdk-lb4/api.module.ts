@@ -21,6 +21,7 @@ import { InfPlaceService } from './api/infPlace.service';
 import { InfStatementService } from './api/infStatement.service';
 import { InfTemporalEntityService } from './api/infTemporalEntity.service';
 import { InfTextPropertyService } from './api/infTextProperty.service';
+import { PaginatedStatementsControllerService } from './api/paginatedStatementsController.service';
 import { PaginationObjectService } from './api/paginationObject.service';
 import { PingControllerService } from './api/pingController.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';

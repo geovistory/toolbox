@@ -1,19 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-
-import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { ReduxQueriesModule } from '../redux-queries.module';
-import { toArray, first } from 'rxjs/operators';
-import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
-import { APP_INITIAL_STATE } from 'app/core/redux-store/redux-store.module';
-import { SDKBrowserModule } from 'app/core/sdk';
 import { NgRedux } from '@angular-redux/store';
-import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
-import { setAppState } from '__tests__/helpers/set-app-state';
-import { BehaviorSubject } from 'rxjs';
-import { project1 } from '__tests__/helpers/data/positive-schema-objects/project-1';
-import { fieldsOfManifestationSingleton } from '__tests__/helpers/data/positive-schema-objects/fields-of-manifestation-singleton';
-import { PK_DEFAULT_CONFIG_PROJECT } from '__tests__/helpers/data/auto-gen/local-model.helpers';
+import { TestBed } from '@angular/core/testing';
 import { IAppState } from 'app/core/redux-store/model';
+import { SchemaObjectService } from 'app/core/redux-store/schema-object.service';
+import { SDKBrowserModule } from 'app/core/sdk';
+import { BehaviorSubject } from 'rxjs';
+import { first, toArray } from 'rxjs/operators';
+import { PK_DEFAULT_CONFIG_PROJECT } from '__tests__/helpers/data/auto-gen/local-model.helpers';
+import { IAppStateMock } from '__tests__/helpers/data/IAppStateMock';
+import { project1 } from '__tests__/helpers/data/positive-schema-objects/project-1';
+import { setAppState } from '__tests__/helpers/set-app-state';
+import { ReduxQueriesModule } from '../redux-queries.module';
+import { ActiveProjectPipesService } from './active-project-pipes.service';
+
 
 describe('ActiveProjectPipesService', () => {
   let service: ActiveProjectPipesService;
@@ -49,8 +47,8 @@ describe('ActiveProjectPipesService', () => {
           done);
     });
   })
-  fdescribe('#pipeActiveProject', () => {
-    fit('should return ProProject', (done) => {
+  describe('#pipeActiveProject', () => {
+    it('should return ProProject', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
       console.log(JSON.stringify(ngRedux.getState().pro))
@@ -68,11 +66,11 @@ describe('ActiveProjectPipesService', () => {
     it('should return InfLanguage', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
-      const q$ = service.pipeActiveProject().pipe(first())
+      const q$ = service.pipeActiveDefaultLanguage().pipe(first())
       q$.pipe(toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence).toEqual([project1.pro[0]])
+            expect(actualSequence).toEqual(project1.inf.language)
           },
           null,
           done);
