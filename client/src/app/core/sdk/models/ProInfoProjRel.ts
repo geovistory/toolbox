@@ -22,21 +22,21 @@ export interface ProInfoProjRelInterface {
 
 export class ProInfoProjRel implements ProInfoProjRelInterface {
   "fk_project": number;
-  "fk_entity": number;
-  "fk_entity_version": string;
-  "fk_entity_version_concat": string;
-  "is_in_project": boolean;
-  "is_standard_in_project": boolean;
-  "calendar": string;
-  "ord_num_of_domain": number;
-  "ord_num_of_range": number;
-  "ord_num_of_text_property": number;
-  "tmsp_last_modification": string;
-  "fk_creator": number;
+  "fk_entity"?: number;
+  "fk_entity_version"?: string;
+  "fk_entity_version_concat"?: string;
+  "is_in_project"?: boolean;
+  "is_standard_in_project"?: boolean;
+  "calendar"?: string;
+  "ord_num_of_domain"?: number;
+  "ord_num_of_range"?: number;
+  "ord_num_of_text_property"?: number;
+  "tmsp_last_modification"?: string;
+  "fk_creator"?: number;
   "fk_last_modifier": number;
-  "pk_entity": number;
-  "entity_version": number;
-  "tmsp_creation": string;
+  "pk_entity"?: number;
+  "entity_version"?: number;
+  "tmsp_creation"?: string;
   constructor(data?: ProInfoProjRelInterface) {
     Object.assign(this, data);
   }
@@ -53,7 +53,7 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
   * @license MIT
   * This method creates an instance of ProInfoProjRel for dynamic purposes.
   **/
-  public static factory(data: ProInfoProjRelInterface): ProInfoProjRel{
+  public static factory(data: ProInfoProjRelInterface): ProInfoProjRel {
     return new ProInfoProjRel(data);
   }
   /**

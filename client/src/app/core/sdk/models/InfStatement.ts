@@ -47,20 +47,20 @@ export interface InfStatementInterface {
 }
 
 export class InfStatement implements InfStatementInterface {
-  "fk_subject_info": number;
-  "fk_subject_data": number;
-  "fk_subject_tables_cell": number;
-  "fk_subject_tables_row": number;
-  "fk_property": number;
-  "fk_property_of_property": number;
-  "fk_object_info": number;
-  "fk_object_data": number;
-  "fk_object_tables_cell": number;
-  "fk_object_tables_row": number;
-  "is_in_project_count": number;
-  "is_standard_in_project_count": number;
-  "community_favorite_calendar": string;
-  "pk_entity": number;
+  "fk_subject_info"?: number;
+  "fk_subject_data"?: number;
+  "fk_subject_tables_cell"?: number;
+  "fk_subject_tables_row"?: number;
+  "fk_property"?: number;
+  "fk_property_of_property"?: number;
+  "fk_object_info"?: number;
+  "fk_object_data"?: number;
+  "fk_object_tables_cell"?: number;
+  "fk_object_tables_row"?: number;
+  "is_in_project_count"?: number;
+  "is_standard_in_project_count"?: number;
+  "community_favorite_calendar"?: string;
+  "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
   subject_temporal_entity?: InfTemporalEntity;
   subject_digital?: DatDigital;
@@ -92,7 +92,7 @@ export class InfStatement implements InfStatementInterface {
   * @license MIT
   * This method creates an instance of InfStatement for dynamic purposes.
   **/
-  public static factory(data: InfStatementInterface): InfStatement{
+  public static factory(data: InfStatementInterface): InfStatement {
     return new InfStatement(data);
   }
   /**
@@ -182,7 +182,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         subject_temporal_entity: {
@@ -190,7 +190,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfTemporalEntity',
           model: 'InfTemporalEntity',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_subject_info',
+          keyFrom: 'fk_subject_info',
           keyTo: 'pk_entity'
         },
         subject_digital: {
@@ -198,7 +198,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_subject_data',
+          keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
         subject_chunk: {
@@ -206,7 +206,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'DatChunk',
           model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_subject_data',
+          keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
         subject_statement: {
@@ -214,7 +214,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfStatement',
           model: 'InfStatement',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_subject_info',
+          keyFrom: 'fk_subject_info',
           keyTo: 'pk_entity'
         },
         object_temporal_entity: {
@@ -222,7 +222,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfTemporalEntity',
           model: 'InfTemporalEntity',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_appellation: {
@@ -230,7 +230,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfAppellation',
           model: 'InfAppellation',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_lang_string: {
@@ -238,7 +238,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfLangString',
           model: 'InfLangString',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_chunk: {
@@ -246,7 +246,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'DatChunk',
           model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_data',
+          keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
         object_dimension: {
@@ -254,7 +254,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfDimension',
           model: 'InfDimension',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_language: {
@@ -262,7 +262,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         subject_persistent_item: {
@@ -270,7 +270,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_subject_info',
+          keyFrom: 'fk_subject_info',
           keyTo: 'pk_entity'
         },
         object_persistent_item: {
@@ -278,7 +278,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_time_primitive: {
@@ -286,7 +286,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfTimePrimitive',
           model: 'InfTimePrimitive',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_place: {
@@ -294,7 +294,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'InfPlace',
           model: 'InfPlace',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_info',
+          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
       }

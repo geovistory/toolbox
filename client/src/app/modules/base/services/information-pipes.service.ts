@@ -107,8 +107,7 @@ export class InformationPipesService {
     else if (l.listType.dimension) return this.pipeListDimension(l, pkEntity, limit)
     else if (l.listType.langString) return this.pipeListLangString(l, pkEntity, limit)
     else if (l.listType.temporalEntity) return this.pipeListEntityPreview(l, pkEntity, limit)
-    // else if (l.listType === 'text-property') return this.pipeListTextProperty(l, pkEntity, limit)
-    else if (l.listType === 'time-span') {
+    else if (l.listType.timeSpan) {
       return this.pipeItemTimeSpan(pkEntity).pipe(
         map((ts) => [ts].filter(i => i.properties.length > 0))
       )

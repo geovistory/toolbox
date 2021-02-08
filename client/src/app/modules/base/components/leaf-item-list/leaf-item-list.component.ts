@@ -116,17 +116,9 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
     } else {
       this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
 
-        if (this.listDefinition.listType == 'text-property') {
+        const statement = (item as BasicStatementItem).statement;
+        this.inf.statement.remove([statement], pkProject)
 
-          const txtProp = (item as TextPropertyItem).textProperty;
-          this.inf.text_property.remove([txtProp], pkProject)
-
-        } else {
-
-          const statement = (item as BasicStatementItem).statement;
-          this.inf.statement.remove([statement], pkProject)
-
-        }
       })
     }
   }

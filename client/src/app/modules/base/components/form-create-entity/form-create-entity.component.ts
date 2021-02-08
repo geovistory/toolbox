@@ -254,54 +254,48 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
             const item = items[0]
-            if (data.listDefinition.listType == 'text-property') {
-              const text_property: Partial<InfTextProperty> = {
-                ...item,
-                fk_concerned_entity: this.pkSourceEntity,
-              };
-              return { text_property }
-            } else {
-              const statement: Partial<InfStatement> = {
-                fk_property: data.listDefinition.property.pkProperty,
-                fk_property_of_property: data.listDefinition.property.pkPropertyOfProperty,
-              }
 
-
-              if (data.listDefinition.isOutgoing) {
-                // assign subject
-                statement.fk_subject_info = this.pkSourceEntity;
-
-                // assign object
-                if (isCtrlEntityModel(item) && item.persistent_item) {
-                  statement.object_persistent_item = item.persistent_item
-                }
-                else if (isCtrlEntityModel(item) && item.temporal_entity) {
-                  statement.object_temporal_entity = item.temporal_entity
-                }
-                else if (isInfStatement(item)) {
-                  statement.object_lang_string = item.object_lang_string;
-                  statement.object_place = item.object_place;
-                  statement.object_appellation = item.object_appellation;
-                  statement.object_language = item.object_language;
-                  statement.object_time_primitive = item.object_time_primitive;
-                  statement.object_dimension = item.object_dimension;
-                }
-
-              } else {
-                // assign object
-                statement.fk_object_info = this.pkSourceEntity;
-
-                // assign subject
-                if (isCtrlEntityModel(item) && item.persistent_item) {
-                  statement.subject_persistent_item = item.persistent_item
-                }
-                else if (isCtrlEntityModel(item) && item.temporal_entity) {
-                  statement.subject_temporal_entity = item.temporal_entity
-                }
-
-              }
-              return { statement }
+            const statement: Partial<InfStatement> = {
+              fk_property: data.listDefinition.property.pkProperty,
+              fk_property_of_property: data.listDefinition.property.pkPropertyOfProperty,
             }
+
+
+            if (data.listDefinition.isOutgoing) {
+              // assign subject
+              statement.fk_subject_info = this.pkSourceEntity;
+
+              // assign object
+              if (isCtrlEntityModel(item) && item.persistent_item) {
+                statement.object_persistent_item = item.persistent_item
+              }
+              else if (isCtrlEntityModel(item) && item.temporal_entity) {
+                statement.object_temporal_entity = item.temporal_entity
+              }
+              else if (isInfStatement(item)) {
+                statement.object_lang_string = item.object_lang_string;
+                statement.object_place = item.object_place;
+                statement.object_appellation = item.object_appellation;
+                statement.object_language = item.object_language;
+                statement.object_time_primitive = item.object_time_primitive;
+                statement.object_dimension = item.object_dimension;
+              }
+
+            } else {
+              // assign object
+              statement.fk_object_info = this.pkSourceEntity;
+
+              // assign subject
+              if (isCtrlEntityModel(item) && item.persistent_item) {
+                statement.subject_persistent_item = item.persistent_item
+              }
+              else if (isCtrlEntityModel(item) && item.temporal_entity) {
+                statement.subject_temporal_entity = item.temporal_entity
+              }
+
+            }
+            return { statement }
+
           }
         },
       }
@@ -312,12 +306,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   private getChildNodesOfClassAndListDef(pkTargetClass: number, listDef?: Subfield): Observable<LocalNodeConfig[]> {
 
-    if (listDef && listDef.listType == 'text-property') {
-      const c = this.getListNode(listDef, false, null);
-      c.array.addOnInit = 1;
-      c.array.mapValue = (items => items[0])
-      return of([c]);
-    }
     return combineLatest(
       this.c.pipeTableNameOfClass(pkTargetClass),
       this.c.pipeClassLabel(pkTargetClass)

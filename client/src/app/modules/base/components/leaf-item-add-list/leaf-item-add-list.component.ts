@@ -271,29 +271,21 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
   }
 
   add() {
-    if (this.listDefinition.listType == 'text-property') {
-      const txtP: InfTextProperty[] = this.selection.selected.map(option => (option as TextPropertyItem).textProperty);
-      this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.text_property.upsert(txtP, pkProject)
-        .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-          this.close.emit()
-        })
-      )
-    }
-    else {
-      const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicStatementItem).statement);
 
-      this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.statement.upsert(statements, pkProject)
-        .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-          this.close.emit()
-        })
-      )
+    const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicStatementItem).statement);
 
-      // add leaf values objects to store
-      this.selection.selected.forEach(s => {
-        if (s.store) s.store.storeFn(s.store.items, '')
+    this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.statement.upsert(statements, pkProject)
+      .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
+        this.close.emit()
       })
+    )
 
-    }
+    // add leaf values objects to store
+    this.selection.selected.forEach(s => {
+      if (s.store) s.store.storeFn(s.store.items, '')
+    })
+
+
   }
 
   ngOnDestroy() {
