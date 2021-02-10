@@ -1,19 +1,20 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "importHelpers": true,
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": false,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
     "target": "es2015",
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": false,
+    "resolveJsonModule": true,
     "types": [
       "socket.io-client",
       "jasmine"
@@ -25,7 +26,6 @@
       "es2016",
       "dom"
     ],
-    "module": "esnext",
   },
   "exclude": [
     "node_modules",

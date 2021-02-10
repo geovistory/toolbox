@@ -2,24 +2,25 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+  "defaultProject": "toolbox",
   "projects": {
-    "geovistory-client": {
-      "root": "",
-      "sourceRoot": "src",
+    "toolbox": {
+      "root": "projects/toolbox",
+      "sourceRoot": "projects/toolbox/src",
       "projectType": "application",
       "prefix": "gv",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "outputPath": "dist/toolbox",
+            "index": "projects/toolbox/src/index.html",
+            "main": "projects/toolbox/src/main.ts",
+            "polyfills": "projects/toolbox/src/polyfills.ts",
+            "tsConfig": "projects/toolbox/tsconfig.app.json",
             "assets": [
-              "src/assets",
-              "src/favicon.ico",
+              "projects/toolbox/src/assets",
+              "projects/toolbox/src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",
@@ -32,7 +33,7 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
+              "projects/toolbox/src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.bubble.css",
@@ -44,7 +45,7 @@
             "scripts": [
               "node_modules/cesium/Build/Cesium/Cesium.js"
             ],
-            "webWorkerTsConfig": "tsconfig.worker.json"
+            "webWorkerTsConfig": "projects/toolbox/tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -65,8 +66,8 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "projects/toolbox/src/environments/environment.ts",
+                  "with": "projects/toolbox/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -75,27 +76,27 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "geovistory-client:build"
+            "browserTarget": "toolbox:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "geovistory-client:build:production"
+              "browserTarget": "toolbox:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "geovistory-client:build"
+            "browserTarget": "toolbox:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
+            "main": "projects/toolbox/src/test.ts",
+            "polyfills": "projects/toolbox/src/polyfills.ts",
+            "tsConfig": "projects/toolbox/tsconfig.spec.json",
+            "karmaConfig": "projects/toolbox/karma.conf.js",
             "sourceMap": {
               "scripts": false,
               "styles": false,
@@ -105,7 +106,7 @@
               "node_modules/cesium/Build/Cesium/Cesium.js"
             ],
             "styles": [
-              "src/styles.scss",
+              "projects/toolbox/src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.bubble.css",
@@ -115,8 +116,8 @@
               "node_modules/primeng/resources/primeng.min.css"
             ],
             "assets": [
-              "src/assets",
-              "src/favicon.ico",
+              "projects/toolbox/src/assets",
+              "projects/toolbox/src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",
@@ -129,35 +130,23 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json",
-              "tsconfig.worker.json"
+              "projects/toolbox/tsconfig.app.json",
+              "projects/toolbox/tsconfig.spec.json",
+              "projects/toolbox/e2e/tsconfig.json"
             ],
-            "exclude": []
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
-      }
-    },
-    "geovistory-client-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "geovistory-client:serve"
-          }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "prefix": "gv",
+          "styleext": "scss"
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": []
-          }
+        "@schematics/angular:directive": {
+          "prefix": "gv"
         }
       }
     },
@@ -194,7 +183,7 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
+              "projects/toolbox/src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.snow.css",
@@ -233,16 +222,6 @@
           }
         }
       }
-    }
-  },
-  "defaultProject": "geovistory-client",
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "gv",
-      "styleext": "scss"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "gv"
     }
   }
 }

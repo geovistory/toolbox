@@ -11,7 +11,7 @@
         "path": "./client",
         "type": "ng2web",
         "name": "geovistory",
-        "sdkPath": "client/src/app/core/sdk"
+        "sdkPath": "client/projects/toolbox/src/app/core/sdk"
       }
     },
     "promptValues": {

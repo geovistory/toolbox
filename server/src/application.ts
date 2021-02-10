@@ -161,14 +161,14 @@ export class GeovistoryApplication extends BootMixin(
     */
   private registerStaticFiles() {
 
-    this.static('/', path.join(__dirname, '../../client/dist'));
-    this.static('/home', path.join(__dirname, '../../client/dist'));
-    this.static(/\/projects.*/, path.join(__dirname, '../../client/dist'));
-    this.static(/\/admin.*/, path.join(__dirname, '../../client/dist'));
-    this.static(/\/backoffice.*/, path.join(__dirname, '../../client/dist'));
-    this.static(/\/email-verified.*/, path.join(__dirname, '../../client/dist'));
-    this.static(/\/reset-password.*/, path.join(__dirname, '../../client/dist'));
-    this.static(/\/login.*/, path.join(__dirname, '../../client/dist'));
+    this.static('/', path.join(__dirname, '../../client/dist/toolbox'));
+    this.static('/home', path.join(__dirname, '../../client/dist/toolbox'));
+    this.static(/\/projects.*/, path.join(__dirname, '../../client/dist/toolbox'));
+    this.static(/\/admin.*/, path.join(__dirname, '../../client/dist/toolbox'));
+    this.static(/\/backoffice.*/, path.join(__dirname, '../../client/dist/toolbox'));
+    this.static(/\/email-verified.*/, path.join(__dirname, '../../client/dist/toolbox'));
+    this.static(/\/reset-password.*/, path.join(__dirname, '../../client/dist/toolbox'));
+    this.static(/\/login.*/, path.join(__dirname, '../../client/dist/toolbox'));
   }
 
 }

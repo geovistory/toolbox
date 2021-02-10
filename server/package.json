@@ -27,7 +27,7 @@
     "build:sdk": "bash build-ngx-sdk.sh",
     "build:mock": "node ./scripts/build-mock.js",
     "build:sdk-windows": "build-ngx-sdk.sh",
-    "build:lb3-sdk": "./node_modules/.bin/lb-sdk lb3app/server/server ../client/src/app/core/sdk -d ng2web -l angular2",
+    "build:lb3-sdk": "./node_modules/.bin/lb-sdk lb3app/server/server ../client/projects/toolbox/src/app/core/sdk -d ng2web -l angular2",
     "build:lb3-sdk-windows": ".\\node_modules\\.bin\\lb-sdk lb3app\\server\\server ..\\client\\src\\app\\core\\sdk -d ng2web -l angular2",
     "start:warehouse": "node ./scripts/start-warehouse.js",
     "start:webserver": "node ./scripts/start-webserver.js",
