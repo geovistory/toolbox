@@ -10,7 +10,7 @@ import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { isLeafItemSubfield } from '../../base.helpers';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, PlaceItem, Subfield, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 

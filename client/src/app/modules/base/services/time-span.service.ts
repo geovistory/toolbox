@@ -9,7 +9,7 @@ import { InfActions } from 'app/core/inf/inf.actions';
 import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { TimeSpanItem } from '../components/properties-tree/properties-tree.models';
-import { InformationPipesService } from './information-pipes.service';
+import { InformationPipesService } from '../../../core/redux-queries/services/information-pipes.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 @Injectable({

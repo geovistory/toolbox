@@ -9,7 +9,7 @@ import { FormFactoryService } from 'app/modules/form-factory/services/form-facto
 import { FormFactoryConfig } from "app/modules/form-factory/services/FormFactoryConfig";
 import { FormNodeConfig } from "app/modules/form-factory/services/FormNodeConfig";
 import { FormFactory } from "app/modules/form-factory/core/form-factory";
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationPipesService } from 'app/core/redux-queries/services/information-pipes.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';

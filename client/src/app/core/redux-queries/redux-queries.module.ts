@@ -4,6 +4,8 @@ import { ReduxStoreModule } from '../redux-store/redux-store.module';
 import { SchemaSelectorsService } from './services/schema-selectors.service';
 import { ConfigurationPipesService } from './services/configuration-pipes.service';
 import { ActiveProjectPipesService } from './services/active-project-pipes.service';
+import { InformationBasicPipesService } from './services/information-basic-pipes.service';
+import { InformationPipesService } from './services/information-pipes.service';
 
 
 
@@ -16,7 +18,9 @@ import { ActiveProjectPipesService } from './services/active-project-pipes.servi
   providers: [
     SchemaSelectorsService,
     ActiveProjectPipesService,
-    ConfigurationPipesService
+    ConfigurationPipesService,
+    InformationBasicPipesService,
+    InformationPipesService
   ]
 })
 export class ReduxQueriesModule { }

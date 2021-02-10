@@ -9,8 +9,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { sortAbc } from 'app/core';
 import { ActiveProjectService } from "app/core/active-project";
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { InformationBasicPipesService } from '../../services/information-basic-pipes.service';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationBasicPipesService } from '../../../../core/redux-queries/services/information-basic-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';
 
 type CtrlModel = number // pk_entity of type (persistent item)

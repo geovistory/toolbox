@@ -19,7 +19,7 @@ import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
 import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { QueryFilterService } from './query-filter.service';
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationPipesService } from 'app/core/redux-queries/services/information-pipes.service';
 import { equals } from 'ramda';
 import { QueryFilterData } from 'app/core/sdk-lb4/model/queryFilterData';
 import { QueryFilter } from 'app/core/sdk-lb4';

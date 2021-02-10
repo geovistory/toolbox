@@ -8,7 +8,7 @@ import { ActiveProjectService } from "app/core/active-project";
 import { InfActions } from 'app/core/inf/inf.actions';
 import { EntityPreviewItem, Item, ItemList, Subfield, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { createPaginateBy } from "../../base.helpers";
 import { temporalEntityListDefaultPageIndex } from "../../base.helpers";

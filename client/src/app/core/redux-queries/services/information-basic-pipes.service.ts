@@ -16,7 +16,7 @@ import { spyTag } from 'app/shared';
 import { omit, values } from 'ramda';
 import { combineLatest, merge, Observable, of, pipe } from 'rxjs';
 import { auditTime, filter, map, switchMap } from 'rxjs/operators';
-import { BasicStatementItem, Subfield } from '../components/properties-tree/properties-tree.models';
+import { BasicStatementItem, Subfield } from '../../../modules/base/components/properties-tree/properties-tree.models';
 import { IAppState } from 'app/core/redux-store/model';
 
 

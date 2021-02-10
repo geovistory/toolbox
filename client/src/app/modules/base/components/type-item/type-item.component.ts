@@ -6,7 +6,7 @@ import { ActiveProjectService } from "app/core/active-project";
 import { ProInfoProjRel } from "app/core/sdk";
 import { InfStatement } from "app/core/sdk";
 import { InfActions } from 'app/core/inf/inf.actions';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 
 @Component({
   selector: 'gv-type-item',

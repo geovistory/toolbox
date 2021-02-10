@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 export interface ChooseClassDialogData {
   title: string;

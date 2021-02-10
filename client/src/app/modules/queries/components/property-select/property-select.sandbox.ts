@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { PropertyOption, PropertySelectComponent } from './property-select.component';
-import { propertyOptionFieldKey } from 'app/modules/base/services/information-pipes.service';
+import { propertyOptionFieldKey } from 'app/core/redux-queries/services/information-pipes.service';
 
 
 const options$ = new BehaviorSubject(null)

@@ -25,9 +25,9 @@ import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rx
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
 import { PaginateByParam } from 'app/core/redux-store/actions';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { ClassAndTypeNode } from '../components/classes-and-types-select/classes-and-types-select.component';
-import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../components/properties-tree/properties-tree.models';
+import { ClassAndTypeNode } from '../../../modules/base/components/classes-and-types-select/classes-and-types-select.component';
+import { CtrlTimeSpanDialogResult } from '../../../modules/base/components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../../../modules/base/components/properties-tree/properties-tree.models';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { IAppState } from 'app/core/redux-store/model';
 

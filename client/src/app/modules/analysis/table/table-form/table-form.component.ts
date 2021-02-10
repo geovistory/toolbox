@@ -16,7 +16,7 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationPipesService } from 'app/core/redux-queries/services/information-pipes.service';
 import { QueryDefinition } from 'app/core/sdk-lb4/model/queryDefinition';
 import { AnalysisDefinition } from 'app/core/sdk-lb4/model/analysisDefinition';
 

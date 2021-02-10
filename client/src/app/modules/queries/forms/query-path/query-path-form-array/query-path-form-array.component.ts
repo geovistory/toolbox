@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationPipesService } from 'app/core/redux-queries/services/information-pipes.service';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { switchMap, map, first, mergeMap, shareReplay } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';

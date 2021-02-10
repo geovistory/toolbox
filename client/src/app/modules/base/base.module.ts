@@ -3,9 +3,11 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModule } from 'app/core/material/material.module';
+import { ReduxQueriesModule } from 'app/core/redux-queries/redux-queries.module';
 import { ValidationService } from 'app/core/validation/validation.service';
 import { ControlMessagesModule, PassiveLinkModule } from 'app/shared';
 import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
 import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
@@ -19,6 +21,7 @@ import { AddOrCreateEntityDialogComponent } from './components/add-or-create-ent
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
+import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
 import { CtrlLangStringComponent } from './components/ctrl-lang-string/ctrl-lang-string.component';
 import { CtrlLanguageComponent } from './components/ctrl-language/ctrl-language.component';
@@ -30,6 +33,10 @@ import { CtrlTimeSpanComponent } from './components/ctrl-time-span/ctrl-time-spa
 import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existence-time-help/existence-time-help.component';
 import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
+import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
+import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
+import { FgPlaceComponent } from './components/fg-place/fg-place.component';
+import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-property.component';
 import { FieldComponent } from './components/field/field.component';
 import { FormArrayComponent } from './components/form-array/form-array.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
@@ -37,27 +44,17 @@ import { FormCreateEntityComponent } from './components/form-create-entity/form-
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { LeafItemAddListComponent } from './components/leaf-item-add-list/leaf-item-add-list.component';
 import { LeafItemListComponent } from './components/leaf-item-list/leaf-item-list.component';
-import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { PropertiesTreeDialogComponent } from './components/properties-tree-dialog/properties-tree-dialog.component';
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
+import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { TemporalEntityAddListComponent } from './components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
 import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
-import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { InformationBasicPipesService } from './services/information-basic-pipes.service';
-import { InformationPipesService } from './services/information-pipes.service';
+import { BaseModalsService } from './services/base-modals.service';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
-import { FgPlaceComponent } from './components/fg-place/fg-place.component';
-import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-property.component';
-import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
-import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
-import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
-import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
-import { SubfieldType } from './components/properties-tree/properties-tree.models';
-import { BaseModalsService } from './services/base-modals.service';
 
 const components = [
   PropertiesTreeComponent,
@@ -114,6 +111,7 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
+  ReduxQueriesModule
 ]
 
 @NgModule({
@@ -121,9 +119,6 @@ const baseModules = [
   declarations: components,
   providers: [
     PaginationService,
-    ConfigurationPipesService,
-    InformationPipesService,
-    InformationBasicPipesService,
     TimeSpanService,
     PropertiesTreeService,
     ValidationService,

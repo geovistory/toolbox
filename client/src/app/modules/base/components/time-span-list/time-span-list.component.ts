@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { Subfield, TimeSpanItem } from '../properties-tree/properties-tree.models';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { TimeSpanService } from '../../services/time-span.service';
 
 @Component({

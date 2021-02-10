@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { AbstractChecklistControl } from 'app/shared/components/checklist-control/classes/abstract-checklist-control';
 import { NestedNode, ChecklistControlService } from 'app/shared/components/checklist-control/services/checklist-control.service';
 import { distinct, switchMap, map, distinctUntilChanged } from 'rxjs/operators';
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationPipesService } from 'app/core/redux-queries/services/information-pipes.service';
 import { ClassAndTypeNode } from 'app/modules/base/components/classes-and-types-select/classes-and-types-select.component';
 import { equals } from 'ramda';
 

@@ -9,7 +9,7 @@ import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil } f
 import { InfActions } from 'app/core/inf/inf.actions';
 import { PaginateByParam } from 'app/core/redux-store/actions';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { Subfield, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';

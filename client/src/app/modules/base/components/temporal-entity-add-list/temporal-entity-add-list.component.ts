@@ -12,7 +12,7 @@ import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, ta
 import { InfActions } from 'app/core/inf/inf.actions';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { ConfigurationPipesService } from 'app/core/redux-queries/services/configuration-pipes.service';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { AddListComponentInterface, Subfield, TemporalEntityItem } from '../properties-tree/properties-tree.models';
 import { temporalEntityListDefaultPageIndex } from "../../base.helpers";

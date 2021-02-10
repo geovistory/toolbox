@@ -7,7 +7,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from "app/core/active-project";
 import { isValueObjectSubfield } from '../../base.helpers';
-import { InformationPipesService } from '../../services/information-pipes.service';
+import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';

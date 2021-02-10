@@ -13,7 +13,7 @@ import { SchemaObjectService } from 'app/core/redux-store/schema-object.service'
 import { RepoService } from 'app/core/repo/repo.service';
 import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationPipesService } from 'app/core/redux-queries/services/information-pipes.service';
 import { ImporterComponent, ImporterDialogData } from 'app/modules/data/components/importer/importer.component';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
