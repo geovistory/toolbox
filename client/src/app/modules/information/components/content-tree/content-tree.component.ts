@@ -23,6 +23,7 @@ import { DatSelector } from 'app/core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 import { BaseModalsService } from 'app/modules/base/services/base-modals.service';
+import { ContentTreeService } from 'app/core/sdk-lb4';
 
 /**
  * Food data with nested structure.
@@ -131,6 +132,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     public p: ActiveProjectService,
     public a: ActiveAccountService,
     private s: SchemaObjectService,
+    private contentTree: ContentTreeService,
     private r: RepoService,
     private inf: InfActions,
     private dat: DatSelector,
@@ -188,7 +190,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
       this.pkRoot = pkRoot;
       // load data recursive is part of / is reproduction of
-      this.s.store(this.s.api.contentTree(pkProject, pkRoot), pkProject)
+      this.s.storeGv(this.contentTree.contentTreeControllerGetContentTree(pkProject, pkRoot), pkProject)
         .pipe(first(), takeUntil(this.destroy$)).subscribe(() => {
           this.contentTree$ = this.observeChildren(pkRoot)
 

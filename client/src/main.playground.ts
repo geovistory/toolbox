@@ -12,7 +12,6 @@ import { AngularCesiumModule } from 'angular-cesium';
 import { PlaygroundModule } from 'angular-playground';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
-import { SDKBrowserModule, ValidationDirectivesModule } from 'app/core';
 import { AuthModule } from 'app/core/auth/auth.module';
 import { DatModule } from 'app/core/dat/dat.module';
 import { DfhModule } from 'app/core/dfh/dfh.module';
@@ -38,6 +37,8 @@ import { CookiesModule } from 'app/core/cookies/cookies.module';
 import { EntityLabelConfigModule } from 'app/shared/modules/entity-label-config/entity-label-config.module';
 import { TabModule } from 'app/core/tab/tab.module';
 import { SocketsModule } from 'app/core/sockets/sockets.module';
+import { SDKBrowserModule } from 'app/core/sdk';
+import { ValidationDirectivesModule } from 'app/core/validation/validation.directives';
 
 
 @NgModule()

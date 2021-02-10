@@ -49,7 +49,6 @@ import { SocketDriver } from './sockets/socket.driver';
 import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
 import { SchemaObjectApi } from './services/custom/SchemaObject';
-import { PaginationObjectApi } from './services/custom/PaginationObject';
 import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
 import { SysClassFieldApi } from './services/custom/SysClassField';
 import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
@@ -113,7 +112,6 @@ export class SDKBrowserModule {
         SDKModels,
         RealTime,
         SchemaObjectApi,
-        PaginationObjectApi,
         SysClassFieldPropertyRelApi,
         SysClassFieldApi,
         SysClassHasTypePropertyApi,

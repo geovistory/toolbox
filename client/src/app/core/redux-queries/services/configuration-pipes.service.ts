@@ -116,18 +116,20 @@ export class ConfigurationPipesService {
             ].join('_'), fieldConfigs)
 
             const uniqFields: { [uid: string]: Field } = {}
+            const uniqSubfieldCache: { [uid: string]: true } = {}
 
 
             // group by source, pkProperty and isOutgoing
             for (const s of subfields) {
-              const uid = [s.sourceClass, s.property.pkProperty, s.isOutgoing].join('_')
-              const fieldConfig: ProClassFieldConfig | undefined = fieldConfigIdx[uid];
+              const fieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing].join('_')
+              const subfieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing, s.targetClass].join('_')
+              const fieldConfig: ProClassFieldConfig | undefined = fieldConfigIdx[fieldId];
               // the first time the group is established
-              if (!uniqFields[uid]) {
-                const isSpecialField: SpecialFieldType = s.isHasTypeField ? 'has-type'
-                  : s.property.pkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN ? 'time-span'
-                    : false;
-                uniqFields[uid] = {
+              if (!uniqFields[fieldId]) {
+                let isSpecialField: SpecialFieldType = false;
+                if (s.isHasTypeField) isSpecialField = 'has-type';
+                else if (s.property.pkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
+                uniqFields[fieldId] = {
                   sourceClass: s.sourceClass,
                   sourceClassLabel: s.sourceClassLabel,
                   sourceMaxQuantity: s.sourceMaxQuantity,
@@ -149,12 +151,19 @@ export class ConfigurationPipesService {
                   placeOfDisplay: getPlaceOfDisplay(sysConfig.specialFields, s, fieldConfig),
                   isSpecialField
                 }
-              } else {
-                uniqFields[uid].allSubfieldsRemovedFromAllProfiles === false ?
-                  uniqFields[uid].allSubfieldsRemovedFromAllProfiles = false :
-                  uniqFields[uid].allSubfieldsRemovedFromAllProfiles = s.removedFromAllProfiles;
-                uniqFields[uid].targetClasses.push(s.targetClass)
-                uniqFields[uid].listDefinitions.push(s)
+
+                // mark subfield as added
+                uniqSubfieldCache[subfieldId] = true;
+
+
+              }
+              // ignore duplications of subfields
+              else if (!uniqSubfieldCache[subfieldId]) {
+                uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles === false ?
+                  uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles = false :
+                  uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles = s.removedFromAllProfiles;
+                uniqFields[fieldId].targetClasses.push(s.targetClass)
+                uniqFields[fieldId].listDefinitions.push(s)
               }
             }
 
@@ -998,8 +1007,7 @@ function createHasTimeSpanProperty(domainClass: number) {
 
 
 function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: RelatedProfile[]): boolean {
-
-  return profiles.some(p => p.removed_from_api === false && enabledProfiles.includes(p.fk_profile))
+  return !profiles.some(p => p.removed_from_api === false && enabledProfiles.includes(p.fk_profile))
 
 }
 

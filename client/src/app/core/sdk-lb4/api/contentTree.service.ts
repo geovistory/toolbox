@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { PaginationObject } from '../model/models';
+import { GvSchemaObject } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class PaginationObjectService {
+export class ContentTreeService {
 
     protected basePath = 'http://0.0.0.0:3000';
     public defaultHeaders = new HttpHeaders();
@@ -85,29 +85,21 @@ export class PaginationObjectService {
     }
 
     /**
-     * Get PaginationObject to build a list of leaf items not (yet) in project.
-     * @param pkProject Primary Key of the Project.
-     * @param limit number of returned items.
-     * @param offset offset of the segment of returned items.
-     * @param body Object to filter the statements
+     * Get SchemaObject with everything needed to build the tree of the content of an F2 Expression.
+     * @param pkProject Primary key of the project
+     * @param pkExpressionEntity Primary Key of the F2 Expression entity for which the content tree is needed.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public paginationObjectListAlternativeLeafItems(pkProject: number, limit: number, offset: number, body: object, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<PaginationObject>>;
-    public paginationObjectListAlternativeLeafItems(pkProject: number, limit: number, offset: number, body: object, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<PaginationObject>>>;
-    public paginationObjectListAlternativeLeafItems(pkProject: number, limit: number, offset: number, body: object, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<PaginationObject>>>;
-    public paginationObjectListAlternativeLeafItems(pkProject: number, limit: number, offset: number, body: object, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
-            throw new Error('Required parameter pkProject was null or undefined when calling paginationObjectListAlternativeLeafItems.');
+            throw new Error('Required parameter pkProject was null or undefined when calling contentTreeControllerGetContentTree.');
         }
-        if (limit === null || limit === undefined) {
-            throw new Error('Required parameter limit was null or undefined when calling paginationObjectListAlternativeLeafItems.');
-        }
-        if (offset === null || offset === undefined) {
-            throw new Error('Required parameter offset was null or undefined when calling paginationObjectListAlternativeLeafItems.');
-        }
-        if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling paginationObjectListAlternativeLeafItems.');
+        if (pkExpressionEntity === null || pkExpressionEntity === undefined) {
+            throw new Error('Required parameter pkExpressionEntity was null or undefined when calling contentTreeControllerGetContentTree.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -115,13 +107,9 @@ export class PaginationObjectService {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>pkProject, 'pkProject');
         }
-        if (limit !== undefined && limit !== null) {
+        if (pkExpressionEntity !== undefined && pkExpressionEntity !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>limit, 'limit');
-        }
-        if (offset !== undefined && offset !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>offset, 'offset');
+            <any>pkExpressionEntity, 'pkExpressionEntity');
         }
 
         let headers = this.defaultHeaders;
@@ -143,11 +131,7 @@ export class PaginationObjectService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -156,25 +140,12 @@ export class PaginationObjectService {
         }
 
 
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json',
-            'application/x-www-form-urlencoded',
-            'application/xml',
-            'text/xml'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
         let responseType: 'text' | 'json' = 'json';
         if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
-        return this.httpClient.post<Array<PaginationObject>>(`${this.configuration.basePath}/lb3-api/PaginationObjects/list-alternative-leaf-items`,
-            body,
+        return this.httpClient.get<GvSchemaObject>(`${this.configuration.basePath}/get-content-tree`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

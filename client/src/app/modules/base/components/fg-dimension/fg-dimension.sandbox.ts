@@ -35,7 +35,7 @@ export default sandboxOf(FgDimensionComponent, {
 
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-          <gv-fg-dimension #c [appearance]="'fill'" [initVal$]="initVal$"></gv-fg-dimension>
+          <gv-fg-dimension #c [appearance]="'fill'" [initVal$]="initVal$" [pkClassOfDimension]="709"></gv-fg-dimension>
       </div>
       <div>
           <button (click)="c.focusOnCtrlNumber()" >focus on number</button>

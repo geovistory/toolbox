@@ -28,7 +28,8 @@
       "type": "object"
     },
     "string": {
-      "type": "string"
+      "type": "string",
+      "generated": true
     }
   },
   "validations": [],

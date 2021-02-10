@@ -71,7 +71,6 @@ export * from './loginRequest';
 export * from './loginResponse';
 export * from './mapTemporalData';
 export * from './newProDfhClassProjRel';
-export * from './paginationObject';
 export * from './pingResponse';
 export * from './proAnalysis';
 export * from './proClassFieldConfig';

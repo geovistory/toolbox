@@ -5,6 +5,7 @@ api.module.ts
 api/account.service.ts
 api/analysis.service.ts
 api/api.ts
+api/contentTree.service.ts
 api/datChunk.service.ts
 api/datChunkController.service.ts
 api/datColumn.service.ts
@@ -23,7 +24,6 @@ api/infStatement.service.ts
 api/infTemporalEntity.service.ts
 api/infTextProperty.service.ts
 api/paginatedStatementsController.service.ts
-api/paginationObject.service.ts
 api/pingController.service.ts
 api/proClassFieldConfig.service.ts
 api/proDfhClassProjRel.service.ts
@@ -120,7 +120,6 @@ model/loginResponse.ts
 model/mapTemporalData.ts
 model/models.ts
 model/newProDfhClassProjRel.ts
-model/paginationObject.ts
 model/pingResponse.ts
 model/proAnalysis.ts
 model/proClassFieldConfig.ts

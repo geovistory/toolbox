@@ -1,20 +1,29 @@
-import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
-import { Lb3Models } from '../utils/interfaces';
-import { logSql } from '../utils';
+import {Postgres1DataSource} from '../../datasources';
+import {DatDigital} from '../../models/dat-digital.model';
+import {GvSchemaObject} from '../../models/gv-schema-object.model';
+import {InfLanguage} from '../../models/inf-language.model';
+import {InfStatement} from '../../models/inf-statement.model';
+import {InfTextProperty} from '../../models/inf-text-property.model';
+import {ProInfoProjRel} from '../../models/pro-info-proj-rel.model';
+import {WarEntityPreview} from '../../models/war-entity-preview.model';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
-export class SqlContentTree extends SqlBuilderLbModels {
+export class QContentTree extends SqlBuilderLb4Models {
 
-  constructor(lb3models: Lb3Models) {
-    super(lb3models)
+  constructor(
+    dataSource: Postgres1DataSource,
+  ) {
+    super(dataSource)
   }
+
 
   /**
    *
    * @param {*} fkProject
    * @param {*} pkEntity primary key of the Expression entity, for which we need the tree.
    */
-  create(fkProject: number, pkEntity: number) {
-    const sql = `
+  query(fkProject: number, pkEntity: number) {
+    this.sql = `
       -- query recusivly all the statements we need to create the tree
       -- tw0 delivers
       -- - pk_entity: the statements we need
@@ -46,8 +55,8 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- entity_previews (Expression Portions)
       tw1 AS (
         SELECT DISTINCT ON (t1.pk_entity)
-          ${this.createSelect('t1', 'WarEntityPreview')},
-          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+          ${this.createSelect('t1', WarEntityPreview.definition)},
+          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           war.entity_preview t1
         JOIN tw0 t3
@@ -66,8 +75,8 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- statements
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfStatement')},
-          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+          ${this.createSelect('t1', InfStatement.definition)},
+          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           tw0
         CROSS JOIN
@@ -82,8 +91,8 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- text_properties
       tw3 AS (
         SELECT
-          ${this.createSelect('t1', 'InfTextProperty')},
-          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+          ${this.createSelect('t1', InfTextProperty.definition)},
+          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           tw1
         CROSS JOIN
@@ -97,7 +106,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- language
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfLanguage')}
+          ${this.createSelect('t1', InfLanguage.definition)}
         FROM
           tw3
         CROSS JOIN
@@ -107,8 +116,8 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- has type statement
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', 'InfStatement')},
-          ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
+          ${this.createSelect('t1', InfStatement.definition)},
+          ${this.createBuildObject('t3', ProInfoProjRel.definition)} proj_rel
         FROM
           tw1
         CROSS JOIN
@@ -125,8 +134,8 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- has appellation for language statements
       tw6 AS (
         SELECT
-          ${this.createSelect('t1', 'InfStatement')},
-          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+          ${this.createSelect('t1', InfStatement.definition)},
+          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           tw1
         CROSS JOIN
@@ -141,7 +150,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- digital
       tw7 AS (
         SELECT
-          ${this.createSelect('t1', 'DatDigital')}
+          ${this.createSelect('t1', DatDigital.definition)}
         FROM
           tw0
         CROSS JOIN
@@ -174,7 +183,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'WarEntityPreview')} as objects
+          ${this.createBuildObject('t1', WarEntityPreview.definition)} as objects
           FROM (
             SELECT * FROM tw1
           ) AS t1
@@ -185,7 +194,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfTextProperty')} as objects
+          ${this.createBuildObject('t1', InfTextProperty.definition)} as objects
           FROM (
             SELECT * FROM tw3
           ) AS t1
@@ -196,7 +205,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfLanguage')} as objects
+          ${this.createBuildObject('t1', InfLanguage.definition)} as objects
           FROM (
             SELECT * FROM tw4
           ) AS t1
@@ -207,7 +216,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfStatement')} as objects
+          ${this.createBuildObject('t1', InfStatement.definition)} as objects
           FROM (
             SELECT * FROM tw2
             UNION ALL
@@ -222,7 +231,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'DatDigital')} as objects
+          ${this.createBuildObject('t1', DatDigital.definition)} as objects
           FROM (
             SELECT * FROM tw7
           ) AS t1
@@ -256,8 +265,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       LEFT JOIN info_proj_rel ON true
     `;
 
-    logSql(sql, this.params);
 
-    return { sql, params: this.params };
+    return this.executeAndReturnFirstData<GvSchemaObject>()
   }
 }

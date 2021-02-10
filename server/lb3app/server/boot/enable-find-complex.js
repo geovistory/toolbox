@@ -24,7 +24,6 @@ var include = [
   'DatChunk',
   'DatDigital',
   'DatNamespace',
-  'WarEntityPreview',
 ];
 
 module.exports = function(app) {

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { AccountService } from './api/account.service';
 import { AnalysisService } from './api/analysis.service';
+import { ContentTreeService } from './api/contentTree.service';
 import { DatChunkService } from './api/datChunk.service';
 import { DatChunkControllerService } from './api/datChunkController.service';
 import { DatColumnService } from './api/datColumn.service';
@@ -22,7 +23,6 @@ import { InfStatementService } from './api/infStatement.service';
 import { InfTemporalEntityService } from './api/infTemporalEntity.service';
 import { InfTextPropertyService } from './api/infTextProperty.service';
 import { PaginatedStatementsControllerService } from './api/paginatedStatementsController.service';
-import { PaginationObjectService } from './api/paginationObject.service';
 import { PingControllerService } from './api/pingController.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';
 import { ProDfhClassProjRelService } from './api/proDfhClassProjRel.service';

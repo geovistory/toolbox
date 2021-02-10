@@ -19,7 +19,6 @@ import { InfStatement } from '../../models/InfStatement';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfTextProperty } from '../../models/InfTextProperty';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
-import { PaginationObject } from '../../models/PaginationObject';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
@@ -43,7 +42,6 @@ export class SDKModels {
 
   private models: Models = {
     SchemaObject: SchemaObject,
-    PaginationObject: PaginationObject,
     SysClassFieldPropertyRel: SysClassFieldPropertyRel,
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,
