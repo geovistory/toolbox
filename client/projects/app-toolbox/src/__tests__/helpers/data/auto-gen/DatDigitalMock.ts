@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { DatDigital } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DatDigital } from "@kleiolab/lib-sdk-lb4";
 import { DatNamespaceMock } from './DatNamespaceMock';
 import { SysSystemTypeMock } from './SysSystemTypeMock';
 

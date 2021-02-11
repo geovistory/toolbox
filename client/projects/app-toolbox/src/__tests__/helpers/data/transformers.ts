@@ -1,5 +1,8 @@
 import { DfhApiClass, DfhApiProperty } from './auto-gen/local-model.helpers';
-import { DfhClass, DfhProperty, DfhLabel } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DfhLabel } from "@kleiolab/lib-sdk-lb4";
+
+import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 
 /**
  * converts a DfhApiClass (database format)

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActiveAccountService } from "projects/app-toolbox/src/app/core/active-account";
-import { DatChunk, PubAccount } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { PubAccount } from "@kleiolab/lib-sdk-lb4";
+
+import { DatChunk } from "@kleiolab/lib-sdk-lb4";
 
 @Component({
   selector: 'gv-home',

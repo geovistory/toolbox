@@ -1,4 +1,4 @@
-import { GeoEntityMapAndTimeCont } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { GeoEntityMapAndTimeCont } from "@kleiolab/lib-sdk-lb4";
 
 export const queryResults1: Array<GeoEntityMapAndTimeCont> = [
   {

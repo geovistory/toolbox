@@ -6,7 +6,10 @@ import { ProjectSettingsData } from 'projects/app-toolbox/src/app/modules/projec
 import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
 import { TabBase } from '../../shared/components/tab-layout/tab-layout.models';
-import { DfhProperty, InfLanguage, WarEntityPreview } from '../sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+
+import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
+import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
 
 export interface ProjectPreview {
   label?: string,
@@ -28,9 +31,9 @@ export interface EntityVersionsByPk<T> {
   [pk_entity: number]: VersionEntity<T>
 }
 
-export interface ChunkList { [pk_entity: number]: DatChunk };
-export interface PeItList { [pk_entity: number]: InfPersistentItem };
-export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
+export interface ChunkList { [pk_entity: number]: DatChunk }
+export interface PeItList { [pk_entity: number]: InfPersistentItem }
+export interface TeEnList { [pk_entity: number]: InfTemporalEntity }
 export interface PropertyList { [pk_entity: string]: DfhProperty; }
 export interface TypePeIt extends InfPersistentItem { fk_typed_class: number; } // TODO remove if replaced by TypePreview
 export interface TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
@@ -241,7 +244,7 @@ export interface ProjectCrm {
   properties?: PropertyList
 }
 
-export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
+export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig }
 
 export interface ClassConfig {
   pkEntity: number;

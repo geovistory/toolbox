@@ -5,7 +5,7 @@ import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { InfLangString } from '@kleiolab/lib-sdk-lb3';
 import { DatChunk } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';

@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 import { IconType, PeItTabData, Tab } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { EntityDetail, SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models';
 import { MentioningListOf } from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { InformationBasicPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-basic-pipes.service';

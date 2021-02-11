@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfStatement } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { InfStatement } from "@kleiolab/lib-sdk-lb4";
 import { DatDigitalMock } from './DatDigitalMock';
 import { DfhApiPropertyMock } from './DfhApiPropertyMock';
 import { InfAppellationMock } from './InfAppellationMock';

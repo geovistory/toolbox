@@ -22,7 +22,7 @@ import { QueryFilterService } from './query-filter.service';
 import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
 import { equals } from 'ramda';
 import { QueryFilterData } from "@kleiolab/lib-sdk-lb4";
-import { QueryFilter } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
 
 export type ClassFilterCondition = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS';
 export type SubgroupOperator = 'AND' | 'OR';

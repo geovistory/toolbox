@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { ActiveProjectPipesService } from '../../../core/redux-queries/services/active-project-pipes.service';
 
 @Component({

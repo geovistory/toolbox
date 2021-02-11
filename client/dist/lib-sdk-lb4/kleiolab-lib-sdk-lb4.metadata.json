@@ -1,1 +1,1 @@
-{"__symbolic":"module","version":4,"exports":[{"from":"@kleiolab/lib-sdk-lb4/src/lib/sdk-lb4"}],"metadata":{},"origins":{},"importAs":"@kleiolab/lib-sdk-lb4"}
+{"__symbolic":"module","version":4,"exports":[{"from":"./lib/api/api"},{"from":"./lib/model/models"},{"from":"./lib/variables"},{"from":"./lib/configuration"},{"from":"./lib/api.module"}],"metadata":{},"origins":{},"importAs":"@kleiolab/lib-sdk-lb4"}

@@ -3,7 +3,10 @@ import { Router } from '@angular/router';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { AccountService, PubAccount, SignupRequest, SignupValidationError } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { SignupValidationError } from "@kleiolab/lib-sdk-lb4";
+import { SignupRequest } from "@kleiolab/lib-sdk-lb4";
+import { PubAccount } from "@kleiolab/lib-sdk-lb4";
+import { AccountService } from "@kleiolab/lib-sdk-lb4";
 import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 

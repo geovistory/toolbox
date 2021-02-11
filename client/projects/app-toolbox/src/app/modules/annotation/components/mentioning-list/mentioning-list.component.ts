@@ -10,7 +10,7 @@ import { SchemaSelectorsService } from 'projects/app-toolbox/src/app/core/redux-
 import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
 import { ByPk, IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { DatChunk, DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';

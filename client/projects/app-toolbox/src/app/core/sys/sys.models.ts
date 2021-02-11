@@ -1,5 +1,5 @@
 import { ByPk } from "projects/app-toolbox/src/app/core/redux-store/model";
-import { SysConfigValue } from '../sdk-lb4';
+import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 
 export interface SysRelevantClassSlice {

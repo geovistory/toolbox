@@ -7,7 +7,7 @@ import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { RangeChangeEvent, Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
 import { YAxisDefinition } from '../models/y-axis-definition';
-import { ChartLinePoint } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
 
 

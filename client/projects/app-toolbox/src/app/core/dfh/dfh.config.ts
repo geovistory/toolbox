@@ -1,6 +1,8 @@
 import { ReducerConfigCollection } from 'projects/app-toolbox/src/app/core/redux-store/reducer-factory';
 import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
-import { DfhClass, DfhProperty } from '../sdk-lb4';
+import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
+
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 
 export const dfhRoot = 'dfh';
 

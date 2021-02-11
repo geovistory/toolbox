@@ -5,7 +5,7 @@ import { SubstoreComponent, SysConfig } from 'projects/app-toolbox/src/app/core'
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
 import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { ClassAndTypePk } from 'projects/app-toolbox/src/app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

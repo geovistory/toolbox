@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { AccountService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { AccountService } from "@kleiolab/lib-sdk-lb4";
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 
 

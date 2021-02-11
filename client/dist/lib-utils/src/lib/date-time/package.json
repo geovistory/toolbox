@@ -1,0 +1,13 @@
+{
+  "main": "../../../bundles/kleiolab-lib-utils-src-lib-date-time.umd.js",
+  "module": "../../../fesm5/kleiolab-lib-utils-src-lib-date-time.js",
+  "es2015": "../../../fesm2015/kleiolab-lib-utils-src-lib-date-time.js",
+  "esm5": "../../../esm5/src/lib/date-time/kleiolab-lib-utils-src-lib-date-time.js",
+  "esm2015": "../../../esm2015/src/lib/date-time/kleiolab-lib-utils-src-lib-date-time.js",
+  "fesm5": "../../../fesm5/kleiolab-lib-utils-src-lib-date-time.js",
+  "fesm2015": "../../../fesm2015/kleiolab-lib-utils-src-lib-date-time.js",
+  "typings": "kleiolab-lib-utils-src-lib-date-time.d.ts",
+  "metadata": "kleiolab-lib-utils-src-lib-date-time.metadata.json",
+  "sideEffects": false,
+  "name": "@kleiolab/lib-utils/src/lib/date-time"
+}

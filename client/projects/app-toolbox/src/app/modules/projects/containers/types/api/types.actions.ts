@@ -5,7 +5,7 @@ import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
 import { DatNamespace } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
-import { DfhClass } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 
 type Payload = Types;
 interface MetaData {

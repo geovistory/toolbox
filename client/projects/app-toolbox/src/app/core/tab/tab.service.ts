@@ -5,7 +5,7 @@ import { ReducerConfigCollection } from 'projects/app-toolbox/src/app/core/redux
 import { Observable } from 'rxjs';
 import { TabActions } from './tab.actions';
 import { tabDefinitions, tabRoot } from './tab.config';
-import { TabCell } from '../sdk-lb4';
+import { TabCell } from "@kleiolab/lib-sdk-lb4";
 
 class Selector {
   constructor(

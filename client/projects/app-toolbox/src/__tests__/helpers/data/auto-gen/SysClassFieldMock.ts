@@ -5,7 +5,7 @@
  * the class_field will be replaced by proper properties.
  */
 
-import { SysClassField } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { SysClassField } from "@kleiolab/lib-sdk-lb4";
 
 /**
  * pk_entity prefix: ---

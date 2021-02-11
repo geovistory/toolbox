@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntitySearchHit, WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+
+import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
 
 @Component({
   selector: 'gv-entity-search-hit',

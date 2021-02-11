@@ -11,7 +11,7 @@ import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { U } from "projects/app-toolbox/src/app/core/util/util";
 import { shareReplay, map } from 'rxjs/operators';
 import { CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog.component';
-import { InfLanguage } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
 
 export interface MergeDef {
   // path of the property in the parent, where the child needs to be appended

@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from 'projects/app-toolbox/src/app/core/redux-store/reducer-factory';
-import { WarEntityPreview } from '../sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 export const warRoot = 'war';
 

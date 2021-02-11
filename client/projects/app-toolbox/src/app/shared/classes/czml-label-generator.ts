@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { TimeSpan } from 'projects/app-toolbox/src/app/core/state/models';
 import { CzmlLabel } from '../../../../../../../server/src/lb3/common/interfaces/czml-types';
 import { TemporalDistribution } from './statistic-helpers';

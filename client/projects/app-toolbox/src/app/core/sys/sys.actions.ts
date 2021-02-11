@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory } from 'projects/app-toolbox/src/app/core/redux-store/actions';
 import { FluxStandardAction } from 'flux-standard-action';
-import { SysConfigValue } from '../sdk-lb4';
+import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 import { IAppState } from '../redux-store/model';
 import { sysRoot } from './sys.config';

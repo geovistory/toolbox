@@ -5,7 +5,9 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
-import { DatDigital, RamListService, WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { RamListService } from "@kleiolab/lib-sdk-lb4";
+import { DatDigital } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';

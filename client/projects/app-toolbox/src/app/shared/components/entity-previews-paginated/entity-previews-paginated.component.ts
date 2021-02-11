@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material';
-import { WarEntityPreview, WarEntityPreviewControllerService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreviewControllerService } from "@kleiolab/lib-sdk-lb4";
+
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 @Component({
   selector: 'gv-entity-previews-paginated',

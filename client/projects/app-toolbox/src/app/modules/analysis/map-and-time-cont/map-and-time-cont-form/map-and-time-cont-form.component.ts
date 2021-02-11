@@ -11,7 +11,8 @@ import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableF
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
 import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
-import { AnalysisTableRequest, AnalysisDefinition } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory

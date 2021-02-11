@@ -1,5 +1,11 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { AnalysisMapResponse, AnalysisTimeChartResponse, ChartLine, CzmlSpatialValue, GeoEntityMapAndTimeCont, TimeCzmlValue, WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { TimeCzmlValue } from "@kleiolab/lib-sdk-lb4";
+import { GeoEntityMapAndTimeCont } from "@kleiolab/lib-sdk-lb4";
+import { CzmlSpatialValue } from "@kleiolab/lib-sdk-lb4";
+import { ChartLine } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisMapResponse } from "@kleiolab/lib-sdk-lb4";
 import { ChartLineDefinition } from 'projects/app-toolbox/src/app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';

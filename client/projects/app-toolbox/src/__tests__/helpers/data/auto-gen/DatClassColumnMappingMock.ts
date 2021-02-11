@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatClassColumnMapping } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DatClassColumnMapping } from "@kleiolab/lib-sdk-lb4";
 import { DfhApiClassMock } from './DfhApiClassMock';
 import { DatColumnMock } from './DatColumnMock';
 

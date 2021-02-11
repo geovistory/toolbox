@@ -18,7 +18,7 @@ import { InfSelector } from '../inf/inf.service';
 import { ActiveProjectPipesService } from '../redux-queries/services/active-project-pipes.service';
 import { IAppState, SchemaObject } from '../redux-store/model';
 import { SchemaObjectService } from '../redux-store/schema-object.service';
-import { ProProject } from '../sdk-lb4';
+import { ProProject } from "@kleiolab/lib-sdk-lb4";
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityDetail } from '../state/models';

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { TabRow } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { TabRow } from "@kleiolab/lib-sdk-lb4";
 import { DatDigitalMock } from './DatDigitalMock';
 import { OmitEntity } from './local-model.helpers';
 

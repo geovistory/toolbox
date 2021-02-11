@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatColumn } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DatColumn } from "@kleiolab/lib-sdk-lb4";
 import { DatDigitalMock } from './DatDigitalMock';
 import { DatNamespaceMock } from './DatNamespaceMock';
 import { SysSystemTypeMock } from './SysSystemTypeMock';

@@ -8,7 +8,8 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
 import { dfhRoot } from './dfh.config';
 import { DfhClassSlice } from './dfh.models';
-import { DfhClass, DfhProperty } from '../sdk-lb4';
+import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 import { IAppState } from '../redux-store/model';
 
 

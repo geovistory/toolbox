@@ -5,7 +5,7 @@ import { ByPk, IAppState } from 'projects/app-toolbox/src/app/core/redux-store/m
 import { ReducerConfigCollection } from 'projects/app-toolbox/src/app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DatClassColumnMapping } from '../sdk-lb4';
+import { DatClassColumnMapping } from "@kleiolab/lib-sdk-lb4";
 import { latestVersion } from '../util/custom-rxjs-operators';
 import { DatActions } from './dat.actions';
 import { datDefinitions, datRoot } from './dat.config';

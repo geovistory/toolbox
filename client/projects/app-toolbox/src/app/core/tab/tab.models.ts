@@ -1,5 +1,5 @@
 import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { TabCell } from '../sdk-lb4';
+import { TabCell } from "@kleiolab/lib-sdk-lb4";
 
 export class TabCellSlice {
   by_pk_cell?: ByPk<TabCell>;

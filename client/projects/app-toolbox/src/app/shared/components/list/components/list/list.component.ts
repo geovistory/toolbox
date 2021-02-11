@@ -8,7 +8,7 @@ import { ListAPIActions } from '../../api/list.actions';
 import { ListAPIEpics } from '../../api/list.epics';
 import { List } from '../../api/list.models';
 import { listReducer } from '../../api/list.reducer';
-import { EntitySearchHit } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 
 @WithSubStore({

@@ -2,7 +2,9 @@ import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/c
 import { FormControl } from '@angular/forms';
 import { SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { AnalysisDefinition, AnalysisTimeChartRequest, AnalysisTimeChartResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisTimeChartRequest } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';

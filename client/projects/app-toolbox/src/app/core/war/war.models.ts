@@ -1,5 +1,5 @@
 import { ByPk } from '../redux-store/model';
-import { WarEntityPreview } from '../sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 export interface WarEntityPreviewSlice {
   by_pk_entity?: ByPk<WarEntityPreview>;

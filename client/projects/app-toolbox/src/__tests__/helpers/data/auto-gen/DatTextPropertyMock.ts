@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatTextProperty } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DatTextProperty } from "@kleiolab/lib-sdk-lb4";
 import { DatColumnMock } from './DatColumnMock';
 import { DatNamespaceMock } from './DatNamespaceMock';
 import { InfLanguageMock } from './InfLanguageMock';

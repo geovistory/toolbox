@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DfhClass } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProDfhClassProjRel } from '@kleiolab/lib-sdk-lb3';
 import { ProjectSettingsData } from './project-settings-data.models';

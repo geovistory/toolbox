@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { ActiveAccountService } from "projects/app-toolbox/src/app/core/active-account";
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { PubAccount } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { PubAccount } from "@kleiolab/lib-sdk-lb4";
 import { IAccount } from 'projects/app-toolbox/src/app/modules/account/account.model';
 import { AccountActions } from 'projects/app-toolbox/src/app/modules/account/api/account.actions';
 import { FeedbackDialogComponent } from 'projects/app-toolbox/src/app/modules/user-feedback/components/feedback-dialog/feedback-dialog.component';

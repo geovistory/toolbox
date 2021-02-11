@@ -7,7 +7,7 @@ import { filter } from 'rxjs/operators';
 import { WarActions } from './war.actions';
 import { warDefinitions, warRoot } from './war.config';
 import { toString } from 'ramda';
-import { WarEntityPreview } from '../sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 
 class Selector {

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { StandardActionsFactory } from '../redux-store/actions';
 import { WarEntityPreviewSlice } from './war.models';
 import { warRoot } from './war.config';
-import { WarEntityPreview } from '../sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { IAppState } from '../redux-store/model';
 
 @Injectable()

@@ -3,7 +3,9 @@
 import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
 import { indexBy, omit, sort, values } from "ramda";
 import { JulianDate } from "cesium";
-import { WarEntityPreview, WarEntityPreviewTimeSpan } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreviewTimeSpan } from "@kleiolab/lib-sdk-lb4";
+
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 /**
  *

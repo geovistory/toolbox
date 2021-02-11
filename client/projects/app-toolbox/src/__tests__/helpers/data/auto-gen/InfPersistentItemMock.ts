@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfPersistentItem } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { InfPersistentItem } from "@kleiolab/lib-sdk-lb4";
 import { DfhApiClassMock } from './DfhApiClassMock';
 
 /**

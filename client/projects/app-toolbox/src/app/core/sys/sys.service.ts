@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ReducerConfigCollection } from 'projects/app-toolbox/src/app/core/redux-store/reducer-factory';
 import { Observable } from 'rxjs';
-import { SysConfigValue } from '../sdk-lb4';
+import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 import { ByPk, IAppState } from '../redux-store/model';
 import { SysActions } from './sys.actions';

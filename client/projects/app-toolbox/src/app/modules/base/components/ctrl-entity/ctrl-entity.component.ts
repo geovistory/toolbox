@@ -7,7 +7,7 @@ import { SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
 import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { FieldProperty } from '../properties-tree/properties-tree.models';

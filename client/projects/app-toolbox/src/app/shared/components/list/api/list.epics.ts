@@ -9,7 +9,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ListComponent } from '../components/list/list.component';
 import { ListAPIAction, ListAPIActions } from './list.actions';
 import { SearchResponse } from './list.models';
-import { WarEntityPreviewControllerService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreviewControllerService } from "@kleiolab/lib-sdk-lb4";
 
 @Injectable()
 export class ListAPIEpics {

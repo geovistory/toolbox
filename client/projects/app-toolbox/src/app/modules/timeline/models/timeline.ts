@@ -4,7 +4,7 @@ import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span"
 import { XAxisDefinition, IXAxisDefinition, XAxisOptions } from './x-axis-definition';
 import { DatePipe } from '@angular/common';
 import { Zoomer } from './zoomer';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 
 

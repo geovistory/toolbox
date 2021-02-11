@@ -1,20 +1,18 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ReplaySubject, Subject, Observable, BehaviorSubject } from 'rxjs';
-import { WorkBook } from 'xlsx/types';
-import { WorkerWrapperService } from '../../services/worker-wrapper.service';
-import { first, takeUntil, switchMap } from 'rxjs/operators';
-import { TColFilter } from '../../../../../../../../../server/src/lb3/server/table/interfaces'
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { values } from 'ramda';
-import { ImportTableControllerService, ImportTable } from 'projects/app-toolbox/src/app/core/sdk-lb4';
-import { Header } from 'projects/app-toolbox/src/app/core/sdk-lb4';
-import { ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
+import { Header, ImportTable, ImportTableControllerService, ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
+import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { ImportTableSocket } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { values } from 'ramda';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { WorkBook } from 'xlsx/types';
+import { TColFilter } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
+import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 export interface ImporterDialogData {
   apiCall: (table: ImportTableResponse) => Observable<ImportTableResponse>

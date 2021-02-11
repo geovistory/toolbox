@@ -1,4 +1,4 @@
-import { GvSchemaObject } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
 import { InfLanguageMock } from '../auto-gen/InfLanguageMock';
 import { ProProjectMock } from '../auto-gen/ProProjectMock';
 

@@ -13,11 +13,10 @@ async function refactor(path) {
       "-p",
       path,
       "-s",
-      ".+sdk-lb4.+",
+      ".+/time-span",
       "-t",
-      "@kleiolab/lib-sdk-lb4",
+      "@kleiolab/lib-utlis",
       "-f",
-      // "-d",
     ]);
 
     child.stdout.pipe(process.stdout);

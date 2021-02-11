@@ -5,7 +5,7 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
 import { IAppState } from '../redux-store/model';
-import { DatClassColumnMapping } from '../sdk-lb4';
+import { DatClassColumnMapping } from "@kleiolab/lib-sdk-lb4";
 import { datRoot } from './dat.config';
 import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from './dat.models';
 

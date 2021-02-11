@@ -1,0 +1,13 @@
+{
+  "main": "../../../bundles/kleiolab-lib-utils-src-lib-time-span.umd.js",
+  "module": "../../../fesm5/kleiolab-lib-utils-src-lib-time-span.js",
+  "es2015": "../../../fesm2015/kleiolab-lib-utils-src-lib-time-span.js",
+  "esm5": "../../../esm5/src/lib/time-span/kleiolab-lib-utils-src-lib-time-span.js",
+  "esm2015": "../../../esm2015/src/lib/time-span/kleiolab-lib-utils-src-lib-time-span.js",
+  "fesm5": "../../../fesm5/kleiolab-lib-utils-src-lib-time-span.js",
+  "fesm2015": "../../../fesm2015/kleiolab-lib-utils-src-lib-time-span.js",
+  "typings": "kleiolab-lib-utils-src-lib-time-span.d.ts",
+  "metadata": "kleiolab-lib-utils-src-lib-time-span.metadata.json",
+  "sideEffects": false,
+  "name": "@kleiolab/lib-utils/src/lib/time-span"
+}

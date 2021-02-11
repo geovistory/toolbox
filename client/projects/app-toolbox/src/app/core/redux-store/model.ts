@@ -13,7 +13,7 @@ import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, I
 import { Sys } from '../sys/sys.models';
 import { War } from '../war/war.models';
 import { Tab } from '../tab/tab.models';
-import { WarEntityPreview } from '../sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]

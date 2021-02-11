@@ -4,7 +4,7 @@ import { DatChunk } from '@kleiolab/lib-sdk-lb3';
 import { AnnotationModule } from '../../annotation.module';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { QuillDoc } from '../../../quill';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 const chunk = {
   fk_text: 13,

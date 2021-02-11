@@ -3,7 +3,7 @@ declare var Object: any;
 import { Inject, Injectable } from '@angular/core';
 import { LoopBackAuth, SDKToken } from '@kleiolab/lib-sdk-lb3';
 import { GvInternalStorage } from '../cookies/cookies.module';
-import { Configuration } from '../sdk-lb4';
+import { Configuration } from "@kleiolab/lib-sdk-lb4";
 import { PubAccount } from "@kleiolab/lib-sdk-lb4";
 
 export class GvAuthToken {

@@ -2,7 +2,7 @@
 import { DatDigitalMock } from './DatDigitalMock';
 import { DatColumnMock } from './DatColumnMock';
 import { TabRowMock } from './TabRowMock';
-import { TabCell } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { TabCell } from "@kleiolab/lib-sdk-lb4";
 
 /**
  * pk_entity prefix: 200

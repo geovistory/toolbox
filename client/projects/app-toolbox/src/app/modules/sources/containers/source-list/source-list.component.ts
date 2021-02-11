@@ -13,7 +13,7 @@ import { first, map } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 

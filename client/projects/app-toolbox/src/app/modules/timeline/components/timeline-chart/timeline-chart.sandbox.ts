@@ -6,7 +6,7 @@ import { ship_voyages, ship_voyages_by_place, births_40k } from './timeline-char
 import { few_births } from './timeline-chart.few-births.mock';
 import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
 import { ChartLine } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTimeChartResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
 
 const data1$ = new BehaviorSubject<AnalysisTimeChartResponse>({
   activeLine: null,

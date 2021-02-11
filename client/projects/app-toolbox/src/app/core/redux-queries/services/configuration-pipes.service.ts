@@ -2,7 +2,17 @@
 import { Injectable } from '@angular/core';
 import { dfhLabelByFksKey } from 'projects/app-toolbox/src/app/core/dfh/dfh.config';
 import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'projects/app-toolbox/src/app/core/pro/pro.config';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue, RelatedProfile } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { RelatedProfile } from "@kleiolab/lib-sdk-lb4";
+import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
+import { SysConfigSpecialFields } from "@kleiolab/lib-sdk-lb4";
+import { SysConfigFieldDisplay } from "@kleiolab/lib-sdk-lb4";
+import { ProTextProperty } from "@kleiolab/lib-sdk-lb4";
+import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
+import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
+import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
+import { DfhLabel } from "@kleiolab/lib-sdk-lb4";
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
+import { ClassConfig } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
 import { flatten, indexBy, uniq, values } from 'ramda';
@@ -1080,414 +1090,414 @@ function getSettingsFromSysConfig(
  * - the when field
  * - if available: the type field
  */
-  // @spyTag @cache({ refCount: false }) pipeFieldDefinitionsForTeEnForm(pkClass: number): Observable<Field[]> {
-  //   return of([])
-  // const hasTypeListDef$ = this.pipeHasTypeSubfield(pkClass)
-  // return combineLatest(
-  //   this.pipeSpecificFieldDefinitions(pkClass)
-  //     .pipe(
-  //       map(fields => fields.filter(f => f.allSubfieldsRemovedFromAllProfiles === false))
-  //     )
-  //   ,
-  //   hasTypeListDef$,
-  // ).pipe(
-  //   map(([fields, hasTypeListDefs]) => {
-  //     const when = this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN)
-  //     return [
-  //       ...fields,
-  //       when,
-  //       ...hasTypeListDefs.map((hasTypeListDef) => {
-  //         const typeField: Field = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
-  //         return typeField;
-  //       })
-  //     ]
-  //   })
-  // )
-  // }
+// @spyTag @cache({ refCount: false }) pipeFieldDefinitionsForTeEnForm(pkClass: number): Observable<Field[]> {
+//   return of([])
+// const hasTypeListDef$ = this.pipeHasTypeSubfield(pkClass)
+// return combineLatest(
+//   this.pipeSpecificFieldDefinitions(pkClass)
+//     .pipe(
+//       map(fields => fields.filter(f => f.allSubfieldsRemovedFromAllProfiles === false))
+//     )
+//   ,
+//   hasTypeListDef$,
+// ).pipe(
+//   map(([fields, hasTypeListDefs]) => {
+//     const when = this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN)
+//     return [
+//       ...fields,
+//       when,
+//       ...hasTypeListDefs.map((hasTypeListDef) => {
+//         const typeField: Field = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
+//         return typeField;
+//       })
+//     ]
+//   })
+// )
+// }
 
 
 /**
  * Pipe the specific fields of given class
  */
-  // @spyTag @cache({ refCount: false }) pipeSpecificFieldDefinitions(pkClass: number): Observable<Field[]> {
-  // return combineLatest(
-  //   this.pipePropertiesOfClass(pkClass, true).pipe(
-  //     // filter out the 'has type' property, since it is part of the default fields
-  //     map(outgoing => outgoing.filter(o => !o.is_has_type_subproperty))
-  //   ),
-  //   this.pipePropertiesOfClass(pkClass, false).pipe(
-  //     // filter out the 'has appellation' property, since it is part of the default fields
-  //     map(ingoing => ingoing.filter(i =>
-  //       i.pk_property !== DfhConfig.PROPERTY_PK_IS_APPELLATION_OF
-  //       && i.pk_property !== DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF
-  //     ))
-  //   ),
-  //   this.pipeFieldConfigs(pkClass)
-  // ).pipe(
-  //   switchMap(([outgoing, ingoing, fieldConfigs]) => {
+// @spyTag @cache({ refCount: false }) pipeSpecificFieldDefinitions(pkClass: number): Observable<Field[]> {
+// return combineLatest(
+//   this.pipePropertiesOfClass(pkClass, true).pipe(
+//     // filter out the 'has type' property, since it is part of the default fields
+//     map(outgoing => outgoing.filter(o => !o.is_has_type_subproperty))
+//   ),
+//   this.pipePropertiesOfClass(pkClass, false).pipe(
+//     // filter out the 'has appellation' property, since it is part of the default fields
+//     map(ingoing => ingoing.filter(i =>
+//       i.pk_property !== DfhConfig.PROPERTY_PK_IS_APPELLATION_OF
+//       && i.pk_property !== DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF
+//     ))
+//   ),
+//   this.pipeFieldConfigs(pkClass)
+// ).pipe(
+//   switchMap(([outgoing, ingoing, fieldConfigs]) => {
 
-  //     const key = (fc: Partial<ProClassFieldConfig>) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`;
-  //     const indexed = indexBy((fc) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`, fieldConfigs)
-  //     const getFieldConfig = (listDef: Subfield): ProClassFieldConfig => {
-  //       return indexed[key({
-  //         fk_property: listDef.property.pkProperty,
-  //         fk_domain_class: listDef.isOutgoing ? listDef.sourceClass : null,
-  //         fk_range_class: listDef.isOutgoing ? null : listDef.sourceClass,
-  //       })]
-  //     }
+//     const key = (fc: Partial<ProClassFieldConfig>) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`;
+//     const indexed = indexBy((fc) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`, fieldConfigs)
+//     const getFieldConfig = (listDef: Subfield): ProClassFieldConfig => {
+//       return indexed[key({
+//         fk_property: listDef.property.pkProperty,
+//         fk_domain_class: listDef.isOutgoing ? listDef.sourceClass : null,
+//         fk_range_class: listDef.isOutgoing ? null : listDef.sourceClass,
+//       })]
+//     }
 
-  //     // Create list definitions
-  //     return combineLatest(
-  //       this.pipePropertiesToSubfields(ingoing, false),
-  //       this.pipePropertiesToSubfields(outgoing, true)
-  //     ).pipe(
-  //       map(([ingoingListDefs, outgoingListDefs]) => {
-  //         const listDefinitions = [...ingoingListDefs, ...outgoingListDefs];
+//     // Create list definitions
+//     return combineLatest(
+//       this.pipePropertiesToSubfields(ingoing, false),
+//       this.pipePropertiesToSubfields(outgoing, true)
+//     ).pipe(
+//       map(([ingoingListDefs, outgoingListDefs]) => {
+//         const listDefinitions = [...ingoingListDefs, ...outgoingListDefs];
 
-  //         // Create field definitions
-  //         const fieldDefs: { [key: string]: Field } = {}
-  //         listDefinitions.forEach(listDef => {
+//         // Create field definitions
+//         const fieldDefs: { [key: string]: Field } = {}
+//         listDefinitions.forEach(listDef => {
 
-  //           const k = listDef.property.pkProperty + '_' + listDef.isOutgoing;
+//           const k = listDef.property.pkProperty + '_' + listDef.isOutgoing;
 
-  //           if (!fieldDefs[k]) {
-  //             fieldDefs[k] = {
-  //               ...listDef,
-  //               placeOfDisplay: {},
-  //               allSubfieldsRemovedFromAllProfiles: false,
-  //               fieldConfig: getFieldConfig(listDef),
-  //               listDefinitions: [listDef],
-  //               targetClasses: [listDef.targetClass]
-  //             }
-  //           } else {
-  //             fieldDefs[k].listDefinitions.push(listDef)
-  //             fieldDefs[k].targetClasses.push(listDef.targetClass)
-  //           }
+//           if (!fieldDefs[k]) {
+//             fieldDefs[k] = {
+//               ...listDef,
+//               placeOfDisplay: {},
+//               allSubfieldsRemovedFromAllProfiles: false,
+//               fieldConfig: getFieldConfig(listDef),
+//               listDefinitions: [listDef],
+//               targetClasses: [listDef.targetClass]
+//             }
+//           } else {
+//             fieldDefs[k].listDefinitions.push(listDef)
+//             fieldDefs[k].targetClasses.push(listDef.targetClass)
+//           }
 
-  //           // }
+//           // }
 
-  //         })
-  //         // Order the fields according to ord_num (from project's config, kleiolab's config) or put it at end of list.
-  //         return sort(
-  //           (a, b) => {
-  //             const getOrdNum = (item: Field) => {
-  //               if (item && item.fieldConfig) return item.fieldConfig.ord_num;
-  //               return Number.POSITIVE_INFINITY;
-  //             }
-  //             const ordNumA = getOrdNum(a);
-  //             const ordNumB = getOrdNum(b);
-  //             return ordNumA - ordNumB;
-  //           },
-  //           values(fieldDefs))
-  //       })
-  //     )
-  //   })
-  // )
-  // }
+//         })
+//         // Order the fields according to ord_num (from project's config, kleiolab's config) or put it at end of list.
+//         return sort(
+//           (a, b) => {
+//             const getOrdNum = (item: Field) => {
+//               if (item && item.fieldConfig) return item.fieldConfig.ord_num;
+//               return Number.POSITIVE_INFINITY;
+//             }
+//             const ordNumA = getOrdNum(a);
+//             const ordNumB = getOrdNum(b);
+//             return ordNumA - ordNumB;
+//           },
+//           values(fieldDefs))
+//       })
+//     )
+//   })
+// )
+// }
 
 
 /**
  * Pipe the fields for identification of given class
  */
-  // @spyTag @cache({ refCount: false }) pipeDefaultFieldDefinitions(pkClass: number): Observable<Field[]> {
+// @spyTag @cache({ refCount: false }) pipeDefaultFieldDefinitions(pkClass: number): Observable<Field[]> {
 
 
-  // /**
-  //  * Pipe the generic field has appellation
-  //  * with the given class as range
-  //  */
-  // const hasAppeProp: DfhPropertyStatus = {
-  //   has_domain: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
-  //   pk_property: DfhConfig.PROPERTY_PK_IS_APPELLATION_OF,
-  //   has_range: pkClass,
-  //   domain_instances_max_quantifier: -1,
-  //   domain_instances_min_quantifier: 0,
-  //   range_instances_max_quantifier: 1,
-  //   range_instances_min_quantifier: 1,
-  //   identifier_in_namespace: 'histP9',
-  //   identity_defining: true,
-  //   is_inherited: true,
-  //   is_has_type_subproperty: false,
-  //   removedFromAllProfiles: false,
-  //   profiles: []
-  // }
-  // const hasAppeListDef$ = this.pipePropertiesToSubfields([hasAppeProp], false).pipe(
-  //   filter(listDefs => !!listDefs && !!listDefs[0]),
-  //   map(listDefs => listDefs[0])
-  // );
+// /**
+//  * Pipe the generic field has appellation
+//  * with the given class as range
+//  */
+// const hasAppeProp: DfhPropertyStatus = {
+//   has_domain: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
+//   pk_property: DfhConfig.PROPERTY_PK_IS_APPELLATION_OF,
+//   has_range: pkClass,
+//   domain_instances_max_quantifier: -1,
+//   domain_instances_min_quantifier: 0,
+//   range_instances_max_quantifier: 1,
+//   range_instances_min_quantifier: 1,
+//   identifier_in_namespace: 'histP9',
+//   identity_defining: true,
+//   is_inherited: true,
+//   is_has_type_subproperty: false,
+//   removedFromAllProfiles: false,
+//   profiles: []
+// }
+// const hasAppeListDef$ = this.pipePropertiesToSubfields([hasAppeProp], false).pipe(
+//   filter(listDefs => !!listDefs && !!listDefs[0]),
+//   map(listDefs => listDefs[0])
+// );
 
-  // /**
-  //  * Pipe the generic field has type
-  //  * with the given class as range
-  //  */
-  // const hasTypeListDef$ = this.pipeHasTypeSubfield(pkClass)
-  // return combineLatest(
-  //   hasAppeListDef$,
-  //   hasTypeListDef$,
-  //   this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(c => !!c))
-  // ).pipe(
-  //   map(([hasAppeListDef, hasTypeListDefs, klass]) => {
-  //     const fields: Field[] = []
-
-
-  //     // /*
-  //     //  * Add 'short title' text-property to
-  //     //  *
-  //     //  * Manifestation Product Type – F3, 219
-  //     //  * Manifestation Singleton – F4, 220
-  //     //  * Item – F5, 221
-  //     //  * Web Request – geovC4, 502
-  //     //  */
-  //     // if ([
-  //     //   DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
-  //     //   DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON,
-  //     //   DfhConfig.CLASS_PK_ITEM,
-  //     //   DfhConfig.CLASS_PK_WEB_REQUEST].includes(pkClass)) {
-  //     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_SHORT_TITLE));
-  //     // }
-
-  //     // /*
-  //     // * Add 'has appellation for language – histP9' to
-  //     // *
-  //     // * all classes except 'Appellation for language – histC10', 365
-  //     // */
-  //     // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-  //     //   const appeField: Field = { ...hasAppeListDef, listDefinitions: [hasAppeListDef] }
-  //     //   fields.push(appeField);
-  //     // }
+// /**
+//  * Pipe the generic field has type
+//  * with the given class as range
+//  */
+// const hasTypeListDef$ = this.pipeHasTypeSubfield(pkClass)
+// return combineLatest(
+//   hasAppeListDef$,
+//   hasTypeListDef$,
+//   this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(c => !!c))
+// ).pipe(
+//   map(([hasAppeListDef, hasTypeListDefs, klass]) => {
+//     const fields: Field[] = []
 
 
-  //     // /*
-  //     // * Add 'hasType' fields
-  //     // */
-  //     // if (hasTypeListDefs && hasTypeListDefs.length > 0) {
-  //     //   hasTypeListDefs.forEach((hasTypeListDef) => {
-  //     //     const typeField: Field = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
-  //     //     fields.push(typeField);
-  //     //   })
-  //     // }
+//     // /*
+//     //  * Add 'short title' text-property to
+//     //  *
+//     //  * Manifestation Product Type – F3, 219
+//     //  * Manifestation Singleton – F4, 220
+//     //  * Item – F5, 221
+//     //  * Web Request – geovC4, 502
+//     //  */
+//     // if ([
+//     //   DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
+//     //   DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON,
+//     //   DfhConfig.CLASS_PK_ITEM,
+//     //   DfhConfig.CLASS_PK_WEB_REQUEST].includes(pkClass)) {
+//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_SHORT_TITLE));
+//     // }
 
-  //     // /*
-  //     // * Add 'entity definition' text-property to
-  //     // *
-  //     // * all classes except 'Appellation for language – histC10', 365
-  //     // */
-  //     // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-  //     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION));
-  //     // }
-  //     // /*
-  //     // * Add 'identifier / exact reference / url / ...' text-property to
-  //     // *
-  //     // * Web Request – geovC4, 502
-  //     // */
-  //     // if (DfhConfig.CLASS_PK_WEB_REQUEST === pkClass) {
-  //     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE));
-  //     // }
-
-  //     // /*
-  //     // * Add 'comment' text-property to
-  //     // *
-  //     // * Manifestation Product Type – F3, 219
-  //     // * Manifestation Singleton – F4, 220
-  //     // * Item – F5, 221
-  //     // * Web Request – geovC4, 502
-  //     // * Expression portion – geovC5, 503
-  //     // */
-  //     // if ([
-  //     //   DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
-  //     //   DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON,
-  //     //   DfhConfig.CLASS_PK_ITEM,
-  //     //   DfhConfig.CLASS_PK_WEB_REQUEST,
-  //     //   DfhConfig.CLASS_PK_EXPRESSION_PORTION].includes(pkClass)) {
-  //     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_COMMENT));
-  //     // }
-
-  //     // /*
-  //     // * Add 'time-span' field to
-  //     // *
-  //     // * all temporal entity classes
-  //     // */
-  //     // if (klass.basic_type === 9) {
-  //     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN));
-  //     // }
-
-  //     return fields
-
-  //   })
-  // )
-  // }
+//     // /*
+//     // * Add 'has appellation for language – histP9' to
+//     // *
+//     // * all classes except 'Appellation for language – histC10', 365
+//     // */
+//     // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+//     //   const appeField: Field = { ...hasAppeListDef, listDefinitions: [hasAppeListDef] }
+//     //   fields.push(appeField);
+//     // }
 
 
-  // private pipeHasTypeSubfield(pkClass: number) {
-  //   return this.pipePropertiesOfClass(pkClass, true).pipe(
-  //     // check if this class has 'has type' subproperty
-  //     map(outgoing => {
-  //       return outgoing.filter((prop) => prop.is_has_type_subproperty);
-  //     }), switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
-  //       return this.pipePropertiesToSubfields([dfhProp], true).pipe(filter(listDefs => !!listDefs && !!listDefs[0]), map(listDefs => {
-  //         const listDef = listDefs[0];
-  //         listDef.listType = { typeItem: 'true' };
-  //         return listDef;
-  //       }));
-  //     }))));
-  // }
+//     // /*
+//     // * Add 'hasType' fields
+//     // */
+//     // if (hasTypeListDefs && hasTypeListDefs.length > 0) {
+//     //   hasTypeListDefs.forEach((hasTypeListDef) => {
+//     //     const typeField: Field = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
+//     //     fields.push(typeField);
+//     //   })
+//     // }
 
-  // getClassFieldSubfield(pkClassField: number): Subfield {
-  //   const template = {
-  //     property: {},
-  //     sourceClass: undefined,
-  //     sourceClassLabel: undefined,
-  //     targetClass: undefined,
-  //     isOutgoing: undefined,
-  //     identityDefiningForSource: undefined,
-  //     identityDefiningForTarget: undefined,
-  //     targetMaxQuantity: undefined,
-  //     targetMinQuantity: undefined,
-  //     sourceMaxQuantity: undefined,
-  //     sourceMinQuantity: undefined,
-  //     removedFromAllProfiles: false
-  //   }
-  //   switch (pkClassField) {
-  //     case SysConfig.PK_CLASS_FIELD_WHEN:
-  //       return {
-  //         ...template,
-  //         listType: { timeSpan: 'true' },
-  //         label: 'When',
-  //         isOutgoing: true,
-  //         // fkClassField: pkClassField,
-  //         ontoInfoLabel: 'P4',
-  //         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/4',
-  //         targetMaxQuantity: 1
-  //       }
-  //     case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-  //       return {
-  //         ...template,
-  //         listType:  { textProperty: 'true' },
-  //         label: 'Description',
-  //         // fkClassField: pkClassField,
-  //         ontoInfoLabel: 'P3',
-  //         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-  //         targetMaxQuantity: -1
-  //       }
-  //     case SysConfig.PK_CLASS_FIELD_COMMENT:
-  //       return {
-  //         ...template,
-  //         // fkClassField: SysConfig.PK_CLASS_FIELD_COMMENT,
-  //         listType:  { textProperty: 'true' },
-  //         label: 'Comments',
-  //         ontoInfoLabel: 'P3',
-  //         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-  //         targetMaxQuantity: -1
-  //       }
-  //     case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-  //       return {
-  //         ...template,
-  //         listType:  { textProperty: 'true' },
-  //         label: 'Exact Reference',
-  //         // fkClassField: pkClassField,
-  //         ontoInfoLabel: 'P3',
-  //         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-  //         targetMaxQuantity: -1
-  //       }
-  //     case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
-  //       return {
-  //         ...template,
-  //         listType:  { textProperty: 'true' },
-  //         label: 'Short Title',
-  //         // fkClassField: pkClassField,
-  //         ontoInfoLabel: 'P3',
-  //         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-  //         targetMaxQuantity: -1
-  //       }
-  //     default:
-  //       break;
-  //   }
-  // }
+//     // /*
+//     // * Add 'entity definition' text-property to
+//     // *
+//     // * all classes except 'Appellation for language – histC10', 365
+//     // */
+//     // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION));
+//     // }
+//     // /*
+//     // * Add 'identifier / exact reference / url / ...' text-property to
+//     // *
+//     // * Web Request – geovC4, 502
+//     // */
+//     // if (DfhConfig.CLASS_PK_WEB_REQUEST === pkClass) {
+//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE));
+//     // }
 
-  // getClassFieldDefinition(pkClassField: number): Field {
-  //   const listDef = this.getClassFieldSubfield(pkClassField)
-  //   return { ...listDef, listDefinitions: [listDef] }
-  // }
+//     // /*
+//     // * Add 'comment' text-property to
+//     // *
+//     // * Manifestation Product Type – F3, 219
+//     // * Manifestation Singleton – F4, 220
+//     // * Item – F5, 221
+//     // * Web Request – geovC4, 502
+//     // * Expression portion – geovC5, 503
+//     // */
+//     // if ([
+//     //   DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
+//     //   DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON,
+//     //   DfhConfig.CLASS_PK_ITEM,
+//     //   DfhConfig.CLASS_PK_WEB_REQUEST,
+//     //   DfhConfig.CLASS_PK_EXPRESSION_PORTION].includes(pkClass)) {
+//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_COMMENT));
+//     // }
+
+//     // /*
+//     // * Add 'time-span' field to
+//     // *
+//     // * all temporal entity classes
+//     // */
+//     // if (klass.basic_type === 9) {
+//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN));
+//     // }
+
+//     return fields
+
+//   })
+// )
+// }
 
 
-  // @spyTag @cache({ refCount: false }) pipeClassesRequired() {
-  //   return this.s.sys$.system_relevant_class$.by_required$.key('true')
-  //     .pipe(map(c => values(c).map(k => k.fk_class)))
-  // }
+// private pipeHasTypeSubfield(pkClass: number) {
+//   return this.pipePropertiesOfClass(pkClass, true).pipe(
+//     // check if this class has 'has type' subproperty
+//     map(outgoing => {
+//       return outgoing.filter((prop) => prop.is_has_type_subproperty);
+//     }), switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
+//       return this.pipePropertiesToSubfields([dfhProp], true).pipe(filter(listDefs => !!listDefs && !!listDefs[0]), map(listDefs => {
+//         const listDef = listDefs[0];
+//         listDef.listType = { typeItem: 'true' };
+//         return listDef;
+//       }));
+//     }))));
+// }
+
+// getClassFieldSubfield(pkClassField: number): Subfield {
+//   const template = {
+//     property: {},
+//     sourceClass: undefined,
+//     sourceClassLabel: undefined,
+//     targetClass: undefined,
+//     isOutgoing: undefined,
+//     identityDefiningForSource: undefined,
+//     identityDefiningForTarget: undefined,
+//     targetMaxQuantity: undefined,
+//     targetMinQuantity: undefined,
+//     sourceMaxQuantity: undefined,
+//     sourceMinQuantity: undefined,
+//     removedFromAllProfiles: false
+//   }
+//   switch (pkClassField) {
+//     case SysConfig.PK_CLASS_FIELD_WHEN:
+//       return {
+//         ...template,
+//         listType: { timeSpan: 'true' },
+//         label: 'When',
+//         isOutgoing: true,
+//         // fkClassField: pkClassField,
+//         ontoInfoLabel: 'P4',
+//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/4',
+//         targetMaxQuantity: 1
+//       }
+//     case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+//       return {
+//         ...template,
+//         listType:  { textProperty: 'true' },
+//         label: 'Description',
+//         // fkClassField: pkClassField,
+//         ontoInfoLabel: 'P3',
+//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
+//         targetMaxQuantity: -1
+//       }
+//     case SysConfig.PK_CLASS_FIELD_COMMENT:
+//       return {
+//         ...template,
+//         // fkClassField: SysConfig.PK_CLASS_FIELD_COMMENT,
+//         listType:  { textProperty: 'true' },
+//         label: 'Comments',
+//         ontoInfoLabel: 'P3',
+//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
+//         targetMaxQuantity: -1
+//       }
+//     case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+//       return {
+//         ...template,
+//         listType:  { textProperty: 'true' },
+//         label: 'Exact Reference',
+//         // fkClassField: pkClassField,
+//         ontoInfoLabel: 'P3',
+//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
+//         targetMaxQuantity: -1
+//       }
+//     case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
+//       return {
+//         ...template,
+//         listType:  { textProperty: 'true' },
+//         label: 'Short Title',
+//         // fkClassField: pkClassField,
+//         ontoInfoLabel: 'P3',
+//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
+//         targetMaxQuantity: -1
+//       }
+//     default:
+//       break;
+//   }
+// }
+
+// getClassFieldDefinition(pkClassField: number): Field {
+//   const listDef = this.getClassFieldSubfield(pkClassField)
+//   return { ...listDef, listDefinitions: [listDef] }
+// }
+
+
+// @spyTag @cache({ refCount: false }) pipeClassesRequired() {
+//   return this.s.sys$.system_relevant_class$.by_required$.key('true')
+//     .pipe(map(c => values(c).map(k => k.fk_class)))
+// }
 
 
 
-  // /**
-  //  * Pipes all the enabled properties of a class
-  //  */
-  // @spyTag @cache({ refCount: false }) pipePropertiesOfClass(pkClass: number, isOutgoing: boolean): Observable<DfhPropertyStatus[]> {
+// /**
+//  * Pipes all the enabled properties of a class
+//  */
+// @spyTag @cache({ refCount: false }) pipePropertiesOfClass(pkClass: number, isOutgoing: boolean): Observable<DfhPropertyStatus[]> {
 
 
-  //   let $: Observable<ByPk<DfhProperty>>
-  //   if (isOutgoing) {
-  //     $ = this.s.dfh$.property$.by_has_domain$.key(pkClass)
-  //   }
-  //   else {
-  //     $ = this.s.dfh$.property$.by_has_range$.key(pkClass)
-  //   }
+//   let $: Observable<ByPk<DfhProperty>>
+//   if (isOutgoing) {
+//     $ = this.s.dfh$.property$.by_has_domain$.key(pkClass)
+//   }
+//   else {
+//     $ = this.s.dfh$.property$.by_has_range$.key(pkClass)
+//   }
 
-  //   // filter properties that are in at least one profile enabled by project
-  //   const profiles$ = this.pipeProfilesEnabledByProject()
-
-
-  //   // Filter out only the properties for which target class is allowed
-  //   return combineLatest($, profiles$)
-  //     .pipe(
-  //       map(([props, profiles]) => {
-  //         const p: DfhPropertyStatus[] = []
-
-  //         values(props).forEach(prop => {
+//   // filter properties that are in at least one profile enabled by project
+//   const profiles$ = this.pipeProfilesEnabledByProject()
 
 
-  //           const propProfileRel = prop.profiles as Profiles
+//   // Filter out only the properties for which target class is allowed
+//   return combineLatest($, profiles$)
+//     .pipe(
+//       map(([props, profiles]) => {
+//         const p: DfhPropertyStatus[] = []
 
-  //           let enabledInAProfile = false;
-
-  //           let removedFromAllProfiles = true;
-
-  //           propProfileRel.forEach(item => {
-  //             if (profiles.includes(item.fk_profile)) {
-  //               enabledInAProfile = true;
-  //               if (item.removed_from_api === false) {
-  //                 removedFromAllProfiles = false
-  //               }
-  //             }
-  //           })
-
-  //           if (enabledInAProfile) {
-  //             p.push({
-  //               ...prop,
-  //               removedFromAllProfiles
-  //             })
-  //           }
-  //         })
-
-  //         return p
-  //       })
-  //     )
-
-  // }
+//         values(props).forEach(prop => {
 
 
-  // /**
-  //  * returns an object where the keys are the pks of the Classes
-  //  * used by the given project
-  //  * - or because the class is enabled by class_proj_rel
-  //  * - or because the class is required by sources or by basics
-  //  *
-  //  * this is usefull to check if a class is available at all
-  //  */
-  // @spyTag @cache({ refCount: false }) pipeClassesInEntitesOrRequired(): Observable<{ [key: string]: number }> {
-  //   return combineLatest(
-  //     this.pipeClassesEnabledInEntities(),
-  //     this.pipeClassesRequired()
-  //   ).pipe(
-  //     map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
-  //     startWith({})
-  //   )
-  // }
+//           const propProfileRel = prop.profiles as Profiles
+
+//           let enabledInAProfile = false;
+
+//           let removedFromAllProfiles = true;
+
+//           propProfileRel.forEach(item => {
+//             if (profiles.includes(item.fk_profile)) {
+//               enabledInAProfile = true;
+//               if (item.removed_from_api === false) {
+//                 removedFromAllProfiles = false
+//               }
+//             }
+//           })
+
+//           if (enabledInAProfile) {
+//             p.push({
+//               ...prop,
+//               removedFromAllProfiles
+//             })
+//           }
+//         })
+
+//         return p
+//       })
+//     )
+
+// }
+
+
+// /**
+//  * returns an object where the keys are the pks of the Classes
+//  * used by the given project
+//  * - or because the class is enabled by class_proj_rel
+//  * - or because the class is required by sources or by basics
+//  *
+//  * this is usefull to check if a class is available at all
+//  */
+// @spyTag @cache({ refCount: false }) pipeClassesInEntitesOrRequired(): Observable<{ [key: string]: number }> {
+//   return combineLatest(
+//     this.pipeClassesEnabledInEntities(),
+//     this.pipeClassesRequired()
+//   ).pipe(
+//     map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
+//     startWith({})
+//   )
+// }

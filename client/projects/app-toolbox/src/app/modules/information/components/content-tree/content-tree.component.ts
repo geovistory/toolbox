@@ -23,7 +23,7 @@ import { DatSelector } from 'projects/app-toolbox/src/app/core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
-import { ContentTreeService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { ContentTreeService } from "@kleiolab/lib-sdk-lb4";
 import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
 
 /**

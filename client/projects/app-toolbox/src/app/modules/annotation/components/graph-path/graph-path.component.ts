@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { WarEntityPreview } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 export interface GraphPathEntity {
   label: string;
   icon: string;

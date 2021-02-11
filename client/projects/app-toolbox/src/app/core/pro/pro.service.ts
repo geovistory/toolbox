@@ -9,7 +9,10 @@ import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
 import { toString } from 'ramda';
 import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
-import { ProClassFieldConfig, ProProject } from '../sdk-lb4';
+import { ProProject } from "@kleiolab/lib-sdk-lb4";
+
+
+import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
 
 
 class Selector {

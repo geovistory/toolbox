@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { ProClassFieldConfig } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
 
 interface FieldConfig extends Field {
   propertyField?: {

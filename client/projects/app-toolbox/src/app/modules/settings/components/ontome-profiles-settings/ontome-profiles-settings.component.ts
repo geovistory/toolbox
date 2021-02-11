@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material';
 import { OntomeProfilesListDialogComponent } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
 import { OntomeProfileDeactivationReportDialogComponent, OntomeProfileDeactivationReportDialogData } from '../ontome-profile-deactivation-report-dialog/ontome-profile-deactivation-report-dialog.component';
 import { OntomeProfileUpdateDialogData, OntomeProfileUpdateDialogComponent } from '../ontome-profile-update-dialog/ontome-profile-update-dialog.component';
-import { DfhProfile } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DfhProfile } from "@kleiolab/lib-sdk-lb4";
 export interface ProfileItem {
   label: string;
   ownerId: number;

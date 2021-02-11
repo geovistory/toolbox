@@ -8,7 +8,13 @@ import { filter, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
 import { IAppState } from '../redux-store/model';
-import { AccountService, LoginRequest, LoginResponse, PubAccount } from '../sdk-lb4';
+import { PubAccount } from "@kleiolab/lib-sdk-lb4";
+
+
+
+import { LoginResponse } from "@kleiolab/lib-sdk-lb4";
+import { LoginRequest } from "@kleiolab/lib-sdk-lb4";
+import { AccountService } from "@kleiolab/lib-sdk-lb4";
 
 
 

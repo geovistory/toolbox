@@ -6,7 +6,7 @@ import { InfActions } from '../inf/inf.actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProActions } from '../pro/pro.actions';
 import { SchemaObjectApi } from '@kleiolab/lib-sdk-lb3';
-import { GvSchemaObject } from '../sdk-lb4';
+import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { SysActions } from '../sys/sys.actions';
 import { TabActions } from '../tab/tab.actions';

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { DatNamespace } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { DatNamespace } from "@kleiolab/lib-sdk-lb4";
 import { ProProjectMock } from './ProProjectMock';
 
 /**

@@ -6,7 +6,8 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { DatDigitalApi } from '@kleiolab/lib-sdk-lb3';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
 import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { TableRow, TableService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { TableService } from "@kleiolab/lib-sdk-lb4";
+import { TableRow } from "@kleiolab/lib-sdk-lb4";
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';

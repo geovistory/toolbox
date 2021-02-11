@@ -1,7 +1,14 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
-import { ProClassFieldConfig, SysConfigValueObjectType, WarEntityPreview, InfStatement, ProInfoProjRel, InfTextProperty, InfTemporalEntity, InfLanguage } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
+import { InfTemporalEntity } from "@kleiolab/lib-sdk-lb4";
+import { InfTextProperty } from "@kleiolab/lib-sdk-lb4";
+import { ProInfoProjRel } from "@kleiolab/lib-sdk-lb4";
+import { InfStatement } from "@kleiolab/lib-sdk-lb4";
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { SysConfigValueObjectType } from "@kleiolab/lib-sdk-lb4";
+import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 

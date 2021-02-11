@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { WarEntityPreview, TimePrimitiveWithCal, } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { TimePrimitiveWithCal } from "@kleiolab/lib-sdk-lb4";
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { ProProjectMock } from './ProProjectMock'
 import { DfhApiClassMock } from './DfhApiClassMock'
 

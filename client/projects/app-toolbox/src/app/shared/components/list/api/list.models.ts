@@ -1,4 +1,4 @@
-import { EntitySearchHit } from 'projects/app-toolbox/src/app/core/sdk-lb4';
+import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
 
 
 
