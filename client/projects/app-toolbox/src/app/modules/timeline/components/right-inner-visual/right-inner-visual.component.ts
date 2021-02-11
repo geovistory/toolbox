@@ -1,5 +1,5 @@
 import { Component, DoCheck, ElementRef, Input, OnInit } from '@angular/core';
-import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
+import { TimePrimitive } from '@kleiolab/lib-utils';
 
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 import { Timeline } from '../../models/timeline';

@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
+import { TimePrimitive } from '@kleiolab/lib-utils';
 
 import { D3Service } from '../shared/d3.service';
 

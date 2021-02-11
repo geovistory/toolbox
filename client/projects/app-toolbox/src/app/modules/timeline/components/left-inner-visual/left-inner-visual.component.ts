@@ -1,5 +1,5 @@
 import { Component, Input, ElementRef, OnInit, DoCheck } from '@angular/core';
-import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
+import { TimePrimitive } from '@kleiolab/lib-utils';
 import { XAxisDefinition } from '../../models/x-axis-definition';
 import { D3Service } from '../../shared/d3.service';
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';

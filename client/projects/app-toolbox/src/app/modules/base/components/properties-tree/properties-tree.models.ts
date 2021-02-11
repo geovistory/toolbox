@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
+import { TimePrimitive } from '@kleiolab/lib-utils';
 import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
 import { InfTemporalEntity } from "@kleiolab/lib-sdk-lb4";
 import { InfTextProperty } from "@kleiolab/lib-sdk-lb4";

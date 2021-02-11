@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
-import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
+import { TimeSpan } from "@kleiolab/lib-utils";
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({
@@ -32,8 +31,7 @@ export class TimeSpanPipe implements PipeTransform {
     // all three
     return this.getString(ts.begin) + ' – ' + this.getString(ts.end);
   }
-
-  getString(t: TimePrimitive): string {
+  getString(t: any): string {
     const s = this.timePrimitivePipe.transform(t);
     return s ? s : '(?)';
   }

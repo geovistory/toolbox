@@ -36,11 +36,9 @@
         "dist/lib-core"
       ],
       "@kleiolab/lib-sdk-lb3/*": [
-        "projects/lib-sdk-lb3/*",
-        "projects/lib-sdk-lb3"
+        "dist/lib-sdk-lb3/*",
       ],
       "@kleiolab/lib-sdk-lb3": [
-        "dist/lib-sdk-lb3/*",
         "dist/lib-sdk-lb3"
       ],
       "@kleiolab/lib-sdk-lb4/*": [

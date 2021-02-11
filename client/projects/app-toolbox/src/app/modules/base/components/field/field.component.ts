@@ -9,7 +9,6 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { isValueObjectSubfield } from '../../base.helpers';
 import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
-import { TimeSpanService } from '../../services/time-span.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { Field, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
@@ -18,6 +17,7 @@ import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
 
 import { temporalEntityListDefaultLimit } from "../../base.helpers";
 import { createPaginateBy } from "../../base.helpers";
+import { TimeSpanService } from '../../services/time-span.service';
 
 interface SubfieldWithItemCount extends Subfield {
   itemsCount: number

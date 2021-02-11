@@ -1,11 +1,8 @@
-import * as d3 from 'd3';
-import { GregorianDateTime } from "projects/app-toolbox/src/app/core/date-time";
-import { JulianDateTime } from "projects/app-toolbox/src/app/core/date-time";
 import { DatePipe } from '@angular/common';
-import { Granularity, DateTimeCommons } from 'projects/app-toolbox/src/app/core/date-time/date-time-commons';
-import { CalendarType, TimePrimitive } from 'projects/app-toolbox/src/app/core/date-time/time-primitive';
-import { Zoomer } from './zoomer';
+import { CalendarType, Granularity, GregorianDateTime, JulianDateTime } from '@kleiolab/lib-utils';
+import * as d3 from 'd3';
 import { ScaleLinear } from 'd3';
+import { Zoomer } from './zoomer';
 
 /**
  * Configurable API

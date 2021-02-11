@@ -6,7 +6,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { takeUntil } from 'rxjs/operators';
-import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
+import { TimeSpan } from '@kleiolab/lib-utils';
 
 export type CtrlTimeSpanModel = CtrlTimeSpanDialogResult
 

@@ -10,20 +10,28 @@ var x = undefined;
 /**
  * @record
  */
+function InfTimePrimitiveWithCalendar() { }
+if (false) {
+    /** @type {?} */
+    InfTimePrimitiveWithCalendar.prototype.calendar;
+}
+/**
+ * @record
+ */
 function TimeSpanWithNumberProps() { }
 if (false) {
     /* Skipping unnamed member:
-    72?: TimePrimitiveWithCal;*/
+    72?: InfTimePrimitiveWithCalendar;*/
     /* Skipping unnamed member:
-    152?: TimePrimitiveWithCal;*/
+    152?: InfTimePrimitiveWithCalendar;*/
     /* Skipping unnamed member:
-    153?: TimePrimitiveWithCal;*/
+    153?: InfTimePrimitiveWithCalendar;*/
     /* Skipping unnamed member:
-    71?: TimePrimitiveWithCal;*/
+    71?: InfTimePrimitiveWithCalendar;*/
     /* Skipping unnamed member:
-    150?: TimePrimitiveWithCal;*/
+    150?: InfTimePrimitiveWithCalendar;*/
     /* Skipping unnamed member:
-    151?: TimePrimitiveWithCal;*/
+    151?: InfTimePrimitiveWithCalendar;*/
 }
 var TimeSpan = /** @class */ (function () {
     function TimeSpan(data) {

@@ -3,13 +3,14 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, View
 import { ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators, FormControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Granularity } from 'projects/app-toolbox/src/app/core/date-time/date-time-commons';
+import { Granularity } from "@kleiolab/lib-utils";
 import { Subject } from 'rxjs';
 import { ValidationService } from "projects/app-toolbox/src/app/core/validation/validation.service";
-import { JulianDateTime } from "projects/app-toolbox/src/app/core/date-time";
-import { GregorianDateTime } from "projects/app-toolbox/src/app/core/date-time";
+import { JulianDateTime } from '@kleiolab/lib-utils';
+import { GregorianDateTime } from '@kleiolab/lib-utils';
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, TimePrimitive } from 'projects/app-toolbox/src/app/core/date-time/time-primitive';
+import { TimePrimitive } from "@kleiolab/lib-utils";
+import { CalendarType } from "@kleiolab/lib-utils";
 import { takeUntil } from 'rxjs/operators';
 
 export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {

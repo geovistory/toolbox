@@ -1,5 +1,5 @@
-import { Granularity } from 'projects/app-toolbox/src/app/core/date-time/date-time-commons';
-import { CalendarType } from 'projects/app-toolbox/src/app/core/date-time/time-primitive';
+import { Granularity } from "@kleiolab/lib-utils";
+import { CalendarType } from "@kleiolab/lib-utils";
 
 interface TimePrimitiveWithCal {
   duration: Granularity,

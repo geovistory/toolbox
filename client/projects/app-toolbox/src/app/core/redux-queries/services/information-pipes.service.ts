@@ -3,13 +3,13 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { limitTo, sortAbc, switchMapOr } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { TimePrimitive } from "projects/app-toolbox/src/app/core/date-time";
+import { TimePrimitive } from '@kleiolab/lib-utils';
 import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
+import { TimeSpan } from "@kleiolab/lib-utils";
 import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { Granularity } from 'projects/app-toolbox/src/app/core/date-time/date-time-commons';
-import { CalendarType } from 'projects/app-toolbox/src/app/core/date-time/time-primitive';
+import { Granularity } from "@kleiolab/lib-utils";
+import { CalendarType } from "@kleiolab/lib-utils";
 import { InfModelName } from 'projects/app-toolbox/src/app/core/inf/inf.service';
 import { InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
@@ -17,7 +17,6 @@ import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/qu
 import { PropertyOption, PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
 import { cache, spyTag } from 'projects/app-toolbox/src/app/shared';
 import { TimePrimitivePipe } from 'projects/app-toolbox/src/app/shared/pipes/time-primitive/time-primitive.pipe';
-import { TimeSpanPipe } from 'projects/app-toolbox/src/app/shared/pipes/time-span/time-span.pipe';
 import { equals, flatten, groupBy, omit, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
@@ -32,6 +31,7 @@ import { InformationBasicPipesService } from './information-basic-pipes.service'
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
+import { TimeSpanPipe } from '../../../shared/pipes/time-span/time-span.pipe';
 
 @Injectable()
 /**

@@ -1,13 +1,17 @@
-import { TimePrimitive } from '@kleiolab/lib-utils/src/lib/date-time';
-import { WarEntityPreviewTimeSpan, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { CalendarType, TimePrimitive } from '@kleiolab/lib-utils/src/lib/date-time';
 export declare const x: TimePrimitive;
+export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
+    calendar: CalendarType;
+}
 export interface TimeSpanWithNumberProps {
-    72?: TimePrimitiveWithCal;
-    152?: TimePrimitiveWithCal;
-    153?: TimePrimitiveWithCal;
-    71?: TimePrimitiveWithCal;
-    150?: TimePrimitiveWithCal;
-    151?: TimePrimitiveWithCal;
+    72?: InfTimePrimitiveWithCalendar;
+    152?: InfTimePrimitiveWithCalendar;
+    153?: InfTimePrimitiveWithCalendar;
+    71?: InfTimePrimitiveWithCalendar;
+    150?: InfTimePrimitiveWithCalendar;
+    151?: InfTimePrimitiveWithCalendar;
 }
 export declare class TimeSpan {
     readonly tpKeys: string[];

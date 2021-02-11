@@ -1,7 +1,10 @@
 import { SysConfig } from 'projects/app-toolbox/src/app/core';
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, TimePrimitive } from 'projects/app-toolbox/src/app/core/date-time/time-primitive';
+import { TimePrimitive } from "@kleiolab/lib-utils";
+
+
+import { CalendarType } from "@kleiolab/lib-utils";
 
 
 export function propSetKeyFromFk(fkPropSet: number) {

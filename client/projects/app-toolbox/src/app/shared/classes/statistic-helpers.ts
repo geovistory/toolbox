@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
+import { TimeSpan } from "@kleiolab/lib-utils";
 import { indexBy, omit, sort, values } from "ramda";
 import { JulianDate } from "cesium";
 import { WarEntityPreviewTimeSpan } from "@kleiolab/lib-sdk-lb4";

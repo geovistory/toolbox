@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
+import { TimeSpan } from "@kleiolab/lib-utils";
 
 import { XAxisDefinition, IXAxisDefinition, XAxisOptions } from './x-axis-definition';
 import { DatePipe } from '@angular/common';

@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../../../node_modules/@types/color/index.d.ts" />
 import { Component, DoCheck, Input } from '@angular/core';
-import { TimeSpan } from "projects/app-toolbox/src/app/core/time-span/time-span";
+import { TimeSpan } from "@kleiolab/lib-utils";
 import Color from 'color';
 import { Timeline } from '../../models/timeline';
 

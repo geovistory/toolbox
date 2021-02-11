@@ -7,7 +7,6 @@ import { CoreTableFilterModule } from 'projects/app-toolbox/src/app/shared/compo
 import { CoreTableMenuModule } from 'projects/app-toolbox/src/app/shared/components/core-table/menu/menu.module';
 import { CoreTableVirtualScrollModule } from 'projects/app-toolbox/src/app/shared/components/core-table/virtual-scroll/virtual-scroll.module';
 import { EntityPreviewModule } from 'projects/app-toolbox/src/app/shared/components/entity-preview/entity-preview.module';
-import { TimeSpanPipeModule } from 'projects/app-toolbox/src/app/shared/pipes/time-span/time-span.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { ChartLineVisualComponent } from './components/chart-line-visual/chart-line-visual.component';
 import { CursorHeaderVisualComponent } from './components/cursor-header-visual/cursor-header-visual.component';
@@ -30,6 +29,7 @@ import { DraggableXAxisDirective } from './directives/draggable-x-axis.directive
 import { RangeEmitterOnMouseDownDirective } from './directives/range-emitter-on-mouse-down.directive';
 import { WrapTextDirective } from './directives/wrap-text.directive';
 import { D3Service } from './shared/d3.service';
+import { TimeSpanPipeModule } from '../../shared/pipes/time-span/time-span.module';
 
 @NgModule({
   imports: [

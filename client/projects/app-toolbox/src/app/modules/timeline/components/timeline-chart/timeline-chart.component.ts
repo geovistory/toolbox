@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { JulianDateTime } from "projects/app-toolbox/src/app/core/date-time";
-import { GregorianDateTime } from "projects/app-toolbox/src/app/core/date-time";
+import { JulianDateTime } from '@kleiolab/lib-utils';
+import { GregorianDateTime } from '@kleiolab/lib-utils';
 import { DimensionChangeEvent } from 'projects/app-toolbox/src/app/shared/directives/dimension-change/dimension-change.directive';
 import { merge, Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

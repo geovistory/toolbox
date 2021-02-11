@@ -13,9 +13,9 @@ async function refactor(path) {
       "-p",
       path,
       "-s",
-      ".+/time-span",
+      ".+core/date-time.+",
       "-t",
-      "@kleiolab/lib-utlis",
+      "@kleiolab/lib-utils",
       "-f",
     ]);
 

@@ -1,14 +1,13 @@
 import { FormArray, FormGroup } from '@angular/forms';
+import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { CalendarType, TimePrimitive, TimeSpan } from '@kleiolab/lib-utils';
+import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 import { ProjectPreview } from 'projects/app-toolbox/src/app/core/active-project/active-project.models';
 import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { TimeSpan } from 'projects/app-toolbox/src/app/core/time-span/time-span';
 import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
 import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
-import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
-import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator

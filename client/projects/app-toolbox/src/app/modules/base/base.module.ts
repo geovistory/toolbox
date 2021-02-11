@@ -12,7 +12,6 @@ import { OntoInfoModule } from 'projects/app-toolbox/src/app/shared/components/o
 import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.module';
 import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TimePrimitivePipeModule } from 'projects/app-toolbox/src/app/shared/pipes/time-primitive/time-primitive.module';
-import { TimeSpanPipeModule } from 'projects/app-toolbox/src/app/shared/pipes/time-span/time-span.module';
 import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
@@ -50,11 +49,12 @@ import { PropertiesTreeService } from './components/properties-tree/properties-t
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { TemporalEntityAddListComponent } from './components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
-import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
 import { BaseModalsService } from './services/base-modals.service';
 import { PaginationService } from './services/pagination.service';
+import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
 import { TimeSpanService } from './services/time-span.service';
+import { TimeSpanPipeModule } from '../../shared/pipes/time-span/time-span.module';
 
 const components = [
   PropertiesTreeComponent,

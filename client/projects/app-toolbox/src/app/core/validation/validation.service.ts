@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { TimePrimitive } from 'projects/app-toolbox/src/app/core/date-time/time-primitive';
+import { TimePrimitive } from "@kleiolab/lib-utils";
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
 import { values } from 'ramda';
 import { isValidQuillDoc } from '../quill-doc-validation/validate-quill-doc';
