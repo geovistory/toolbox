@@ -1,0 +1,16 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/model/getEntityLabelConfigResponse.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function GetEntityLabelConfigResponse() { }
+if (false) {
+    /** @type {?|undefined} */
+    GetEntityLabelConfigResponse.prototype.defaultConfig;
+    /** @type {?|undefined} */
+    GetEntityLabelConfigResponse.prototype.customConfig;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZ2V0RW50aXR5TGFiZWxDb25maWdSZXNwb25zZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItc2RrLWxiNC8iLCJzb3VyY2VzIjpbImxpYi9zZGstbGI0L21vZGVsL2dldEVudGl0eUxhYmVsQ29uZmlnUmVzcG9uc2UudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7QUFjQSxrREFHQzs7O0lBRkcscURBQXFDOztJQUNyQyxvREFBb0MiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIGdlb3Zpc3RvcnlcbiAqIEdlb3Zpc3Rvcnkg4oCTIFBsYXRmb3JtIGZvciBEaWdpdGFsIEhpc3RvcnlcbiAqXG4gKiBUaGUgdmVyc2lvbiBvZiB0aGUgT3BlbkFQSSBkb2N1bWVudDogMS4wLjBcbiAqIFxuICpcbiAqIE5PVEU6IFRoaXMgY2xhc3MgaXMgYXV0byBnZW5lcmF0ZWQgYnkgT3BlbkFQSSBHZW5lcmF0b3IgKGh0dHBzOi8vb3BlbmFwaS1nZW5lcmF0b3IudGVjaCkuXG4gKiBodHRwczovL29wZW5hcGktZ2VuZXJhdG9yLnRlY2hcbiAqIERvIG5vdCBlZGl0IHRoZSBjbGFzcyBtYW51YWxseS5cbiAqL1xuaW1wb3J0IHsgUHJvRW50aXR5TGFiZWxDb25maWcgfSBmcm9tICcuL3Byb0VudGl0eUxhYmVsQ29uZmlnJztcblxuXG5leHBvcnQgaW50ZXJmYWNlIEdldEVudGl0eUxhYmVsQ29uZmlnUmVzcG9uc2UgeyBcbiAgICBkZWZhdWx0Q29uZmlnPzogUHJvRW50aXR5TGFiZWxDb25maWc7XG4gICAgY3VzdG9tQ29uZmlnPzogUHJvRW50aXR5TGFiZWxDb25maWc7XG59XG5cbiJdfQ==

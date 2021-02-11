@@ -1,0 +1,15 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/model/sysConfigFieldsByProperty.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function SysConfigFieldsByProperty() { }
+if (false) {
+    /** @type {?|undefined} */
+    SysConfigFieldsByProperty.prototype._1;
+    /* Skipping unhandled member: [key: string]: SysConfigFieldDisplay | any;*/
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3lzQ29uZmlnRmllbGRzQnlQcm9wZXJ0eS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItc2RrLWxiNC8iLCJzb3VyY2VzIjpbImxpYi9zZGstbGI0L21vZGVsL3N5c0NvbmZpZ0ZpZWxkc0J5UHJvcGVydHkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7QUFjQSwrQ0FLQzs7O0lBREcsdUNBQTJCIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBnZW92aXN0b3J5XG4gKiBHZW92aXN0b3J5IOKAkyBQbGF0Zm9ybSBmb3IgRGlnaXRhbCBIaXN0b3J5XG4gKlxuICogVGhlIHZlcnNpb24gb2YgdGhlIE9wZW5BUEkgZG9jdW1lbnQ6IDEuMC4wXG4gKiBcbiAqXG4gKiBOT1RFOiBUaGlzIGNsYXNzIGlzIGF1dG8gZ2VuZXJhdGVkIGJ5IE9wZW5BUEkgR2VuZXJhdG9yIChodHRwczovL29wZW5hcGktZ2VuZXJhdG9yLnRlY2gpLlxuICogaHR0cHM6Ly9vcGVuYXBpLWdlbmVyYXRvci50ZWNoXG4gKiBEbyBub3QgZWRpdCB0aGUgY2xhc3MgbWFudWFsbHkuXG4gKi9cbmltcG9ydCB7IFN5c0NvbmZpZ0ZpZWxkRGlzcGxheSB9IGZyb20gJy4vc3lzQ29uZmlnRmllbGREaXNwbGF5JztcblxuXG5leHBvcnQgaW50ZXJmYWNlIFN5c0NvbmZpZ0ZpZWxkc0J5UHJvcGVydHkgeyBcbiAgW2tleTogc3RyaW5nXTogU3lzQ29uZmlnRmllbGREaXNwbGF5IHwgYW55O1xuXG5cbiAgICBfMT86IFN5c0NvbmZpZ0ZpZWxkRGlzcGxheTtcbn1cblxuIl19

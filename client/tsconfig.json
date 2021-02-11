@@ -42,7 +42,15 @@
       "@kleiolab/lib-sdk-lb3": [
         "dist/lib-sdk-lb3/*",
         "dist/lib-sdk-lb3"
-      ]
+      ],
+      "@kleiolab/lib-sdk-lb4/*": [
+        "projects/lib-sdk-lb4/*",
+        "projects/lib-sdk-lb4"
+      ],
+      "@kleiolab/lib-sdk-lb4": [
+        "dist/lib-sdk-lb4/*",
+        "dist/lib-sdk-lb4"
+      ],
     }
   },
   "exclude": [

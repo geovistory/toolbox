@@ -1,0 +1,10 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: kleiolab-lib-sdk-lb4.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Generated bundle index. Do not edit.
+ */
+export { APIS, AccountService, AnalysisService, ContentTreeService, DatChunkService, DatChunkControllerService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, RamListService, SchemaObjectService, SysClassFieldService, SysClassHasTypePropertyService, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TableService, WarEntityPreviewControllerService, AnalysisTableExportRequest, ColDef, GetTablePageOptions, QueryFilterData, QueryPathSegment, SysConfigValueObjectType, TColFilterNum, TColFilterTxt, TimePrimitiveWithCal, WarStatementGeoJson, WarStatementTimePrimitiveVT, BASE_PATH, COLLECTION_FORMATS, Configuration, ApiModule } from './public-api';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia2xlaW9sYWItbGliLXNkay1sYjQuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXNkay1sYjQvIiwic291cmNlcyI6WyJrbGVpb2xhYi1saWItc2RrLWxiNC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7OztBQUlBLGdzQ0FBYyxjQUFjLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEdlbmVyYXRlZCBidW5kbGUgaW5kZXguIERvIG5vdCBlZGl0LlxuICovXG5cbmV4cG9ydCAqIGZyb20gJy4vcHVibGljLWFwaSc7XG4iXX0=

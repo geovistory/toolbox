@@ -1,0 +1,16 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/model/datChunkIncludeFilterItems.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function DatChunkIncludeFilterItems() { }
+if (false) {
+    /** @type {?|undefined} */
+    DatChunkIncludeFilterItems.prototype.relation;
+    /** @type {?|undefined} */
+    DatChunkIncludeFilterItems.prototype.scope;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGF0Q2h1bmtJbmNsdWRlRmlsdGVySXRlbXMuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXNkay1sYjQvIiwic291cmNlcyI6WyJsaWIvc2RrLWxiNC9tb2RlbC9kYXRDaHVua0luY2x1ZGVGaWx0ZXJJdGVtcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7OztBQWNBLGdEQUdDOzs7SUFGRyw4Q0FBa0I7O0lBQ2xCLDJDQUE0QiIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogZ2VvdmlzdG9yeVxuICogR2VvdmlzdG9yeSDigJMgUGxhdGZvcm0gZm9yIERpZ2l0YWwgSGlzdG9yeVxuICpcbiAqIFRoZSB2ZXJzaW9uIG9mIHRoZSBPcGVuQVBJIGRvY3VtZW50OiAxLjAuMFxuICogXG4gKlxuICogTk9URTogVGhpcyBjbGFzcyBpcyBhdXRvIGdlbmVyYXRlZCBieSBPcGVuQVBJIEdlbmVyYXRvciAoaHR0cHM6Ly9vcGVuYXBpLWdlbmVyYXRvci50ZWNoKS5cbiAqIGh0dHBzOi8vb3BlbmFwaS1nZW5lcmF0b3IudGVjaFxuICogRG8gbm90IGVkaXQgdGhlIGNsYXNzIG1hbnVhbGx5LlxuICovXG5pbXBvcnQgeyBEYXRDaHVua1Njb3BlRmlsdGVyIH0gZnJvbSAnLi9kYXRDaHVua1Njb3BlRmlsdGVyJztcblxuXG5leHBvcnQgaW50ZXJmYWNlIERhdENodW5rSW5jbHVkZUZpbHRlckl0ZW1zIHsgXG4gICAgcmVsYXRpb24/OiBzdHJpbmc7XG4gICAgc2NvcGU/OiBEYXRDaHVua1Njb3BlRmlsdGVyO1xufVxuXG4iXX0=

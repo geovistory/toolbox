@@ -1,0 +1,16 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/model/analysisTableRequest.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function AnalysisTableRequest() { }
+if (false) {
+    /** @type {?} */
+    AnalysisTableRequest.prototype.analysisDefinition;
+    /** @type {?} */
+    AnalysisTableRequest.prototype.fkProject;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYW5hbHlzaXNUYWJsZVJlcXVlc3QuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXNkay1sYjQvIiwic291cmNlcyI6WyJsaWIvc2RrLWxiNC9tb2RlbC9hbmFseXNpc1RhYmxlUmVxdWVzdC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7OztBQWNBLDBDQUdDOzs7SUFGRyxrREFBdUM7O0lBQ3ZDLHlDQUFrQiIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogZ2VvdmlzdG9yeVxuICogR2VvdmlzdG9yeSDigJMgUGxhdGZvcm0gZm9yIERpZ2l0YWwgSGlzdG9yeVxuICpcbiAqIFRoZSB2ZXJzaW9uIG9mIHRoZSBPcGVuQVBJIGRvY3VtZW50OiAxLjAuMFxuICogXG4gKlxuICogTk9URTogVGhpcyBjbGFzcyBpcyBhdXRvIGdlbmVyYXRlZCBieSBPcGVuQVBJIEdlbmVyYXRvciAoaHR0cHM6Ly9vcGVuYXBpLWdlbmVyYXRvci50ZWNoKS5cbiAqIGh0dHBzOi8vb3BlbmFwaS1nZW5lcmF0b3IudGVjaFxuICogRG8gbm90IGVkaXQgdGhlIGNsYXNzIG1hbnVhbGx5LlxuICovXG5pbXBvcnQgeyBBbmFseXNpc0RlZmluaXRpb24gfSBmcm9tICcuL2FuYWx5c2lzRGVmaW5pdGlvbic7XG5cblxuZXhwb3J0IGludGVyZmFjZSBBbmFseXNpc1RhYmxlUmVxdWVzdCB7IFxuICAgIGFuYWx5c2lzRGVmaW5pdGlvbjogQW5hbHlzaXNEZWZpbml0aW9uO1xuICAgIGZrUHJvamVjdDogbnVtYmVyO1xufVxuXG4iXX0=
