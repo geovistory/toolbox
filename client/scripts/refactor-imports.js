@@ -2,10 +2,7 @@ const { readdirSync } = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
 
-const getDirectories = (source) =>
-  readdirSync(source, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => path.join(source, dirent.name));
+const ROOT_DIRECTORY = "../projects/app-toolbox";
 
 async function refactor(path) {
   console.log(`Refactor files in: ${path}`);
@@ -16,21 +13,10 @@ async function refactor(path) {
       "-p",
       path,
       "-s",
-      "app/core/sdk",
+      ".+sdk-lb4.+",
       "-t",
-      "app/core/sdk-lb4",
-      "-e",
-      "InfPersistentItem",
-      "InfStatement",
-      "InfTemporalEntity",
-      "InfAppellation",
-      "InfPlace",
-      "InfTimePrimitive",
-      "InfTextProperty",
-      "InfLanguage",
-      "DatDigital",
-      "InfLangString",
-      "InfDimension",
+      "@kleiolab/lib-sdk-lb4",
+      "-f",
       // "-d",
     ]);
 
@@ -42,8 +28,13 @@ async function refactor(path) {
     });
   });
 }
+const getDirectories = (source) =>
+  readdirSync(source, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => path.join(source, dirent.name));
+
 async function refactorAll() {
-  const directories = getDirectories("../src");
+  const directories = getDirectories(ROOT_DIRECTORY);
   for (const path of directories) {
     await refactor(path);
   }

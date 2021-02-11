@@ -2,7 +2,15 @@ import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, 
 import { MatDialog } from '@angular/material/dialog';
 import { SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { AnalysisDefinition, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition, WarEntityPreview, WarStatementObjectValue, AnalysisTableCellValue } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/models';
+import { AnalysisTableCellValue } from "@kleiolab/lib-sdk-lb4";
+import { WarStatementObjectValue } from "@kleiolab/lib-sdk-lb4";
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
+import { ColDef } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisTableResponse } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisTableExportRequest } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
 import { saveAs } from 'file-saver';
 import { Table } from 'primeng/table';

@@ -6,7 +6,7 @@ import { switchMap, map, first, mergeMap, shareReplay } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';
 import { PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
 import { BehaviorSubject } from 'rxjs';
-import { QueryPathSegment } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryPathSegment';
+import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 
 @Component({
   selector: 'gv-query-path-form-array',

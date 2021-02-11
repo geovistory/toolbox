@@ -3,7 +3,7 @@ import { QueriesModule } from 'projects/app-toolbox/src/app/modules/queries/quer
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { BehaviorSubject, of } from 'rxjs';
 import { QueryPathFormComponent } from './query-path-form.component';
-import { QueryPathSegment } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryPathSegment';
+import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 
 const initVal1: QueryPathSegment[] = [{
   type: 'classes',

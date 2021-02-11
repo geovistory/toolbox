@@ -1,4 +1,4 @@
-import { QueryDefinition } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryDefinition';
+import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
 
 export const mockQuery: QueryDefinition = {
   'filter': {

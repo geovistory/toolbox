@@ -7,7 +7,7 @@ import { map, first } from 'rxjs/operators';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 import { TableFormService } from '../table-form/table-form.service';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
-import { ColDef } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/colDef';
+import { ColDef } from "@kleiolab/lib-sdk-lb4";
 
 /*
  * Returns a column type label for a ColDef

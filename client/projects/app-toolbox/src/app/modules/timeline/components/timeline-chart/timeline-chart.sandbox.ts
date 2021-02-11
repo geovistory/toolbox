@@ -4,8 +4,8 @@ import { TimelineModule } from '../../timeline.module';
 import { TimelineChartComponent } from './timeline-chart.component';
 import { ship_voyages, ship_voyages_by_place, births_40k } from './timeline-chart.mock';
 import { few_births } from './timeline-chart.few-births.mock';
-import { ChartLinePoint } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLinePoint';
-import { ChartLine } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLine';
+import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
+import { ChartLine } from "@kleiolab/lib-sdk-lb4";
 import { AnalysisTimeChartResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4';
 
 const data1$ = new BehaviorSubject<AnalysisTimeChartResponse>({

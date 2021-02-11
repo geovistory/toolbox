@@ -36,7 +36,7 @@ import { ProModule } from 'projects/app-toolbox/src/app/core/pro/pro.module';
 import { ReduxQueriesModule } from 'projects/app-toolbox/src/app/core/redux-queries/redux-queries.module';
 import { ReduxStoreModule } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
 import { RepoModule } from 'projects/app-toolbox/src/app/core/repo/repo.module';
-import { ApiModule } from 'projects/app-toolbox/src/app/core/sdk-lb4/api.module';
+import { ApiModule } from "@kleiolab/lib-sdk-lb4";
 import { SocketsModule } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
 import { SysModule } from 'projects/app-toolbox/src/app/core/sys/sys.module';
 import { TabModule } from 'projects/app-toolbox/src/app/core/tab/tab.module';

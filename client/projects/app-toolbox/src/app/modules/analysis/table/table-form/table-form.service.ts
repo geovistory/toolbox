@@ -8,8 +8,11 @@ import { values } from 'd3';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TableFormNodeConfig } from './table-form.component';
-import { ColDef } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/colDef';
-import { QueryFilter, AnalysisDefinition, QueryPathSegment } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/models';
+import { ColDef } from "@kleiolab/lib-sdk-lb4";
+import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
+
+import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
+import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
 
 interface PathColumn {
   rootClasses$: Observable<number[]>,

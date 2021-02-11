@@ -1,6 +1,6 @@
 import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, InfDimension } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '../sdk-lb4/model/infStatement';
+import { InfStatement } from "@kleiolab/lib-sdk-lb4";
 interface PaginationInfo {
   loading: {
     [key: string]: boolean

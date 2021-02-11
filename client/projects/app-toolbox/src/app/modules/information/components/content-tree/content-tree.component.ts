@@ -11,7 +11,7 @@ import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
 import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 import { RepoService } from 'projects/app-toolbox/src/app/core/repo/repo.service';
-import { ImportTableResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/importTableResponse';
+import { ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
 import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/app/modules/data/components/importer/importer.component';

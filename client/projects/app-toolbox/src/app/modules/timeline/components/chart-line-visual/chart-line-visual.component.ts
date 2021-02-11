@@ -2,9 +2,9 @@ import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { ScaleLinear } from 'd3';
 import { Subject } from 'rxjs';
 import { D3Service } from '../../shared/d3.service';
-import { AnalysisTimeChartResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/analysisTimeChartResponse';
-import { ChartLine } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLine';
-import { ChartLinePoint } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLinePoint';
+import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
+import { ChartLine } from "@kleiolab/lib-sdk-lb4";
+import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
 
 
 export interface ActiveLineClickEvent {

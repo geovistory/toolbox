@@ -8,7 +8,7 @@ import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjR
 import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
 import { toString } from 'ramda';
-import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 import { ProClassFieldConfig, ProProject } from '../sdk-lb4';
 
 

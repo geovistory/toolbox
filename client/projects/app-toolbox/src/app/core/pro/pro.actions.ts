@@ -7,7 +7,7 @@ import { LoadActionMeta, StandardActionsFactory, ActionResultObservable, Succeed
 import { proRoot } from './pro.config';
 import { ProInfoProjRelSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProAnalysisSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 import { U } from '../util/util';
 import { IAppState } from '../redux-store/model';
 

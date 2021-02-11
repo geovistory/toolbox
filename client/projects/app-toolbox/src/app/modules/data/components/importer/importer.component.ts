@@ -13,7 +13,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { values } from 'ramda';
 import { ImportTableControllerService, ImportTable } from 'projects/app-toolbox/src/app/core/sdk-lb4';
 import { Header } from 'projects/app-toolbox/src/app/core/sdk-lb4';
-import { ImportTableResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/importTableResponse';
+import { ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
 import { ImportTableSocket } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
 
 export interface ImporterDialogData {

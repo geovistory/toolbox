@@ -13,7 +13,7 @@ import { QueryFilterComponent, QueryFilterInjectData } from 'projects/app-toolbo
 import { values } from 'ramda';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { TimeChartContLine } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/timeChartContLine';
+import { TimeChartContLine } from "@kleiolab/lib-sdk-lb4";
 export interface TimeChartContInput {
   lines: TimeChartContLine[]
 }

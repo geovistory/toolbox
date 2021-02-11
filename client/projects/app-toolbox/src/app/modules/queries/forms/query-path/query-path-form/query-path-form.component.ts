@@ -14,7 +14,7 @@ import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'projects/
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { QueryPathSegment } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryPathSegment';
+import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 
 export interface QueryPathFormArrayData {
   type: 'root'

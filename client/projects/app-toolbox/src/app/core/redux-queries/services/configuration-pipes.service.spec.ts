@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
-import { GvSchemaObject } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/gvSchemaObject';
+import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
 import { Field, SubfieldType } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';

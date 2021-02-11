@@ -6,7 +6,7 @@ import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
-import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {

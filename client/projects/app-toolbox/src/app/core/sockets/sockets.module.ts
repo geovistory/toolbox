@@ -2,7 +2,7 @@ import { Injectable, NgModule } from '@angular/core';
 import { Socket, SocketIoModule } from 'ngx-socket-io';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { WarActions } from '../war/war.actions';
-import { WarEntityPreview } from '../sdk-lb4/model/warEntityPreview';
+import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 @Injectable()
 export class EntityPreviewSocket extends Socket {

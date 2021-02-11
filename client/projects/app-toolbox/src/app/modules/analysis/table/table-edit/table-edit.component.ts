@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/c
 import { SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { AnalysisTableRequest, AnalysisTableResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4';
-import { QueryDefinition } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryDefinition';
+import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';

@@ -1,4 +1,4 @@
-import { PubAccount } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/pubAccount';
+import { PubAccount } from "@kleiolab/lib-sdk-lb4";
 
 export interface AccountRole {
   id: number

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GvAuthService } from './auth.service';
-import { Configuration } from '../sdk-lb4/configuration';
+import { Configuration } from "@kleiolab/lib-sdk-lb4";
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 
 

@@ -1,6 +1,6 @@
 import { ByPk } from "projects/app-toolbox/src/app/core/redux-store/model";
 import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProProject, ProDfhProfileProjRel, ProClassFieldConfig } from '@kleiolab/lib-sdk-lb3';
-import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 
 export interface ProProjectSlice {
   by_pk_entity?: ByPk<ProProject>;

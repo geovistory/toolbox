@@ -7,7 +7,7 @@ import { U } from "projects/app-toolbox/src/app/core/util/util";
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { QueryFilter } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryFilter';
+import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
 
 
 

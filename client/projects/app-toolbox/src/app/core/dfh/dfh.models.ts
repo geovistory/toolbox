@@ -1,6 +1,8 @@
 import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
-import { DfhClass, DfhProperty } from '../sdk-lb4/model/models';
+import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
+
+import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 
 export class DfhProfileSlice {
   by_pk_profile?: ByPk<DfhProfile>;

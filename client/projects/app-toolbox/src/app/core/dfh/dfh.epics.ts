@@ -5,7 +5,7 @@ import { NotificationsAPIActions } from '../notifications/components/api/notific
 import { LoadActionMeta } from '../redux-store/actions';
 import { DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
 import { DfhClass, DfhClassControllerService, DfhProperty } from '../sdk-lb4';
-import { DfhPropertyControllerService } from '../sdk-lb4/api/dfhPropertyController.service';
+import { DfhPropertyControllerService } from "@kleiolab/lib-sdk-lb4";
 import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory, DfhProfileActionFactory, DfhPropertyActionFactory } from './dfh.actions';
 import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from './dfh.models';
 

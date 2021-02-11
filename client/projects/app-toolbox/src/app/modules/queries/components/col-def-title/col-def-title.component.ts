@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ColDef } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/models';
+import { ColDef } from "@kleiolab/lib-sdk-lb4";
 
 @Component({
   selector: 'gv-col-def-title',

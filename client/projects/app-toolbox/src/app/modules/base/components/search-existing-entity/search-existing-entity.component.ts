@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { SearchExistingRelatedStatement, WarEntityPreviewControllerService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
-import { EntitySearchHit } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/entitySearchHit';
-import { WarEntityPreviewSearchExistingReq } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/warEntityPreviewSearchExistingReq';
+import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
+import { WarEntityPreviewSearchExistingReq } from "@kleiolab/lib-sdk-lb4";
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';

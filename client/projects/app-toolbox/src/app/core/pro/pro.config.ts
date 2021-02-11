@@ -1,6 +1,6 @@
 import { ReducerConfigCollection } from "projects/app-toolbox/src/app/core/redux-store/reducer-factory";
 import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjRel } from '@kleiolab/lib-sdk-lb3';
-import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 
 export const proRoot = 'pro';
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { AccountRole, IAccount } from '../account.model';
-import { PubAccount } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/models';
+import { PubAccount } from "@kleiolab/lib-sdk-lb4";
 
 interface MetaData {
   accountId?: number;

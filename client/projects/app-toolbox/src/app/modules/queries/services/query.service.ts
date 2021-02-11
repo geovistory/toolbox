@@ -4,7 +4,7 @@ import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shar
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
-import { QueryPathSegment } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryPathSegment';
+import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
 
 @Injectable({

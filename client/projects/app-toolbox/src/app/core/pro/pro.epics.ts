@@ -15,9 +15,9 @@ import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, Pro
 import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { SchemaObject } from '../redux-store/model';
 import { SchemaObjectService } from '../redux-store/schema-object.service';
-import { AnalysisService } from '../sdk-lb4/api/analysis.service';
+import { AnalysisService } from "@kleiolab/lib-sdk-lb4";
 import { map } from 'rxjs/operators';
-import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 
 
 @Injectable()

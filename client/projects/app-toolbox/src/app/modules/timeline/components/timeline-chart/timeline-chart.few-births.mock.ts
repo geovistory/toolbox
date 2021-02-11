@@ -1,4 +1,4 @@
-import { ChartLinePoint } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLinePoint';
+import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
 
 export const few_births: ChartLinePoint[] = [
   {

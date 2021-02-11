@@ -17,8 +17,8 @@ import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from '
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
 import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
-import { QueryDefinition } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/queryDefinition';
-import { AnalysisDefinition } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/analysisDefinition';
+import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 
 
 export interface TableFormGroupData {

@@ -3,7 +3,7 @@ import { MatSort, MatTableDataSource } from '@angular/material';
 import { AnalysisTabData, SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { AnalysisService } from 'projects/app-toolbox/src/app/core/sdk-lb4';
-import { ProAnalysis } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/proAnalysis';
+import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 import { values } from 'd3';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

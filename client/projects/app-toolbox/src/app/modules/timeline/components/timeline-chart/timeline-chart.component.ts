@@ -9,8 +9,8 @@ import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definitio
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';
 import { ChartLineDefinition } from '../chart-line-visual/chart-line-visual.component';
-import { ChartLine } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLine';
-import { ChartLinePoint } from 'projects/app-toolbox/src/app/core/sdk-lb4/model/chartLinePoint';
+import { ChartLine } from "@kleiolab/lib-sdk-lb4";
+import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
 import { AnalysisTimeChartResponse } from 'projects/app-toolbox/src/app/core/sdk-lb4';
 export class CursorInfo {
   readonly switchBetweenCalendars = 2299161 * 24 * 60 * 60;
