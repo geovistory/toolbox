@@ -1,0 +1,21 @@
+{
+  "name": "@kleiolab/lib-sdk-lb3",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14"
+  },
+  "main": "bundles/kleiolab-lib-sdk-lb3.umd.js",
+  "module": "fesm5/kleiolab-lib-sdk-lb3.js",
+  "es2015": "fesm2015/kleiolab-lib-sdk-lb3.js",
+  "esm5": "esm5/kleiolab-lib-sdk-lb3.js",
+  "esm2015": "esm2015/kleiolab-lib-sdk-lb3.js",
+  "fesm5": "fesm5/kleiolab-lib-sdk-lb3.js",
+  "fesm2015": "fesm2015/kleiolab-lib-sdk-lb3.js",
+  "typings": "kleiolab-lib-sdk-lb3.d.ts",
+  "metadata": "kleiolab-lib-sdk-lb3.metadata.json",
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}

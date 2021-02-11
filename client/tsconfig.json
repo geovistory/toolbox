@@ -8,10 +8,10 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
+    "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": false,
     "resolveJsonModule": true,
@@ -26,6 +26,24 @@
       "es2016",
       "dom"
     ],
+    "paths": {
+      "@kleiolab/lib-core/*": [
+        "projects/lib-core/*",
+        "projects/lib-core"
+      ],
+      "@kleiolab/lib-core": [
+        "dist/lib-core/*",
+        "dist/lib-core"
+      ],
+      "@kleiolab/lib-sdk-lb3/*": [
+        "projects/lib-sdk-lb3/*",
+        "projects/lib-sdk-lb3"
+      ],
+      "@kleiolab/lib-sdk-lb3": [
+        "dist/lib-sdk-lb3/*",
+        "dist/lib-sdk-lb3"
+      ]
+    }
   },
   "exclude": [
     "node_modules",

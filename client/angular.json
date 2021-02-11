@@ -2,25 +2,25 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "defaultProject": "toolbox",
+  "defaultProject": "app-toolbox",
   "projects": {
-    "toolbox": {
-      "root": "projects/toolbox",
-      "sourceRoot": "projects/toolbox/src",
+    "app-toolbox": {
+      "root": "projects/app-toolbox",
+      "sourceRoot": "projects/app-toolbox/src",
       "projectType": "application",
       "prefix": "gv",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/toolbox",
-            "index": "projects/toolbox/src/index.html",
-            "main": "projects/toolbox/src/main.ts",
-            "polyfills": "projects/toolbox/src/polyfills.ts",
-            "tsConfig": "projects/toolbox/tsconfig.app.json",
+            "outputPath": "dist/app-toolbox",
+            "index": "projects/app-toolbox/src/index.html",
+            "main": "projects/app-toolbox/src/main.ts",
+            "polyfills": "projects/app-toolbox/src/polyfills.ts",
+            "tsConfig": "projects/app-toolbox/tsconfig.app.json",
             "assets": [
-              "projects/toolbox/src/assets",
-              "projects/toolbox/src/favicon.ico",
+              "projects/app-toolbox/src/assets",
+              "projects/app-toolbox/src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",
@@ -33,7 +33,7 @@
               }
             ],
             "styles": [
-              "projects/toolbox/src/styles.scss",
+              "projects/app-toolbox/src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.bubble.css",
@@ -45,7 +45,7 @@
             "scripts": [
               "node_modules/cesium/Build/Cesium/Cesium.js"
             ],
-            "webWorkerTsConfig": "projects/toolbox/tsconfig.worker.json"
+            "webWorkerTsConfig": "projects/app-toolbox/tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -66,8 +66,8 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "projects/toolbox/src/environments/environment.ts",
-                  "with": "projects/toolbox/src/environments/environment.prod.ts"
+                  "replace": "projects/app-toolbox/src/environments/environment.ts",
+                  "with": "projects/app-toolbox/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -76,27 +76,27 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "toolbox:build"
+            "browserTarget": "app-toolbox:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "toolbox:build:production"
+              "browserTarget": "app-toolbox:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "toolbox:build"
+            "browserTarget": "app-toolbox:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/toolbox/src/test.ts",
-            "polyfills": "projects/toolbox/src/polyfills.ts",
-            "tsConfig": "projects/toolbox/tsconfig.spec.json",
-            "karmaConfig": "projects/toolbox/karma.conf.js",
+            "main": "projects/app-toolbox/src/test.ts",
+            "polyfills": "projects/app-toolbox/src/polyfills.ts",
+            "tsConfig": "projects/app-toolbox/tsconfig.spec.json",
+            "karmaConfig": "projects/app-toolbox/karma.conf.js",
             "sourceMap": {
               "scripts": false,
               "styles": false,
@@ -106,7 +106,7 @@
               "node_modules/cesium/Build/Cesium/Cesium.js"
             ],
             "styles": [
-              "projects/toolbox/src/styles.scss",
+              "projects/app-toolbox/src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.bubble.css",
@@ -116,8 +116,8 @@
               "node_modules/primeng/resources/primeng.min.css"
             ],
             "assets": [
-              "projects/toolbox/src/assets",
-              "projects/toolbox/src/favicon.ico",
+              "projects/app-toolbox/src/assets",
+              "projects/app-toolbox/src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",
@@ -130,9 +130,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/toolbox/tsconfig.app.json",
-              "projects/toolbox/tsconfig.spec.json",
-              "projects/toolbox/e2e/tsconfig.json"
+              "projects/app-toolbox/tsconfig.app.json",
+              "projects/app-toolbox/tsconfig.spec.json",
+              "projects/app-toolbox/e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -147,6 +147,41 @@
         },
         "@schematics/angular:directive": {
           "prefix": "gv"
+        }
+      }
+    },
+    "lib-core": {
+      "projectType": "library",
+      "root": "projects/lib-core",
+      "sourceRoot": "projects/lib-core/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/lib-core/tsconfig.lib.json",
+            "project": "projects/lib-core/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/lib-core/src/test.ts",
+            "tsConfig": "projects/lib-core/tsconfig.spec.json",
+            "karmaConfig": "projects/lib-core/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/lib-core/tsconfig.lib.json",
+              "projects/lib-core/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
         }
       }
     },
@@ -183,7 +218,7 @@
               }
             ],
             "styles": [
-              "projects/toolbox/src/styles.scss",
+              "projects/app-toolbox/src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.snow.css",
@@ -219,6 +254,41 @@
           "options": {
             "browserTarget": "playground:build",
             "port": 4201
+          }
+        }
+      }
+    },
+    "lib-sdk-lb3": {
+      "projectType": "library",
+      "root": "projects/lib-sdk-lb3",
+      "sourceRoot": "projects/lib-sdk-lb3/src",
+      "prefix": "gv",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/lib-sdk-lb3/tsconfig.lib.json",
+            "project": "projects/lib-sdk-lb3/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/lib-sdk-lb3/src/test.ts",
+            "tsConfig": "projects/lib-sdk-lb3/tsconfig.spec.json",
+            "karmaConfig": "projects/lib-sdk-lb3/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/lib-sdk-lb3/tsconfig.lib.json",
+              "projects/lib-sdk-lb3/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }

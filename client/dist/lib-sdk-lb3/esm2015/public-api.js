@@ -1,0 +1,5 @@
+/*
+ * Public API Surface of lib-sdk-lb3
+ */
+export * from '@kleiolab/lib-sdk-lb3/src/lib/sdk';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItc2RrLWxiMy8iLCJzb3VyY2VzIjpbInB1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFDSCxjQUFjLG1DQUFtQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIFB1YmxpYyBBUEkgU3VyZmFjZSBvZiBsaWItc2RrLWxiM1xuICovXG5leHBvcnQgKiBmcm9tICdAa2xlaW9sYWIvbGliLXNkay1sYjMvc3JjL2xpYi9zZGsnO1xuIl19

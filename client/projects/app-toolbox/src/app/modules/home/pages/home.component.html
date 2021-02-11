@@ -1,0 +1,65 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <i class="fa fa-home"></i> Home
+    </li>
+  </ol>
+</gv-navbar>
+
+<div *ngIf="!(account)" class="container mt-5">
+  <div class="row">
+    <div class="col text-center">
+      <h1>
+        <div class="gv-icon gv-icon-geovistory-logo text-primary"></div>
+        Geovistory Toolbox
+      </h1>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col text-center">
+      <p>
+        Store, visualize and share historical and geographical data.
+      </p>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col text-center">
+      <a class="btn btn-primary mr-2" routerLink="/login">Login</a>
+      <a class="btn btn-link" routerLink="/registration">Register</a>
+    </div>
+  </div>
+  <div class="row powered-by">
+    <div class="col text-center mat-text-secondary">
+      <ng-container *ngTemplateOutlet="poweredBy"></ng-container>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="account" class="container mt-5">
+  <div id="userDashboard" class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-3">
+        <i id="userImage" class="d-none d-sm-none d-md-block fa fa-user-circle pull-right" aria-hidden="true"></i>
+      </div>
+      <div class="col-md-9">
+        <h2>Welcome to Geovistory Toolbox {{account.username}}</h2>
+        <p class="text-muted">{{account.email}}</p>
+      </div>
+    </div>
+    <div class="row mt-5 justify-content-center">
+      <div class="col-md-6">
+        <a class="btn btn-outline-primary mr-2" routerLink="/projects">Your Projects</a>
+        <a class="btn btn-outline-secondary" routerLink="/account">Personal Settings</a>
+      </div>
+    </div>
+    <div class="row powered-by justify-content-center">
+      <div class="col-md-6 mat-text-secondary">
+        <ng-container *ngTemplateOutlet="poweredBy"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #poweredBy>
+  Powered by <a href="https://kleiolab.ch" title="KleioLab GmbH – Company website" target="_blank">KleioLab</a>
+</ng-template>

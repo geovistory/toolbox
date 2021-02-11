@@ -1,0 +1,13 @@
+/* tslint:disable */
+/**
+ * @module SocketDriver
+ * @author Jonathan Casarrubias <t: johncasarrubias, gh: mean-expert-official>
+ * @license MIT
+ * @description
+ * The SocketDriver class is used for dependency injection swapping.
+ * It will be provided using factory method from different sources.
+ **/
+export class SocketDriver {
+    connect(url, options) { }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic29ja2V0LmRyaXZlci5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItc2RrLWxiMy8iLCJzb3VyY2VzIjpbImxpYi9zZGsvc29ja2V0cy9zb2NrZXQuZHJpdmVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLG9CQUFvQjtBQUNwQjs7Ozs7OztJQU9JO0FBQ0osTUFBTSxPQUFPLFlBQVk7SUFDdkIsT0FBTyxDQUFDLEdBQVEsRUFBRSxPQUFZLElBQUcsQ0FBQztDQUNuQyIsInNvdXJjZXNDb250ZW50IjpbIi8qIHRzbGludDpkaXNhYmxlICovXG4vKipcbiAqwqBAbW9kdWxlIFNvY2tldERyaXZlclxuICogQGF1dGhvciBKb25hdGhhbiBDYXNhcnJ1YmlhcyA8dDogam9obmNhc2FycnViaWFzLCBnaDogbWVhbi1leHBlcnQtb2ZmaWNpYWw+XG4gKiBAbGljZW5zZSBNSVRcbiAqIEBkZXNjcmlwdGlvblxuICogVGhlIFNvY2tldERyaXZlciBjbGFzcyBpcyB1c2VkIGZvciBkZXBlbmRlbmN5IGluamVjdGlvbiBzd2FwcGluZy5cbiAqIEl0IHdpbGwgYmUgcHJvdmlkZWQgdXNpbmcgZmFjdG9yeSBtZXRob2QgZnJvbSBkaWZmZXJlbnQgc291cmNlcy5cbiAqKi9cbmV4cG9ydCBjbGFzcyBTb2NrZXREcml2ZXIge1xuICBjb25uZWN0KHVybDogYW55LCBvcHRpb25zOiBhbnkpIHt9XG59XG4iXX0=
