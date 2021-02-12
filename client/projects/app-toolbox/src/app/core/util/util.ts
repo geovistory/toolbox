@@ -7,7 +7,7 @@ import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
 import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
 import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
-import { DfhConfig } from '../../modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator

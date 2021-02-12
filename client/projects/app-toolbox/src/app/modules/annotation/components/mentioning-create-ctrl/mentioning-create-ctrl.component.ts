@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { DatChunk } from '@kleiolab/lib-sdk-lb3';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { Subject } from 'rxjs';
 
 type CtrlModel = InfStatement;

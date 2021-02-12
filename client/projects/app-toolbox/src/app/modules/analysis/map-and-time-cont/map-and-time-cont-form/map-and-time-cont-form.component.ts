@@ -3,7 +3,7 @@ import { FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
 import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';

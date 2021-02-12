@@ -13,10 +13,12 @@ async function refactor(path) {
       "-p",
       path,
       "-s",
-      ".+core/date-time.+",
+      ".+information/shared.+",
       "-t",
-      "@kleiolab/lib-utils",
+      "@kleiolab/lib-config",
       "-f",
+      "-e",
+      "DfhConfig",
     ]);
 
     child.stdout.pipe(process.stdout);

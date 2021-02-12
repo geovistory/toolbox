@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';

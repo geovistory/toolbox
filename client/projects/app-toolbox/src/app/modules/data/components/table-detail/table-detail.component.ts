@@ -11,7 +11,7 @@ import { TableRow } from "@kleiolab/lib-sdk-lb4";
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { ColumnMapping, Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';

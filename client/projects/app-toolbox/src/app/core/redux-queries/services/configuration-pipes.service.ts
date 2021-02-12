@@ -14,7 +14,7 @@ import { DfhLabel } from "@kleiolab/lib-sdk-lb4";
 import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 import { ClassConfig } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';

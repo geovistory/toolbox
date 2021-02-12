@@ -53,12 +53,12 @@
       "@kleiolab/lib-utils": [
         "dist/lib-utils"
       ],
-      "lib-config": [
+      "@kleiolab/lib-config/*": [
+        "dist/lib-config/*"
+      ],
+      "@kleiolab/lib-config": [
         "dist/lib-config"
       ],
-      "lib-config/*": [
-        "dist/lib-config/*"
-      ]
     }
   },
   "exclude": [

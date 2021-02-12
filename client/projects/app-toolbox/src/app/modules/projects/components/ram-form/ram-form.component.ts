@@ -6,7 +6,7 @@ import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { InfLangString } from '@kleiolab/lib-sdk-lb3';
 import { DatChunk } from '@kleiolab/lib-sdk-lb3';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';

@@ -9,7 +9,7 @@ import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { RamListService } from "@kleiolab/lib-sdk-lb4";
 import { DatDigital } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

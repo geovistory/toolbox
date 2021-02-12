@@ -13,7 +13,7 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil, filter } from 'rxjs/operators';
 import { CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 
 type FgDimensionNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgDimensionInjectData extends FormFactoryCompontentInjectData<Observable<InfDimension>> {

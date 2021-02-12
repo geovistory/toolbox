@@ -1,5 +1,5 @@
 
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Subfield } from '../../properties-tree/properties-tree.models';

@@ -10,7 +10,7 @@ import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/a
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { PropertyOption, PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
 import { cache, spyTag } from 'projects/app-toolbox/src/app/shared';

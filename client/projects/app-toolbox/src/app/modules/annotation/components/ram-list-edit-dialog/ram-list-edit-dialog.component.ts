@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { Field, FieldBase, Subfield } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
 import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject } from 'rxjs';
 export interface RamListEditDialogData {
 

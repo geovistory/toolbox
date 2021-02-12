@@ -12,7 +12,7 @@ import { ByPk, IAppState } from 'projects/app-toolbox/src/app/core/redux-store/m
 import { DatChunk, DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { flatten, indexBy, values } from 'ramda';

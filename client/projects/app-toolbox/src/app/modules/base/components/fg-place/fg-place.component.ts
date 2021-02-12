@@ -7,7 +7,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
 import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
 import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 

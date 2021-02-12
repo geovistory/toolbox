@@ -7,7 +7,7 @@ import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
 import { U } from "projects/app-toolbox/src/app/core/util/util";
 import { SchemaObject } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { Observable, Subject } from 'rxjs';
 import { filter, first, map } from 'rxjs/operators';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';

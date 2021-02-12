@@ -8,7 +8,7 @@ import { Subject, Observable, of, combineLatest } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { first, takeUntil, switchMap, map, filter } from 'rxjs/operators';
 import { values } from 'ramda';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { MatDialog } from '@angular/material';
 import { OntomeProfilesListDialogComponent } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
 import { OntomeProfileDeactivationReportDialogComponent, OntomeProfileDeactivationReportDialogData } from '../ontome-profile-deactivation-report-dialog/ontome-profile-deactivation-report-dialog.component';

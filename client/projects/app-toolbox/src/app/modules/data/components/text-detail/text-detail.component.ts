@@ -16,7 +16,7 @@ import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
 import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
 import { MatDialog } from '@angular/material';
 import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 
 

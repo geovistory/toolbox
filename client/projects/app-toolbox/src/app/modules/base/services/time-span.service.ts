@@ -10,7 +10,7 @@ import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { TimeSpanItem } from '../components/properties-tree/properties-tree.models';
 import { InformationPipesService } from '../../../core/redux-queries/services/information-pipes.service';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 
 @Injectable({
   providedIn: 'root'

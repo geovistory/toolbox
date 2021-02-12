@@ -10,7 +10,7 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { runInThisContext } from 'vm';
 import { values } from 'd3';
 import { indexBy } from 'ramda';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { OntomeProfilesListDialogComponent, OntomeProfilesListDialogData } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
 import { OntomeProfileActivationReportDialogData, OntomeProfileActivationReportDialogComponent } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
 

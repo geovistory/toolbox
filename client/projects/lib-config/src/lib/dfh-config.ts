@@ -1,4 +1,12 @@
-
+/**
+ * This file contains primary keys of data records
+ * from the dfh schema, that have a special meaning
+ * for the geovistory logic.
+ *
+ * Libraries and apps implementing logic depending on
+ * such primary keys should use this config file
+ * instead of putting the keys hard coded.
+ */
 export class DfhConfig {
 
   // fk_class of time primitives
@@ -57,7 +65,7 @@ export class DfhConfig {
   static PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE = [71, 72, 150, 151, 152, 153]
 
   // dictionnary from dfh_pk_property to property name of TimePrimitive Class
-  static PROPERTY_PK_TO_EXISTENCE_TIME_KEY = {
+  static PROPERTY_PK_TO_EXISTENCE_TIME_KEY: { [pkProperty: number]: string } = {
     71: 'p81',
     72: 'p82',
     150: 'p81a',
@@ -65,8 +73,6 @@ export class DfhConfig {
     152: 'p82a',
     153: 'p82b'
   }
-
-
 
 
   /**

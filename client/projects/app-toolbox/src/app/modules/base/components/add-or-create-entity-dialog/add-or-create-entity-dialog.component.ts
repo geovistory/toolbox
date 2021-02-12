@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgForm } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
-import { DfhConfig } from '../../../information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { SchemaObject } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';

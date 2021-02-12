@@ -17,7 +17,7 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig";
 import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { equals, flatten, groupBy, indexBy, keys, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';

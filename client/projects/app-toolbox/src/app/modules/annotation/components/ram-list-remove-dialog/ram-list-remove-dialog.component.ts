@@ -5,7 +5,7 @@ import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base
 import { Field, Subfield } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { first, takeUntil } from 'rxjs/operators';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 export interface RamListRemoveDialogData {

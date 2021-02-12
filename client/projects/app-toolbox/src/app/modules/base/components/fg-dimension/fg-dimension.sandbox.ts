@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { InfDimension } from '@kleiolab/lib-sdk-lb3';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { FgDimensionComponent } from './fg-dimension.component';

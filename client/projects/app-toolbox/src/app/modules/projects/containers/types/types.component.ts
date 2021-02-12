@@ -20,7 +20,7 @@ import { Field, TemporalEntityItem } from 'projects/app-toolbox/src/app/modules/
 import { createPaginateBy } from 'projects/app-toolbox/src/app/modules/base/base.helpers';
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 

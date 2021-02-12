@@ -4,7 +4,7 @@ import { CalendarType, Granularity, TimePrimitive, TimeSpanUtil } from '@kleiola
 import { IconType } from 'projects/app-toolbox/src/app/core';
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { switchMapOr } from 'projects/app-toolbox/src/app/core/util/switchMapOr';
-import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
+import { DfhConfig } from "@kleiolab/lib-config";
 import { spyTag } from 'projects/app-toolbox/src/app/shared';
 import { omit, values } from 'ramda';
 import { combineLatest, merge, Observable, of, pipe } from 'rxjs';
