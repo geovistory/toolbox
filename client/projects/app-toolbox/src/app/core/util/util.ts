@@ -1,6 +1,6 @@
 import { FormArray, FormGroup } from '@angular/forms';
 import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, TimePrimitive, TimeSpan } from '@kleiolab/lib-utils';
+import { CalendarType, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 import { ProjectPreview } from 'projects/app-toolbox/src/app/core/active-project/active-project.models';
 import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
@@ -170,8 +170,8 @@ export class U {
     });
   }
 
-  static timeSpanItemToTimeSpan(timeSpanItem: TimeSpanItem): TimeSpan {
-    const t = new TimeSpan();
+  static timeSpanItemToTimeSpan(timeSpanItem: TimeSpanItem): TimeSpanUtil {
+    const t = new TimeSpanUtil();
 
     timeSpanItem.properties.forEach(p => {
       const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty]

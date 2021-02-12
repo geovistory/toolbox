@@ -6,7 +6,7 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { TimePrimitive } from '@kleiolab/lib-utils';
 import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { TimeSpan } from "@kleiolab/lib-utils";
+import { TimeSpanUtil } from "@kleiolab/lib-utils";
 import { U } from "projects/app-toolbox/src/app/core/util/util";
 import { Granularity } from "@kleiolab/lib-utils";
 import { CalendarType } from "@kleiolab/lib-utils";
@@ -409,7 +409,7 @@ export class InformationPipesService {
               if (itemsCount > 0) {
                 const timeSpanKeys: CtrlTimeSpanDialogResult = {}
                 keys.forEach(key => { timeSpanKeys[key] = t[key][0].timePrimitive })
-                const timeSpan = TimeSpan.fromTimeSpanDialogData(timeSpanKeys);
+                const timeSpan = TimeSpanUtil.fromTimeSpanDialogData(timeSpanKeys);
                 label = this.timeSpanPipe.transform(timeSpan);
               }
               cell = {

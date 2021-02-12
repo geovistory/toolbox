@@ -23,4 +23,12 @@
     "src/test.ts",
     "**/*.spec.ts"
   ],
+  // "@kleiolab/lib-utils": [
+  //   "dist/lib-utils/*",
+  //   "dist/lib-utils"
+  // ],
+  // "@kleiolab/lib-utils/*": [
+  //   "projects/lib-utils/*",
+  //   "projects/lib-utils"
+  // ],
 }

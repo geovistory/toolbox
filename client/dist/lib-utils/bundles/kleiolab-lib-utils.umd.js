@@ -234,8 +234,8 @@
         /* Skipping unnamed member:
         151?: InfTimePrimitiveWithCalendar;*/
     }
-    var TimeSpan = /** @class */ (function () {
-        function TimeSpan(data) {
+    var TimeSpanUtil = /** @class */ (function () {
+        function TimeSpanUtil(data) {
             var _this = this;
             this.tpKeys = ['p82', 'p81', 'p82a', 'p82b', 'p81a', 'p81b'];
             if (data) {
@@ -255,7 +255,7 @@
                 }));
             }
         }
-        Object.defineProperty(TimeSpan.prototype, "earliestDay", {
+        Object.defineProperty(TimeSpanUtil.prototype, "earliestDay", {
             get: 
             // end of the end | right outer bound | not after
             /**
@@ -301,7 +301,7 @@
          * @param {?} tps
          * @return {?} object with min Date and max Date or null, if no TimePrimitive available
          */
-        TimeSpan.getMinMaxTimePrimitveOfArray = /**
+        TimeSpanUtil.getMinMaxTimePrimitveOfArray = /**
          * get the earliest and latest TimePrimitive of given array of TimePrimitives
          *
          * For earliest it compares the begin of TimePrimitive duration
@@ -335,7 +335,7 @@
          * @param {?=} d
          * @return {?}
          */
-        TimeSpan.fromTimeSpanDialogData = /**
+        TimeSpanUtil.fromTimeSpanDialogData = /**
          * @param {?=} d
          * @return {?}
          */
@@ -357,7 +357,7 @@
                 x['p81b'] = d['151'];
             if (d['153'])
                 x['p82b'] = d['153'];
-            return new TimeSpan(x);
+            return new TimeSpanUtil(x);
         };
         /**
          * returns true if no TimePrimitive is there
@@ -366,7 +366,7 @@
          * returns true if no TimePrimitive is there
          * @return {?}
          */
-        TimeSpan.prototype.isEmpty = /**
+        TimeSpanUtil.prototype.isEmpty = /**
          * returns true if no TimePrimitive is there
          * @return {?}
          */
@@ -380,7 +380,7 @@
          * returns true if at least one TimePrimitive is there
          * @return {?}
          */
-        TimeSpan.prototype.isNotEmpty = /**
+        TimeSpanUtil.prototype.isNotEmpty = /**
          * returns true if at least one TimePrimitive is there
          * @return {?}
          */
@@ -406,7 +406,7 @@
          *
          * @return {?} object with min Date and max Date or null, if no TimePrimitive available
          */
-        TimeSpan.prototype.getMinMaxTimePrimitive = /**
+        TimeSpanUtil.prototype.getMinMaxTimePrimitive = /**
          * get the earliest and latest TimePrimitive of this TimeSpan
          *
          * For earliest it compares the begin of TimePrimitive duration
@@ -415,7 +415,7 @@
          * @return {?} object with min Date and max Date or null, if no TimePrimitive available
          */
         function () {
-            return TimeSpan.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
+            return TimeSpanUtil.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
         };
         /**
          * @returns array of TimePrimitives of this TimeSpan
@@ -423,7 +423,7 @@
         /**
          * @return {?} array of TimePrimitives of this TimeSpan
          */
-        TimeSpan.prototype.getArrayOfTimePrimitives = /**
+        TimeSpanUtil.prototype.getArrayOfTimePrimitives = /**
          * @return {?} array of TimePrimitives of this TimeSpan
          */
         function () {
@@ -444,7 +444,7 @@
         /**
          * @return {?}
          */
-        TimeSpan.prototype.getPrimitivesForPreview = /**
+        TimeSpanUtil.prototype.getPrimitivesForPreview = /**
          * @return {?}
          */
         function () {
@@ -456,23 +456,23 @@
             var end = this.p82b || this.p81b;
             return { single: single, begin: begin, end: end };
         };
-        return TimeSpan;
+        return TimeSpanUtil;
     }());
     if (false) {
         /** @type {?} */
-        TimeSpan.prototype.tpKeys;
+        TimeSpanUtil.prototype.tpKeys;
         /** @type {?} */
-        TimeSpan.prototype.p82;
+        TimeSpanUtil.prototype.p82;
         /** @type {?} */
-        TimeSpan.prototype.p81;
+        TimeSpanUtil.prototype.p81;
         /** @type {?} */
-        TimeSpan.prototype.p82a;
+        TimeSpanUtil.prototype.p82a;
         /** @type {?} */
-        TimeSpan.prototype.p81a;
+        TimeSpanUtil.prototype.p81a;
         /** @type {?} */
-        TimeSpan.prototype.p81b;
+        TimeSpanUtil.prototype.p81b;
         /** @type {?} */
-        TimeSpan.prototype.p82b;
+        TimeSpanUtil.prototype.p82b;
     }
 
     /**
@@ -1850,7 +1850,7 @@
     exports.GregorianDateTime = GregorianDateTime;
     exports.JulianDateTime = JulianDateTime;
     exports.TimePrimitive = TimePrimitive;
-    exports.TimeSpan = TimeSpan;
+    exports.TimeSpanUtil = TimeSpanUtil;
     exports.x = x;
 
     Object.defineProperty(exports, '__esModule', { value: true });

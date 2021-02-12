@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { TimeSpan } from "@kleiolab/lib-utils";
+import { TimeSpanUtil } from "@kleiolab/lib-utils";
 
 import { XAxisDefinition, IXAxisDefinition, XAxisOptions } from './x-axis-definition';
 import { DatePipe } from '@angular/common';
@@ -52,7 +52,7 @@ export interface TimeLineData {
 
 export interface TimeLineRow {
   label: string;
-  existenceTime: TimeSpan;
+  existenceTime: TimeSpanUtil;
   entityPreview: WarEntityPreview;
   accentuation: Accentuation;
   storeConnector?: {
@@ -89,7 +89,7 @@ export class Timeline {
     const timePrimitives = []
 
     rows.forEach((row: TimeLineRow) => {
-      const ext: TimeSpan = row.existenceTime;
+      const ext: TimeSpanUtil = row.existenceTime;
       const minMaxOfExTime = ext.getMinMaxTimePrimitive();
 
       if (minMaxOfExTime) {
@@ -99,7 +99,7 @@ export class Timeline {
     })
 
     if (timePrimitives.length > 0) {
-      const minMax = TimeSpan.getMinMaxTimePrimitveOfArray(timePrimitives);
+      const minMax = TimeSpanUtil.getMinMaxTimePrimitveOfArray(timePrimitives);
       const firstSec = minMax.min.getJulianSecond();
       const lastSec = minMax.max.getLastSecond();
 

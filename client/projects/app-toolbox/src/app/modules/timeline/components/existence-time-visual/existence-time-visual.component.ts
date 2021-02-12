@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../../../node_modules/@types/color/index.d.ts" />
 import { Component, DoCheck, Input } from '@angular/core';
-import { TimeSpan } from "@kleiolab/lib-utils";
+import { TimeSpanUtil } from "@kleiolab/lib-utils";
 import Color from 'color';
 import { Timeline } from '../../models/timeline';
 
@@ -21,7 +21,7 @@ export class ExistenceTimeVisualComponent implements DoCheck {
   outer: { start: number, end: number, color: string };
 
   @Input('existenceTimeVisual') existenceTimeOnXAxis: {
-    existenceTime: TimeSpan,
+    existenceTime: TimeSpanUtil,
     timeline: Timeline,
     color: string
   };

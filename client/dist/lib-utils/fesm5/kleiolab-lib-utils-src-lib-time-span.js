@@ -33,8 +33,8 @@ if (false) {
     /* Skipping unnamed member:
     151?: InfTimePrimitiveWithCalendar;*/
 }
-var TimeSpan = /** @class */ (function () {
-    function TimeSpan(data) {
+var TimeSpanUtil = /** @class */ (function () {
+    function TimeSpanUtil(data) {
         var _this = this;
         this.tpKeys = ['p82', 'p81', 'p82a', 'p82b', 'p81a', 'p81b'];
         if (data) {
@@ -54,7 +54,7 @@ var TimeSpan = /** @class */ (function () {
             }));
         }
     }
-    Object.defineProperty(TimeSpan.prototype, "earliestDay", {
+    Object.defineProperty(TimeSpanUtil.prototype, "earliestDay", {
         get: 
         // end of the end | right outer bound | not after
         /**
@@ -100,7 +100,7 @@ var TimeSpan = /** @class */ (function () {
      * @param {?} tps
      * @return {?} object with min Date and max Date or null, if no TimePrimitive available
      */
-    TimeSpan.getMinMaxTimePrimitveOfArray = /**
+    TimeSpanUtil.getMinMaxTimePrimitveOfArray = /**
      * get the earliest and latest TimePrimitive of given array of TimePrimitives
      *
      * For earliest it compares the begin of TimePrimitive duration
@@ -134,7 +134,7 @@ var TimeSpan = /** @class */ (function () {
      * @param {?=} d
      * @return {?}
      */
-    TimeSpan.fromTimeSpanDialogData = /**
+    TimeSpanUtil.fromTimeSpanDialogData = /**
      * @param {?=} d
      * @return {?}
      */
@@ -156,7 +156,7 @@ var TimeSpan = /** @class */ (function () {
             x['p81b'] = d['151'];
         if (d['153'])
             x['p82b'] = d['153'];
-        return new TimeSpan(x);
+        return new TimeSpanUtil(x);
     };
     /**
      * returns true if no TimePrimitive is there
@@ -165,7 +165,7 @@ var TimeSpan = /** @class */ (function () {
      * returns true if no TimePrimitive is there
      * @return {?}
      */
-    TimeSpan.prototype.isEmpty = /**
+    TimeSpanUtil.prototype.isEmpty = /**
      * returns true if no TimePrimitive is there
      * @return {?}
      */
@@ -179,7 +179,7 @@ var TimeSpan = /** @class */ (function () {
      * returns true if at least one TimePrimitive is there
      * @return {?}
      */
-    TimeSpan.prototype.isNotEmpty = /**
+    TimeSpanUtil.prototype.isNotEmpty = /**
      * returns true if at least one TimePrimitive is there
      * @return {?}
      */
@@ -205,7 +205,7 @@ var TimeSpan = /** @class */ (function () {
      *
      * @return {?} object with min Date and max Date or null, if no TimePrimitive available
      */
-    TimeSpan.prototype.getMinMaxTimePrimitive = /**
+    TimeSpanUtil.prototype.getMinMaxTimePrimitive = /**
      * get the earliest and latest TimePrimitive of this TimeSpan
      *
      * For earliest it compares the begin of TimePrimitive duration
@@ -214,7 +214,7 @@ var TimeSpan = /** @class */ (function () {
      * @return {?} object with min Date and max Date or null, if no TimePrimitive available
      */
     function () {
-        return TimeSpan.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
+        return TimeSpanUtil.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
     };
     /**
      * @returns array of TimePrimitives of this TimeSpan
@@ -222,7 +222,7 @@ var TimeSpan = /** @class */ (function () {
     /**
      * @return {?} array of TimePrimitives of this TimeSpan
      */
-    TimeSpan.prototype.getArrayOfTimePrimitives = /**
+    TimeSpanUtil.prototype.getArrayOfTimePrimitives = /**
      * @return {?} array of TimePrimitives of this TimeSpan
      */
     function () {
@@ -243,7 +243,7 @@ var TimeSpan = /** @class */ (function () {
     /**
      * @return {?}
      */
-    TimeSpan.prototype.getPrimitivesForPreview = /**
+    TimeSpanUtil.prototype.getPrimitivesForPreview = /**
      * @return {?}
      */
     function () {
@@ -255,23 +255,23 @@ var TimeSpan = /** @class */ (function () {
         var end = this.p82b || this.p81b;
         return { single: single, begin: begin, end: end };
     };
-    return TimeSpan;
+    return TimeSpanUtil;
 }());
 if (false) {
     /** @type {?} */
-    TimeSpan.prototype.tpKeys;
+    TimeSpanUtil.prototype.tpKeys;
     /** @type {?} */
-    TimeSpan.prototype.p82;
+    TimeSpanUtil.prototype.p82;
     /** @type {?} */
-    TimeSpan.prototype.p81;
+    TimeSpanUtil.prototype.p81;
     /** @type {?} */
-    TimeSpan.prototype.p82a;
+    TimeSpanUtil.prototype.p82a;
     /** @type {?} */
-    TimeSpan.prototype.p81a;
+    TimeSpanUtil.prototype.p81a;
     /** @type {?} */
-    TimeSpan.prototype.p81b;
+    TimeSpanUtil.prototype.p81b;
     /** @type {?} */
-    TimeSpan.prototype.p82b;
+    TimeSpanUtil.prototype.p82b;
 }
 
 /**
@@ -286,5 +286,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { TimeSpan, x };
+export { TimeSpanUtil, x };
 //# sourceMappingURL=kleiolab-lib-utils-src-lib-time-span.js.map

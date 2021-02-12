@@ -34,7 +34,7 @@ export interface DateTime {
   onDateChange: EventEmitter<YearMonthDay>;
 
   /**
-   * get the julian day 
+   * get the julian day
    *
    * @return {number}  julian day
    */
@@ -54,7 +54,7 @@ export interface DateTime {
 
   /**
    * Set julian second of the DateTime value (affecting year, month, day, hours, minutes, seconds)
-   * 
+   *
    * @param julianSecond julian second
    */
   fromJulianSecond(julianSecond: number): GregorianDateTime | JulianDateTime;

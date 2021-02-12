@@ -14,7 +14,7 @@ export interface TimeSpanWithNumberProps {
   150?: InfTimePrimitiveWithCalendar; // p81a | end of the begin | left inner bound | surely from
   151?: InfTimePrimitiveWithCalendar; // p81b | begin of the end | right inner bound | surely to
 }
-export class TimeSpan {
+export class TimeSpanUtil {
 
   readonly tpKeys = ['p82', 'p81', 'p82a', 'p82b', 'p81a', 'p81b']
 
@@ -74,7 +74,7 @@ export class TimeSpan {
     return { min: min, max: max };
   }
 
-  static fromTimeSpanDialogData(d: TimeSpanWithNumberProps = {}): TimeSpan {
+  static fromTimeSpanDialogData(d: TimeSpanWithNumberProps = {}): TimeSpanUtil {
     if (!d) d = {};
     const x = {}
     if (d['72']) x['p82'] = d['72'];
@@ -83,7 +83,7 @@ export class TimeSpan {
     if (d['150']) x['p81a'] = d['150'];
     if (d['151']) x['p81b'] = d['151'];
     if (d['153']) x['p82b'] = d['153'];
-    return new TimeSpan(x)
+    return new TimeSpanUtil(x)
   }
 
   constructor(data?: WarEntityPreviewTimeSpan) {
@@ -121,7 +121,7 @@ export class TimeSpan {
   * @returns object with min Date and max Date or null, if no TimePrimitive available
   */
   getMinMaxTimePrimitive(): { min: TimePrimitive, max: TimePrimitive } | null {
-    return TimeSpan.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
+    return TimeSpanUtil.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
   }
 
   /**

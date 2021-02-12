@@ -13,7 +13,7 @@ export interface TimeSpanWithNumberProps {
     150?: InfTimePrimitiveWithCalendar;
     151?: InfTimePrimitiveWithCalendar;
 }
-export declare class TimeSpan {
+export declare class TimeSpanUtil {
     readonly tpKeys: string[];
     p82?: TimePrimitive;
     p81?: TimePrimitive;
@@ -34,7 +34,7 @@ export declare class TimeSpan {
         min: TimePrimitive;
         max: TimePrimitive;
     };
-    static fromTimeSpanDialogData(d?: TimeSpanWithNumberProps): TimeSpan;
+    static fromTimeSpanDialogData(d?: TimeSpanWithNumberProps): TimeSpanUtil;
     constructor(data?: WarEntityPreviewTimeSpan);
     /**
      * returns true if no TimePrimitive is there

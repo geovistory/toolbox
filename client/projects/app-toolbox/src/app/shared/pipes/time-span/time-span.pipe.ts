@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimeSpan } from "@kleiolab/lib-utils";
+import { TimeSpanUtil, TimePrimitive } from "@kleiolab/lib-utils";
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({
@@ -9,10 +9,10 @@ export class TimeSpanPipe implements PipeTransform {
 
   constructor(private timePrimitivePipe: TimePrimitivePipe) { }
 
-  transform(timeSpan: TimeSpan): string {
+  transform(timeSpan: TimeSpanUtil): string {
     if (!timeSpan) return null;
 
-    const ts = new TimeSpan(timeSpan).getPrimitivesForPreview();
+    const ts = new TimeSpanUtil(timeSpan).getPrimitivesForPreview();
     // nothing
     if (!ts.single && !ts.begin && !ts.end) return '';
 

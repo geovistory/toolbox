@@ -34,7 +34,7 @@ if (false) {
     /* Skipping unnamed member:
     151?: InfTimePrimitiveWithCalendar;*/
 }
-class TimeSpan {
+class TimeSpanUtil {
     /**
      * @param {?=} data
      */
@@ -131,7 +131,7 @@ class TimeSpan {
             x['p81b'] = d['151'];
         if (d['153'])
             x['p82b'] = d['153'];
-        return new TimeSpan(x);
+        return new TimeSpanUtil(x);
     }
     /**
      * returns true if no TimePrimitive is there
@@ -159,7 +159,7 @@ class TimeSpan {
      * @return {?} object with min Date and max Date or null, if no TimePrimitive available
      */
     getMinMaxTimePrimitive() {
-        return TimeSpan.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
+        return TimeSpanUtil.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
     }
     /**
      * @return {?} array of TimePrimitives of this TimeSpan
@@ -193,19 +193,19 @@ class TimeSpan {
 }
 if (false) {
     /** @type {?} */
-    TimeSpan.prototype.tpKeys;
+    TimeSpanUtil.prototype.tpKeys;
     /** @type {?} */
-    TimeSpan.prototype.p82;
+    TimeSpanUtil.prototype.p82;
     /** @type {?} */
-    TimeSpan.prototype.p81;
+    TimeSpanUtil.prototype.p81;
     /** @type {?} */
-    TimeSpan.prototype.p82a;
+    TimeSpanUtil.prototype.p82a;
     /** @type {?} */
-    TimeSpan.prototype.p81a;
+    TimeSpanUtil.prototype.p81a;
     /** @type {?} */
-    TimeSpan.prototype.p81b;
+    TimeSpanUtil.prototype.p81b;
     /** @type {?} */
-    TimeSpan.prototype.p82b;
+    TimeSpanUtil.prototype.p82b;
 }
 
 /**
@@ -1279,5 +1279,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive, TimeSpan, x };
+export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive, TimeSpanUtil, x };
 //# sourceMappingURL=kleiolab-lib-utils.js.map

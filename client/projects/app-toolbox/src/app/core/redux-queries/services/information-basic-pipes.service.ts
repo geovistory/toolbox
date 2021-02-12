@@ -6,7 +6,7 @@ import { TimePrimitive } from '@kleiolab/lib-utils';
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
 import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { TimeSpan } from "@kleiolab/lib-utils";
+import { TimeSpanUtil } from "@kleiolab/lib-utils";
 import { Granularity } from "@kleiolab/lib-utils";
 import { CalendarType } from "@kleiolab/lib-utils";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
@@ -178,7 +178,7 @@ export class InformationBasicPipesService {
    * pipes the TimeSpan of a temporal entity
    * @param pkEntity the pk_entity of the termporal entity
    */
-  @spyTag pipeTimeSpan(pkEntity: number): Observable<TimeSpan> {
+  @spyTag pipeTimeSpan(pkEntity: number): Observable<TimeSpanUtil> {
     // Get the properties leading to presences
     return combineLatest(
       this.pipeOutgoingStatementsByProperty(72, pkEntity).pipe(this.timePrimitiveOfStatements()),
@@ -189,7 +189,7 @@ export class InformationBasicPipesService {
       this.pipeOutgoingStatementsByProperty(153, pkEntity).pipe(this.timePrimitiveOfStatements()),
 
     ).pipe(
-      map(([_72, _71, _150, _151, _152, _153]) => new TimeSpan({
+      map(([_72, _71, _150, _151, _152, _153]) => new TimeSpanUtil({
         p82: _72,
         p81: _71,
         p82a: _152,

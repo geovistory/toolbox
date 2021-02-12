@@ -6,7 +6,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { takeUntil } from 'rxjs/operators';
-import { TimeSpan } from '@kleiolab/lib-utils';
+import { TimeSpanUtil } from '@kleiolab/lib-utils';
 
 export type CtrlTimeSpanModel = CtrlTimeSpanDialogResult
 
@@ -82,11 +82,11 @@ export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, M
       this.model = value;
     }
     this.onChange(this.model)
-    this.timeSpan = TimeSpan.fromTimeSpanDialogData(value)
+    this.timeSpan = TimeSpanUtil.fromTimeSpanDialogData(value)
   }
 
 
-  timeSpan: TimeSpan;
+  timeSpan: TimeSpanUtil;
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,

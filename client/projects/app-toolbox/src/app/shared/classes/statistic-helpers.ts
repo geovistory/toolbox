@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { TimeSpan } from "@kleiolab/lib-utils";
+import { TimeSpanUtil } from "@kleiolab/lib-utils";
 import { indexBy, omit, sort, values } from "ramda";
 import { JulianDate } from "cesium";
 import { WarEntityPreviewTimeSpan } from "@kleiolab/lib-sdk-lb4";
@@ -167,7 +167,7 @@ export function timeSpanExtremes(t: WarEntityPreviewTimeSpan): CesiumTimeSpanExt
 
   if (!t || !Object.keys(t).length) return {};
 
-  const timespan = new TimeSpan(t);
+  const timespan = new TimeSpanUtil(t);
   const minMax = timespan.getMinMaxTimePrimitive();
 
   const start = new Cesium.JulianDate(minMax.min.julianDay, -43200, Cesium.TimeStandard.UTC);
