@@ -37,7 +37,7 @@ import { ReduxQueriesModule } from 'projects/app-toolbox/src/app/core/redux-quer
 import { ReduxStoreModule } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
 import { RepoModule } from 'projects/app-toolbox/src/app/core/repo/repo.module';
 import { ApiModule } from "@kleiolab/lib-sdk-lb4";
-import { SocketsModule } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
+import { SocketsModule, SocketsConfig } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
 import { SysModule } from 'projects/app-toolbox/src/app/core/sys/sys.module';
 import { TabModule } from 'projects/app-toolbox/src/app/core/tab/tab.module';
 import { WarModule } from 'projects/app-toolbox/src/app/core/war/war.module';
@@ -53,7 +53,8 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from './shared/pipes/keys.module';
 
 // TODO: check if this can stay.
-const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
+const socketIoConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
+const socketsConfig: SocketsConfig = { baseUrl: environment.baseUrl };
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'standard'
@@ -91,7 +92,7 @@ registerLocaleData(localeDeCh);
     AngularCesiumModule.forRoot(),
     DndModule.forRoot(),
     TreeviewModule.forRoot(),
-    SocketIoModule.forRoot(socketConfig),
+    SocketIoModule.forRoot(socketIoConfig),
     AngularSplitModule.forRoot(),
     MccColorPickerModule.forRoot({}),
     BrowserModule,
@@ -113,7 +114,7 @@ registerLocaleData(localeDeCh);
     MaterialModule,
     ApiModule,
     CookiesModule.forRoot(),
-    SocketsModule
+    SocketsModule.forRoot(socketsConfig)
   ],
   providers: [
     ActiveAccountService,

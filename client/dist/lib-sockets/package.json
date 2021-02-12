@@ -1,0 +1,22 @@
+{
+  "name": "@kleiolab/lib-sockets",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14",
+    "ngx-socket-io": "^2.1.1"
+  },
+  "main": "bundles/kleiolab-lib-sockets.umd.js",
+  "module": "fesm5/kleiolab-lib-sockets.js",
+  "es2015": "fesm2015/kleiolab-lib-sockets.js",
+  "esm5": "esm5/kleiolab-lib-sockets.js",
+  "esm2015": "esm2015/kleiolab-lib-sockets.js",
+  "fesm5": "fesm5/kleiolab-lib-sockets.js",
+  "fesm2015": "fesm2015/kleiolab-lib-sockets.js",
+  "typings": "kleiolab-lib-sockets.d.ts",
+  "metadata": "kleiolab-lib-sockets.metadata.json",
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}

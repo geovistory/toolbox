@@ -1,0 +1,138 @@
+import { Injectable, Optional } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
+import { WarActions } from '@kleiolab/lib-redux';
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: models/SocketsConfig.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SocketsConfig {
+    constructor() {
+        this.baseUrl = '';
+    }
+}
+if (false) {
+    /** @type {?} */
+    SocketsConfig.prototype.baseUrl;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: models/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: services/entity-preview-socket.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class EntityPreviewSocket extends Socket {
+    /**
+     * @param {?} warActions
+     * @param {?=} config
+     */
+    constructor(warActions, config) {
+        super({ url: config.baseUrl + '/WarEntityPreview' });
+        // dispatch a method to put the EntityPreview to the store
+        this.fromEvent('entityPreview').subscribe((/**
+         * @param {?} data
+         * @return {?}
+         */
+        data => {
+            warActions.entity_preview.loadSucceeded([data], '');
+        }));
+    }
+}
+EntityPreviewSocket.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+EntityPreviewSocket.ctorParameters = () => [
+    { type: WarActions },
+    { type: SocketsConfig, decorators: [{ type: Optional }] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: services/import-table-socket-socket.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ImportTableSocket extends Socket {
+    /**
+     * @param {?=} config
+     */
+    constructor(config) {
+        super({ url: config.baseUrl + '/ImportTable' });
+        this.connected = false;
+        this.connected = true;
+    }
+    /**
+     * @return {?}
+     */
+    cleanConnect() {
+        if (!this.connected)
+            this.connect();
+    }
+    /**
+     * @return {?}
+     */
+    cleanDisconnect() {
+        this.disconnect();
+        this.connected = false;
+    }
+}
+ImportTableSocket.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ImportTableSocket.ctorParameters = () => [
+    { type: SocketsConfig, decorators: [{ type: Optional }] }
+];
+if (false) {
+    /** @type {?} */
+    ImportTableSocket.prototype.connected;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: services/sys-status-socket.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SysStatusSocket extends Socket {
+    /**
+     * @param {?=} config
+     */
+    constructor(config) {
+        super({ url: config.baseUrl + '/SysStatus' });
+    }
+}
+SysStatusSocket.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SysStatusSocket.ctorParameters = () => [
+    { type: SocketsConfig, decorators: [{ type: Optional }] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: services/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: public-api.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: kleiolab-lib-sockets-src-lib-sockets.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+export { EntityPreviewSocket, ImportTableSocket, SocketsConfig, SysStatusSocket };
+//# sourceMappingURL=kleiolab-lib-sockets-src-lib-sockets.js.map

@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":4,"exports":[{"from":"./entity-preview-socket.service"},{"from":"./import-table-socket-socket.service"},{"from":"./sys-status-socket.service"}],"metadata":{},"origins":{},"importAs":"@kleiolab/lib-sockets/src/lib/sockets"}

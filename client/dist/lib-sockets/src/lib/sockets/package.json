@@ -1,0 +1,13 @@
+{
+  "main": "../../../bundles/kleiolab-lib-sockets-src-lib-sockets.umd.js",
+  "module": "../../../fesm5/kleiolab-lib-sockets-src-lib-sockets.js",
+  "es2015": "../../../fesm2015/kleiolab-lib-sockets-src-lib-sockets.js",
+  "esm5": "../../../esm5/src/lib/sockets/kleiolab-lib-sockets-src-lib-sockets.js",
+  "esm2015": "../../../esm2015/src/lib/sockets/kleiolab-lib-sockets-src-lib-sockets.js",
+  "fesm5": "../../../fesm5/kleiolab-lib-sockets-src-lib-sockets.js",
+  "fesm2015": "../../../fesm2015/kleiolab-lib-sockets-src-lib-sockets.js",
+  "typings": "kleiolab-lib-sockets-src-lib-sockets.d.ts",
+  "metadata": "kleiolab-lib-sockets-src-lib-sockets.metadata.json",
+  "sideEffects": false,
+  "name": "@kleiolab/lib-sockets/src/lib/sockets"
+}

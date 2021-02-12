@@ -51,17 +51,23 @@
       "@kleiolab/lib-config": [
         "dist/lib-config"
       ],
-      "lib-sockets": [
+      "@kleiolab/lib-sockets": [
         "dist/lib-sockets"
       ],
-      "lib-sockets/*": [
+      "@kleiolab/lib-sockets/*": [
         "dist/lib-sockets/*"
       ],
-      "lib-redux": [
+      "@kleiolab/lib-redux/*": [
+        "dist/lib-redux/*"
+      ],
+      "@kleiolab/lib-redux": [
         "dist/lib-redux"
       ],
-      "lib-redux/*": [
-        "dist/lib-redux/*"
+      "@kleiolab/lib-queries": [
+        "dist/lib-queries"
+      ],
+      "@kleiolab/lib-queries/*": [
+        "dist/lib-queries/*"
       ]
     }
   },
