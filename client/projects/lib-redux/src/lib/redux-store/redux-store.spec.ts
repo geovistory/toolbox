@@ -2,7 +2,7 @@ import { NgRedux, NgReduxModule } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { first, toArray } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
-import { IAppState } from './model';
+import { IAppState } from './root/models';
 
 const testScheduler = new TestScheduler((actual, expected) => {
   // asserting the two objects are equal

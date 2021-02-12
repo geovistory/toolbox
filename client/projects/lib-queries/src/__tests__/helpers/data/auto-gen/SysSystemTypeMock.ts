@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { SysSystemType } from "@kleiolab/lib-sdk-lb4";
+import { SysSystemType } from '@kleiolab/lib-sdk-lb4';
 
 /**
  * pk_entity prefix: ---

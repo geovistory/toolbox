@@ -6,6 +6,6 @@ export * from './inf-epic-factory';
 export * from './reducer-factory';
 export * from './schema-actions-factory';
 export * from './schema-epics-factory';
-export * from './schema-object.service';
+export * from '../services/schema-object.service';
 // end:ng42.barrel
 

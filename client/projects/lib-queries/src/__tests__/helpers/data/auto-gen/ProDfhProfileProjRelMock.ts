@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProDfhProfileProjRel } from "@kleiolab/lib-sdk-lb4";
+import { ProDfhProfileProjRel } from '@kleiolab/lib-sdk-lb4';
 import { ProProjectMock } from './ProProjectMock';
 import { OmitEntity } from './local-model.helpers';
 

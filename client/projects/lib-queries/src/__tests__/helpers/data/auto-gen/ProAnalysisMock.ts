@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
-import { ColDef } from "@kleiolab/lib-sdk-lb4";
+import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { ColDef } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from './DfhApiClassMock';
 import { ProProjectMock } from './ProProjectMock';
 import { SysSystemTypeMock } from './SysSystemTypeMock';

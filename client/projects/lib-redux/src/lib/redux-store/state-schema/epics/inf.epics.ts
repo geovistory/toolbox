@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
-import { Action } from 'rxjs/internal/scheduler/Action';
 import { mergeMap } from 'rxjs/operators';
 import { SchemaObject } from '../../root/models';
 import { DatActions, FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeStatements, LoadPaginatedStatementListMeta, PaginatedStatementList, ProActions, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from '../actions';
@@ -10,6 +9,7 @@ import { InfPersistentItemSlice, InfStatementSlice, InfTemporalEntitySlice, InfT
 import { NotificationsAPIActions } from '../../state-gui/actions';
 import { infRoot } from '../reducer-configs';
 import { Flattener, FluxActionObservable, InfEpicsFactory, ModifyActionMeta, PaginateByParam, SchemaObjectService, storeFlattened } from '../_helpers';
+import { Action } from 'redux';
 
 @Injectable()
 export class InfEpics {

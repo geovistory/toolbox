@@ -9,6 +9,7 @@ import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux
 import { ClassAndTypeNode } from 'projects/app-toolbox/src/app/modules/base/components/classes-and-types-select/classes-and-types-select.component';
 import { equals } from 'ramda';
 
+// TODO DELETE
 export interface ClassAndTypeSelectModel {
   classes?: number[]
   types?: number[]

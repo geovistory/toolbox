@@ -362,7 +362,42 @@
         SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT;
     }
 
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/pro-config.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Contains configuration of keys used in the the system-schema
+     * that are relevant for the app logic.
+     *
+     * Example: the ui-context keys are used to query the order of properties in different contexts
+     */
+    var   /**
+     * Contains configuration of keys used in the the system-schema
+     * that are relevant for the app logic.
+     *
+     * Example: the ui-context keys are used to query the order of properties in different contexts
+     */
+    ProConfig = /** @class */ (function () {
+        function ProConfig() {
+        }
+        return ProConfig;
+    }());
+    if (false) {
+        /**
+         * Primary Key of Namespace "Geovistory Ongoing"
+         * @type {?}
+         */
+        ProConfig.PK_PROJECT_OF_TEMPLATE_PROJECT;
+        /** @type {?} */
+        ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT;
+        /** @type {?} */
+        ProConfig.PK_PROJECT_OF_SANDBOX_PROJECT;
+    }
+
     exports.DfhConfig = DfhConfig;
+    exports.ProConfig = ProConfig;
     exports.SysConfig = SysConfig;
 
     Object.defineProperty(exports, '__esModule', { value: true });

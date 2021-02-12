@@ -1,4 +1,4 @@
-import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
+import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from '../auto-gen/DfhApiClassMock';
 import { DfhApiPropertyMock } from '../auto-gen/DfhApiPropertyMock';
 import { ProDfhProfileProjRelMock } from '../auto-gen/ProDfhProfileProjRelMock';

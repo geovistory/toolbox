@@ -1,24 +1,23 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
+import { IAppState, SchemaObjectService } from '@kleiolab/lib-redux';
 import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
-import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
-import { Field, SubfieldType } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
+import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
 import { DfhApiClassMock } from '../../../__tests__/helpers/data/auto-gen/DfhApiClassMock';
+import { DfhApiPropertyMock } from '../../../__tests__/helpers/data/auto-gen/DfhApiPropertyMock';
 import { PK_DEFAULT_CONFIG_PROJECT } from '../../../__tests__/helpers/data/auto-gen/local-model.helpers';
 import { ProClassFieldConfigMock } from '../../../__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
 import { IAppStateMock } from '../../../__tests__/helpers/data/IAppStateMock';
+import { basicClassesAndProperties } from '../../../__tests__/helpers/data/positive-schema-objects/basic-classes-and-properties';
 import { fieldsOfManifestationSingleton } from '../../../__tests__/helpers/data/positive-schema-objects/fields-of-manifestation-singleton';
 import { project1 } from '../../../__tests__/helpers/data/positive-schema-objects/project-1';
-import { setAppState } from '../../../__tests__/helpers/set-app-state';
-import { ReduxQueriesModule } from '../redux-queries.module';
-import { ConfigurationPipesService } from './configuration-pipes.service';
 import { sysConfig } from '../../../__tests__/helpers/data/positive-schema-objects/sys-config';
-import { basicClassesAndProperties } from '../../../__tests__/helpers/data/positive-schema-objects/basic-classes-and-properties';
-import { DfhApiPropertyMock } from '../../../__tests__/helpers/data/auto-gen/DfhApiPropertyMock';
+import { setAppState } from '../../../__tests__/helpers/set-app-state';
+import { Field, SubfieldType } from '../models';
+import { ReduxQueriesModule } from '../module/redux-queries.module';
+import { ConfigurationPipesService } from './configuration-pipes.service';
 
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;

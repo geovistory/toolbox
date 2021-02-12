@@ -1,6 +1,6 @@
-import { SysConfigValueObjectType } from "@kleiolab/lib-sdk-lb4";
+import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 
-import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
+import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {

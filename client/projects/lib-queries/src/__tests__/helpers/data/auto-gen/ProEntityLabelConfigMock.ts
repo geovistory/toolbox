@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProEntityLabelConfig } from "@kleiolab/lib-sdk-lb4";
+import { ProEntityLabelConfig } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from './DfhApiClassMock';
 import { PK_DEFAULT_CONFIG_PROJECT } from './local-model.helpers';
 import { DfhApiPropertyMock } from './DfhApiPropertyMock';

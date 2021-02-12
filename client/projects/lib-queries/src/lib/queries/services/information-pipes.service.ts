@@ -1,29 +1,23 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { IAppState, PaginateByParam } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, Granularity, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
-import { limitTo, sortAbc, switchMapOr } from 'projects/app-toolbox/src/app/core';
-import { InfModelName, InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { U } from 'projects/app-toolbox/src/app/core/util/util';
-import { DfhConfig } from "@kleiolab/lib-config";
-import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { PropertyOption, PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
-import { cache, spyTag } from 'projects/app-toolbox/src/app/shared';
+import { CalendarType, combineLatestOrEmpty, Granularity, limitTo, sortAbc, switchMapOr, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
+
 import { equals, flatten, groupBy, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { ClassAndTypeNode } from '../../../modules/base/components/classes-and-types-select/classes-and-types-select.component';
-import { CtrlTimeSpanDialogResult } from '../../../modules/base/components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../../../modules/base/components/properties-tree/properties-tree.models';
+import { cache, spyTag } from '../decorators';
+import { timeSpanItemToTimeSpan } from '../functions/functions';
+import { AppellationItem, BasicStatementItem, ClassAndTypeNode, ClassAndTypeSelectModel, CtrlTimeSpanDialogResult, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, PropertyOption, PropertySelectModel, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../models';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
+import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
+import { InfSelector, InfModelName } from '../selectors/inf.service';
 
 @Injectable()
 /**
@@ -523,7 +517,7 @@ export class InformationPipesService {
       return this.pipeItemTimeSpan(fkEntity)
         .pipe(map((item) => {
           const items = item.properties.find(p => p.items.length > 0) ? [{
-            label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item)),
+            label: this.timeSpanPipe.transform(timeSpanItemToTimeSpan(item)),
             properties: [] // TODO check if the properties or the item are really not needed
           }] : []
           return {

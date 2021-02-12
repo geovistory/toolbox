@@ -13,7 +13,7 @@ import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-tim
 
 import { Field } from '../../properties-tree/properties-tree.models';
 import { FormPart, MergeDef } from './FormPart';
-
+// TODO DELETE
 export interface CtrlTimeSpanDialogResult {
   // key is the dfh_pk_property, expressing what the time primitive means for the time span
   72?: InfTimePrimitiveWithCalendar; // p82 | At some time within | outer bounds | not before – not after
@@ -23,6 +23,7 @@ export interface CtrlTimeSpanDialogResult {
   150?: InfTimePrimitiveWithCalendar; // p81a | end of the begin | left inner bound | surely from
   151?: InfTimePrimitiveWithCalendar; // p81b | begin of the end | right inner bound | surely to
 }
+// TODO DELETE
 export interface CtrlTimeSpanDialogData {
   timePrimitives: CtrlTimeSpanDialogResult
   beforeCloseCallback?: (timePrimitives: CtrlTimeSpanDialogResult) => Observable<boolean>

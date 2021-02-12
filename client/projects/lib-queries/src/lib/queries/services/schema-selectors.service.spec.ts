@@ -1,18 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-
-import { SchemaSelectorsService } from './schema-selectors.service';
-import { ReduxStoreModule } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
-import { SDKBrowserModule, } from '@kleiolab/lib-sdk-lb3';
-import { ReduxQueriesModule } from '../redux-queries.module';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 import { NgRedux } from '@angular-redux/store';
-import { ConfigurationPipesService } from './configuration-pipes.service';
-import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
-import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
+import { TestBed } from '@angular/core/testing';
+import { ByPk, IAppState, SchemaObjectService } from '@kleiolab/lib-redux';
+import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
+import { GvSchemaObject, ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
-import { ByPk, IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { ProClassFieldConfigMock } from '../../../__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
+import { ReduxQueriesModule } from '../module/redux-queries.module';
+import { SchemaSelectorsService } from './schema-selectors.service';
+
 
 describe('SchemaSelectorsService', () => {
   let ngRedux: NgRedux<IAppState>;

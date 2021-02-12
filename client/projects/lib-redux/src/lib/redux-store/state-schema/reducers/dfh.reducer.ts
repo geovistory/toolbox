@@ -1,6 +1,6 @@
 
 import { ReducerFactory } from '../_helpers';
-import { dfhDefinitions } from './dfh.config';
+import { dfhDefinitions } from '../reducer-configs';
 
 export function createDfhReducer() {
   return new ReducerFactory('dfh', dfhDefinitions).createReducers()

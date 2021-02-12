@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/core')) :
-    typeof define === 'function' && define.amd ? define('@kleiolab/lib-utils', ['exports', '@angular/common', '@angular/core'], factory) :
-    (global = global || self, factory((global.kleiolab = global.kleiolab || {}, global.kleiolab['lib-utils'] = {}), global.ng.common, global.ng.core));
-}(this, (function (exports, common, core) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('ramda'), require('rxjs-spy/operators')) :
+    typeof define === 'function' && define.amd ? define('@kleiolab/lib-utils', ['exports', '@angular/common', '@angular/core', 'rxjs', 'rxjs/operators', 'ramda', 'rxjs-spy/operators'], factory) :
+    (global = global || self, factory((global.kleiolab = global.kleiolab || {}, global.kleiolab['lib-utils'] = {}), global.ng.common, global.ng.core, global.rxjs, global.rxjs.operators, global.ramda, global.operators$1));
+}(this, (function (exports, common, core, rxjs, operators, ramda, operators$1) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2278,6 +2278,282 @@
         U.recursiveMarkAsTouched;
     }
 
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/functions/combineLatestOrEmpty.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Combine Latest or, if input is an empty array, emit empty array
+     * @template I
+     * @param {?} obs
+     * @return {?}
+     */
+    function combineLatestOrEmpty(obs) {
+        obs = __spread([rxjs.of(null)], obs);
+        return rxjs.combineLatest(obs).pipe(operators.map((/**
+         * @param {?} values
+         * @return {?}
+         */
+        function (values) {
+            values.shift();
+            return values;
+        })));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/functions/custom-rxjs-operators.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     * @template T
+     */
+    function ByPk() { }
+    /**
+     * @record
+     * @template T
+     */
+    function VersionEntity() { }
+    if (false) {
+        /** @type {?} */
+        VersionEntity.prototype._latestVersion;
+        /* Skipping unhandled member: [v: number]: T*/
+    }
+    /**
+     * @record
+     * @template T
+     */
+    function EntityVersionsByPk() { }
+    /*****************************************************************************
+     * Generic operators
+     *****************************************************************************/
+    /**
+     * Returns an Observable that emits an flatened array consisting of the items of the arrays returned by getArrayFromItemFn.
+     * @template T, R
+     * @param {?} getArrayFromItemFn
+     * @return {?}
+     */
+    function mapConcat(getArrayFromItemFn) {
+        return operators.map((/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            if (typeof getArrayFromItemFn !== 'function') {
+                throw new TypeError('argument is not a function.');
+            }
+            /** @type {?} */
+            var concatenatedArray = [];
+            source.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            function (item) {
+                if (item)
+                    concatenatedArray = ramda.concat(concatenatedArray, getArrayFromItemFn(item));
+            }));
+            return concatenatedArray;
+        }));
+    }
+    /**
+     * Takes an object with EntityVersions indexed by pk
+     * Returns an array containing the latest versions for each indexed entity
+     * @template T
+     * @return {?}
+     */
+    function latestEntityVersions() {
+        return rxjs.pipe(operators.map((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return U.objNr2Arr(d); })), operators.map((/**
+         * @param {?} a
+         * @return {?}
+         */
+        function (a) { return a.map((/**
+         * @param {?} q
+         * @return {?}
+         */
+        function (q) { return q[q._latestVersion]; })); })));
+    }
+    /**
+     * Takes an object with EntityVersions indexed by pk
+     * Returns an the latest versions for entity with given pkEntity
+     * @template T
+     * @param {?} pkEntity
+     * @return {?}
+     */
+    function latestEntityVersion(pkEntity) {
+        return rxjs.pipe(operators.map((/**
+         * @param {?} byPkEntity
+         * @return {?}
+         */
+        function (byPkEntity) { return byPkEntity[pkEntity]; })), operators.filter((/**
+         * @param {?} entityVersions
+         * @return {?}
+         */
+        function (entityVersions) { return entityVersions && entityVersions._latestVersion !== undefined; })), operators.map((/**
+         * @param {?} entityVersions
+         * @return {?}
+         */
+        function (entityVersions) { return entityVersions[entityVersions._latestVersion]; })));
+    }
+    /**
+     * @template T
+     * @param {?} versions
+     * @return {?}
+     */
+    function latestVersion(versions) {
+        /** @type {?} */
+        var latestVersion = 0;
+        /** @type {?} */
+        var latest;
+        ramda.values(versions).forEach((/**
+         * @param {?} v
+         * @return {?}
+         */
+        function (v) {
+            if (v.entity_version > latestVersion) {
+                latestVersion = v.entity_version;
+                latest = v;
+            }
+        }));
+        return latest;
+    }
+    /**
+     * @template T
+     * @param {?} versions
+     * @param {?} version
+     * @return {?}
+     */
+    function getSpecificVersion(versions, version) {
+        /** @type {?} */
+        var ver = ramda.values(versions).find((/**
+         * @param {?} v
+         * @return {?}
+         */
+        function (v) { return v.entity_version === version; }));
+        return ver;
+    }
+    /**
+     * limits the number of items in array
+     * @template T
+     * @param {?=} limit
+     * @return {?}
+     */
+    function limitTo(limit) {
+        return operators.map((/**
+         * @param {?} items
+         * @return {?}
+         */
+        function (items) {
+            if (!limit)
+                return items;
+            return items.slice(0, limit);
+        }));
+    }
+    /**
+     * limits the number of items in array
+     * @template T
+     * @param {?=} limit
+     * @param {?=} offset
+     * @return {?}
+     */
+    function limitOffset(limit, offset) {
+        return operators.map((/**
+         * @param {?} items
+         * @return {?}
+         */
+        function (items) {
+            if (!limit)
+                return items;
+            offset = offset ? offset : 0;
+            /** @type {?} */
+            var start = limit * offset;
+            /** @type {?} */
+            var end = start + limit;
+            return items.slice(start, end);
+        }));
+    }
+    /**
+     * @template T
+     * @param {?} stringFn
+     * @return {?}
+     */
+    function sortAbc(stringFn) {
+        return operators.map((/**
+         * @param {?} l
+         * @return {?}
+         */
+        function (l) { return ramda.sort((/**
+         * @param {?} a
+         * @param {?} b
+         * @return {?}
+         */
+        function (a, b) {
+            /** @type {?} */
+            var textA = stringFn(a);
+            /** @type {?} */
+            var textB = stringFn(b);
+            if (!textA)
+                return -1;
+            if (!textB)
+                return 1;
+            textA = textA.toUpperCase(); // ignore upper and lowercase
+            textB = textB.toUpperCase(); // ignore upper and lowercase
+            if (textA < textB) {
+                return -1;
+            }
+            if (textA > textB) {
+                return 1;
+            }
+            // names are equal
+            return 0;
+        }), l); }));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/functions/switchMapOr.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * switchMaps to the default, if condition is true, else to provided elseOutput
+     *
+     * @template I, O
+     * @param {?} defaultValue
+     * @param {?} elseOutput
+     * @param {?=} conditionForDefault
+     * @return {?}
+     */
+    function switchMapOr(defaultValue, elseOutput, conditionForDefault) {
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            conditionForDefault = conditionForDefault ? conditionForDefault : (/**
+             * @param {?} x
+             * @return {?}
+             */
+            function (x) { return (!x || Object.keys(x).length < 1); });
+            return source.pipe(
+            // auditTime(1),
+            operators.switchMap((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) {
+                return rxjs.iif((/**
+                 * @return {?}
+                 */
+                function () { return conditionForDefault(value); }), rxjs.of(defaultValue), elseOutput(value));
+            })), operators$1.tag("switchMapOr"));
+        });
+    }
+
     exports.DateTimeCommons = DateTimeCommons;
     exports.DateTimeModule = DateTimeModule;
     exports.GregorianDateTime = GregorianDateTime;
@@ -2287,6 +2563,16 @@
     exports.TimeSpanPipe = TimeSpanPipe;
     exports.TimeSpanUtil = TimeSpanUtil;
     exports.U = U;
+    exports.combineLatestOrEmpty = combineLatestOrEmpty;
+    exports.getSpecificVersion = getSpecificVersion;
+    exports.latestEntityVersion = latestEntityVersion;
+    exports.latestEntityVersions = latestEntityVersions;
+    exports.latestVersion = latestVersion;
+    exports.limitOffset = limitOffset;
+    exports.limitTo = limitTo;
+    exports.mapConcat = mapConcat;
+    exports.sortAbc = sortAbc;
+    exports.switchMapOr = switchMapOr;
     exports.x = x;
 
     Object.defineProperty(exports, '__esModule', { value: true });

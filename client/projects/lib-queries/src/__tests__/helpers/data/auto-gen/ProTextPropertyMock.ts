@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProTextProperty } from "@kleiolab/lib-sdk-lb4";
+import { ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { InfLanguageMock } from './InfLanguageMock';
 import { DfhApiPropertyMock } from './DfhApiPropertyMock';
 import { SysSystemTypeMock } from './SysSystemTypeMock';

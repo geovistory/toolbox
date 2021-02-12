@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProInfoProjRel } from "@kleiolab/lib-sdk-lb4";
+import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { InfPersistentItemMock } from './InfPersistentItemMock';
 import { InfStatementMock } from './InfStatementMock';
 import { InfTemporalEntityMock } from './InfTemporalEntityMock';

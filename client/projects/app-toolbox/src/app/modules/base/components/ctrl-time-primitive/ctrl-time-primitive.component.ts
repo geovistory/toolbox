@@ -13,6 +13,7 @@ import { TimePrimitive } from "@kleiolab/lib-utils";
 import { CalendarType } from "@kleiolab/lib-utils";
 import { takeUntil } from 'rxjs/operators';
 
+// TODO DELETE
 export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
   calendar: CalendarType
 }

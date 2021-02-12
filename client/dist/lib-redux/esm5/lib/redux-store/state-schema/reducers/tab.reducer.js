@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducers/tab.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { tabDefinitions, tabRoot } from '../reducer-configs';
+import { ReducerFactory } from '../_helpers';
+/**
+ * @return {?}
+ */
+export function createTabReducer() {
+    return new ReducerFactory(tabRoot, tabDefinitions).createReducers();
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGFiLnJlZHVjZXIuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXJlZHV4LyIsInNvdXJjZXMiOlsibGliL3JlZHV4LXN0b3JlL3N0YXRlLXNjaGVtYS9yZWR1Y2Vycy90YWIucmVkdWNlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUFBLE9BQU8sRUFBRSxjQUFjLEVBQUUsT0FBTyxFQUFFLE1BQU0sb0JBQW9CLENBQUM7QUFDN0QsT0FBTyxFQUFFLGNBQWMsRUFBRSxNQUFNLGFBQWEsQ0FBQzs7OztBQUU3QyxNQUFNLFVBQVUsZ0JBQWdCO0lBQzlCLE9BQU8sSUFBSSxjQUFjLENBQUMsT0FBTyxFQUFFLGNBQWMsQ0FBQyxDQUFDLGNBQWMsRUFBRSxDQUFBO0FBQ3JFLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyB0YWJEZWZpbml0aW9ucywgdGFiUm9vdCB9IGZyb20gJy4uL3JlZHVjZXItY29uZmlncyc7XG5pbXBvcnQgeyBSZWR1Y2VyRmFjdG9yeSB9IGZyb20gJy4uL19oZWxwZXJzJztcblxuZXhwb3J0IGZ1bmN0aW9uIGNyZWF0ZVRhYlJlZHVjZXIoKSB7XG4gIHJldHVybiBuZXcgUmVkdWNlckZhY3RvcnkodGFiUm9vdCwgdGFiRGVmaW5pdGlvbnMpLmNyZWF0ZVJlZHVjZXJzKClcbn1cbiJdfQ==

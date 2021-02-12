@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { InfStatement, InfTemporalEntity, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, Granularity, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
-import { IconType } from 'projects/app-toolbox/src/app/core';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { switchMapOr } from 'projects/app-toolbox/src/app/core/util/switchMapOr';
-import { DfhConfig } from "@kleiolab/lib-config";
-import { spyTag } from 'projects/app-toolbox/src/app/shared';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { IconType } from '@kleiolab/lib-redux';
+import { InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { CalendarType, combineLatestOrEmpty, Granularity, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { omit, values } from 'ramda';
-import { combineLatest, merge, Observable, of, pipe } from 'rxjs';
-import { auditTime, filter, map, switchMap } from 'rxjs/operators';
-import { BasicStatementItem, Subfield } from '../../../modules/base/components/properties-tree/properties-tree.models';
+import { combineLatest, merge, Observable, of, pipe, BehaviorSubject } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { spyTag } from '../decorators';
+import { BasicStatementItem, Subfield } from '../models';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4/public-api';
 
 
 
@@ -37,19 +36,19 @@ export class InformationBasicPipesService {
    * Project
   *********************************************************************/
 
-  @spyTag pipeRelatedTemporalEntities(pkEntity: number): Observable<InfTemporalEntity[]> {
-    return this.s.inf$.statement$
-      .by_object$({ fk_object_info: pkEntity })
-      .pipe(
-        auditTime(1),
-        switchMapOr([], (statements) => combineLatest(
-          statements.map(statement => this.s.inf$.temporal_entity$.by_pk_entity_key$(statement.fk_subject_info).pipe(
-          ))
-        ).pipe(
-          map(x => x.filter((y) => !!y)),
-        )),
-      )
-  }
+  // @spyTag pipeRelatedTemporalEntities(pkEntity: number): Observable<InfTemporalEntity[]> {
+  //   return this.s.inf$.statement$
+  //     .by_object$({ fk_object_info: pkEntity })
+  //     .pipe(
+  //       auditTime(1),
+  //       switchMapOr([], (statements) => combineLatest(
+  //         statements.map(statement => this.s.inf$.temporal_entity$.by_pk_entity_key$(statement.fk_subject_info).pipe(
+  //         ))
+  //       ).pipe(
+  //         map(x => x.filter((y) => !!y)),
+  //       )),
+  //     )
+  // }
 
 
 
@@ -199,27 +198,26 @@ export class InformationBasicPipesService {
    * are of the same properties.
    */
   timePrimitiveOfStatements = () => pipe(
-    map((r: InfStatement[]) => {
-      if (r.length > 1) return [r[0]]
-      else return r
-    }),
-    switchMapOr(undefined, (r) => this.pipeInfTimePrimitive(r[0].fk_object_info).pipe(
-      switchMapOr(undefined, (infTimePrimitive) => this.p.pkProject$.pipe(
-        switchMap((pkProject) => this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
-          .key(pkProject + '_' + r[0].pk_entity).pipe(
-            filter(statement => !!statement),
-            map(ipr => {
-              const x = new TimePrimitive({
-                calendar: (ipr.calendar ? ipr.calendar : 'gregorian') as CalendarType,
-                julianDay: infTimePrimitive.julian_day,
-                duration: infTimePrimitive.duration as Granularity
+    map((r: InfStatement[]) => r[0]),
+    switchMap((r) => {
+      if (!r) return new BehaviorSubject(undefined)
+      return this.pipeInfTimePrimitive(r.fk_object_info).pipe(
+        switchMap((infTimePrimitive) => this.p.pkProject$.pipe(
+          switchMap((pkProject) => this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
+            .key(pkProject + '_' + r[0].pk_entity).pipe(
+              filter(statement => !!statement),
+              map(ipr => {
+                const y: TimePrimitiveWithCal = {
+                  calendar: (ipr.calendar ? ipr.calendar : 'gregorian') as CalendarType,
+                  julianDay: infTimePrimitive.julian_day,
+                  duration: infTimePrimitive.duration as Granularity
+                }
+                return y;
               })
-              return x;
-            })
-          ))
-      ))
-    )),
-
+            ))
+        ))
+      )
+    })
   )
 
   /**

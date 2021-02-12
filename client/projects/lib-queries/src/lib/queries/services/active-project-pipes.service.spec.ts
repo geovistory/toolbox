@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
+import { IAppState } from '@kleiolab/lib-redux';
+import { SchemaObjectService } from '@kleiolab/lib-redux';
 import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { PK_DEFAULT_CONFIG_PROJECT } from '../../../__tests__/helpers/data/auto-
 import { IAppStateMock } from '../../../__tests__/helpers/data/IAppStateMock';
 import { project1 } from '../../../__tests__/helpers/data/positive-schema-objects/project-1';
 import { setAppState } from '../../../__tests__/helpers/set-app-state';
-import { ReduxQueriesModule } from '../redux-queries.module';
+import { ReduxQueriesModule } from '../module/redux-queries.module';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 
 

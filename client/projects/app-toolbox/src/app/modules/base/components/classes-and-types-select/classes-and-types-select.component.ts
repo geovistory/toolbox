@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
 import { ClassAndTypePk } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
-
+// TODO DELETE
 export interface ClassAndTypeNode {
   label: string;
   data: ClassAndTypePk

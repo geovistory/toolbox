@@ -1,6 +1,6 @@
-import { ProjectDetail } from 'projects/app-toolbox/src/app/core/active-project/active-project.models';
 import { ProProjectMock } from './auto-gen/ProProjectMock';
 import { InfLanguageMock } from './auto-gen/InfLanguageMock';
+import { ProjectDetail } from '@kleiolab/lib-redux';
 
 export namespace ProjectDetailMock {
   export const project1: ProjectDetail = {

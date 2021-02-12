@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfTemporalEntity } from "@kleiolab/lib-sdk-lb4";
+import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from './DfhApiClassMock';
 
 /**

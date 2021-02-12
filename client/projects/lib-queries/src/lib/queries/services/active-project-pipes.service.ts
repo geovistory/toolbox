@@ -1,15 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
-import { filter, distinctUntilChanged, switchMap, first } from 'rxjs/operators';
-import { SchemaSelectorsService } from './schema-selectors.service';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
-import { ProProject } from "@kleiolab/lib-sdk-lb4";
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { cache } from 'projects/app-toolbox/src/app/shared/decorators/method-decorators';
+import { Injectable } from '@angular/core';
+import { IAppState } from '@kleiolab/lib-redux';
+import { InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';
-import { EntityPreviewSocket } from '../../sockets/sockets.module';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter, first, switchMap } from 'rxjs/operators';
+import { cache } from '../decorators';
+import { SchemaSelectorsService } from './schema-selectors.service';
 
 @Injectable({
   providedIn: 'root'

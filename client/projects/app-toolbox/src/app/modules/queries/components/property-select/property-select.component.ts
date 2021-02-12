@@ -10,9 +10,9 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
 
 
-
+// TODO DELETE
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string }
-
+// TODO DELETE
 export interface PropertySelectModel {
   outgoingProperties?: number[]
   ingoingProperties?: number[]

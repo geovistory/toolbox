@@ -1,29 +1,17 @@
 
 import { Injectable } from '@angular/core';
-import { dfhLabelByFksKey } from 'projects/app-toolbox/src/app/core/dfh/dfh.config';
-import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'projects/app-toolbox/src/app/core/pro/pro.config';
-import { RelatedProfile } from "@kleiolab/lib-sdk-lb4";
-import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
-import { SysConfigSpecialFields } from "@kleiolab/lib-sdk-lb4";
-import { SysConfigFieldDisplay } from "@kleiolab/lib-sdk-lb4";
-import { ProTextProperty } from "@kleiolab/lib-sdk-lb4";
-import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
-import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
-import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
-import { DfhLabel } from "@kleiolab/lib-sdk-lb4";
-import { DfhClass } from "@kleiolab/lib-sdk-lb4";
-import { ClassConfig } from "@kleiolab/lib-sdk-lb4";
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
+import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import * as Config from '../../../../../../../server/lb3app/common/config/Config';
-import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
-import { Field, FieldPlaceOfDisplay, SpecialFieldType, Subfield, SubfieldType } from '../../../modules/base/components/properties-tree/properties-tree.models';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { cache, spyTag } from '../decorators';
+import { Field, FieldPlaceOfDisplay, SpecialFieldType, Subfield, SubfieldType } from '../models';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
-import { cache, spyTag } from 'projects/app-toolbox/src/app/shared/decorators/method-decorators';
+
 
 // this is the
 export type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'persistent_item' | 'temporal_entity'
@@ -396,7 +384,7 @@ export class ConfigurationPipesService {
         })
         const defaultProjectkey = proClassFieldConfgByProjectAndClassKey({
           fk_class_for_class_field: pkClass,
-          fk_project: Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT
+          fk_project: ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT
         })
         return combineLatest(
           this.s.pro$.class_field_config$.by_fk_project__fk_class$.key(activeProjectkey),
@@ -502,7 +490,7 @@ export class ConfigurationPipesService {
 
       // label of default project
       this.pipeProTextProperty({
-        fk_project: Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT,
+        fk_project: ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT,
         fk_language: d.language.pk_entity,
         fk_system_type,
         fk_dfh_class: d.pkClass,
@@ -517,7 +505,7 @@ export class ConfigurationPipesService {
 
       // label of default project
       this.pipeProTextProperty({
-        fk_project: Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT,
+        fk_project: ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT,
         fk_language: 18889,
         fk_system_type,
         fk_dfh_class: d.pkClass,

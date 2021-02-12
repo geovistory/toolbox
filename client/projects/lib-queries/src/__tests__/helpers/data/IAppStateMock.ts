@@ -1,6 +1,6 @@
 import { ProjectDetailMock } from './ProjectDetailMock';
 import { SysConfigValueMock } from './auto-gen/SysConfigValueMock';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { IAppState } from '@kleiolab/lib-redux';
 
 export namespace IAppStateMock {
   export const state1: IAppState = {

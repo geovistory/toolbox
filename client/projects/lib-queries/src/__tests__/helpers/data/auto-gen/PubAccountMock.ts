@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { PubAccount } from "@kleiolab/lib-sdk-lb4";
+import { PubAccount } from '@kleiolab/lib-sdk-lb4';
 
 /**
  * pk_entity prefix: 100

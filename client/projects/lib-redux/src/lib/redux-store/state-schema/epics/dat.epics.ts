@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models';
-import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, InfActions, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, LoadVersionAction, ProActions } from '../actions';
+import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, InfActions, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, ProActions } from '../actions';
 import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from '../models';
 import { NotificationsAPIActions } from '../../state-gui/actions';
 import { datRoot } from '../reducer-configs';
-import { Flattener, LoadActionMeta, ModifyActionMeta, SchemaEpicsFactory, SchemaObjectService, storeFlattened } from '../_helpers';
+import { Flattener, LoadActionMeta, ModifyActionMeta, SchemaEpicsFactory, SchemaObjectService, storeFlattened, LoadVersionAction } from '../_helpers';
 
 
 @Injectable()

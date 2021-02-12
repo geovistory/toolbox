@@ -1,6 +1,5 @@
 import { ReducerFactory } from '../_helpers';
-import { infDefinitions, infRoot } from './inf.config';
-
+import { infDefinitions, infRoot } from '../reducer-configs';
 
 
 

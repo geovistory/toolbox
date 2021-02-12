@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatDigitalMock } from './DatDigitalMock';
+import { TabCell } from '@kleiolab/lib-sdk-lb4';
 import { DatColumnMock } from './DatColumnMock';
+import { DatDigitalMock } from './DatDigitalMock';
 import { TabRowMock } from './TabRowMock';
-import { TabCell } from "@kleiolab/lib-sdk-lb4";
 
 /**
  * pk_entity prefix: 200
  */
 export class TabCellXMock {
   static readonly FEATURE_X_1_1: Partial<TabCell> = ({
-    pk_cell: 2000, //pk_entity
-    fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
-    fk_column: DatColumnMock.COL_NAMES.pk_entity as number, //fk_column
-    fk_row: TabRowMock.ROW_ALBERT.pk_row, //fk_row
-    string_value: 'Albert IV' //content
+    pk_cell: 2000, // pk_entity
+    fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, // fk_digital
+    fk_column: DatColumnMock.COL_NAMES.pk_entity as number, // fk_column
+    fk_row: TabRowMock.ROW_ALBERT.pk_row, // fk_row
+    string_value: 'Albert IV' // content
   }
   )
 

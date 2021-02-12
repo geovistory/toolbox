@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/sys.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { sysDefinitions, sysRoot } from '../reducer-configs';
+import { ReducerFactory } from '../_helpers';
+/**
+ * @return {?}
+ */
+export function createSysReducer() {
+    return new ReducerFactory(sysRoot, sysDefinitions).createReducers();
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3lzLnJlZHVjZXIuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXJlZHV4L3NyYy9saWIvcmVkdXgtc3RvcmUvIiwic291cmNlcyI6WyJzdGF0ZS1zY2hlbWEvcmVkdWNlcnMvc3lzLnJlZHVjZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFBQSxPQUFPLEVBQUUsY0FBYyxFQUFFLE9BQU8sRUFBRSxNQUFNLG9CQUFvQixDQUFDO0FBQzdELE9BQU8sRUFBRSxjQUFjLEVBQUUsTUFBTSxhQUFhLENBQUM7Ozs7QUFDN0MsTUFBTSxVQUFVLGdCQUFnQjtJQUM5QixPQUFPLElBQUksY0FBYyxDQUFDLE9BQU8sRUFBRSxjQUFjLENBQUMsQ0FBQyxjQUFjLEVBQUUsQ0FBQTtBQUNyRSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgc3lzRGVmaW5pdGlvbnMsIHN5c1Jvb3QgfSBmcm9tICcuLi9yZWR1Y2VyLWNvbmZpZ3MnO1xuaW1wb3J0IHsgUmVkdWNlckZhY3RvcnkgfSBmcm9tICcuLi9faGVscGVycyc7XG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlU3lzUmVkdWNlcigpIHtcbiAgcmV0dXJuIG5ldyBSZWR1Y2VyRmFjdG9yeShzeXNSb290LCBzeXNEZWZpbml0aW9ucykuY3JlYXRlUmVkdWNlcnMoKVxufVxuIl19

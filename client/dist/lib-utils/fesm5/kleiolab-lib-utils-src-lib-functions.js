@@ -1,3 +1,9 @@
+import { __spread } from 'tslib';
+import { of, combineLatest, pipe, iif } from 'rxjs';
+import { map, filter, switchMap } from 'rxjs/operators';
+import { concat, values, sort } from 'ramda';
+import { tag } from 'rxjs-spy/operators';
+
 /**
  * @fileoverview added by tsickle
  * Generated from: util.ts
@@ -261,6 +267,282 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: combineLatestOrEmpty.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Combine Latest or, if input is an empty array, emit empty array
+ * @template I
+ * @param {?} obs
+ * @return {?}
+ */
+function combineLatestOrEmpty(obs) {
+    obs = __spread([of(null)], obs);
+    return combineLatest(obs).pipe(map((/**
+     * @param {?} values
+     * @return {?}
+     */
+    function (values) {
+        values.shift();
+        return values;
+    })));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: custom-rxjs-operators.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ * @template T
+ */
+function ByPk() { }
+/**
+ * @record
+ * @template T
+ */
+function VersionEntity() { }
+if (false) {
+    /** @type {?} */
+    VersionEntity.prototype._latestVersion;
+    /* Skipping unhandled member: [v: number]: T*/
+}
+/**
+ * @record
+ * @template T
+ */
+function EntityVersionsByPk() { }
+/*****************************************************************************
+ * Generic operators
+ *****************************************************************************/
+/**
+ * Returns an Observable that emits an flatened array consisting of the items of the arrays returned by getArrayFromItemFn.
+ * @template T, R
+ * @param {?} getArrayFromItemFn
+ * @return {?}
+ */
+function mapConcat(getArrayFromItemFn) {
+    return map((/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        if (typeof getArrayFromItemFn !== 'function') {
+            throw new TypeError('argument is not a function.');
+        }
+        /** @type {?} */
+        var concatenatedArray = [];
+        source.forEach((/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) {
+            if (item)
+                concatenatedArray = concat(concatenatedArray, getArrayFromItemFn(item));
+        }));
+        return concatenatedArray;
+    }));
+}
+/**
+ * Takes an object with EntityVersions indexed by pk
+ * Returns an array containing the latest versions for each indexed entity
+ * @template T
+ * @return {?}
+ */
+function latestEntityVersions() {
+    return pipe(map((/**
+     * @param {?} d
+     * @return {?}
+     */
+    function (d) { return U.objNr2Arr(d); })), map((/**
+     * @param {?} a
+     * @return {?}
+     */
+    function (a) { return a.map((/**
+     * @param {?} q
+     * @return {?}
+     */
+    function (q) { return q[q._latestVersion]; })); })));
+}
+/**
+ * Takes an object with EntityVersions indexed by pk
+ * Returns an the latest versions for entity with given pkEntity
+ * @template T
+ * @param {?} pkEntity
+ * @return {?}
+ */
+function latestEntityVersion(pkEntity) {
+    return pipe(map((/**
+     * @param {?} byPkEntity
+     * @return {?}
+     */
+    function (byPkEntity) { return byPkEntity[pkEntity]; })), filter((/**
+     * @param {?} entityVersions
+     * @return {?}
+     */
+    function (entityVersions) { return entityVersions && entityVersions._latestVersion !== undefined; })), map((/**
+     * @param {?} entityVersions
+     * @return {?}
+     */
+    function (entityVersions) { return entityVersions[entityVersions._latestVersion]; })));
+}
+/**
+ * @template T
+ * @param {?} versions
+ * @return {?}
+ */
+function latestVersion(versions) {
+    /** @type {?} */
+    var latestVersion = 0;
+    /** @type {?} */
+    var latest;
+    values(versions).forEach((/**
+     * @param {?} v
+     * @return {?}
+     */
+    function (v) {
+        if (v.entity_version > latestVersion) {
+            latestVersion = v.entity_version;
+            latest = v;
+        }
+    }));
+    return latest;
+}
+/**
+ * @template T
+ * @param {?} versions
+ * @param {?} version
+ * @return {?}
+ */
+function getSpecificVersion(versions, version) {
+    /** @type {?} */
+    var ver = values(versions).find((/**
+     * @param {?} v
+     * @return {?}
+     */
+    function (v) { return v.entity_version === version; }));
+    return ver;
+}
+/**
+ * limits the number of items in array
+ * @template T
+ * @param {?=} limit
+ * @return {?}
+ */
+function limitTo(limit) {
+    return map((/**
+     * @param {?} items
+     * @return {?}
+     */
+    function (items) {
+        if (!limit)
+            return items;
+        return items.slice(0, limit);
+    }));
+}
+/**
+ * limits the number of items in array
+ * @template T
+ * @param {?=} limit
+ * @param {?=} offset
+ * @return {?}
+ */
+function limitOffset(limit, offset) {
+    return map((/**
+     * @param {?} items
+     * @return {?}
+     */
+    function (items) {
+        if (!limit)
+            return items;
+        offset = offset ? offset : 0;
+        /** @type {?} */
+        var start = limit * offset;
+        /** @type {?} */
+        var end = start + limit;
+        return items.slice(start, end);
+    }));
+}
+/**
+ * @template T
+ * @param {?} stringFn
+ * @return {?}
+ */
+function sortAbc(stringFn) {
+    return map((/**
+     * @param {?} l
+     * @return {?}
+     */
+    function (l) { return sort((/**
+     * @param {?} a
+     * @param {?} b
+     * @return {?}
+     */
+    function (a, b) {
+        /** @type {?} */
+        var textA = stringFn(a);
+        /** @type {?} */
+        var textB = stringFn(b);
+        if (!textA)
+            return -1;
+        if (!textB)
+            return 1;
+        textA = textA.toUpperCase(); // ignore upper and lowercase
+        textB = textB.toUpperCase(); // ignore upper and lowercase
+        if (textA < textB) {
+            return -1;
+        }
+        if (textA > textB) {
+            return 1;
+        }
+        // names are equal
+        return 0;
+    }), l); }));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: switchMapOr.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * switchMaps to the default, if condition is true, else to provided elseOutput
+ *
+ * @template I, O
+ * @param {?} defaultValue
+ * @param {?} elseOutput
+ * @param {?=} conditionForDefault
+ * @return {?}
+ */
+function switchMapOr(defaultValue, elseOutput, conditionForDefault) {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        conditionForDefault = conditionForDefault ? conditionForDefault : (/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) { return (!x || Object.keys(x).length < 1); });
+        return source.pipe(
+        // auditTime(1),
+        switchMap((/**
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) {
+            return iif((/**
+             * @return {?}
+             */
+            function () { return conditionForDefault(value); }), of(defaultValue), elseOutput(value));
+        })), tag("switchMapOr"));
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: public-api.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -271,5 +553,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { U };
+export { U, combineLatestOrEmpty, getSpecificVersion, latestEntityVersion, latestEntityVersions, latestVersion, limitOffset, limitTo, mapConcat, sortAbc, switchMapOr };
 //# sourceMappingURL=kleiolab-lib-utils-src-lib-functions.js.map

@@ -1,153 +1,1294 @@
-import { NgRedux, dispatch } from '@angular-redux/store';
-import { Injectable } from '@angular/core';
-import { U } from '@kleiolab/lib-utils';
-import { filter, mergeMap, switchMap, mapTo, map } from 'rxjs/operators';
+import { dispatch, NgRedux, NgReduxModule, DevToolsExtension } from '@angular-redux/store';
+import { Injectable, ɵɵdefineInjectable, InjectionToken, NgModule, Inject } from '@angular/core';
+import { keys, omit, values, pathOr, equals, indexBy } from 'ramda';
+import dynamicMiddlewares from 'redux-dynamic-middlewares';
+import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
+import { Observable, combineLatest, of, Subject, BehaviorSubject } from 'rxjs';
+import { mergeMap, filter, switchMap, mapTo, map } from 'rxjs/operators';
+import { PubAccountApi, ProProjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, SchemaObjectApi, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi } from '@kleiolab/lib-sdk-lb3';
 import { __decorate, __metadata } from 'tslib';
-import { PubAccountApi, ProProjectApi } from '@kleiolab/lib-sdk-lb3';
-import { combineEpics, ofType } from 'redux-observable-es6-compat';
-import { Observable, combineLatest } from 'rxjs';
 import { SysConfig } from '@kleiolab/lib-config';
+import { U } from '@kleiolab/lib-utils';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { ToastyService, ToastyConfig } from '@cime/ngx-toasty';
+import { composeReducers, defaultFormReducer } from '@angular-redux/form';
+import { combineReducers } from 'redux';
+import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4/public-api';
+import { routerReducer } from '@angular-redux/router';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { omit } from 'ramda';
 
 /**
  * @fileoverview added by tsickle
- * Generated from: root/models/model.ts
+ * Generated from: state-gui/actions/account.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function InfObject() { }
-if (false) {
-    /** @type {?} */
-    InfObject.prototype.persistent_item;
-    /** @type {?} */
-    InfObject.prototype.temporal_entity;
-    /** @type {?} */
-    InfObject.prototype.statement;
-    /** @type {?} */
-    InfObject.prototype.place;
-    /** @type {?} */
-    InfObject.prototype.language;
-    /** @type {?} */
-    InfObject.prototype.appellation;
-    /** @type {?} */
-    InfObject.prototype.time_primitive;
-    /** @type {?} */
-    InfObject.prototype.text_property;
-    /** @type {?} */
-    InfObject.prototype.lang_string;
-    /** @type {?} */
-    InfObject.prototype.dimension;
-}
-/**
- * @record
- */
-function ProObject() { }
-if (false) {
-    /** @type {?} */
-    ProObject.prototype.info_proj_rel;
-}
-/**
- * @record
- */
-function DatObject() { }
-if (false) {
-    /** @type {?} */
-    DatObject.prototype.digital;
-}
-/**
- * @record
- */
-function WarObject() { }
-if (false) {
-    /** @type {?} */
-    WarObject.prototype.entity_preview;
-}
-/**
- * @record
- */
-function SchemaObject() { }
+function AccountActionMeta() { }
 if (false) {
     /** @type {?|undefined} */
-    SchemaObject.prototype.inf;
+    AccountActionMeta.prototype.accountId;
     /** @type {?|undefined} */
-    SchemaObject.prototype.pro;
+    AccountActionMeta.prototype.accountRoles;
     /** @type {?|undefined} */
-    SchemaObject.prototype.dat;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.war;
+    AccountActionMeta.prototype.account;
 }
-/**
- * @record
- */
-function PaginationObject() { }
+;
+class AccountActions {
+    /**
+     * @return {?}
+     */
+    login() {
+        return {
+            type: AccountActions.LOGIN,
+            payload: null,
+            meta: null
+        };
+    }
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    loginSucceeded(account) {
+        return {
+            type: AccountActions.LOGIN_SUCCEEDED,
+            payload: null,
+            meta: { account }
+        };
+    }
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    loginFailed(error) {
+        return {
+            type: AccountActions.LOGIN_FAILED,
+            payload: null,
+            meta: null,
+            error
+        };
+    }
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    accountUpdated(account) {
+        return {
+            type: AccountActions.ACCOUNT_UPDATED,
+            payload: null,
+            meta: { account }
+        };
+    }
+    // Roles of the account, used to check permissions
+    /**
+     * @param {?} accountId
+     * @return {?}
+     */
+    loadRoles(accountId) {
+        return {
+            type: AccountActions.LOAD_ROLES,
+            payload: null,
+            meta: { accountId }
+        };
+    }
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    loadRolesSucceeded(accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_SUCCEEDED,
+            payload: null,
+            meta: { accountRoles }
+        };
+    }
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    loadRolesFailed(accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_FAILED,
+            payload: null,
+            meta: null
+        };
+    }
+}
+AccountActions.LOGIN = 'Account::LOGIN';
+AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
+AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
+AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
+AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
+AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
+AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
+AccountActions.decorators = [
+    { type: Injectable }
+];
 if (false) {
     /** @type {?} */
-    PaginationObject.prototype.count;
+    AccountActions.LOGIN;
     /** @type {?} */
-    PaginationObject.prototype.schemas;
+    AccountActions.LOGIN_SUCCEEDED;
     /** @type {?} */
-    PaginationObject.prototype.statements;
+    AccountActions.LOGIN_FAILED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_FAILED;
+    /** @type {?} */
+    AccountActions.ACCOUNT_UPDATED;
 }
-/**
- * @record
- */
-function IAppState() { }
-if (false) {
-    /** @type {?|undefined} */
-    IAppState.prototype.account;
-    /** @type {?|undefined} */
-    IAppState.prototype.loadingBar;
-    /** @type {?|undefined} */
-    IAppState.prototype.projects;
-    /** @type {?|undefined} */
-    IAppState.prototype.sys;
-    /** @type {?|undefined} */
-    IAppState.prototype.dfh;
-    /** @type {?|undefined} */
-    IAppState.prototype.inf;
-    /** @type {?|undefined} */
-    IAppState.prototype.dat;
-    /** @type {?|undefined} */
-    IAppState.prototype.pro;
-    /** @type {?|undefined} */
-    IAppState.prototype.war;
-    /** @type {?|undefined} */
-    IAppState.prototype.tab;
-    /** @type {?|undefined} */
-    IAppState.prototype.activeProject;
-    /** @type {?|undefined} */
-    IAppState.prototype.routes;
-    /** @type {?|undefined} */
-    IAppState.prototype.information;
-    /** @type {?|undefined} */
-    IAppState.prototype.sources;
-    /** @type {?|undefined} */
-    IAppState.prototype.sandboxState;
-    /** @type {?|undefined} */
-    IAppState.prototype.pending;
-}
-/**
- * @record
- * @template T
- */
-function ByPk() { }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: root/models/index.ts
+ * Generated from: state-gui/actions/active-project.action.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function ActiveProjectMeta() { }
+if (false) {
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.projectPreview;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.pk_project;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.pk_entity;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.pk_entities;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.pk_classes;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.pk_ui_context;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.entity_version;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.chunk;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.teEnGraphs;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.peItGraphs;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.types;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.projRel;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.dfh_pk_class;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.infProjRel;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.panels;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.list;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.panelIndex;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.panelSerial;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.tabIndex;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.uiIdSerial;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.focusedPanel;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.previousPanelIndex;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.currentPanelIndex;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.previousTabIndex;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.currentTabIndex;
+    /** @type {?|undefined} */
+    ActiveProjectMeta.prototype.tab;
+}
+;
+class ActiveProjectActions {
+    /**
+     * @param {?} pk_project
+     * @return {?}
+     */
+    loadProjectBasics(pk_project) {
+        return {
+            type: ActiveProjectActions.LOAD_PROJECT_BASICS,
+            payload: null,
+            meta: {
+                pk_project
+            }
+        };
+    }
+    /**
+     * @param {?} projectPreview
+     * @return {?}
+     */
+    loadProjectBasiscsSucceded(projectPreview) {
+        return {
+            type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
+            payload: null,
+            meta: { projectPreview },
+        };
+    }
+    /**
+     * @param {?} pk_project
+     * @return {?}
+     */
+    loadProjectConfig(pk_project) {
+        return {
+            type: ActiveProjectActions.LOAD_PROJECT_CONFIG,
+            payload: null,
+            meta: {
+                pk_project
+            },
+        };
+    }
+    /**
+     * @return {?}
+     */
+    loadProjectConfigSucceeded() {
+        return {
+            type: ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED,
+            payload: {
+            // crm
+            },
+            meta: null,
+        };
+    }
+    /**
+     * @param {?} list
+     * @return {?}
+     */
+    setListType(list) {
+        return {
+            type: ActiveProjectActions.SET_LIST_TYPE,
+            payload: null,
+            meta: {
+                list
+            }
+        };
+    }
+    /**
+     * @param {?} panels
+     * @param {?} uiIdSerial
+     * @param {?} panelSerial
+     * @param {?} focusedPanel
+     * @return {?}
+     */
+    setPanels(panels, uiIdSerial, panelSerial, focusedPanel) {
+        return {
+            type: ActiveProjectActions.SET_PANELS,
+            payload: null,
+            meta: { panels, uiIdSerial, panelSerial, focusedPanel }
+        };
+    }
+    /**
+     * @param {?} panelIndex
+     * @param {?} tabIndex
+     * @return {?}
+     */
+    activateTab(panelIndex, tabIndex) {
+        return {
+            type: ActiveProjectActions.ACTIVATE_TAB,
+            payload: null,
+            meta: {
+                panelIndex, tabIndex
+            }
+        };
+    }
+    /**
+     * @param {?} previousPanelIndex
+     * @param {?} currentPanelIndex
+     * @param {?} previousTabIndex
+     * @param {?} currentTabIndex
+     * @return {?}
+     */
+    moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex) {
+        return {
+            type: ActiveProjectActions.MOVE_TAB,
+            payload: null,
+            meta: {
+                previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex
+            }
+        };
+    }
+    /**
+     * @param {?} panelIndex
+     * @param {?} tabIndex
+     * @return {?}
+     */
+    closeTab(panelIndex, tabIndex) {
+        return {
+            type: ActiveProjectActions.CLOSE_TAB,
+            payload: null,
+            meta: {
+                panelIndex, tabIndex
+            }
+        };
+    }
+    /**
+     * @template TabData
+     * @param {?} tab
+     * @return {?}
+     */
+    addTab(tab) {
+        return {
+            type: ActiveProjectActions.ADD_TAB,
+            payload: null,
+            meta: { tab }
+        };
+    }
+    /**
+     * @param {?} previousPanelIndex
+     * @param {?} tabIndex
+     * @param {?} currentPanelIndex
+     * @return {?}
+     */
+    splitPanel(previousPanelIndex, tabIndex, currentPanelIndex) {
+        return {
+            type: ActiveProjectActions.SPLIT_PANEL,
+            payload: null,
+            meta: { previousPanelIndex, tabIndex, currentPanelIndex }
+        };
+    }
+    /**
+     * @param {?} panelIndex
+     * @return {?}
+     */
+    closePanel(panelIndex) {
+        return {
+            type: ActiveProjectActions.CLOSE_PANEL,
+            payload: null,
+            meta: { panelIndex }
+        };
+    }
+    /**
+     * @param {?} panelIndex
+     * @return {?}
+     */
+    focusPanel(panelIndex) {
+        return {
+            type: ActiveProjectActions.FOCUS_PANEL,
+            payload: null,
+            meta: { panelIndex }
+        };
+    }
+    // updateSelectedChunk(selectedChunk: DatChunk): ActiveProjectAction {
+    //   return {
+    //     type: ActiveProjectActions.UPDATE_SELECTED_CHUNK,
+    //     payload: { selectedChunk },
+    //     meta: null
+    //   }
+    // }
+    /**
+     * @param {?} refiningChunk
+     * @return {?}
+     */
+    setRefiningChunk(refiningChunk) {
+        return {
+            type: ActiveProjectActions.SET_REFINING_CHUNK,
+            payload: { refiningChunk },
+            meta: null
+        };
+    }
+    /**
+     * @param {?} creatingMentioning
+     * @return {?}
+     */
+    setCreatingMentioning(creatingMentioning) {
+        return {
+            type: ActiveProjectActions.SET_CREATING_MENTIONING,
+            payload: { creatingMentioning },
+            meta: null
+        };
+    }
+    /**
+     * @param {?} mentioningsFocusedInText
+     * @return {?}
+     */
+    setMentioningsFocusedInText(mentioningsFocusedInText) {
+        return {
+            type: ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT,
+            payload: { mentioningsFocusedInText },
+            meta: null
+        };
+    }
+    /**
+     * @param {?} mentioningsFocusedInTable
+     * @return {?}
+     */
+    setMentioningsFocusedInTable(mentioningsFocusedInTable) {
+        return {
+            type: ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE,
+            payload: { mentioningsFocusedInTable },
+            meta: null
+        };
+    }
+    /**
+     * @return {?}
+     */
+    destroy() {
+        return {
+            type: ActiveProjectActions.DESTROY,
+            payload: null,
+            meta: null,
+        };
+    }
+}
+/* tslint:disable:member-ordering */
+/**
+ * *********************************************************************************
+ * CRM and Config (metadata, crm)
+ * **********************************************************************************
+ */
+ActiveProjectActions.LOAD_PROJECT_BASICS = 'ActiveProject::LOAD_PROJECT_BASICS';
+ActiveProjectActions.LOAD_PROJECT_BASICS_FAILED = 'ActiveProject::LOAD_PROJECT_BASICS_FAILED';
+ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_BASICS_SUCCEEDED';
+ActiveProjectActions.LOAD_PROJECT_CONFIG = 'ActiveProject::LOAD_PROJECT_CONFIG';
+ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_CONFIG_SUCCEEDED';
+/**
+ * *********************************************************************************
+ * Layout -- Tabs
+ * **********************************************************************************
+ */
+ActiveProjectActions.SET_LIST_TYPE = 'ActiveProject::SET_LIST_TYPE';
+ActiveProjectActions.SET_PANELS = 'ActiveProject::SET_PANELS';
+ActiveProjectActions.ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
+ActiveProjectActions.MOVE_TAB = 'ActiveProject::MOVE_TAB';
+ActiveProjectActions.CLOSE_TAB = 'ActiveProject::CLOSE_TAB';
+ActiveProjectActions.ADD_TAB = 'ActiveProject::ADD_TAB';
+ActiveProjectActions.SPLIT_PANEL = 'ActiveProject::SPLIT_PANEL';
+ActiveProjectActions.CLOSE_PANEL = 'ActiveProject::CLOSE_PANEL';
+ActiveProjectActions.FOCUS_PANEL = 'ActiveProject::FOCUS_PANEL';
+// /************************************************************************************
+//  * Layout -- Modals
+// ************************************************************************************/
+// // create or add entity modal
+// static readonly OPEN_ADD_FORM = 'ActiveProject::OPEN_ADD_FORM';
+// static readonly CLOSE_ADD_FORM = 'ActiveProject::CLOSE_ADD_FORM';
+// openAddForm = (createOrAddEntity: CreateOrAddEntity): ActiveProjectAction => ({
+//   type: ActiveProjectActions.OPEN_ADD_FORM,
+//   meta: { createOrAddEntity },
+//   payload: null
+// })
+// closeAddForm = (): ActiveProjectAction => ({
+//   type: ActiveProjectActions.CLOSE_ADD_FORM,
+//   meta: null,
+//   payload: null
+// })
+/************************************************************************************
+  * Information cache
+  ************************************************************************************/
+// EntityPreviews
+// static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
+// static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
+// static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
+// loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entity, pk_ui_context
+//     }
+//   }
+// }
+// loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       entityPreview
+//     },
+//   }
+// }
+// loadEntityPreviewFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // EntityPreviews
+// static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';
+// static LOAD_TYPES_SUCCEEDED = 'ActiveProject::LOAD_TYPES_SUCCEEDED';
+// static LOAD_TYPES_FAILED = 'ActiveProject::LOAD_TYPES_FAILED';
+// loadTypes(pk_project: number, pk_classes: number[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_TYPES,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_classes
+//     }
+//   }
+// }
+// loadTypesSucceeded(types: TypePeIt[], pk_classes: number[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_TYPES_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       types, pk_classes
+//     },
+//   }
+// }
+// loadTypesFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_TYPES_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // Entities Details for display in Modals
+// static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';
+// static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
+// static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
+// static LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED';
+// loadEntityDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entity, pk_ui_context
+//     }
+//   }
+// }
+// loadPeItDetailsForModalSucceeded(peItDetail: EntityDetail): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       peItDetail
+//     },
+//   }
+// }
+// loaEntitytDetailsForModalFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // Chunks
+// static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
+// static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
+// static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
+// loadChunk(pk_project: number, pk_entity: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_CHUNK,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entity
+//     }
+//   }
+// }
+// loadChunkSucceeded(chunk: DatChunk): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_CHUNK_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       chunk
+//     },
+//   }
+// }
+// loadChunkFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_CHUNK_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // PeIt Graphs
+// static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
+// static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
+// static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
+// loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entities
+//     }
+//   }
+// }
+// loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       peItGraphs
+//     },
+//   }
+// }
+// loadPeItGraphsFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // TeEn Graphs
+// static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
+// static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
+// static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
+// loadTeEnGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_TEEN_GRAPHS,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entities
+//     }
+//   }
+// }
+// loadTeEnGraphsSucceeded(teEnGraphs: InfTemporalEntity[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       teEnGraphs
+//     },
+//   }
+// }
+// loadTeEnGraphsFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // Queries
+// static LOAD_QUERIES = 'ActiveProject::LOAD_QUERIES';
+// static LOAD_QUERIES_SUCCEEDED = 'ActiveProject::LOAD_QUERIES_SUCCEEDED';
+// static LOAD_QUERIES_FAILED = 'ActiveProject::LOAD_QUERIES_FAILED';
+// loadQueries(pk_project: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_QUERIES,
+//     payload: null,
+//     meta: {
+//       pk_project
+//     }
+//   }
+// }
+// loadQueriesSucceeded(comQueryArray: ComQueryV[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_QUERIES_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       comQueryArray
+//     },
+//   }
+// }
+// loadQueriesFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_QUERIES_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // Query Version
+// static LOAD_QUERY_VERSION = 'ActiveProject::LOAD_QUERY_VERSION';
+// static LOAD_QUERY_VERSION_SUCCEEDED = 'ActiveProject::LOAD_QUERY_VERSION_SUCCEEDED';
+// static LOAD_QUERY_VERSION_FAILED = 'ActiveProject::LOAD_QUERY_VERSION_FAILED';
+// loadQueryVersion(pk_project: number, pk_entity: number, entity_version: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_QUERY_VERSION,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entity, entity_version
+//     }
+//   }
+// }
+// loadQueryVersionSucceeded(comQuery: ProQuery): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       comQuery
+//     },
+//   }
+// }
+// loadQueryVersionFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_QUERY_VERSION_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // Visuals
+// static LOAD_VISUALS = 'ActiveProject::LOAD_VISUALS';
+// static LOAD_VISUALS_SUCCEEDED = 'ActiveProject::LOAD_VISUALS_SUCCEEDED';
+// static LOAD_VISUALS_FAILED = 'ActiveProject::LOAD_VISUALS_FAILED';
+// loadVisuals(pk_project: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_VISUALS,
+//     payload: null,
+//     meta: {
+//       pk_project
+//     }
+//   }
+// }
+// loadVisualsSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_VISUALS_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       comVisualArray
+//     },
+//   }
+// }
+// loadVisualsFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_VISUALS_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+// // Visual Version
+// static LOAD_VISUAL_VERSION = 'ActiveProject::LOAD_VISUAL_VERSION';
+// static LOAD_VISUAL_VERSION_SUCCEEDED = 'ActiveProject::LOAD_VISUAL_VERSION_SUCCEEDED';
+// static LOAD_VISUAL_VERSION_FAILED = 'ActiveProject::LOAD_VISUAL_VERSION_FAILED';
+// loadVisualVersion(pk_project: number, pk_entity: number, entity_version?: number): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_VISUAL_VERSION,
+//     payload: null,
+//     meta: {
+//       pk_project, pk_entity, entity_version
+//     }
+//   }
+// }
+// loadVisualVersionSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED,
+//     payload: null,
+//     meta: {
+//       comVisualArray
+//     },
+//   }
+// }
+// loadVisualVersionFailed(error): ActiveProjectAction {
+//   return {
+//     type: ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED,
+//     payload: null,
+//     meta: null,
+//     error
+//   }
+// }
+/**
+ * *********************************************************************************
+ *  Things for Mentionings / Annotations
+ * **********************************************************************************
+ */
+ActiveProjectActions.UPDATE_SELECTED_CHUNK = 'ActiveProject::UPDATE_SELECTED_CHUNK';
+ActiveProjectActions.SET_REFINING_CHUNK = 'ActiveProject::SET_REFINING_CHUNK';
+ActiveProjectActions.SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
+/**
+ * *********************************************************************************
+ * Highlighting of mentionings in the gui
+ * **********************************************************************************
+ */
+ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TEXT';
+ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TABLE';
+// /*********************************************************************
+//  *  Methods to manage enabling and disabling a class for the project
+//  *********************************************************************/
+// static readonly UPSERT_CLASS_PROJ_REL = 'ActiveProject::UPSERT_CLASS_PROJ_REL';
+// static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
+// static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
+// upsertClassProjRel = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+//   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
+//   meta: { projRel, dfh_pk_class },
+//   payload: null,
+// });
+// upsertClassProjRelSucceeded = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+//   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
+//   meta: { projRel, dfh_pk_class },
+//   payload: null
+// })
+// upsertClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
+//   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED,
+//   meta: { dfh_pk_class },
+//   payload: null,
+//   error,
+// })
+// /*********************************************************************
+//  *  Methods to manage enabling and disabling an entity for the project
+//  *********************************************************************/
+// static readonly UPSERT_ENTITY_PROJ_REL = 'ActiveProject::UPSERT_ENTITY_PROJ_REL';
+// static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
+// static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
+// upsertEntityProjRel = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
+//   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
+//   meta: { infProjRel },
+//   payload: null,
+// });
+// upsertEntityProjRelSucceeded = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
+//   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
+//   meta: { infProjRel },
+//   payload: null
+// })
+// upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
+//   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
+//   meta: null,
+//   payload: null,
+//   error,
+// })
+/**
+ * *********************************************************************************
+ * Destroy the active project state (on closing a project)
+ * **********************************************************************************
+ */
+ActiveProjectActions.DESTROY = 'ActiveProject::DESTROY';
+ActiveProjectActions.decorators = [
+    { type: Injectable }
+];
+if (false) {
+    /**
+     * *********************************************************************************
+     * CRM and Config (metadata, crm)
+     * **********************************************************************************
+     * @type {?}
+     */
+    ActiveProjectActions.LOAD_PROJECT_BASICS;
+    /** @type {?} */
+    ActiveProjectActions.LOAD_PROJECT_BASICS_FAILED;
+    /** @type {?} */
+    ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED;
+    /** @type {?} */
+    ActiveProjectActions.LOAD_PROJECT_CONFIG;
+    /** @type {?} */
+    ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED;
+    /**
+     * *********************************************************************************
+     * Layout -- Tabs
+     * **********************************************************************************
+     * @type {?}
+     */
+    ActiveProjectActions.SET_LIST_TYPE;
+    /** @type {?} */
+    ActiveProjectActions.SET_PANELS;
+    /** @type {?} */
+    ActiveProjectActions.ACTIVATE_TAB;
+    /** @type {?} */
+    ActiveProjectActions.MOVE_TAB;
+    /** @type {?} */
+    ActiveProjectActions.CLOSE_TAB;
+    /** @type {?} */
+    ActiveProjectActions.ADD_TAB;
+    /** @type {?} */
+    ActiveProjectActions.SPLIT_PANEL;
+    /** @type {?} */
+    ActiveProjectActions.CLOSE_PANEL;
+    /** @type {?} */
+    ActiveProjectActions.FOCUS_PANEL;
+    /**
+     * *********************************************************************************
+     *  Things for Mentionings / Annotations
+     * **********************************************************************************
+     * @type {?}
+     */
+    ActiveProjectActions.UPDATE_SELECTED_CHUNK;
+    /** @type {?} */
+    ActiveProjectActions.SET_REFINING_CHUNK;
+    /** @type {?} */
+    ActiveProjectActions.SET_CREATING_MENTIONING;
+    /**
+     * *********************************************************************************
+     * Highlighting of mentionings in the gui
+     * **********************************************************************************
+     * @type {?}
+     */
+    ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT;
+    /** @type {?} */
+    ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE;
+    /**
+     * *********************************************************************************
+     * Destroy the active project state (on closing a project)
+     * **********************************************************************************
+     * @type {?}
+     */
+    ActiveProjectActions.DESTROY;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/entity-list.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class InformationAPIActions {
+    constructor() {
+        /**
+         * ******************************************************************
+         *  Method to distroy the slice of store
+         * *******************************************************************
+         */
+        this.destroy = (/**
+         * @return {?}
+         */
+        () => ({
+            type: InformationAPIActions.DESTROY,
+            meta: null,
+            payload: null
+        }));
+    }
+}
+InformationAPIActions.DESTROY = 'Information::DESTROY';
+InformationAPIActions.decorators = [
+    { type: Injectable }
+];
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], InformationAPIActions.prototype, "destroy", void 0);
+if (false) {
+    /** @type {?} */
+    InformationAPIActions.DESTROY;
+    /**
+     * ******************************************************************
+     *  Method to distroy the slice of store
+     * *******************************************************************
+     * @type {?}
+     */
+    InformationAPIActions.prototype.destroy;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/loading-bar.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData() { }
+if (false) {
+    /** @type {?} */
+    MetaData.prototype.null;
+}
+;
+/**
+ * This actions start, stop and complete the global loading bar
+ * using a SlimLoadingBarService instantiated within the loading-bar
+ * module.
+ *
+ * In order to show a loading bar in GUI, use the LoadingBarComponent
+ * exported by this module.
+ */
+class LoadingBarActions {
+    constructor() {
+        this.startLoading = (/**
+         * @return {?}
+         */
+        () => ({
+            type: LoadingBarActions.START,
+            meta: null,
+            payload: null,
+        }));
+        this.stopLoading = (/**
+         * @return {?}
+         */
+        () => ({
+            type: LoadingBarActions.STOP,
+            meta: null,
+            payload: null
+        }));
+        this.completeLoading = (/**
+         * @return {?}
+         */
+        () => ({
+            type: LoadingBarActions.COPMLETE,
+            meta: null,
+            payload: null,
+        }));
+    }
+}
+LoadingBarActions.START = 'LOADING_BAR_START';
+LoadingBarActions.STOP = 'LOADING_BAR_STOP';
+LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
+LoadingBarActions.decorators = [
+    { type: Injectable }
+];
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], LoadingBarActions.prototype, "startLoading", void 0);
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], LoadingBarActions.prototype, "stopLoading", void 0);
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], LoadingBarActions.prototype, "completeLoading", void 0);
+if (false) {
+    /** @type {?} */
+    LoadingBarActions.START;
+    /** @type {?} */
+    LoadingBarActions.STOP;
+    /** @type {?} */
+    LoadingBarActions.COPMLETE;
+    /** @type {?} */
+    LoadingBarActions.prototype.startLoading;
+    /** @type {?} */
+    LoadingBarActions.prototype.stopLoading;
+    /** @type {?} */
+    LoadingBarActions.prototype.completeLoading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/notifications.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData$1() { }
+if (false) {
+    /** @type {?|undefined} */
+    MetaData$1.prototype.itemsArray;
+}
+;
+class NotificationsAPIActions {
+    constructor() {
+        this.addToast = (/**
+         * @param {?} payload
+         * @return {?}
+         */
+        (payload) => ({
+            type: NotificationsAPIActions.ADD_TOAST,
+            meta: null,
+            payload
+        }));
+    }
+}
+NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
+NotificationsAPIActions.decorators = [
+    { type: Injectable }
+];
+if (false) {
+    /** @type {?} */
+    NotificationsAPIActions.ADD_TOAST;
+    /** @type {?} */
+    NotificationsAPIActions.prototype.addToast;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/projects.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ProjectsActions {
+    /**
+     * @param {?} payload
+     * @return {?}
+     */
+    loadProjectsSucceeded(payload) {
+        return {
+            type: ProjectsActions.LOAD_PROJECTS_SUCCEEDED,
+            payload,
+            meta: null
+        };
+    }
+}
+ProjectsActions.LOAD_PROJECTS_SUCCEEDED = 'LOAD_PROJECTS_SUCCEEDED';
+ProjectsActions.decorators = [
+    { type: Injectable }
+];
+if (false) {
+    /** @type {?} */
+    ProjectsActions.LOAD_PROJECTS_SUCCEEDED;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/source-list.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData$2() { }
+if (false) {
+    /** @type {?|undefined} */
+    MetaData$2.prototype.pkAllowedClasses;
+}
+;
+class SourceListAPIActions {
+    constructor() {
+        /**
+         * ******************************************************************
+         *  Actions to manage the list
+         * *******************************************************************
+         */
+        this.initializeList = (/**
+         * @param {?} pkAllowedClasses
+         * @return {?}
+         */
+        (pkAllowedClasses) => ({
+            type: SourceListAPIActions.INITIALIZE_LIST,
+            meta: { pkAllowedClasses },
+            payload: null
+        }));
+        /**
+         * ******************************************************************
+         *  Method to distroy the slice of store
+         * *******************************************************************
+         */
+        this.destroy = (/**
+         * @return {?}
+         */
+        () => ({
+            type: SourceListAPIActions.DESTROY,
+            meta: null,
+            payload: null
+        }));
+    }
+}
+SourceListAPIActions.INITIALIZE_LIST = 'SourceList::INITIALIZE_LIST';
+SourceListAPIActions.DESTROY = 'SourceList::DESTROY';
+SourceListAPIActions.decorators = [
+    { type: Injectable }
+];
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], SourceListAPIActions.prototype, "initializeList", void 0);
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], SourceListAPIActions.prototype, "destroy", void 0);
+if (false) {
+    /** @type {?} */
+    SourceListAPIActions.INITIALIZE_LIST;
+    /** @type {?} */
+    SourceListAPIActions.DESTROY;
+    /**
+     * ******************************************************************
+     *  Actions to manage the list
+     * *******************************************************************
+     * @type {?}
+     */
+    SourceListAPIActions.prototype.initializeList;
+    /**
+     * ******************************************************************
+     *  Method to distroy the slice of store
+     * *******************************************************************
+     * @type {?}
+     */
+    SourceListAPIActions.prototype.destroy;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/index.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * Generated from: root/index.ts
+ * Generated from: state-gui/epics/account.epics.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class AccountEpics {
+    /**
+     * @param {?} actions
+     * @param {?} loadingBarActions
+     * @param {?} accountApi
+     * @param {?} notificationActions
+     */
+    constructor(actions, loadingBarActions, accountApi, notificationActions) {
+        this.actions = actions;
+        this.loadingBarActions = loadingBarActions;
+        this.accountApi = accountApi;
+        this.notificationActions = notificationActions;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics(this.loadRoles());
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    loadRoles() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => new Observable((/**
+         * @param {?} globalStore
+         * @return {?}
+         */
+        (globalStore) => {
+            globalStore.next(this.loadingBarActions.startLoading());
+            this.accountApi.getRoles(action.meta.accountId)
+                .subscribe((/**
+             * @param {?} data
+             * @return {?}
+             */
+            (data) => {
+                globalStore.next(this.loadingBarActions.completeLoading());
+                globalStore.next(this.actions.loadRolesSucceeded(data));
+            }), (/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => {
+                globalStore.next(this.notificationActions.addToast({
+                    type: 'error',
+                    options: { title: error }
+                }));
+            }));
+        }))))));
+    }
+}
+AccountEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+AccountEpics.ctorParameters = () => [
+    { type: AccountActions },
+    { type: LoadingBarActions },
+    { type: PubAccountApi },
+    { type: NotificationsAPIActions }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.loadingBarActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.accountApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.notificationActions;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -3205,10 +4346,10 @@ if (false) {
 /**
  * @record
  */
-function MetaData() { }
+function MetaData$3() { }
 if (false) {
     /** @type {?|undefined} */
-    MetaData.prototype.systemRelevantClasses;
+    MetaData$3.prototype.systemRelevantClasses;
 }
 ;
 class SysActions {
@@ -3300,1773 +4441,6 @@ if (false) {
  * Generated from: state-schema/actions/index.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/dat.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class DigitalSlice {
-}
-if (false) {
-    /** @type {?} */
-    DigitalSlice.prototype.by_pk_entity__entity_version;
-    /** @type {?} */
-    DigitalSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    DigitalSlice.prototype.by_pk_text;
-    /** @type {?} */
-    DigitalSlice.prototype.loading;
-}
-class ChunkSlice {
-}
-if (false) {
-    /** @type {?} */
-    ChunkSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    ChunkSlice.prototype.by_fk_text;
-    /** @type {?} */
-    ChunkSlice.prototype.loading;
-}
-class ColumnSlice {
-}
-if (false) {
-    /** @type {?} */
-    ColumnSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    ColumnSlice.prototype.by_fk_digital;
-}
-class ClassColumnMappingSlice {
-}
-if (false) {
-    /** @type {?} */
-    ClassColumnMappingSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    ClassColumnMappingSlice.prototype.by_fk_column;
-}
-class TextPropertySlice {
-}
-if (false) {
-    /** @type {?} */
-    TextPropertySlice.prototype.by_pk_entity;
-    /** @type {?} */
-    TextPropertySlice.prototype.by_fk_digital;
-}
-class NamespaceSlice {
-}
-if (false) {
-    /** @type {?} */
-    NamespaceSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    NamespaceSlice.prototype.by_fk_project;
-    /** @type {?} */
-    NamespaceSlice.prototype.loading;
-}
-/**
- * @record
- */
-function Dat() { }
-if (false) {
-    /** @type {?|undefined} */
-    Dat.prototype.digital;
-    /** @type {?|undefined} */
-    Dat.prototype.chunk;
-    /** @type {?|undefined} */
-    Dat.prototype.column;
-    /** @type {?|undefined} */
-    Dat.prototype.text_property;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/dfh.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class DfhProfileSlice {
-}
-if (false) {
-    /** @type {?} */
-    DfhProfileSlice.prototype.by_pk_profile;
-    /** @type {?} */
-    DfhProfileSlice.prototype.loading;
-}
-class DfhClassSlice {
-}
-if (false) {
-    /** @type {?} */
-    DfhClassSlice.prototype.by_pk_class;
-    /** @type {?} */
-    DfhClassSlice.prototype.by_basic_type;
-    /** @type {?} */
-    DfhClassSlice.prototype.loading;
-}
-class DfhPropertySlice {
-}
-if (false) {
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_pk_property;
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_has_domain__fk_property;
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_has_range__fk_property;
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_has_domain;
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_has_range;
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_pk_property__has_domain__has_range;
-    /** @type {?} */
-    DfhPropertySlice.prototype.by_is_has_type_subproperty;
-    /** @type {?} */
-    DfhPropertySlice.prototype.loading;
-}
-class DfhLabelSlice {
-}
-if (false) {
-    /** @type {?} */
-    DfhLabelSlice.prototype.by_fks;
-    /** @type {?} */
-    DfhLabelSlice.prototype.by_fk_class__type;
-    /** @type {?} */
-    DfhLabelSlice.prototype.by_fk_property__type;
-    /** @type {?} */
-    DfhLabelSlice.prototype.by_fk_profile__type;
-    /** @type {?} */
-    DfhLabelSlice.prototype.loading;
-}
-/**
- * @record
- */
-function Dfh() { }
-if (false) {
-    /** @type {?|undefined} */
-    Dfh.prototype.profile;
-    /** @type {?|undefined} */
-    Dfh.prototype.klass;
-    /** @type {?|undefined} */
-    Dfh.prototype.property;
-    /** @type {?|undefined} */
-    Dfh.prototype.label;
-    /** @type {?} */
-    Dfh.prototype.pkEntityModelMap;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/inf.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function PaginationInfo() { }
-if (false) {
-    /** @type {?} */
-    PaginationInfo.prototype.loading;
-    /** @type {?} */
-    PaginationInfo.prototype.count;
-    /** @type {?} */
-    PaginationInfo.prototype.rows;
-}
-class InfPersistentItemSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfPersistentItemSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfPersistentItemSlice.prototype.by_fk_class;
-    /** @type {?} */
-    InfPersistentItemSlice.prototype.loading;
-}
-class InfTemporalEntitySlice {
-}
-if (false) {
-    /** @type {?} */
-    InfTemporalEntitySlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfTemporalEntitySlice.prototype.by_fk_class;
-    /** @type {?} */
-    InfTemporalEntitySlice.prototype.loading;
-}
-class InfStatementSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfStatementSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfStatementSlice.prototype.by_subject;
-    /** @type {?} */
-    InfStatementSlice.prototype.by_object;
-    /* Skipping unnamed member:
-    'by_subject+property'?: ByPk<ByPk<InfStatement>>;*/
-    /* Skipping unnamed member:
-    'by_object+property'?: ByPk<ByPk<InfStatement>>;*/
-    /** @type {?} */
-    InfStatementSlice.prototype.by_fk_subject_data;
-    /** @type {?} */
-    InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_object_info__ofProject;
-    /** @type {?} */
-    InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_subject_info__ofProject;
-    /** @type {?} */
-    InfStatementSlice.prototype.loading;
-}
-class InfPlaceSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfPlaceSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfPlaceSlice.prototype.loading;
-}
-class InfTimePrimitiveSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfTimePrimitiveSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfTimePrimitiveSlice.prototype.loading;
-}
-class InfLanguageSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfLanguageSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfLanguageSlice.prototype.loading;
-}
-class InfAppellationSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfAppellationSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfAppellationSlice.prototype.loading;
-}
-class InfLangStringSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfLangStringSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfLangStringSlice.prototype.loading;
-}
-class InfDimensionSlice {
-}
-if (false) {
-    /** @type {?} */
-    InfDimensionSlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfDimensionSlice.prototype.loading;
-}
-class InfTextPropertySlice {
-}
-if (false) {
-    /** @type {?} */
-    InfTextPropertySlice.prototype.by_pk_entity;
-    /** @type {?} */
-    InfTextPropertySlice.prototype.by_fk_concerned_entity__fk_class_field;
-    /** @type {?} */
-    InfTextPropertySlice.prototype.by_fk_concerned_entity;
-    /** @type {?} */
-    InfTextPropertySlice.prototype.loading;
-}
-/**
- * @record
- */
-function Inf() { }
-if (false) {
-    /** @type {?|undefined} */
-    Inf.prototype.persistent_item;
-    /** @type {?|undefined} */
-    Inf.prototype.temporal_entity;
-    /** @type {?|undefined} */
-    Inf.prototype.statement;
-    /** @type {?|undefined} */
-    Inf.prototype.place;
-    /** @type {?|undefined} */
-    Inf.prototype.time_primitive;
-    /** @type {?|undefined} */
-    Inf.prototype.language;
-    /** @type {?|undefined} */
-    Inf.prototype.appellation;
-    /** @type {?|undefined} */
-    Inf.prototype.lang_string;
-    /** @type {?|undefined} */
-    Inf.prototype.dimension;
-    /** @type {?|undefined} */
-    Inf.prototype.text_property;
-    /** @type {?|undefined} */
-    Inf.prototype.pkEntityModelMap;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/pro.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function ProProjectSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProProjectSlice.prototype.by_pk_entity;
-}
-/**
- * @record
- */
-function ProInfoProjRelSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProInfoProjRelSlice.prototype.by_fk_project__fk_entity;
-    /** @type {?|undefined} */
-    ProInfoProjRelSlice.prototype.loading;
-}
-/**
- * @record
- */
-function ProDfhClassProjRelSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProDfhClassProjRelSlice.prototype.by_fk_project__fk_class;
-    /** @type {?|undefined} */
-    ProDfhClassProjRelSlice.prototype.by_fk_project__enabled_in_entities;
-    /** @type {?|undefined} */
-    ProDfhClassProjRelSlice.prototype.loading;
-}
-/**
- * @record
- */
-function ProDfhProfileProjRelSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProDfhProfileProjRelSlice.prototype.by_fk_project__fk_profile;
-    /** @type {?|undefined} */
-    ProDfhProfileProjRelSlice.prototype.by_fk_project__enabled;
-    /** @type {?|undefined} */
-    ProDfhProfileProjRelSlice.prototype.loading;
-}
-/**
- * @record
- */
-function ProClassFieldConfigSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProClassFieldConfigSlice.prototype.by_fk_project__fk_class;
-    /** @type {?|undefined} */
-    ProClassFieldConfigSlice.prototype.loading;
-}
-/**
- * @record
- */
-function ProTextPropertySlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProTextPropertySlice.prototype.by_pk_entity;
-    /** @type {?|undefined} */
-    ProTextPropertySlice.prototype.by_fk_project__fk_property__fk_domain_class__fk_range_class;
-    /** @type {?|undefined} */
-    ProTextPropertySlice.prototype.loading;
-}
-/**
- * @record
- */
-function ProAnalysisSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    ProAnalysisSlice.prototype.by_pk_entity;
-}
-/**
- * @record
- */
-function Pro() { }
-if (false) {
-    /** @type {?|undefined} */
-    Pro.prototype.info_proj_rel;
-    /** @type {?|undefined} */
-    Pro.prototype.dfh_profile_proj_rel;
-    /** @type {?|undefined} */
-    Pro.prototype.dfh_class_proj_rel;
-    /** @type {?|undefined} */
-    Pro.prototype.class_field_config;
-    /** @type {?|undefined} */
-    Pro.prototype.text_property;
-    /** @type {?|undefined} */
-    Pro.prototype.analysis;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/sys.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function SysRelevantClassSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    SysRelevantClassSlice.prototype.by_pk_entity;
-    /** @type {?|undefined} */
-    SysRelevantClassSlice.prototype.by_fk_class;
-    /** @type {?|undefined} */
-    SysRelevantClassSlice.prototype.by_required_by_sources;
-    /** @type {?|undefined} */
-    SysRelevantClassSlice.prototype.by_required;
-    /** @type {?|undefined} */
-    SysRelevantClassSlice.prototype.loading;
-}
-/**
- * @record
- */
-function SysConfigSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    SysConfigSlice.prototype.by_main;
-    /** @type {?|undefined} */
-    SysConfigSlice.prototype.loading;
-}
-/**
- * @record
- */
-function Sys() { }
-if (false) {
-    /** @type {?|undefined} */
-    Sys.prototype.system_relevant_class;
-    /** @type {?|undefined} */
-    Sys.prototype.config;
-    /** @type {?} */
-    Sys.prototype.pkEntityModelMap;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/tab.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TabCellSlice {
-}
-if (false) {
-    /** @type {?} */
-    TabCellSlice.prototype.by_pk_cell;
-    /** @type {?} */
-    TabCellSlice.prototype.by_fk_column_fk_row;
-}
-/**
- * @record
- */
-function Tab() { }
-if (false) {
-    /** @type {?|undefined} */
-    Tab.prototype.cell;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/war.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function WarEntityPreviewSlice() { }
-if (false) {
-    /** @type {?|undefined} */
-    WarEntityPreviewSlice.prototype.by_pk_entity;
-}
-/**
- * @record
- */
-function War() { }
-if (false) {
-    /** @type {?|undefined} */
-    War.prototype.entity_preview;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/account.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function AccountActionMeta() { }
-if (false) {
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountId;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountRoles;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.account;
-}
-;
-class AccountActions {
-    /**
-     * @return {?}
-     */
-    login() {
-        return {
-            type: AccountActions.LOGIN,
-            payload: null,
-            meta: null
-        };
-    }
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    loginSucceeded(account) {
-        return {
-            type: AccountActions.LOGIN_SUCCEEDED,
-            payload: null,
-            meta: { account }
-        };
-    }
-    /**
-     * @param {?} error
-     * @return {?}
-     */
-    loginFailed(error) {
-        return {
-            type: AccountActions.LOGIN_FAILED,
-            payload: null,
-            meta: null,
-            error
-        };
-    }
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    accountUpdated(account) {
-        return {
-            type: AccountActions.ACCOUNT_UPDATED,
-            payload: null,
-            meta: { account }
-        };
-    }
-    // Roles of the account, used to check permissions
-    /**
-     * @param {?} accountId
-     * @return {?}
-     */
-    loadRoles(accountId) {
-        return {
-            type: AccountActions.LOAD_ROLES,
-            payload: null,
-            meta: { accountId }
-        };
-    }
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    loadRolesSucceeded(accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_SUCCEEDED,
-            payload: null,
-            meta: { accountRoles }
-        };
-    }
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    loadRolesFailed(accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_FAILED,
-            payload: null,
-            meta: null
-        };
-    }
-}
-AccountActions.LOGIN = 'Account::LOGIN';
-AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
-AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
-AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
-AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
-AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
-AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
-AccountActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /** @type {?} */
-    AccountActions.LOGIN;
-    /** @type {?} */
-    AccountActions.LOGIN_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOGIN_FAILED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_FAILED;
-    /** @type {?} */
-    AccountActions.ACCOUNT_UPDATED;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/active-project.action.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function ActiveProjectMeta() { }
-if (false) {
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.projectPreview;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.pk_project;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.pk_entity;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.pk_entities;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.pk_classes;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.pk_ui_context;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.entity_version;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.chunk;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.teEnGraphs;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.peItGraphs;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.types;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.projRel;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.dfh_pk_class;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.infProjRel;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.panels;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.list;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.panelIndex;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.panelSerial;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.tabIndex;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.uiIdSerial;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.focusedPanel;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.previousPanelIndex;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.currentPanelIndex;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.previousTabIndex;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.currentTabIndex;
-    /** @type {?|undefined} */
-    ActiveProjectMeta.prototype.tab;
-}
-;
-class ActiveProjectActions {
-    /**
-     * @param {?} pk_project
-     * @return {?}
-     */
-    loadProjectBasics(pk_project) {
-        return {
-            type: ActiveProjectActions.LOAD_PROJECT_BASICS,
-            payload: null,
-            meta: {
-                pk_project
-            }
-        };
-    }
-    /**
-     * @param {?} projectPreview
-     * @return {?}
-     */
-    loadProjectBasiscsSucceded(projectPreview) {
-        return {
-            type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
-            payload: null,
-            meta: { projectPreview },
-        };
-    }
-    /**
-     * @param {?} pk_project
-     * @return {?}
-     */
-    loadProjectConfig(pk_project) {
-        return {
-            type: ActiveProjectActions.LOAD_PROJECT_CONFIG,
-            payload: null,
-            meta: {
-                pk_project
-            },
-        };
-    }
-    /**
-     * @return {?}
-     */
-    loadProjectConfigSucceeded() {
-        return {
-            type: ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED,
-            payload: {
-            // crm
-            },
-            meta: null,
-        };
-    }
-    /**
-     * @param {?} list
-     * @return {?}
-     */
-    setListType(list) {
-        return {
-            type: ActiveProjectActions.SET_LIST_TYPE,
-            payload: null,
-            meta: {
-                list
-            }
-        };
-    }
-    /**
-     * @param {?} panels
-     * @param {?} uiIdSerial
-     * @param {?} panelSerial
-     * @param {?} focusedPanel
-     * @return {?}
-     */
-    setPanels(panels, uiIdSerial, panelSerial, focusedPanel) {
-        return {
-            type: ActiveProjectActions.SET_PANELS,
-            payload: null,
-            meta: { panels, uiIdSerial, panelSerial, focusedPanel }
-        };
-    }
-    /**
-     * @param {?} panelIndex
-     * @param {?} tabIndex
-     * @return {?}
-     */
-    activateTab(panelIndex, tabIndex) {
-        return {
-            type: ActiveProjectActions.ACTIVATE_TAB,
-            payload: null,
-            meta: {
-                panelIndex, tabIndex
-            }
-        };
-    }
-    /**
-     * @param {?} previousPanelIndex
-     * @param {?} currentPanelIndex
-     * @param {?} previousTabIndex
-     * @param {?} currentTabIndex
-     * @return {?}
-     */
-    moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex) {
-        return {
-            type: ActiveProjectActions.MOVE_TAB,
-            payload: null,
-            meta: {
-                previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex
-            }
-        };
-    }
-    /**
-     * @param {?} panelIndex
-     * @param {?} tabIndex
-     * @return {?}
-     */
-    closeTab(panelIndex, tabIndex) {
-        return {
-            type: ActiveProjectActions.CLOSE_TAB,
-            payload: null,
-            meta: {
-                panelIndex, tabIndex
-            }
-        };
-    }
-    /**
-     * @template TabData
-     * @param {?} tab
-     * @return {?}
-     */
-    addTab(tab) {
-        return {
-            type: ActiveProjectActions.ADD_TAB,
-            payload: null,
-            meta: { tab }
-        };
-    }
-    /**
-     * @param {?} previousPanelIndex
-     * @param {?} tabIndex
-     * @param {?} currentPanelIndex
-     * @return {?}
-     */
-    splitPanel(previousPanelIndex, tabIndex, currentPanelIndex) {
-        return {
-            type: ActiveProjectActions.SPLIT_PANEL,
-            payload: null,
-            meta: { previousPanelIndex, tabIndex, currentPanelIndex }
-        };
-    }
-    /**
-     * @param {?} panelIndex
-     * @return {?}
-     */
-    closePanel(panelIndex) {
-        return {
-            type: ActiveProjectActions.CLOSE_PANEL,
-            payload: null,
-            meta: { panelIndex }
-        };
-    }
-    /**
-     * @param {?} panelIndex
-     * @return {?}
-     */
-    focusPanel(panelIndex) {
-        return {
-            type: ActiveProjectActions.FOCUS_PANEL,
-            payload: null,
-            meta: { panelIndex }
-        };
-    }
-    // updateSelectedChunk(selectedChunk: DatChunk): ActiveProjectAction {
-    //   return {
-    //     type: ActiveProjectActions.UPDATE_SELECTED_CHUNK,
-    //     payload: { selectedChunk },
-    //     meta: null
-    //   }
-    // }
-    /**
-     * @param {?} refiningChunk
-     * @return {?}
-     */
-    setRefiningChunk(refiningChunk) {
-        return {
-            type: ActiveProjectActions.SET_REFINING_CHUNK,
-            payload: { refiningChunk },
-            meta: null
-        };
-    }
-    /**
-     * @param {?} creatingMentioning
-     * @return {?}
-     */
-    setCreatingMentioning(creatingMentioning) {
-        return {
-            type: ActiveProjectActions.SET_CREATING_MENTIONING,
-            payload: { creatingMentioning },
-            meta: null
-        };
-    }
-    /**
-     * @param {?} mentioningsFocusedInText
-     * @return {?}
-     */
-    setMentioningsFocusedInText(mentioningsFocusedInText) {
-        return {
-            type: ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT,
-            payload: { mentioningsFocusedInText },
-            meta: null
-        };
-    }
-    /**
-     * @param {?} mentioningsFocusedInTable
-     * @return {?}
-     */
-    setMentioningsFocusedInTable(mentioningsFocusedInTable) {
-        return {
-            type: ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE,
-            payload: { mentioningsFocusedInTable },
-            meta: null
-        };
-    }
-    /**
-     * @return {?}
-     */
-    destroy() {
-        return {
-            type: ActiveProjectActions.DESTROY,
-            payload: null,
-            meta: null,
-        };
-    }
-}
-/* tslint:disable:member-ordering */
-/**
- * *********************************************************************************
- * CRM and Config (metadata, crm)
- * **********************************************************************************
- */
-ActiveProjectActions.LOAD_PROJECT_BASICS = 'ActiveProject::LOAD_PROJECT_BASICS';
-ActiveProjectActions.LOAD_PROJECT_BASICS_FAILED = 'ActiveProject::LOAD_PROJECT_BASICS_FAILED';
-ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_BASICS_SUCCEEDED';
-ActiveProjectActions.LOAD_PROJECT_CONFIG = 'ActiveProject::LOAD_PROJECT_CONFIG';
-ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_CONFIG_SUCCEEDED';
-/**
- * *********************************************************************************
- * Layout -- Tabs
- * **********************************************************************************
- */
-ActiveProjectActions.SET_LIST_TYPE = 'ActiveProject::SET_LIST_TYPE';
-ActiveProjectActions.SET_PANELS = 'ActiveProject::SET_PANELS';
-ActiveProjectActions.ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
-ActiveProjectActions.MOVE_TAB = 'ActiveProject::MOVE_TAB';
-ActiveProjectActions.CLOSE_TAB = 'ActiveProject::CLOSE_TAB';
-ActiveProjectActions.ADD_TAB = 'ActiveProject::ADD_TAB';
-ActiveProjectActions.SPLIT_PANEL = 'ActiveProject::SPLIT_PANEL';
-ActiveProjectActions.CLOSE_PANEL = 'ActiveProject::CLOSE_PANEL';
-ActiveProjectActions.FOCUS_PANEL = 'ActiveProject::FOCUS_PANEL';
-// /************************************************************************************
-//  * Layout -- Modals
-// ************************************************************************************/
-// // create or add entity modal
-// static readonly OPEN_ADD_FORM = 'ActiveProject::OPEN_ADD_FORM';
-// static readonly CLOSE_ADD_FORM = 'ActiveProject::CLOSE_ADD_FORM';
-// openAddForm = (createOrAddEntity: CreateOrAddEntity): ActiveProjectAction => ({
-//   type: ActiveProjectActions.OPEN_ADD_FORM,
-//   meta: { createOrAddEntity },
-//   payload: null
-// })
-// closeAddForm = (): ActiveProjectAction => ({
-//   type: ActiveProjectActions.CLOSE_ADD_FORM,
-//   meta: null,
-//   payload: null
-// })
-/************************************************************************************
-  * Information cache
-  ************************************************************************************/
-// EntityPreviews
-// static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
-// static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
-// static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
-// loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entity, pk_ui_context
-//     }
-//   }
-// }
-// loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       entityPreview
-//     },
-//   }
-// }
-// loadEntityPreviewFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // EntityPreviews
-// static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';
-// static LOAD_TYPES_SUCCEEDED = 'ActiveProject::LOAD_TYPES_SUCCEEDED';
-// static LOAD_TYPES_FAILED = 'ActiveProject::LOAD_TYPES_FAILED';
-// loadTypes(pk_project: number, pk_classes: number[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_TYPES,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_classes
-//     }
-//   }
-// }
-// loadTypesSucceeded(types: TypePeIt[], pk_classes: number[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_TYPES_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       types, pk_classes
-//     },
-//   }
-// }
-// loadTypesFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_TYPES_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // Entities Details for display in Modals
-// static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';
-// static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
-// static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
-// static LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED';
-// loadEntityDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entity, pk_ui_context
-//     }
-//   }
-// }
-// loadPeItDetailsForModalSucceeded(peItDetail: EntityDetail): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       peItDetail
-//     },
-//   }
-// }
-// loaEntitytDetailsForModalFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // Chunks
-// static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
-// static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
-// static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
-// loadChunk(pk_project: number, pk_entity: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_CHUNK,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entity
-//     }
-//   }
-// }
-// loadChunkSucceeded(chunk: DatChunk): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_CHUNK_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       chunk
-//     },
-//   }
-// }
-// loadChunkFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_CHUNK_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // PeIt Graphs
-// static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
-// static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
-// static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
-// loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entities
-//     }
-//   }
-// }
-// loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       peItGraphs
-//     },
-//   }
-// }
-// loadPeItGraphsFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // TeEn Graphs
-// static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
-// static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
-// static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
-// loadTeEnGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_TEEN_GRAPHS,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entities
-//     }
-//   }
-// }
-// loadTeEnGraphsSucceeded(teEnGraphs: InfTemporalEntity[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       teEnGraphs
-//     },
-//   }
-// }
-// loadTeEnGraphsFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // Queries
-// static LOAD_QUERIES = 'ActiveProject::LOAD_QUERIES';
-// static LOAD_QUERIES_SUCCEEDED = 'ActiveProject::LOAD_QUERIES_SUCCEEDED';
-// static LOAD_QUERIES_FAILED = 'ActiveProject::LOAD_QUERIES_FAILED';
-// loadQueries(pk_project: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_QUERIES,
-//     payload: null,
-//     meta: {
-//       pk_project
-//     }
-//   }
-// }
-// loadQueriesSucceeded(comQueryArray: ComQueryV[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_QUERIES_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       comQueryArray
-//     },
-//   }
-// }
-// loadQueriesFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_QUERIES_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // Query Version
-// static LOAD_QUERY_VERSION = 'ActiveProject::LOAD_QUERY_VERSION';
-// static LOAD_QUERY_VERSION_SUCCEEDED = 'ActiveProject::LOAD_QUERY_VERSION_SUCCEEDED';
-// static LOAD_QUERY_VERSION_FAILED = 'ActiveProject::LOAD_QUERY_VERSION_FAILED';
-// loadQueryVersion(pk_project: number, pk_entity: number, entity_version: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_QUERY_VERSION,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entity, entity_version
-//     }
-//   }
-// }
-// loadQueryVersionSucceeded(comQuery: ProQuery): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       comQuery
-//     },
-//   }
-// }
-// loadQueryVersionFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_QUERY_VERSION_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // Visuals
-// static LOAD_VISUALS = 'ActiveProject::LOAD_VISUALS';
-// static LOAD_VISUALS_SUCCEEDED = 'ActiveProject::LOAD_VISUALS_SUCCEEDED';
-// static LOAD_VISUALS_FAILED = 'ActiveProject::LOAD_VISUALS_FAILED';
-// loadVisuals(pk_project: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_VISUALS,
-//     payload: null,
-//     meta: {
-//       pk_project
-//     }
-//   }
-// }
-// loadVisualsSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_VISUALS_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       comVisualArray
-//     },
-//   }
-// }
-// loadVisualsFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_VISUALS_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-// // Visual Version
-// static LOAD_VISUAL_VERSION = 'ActiveProject::LOAD_VISUAL_VERSION';
-// static LOAD_VISUAL_VERSION_SUCCEEDED = 'ActiveProject::LOAD_VISUAL_VERSION_SUCCEEDED';
-// static LOAD_VISUAL_VERSION_FAILED = 'ActiveProject::LOAD_VISUAL_VERSION_FAILED';
-// loadVisualVersion(pk_project: number, pk_entity: number, entity_version?: number): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_VISUAL_VERSION,
-//     payload: null,
-//     meta: {
-//       pk_project, pk_entity, entity_version
-//     }
-//   }
-// }
-// loadVisualVersionSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED,
-//     payload: null,
-//     meta: {
-//       comVisualArray
-//     },
-//   }
-// }
-// loadVisualVersionFailed(error): ActiveProjectAction {
-//   return {
-//     type: ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED,
-//     payload: null,
-//     meta: null,
-//     error
-//   }
-// }
-/**
- * *********************************************************************************
- *  Things for Mentionings / Annotations
- * **********************************************************************************
- */
-ActiveProjectActions.UPDATE_SELECTED_CHUNK = 'ActiveProject::UPDATE_SELECTED_CHUNK';
-ActiveProjectActions.SET_REFINING_CHUNK = 'ActiveProject::SET_REFINING_CHUNK';
-ActiveProjectActions.SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
-/**
- * *********************************************************************************
- * Highlighting of mentionings in the gui
- * **********************************************************************************
- */
-ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TEXT';
-ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TABLE';
-// /*********************************************************************
-//  *  Methods to manage enabling and disabling a class for the project
-//  *********************************************************************/
-// static readonly UPSERT_CLASS_PROJ_REL = 'ActiveProject::UPSERT_CLASS_PROJ_REL';
-// static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
-// static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
-// upsertClassProjRel = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
-//   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
-//   meta: { projRel, dfh_pk_class },
-//   payload: null,
-// });
-// upsertClassProjRelSucceeded = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
-//   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
-//   meta: { projRel, dfh_pk_class },
-//   payload: null
-// })
-// upsertClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
-//   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED,
-//   meta: { dfh_pk_class },
-//   payload: null,
-//   error,
-// })
-// /*********************************************************************
-//  *  Methods to manage enabling and disabling an entity for the project
-//  *********************************************************************/
-// static readonly UPSERT_ENTITY_PROJ_REL = 'ActiveProject::UPSERT_ENTITY_PROJ_REL';
-// static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
-// static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
-// upsertEntityProjRel = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
-//   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
-//   meta: { infProjRel },
-//   payload: null,
-// });
-// upsertEntityProjRelSucceeded = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
-//   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
-//   meta: { infProjRel },
-//   payload: null
-// })
-// upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
-//   type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
-//   meta: null,
-//   payload: null,
-//   error,
-// })
-/**
- * *********************************************************************************
- * Destroy the active project state (on closing a project)
- * **********************************************************************************
- */
-ActiveProjectActions.DESTROY = 'ActiveProject::DESTROY';
-ActiveProjectActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /**
-     * *********************************************************************************
-     * CRM and Config (metadata, crm)
-     * **********************************************************************************
-     * @type {?}
-     */
-    ActiveProjectActions.LOAD_PROJECT_BASICS;
-    /** @type {?} */
-    ActiveProjectActions.LOAD_PROJECT_BASICS_FAILED;
-    /** @type {?} */
-    ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED;
-    /** @type {?} */
-    ActiveProjectActions.LOAD_PROJECT_CONFIG;
-    /** @type {?} */
-    ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED;
-    /**
-     * *********************************************************************************
-     * Layout -- Tabs
-     * **********************************************************************************
-     * @type {?}
-     */
-    ActiveProjectActions.SET_LIST_TYPE;
-    /** @type {?} */
-    ActiveProjectActions.SET_PANELS;
-    /** @type {?} */
-    ActiveProjectActions.ACTIVATE_TAB;
-    /** @type {?} */
-    ActiveProjectActions.MOVE_TAB;
-    /** @type {?} */
-    ActiveProjectActions.CLOSE_TAB;
-    /** @type {?} */
-    ActiveProjectActions.ADD_TAB;
-    /** @type {?} */
-    ActiveProjectActions.SPLIT_PANEL;
-    /** @type {?} */
-    ActiveProjectActions.CLOSE_PANEL;
-    /** @type {?} */
-    ActiveProjectActions.FOCUS_PANEL;
-    /**
-     * *********************************************************************************
-     *  Things for Mentionings / Annotations
-     * **********************************************************************************
-     * @type {?}
-     */
-    ActiveProjectActions.UPDATE_SELECTED_CHUNK;
-    /** @type {?} */
-    ActiveProjectActions.SET_REFINING_CHUNK;
-    /** @type {?} */
-    ActiveProjectActions.SET_CREATING_MENTIONING;
-    /**
-     * *********************************************************************************
-     * Highlighting of mentionings in the gui
-     * **********************************************************************************
-     * @type {?}
-     */
-    ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT;
-    /** @type {?} */
-    ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE;
-    /**
-     * *********************************************************************************
-     * Destroy the active project state (on closing a project)
-     * **********************************************************************************
-     * @type {?}
-     */
-    ActiveProjectActions.DESTROY;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/entity-list.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class InformationAPIActions {
-    constructor() {
-        /**
-         * ******************************************************************
-         *  Method to distroy the slice of store
-         * *******************************************************************
-         */
-        this.destroy = (/**
-         * @return {?}
-         */
-        () => ({
-            type: InformationAPIActions.DESTROY,
-            meta: null,
-            payload: null
-        }));
-    }
-}
-InformationAPIActions.DESTROY = 'Information::DESTROY';
-InformationAPIActions.decorators = [
-    { type: Injectable }
-];
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], InformationAPIActions.prototype, "destroy", void 0);
-if (false) {
-    /** @type {?} */
-    InformationAPIActions.DESTROY;
-    /**
-     * ******************************************************************
-     *  Method to distroy the slice of store
-     * *******************************************************************
-     * @type {?}
-     */
-    InformationAPIActions.prototype.destroy;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/loading-bar.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$1() { }
-if (false) {
-    /** @type {?} */
-    MetaData$1.prototype.null;
-}
-;
-/**
- * This actions start, stop and complete the global loading bar
- * using a SlimLoadingBarService instantiated within the loading-bar
- * module.
- *
- * In order to show a loading bar in GUI, use the LoadingBarComponent
- * exported by this module.
- */
-class LoadingBarActions {
-    constructor() {
-        this.startLoading = (/**
-         * @return {?}
-         */
-        () => ({
-            type: LoadingBarActions.START,
-            meta: null,
-            payload: null,
-        }));
-        this.stopLoading = (/**
-         * @return {?}
-         */
-        () => ({
-            type: LoadingBarActions.STOP,
-            meta: null,
-            payload: null
-        }));
-        this.completeLoading = (/**
-         * @return {?}
-         */
-        () => ({
-            type: LoadingBarActions.COPMLETE,
-            meta: null,
-            payload: null,
-        }));
-    }
-}
-LoadingBarActions.START = 'LOADING_BAR_START';
-LoadingBarActions.STOP = 'LOADING_BAR_STOP';
-LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
-LoadingBarActions.decorators = [
-    { type: Injectable }
-];
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], LoadingBarActions.prototype, "startLoading", void 0);
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], LoadingBarActions.prototype, "stopLoading", void 0);
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], LoadingBarActions.prototype, "completeLoading", void 0);
-if (false) {
-    /** @type {?} */
-    LoadingBarActions.START;
-    /** @type {?} */
-    LoadingBarActions.STOP;
-    /** @type {?} */
-    LoadingBarActions.COPMLETE;
-    /** @type {?} */
-    LoadingBarActions.prototype.startLoading;
-    /** @type {?} */
-    LoadingBarActions.prototype.stopLoading;
-    /** @type {?} */
-    LoadingBarActions.prototype.completeLoading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/notifications.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$2() { }
-if (false) {
-    /** @type {?|undefined} */
-    MetaData$2.prototype.itemsArray;
-}
-;
-class NotificationsAPIActions {
-    constructor() {
-        this.addToast = (/**
-         * @param {?} payload
-         * @return {?}
-         */
-        (payload) => ({
-            type: NotificationsAPIActions.ADD_TOAST,
-            meta: null,
-            payload
-        }));
-    }
-}
-NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
-NotificationsAPIActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /** @type {?} */
-    NotificationsAPIActions.ADD_TOAST;
-    /** @type {?} */
-    NotificationsAPIActions.prototype.addToast;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/projects.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ProjectsActions {
-    /**
-     * @param {?} payload
-     * @return {?}
-     */
-    loadProjectsSucceeded(payload) {
-        return {
-            type: ProjectsActions.LOAD_PROJECTS_SUCCEEDED,
-            payload,
-            meta: null
-        };
-    }
-}
-ProjectsActions.LOAD_PROJECTS_SUCCEEDED = 'LOAD_PROJECTS_SUCCEEDED';
-ProjectsActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /** @type {?} */
-    ProjectsActions.LOAD_PROJECTS_SUCCEEDED;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/source-list.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$3() { }
-if (false) {
-    /** @type {?|undefined} */
-    MetaData$3.prototype.pkAllowedClasses;
-}
-;
-class SourceListAPIActions {
-    constructor() {
-        /**
-         * ******************************************************************
-         *  Actions to manage the list
-         * *******************************************************************
-         */
-        this.initializeList = (/**
-         * @param {?} pkAllowedClasses
-         * @return {?}
-         */
-        (pkAllowedClasses) => ({
-            type: SourceListAPIActions.INITIALIZE_LIST,
-            meta: { pkAllowedClasses },
-            payload: null
-        }));
-        /**
-         * ******************************************************************
-         *  Method to distroy the slice of store
-         * *******************************************************************
-         */
-        this.destroy = (/**
-         * @return {?}
-         */
-        () => ({
-            type: SourceListAPIActions.DESTROY,
-            meta: null,
-            payload: null
-        }));
-    }
-}
-SourceListAPIActions.INITIALIZE_LIST = 'SourceList::INITIALIZE_LIST';
-SourceListAPIActions.DESTROY = 'SourceList::DESTROY';
-SourceListAPIActions.decorators = [
-    { type: Injectable }
-];
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], SourceListAPIActions.prototype, "initializeList", void 0);
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], SourceListAPIActions.prototype, "destroy", void 0);
-if (false) {
-    /** @type {?} */
-    SourceListAPIActions.INITIALIZE_LIST;
-    /** @type {?} */
-    SourceListAPIActions.DESTROY;
-    /**
-     * ******************************************************************
-     *  Actions to manage the list
-     * *******************************************************************
-     * @type {?}
-     */
-    SourceListAPIActions.prototype.initializeList;
-    /**
-     * ******************************************************************
-     *  Method to distroy the slice of store
-     * *******************************************************************
-     * @type {?}
-     */
-    SourceListAPIActions.prototype.destroy;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/epics/account.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class AccountEpics {
-    /**
-     * @param {?} actions
-     * @param {?} loadingBarActions
-     * @param {?} accountApi
-     * @param {?} notificationActions
-     */
-    constructor(actions, loadingBarActions, accountApi, notificationActions) {
-        this.actions = actions;
-        this.loadingBarActions = loadingBarActions;
-        this.accountApi = accountApi;
-        this.notificationActions = notificationActions;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics(this.loadRoles());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    loadRoles() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => new Observable((/**
-         * @param {?} globalStore
-         * @return {?}
-         */
-        (globalStore) => {
-            globalStore.next(this.loadingBarActions.startLoading());
-            this.accountApi.getRoles(action.meta.accountId)
-                .subscribe((/**
-             * @param {?} data
-             * @return {?}
-             */
-            (data) => {
-                globalStore.next(this.loadingBarActions.completeLoading());
-                globalStore.next(this.actions.loadRolesSucceeded(data));
-            }), (/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                globalStore.next(this.notificationActions.addToast({
-                    type: 'error',
-                    options: { title: error }
-                }));
-            }));
-        }))))));
-    }
-}
-AccountEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-AccountEpics.ctorParameters = () => [
-    { type: AccountActions },
-    { type: LoadingBarActions },
-    { type: PubAccountApi },
-    { type: NotificationsAPIActions }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.loadingBarActions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.accountApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.notificationActions;
-}
 
 /**
  * @fileoverview added by tsickle
@@ -5675,6 +5049,3389 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/action-resolver.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ActionResolverEpics {
+    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+    constructor() {
+        this.createEpics = (/**
+         * @return {?}
+         */
+        () => combineEpics(this.createResolveEpic()));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createResolveEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(filter((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
+    }
+}
+ActionResolverEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+ActionResolverEpics.ctorParameters = () => [];
+/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ActionResolverEpics.prototype.createEpics;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/_helpers/flattener.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template Payload, Model
+ */
+class ModelFlattener {
+    /**
+     * @param {?} actions
+     * @param {?} modelDefinition
+     * @param {?} flattenCb
+     */
+    constructor(actions, modelDefinition, flattenCb) {
+        this.actions = actions;
+        this.modelDefinition = modelDefinition;
+        this.flattenCb = flattenCb;
+    }
+    /**
+     * @param {?} items
+     * @return {?}
+     */
+    flatten(items) {
+        if (items && items.length > 0) {
+            this.flattenCb(items);
+            // todo remove properties of those objects, using getModelDefinition()
+            /** @type {?} */
+            const keysToOmit = keys(this.modelDefinition.relations).map((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => item.toString()));
+            this.items = [
+                ...(this.items || []),
+                ...(/** @type {?} */ (items.filter((/**
+                 * @param {?} item
+                 * @return {?}
+                 */
+                item => !!item && Object.keys(item).length > 0))
+                    .map((/**
+                 * @param {?} item
+                 * @return {?}
+                 */
+                item => omit(keysToOmit, item)))))
+            ];
+        }
+        return true;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ModelFlattener.prototype.items;
+    /** @type {?} */
+    ModelFlattener.prototype.actions;
+    /** @type {?} */
+    ModelFlattener.prototype.modelDefinition;
+    /** @type {?} */
+    ModelFlattener.prototype.flattenCb;
+}
+/**
+ * @record
+ */
+function FlattenerInterface() { }
+/**
+ * Flattener is the class used to flatten nested objects.
+ * Use storeFlattened() to call all actions to put the
+ * flattened items into the store.
+ */
+class Flattener {
+    /**
+     * @param {?} infActions
+     * @param {?} datActions
+     * @param {?} proActions
+     */
+    constructor(infActions, datActions, proActions) {
+        this.infActions = infActions;
+        this.datActions = datActions;
+        this.proActions = proActions;
+        this.info_proj_rel = new ModelFlattener(this.proActions.info_proj_rel, ProInfoProjRel.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new ProInfoProjRel(item);
+            }));
+        }));
+        this.pro_dfh_class_proj_rel = new ModelFlattener(this.proActions.dfh_class_proj_rel, ProDfhClassProjRel.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new ProDfhClassProjRel(item);
+            }));
+        }));
+        this.pro_dfh_profile_proj_rel = new ModelFlattener(this.proActions.dfh_profile_proj_rel, ProDfhProfileProjRel.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new ProDfhProfileProjRel(item);
+            }));
+        }));
+        this.persistent_item = new ModelFlattener(this.infActions.persistent_item, InfPersistentItem.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfPersistentItem(item);
+                this.statement.flatten(item.incoming_statements);
+                this.statement.flatten(item.outgoing_statements);
+                this.text_property.flatten(item.text_properties);
+                this.info_proj_rel.flatten(item.entity_version_project_rels);
+            }));
+        }));
+        this.temporal_entity = new ModelFlattener(this.infActions.temporal_entity, InfTemporalEntity.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfTemporalEntity(item);
+                this.statement.flatten(item.outgoing_statements);
+                this.statement.flatten(item.incoming_statements);
+                this.text_property.flatten(item.text_properties);
+                this.info_proj_rel.flatten(item.entity_version_project_rels);
+            }));
+        }));
+        this.statement = new ModelFlattener(this.infActions.statement, InfStatement.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfStatement(item);
+                this.info_proj_rel.flatten(item.entity_version_project_rels);
+                // Subject
+                if (item.subject_temporal_entity)
+                    this.temporal_entity.flatten([item.subject_temporal_entity]);
+                else if (item.subject_statement)
+                    this.statement.flatten([item.subject_statement]);
+                // Object
+                if (item.object_persistent_item)
+                    this.persistent_item.flatten([item.object_persistent_item]);
+                else if (item.object_appellation)
+                    this.appellation.flatten([item.object_appellation]);
+                else if (item.object_place)
+                    this.place.flatten([item.object_place]);
+                else if (item.object_time_primitive)
+                    this.time_primitive.flatten([item.object_time_primitive]);
+                else if (item.object_language)
+                    this.language.flatten([item.object_language]);
+                else if (item.subject_chunk)
+                    this.chunk.flatten([item.subject_chunk]);
+                else if (item.object_lang_string)
+                    this.lang_string.flatten([item.object_lang_string]);
+                else if (item.object_dimension)
+                    this.dimension.flatten([item.object_dimension]);
+            }));
+        }));
+        this.appellation = new ModelFlattener(this.infActions.appellation, InfAppellation.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfAppellation(item);
+            }));
+        }));
+        this.place = new ModelFlattener(this.infActions.place, InfPlace.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfPlace(item);
+            }));
+        }));
+        this.time_primitive = new ModelFlattener(this.infActions.time_primitive, InfTimePrimitive.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfTimePrimitive(item);
+            }));
+        }));
+        this.language = new ModelFlattener(this.infActions.language, InfLanguage.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfLanguage(item);
+            }));
+        }));
+        this.lang_string = new ModelFlattener(this.infActions.lang_string, InfLangString.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfLangString(item);
+                this.language.flatten([item.language]);
+                this.info_proj_rel.flatten(item.entity_version_project_rels);
+            }));
+        }));
+        this.dimension = new ModelFlattener(this.infActions.dimension, InfDimension.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfDimension(item);
+                this.info_proj_rel.flatten(item.entity_version_project_rels);
+            }));
+        }));
+        this.text_property = new ModelFlattener(this.infActions.text_property, InfTextProperty.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new InfTextProperty(item);
+                this.language.flatten([item.language]);
+                this.info_proj_rel.flatten(item.entity_version_project_rels);
+            }));
+        }));
+        this.digital = new ModelFlattener(this.datActions.digital, DatDigital.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new DatDigital(item);
+            }));
+        }));
+        this.chunk = new ModelFlattener(this.datActions.chunk, DatChunk.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new DatChunk(item);
+                this.statement.flatten(item.outgoing_statements);
+            }));
+        }));
+        this.pro_project = new ModelFlattener(this.proActions.project, ProProject.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new ProProject(item);
+                this.language.flatten([item.default_language]);
+            }));
+        }));
+        this.pro_text_property = new ModelFlattener(this.proActions.text_property, ProTextProperty.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new ProTextProperty(item);
+                this.language.flatten([item.language]);
+            }));
+        }));
+        this.pro_class_field_config = new ModelFlattener(this.proActions.class_field_config, ProClassFieldConfig.getModelDefinition(), (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => {
+                item = new ProClassFieldConfig(item);
+            }));
+        }));
+        this.analysis = new ModelFlattener(this.proActions.analysis, { relations: [] }, (/**
+         * @param {?} items
+         * @return {?}
+         */
+        (items) => {
+            items.forEach((/**
+             * @param {?} item
+             * @return {?}
+             */
+            item => { }));
+        }));
+    }
+    /**
+     * @return {?}
+     */
+    getFlattened() {
+        return {
+            pro_project: this.pro_project,
+            pro_text_property: this.pro_text_property,
+            pro_class_field_config: this.pro_class_field_config,
+            pro_dfh_profile_proj_rel: this.pro_dfh_profile_proj_rel,
+            pro_dfh_class_proj_rel: this.pro_dfh_class_proj_rel,
+            info_proj_rel: this.info_proj_rel,
+            analysis: this.analysis,
+            persistent_item: this.persistent_item,
+            temporal_entity: this.temporal_entity,
+            statement: this.statement,
+            appellation: this.appellation,
+            place: this.place,
+            time_primitive: this.time_primitive,
+            language: this.language,
+            text_property: this.text_property,
+            lang_string: this.lang_string,
+            dimension: this.dimension,
+            digital: this.digital,
+            chunk: this.chunk,
+        };
+    }
+}
+if (false) {
+    /** @type {?} */
+    Flattener.prototype.info_proj_rel;
+    /** @type {?} */
+    Flattener.prototype.pro_dfh_class_proj_rel;
+    /** @type {?} */
+    Flattener.prototype.pro_dfh_profile_proj_rel;
+    /** @type {?} */
+    Flattener.prototype.persistent_item;
+    /** @type {?} */
+    Flattener.prototype.temporal_entity;
+    /** @type {?} */
+    Flattener.prototype.statement;
+    /** @type {?} */
+    Flattener.prototype.appellation;
+    /** @type {?} */
+    Flattener.prototype.place;
+    /** @type {?} */
+    Flattener.prototype.time_primitive;
+    /** @type {?} */
+    Flattener.prototype.language;
+    /** @type {?} */
+    Flattener.prototype.lang_string;
+    /** @type {?} */
+    Flattener.prototype.dimension;
+    /** @type {?} */
+    Flattener.prototype.text_property;
+    /** @type {?} */
+    Flattener.prototype.digital;
+    /** @type {?} */
+    Flattener.prototype.chunk;
+    /** @type {?} */
+    Flattener.prototype.pro_project;
+    /** @type {?} */
+    Flattener.prototype.pro_text_property;
+    /** @type {?} */
+    Flattener.prototype.pro_class_field_config;
+    /** @type {?} */
+    Flattener.prototype.analysis;
+    /** @type {?} */
+    Flattener.prototype.infActions;
+    /** @type {?} */
+    Flattener.prototype.datActions;
+    /** @type {?} */
+    Flattener.prototype.proActions;
+}
+/** @type {?} */
+const storeFlattened = (/**
+ * @param {?} flattened
+ * @param {?=} pk
+ * @param {?=} type
+ * @return {?}
+ */
+(flattened, pk, type) => {
+    values(flattened).forEach((/**
+     * @param {?} model
+     * @return {?}
+     */
+    model => {
+        if (model.items) {
+            if (type === 'UPSERT') {
+                model.actions.upsertSucceeded(model.items, undefined, pk);
+            }
+            else {
+                model.actions.loadSucceeded(model.items, undefined, pk);
+            }
+        }
+    }));
+});
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/_helpers/schema-epics-factory.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template Payload, Model
+ */
+class SchemaEpicsFactory {
+    /**
+     * @param {?} actionPrefix
+     * @param {?} modelName
+     * @param {?} actions
+     * @param {?} notifications
+     */
+    constructor(actionPrefix, modelName, actions, notifications) {
+        this.actionPrefix = actionPrefix;
+        this.modelName = modelName;
+        this.actions = actions;
+        this.notifications = notifications;
+    }
+    /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?} actionSuffix
+     * @param {?=} onSuccessHook
+     * @return {?}
+     */
+    createLoadEpic(apiFn, actionSuffix, onSuccessHook) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.type('LOAD', actionSuffix)), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk, meta);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?=} onSuccessHook
+     * @return {?}
+     */
+    createUpsertEpic(apiFn, onSuccessHook) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * @param {?} apiFn
+     * @return {?}
+     */
+    createDeleteEpic(apiFn) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                apiFn(action.meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * Create the string used as action.type
+     * @param {?} operation
+     * @param {?} actionSuffix
+     * @return {?}
+     */
+    type(operation, actionSuffix) {
+        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
+    }
+    /**
+     * Create the onError logic for standard actions
+     * @param {?} globalActions pass in the subscriber to the action$ stream
+     * @param {?} error
+     * @param {?} pendingKey
+     * @param {?} pkProject
+     * @return {?}
+     */
+    onError(globalActions, error, pendingKey, pkProject) {
+        globalActions.next(this.notifications.addToast({
+            type: 'error',
+            options: { title: error.message }
+        }));
+        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
+    }
+}
+if (false) {
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.actionPrefix;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.modelName;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.actions;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.notifications;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/_helpers/inf-epic-factory.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template Payload, Model
+ */
+class InfEpicsFactory extends SchemaEpicsFactory {
+    /**
+     * @param {?} actionPrefix
+     * @param {?} modelName
+     * @param {?} actions
+     * @param {?} notifications
+     * @param {?} infoProjRelApi
+     * @param {?} proActions
+     */
+    constructor(actionPrefix, modelName, actions, notifications, infoProjRelApi, proActions) {
+        super(actionPrefix, modelName, actions, notifications);
+        this.actionPrefix = actionPrefix;
+        this.modelName = modelName;
+        this.actions = actions;
+        this.notifications = notifications;
+        this.infoProjRelApi = infoProjRelApi;
+        this.proActions = proActions;
+    }
+    /**
+     * This upsert epic overrides the standard upsert.
+     * In addition to the standard, it extends the items to upsert, so that
+     * they are added to the project.
+     * @template T
+     * @param {?} apiFn
+     * @param {?=} onSuccessHook
+     * @return {?}
+     */
+    createUpsertEpic(apiFn, onSuccessHook) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ (action.meta));
+                // add is_in_project true
+                meta.items = meta.items.map((/**
+                 * @param {?} i
+                 * @return {?}
+                 */
+                i => (Object.assign({}, i, { entity_version_project_rels: [Object.assign({}, pathOr({}, ['entity_version_project_rels', 0], i), { is_in_project: true })] }))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    globalActions.next(this.notifications.addToast({
+                        type: 'error',
+                        options: { title: error.message }
+                    }));
+                    this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * This epic maps the items to remove in minimalisic instances of
+     * InfoProjRel, containing only the fk_entity and is_in_project=false.
+     * The pk of the project, that removes the items, is transported in meta.pk.
+     * @return {?}
+     */
+    createRemoveEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::REMOVE'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                this.infoProjRelApi.bulkUpdateEprAttributes(action.meta.pk, action.meta.items.map((/**
+                 * @param {?} item
+                 * @return {?}
+                 */
+                (item) => ({
+                    fk_entity: item.pk_entity,
+                    is_in_project: false
+                }))))
+                    .subscribe((/**
+                 * @param {?} infoProjRels
+                 * @return {?}
+                 */
+                (infoProjRels) => {
+                    if (infoProjRels.length) {
+                        this.proActions.info_proj_rel.upsertSucceeded(infoProjRels, undefined, action.meta.pk);
+                    }
+                    this.actions.removeSucceeded(action.meta.items, pendingKey, action.meta.pk);
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    globalActions.next(this.notifications.addToast({
+                        type: 'error',
+                        options: { title: error.message }
+                    }));
+                    this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * This upsert epic overrides the standard upsert.
+     * In addition to the standard, it extends the items to upsert, so that
+     * they are added to the project.
+     * @template T
+     * @param {?} apiFn
+     * @param {?} actionSuffix
+     * @param {?=} onSuccessHook
+     * @return {?}
+     */
+    createCustomUpsertEpic(apiFn, actionSuffix, onSuccessHook) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT' + (actionSuffix ? '::' + actionSuffix : '')), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ (action.meta));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk);
+                        this.actions.upsertSucceeded([], pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    globalActions.next(this.notifications.addToast({
+                        type: 'error',
+                        options: { title: error.message }
+                    }));
+                    this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+}
+if (false) {
+    /** @type {?} */
+    InfEpicsFactory.prototype.actionPrefix;
+    /** @type {?} */
+    InfEpicsFactory.prototype.modelName;
+    /** @type {?} */
+    InfEpicsFactory.prototype.actions;
+    /** @type {?} */
+    InfEpicsFactory.prototype.notifications;
+    /** @type {?} */
+    InfEpicsFactory.prototype.infoProjRelApi;
+    /** @type {?} */
+    InfEpicsFactory.prototype.proActions;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/_helpers/reducer-factory.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap';
+/**
+ * @record
+ * @template ModelName
+ */
+function EntityModelAndClass() { }
+if (false) {
+    /** @type {?} */
+    EntityModelAndClass.prototype.modelName;
+    /** @type {?} */
+    EntityModelAndClass.prototype.fkClass;
+}
+/**
+ * @record
+ */
+function ReducerConfigCollection() { }
+/**
+ * @record
+ */
+function ReducerConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    ReducerConfig.prototype.facetteByPk;
+    /** @type {?|undefined} */
+    ReducerConfig.prototype.indexBy;
+    /** @type {?|undefined} */
+    ReducerConfig.prototype.groupBy;
+    /** @type {?|undefined} */
+    ReducerConfig.prototype.equals;
+}
+/**
+ * @record
+ * @template Model
+ */
+function Meta() { }
+if (false) {
+    /** @type {?} */
+    Meta.prototype.items;
+    /** @type {?|undefined} */
+    Meta.prototype.pk;
+}
+/** @type {?} */
+const by = (/**
+ * @param {?} name
+ * @return {?}
+ */
+(name) => 'by_' + name);
+/** @type {?} */
+const paginateName = (/**
+ * @param {?} pagBy
+ * @return {?}
+ */
+(pagBy) => pagBy.map((/**
+ * @param {?} p
+ * @return {?}
+ */
+p => Object.keys(p)[0])).join('__'));
+/** @type {?} */
+const pag = (/**
+ * @param {?} name
+ * @return {?}
+ */
+(name) => 'pag_' + name);
+/** @type {?} */
+const paginatedBy = (/**
+ * @param {?} name
+ * @return {?}
+ */
+(name) => pag(by(name)));
+/** @type {?} */
+const paginateKey = (/**
+ * @param {?} pagBy
+ * @return {?}
+ */
+(pagBy) => pagBy.map((/**
+ * @param {?} p
+ * @return {?}
+ */
+p => values(p)[0])).join('_'));
+/**
+ * @param {?} limit
+ * @param {?} offset
+ * @return {?}
+ */
+function getFromTo(limit, offset) {
+    return getStart(limit, offset) + '_' + getEnd(limit, offset);
+}
+/**
+ * @param {?} limit
+ * @param {?} offset
+ * @return {?}
+ */
+function getEnd(limit, offset) {
+    return getStart(limit, offset) + limit;
+}
+/**
+ * @param {?} limit
+ * @param {?} offset
+ * @return {?}
+ */
+function getStart(limit, offset) {
+    return offset;
+}
+/**
+ * Creates standard reducers for the given model.
+ *
+ * Adds indexes according to config.
+ *
+ * S: Interface of the state (slice of store)
+ * @template Payload, Model
+ */
+class ReducerFactory {
+    /**
+     * @param {?} actionPrefix
+     * @param {?} configs
+     */
+    constructor(actionPrefix, configs) {
+        this.actionPrefix = actionPrefix;
+        this.configs = configs;
+        this.updatingBy = (/**
+         * @param {?} name
+         * @return {?}
+         */
+        (name) => 'updating_' + by(name));
+        this.deletingBy = (/**
+         * @param {?} name
+         * @return {?}
+         */
+        (name) => 'deleting_' + by(name));
+        this.removingBy = (/**
+         * @param {?} name
+         * @return {?}
+         */
+        (name) => 'removing_' + by(name));
+    }
+    /**
+     * @return {?}
+     */
+    createReducers() {
+        /** @type {?} */
+        const reducers = {};
+        U.obj2KeyValueArr(this.configs).forEach((/**
+         * @param {?} x
+         * @return {?}
+         */
+        x => {
+            reducers[x.key] = this.createModelReducers(x.key, x.value);
+        }));
+        /** @type {?} */
+        const entityModelMapReducers = keys(this.configs).map((/**
+         * @param {?} modelName
+         * @return {?}
+         */
+        modelName => this.createEntityModelMapReducers(modelName)));
+        reducers[PR_ENTITY_MODEL_MAP] = composeReducers(...entityModelMapReducers);
+        return combineReducers(reducers);
+    }
+    /**
+     * @private
+     * @param {?} modelName
+     * @param {?} config
+     * @return {?}
+     */
+    createModelReducers(modelName, config) {
+        /** @type {?} */
+        const actionPrefix = this.actionPrefix;
+        /** @type {?} */
+        const reducer = (/**
+         * @param {?=} state
+         * @param {?=} action
+         * @return {?}
+         */
+        (state = {}, action) => {
+            /** @type {?} */
+            const facette = this.facette(modelName, config);
+            if (action.type === actionPrefix + '.' + modelName + '::LOAD') {
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, omit([by(config.indexBy.keyInStore)], innerState), { loading: true }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::LOAD_SUCCEEDED') {
+                // If action state differs from
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, this.mergeItemsInState(config, innerState, action), { loading: false }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::UPSERT') {
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, { [this.updatingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config) }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED') {
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, this.mergeItemsInState(config, innerState, action
+                // , true
+                ), { [this.updatingBy(config.indexBy.keyInStore)]: omit(values(this.indexKeyObject(action, config)), innerState[this.updatingBy(config.indexBy.keyInStore)]) }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::DELETE') {
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, { [this.deletingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config) }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::DELETE_SUCCEEDED') {
+                /** @type {?} */
+                const deletingKey = this.deletingBy(config.indexBy.keyInStore);
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => {
+                    innerState = Object.assign({}, this.deleteItemsFromState(config, action, innerState), { [deletingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.deletingBy(config.indexBy.keyInStore)]) });
+                    if (!Object.keys(innerState[deletingKey]).length)
+                        innerState = omit([deletingKey], innerState);
+                    return innerState;
+                }));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::REMOVE') {
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, { [this.removingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config) }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::REMOVE_SUCCEEDED') {
+                /** @type {?} */
+                const removingKey = this.removingBy(config.indexBy.keyInStore);
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => {
+                    innerState = Object.assign({}, this.deleteItemsFromState(config, action, innerState), { [removingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.removingBy(config.indexBy.keyInStore)]) });
+                    if (!Object.keys(innerState[removingKey]).length)
+                        innerState = omit([removingKey], innerState);
+                    return innerState;
+                }));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::FAILED') {
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, omit([by(config.indexBy.keyInStore)], innerState), { loading: false }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE') {
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                /** @type {?} */
+                const paginateBy = paginatedBy(paginateName(meta.paginateBy));
+                /** @type {?} */
+                const key = meta.paginateBy.map((/**
+                 * @param {?} p
+                 * @return {?}
+                 */
+                p => values(p)[0])).join('_');
+                /** @type {?} */
+                const fromTo = getFromTo(meta.limit, meta.offset);
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, { [paginateBy]: Object.assign({}, innerState[paginateBy], { [key]: Object.assign({}, (innerState[paginateBy] || {})[key], { loading: Object.assign({}, ((innerState[paginateBy] || {})[key] || {}).loading, { [fromTo]: true }) }) }) }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                /** @type {?} */
+                const paginateBy = paginatedBy(paginateName(meta.paginateBy));
+                /** @type {?} */
+                const key = paginateKey(meta.paginateBy);
+                /** @type {?} */
+                const fromTo = getFromTo(meta.limit, meta.offset);
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, { [paginateBy]: Object.assign({}, innerState[paginateBy], { [key]: Object.assign({}, (innerState[paginateBy] || {})[key], { loading: Object.assign({}, ((innerState[paginateBy] || {})[key] || {}).loading, { [fromTo]: false }) }) }) }))));
+            }
+            else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                /** @type {?} */
+                const paginateBy = paginatedBy(paginateName(meta.paginateBy));
+                /** @type {?} */
+                const key = paginateKey(meta.paginateBy);
+                /** @type {?} */
+                const start = getStart(meta.limit, meta.offset);
+                /** @type {?} */
+                const fromTo = getFromTo(meta.limit, meta.offset);
+                /** @type {?} */
+                const rows = {};
+                if (meta.pks) {
+                    meta.pks.forEach((/**
+                     * @param {?} pk
+                     * @param {?} i
+                     * @return {?}
+                     */
+                    (pk, i) => {
+                        rows[start + i] = pk;
+                    }));
+                }
+                state = facette(action, state, (/**
+                 * @param {?} innerState
+                 * @return {?}
+                 */
+                (innerState) => (Object.assign({}, innerState, { [paginateBy]: Object.assign({}, innerState[paginateBy], { [key]: Object.assign({}, (innerState[paginateBy] || {})[key], { count: meta.count || 0, rows: Object.assign({}, ((innerState[paginateBy] || {})[key] || {}).rows, rows), loading: Object.assign({}, ((innerState[paginateBy] || {})[key] || {}).loading, { [fromTo]: false }) }) }) }))));
+            }
+            return state;
+        });
+        return reducer;
+    }
+    /**
+     * Creates an map for pk_entity -> modelName on the level of the schema:
+     * example:
+     * @private
+     * @param {?} modelName
+     * @return {?}
+     */
+    createEntityModelMapReducers(modelName) {
+        /** @type {?} */
+        const actionPrefix = this.actionPrefix;
+        /** @type {?} */
+        const reducer = (/**
+         * @param {?=} state
+         * @param {?=} action
+         * @return {?}
+         */
+        (state = {}, action) => {
+            /** @type {?} */
+            const modelPath = actionPrefix + '.' + modelName;
+            if (!action || !action.meta || !action.meta.items || !action.meta.items.length)
+                return state;
+            /** @type {?} */
+            const items = action.meta.items;
+            switch (action.type) {
+                case modelPath + '::LOAD_SUCCEEDED':
+                case modelPath + '::UPSERT_SUCCEEDED':
+                    /** @type {?} */
+                    const idx = {};
+                    for (let i = 0; i < items.length; i++) {
+                        /** @type {?} */
+                        const item = (/** @type {?} */ (items[i]));
+                        if (item.pk_entity) {
+                            idx[item.pk_entity] = {
+                                modelName,
+                                fkClass: item.fkClass
+                            };
+                        }
+                    }
+                    state = Object.assign({}, state, idx);
+                    break;
+                case modelPath + '::DELETE_SUCCEEDED':
+                case modelPath + '::REMOVE_SUCCEEDED':
+                    /** @type {?} */
+                    const pkEntities = [];
+                    for (let i = 0; i < items.length; i++) {
+                        /** @type {?} */
+                        const item = (/** @type {?} */ (items[i]));
+                        if (item.pk_entity) {
+                            pkEntities.push(item.pk_entity);
+                        }
+                    }
+                    state = omit(pkEntities, state);
+                    break;
+                default:
+                    break;
+            }
+            return state;
+        });
+        return reducer;
+    }
+    /**
+     * @private
+     * @param {?} modelName
+     * @param {?} config
+     * @return {?}
+     */
+    facette(modelName, config) {
+        return (/**
+         * @param {?} action
+         * @param {?} state
+         * @param {?} cb
+         * @return {?}
+         */
+        (action, state, cb) => {
+            /** @type {?} */
+            let outerState;
+            ({ outerState, state } = this.deFacette(modelName, config, action, outerState, state));
+            /** @type {?} */
+            const innerState = cb(state);
+            return this.enFacette(modelName, config, action, innerState, outerState);
+        });
+    }
+    /**
+     * @private
+     * @param {?} modelName
+     * @param {?} config
+     * @param {?} action
+     * @param {?} outerState
+     * @param {?} state
+     * @return {?}
+     */
+    deFacette(modelName, config, action, outerState, state) {
+        if (this.isFacetteByPk(config, action)) {
+            // outerState = clone(state);
+            /** @type {?} */
+            const pk = action.meta.pk || 'repo'
+            // state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
+            ;
+            // state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
+            /** @type {?} */
+            const innerState = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
+            return {
+                outerState: state,
+                state: innerState
+            };
+        }
+        return { outerState, state };
+    }
+    /**
+     * @private
+     * @param {?} modelName
+     * @param {?} config
+     * @param {?} action
+     * @param {?} state
+     * @param {?} outerState
+     * @return {?}
+     */
+    enFacette(modelName, config, action, state, outerState) {
+        if (this.isFacetteByPk(config, action)) {
+            /** @type {?} */
+            const pk = action.meta.pk || 'repo';
+            state = Object.assign({}, outerState, { [config.facetteByPk]: Object.assign({}, outerState[config.facetteByPk], { [pk]: state }) });
+        }
+        return state;
+    }
+    /**
+     * @private
+     * @param {?} config
+     * @param {?} action
+     * @return {?}
+     */
+    isFacetteByPk(config, action) {
+        if (config.facetteByPk) {
+            if (!action.meta || action.meta.pk === undefined)
+                throw Error('Facette action must provide pk for facette');
+            else
+                return true;
+        }
+        else
+            return false;
+    }
+    /**
+     * @param {?} config
+     * @param {?} action
+     * @param {?} state
+     * @return {?}
+     */
+    deleteItemsFromState(config, action, state) {
+        /** @type {?} */
+        const items = action.meta.items;
+        // let state = {}
+        /** @type {?} */
+        const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
+        /** @type {?} */
+        const groups = groupBys.map((/**
+         * @param {?} i
+         * @return {?}
+         */
+        i => ({
+            groupByKey: by(i.keyInStore),
+            groupByFn: i.groupByFn,
+        })));
+        /** @type {?} */
+        const mainIndexKey = by(config.indexBy.keyInStore);
+        items.forEach((/**
+         * @param {?} removedItem
+         * @return {?}
+         */
+        (removedItem) => {
+            // get path segments of new item
+            /** @type {?} */
+            const itemKey = config.indexBy.indexByFn(removedItem);
+            // second segment e.g. '807060'
+            // get old item, if exists
+            /** @type {?} */
+            const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+            // Q: Does the item exists?
+            if (oldItem) {
+                // A: Yes. use old item does exist
+                // remove the removedItem at path in main index
+                state = Object.assign({}, state, { [mainIndexKey]: Object.assign({}, omit([itemKey], state[mainIndexKey])) });
+                // delete the removedItem at path in the group index
+                groups.forEach((/**
+                 * @param {?} g
+                 * @return {?}
+                 */
+                g => {
+                    /** @type {?} */
+                    const groupKey = this.getGroupKeyOfItem(g.groupByFn, removedItem);
+                    state = Object.assign({}, state, { [g.groupByKey]: Object.assign({}, state[g.groupByKey], { [groupKey]: Object.assign({}, omit([itemKey], (state[g.groupByKey] || {})[groupKey])) }) });
+                    // // cleanup paginations
+                    // state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+                }));
+            }
+        }));
+        // cleanup main index
+        if (Object.keys(state[mainIndexKey]).length < 1) {
+            state = Object.assign({}, omit([mainIndexKey], state));
+        }
+        // cleanup group indices
+        groups.forEach((/**
+         * @param {?} g
+         * @return {?}
+         */
+        g => {
+            // cleanup groups in group index
+            Object.keys(state[g.groupByKey]).forEach((/**
+             * @param {?} groupKey
+             * @return {?}
+             */
+            groupKey => {
+                if (Object.keys(state[g.groupByKey][groupKey]).length < 1) {
+                    state = Object.assign({}, state, { [g.groupByKey]: omit([groupKey], state[g.groupByKey]) });
+                }
+            }));
+            // cleanup group index
+            if (Object.keys(state[g.groupByKey]).length < 1) {
+                state = Object.assign({}, omit([g.groupByKey], state));
+            }
+        }));
+        return state;
+    }
+    /**
+     * @param {?} config
+     * @param {?} state
+     * @param {?} action
+     * @return {?}
+     */
+    mergeItemsInState(config, state, action
+    // , resetPaginations = false
+    ) {
+        /** @type {?} */
+        const items = action.meta.items;
+        /** @type {?} */
+        const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
+        /** @type {?} */
+        const groups = groupBys.map((/**
+         * @param {?} i
+         * @return {?}
+         */
+        i => ({
+            groupByKey: by(i.keyInStore),
+            groupByFn: i.groupByFn,
+        })));
+        /** @type {?} */
+        const mainIndexKey = by(config.indexBy.keyInStore);
+        items.forEach((/**
+         * @param {?} newItem
+         * @return {?}
+         */
+        (newItem) => {
+            // get path segments of new item
+            /** @type {?} */
+            const itemKey = config.indexBy.indexByFn(newItem);
+            // second segment e.g. '807060'
+            // get old item, if exists
+            /** @type {?} */
+            const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+            /** @type {?} */
+            let itemToSet;
+            // Q: Does the item exists, and is it deeply-equal to the new item?
+            /** @type {?} */
+            const equalsFn = config.equals || equals;
+            if (oldItem && equalsFn(newItem, oldItem)) {
+                // A: Yes. use old item as itemToSet
+                itemToSet = oldItem;
+            }
+            else {
+                // A: No. use new item as itemToSet
+                itemToSet = newItem;
+                // put the itemToSet at path in main index
+                state = Object.assign({}, state, { [mainIndexKey]: Object.assign({}, state[mainIndexKey], { [itemKey]: itemToSet }) });
+                // iterate over the group indexes
+                groups.forEach((/**
+                 * @param {?} g
+                 * @return {?}
+                 */
+                g => {
+                    // remove the oldItem from all group indexes
+                    /** @type {?} */
+                    const oldGroupKey = this.getGroupKeyOfItem(g.groupByFn, oldItem);
+                    state = Object.assign({}, state, { [g.groupByKey]: Object.assign({}, state[g.groupByKey], { [oldGroupKey]: Object.assign({}, omit([itemKey], (state[g.groupByKey] || {})[oldGroupKey])) }) });
+                    // add the itemToSet to all group indexes, if not undefined
+                    /** @type {?} */
+                    const newGroupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet);
+                    if (newGroupKey !== undefined) {
+                        state = Object.assign({}, state, { [g.groupByKey]: Object.assign({}, state[g.groupByKey], { [newGroupKey]: Object.assign({}, (state[g.groupByKey] || {})[newGroupKey], { [itemKey]: itemToSet }) }) });
+                    }
+                }));
+            }
+        }));
+        return state;
+    }
+    // /**
+    //  * resets pagination within a group, e.g. 'pag_by_fk_property'
+    //  * TODO: check if can be deleted
+    //  */
+    // private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
+    //   const paginateBy = pag(groupByKey);
+    //   if (state[paginateBy] && state[paginateBy][groupKey] && state[paginateBy][groupKey].count !== undefined) {
+    //     state = {
+    //       ...state,
+    //       [paginateBy]: {
+    //         ...state[paginateBy],
+    //         [groupKey]: {
+    //           ...state[paginateBy][groupKey],
+    //           ...(!isUpsert ? {} : { count: state[paginateBy][groupKey].count + 1 }),
+    //           rows: {},
+    //           loading: {}
+    //         }
+    //       }
+    //     };
+    //   }
+    //   return state;
+    // }
+    /**
+     * Creates object where the key returned by the configured indexByFn
+     * @private
+     * @param {?} action
+     * @param {?} config
+     * @return {?}
+     */
+    indexKeyObject(action, config) {
+        return indexBy((/**
+         * @param {?} i
+         * @return {?}
+         */
+        (i) => (i)), action.meta.items
+            // filter items that are not (yet) indexable. This is normally the case, when creating new items that have no pk yet.
+            .filter((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
+            try {
+                config.indexBy.indexByFn(item);
+                return true;
+            }
+            catch (error) {
+                return false;
+            }
+        }))
+            .map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => config.indexBy.indexByFn(item))));
+    }
+    /**
+     * @param {?} items
+     * @param {?} groupByFn
+     * @param {?} indexByFn
+     * @return {?}
+     */
+    groupBy(items, groupByFn, indexByFn) {
+        /** @type {?} */
+        const groups = {};
+        items.forEach((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
+            // if the group by key is not possible to create, the item won't be added to the index
+            /** @type {?} */
+            const groupKey = this.getGroupKeyOfItem(groupByFn, item);
+            if (groupKey) {
+                /** @type {?} */
+                const indexKey = indexByFn(item);
+                groups[groupKey] = Object.assign({}, groups[groupKey], { [indexKey]: item });
+            }
+        }));
+        return groups;
+    }
+    /**
+     * @private
+     * @param {?} groupByFn
+     * @param {?} item
+     * @return {?}
+     */
+    getGroupKeyOfItem(groupByFn, item) {
+        /** @type {?} */
+        let groupKey;
+        try {
+            groupKey = groupByFn(item);
+        }
+        catch (error) {
+        }
+        return groupKey;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ReducerFactory.prototype.updatingBy;
+    /** @type {?} */
+    ReducerFactory.prototype.deletingBy;
+    /** @type {?} */
+    ReducerFactory.prototype.removingBy;
+    /** @type {?} */
+    ReducerFactory.prototype.actionPrefix;
+    /** @type {?} */
+    ReducerFactory.prototype.configs;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/services/schema-object.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Class to put schema objects into store
+ */
+class SchemaObjectService {
+    /**
+     * @param {?} api
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} datActions
+     * @param {?} warActions
+     * @param {?} tabActions
+     * @param {?} dfhActions
+     * @param {?} sysActions
+     * @param {?} notifications
+     */
+    constructor(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
+        this.api = api;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.warActions = warActions;
+        this.tabActions = tabActions;
+        this.dfhActions = dfhActions;
+        this.sysActions = sysActions;
+        this.notifications = notifications;
+    }
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    store(apiCall$, pkProject) {
+        /** @type {?} */
+        const s$ = new Subject();
+        apiCall$.subscribe((/**
+         * @param {?} result
+         * @return {?}
+         */
+        result => {
+            this.storeSchemaObject(result, pkProject === 'ofRepo' ? null : pkProject);
+            s$.next(result);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => {
+            this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            });
+            s$.error(error);
+        }));
+        return s$;
+    }
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    storeGv(apiCall$, pkProject) {
+        /** @type {?} */
+        const s$ = new Subject();
+        apiCall$.subscribe((/**
+         * @param {?} result
+         * @return {?}
+         */
+        result => {
+            this.storeSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject);
+            s$.next(result);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => {
+            this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            });
+            s$.error(error);
+        }));
+        return s$;
+    }
+    /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    storeSchemaObject(object, pkProject) {
+        if (object && Object.keys(object).length > 0) {
+            Object.keys(object).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            schema => {
+                /** @type {?} */
+                let actions;
+                if (schema === 'inf')
+                    actions = this.infActions;
+                else if (schema === 'pro')
+                    actions = this.proActions;
+                else if (schema === 'dat')
+                    actions = this.datActions;
+                else if (schema === 'war')
+                    actions = this.warActions;
+                if (actions) {
+                    Object.keys(object[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    model => {
+                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+                    }));
+                }
+            }));
+        }
+    }
+    /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    storeSchemaObjectGv(object, pkProject) {
+        if (object && Object.keys(object).length > 0) {
+            Object.keys(object).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            schema => {
+                /** @type {?} */
+                let actions;
+                if (schema === 'inf')
+                    actions = this.infActions;
+                else if (schema === 'pro')
+                    actions = this.proActions;
+                else if (schema === 'dat')
+                    actions = this.datActions;
+                else if (schema === 'war')
+                    actions = this.warActions;
+                else if (schema === 'tab')
+                    actions = this.tabActions;
+                else if (schema === 'dfh')
+                    actions = this.dfhActions;
+                else if (schema === 'sys')
+                    actions = this.sysActions;
+                if (actions) {
+                    Object.keys(object[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    model => {
+                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+                    }));
+                }
+            }));
+            // this.extendEntityPreviewStream(object, pkProject);
+            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
+        }
+    }
+}
+SchemaObjectService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SchemaObjectService.ctorParameters = () => [
+    { type: SchemaObjectApi },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatActions },
+    { type: WarActions },
+    { type: TabActions },
+    { type: DfhActions },
+    { type: SysActions },
+    { type: NotificationsAPIActions }
+];
+if (false) {
+    /** @type {?} */
+    SchemaObjectService.prototype.api;
+    /** @type {?} */
+    SchemaObjectService.prototype.infActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.proActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.datActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.warActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.tabActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.dfhActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.sysActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.notifications;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/_helpers/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/dat.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DatEpics {
+    /**
+     * @param {?} notification
+     * @param {?} datActions
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} digitalApi
+     * @param {?} chunkApi
+     * @param {?} columnApi
+     * @param {?} namespaceApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
+        this.notification = notification;
+        this.datActions = datActions;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.digitalApi = digitalApi;
+        this.chunkApi = chunkApi;
+        this.columnApi = columnApi;
+        this.namespaceApi = namespaceApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
+        /** @type {?} */
+        const chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
+        /** @type {?} */
+        const namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
+        /** @type {?} */
+        const columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
+        return combineEpics(
+        // Digital
+        digitalEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null)), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items))), digitalEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.bulkDelete(meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.pk_entity))))), 
+        // Chunk
+        chunkEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital)), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.chunk.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), 
+        // Namespace
+        namespaceEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.namespaceApi.byProject(meta.pk)), ''), columnEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital)), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ (results));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })));
+    }
+}
+DatEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+DatEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: DatActions },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatDigitalApi },
+    { type: DatChunkApi },
+    { type: DatColumnApi },
+    { type: DatNamespaceApi },
+    { type: SchemaObjectService }
+];
+if (false) {
+    /** @type {?} */
+    DatEpics.prototype.notification;
+    /** @type {?} */
+    DatEpics.prototype.datActions;
+    /** @type {?} */
+    DatEpics.prototype.infActions;
+    /** @type {?} */
+    DatEpics.prototype.proActions;
+    /** @type {?} */
+    DatEpics.prototype.digitalApi;
+    /** @type {?} */
+    DatEpics.prototype.chunkApi;
+    /** @type {?} */
+    DatEpics.prototype.columnApi;
+    /** @type {?} */
+    DatEpics.prototype.namespaceApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/dfh.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DfhEpics {
+    /**
+     * @param {?} actions
+     * @param {?} notification
+     * @param {?} profileApi
+     * @param {?} classApi
+     * @param {?} propertyApi
+     * @param {?} labelApi
+     */
+    constructor(actions, notification, profileApi, classApi, propertyApi, labelApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.profileApi = profileApi;
+        this.classApi = classApi;
+        this.propertyApi = propertyApi;
+        this.labelApi = labelApi;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
+        /** @type {?} */
+        const dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
+        /** @type {?} */
+        const dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
+        /** @type {?} */
+        const dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
+        return combineEpics(
+        // Profile Loaders
+        dfhProfileEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileApi.ofProject(meta.pk)), DfhProfileActionFactory.OF_PROJECT), 
+        // Property Loaders
+        dfhPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.propertyApi.dfhPropertyControllerOfProject(meta.pk)), DfhPropertyActionFactory.OF_PROJECT), 
+        // Class Loaders
+        dfhClassEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classApi.dfhClassControllerOfProject(meta.pk)), DfhClassActionFactory.OF_PROJECT), 
+        // Label Loaders
+        dfhLabelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.labelApi.ofProject(meta.pk)), DfhLabelActionFactory.OF_PROJECT));
+    }
+}
+DfhEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+DfhEpics.ctorParameters = () => [
+    { type: DfhActions },
+    { type: NotificationsAPIActions },
+    { type: DfhProfileApi },
+    { type: DfhClassControllerService },
+    { type: DfhPropertyControllerService },
+    { type: DfhLabelApi }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.profileApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.classApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.propertyApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.labelApi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/inf.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class InfEpics {
+    /**
+     * @param {?} notification
+     * @param {?} peItApi
+     * @param {?} teEnApi
+     * @param {?} statementApi
+     * @param {?} textPropertyApi
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} datActions
+     * @param {?} infoProjRelApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, peItApi, teEnApi, statementApi, textPropertyApi, infActions, proActions, datActions, infoProjRelApi, schemaObjectService) {
+        this.notification = notification;
+        this.peItApi = peItApi;
+        this.teEnApi = teEnApi;
+        this.statementApi = statementApi;
+        this.textPropertyApi = textPropertyApi;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.infoProjRelApi = infoProjRelApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const infPersistentItemEpicsFactory = new InfEpicsFactory(infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        const infTemporalEntityEpicsFactory = new InfEpicsFactory(infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        const infStatementEpicsFactory = new InfEpicsFactory(infRoot, 'statement', this.infActions.statement, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        const infTextPropertyEpicsFactory = new InfEpicsFactory(infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
+        return combineEpics(
+        /**
+         * Perstistent Item
+         *
+         */
+        infPersistentItemEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.peItApi.ownProperties(meta.pk, meta.pkEntity)), InfPersistentItemActionFactory.MINIMAL_BY_PK, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            // call action to store records
+            Object.keys(schemas).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            schema => {
+                /** @type {?} */
+                let actions;
+                if (schema === 'inf')
+                    actions = this.infActions;
+                else if (schema === 'pro')
+                    actions = this.proActions;
+                if (actions) {
+                    Object.keys(schemas[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    model => {
+                        actions[model].loadSucceeded(schemas[schema][model], undefined, pk);
+                    }));
+                }
+            }));
+        })), infPersistentItemEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.peItApi.typesOfProject(meta.pk)), InfPersistentItemActionFactory.TYPES_OF_PROJECT, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ (results));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })), 
+        // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
+        //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
+        //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+        //   (results, pk) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.persistent_item.flatten(results);
+        //     storeFlattened(flattener.getFlattened(), pk);
+        //   }
+        // ),
+        infPersistentItemEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.peItApi
+            .findOrCreateInfPersistentItems(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.persistent_item.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), infPersistentItemEpicsFactory.createRemoveEpic(), 
+        /**
+         * Temporal Entity
+         *
+         */
+        infTemporalEntityEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.teEnApi.ownProperties(meta.pk, meta.pkEntity)), InfTemporalEntityActionFactory.OWN_PROPERTIES, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ (results));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })), (/**
+         * Epic to load paginated Temporal Entity List
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        (globalActions) => {
+            /** @type {?} */
+            const meta = action.meta;
+            /** @type {?} */
+            const apiCal$ = this.teEnApi.temporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            const pkProject = meta.pk;
+            this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        })))))), (/**
+         * Epic to load paginated Alternative Temporal Entity List
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        (globalActions) => {
+            /** @type {?} */
+            const meta = action.meta;
+            /** @type {?} */
+            const apiCal$ = this.teEnApi.alternativeTemporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            const pkProject = null;
+            this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        })))))), infTemporalEntityEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.teEnApi
+            .findOrCreateInfTemporalEntities(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.temporal_entity.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), infTemporalEntityEpicsFactory.createRemoveEpic(), 
+        /**
+         * Statement
+         *
+         */
+        infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk)), InfStatementActionFactory.ALTERNATIVES_INGOING, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), null);
+        })), infStatementEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi
+            .findOrCreateInfStatements(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        (globalActions) => {
+            /** @type {?} */
+            const meta = action.meta;
+            /** @type {?} */
+            const apiCal$ = this.statementApi.paginatedListTargetingEntityPreviews(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            const pkProject = meta.pk;
+            this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
+        })))))), infStatementEpicsFactory.createRemoveEpic(), infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty)), InfStatementActionFactory.BY_PARAMS, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'LOAD');
+        })), infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity)), InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const res = (/** @type {?} */ ((/** @type {?} */ (results))));
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(res.statements);
+            storeFlattened(flattener.getFlattened(), pk);
+            /** @type {?} */
+            const flattener2 = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener2.digital.flatten(res.digitals);
+            storeFlattened(flattener2.getFlattened(), pk);
+        })), 
+        /**
+         * Text Property
+         *
+         */
+        infTextPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi
+            .findAlternativeTextProperties(meta.pk, meta.fkEntity, meta.fkClassField)), InfTextPropertyActionFactory.ALTERNATIVES, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.text_property.flatten(results);
+            storeFlattened(flattener.getFlattened(), null);
+        })), infTextPropertyEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi
+            .findOrCreateInfTextProperties(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.text_property.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), infTextPropertyEpicsFactory.createRemoveEpic());
+    }
+    /**
+     * handles the update of store for paginated temporal entity lists.
+     * @private
+     * @template M
+     * @param {?} action
+     * @param {?} epicsFactory
+     * @param {?} globalActions
+     * @param {?} apiCall$
+     * @param {?} pkProject if null, list is handled as 'repo' list
+     * @return {?}
+     */
+    handleTemporalEntityListAction(action, epicsFactory, globalActions, apiCall$, pkProject) {
+        /** @type {?} */
+        const meta = action.meta;
+        /** @type {?} */
+        const pendingKey = meta.addPending;
+        /** @type {?} */
+        const paginateBy = [
+            { fk_property: meta.pkProperty },
+            { fk_target_class: meta.fkTargetClass },
+            { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
+            { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
+        ];
+        // call action to set pagination loading on true
+        this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+        // call api to load data
+        apiCall$.subscribe((/**
+         * @param {?} data
+         * @return {?}
+         */
+        (data) => {
+            // call action to store records
+            this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
+            // call action to store pagination
+            this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+            // call action to conclude the pending request
+            epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => {
+            // call action to handle error
+            epicsFactory.onError(globalActions, error, pendingKey, pkProject);
+        }));
+    }
+}
+InfEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+InfEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: InfPersistentItemApi },
+    { type: InfTemporalEntityApi },
+    { type: InfStatementApi },
+    { type: InfTextPropertyApi },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatActions },
+    { type: ProInfoProjRelApi },
+    { type: SchemaObjectService }
+];
+if (false) {
+    /** @type {?} */
+    InfEpics.prototype.notification;
+    /** @type {?} */
+    InfEpics.prototype.peItApi;
+    /** @type {?} */
+    InfEpics.prototype.teEnApi;
+    /** @type {?} */
+    InfEpics.prototype.statementApi;
+    /** @type {?} */
+    InfEpics.prototype.textPropertyApi;
+    /** @type {?} */
+    InfEpics.prototype.infActions;
+    /** @type {?} */
+    InfEpics.prototype.proActions;
+    /** @type {?} */
+    InfEpics.prototype.datActions;
+    /** @type {?} */
+    InfEpics.prototype.infoProjRelApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    InfEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/pro.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ProEpics {
+    /**
+     * @param {?} notification
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} datActions
+     * @param {?} projectApi
+     * @param {?} infoProjRelApi
+     * @param {?} classProjRelApi
+     * @param {?} profileProjRelApi
+     * @param {?} classFieldConfApi
+     * @param {?} textPropertyApi
+     * @param {?} analysisApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, infActions, proActions, datActions, projectApi, infoProjRelApi, classProjRelApi, profileProjRelApi, classFieldConfApi, textPropertyApi, analysisApi, schemaObjectService) {
+        this.notification = notification;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.projectApi = projectApi;
+        this.infoProjRelApi = infoProjRelApi;
+        this.classProjRelApi = classProjRelApi;
+        this.profileProjRelApi = profileProjRelApi;
+        this.classFieldConfApi = classFieldConfApi;
+        this.textPropertyApi = textPropertyApi;
+        this.analysisApi = analysisApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const proProjectEpicsFactory = new SchemaEpicsFactory(proRoot, 'project', this.proActions.project, this.notification);
+        /** @type {?} */
+        const proInfoProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
+        /** @type {?} */
+        const proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
+        /** @type {?} */
+        const proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
+        /** @type {?} */
+        const proClassFieldConfigEpicsFactory = new SchemaEpicsFactory(proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
+        /** @type {?} */
+        const proTextPropertyEpicsFactory = new SchemaEpicsFactory(proRoot, 'text_property', this.proActions.text_property, this.notification);
+        /** @type {?} */
+        const proAnalysisEpicsFactory = new SchemaEpicsFactory(proRoot, 'analysis', this.proActions.analysis, this.notification);
+        return combineEpics(
+        /**
+        * ProProject
+        */
+        proProjectEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.projectApi
+            .ofAccount(meta.pk)), ProProjectActionFactory.OF_ACCOUNT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_project.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proProjectEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.projectApi
+            .getBasics(meta.pk)), ProProjectActionFactory.LOAD_BASICS, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_project.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), 
+        /**
+         * ProInfoProjRel
+         */
+        proInfoProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.infoProjRelApi
+            .bulkUpdateEprAttributes(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.info_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), proInfoProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.infoProjRelApi
+            .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing)), ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.info_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+         * ProClassFieldConfig
+         */
+        proClassFieldConfigEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classFieldConfApi.ofProject(meta.pk)), ProClassFieldConfigActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_class_field_config.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proClassFieldConfigEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classFieldConfApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_class_field_config.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+         * ProProDfhClassProjRel
+         */
+        proDfhClassProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classProjRelApi.ofProject(meta.pk)), ProDfhClassProjRelActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_class_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proDfhClassProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classProjRelApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_class_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+        * ProDfhProfileProjRel
+        */
+        proDfhProfileProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileProjRelApi.ofProject(meta.pk)), ProDfhProfileProjRelActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_profile_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proDfhProfileProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileProjRelApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_profile_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+        * ProTextProperty
+        */
+        proTextPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi.ofProject(meta.pk)), ProTextPropertyActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            this.schemaObjectService.storeSchemaObject(schemas, pk);
+        })), proTextPropertyEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            this.schemaObjectService.storeSchemaObject(schemas, pk);
+        })), proTextPropertyEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi.bulkDelete(meta.pk, meta.items))), 
+        /**
+        * ProAnalysis
+        */
+        // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
+        //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
+        //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
+        //   (results) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.analysis.flatten(results);
+        //     storeFlattened(flattener.getFlattened());
+        //   }
+        // ),
+        // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
+        //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
+        //   (results, pk) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.analysis.flatten(results);
+        //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        //   }
+        // ),
+        proAnalysisEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.pk_entity))))));
+    }
+}
+ProEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ProEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatActions },
+    { type: ProProjectApi },
+    { type: ProInfoProjRelApi },
+    { type: ProDfhClassProjRelApi },
+    { type: ProDfhProfileProjRelApi },
+    { type: ProClassFieldConfigApi },
+    { type: ProTextPropertyApi },
+    { type: AnalysisService },
+    { type: SchemaObjectService }
+];
+if (false) {
+    /** @type {?} */
+    ProEpics.prototype.notification;
+    /** @type {?} */
+    ProEpics.prototype.infActions;
+    /** @type {?} */
+    ProEpics.prototype.proActions;
+    /** @type {?} */
+    ProEpics.prototype.datActions;
+    /** @type {?} */
+    ProEpics.prototype.projectApi;
+    /** @type {?} */
+    ProEpics.prototype.infoProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.classProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.profileProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.classFieldConfApi;
+    /** @type {?} */
+    ProEpics.prototype.textPropertyApi;
+    /** @type {?} */
+    ProEpics.prototype.analysisApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/sys.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SysEpics {
+    /**
+     * @param {?} actions
+     * @param {?} notification
+     * @param {?} sysRelevantClassApi
+     * @param {?} sysConfigApi
+     */
+    constructor(actions, notification, sysRelevantClassApi, sysConfigApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.sysRelevantClassApi = sysRelevantClassApi;
+        this.sysConfigApi = sysConfigApi;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
+        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
+        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
+        /** @type {?} */
+        const configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
+        return combineEpics(
+        // SystemRelevantClass Epics
+        systemRelevantClassEpicsFactory.createLoadEpic((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => this.sysRelevantClassApi.find()), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items))), 
+        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
+        configEpicsFactory.createLoadEpic((/**
+         * @return {?}
+         */
+        () => this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
+         * @param {?} x
+         * @return {?}
+         */
+        x => [x])))), ''));
+    }
+}
+SysEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SysEpics.ctorParameters = () => [
+    { type: SysActions },
+    { type: NotificationsAPIActions },
+    { type: SysSystemRelevantClassApi },
+    { type: SystemConfigurationService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysRelevantClassApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysConfigApi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/tab.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class TabEpics {
+    constructor() { }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics();
+    }
+}
+TabEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+TabEpics.ctorParameters = () => [];
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/war.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class WarEpics {
+    constructor() { }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics();
+    }
+}
+WarEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+WarEpics.ctorParameters = () => [];
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/root-epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class RootEpics {
+    /**
+     * @param {?} loadingBarEpics
+     * @param {?} notificationEpics
+     * @param {?} activeProjectEpics
+     * @param {?} accountEpics
+     * @param {?} systemEpics
+     * @param {?} dfhEpics
+     * @param {?} infEpics
+     * @param {?} datEpics
+     * @param {?} proEpics
+     * @param {?} actionResolver
+     */
+    constructor(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, systemEpics, dfhEpics, infEpics, datEpics, proEpics, actionResolver) {
+        this.loadingBarEpics = loadingBarEpics;
+        this.notificationEpics = notificationEpics;
+        this.activeProjectEpics = activeProjectEpics;
+        this.accountEpics = accountEpics;
+        this.systemEpics = systemEpics;
+        this.dfhEpics = dfhEpics;
+        this.infEpics = infEpics;
+        this.datEpics = datEpics;
+        this.proEpics = proEpics;
+        this.actionResolver = actionResolver;
+        this.rootEpicStream$ = new BehaviorSubject(combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.systemEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), 
+        // important: this needs to be the last epic in
+        this.actionResolver.createEpics()));
+        this.rootEpic = (/**
+         * @param {?} action$
+         * @param {?} state$
+         * @param {?=} dependencies
+         * @return {?}
+         */
+        (action$, state$, dependencies = undefined) => {
+            return this.rootEpicStream$.pipe(mergeMap((/**
+             * @param {?} epic
+             * @return {?}
+             */
+            (epic) => epic(action$, state$, dependencies))));
+        });
+    }
+    /**
+     * @return {?}
+     */
+    getRootEpic() {
+        return this.rootEpic;
+    }
+    /**
+     * Adds an epic to the RootEpic middleware
+     * @param {?} epic that will be added to the RootEpics
+     * @return {?}
+     */
+    addEpic(epic) {
+        this.rootEpicStream$.next(epic);
+    }
+}
+RootEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+RootEpics.ctorParameters = () => [
+    { type: LoadingBarEpics },
+    { type: NotificationsAPIEpics },
+    { type: ActiveProjectEpics },
+    { type: AccountEpics },
+    { type: SysEpics },
+    { type: DfhEpics },
+    { type: InfEpics },
+    { type: DatEpics },
+    { type: ProEpics },
+    { type: ActionResolverEpics }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.rootEpicStream$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.rootEpic;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.loadingBarEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.notificationEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.activeProjectEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.accountEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.systemEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.dfhEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.infEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.datEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.proEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.actionResolver;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/account.reducers.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE = {
+    account: undefined,
+    roles: undefined
+};
+/** @type {?} */
+const accountRootReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+(lastState = INITIAL_STATE, action) => {
+    switch (action.type) {
+        case AccountActions.LOGIN_SUCCEEDED:
+            lastState = Object.assign({}, lastState, { account: action.meta.account });
+            break;
+        case AccountActions.ACCOUNT_UPDATED:
+            lastState = Object.assign({}, lastState, { account: action.meta.account });
+            break;
+        case AccountActions.LOAD_ROLES_SUCCEEDED:
+            lastState = Object.assign({}, lastState, { roles: action.meta.accountRoles });
+            break;
+        case AccountActions.LOAD_ROLES_FAILED:
+            lastState = Object.assign({}, lastState, { roles: [] });
+            break;
+    }
+    return lastState;
+});
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/active-project.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE$1 = {
+    label: '',
+    list: '',
+    uiIdSerial: 0,
+    panelSerial: 0,
+    focusedPanel: 0,
+    panels: []
+};
+/** @type {?} */
+const activeProjectReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = INITIAL_STATE$1, action) => {
+    /** @type {?} */
+    let pi;
+    /** @type {?} */
+    let ti;
+    /** @type {?} */
+    let ppi;
+    /** @type {?} */
+    let cpi;
+    /** @type {?} */
+    let pti;
+    /** @type {?} */
+    let cti;
+    switch (action.type) {
+        /************************************************************************************
+         * Load project data (metadata, crm)
+        ************************************************************************************/
+        case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
+            state = Object.assign({}, state, action.meta.projectPreview);
+            break;
+        case ActiveProjectActions.LOAD_PROJECT_CONFIG:
+            state = Object.assign({}, state, { loadingConfigData: true });
+            break;
+        case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
+            state = Object.assign({}, state, { configDataInitialized: true, loadingConfigData: false });
+            break;
+        /************************************************************************************
+         * Layout -- Tabs
+        ************************************************************************************/
+        case ActiveProjectActions.SET_PANELS:
+            state = Object.assign({}, state, { panels: action.meta.panels, uiIdSerial: action.meta.uiIdSerial, panelSerial: action.meta.panelSerial, focusedPanel: action.meta.focusedPanel });
+            break;
+        case ActiveProjectActions.SET_LIST_TYPE:
+            state = Object.assign({}, state, { list: action.meta.list });
+            break;
+        case ActiveProjectActions.ACTIVATE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs].map((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => {
+                            tab.active = (index === ti);
+                            return tab;
+                        })) })
+                }) });
+            break;
+        case ActiveProjectActions.MOVE_TAB:
+            ppi = action.meta.previousPanelIndex;
+            cpi = action.meta.currentPanelIndex;
+            pti = action.meta.previousTabIndex;
+            cti = action.meta.currentTabIndex;
+            if (ppi === cpi) {
+                /** @type {?} */
+                const tabs = [...state.panels[cpi].tabs];
+                moveItemInArray(tabs, pti, cti);
+                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                        [cpi]: Object.assign({}, state.panels[cpi], { tabs })
+                    }) });
+            }
+            else {
+                /** @type {?} */
+                const pTabs = [...state.panels[ppi].tabs];
+                /** @type {?} */
+                const cTabs = [...state.panels[cpi].tabs];
+                transferArrayItem(pTabs, cTabs, pti, cti);
+                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                        [ppi]: Object.assign({}, state.panels[ppi], { tabs: pTabs.map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            (tab, index) => {
+                                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
+                                return tab;
+                            })) }),
+                        [cpi]: Object.assign({}, state.panels[cpi], { tabs: cTabs.map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            (tab, index) => {
+                                tab.active = (index === cti);
+                                return tab;
+                            })) })
+                    }) });
+            }
+            break;
+        case ActiveProjectActions.ADD_TAB:
+            if (state.panels.length === 0) {
+                state = Object.assign({}, state, { panels: [
+                        {
+                            id: state.panelSerial,
+                            tabs: []
+                        }
+                    ], focusedPanel: 0, panelSerial: state.panelSerial + 1 });
+            }
+            pi = state.focusedPanel;
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [pi]: Object.assign({}, state.panels[pi], { tabs: [
+                            ...state.panels[pi].tabs.map((/**
+                             * @param {?} t
+                             * @return {?}
+                             */
+                            t => {
+                                t.active = false;
+                                return t;
+                            })),
+                            Object.assign({}, omit(['pathSegment'], action.meta.tab), { path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()] })
+                        ] })
+                }), uiIdSerial: (state.uiIdSerial + 1) });
+            break;
+        case ActiveProjectActions.CLOSE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            // remove the closing tab
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
+                            .filter((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => index !== ti)) })
+                }) });
+            // activate a sibling tab, if needed and possible
+            if (!state.panels[pi].tabs.find((/**
+             * @param {?} t
+             * @return {?}
+             */
+            t => t.active))) {
+                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                        [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
+                                .map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            (tab, index) => {
+                                tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
+                                return tab;
+                            })) })
+                    }) });
+            }
+            break;
+        case ActiveProjectActions.CLOSE_PANEL:
+            pi = action.meta.panelIndex;
+            /** @type {?} */
+            const panels = [...state.panels];
+            panels.splice(pi, 1);
+            state = Object.assign({}, state, { panels });
+            break;
+        case ActiveProjectActions.FOCUS_PANEL:
+            state = Object.assign({}, state, { focusedPanel: action.meta.panelIndex });
+            break;
+        case ActiveProjectActions.SPLIT_PANEL:
+            ppi = action.meta.previousPanelIndex;
+            ti = action.meta.tabIndex;
+            cpi = action.meta.currentPanelIndex;
+            /** @type {?} */
+            const moveTab = state.panels[ppi].tabs[ti];
+            // removes tab from old panel
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [ppi]: Object.assign({}, state.panels[ppi], { tabs: [...state.panels[ppi].tabs]
+                            .filter((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => index !== ti))
+                            .map((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => {
+                            if (index === 0)
+                                tab.active = true;
+                            return tab;
+                        })) })
+                }) });
+            // insert a new panel at position of cpi
+            /** @type {?} */
+            const newPanels = [...state.panels];
+            newPanels.splice(cpi, 0, {
+                id: state.panelSerial,
+                tabs: [moveTab]
+            });
+            state = Object.assign({}, state, { panels: newPanels, panelSerial: state.panelSerial + 1 });
+            break;
+        case ActiveProjectActions.SET_REFINING_CHUNK:
+            state = Object.assign({}, state, { refiningChunk: action.payload.refiningChunk });
+            break;
+        case ActiveProjectActions.SET_CREATING_MENTIONING:
+            state = Object.assign({}, state, { creatingMentioning: action.payload.creatingMentioning });
+            break;
+        /************************************************************************************
+        * Highlighting of mentionings in the gui
+        ************************************************************************************/
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
+            state = Object.assign({}, state, { mentioningsFocusedInText: action.payload.mentioningsFocusedInText });
+            break;
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
+            state = Object.assign({}, state, { mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable });
+            break;
+        /************************************************************************************
+         * Destroy the active project state (on closing a project)
+        ************************************************************************************/
+        case ActiveProjectActions.DESTROY:
+            state = INITIAL_STATE$1;
+            break;
+    }
+    return state;
+});
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: state-gui/models/account.model.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -6149,419 +8906,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/models/active-project/entity-detail.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function PeItDetailList() { }
-;
-class EntityDetail {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        /**
-         * Left Panel Visibility
-         */
-        // the properties with information about the peIt
-        this.showProperties = false;
-        // the right area
-        this.showRightArea = true;
-        /**
-         * Right panel
-         */
-        this.rightPanelTabs = [];
-        this.rightPanelActiveTab = 0; // index of the active tab
-        // index of the active tab
-        // the bar to above the properties
-        // showPropertiesHeader?= true;
-        // the header with name of peIt
-        this.showHeader = true;
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    EntityDetail.prototype.pkEntity;
-    /**
-     * Left Panel Visibility
-     * @type {?}
-     */
-    EntityDetail.prototype.showProperties;
-    /** @type {?} */
-    EntityDetail.prototype.showRightArea;
-    /**
-     * Right panel
-     * @type {?}
-     */
-    EntityDetail.prototype.rightPanelTabs;
-    /** @type {?} */
-    EntityDetail.prototype.rightPanelActiveTab;
-    /** @type {?} */
-    EntityDetail.prototype.showHeader;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/active-project/project-settings-data.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-class ProjectSettingsData {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    ProjectSettingsData.prototype.items;
-    /** @type {?} */
-    ProjectSettingsData.prototype.tabTitle;
-    /** @type {?} */
-    ProjectSettingsData.prototype.loading;
-    /** @type {?} */
-    ProjectSettingsData.prototype.error;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/active-project/tab-layout.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-class TabBase {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    TabBase.prototype.pkEntity;
-    /** @type {?} */
-    TabBase.prototype.tabTitle;
-    /** @type {?} */
-    TabBase.prototype.tabTooltip;
-    /** @type {?} */
-    TabBase.prototype.loading;
-    /** @type {?} */
-    TabBase.prototype.layoutMode;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/active-project/types.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-class Types {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    Types.prototype.items;
-    /** @type {?} */
-    Types.prototype.edit;
-    /** @type {?} */
-    Types.prototype.loading;
-    /** @type {?} */
-    Types.prototype.error;
-    /** @type {?} */
-    Types.prototype.tabTitle;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/active-project/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/account.reducers.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE = {
-    account: undefined,
-    roles: undefined
-};
-/** @type {?} */
-const accountRootReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-(lastState = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case AccountActions.LOGIN_SUCCEEDED:
-            lastState = Object.assign({}, lastState, { account: action.meta.account });
-            break;
-        case AccountActions.ACCOUNT_UPDATED:
-            lastState = Object.assign({}, lastState, { account: action.meta.account });
-            break;
-        case AccountActions.LOAD_ROLES_SUCCEEDED:
-            lastState = Object.assign({}, lastState, { roles: action.meta.accountRoles });
-            break;
-        case AccountActions.LOAD_ROLES_FAILED:
-            lastState = Object.assign({}, lastState, { roles: [] });
-            break;
-    }
-    return lastState;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/active-project.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$1 = {
-    label: '',
-    list: '',
-    uiIdSerial: 0,
-    panelSerial: 0,
-    focusedPanel: 0,
-    panels: []
-};
-/** @type {?} */
-const activeProjectReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-(state = INITIAL_STATE$1, action) => {
-    /** @type {?} */
-    let pi;
-    /** @type {?} */
-    let ti;
-    /** @type {?} */
-    let ppi;
-    /** @type {?} */
-    let cpi;
-    /** @type {?} */
-    let pti;
-    /** @type {?} */
-    let cti;
-    switch (action.type) {
-        /************************************************************************************
-         * Load project data (metadata, crm)
-        ************************************************************************************/
-        case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
-            state = Object.assign({}, state, action.meta.projectPreview);
-            break;
-        case ActiveProjectActions.LOAD_PROJECT_CONFIG:
-            state = Object.assign({}, state, { loadingConfigData: true });
-            break;
-        case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
-            state = Object.assign({}, state, { configDataInitialized: true, loadingConfigData: false });
-            break;
-        /************************************************************************************
-         * Layout -- Tabs
-        ************************************************************************************/
-        case ActiveProjectActions.SET_PANELS:
-            state = Object.assign({}, state, { panels: action.meta.panels, uiIdSerial: action.meta.uiIdSerial, panelSerial: action.meta.panelSerial, focusedPanel: action.meta.focusedPanel });
-            break;
-        case ActiveProjectActions.SET_LIST_TYPE:
-            state = Object.assign({}, state, { list: action.meta.list });
-            break;
-        case ActiveProjectActions.ACTIVATE_TAB:
-            pi = action.meta.panelIndex;
-            ti = action.meta.tabIndex;
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs].map((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => {
-                            tab.active = (index === ti);
-                            return tab;
-                        })) })
-                }) });
-            break;
-        case ActiveProjectActions.MOVE_TAB:
-            ppi = action.meta.previousPanelIndex;
-            cpi = action.meta.currentPanelIndex;
-            pti = action.meta.previousTabIndex;
-            cti = action.meta.currentTabIndex;
-            if (ppi === cpi) {
-                /** @type {?} */
-                const tabs = [...state.panels[cpi].tabs];
-                moveItemInArray(tabs, pti, cti);
-                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                        [cpi]: Object.assign({}, state.panels[cpi], { tabs })
-                    }) });
-            }
-            else {
-                /** @type {?} */
-                const pTabs = [...state.panels[ppi].tabs];
-                /** @type {?} */
-                const cTabs = [...state.panels[cpi].tabs];
-                transferArrayItem(pTabs, cTabs, pti, cti);
-                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                        [ppi]: Object.assign({}, state.panels[ppi], { tabs: pTabs.map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            (tab, index) => {
-                                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
-                                return tab;
-                            })) }),
-                        [cpi]: Object.assign({}, state.panels[cpi], { tabs: cTabs.map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            (tab, index) => {
-                                tab.active = (index === cti);
-                                return tab;
-                            })) })
-                    }) });
-            }
-            break;
-        case ActiveProjectActions.ADD_TAB:
-            if (state.panels.length === 0) {
-                state = Object.assign({}, state, { panels: [
-                        {
-                            id: state.panelSerial,
-                            tabs: []
-                        }
-                    ], focusedPanel: 0, panelSerial: state.panelSerial + 1 });
-            }
-            pi = state.focusedPanel;
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [pi]: Object.assign({}, state.panels[pi], { tabs: [
-                            ...state.panels[pi].tabs.map((/**
-                             * @param {?} t
-                             * @return {?}
-                             */
-                            t => {
-                                t.active = false;
-                                return t;
-                            })),
-                            Object.assign({}, omit(['pathSegment'], action.meta.tab), { path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()] })
-                        ] })
-                }), uiIdSerial: (state.uiIdSerial + 1) });
-            break;
-        case ActiveProjectActions.CLOSE_TAB:
-            pi = action.meta.panelIndex;
-            ti = action.meta.tabIndex;
-            // remove the closing tab
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
-                            .filter((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => index !== ti)) })
-                }) });
-            // activate a sibling tab, if needed and possible
-            if (!state.panels[pi].tabs.find((/**
-             * @param {?} t
-             * @return {?}
-             */
-            t => t.active))) {
-                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                        [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
-                                .map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            (tab, index) => {
-                                tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
-                                return tab;
-                            })) })
-                    }) });
-            }
-            break;
-        case ActiveProjectActions.CLOSE_PANEL:
-            pi = action.meta.panelIndex;
-            /** @type {?} */
-            const panels = [...state.panels];
-            panels.splice(pi, 1);
-            state = Object.assign({}, state, { panels });
-            break;
-        case ActiveProjectActions.FOCUS_PANEL:
-            state = Object.assign({}, state, { focusedPanel: action.meta.panelIndex });
-            break;
-        case ActiveProjectActions.SPLIT_PANEL:
-            ppi = action.meta.previousPanelIndex;
-            ti = action.meta.tabIndex;
-            cpi = action.meta.currentPanelIndex;
-            /** @type {?} */
-            const moveTab = state.panels[ppi].tabs[ti];
-            // removes tab from old panel
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [ppi]: Object.assign({}, state.panels[ppi], { tabs: [...state.panels[ppi].tabs]
-                            .filter((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => index !== ti))
-                            .map((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => {
-                            if (index === 0)
-                                tab.active = true;
-                            return tab;
-                        })) })
-                }) });
-            // insert a new panel at position of cpi
-            /** @type {?} */
-            const newPanels = [...state.panels];
-            newPanels.splice(cpi, 0, {
-                id: state.panelSerial,
-                tabs: [moveTab]
-            });
-            state = Object.assign({}, state, { panels: newPanels, panelSerial: state.panelSerial + 1 });
-            break;
-        case ActiveProjectActions.SET_REFINING_CHUNK:
-            state = Object.assign({}, state, { refiningChunk: action.payload.refiningChunk });
-            break;
-        case ActiveProjectActions.SET_CREATING_MENTIONING:
-            state = Object.assign({}, state, { creatingMentioning: action.payload.creatingMentioning });
-            break;
-        /************************************************************************************
-        * Highlighting of mentionings in the gui
-        ************************************************************************************/
-        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
-            state = Object.assign({}, state, { mentioningsFocusedInText: action.payload.mentioningsFocusedInText });
-            break;
-        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
-            state = Object.assign({}, state, { mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable });
-            break;
-        /************************************************************************************
-         * Destroy the active project state (on closing a project)
-        ************************************************************************************/
-        case ActiveProjectActions.DESTROY:
-            state = INITIAL_STATE$1;
-            break;
-    }
-    return state;
-});
-
-/**
- * @fileoverview added by tsickle
  * Generated from: state-gui/reducers/entity-list.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -6712,7 +9056,1102 @@ function sourceListReducer(state = INITIAL_STATE$6, a) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/dat.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createDatReducer() {
+    return new ReducerFactory(datRoot, datDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/dfh.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createDfhReducer() {
+    return new ReducerFactory('dfh', dfhDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/inf.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createInfReducer() {
+    return new ReducerFactory(infRoot, infDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/pro.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createProReducer() {
+    return new ReducerFactory(proRoot, proDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/sys.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createSysReducer() {
+    return new ReducerFactory(sysRoot, sysDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/tab.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createTabReducer() {
+    return new ReducerFactory(tabRoot, tabDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/war.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createWarReducer() {
+    return new ReducerFactory(warRoot, warDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/root-reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
+/** @type {?} */
+const sandboxStateReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+(lastState = {}, action) => {
+    if (action.type === INIT_SANDBOX_STATE) {
+        lastState = Object.assign({}, lastState, action.payload);
+    }
+    return lastState;
+});
+/** @type {?} */
+const pendingRequestReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.meta && action.meta.addPending) {
+        /** @type {?} */
+        const uuid = action.meta.addPending;
+        state = Object.assign({}, state, { [uuid]: true });
+        // console.log('add ' + uuid + ' ' + Date.now())
+    }
+    if (action && action.meta && action.meta.removePending) {
+        /** @type {?} */
+        const uuid = action.meta.removePending;
+        state = Object.assign({}, omit([uuid], state));
+    }
+    return state;
+});
+/** @type {?} */
+const resolvedRequestReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.meta && action.meta.removePending) {
+        /** @type {?} */
+        const uuid = action.meta.removePending;
+        state = Object.assign({}, state, { [uuid]: action.meta });
+    }
+    return state;
+});
+/** @type {?} */
+const cleanupResolved = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.type === 'CLEAN_UP_RESOLVED') {
+        /** @type {?} */
+        const uuid = action.meta.uuid;
+        state = Object.assign({}, omit([uuid], state));
+        // console.log('resolve ' + uuid + ' ' + Date.now().toString())
+    }
+    return state;
+});
+/** @type {?} */
+const SET_APP_STATE = 'SET_APP_STATE';
+/** @type {?} */
+const setAppState = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.type === SET_APP_STATE) {
+        state = action.payload;
+    }
+    return state;
+});
+/** @type {?} */
+const rootReducer = composeReducers(defaultFormReducer(), combineReducers({
+    account: accountRootReducer,
+    loadingBar: loadingBarReducer,
+    activeProject: activeProjectReducer,
+    routes: routerReducer,
+    information: informationReducer,
+    sources: sourceListReducer,
+    sandboxState: sandboxStateReducer,
+    projects: createProjectsReducer(),
+    sys: createSysReducer(),
+    dfh: createDfhReducer(),
+    inf: createInfReducer(),
+    dat: createDatReducer(),
+    pro: createProReducer(),
+    war: createWarReducer(),
+    tab: createTabReducer(),
+    pending: pendingRequestReducer,
+    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
+}), setAppState);
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: module/redux-store.module.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Function to use in combination with rxjs/operator .filter()
+ * in order to get only actions dispached with a fractalkey
+ * equal to the provided path.
+ *
+ * example:
+ * pipe(
+ *    filter(action => ofSubstore(c.basePath)(action)),
+ *    ofType('Foo')
+ * )
+ * \@param path
+ * @type {?}
+ */
+const ofSubstore = (/**
+ * @param {?} path
+ * @return {?}
+ */
+(path) => (/**
+ * @param {?} action
+ * @return {?}
+ */
+(action) => {
+    if (!('@angular-redux::fractalkey' in action))
+        return false;
+    /** @type {?} */
+    const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
+    /** @type {?} */
+    const bool = equals(actionPath, path);
+    return bool;
+}));
+/** @type {?} */
+const APP_INITIAL_STATE = new InjectionToken('app.INITIAL_STATE');
+const ɵ0$8 = {};
+class ReduxStoreModule {
+    /**
+     * @param {?} ngRedux
+     * @param {?} devTools
+     * @param {?} rootEpics
+     * @param {?} initialState
+     */
+    constructor(ngRedux, devTools, 
+    // ngReduxRouter: NgReduxRouter,
+    rootEpics, initialState) {
+        this.ngRedux = ngRedux;
+        /** @type {?} */
+        const epicMiddleware = createEpicMiddleware();
+        // Tell Redux about our reducers and epics. If the Redux DevTools
+        // chrome extension is available in the browser, tell Redux about
+        // it too.
+        ngRedux.configureStore(
+        // RootReducer
+        rootReducer, 
+        // Initial state
+        initialState, 
+        // Middleware
+        [
+            // createLogger(),
+            epicMiddleware,
+            dynamicMiddlewares,
+        ], 
+        // Enhancers
+        devTools.isEnabled() ? [devTools.enhancer()] : []);
+        // Apply rootEpic
+        epicMiddleware.run(rootEpics.getRootEpic());
+        // // Enable syncing of Angular router state with our Redux store.
+        // if (ngReduxRouter) {
+        //     ngReduxRouter.initialize();
+        // }
+        // Enable syncing of Angular form state with our Redux store.
+        // provideReduxForms(ngRedux);
+    }
+}
+ReduxStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    NgReduxModule,
+                ],
+                providers: [
+                    AccountActions,
+                    ActiveProjectActions,
+                    LoadingBarActions,
+                    NotificationsAPIActions,
+                    AccountEpics,
+                    ActiveProjectEpics,
+                    LoadingBarEpics,
+                    NotificationsAPIEpics,
+                    DatActions,
+                    DfhActions,
+                    InfActions,
+                    ProActions,
+                    SysActions,
+                    TabActions,
+                    WarActions,
+                    DatEpics,
+                    DfhEpics,
+                    InfEpics,
+                    ProEpics,
+                    SysEpics,
+                    TabEpics,
+                    WarEpics,
+                    RootEpics,
+                    SchemaActionsFactory,
+                    SchemaObjectService,
+                    { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
+                ]
+            },] }
+];
+/** @nocollapse */
+ReduxStoreModule.ctorParameters = () => [
+    { type: NgRedux },
+    { type: DevToolsExtension },
+    { type: RootEpics },
+    { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] }
+];
+if (false) {
+    /** @type {?} */
+    ReduxStoreModule.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/models/model.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function InfObject() { }
+if (false) {
+    /** @type {?} */
+    InfObject.prototype.persistent_item;
+    /** @type {?} */
+    InfObject.prototype.temporal_entity;
+    /** @type {?} */
+    InfObject.prototype.statement;
+    /** @type {?} */
+    InfObject.prototype.place;
+    /** @type {?} */
+    InfObject.prototype.language;
+    /** @type {?} */
+    InfObject.prototype.appellation;
+    /** @type {?} */
+    InfObject.prototype.time_primitive;
+    /** @type {?} */
+    InfObject.prototype.text_property;
+    /** @type {?} */
+    InfObject.prototype.lang_string;
+    /** @type {?} */
+    InfObject.prototype.dimension;
+}
+/**
+ * @record
+ */
+function ProObject() { }
+if (false) {
+    /** @type {?} */
+    ProObject.prototype.info_proj_rel;
+}
+/**
+ * @record
+ */
+function DatObject() { }
+if (false) {
+    /** @type {?} */
+    DatObject.prototype.digital;
+}
+/**
+ * @record
+ */
+function WarObject() { }
+if (false) {
+    /** @type {?} */
+    WarObject.prototype.entity_preview;
+}
+/**
+ * @record
+ */
+function SchemaObject() { }
+if (false) {
+    /** @type {?|undefined} */
+    SchemaObject.prototype.inf;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.pro;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.dat;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.war;
+}
+/**
+ * @record
+ */
+function PaginationObject() { }
+if (false) {
+    /** @type {?} */
+    PaginationObject.prototype.count;
+    /** @type {?} */
+    PaginationObject.prototype.schemas;
+    /** @type {?} */
+    PaginationObject.prototype.statements;
+}
+/**
+ * @record
+ */
+function IAppState() { }
+if (false) {
+    /** @type {?|undefined} */
+    IAppState.prototype.account;
+    /** @type {?|undefined} */
+    IAppState.prototype.loadingBar;
+    /** @type {?|undefined} */
+    IAppState.prototype.projects;
+    /** @type {?|undefined} */
+    IAppState.prototype.sys;
+    /** @type {?|undefined} */
+    IAppState.prototype.dfh;
+    /** @type {?|undefined} */
+    IAppState.prototype.inf;
+    /** @type {?|undefined} */
+    IAppState.prototype.dat;
+    /** @type {?|undefined} */
+    IAppState.prototype.pro;
+    /** @type {?|undefined} */
+    IAppState.prototype.war;
+    /** @type {?|undefined} */
+    IAppState.prototype.tab;
+    /** @type {?|undefined} */
+    IAppState.prototype.activeProject;
+    /** @type {?|undefined} */
+    IAppState.prototype.routes;
+    /** @type {?|undefined} */
+    IAppState.prototype.information;
+    /** @type {?|undefined} */
+    IAppState.prototype.sources;
+    /** @type {?|undefined} */
+    IAppState.prototype.sandboxState;
+    /** @type {?|undefined} */
+    IAppState.prototype.pending;
+}
+/**
+ * @record
+ * @template T
+ */
+function ByPk() { }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/models/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/active-project/entity-detail.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function PeItDetailList() { }
+;
+class EntityDetail {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        /**
+         * Left Panel Visibility
+         */
+        // the properties with information about the peIt
+        this.showProperties = false;
+        // the right area
+        this.showRightArea = true;
+        /**
+         * Right panel
+         */
+        this.rightPanelTabs = [];
+        this.rightPanelActiveTab = 0; // index of the active tab
+        // index of the active tab
+        // the bar to above the properties
+        // showPropertiesHeader?= true;
+        // the header with name of peIt
+        this.showHeader = true;
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    EntityDetail.prototype.pkEntity;
+    /**
+     * Left Panel Visibility
+     * @type {?}
+     */
+    EntityDetail.prototype.showProperties;
+    /** @type {?} */
+    EntityDetail.prototype.showRightArea;
+    /**
+     * Right panel
+     * @type {?}
+     */
+    EntityDetail.prototype.rightPanelTabs;
+    /** @type {?} */
+    EntityDetail.prototype.rightPanelActiveTab;
+    /** @type {?} */
+    EntityDetail.prototype.showHeader;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/active-project/project-settings-data.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+class ProjectSettingsData {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    ProjectSettingsData.prototype.items;
+    /** @type {?} */
+    ProjectSettingsData.prototype.tabTitle;
+    /** @type {?} */
+    ProjectSettingsData.prototype.loading;
+    /** @type {?} */
+    ProjectSettingsData.prototype.error;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/active-project/tab-layout.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+class TabBase {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    TabBase.prototype.pkEntity;
+    /** @type {?} */
+    TabBase.prototype.tabTitle;
+    /** @type {?} */
+    TabBase.prototype.tabTooltip;
+    /** @type {?} */
+    TabBase.prototype.loading;
+    /** @type {?} */
+    TabBase.prototype.layoutMode;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/active-project/types.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+class Types {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    Types.prototype.items;
+    /** @type {?} */
+    Types.prototype.edit;
+    /** @type {?} */
+    Types.prototype.loading;
+    /** @type {?} */
+    Types.prototype.error;
+    /** @type {?} */
+    Types.prototype.tabTitle;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/active-project/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: state-gui/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/dat.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DigitalSlice {
+}
+if (false) {
+    /** @type {?} */
+    DigitalSlice.prototype.by_pk_entity__entity_version;
+    /** @type {?} */
+    DigitalSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    DigitalSlice.prototype.by_pk_text;
+    /** @type {?} */
+    DigitalSlice.prototype.loading;
+}
+class ChunkSlice {
+}
+if (false) {
+    /** @type {?} */
+    ChunkSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    ChunkSlice.prototype.by_fk_text;
+    /** @type {?} */
+    ChunkSlice.prototype.loading;
+}
+class ColumnSlice {
+}
+if (false) {
+    /** @type {?} */
+    ColumnSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    ColumnSlice.prototype.by_fk_digital;
+}
+class ClassColumnMappingSlice {
+}
+if (false) {
+    /** @type {?} */
+    ClassColumnMappingSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    ClassColumnMappingSlice.prototype.by_fk_column;
+}
+class TextPropertySlice {
+}
+if (false) {
+    /** @type {?} */
+    TextPropertySlice.prototype.by_pk_entity;
+    /** @type {?} */
+    TextPropertySlice.prototype.by_fk_digital;
+}
+class NamespaceSlice {
+}
+if (false) {
+    /** @type {?} */
+    NamespaceSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    NamespaceSlice.prototype.by_fk_project;
+    /** @type {?} */
+    NamespaceSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function Dat() { }
+if (false) {
+    /** @type {?|undefined} */
+    Dat.prototype.digital;
+    /** @type {?|undefined} */
+    Dat.prototype.chunk;
+    /** @type {?|undefined} */
+    Dat.prototype.column;
+    /** @type {?|undefined} */
+    Dat.prototype.text_property;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/dfh.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DfhProfileSlice {
+}
+if (false) {
+    /** @type {?} */
+    DfhProfileSlice.prototype.by_pk_profile;
+    /** @type {?} */
+    DfhProfileSlice.prototype.loading;
+}
+class DfhClassSlice {
+}
+if (false) {
+    /** @type {?} */
+    DfhClassSlice.prototype.by_pk_class;
+    /** @type {?} */
+    DfhClassSlice.prototype.by_basic_type;
+    /** @type {?} */
+    DfhClassSlice.prototype.loading;
+}
+class DfhPropertySlice {
+}
+if (false) {
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_pk_property;
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_has_domain__fk_property;
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_has_range__fk_property;
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_has_domain;
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_has_range;
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_pk_property__has_domain__has_range;
+    /** @type {?} */
+    DfhPropertySlice.prototype.by_is_has_type_subproperty;
+    /** @type {?} */
+    DfhPropertySlice.prototype.loading;
+}
+class DfhLabelSlice {
+}
+if (false) {
+    /** @type {?} */
+    DfhLabelSlice.prototype.by_fks;
+    /** @type {?} */
+    DfhLabelSlice.prototype.by_fk_class__type;
+    /** @type {?} */
+    DfhLabelSlice.prototype.by_fk_property__type;
+    /** @type {?} */
+    DfhLabelSlice.prototype.by_fk_profile__type;
+    /** @type {?} */
+    DfhLabelSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function Dfh() { }
+if (false) {
+    /** @type {?|undefined} */
+    Dfh.prototype.profile;
+    /** @type {?|undefined} */
+    Dfh.prototype.klass;
+    /** @type {?|undefined} */
+    Dfh.prototype.property;
+    /** @type {?|undefined} */
+    Dfh.prototype.label;
+    /** @type {?} */
+    Dfh.prototype.pkEntityModelMap;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/inf.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function PaginationInfo() { }
+if (false) {
+    /** @type {?} */
+    PaginationInfo.prototype.loading;
+    /** @type {?} */
+    PaginationInfo.prototype.count;
+    /** @type {?} */
+    PaginationInfo.prototype.rows;
+}
+class InfPersistentItemSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfPersistentItemSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfPersistentItemSlice.prototype.by_fk_class;
+    /** @type {?} */
+    InfPersistentItemSlice.prototype.loading;
+}
+class InfTemporalEntitySlice {
+}
+if (false) {
+    /** @type {?} */
+    InfTemporalEntitySlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfTemporalEntitySlice.prototype.by_fk_class;
+    /** @type {?} */
+    InfTemporalEntitySlice.prototype.loading;
+}
+class InfStatementSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfStatementSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfStatementSlice.prototype.by_subject;
+    /** @type {?} */
+    InfStatementSlice.prototype.by_object;
+    /* Skipping unnamed member:
+    'by_subject+property'?: ByPk<ByPk<InfStatement>>;*/
+    /* Skipping unnamed member:
+    'by_object+property'?: ByPk<ByPk<InfStatement>>;*/
+    /** @type {?} */
+    InfStatementSlice.prototype.by_fk_subject_data;
+    /** @type {?} */
+    InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_object_info__ofProject;
+    /** @type {?} */
+    InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_subject_info__ofProject;
+    /** @type {?} */
+    InfStatementSlice.prototype.loading;
+}
+class InfPlaceSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfPlaceSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfPlaceSlice.prototype.loading;
+}
+class InfTimePrimitiveSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfTimePrimitiveSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfTimePrimitiveSlice.prototype.loading;
+}
+class InfLanguageSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfLanguageSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfLanguageSlice.prototype.loading;
+}
+class InfAppellationSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfAppellationSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfAppellationSlice.prototype.loading;
+}
+class InfLangStringSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfLangStringSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfLangStringSlice.prototype.loading;
+}
+class InfDimensionSlice {
+}
+if (false) {
+    /** @type {?} */
+    InfDimensionSlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfDimensionSlice.prototype.loading;
+}
+class InfTextPropertySlice {
+}
+if (false) {
+    /** @type {?} */
+    InfTextPropertySlice.prototype.by_pk_entity;
+    /** @type {?} */
+    InfTextPropertySlice.prototype.by_fk_concerned_entity__fk_class_field;
+    /** @type {?} */
+    InfTextPropertySlice.prototype.by_fk_concerned_entity;
+    /** @type {?} */
+    InfTextPropertySlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function Inf() { }
+if (false) {
+    /** @type {?|undefined} */
+    Inf.prototype.persistent_item;
+    /** @type {?|undefined} */
+    Inf.prototype.temporal_entity;
+    /** @type {?|undefined} */
+    Inf.prototype.statement;
+    /** @type {?|undefined} */
+    Inf.prototype.place;
+    /** @type {?|undefined} */
+    Inf.prototype.time_primitive;
+    /** @type {?|undefined} */
+    Inf.prototype.language;
+    /** @type {?|undefined} */
+    Inf.prototype.appellation;
+    /** @type {?|undefined} */
+    Inf.prototype.lang_string;
+    /** @type {?|undefined} */
+    Inf.prototype.dimension;
+    /** @type {?|undefined} */
+    Inf.prototype.text_property;
+    /** @type {?|undefined} */
+    Inf.prototype.pkEntityModelMap;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/pro.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function ProProjectSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProProjectSlice.prototype.by_pk_entity;
+}
+/**
+ * @record
+ */
+function ProInfoProjRelSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProInfoProjRelSlice.prototype.by_fk_project__fk_entity;
+    /** @type {?|undefined} */
+    ProInfoProjRelSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function ProDfhClassProjRelSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProDfhClassProjRelSlice.prototype.by_fk_project__fk_class;
+    /** @type {?|undefined} */
+    ProDfhClassProjRelSlice.prototype.by_fk_project__enabled_in_entities;
+    /** @type {?|undefined} */
+    ProDfhClassProjRelSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function ProDfhProfileProjRelSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProDfhProfileProjRelSlice.prototype.by_fk_project__fk_profile;
+    /** @type {?|undefined} */
+    ProDfhProfileProjRelSlice.prototype.by_fk_project__enabled;
+    /** @type {?|undefined} */
+    ProDfhProfileProjRelSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function ProClassFieldConfigSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProClassFieldConfigSlice.prototype.by_fk_project__fk_class;
+    /** @type {?|undefined} */
+    ProClassFieldConfigSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function ProTextPropertySlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProTextPropertySlice.prototype.by_pk_entity;
+    /** @type {?|undefined} */
+    ProTextPropertySlice.prototype.by_fk_project__fk_property__fk_domain_class__fk_range_class;
+    /** @type {?|undefined} */
+    ProTextPropertySlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function ProAnalysisSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProAnalysisSlice.prototype.by_pk_entity;
+}
+/**
+ * @record
+ */
+function Pro() { }
+if (false) {
+    /** @type {?|undefined} */
+    Pro.prototype.info_proj_rel;
+    /** @type {?|undefined} */
+    Pro.prototype.dfh_profile_proj_rel;
+    /** @type {?|undefined} */
+    Pro.prototype.dfh_class_proj_rel;
+    /** @type {?|undefined} */
+    Pro.prototype.class_field_config;
+    /** @type {?|undefined} */
+    Pro.prototype.text_property;
+    /** @type {?|undefined} */
+    Pro.prototype.analysis;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/sys.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function SysRelevantClassSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    SysRelevantClassSlice.prototype.by_pk_entity;
+    /** @type {?|undefined} */
+    SysRelevantClassSlice.prototype.by_fk_class;
+    /** @type {?|undefined} */
+    SysRelevantClassSlice.prototype.by_required_by_sources;
+    /** @type {?|undefined} */
+    SysRelevantClassSlice.prototype.by_required;
+    /** @type {?|undefined} */
+    SysRelevantClassSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function SysConfigSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    SysConfigSlice.prototype.by_main;
+    /** @type {?|undefined} */
+    SysConfigSlice.prototype.loading;
+}
+/**
+ * @record
+ */
+function Sys() { }
+if (false) {
+    /** @type {?|undefined} */
+    Sys.prototype.system_relevant_class;
+    /** @type {?|undefined} */
+    Sys.prototype.config;
+    /** @type {?} */
+    Sys.prototype.pkEntityModelMap;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/tab.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class TabCellSlice {
+}
+if (false) {
+    /** @type {?} */
+    TabCellSlice.prototype.by_pk_cell;
+    /** @type {?} */
+    TabCellSlice.prototype.by_fk_column_fk_row;
+}
+/**
+ * @record
+ */
+function Tab() { }
+if (false) {
+    /** @type {?|undefined} */
+    Tab.prototype.cell;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/war.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function WarEntityPreviewSlice() { }
+if (false) {
+    /** @type {?|undefined} */
+    WarEntityPreviewSlice.prototype.by_pk_entity;
+}
+/**
+ * @record
+ */
+function War() { }
+if (false) {
+    /** @type {?|undefined} */
+    War.prototype.entity_preview;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/models/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/services/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/index.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -6728,5 +10167,5 @@ function sourceListReducer(state = INITIAL_STATE$6, a) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { AccountActions, AccountEpics, ActiveProjectActions, ActiveProjectEpics, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, InfActions, InfAppellationSlice, InfDimensionSlice, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, InformationAPIActions, List, LoadingBarActions, LoadingBarEpics, NamespaceSlice, Notifications, NotificationsAPIActions, NotificationsAPIEpics, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, SourceList, SourceListAPIActions, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, accountRootReducer, activeProjectReducer, createProjectsReducer, informationReducer, loadingBarReducer, notificationsReducer, sourceListReducer };
+export { AccountActions, AccountEpics, ActionResolverEpics, ActiveProjectActions, ActiveProjectEpics, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, InformationAPIActions, List, LoadingBarActions, LoadingBarEpics, NamespaceSlice, Notifications, NotificationsAPIActions, NotificationsAPIEpics, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxStoreModule, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SourceListAPIActions, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, accountRootReducer, activeProjectReducer, by, createProjectsReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, informationReducer, loadingBarReducer, notificationsReducer, pag, paginateKey, paginateName, paginatedBy, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, sourceListReducer, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, AccountActions as ɵb, SchemaObjectService as ɵba, ActiveProjectActions as ɵc, LoadingBarActions as ɵd, NotificationsAPIActions as ɵe, AccountEpics as ɵf, ActiveProjectEpics as ɵg, LoadingBarEpics as ɵh, NotificationsAPIEpics as ɵi, DatActions as ɵj, DfhActions as ɵk, InfActions as ɵl, ProActions as ɵm, SysActions as ɵn, TabActions as ɵo, WarActions as ɵp, DatEpics as ɵq, DfhEpics as ɵr, InfEpics as ɵs, ProEpics as ɵt, SysEpics as ɵu, TabEpics as ɵv, WarEpics as ɵw, RootEpics as ɵx, ActionResolverEpics as ɵy, SchemaActionsFactory as ɵz };
 //# sourceMappingURL=kleiolab-lib-redux-src-lib-redux-store.js.map

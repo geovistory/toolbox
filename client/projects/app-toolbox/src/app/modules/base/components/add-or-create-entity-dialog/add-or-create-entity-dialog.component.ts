@@ -18,7 +18,7 @@ export interface AddOrCreateEntityDialogData {
   notInProjectBtnText: string
   notInProjectClickBehavior: NotInProjectClickBehavior
 }
-
+// TODO DELETE
 export interface ClassAndTypePk { pkClass: number, pkType: number }
 
 export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';

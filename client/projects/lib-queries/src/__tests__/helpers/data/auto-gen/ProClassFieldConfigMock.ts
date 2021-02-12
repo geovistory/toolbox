@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
+import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { PK_DEFAULT_CONFIG_PROJECT } from './local-model.helpers';
 import { DfhApiPropertyMock } from './DfhApiPropertyMock';
 import { DfhApiClassMock } from './DfhApiClassMock';

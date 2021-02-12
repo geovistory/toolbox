@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/dfh.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { ReducerFactory } from '../_helpers';
+import { dfhDefinitions } from '../reducer-configs';
+/**
+ * @return {?}
+ */
+export function createDfhReducer() {
+    return new ReducerFactory('dfh', dfhDefinitions).createReducers();
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGZoLnJlZHVjZXIuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXJlZHV4L3NyYy9saWIvcmVkdXgtc3RvcmUvIiwic291cmNlcyI6WyJzdGF0ZS1zY2hlbWEvcmVkdWNlcnMvZGZoLnJlZHVjZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFDQSxPQUFPLEVBQUUsY0FBYyxFQUFFLE1BQU0sYUFBYSxDQUFDO0FBQzdDLE9BQU8sRUFBRSxjQUFjLEVBQUUsTUFBTSxvQkFBb0IsQ0FBQzs7OztBQUVwRCxNQUFNLFVBQVUsZ0JBQWdCO0lBQzlCLE9BQU8sSUFBSSxjQUFjLENBQUMsS0FBSyxFQUFFLGNBQWMsQ0FBQyxDQUFDLGNBQWMsRUFBRSxDQUFBO0FBQ25FLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJcbmltcG9ydCB7IFJlZHVjZXJGYWN0b3J5IH0gZnJvbSAnLi4vX2hlbHBlcnMnO1xuaW1wb3J0IHsgZGZoRGVmaW5pdGlvbnMgfSBmcm9tICcuLi9yZWR1Y2VyLWNvbmZpZ3MnO1xuXG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlRGZoUmVkdWNlcigpIHtcbiAgcmV0dXJuIG5ldyBSZWR1Y2VyRmFjdG9yeSgnZGZoJywgZGZoRGVmaW5pdGlvbnMpLmNyZWF0ZVJlZHVjZXJzKClcbn1cbiJdfQ==
