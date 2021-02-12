@@ -36,23 +36,29 @@
         "dist/lib-core"
       ],
       "@kleiolab/lib-sdk-lb3/*": [
-        "dist/lib-sdk-lb3/*",
+        "dist/lib-sdk-lb3/*"
       ],
       "@kleiolab/lib-sdk-lb3": [
         "dist/lib-sdk-lb3"
       ],
       "@kleiolab/lib-sdk-lb4/*": [
-        "dist/lib-sdk-lb4/*",
+        "dist/lib-sdk-lb4/*"
       ],
       "@kleiolab/lib-sdk-lb4": [
         "dist/lib-sdk-lb4"
       ],
       "@kleiolab/lib-utils/*": [
-        "dist/lib-utils/*",
+        "dist/lib-utils/*"
       ],
       "@kleiolab/lib-utils": [
         "dist/lib-utils"
       ],
+      "lib-config": [
+        "dist/lib-config"
+      ],
+      "lib-config/*": [
+        "dist/lib-config/*"
+      ]
     }
   },
   "exclude": [

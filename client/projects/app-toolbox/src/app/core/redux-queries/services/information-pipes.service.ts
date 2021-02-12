@@ -1,37 +1,29 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { limitTo, sortAbc, switchMapOr } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { TimePrimitive } from '@kleiolab/lib-utils';
-import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { TimeSpanUtil } from "@kleiolab/lib-utils";
-import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { Granularity } from "@kleiolab/lib-utils";
-import { CalendarType } from "@kleiolab/lib-utils";
-import { InfModelName } from 'projects/app-toolbox/src/app/core/inf/inf.service';
-import { InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
+import { CalendarType, Granularity, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
+import { limitTo, sortAbc, switchMapOr } from 'projects/app-toolbox/src/app/core';
+import { InfModelName, InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
+import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
+import { U } from 'projects/app-toolbox/src/app/core/util/util';
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
 import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { PropertyOption, PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
 import { cache, spyTag } from 'projects/app-toolbox/src/app/shared';
-import { TimePrimitivePipe } from 'projects/app-toolbox/src/app/shared/pipes/time-primitive/time-primitive.pipe';
-import { equals, flatten, groupBy, omit, pick, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/actions';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../../../modules/base/components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../../../modules/base/components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../../../modules/base/components/properties-tree/properties-tree.models';
-import { InformationBasicPipesService } from './information-basic-pipes.service';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../../../modules/base/components/properties-tree/properties-tree.models';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
+import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
-import { TimeSpanPipe } from '../../../shared/pipes/time-span/time-span.pipe';
 
 @Injectable()
 /**

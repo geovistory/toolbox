@@ -1,228 +1,9 @@
-import { TimePrimitive as TimePrimitive$1 } from '@kleiolab/lib-utils/src/lib/date-time';
-import { EventEmitter } from '@angular/core';
+import { DatePipe, CommonModule } from '@angular/common';
+import { EventEmitter, Pipe, NgModule } from '@angular/core';
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/time-span/time-span.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const x = undefined;
-/**
- * @record
- */
-function InfTimePrimitiveWithCalendar() { }
-if (false) {
-    /** @type {?} */
-    InfTimePrimitiveWithCalendar.prototype.calendar;
-}
-/**
- * @record
- */
-function TimeSpanWithNumberProps() { }
-if (false) {
-    /* Skipping unnamed member:
-    72?: InfTimePrimitiveWithCalendar;*/
-    /* Skipping unnamed member:
-    152?: InfTimePrimitiveWithCalendar;*/
-    /* Skipping unnamed member:
-    153?: InfTimePrimitiveWithCalendar;*/
-    /* Skipping unnamed member:
-    71?: InfTimePrimitiveWithCalendar;*/
-    /* Skipping unnamed member:
-    150?: InfTimePrimitiveWithCalendar;*/
-    /* Skipping unnamed member:
-    151?: InfTimePrimitiveWithCalendar;*/
-}
-class TimeSpanUtil {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        this.tpKeys = ['p82', 'p81', 'p82a', 'p82b', 'p81a', 'p81b'];
-        if (data) {
-            Object.keys(data).forEach((/**
-             * @param {?} key
-             * @return {?}
-             */
-            key => data[key] === undefined ? delete data[key] : ''));
-            Object.assign(this, data);
-            this.tpKeys.forEach((/**
-             * @param {?} key
-             * @return {?}
-             */
-            key => {
-                if (this[key])
-                    this[key] = new TimePrimitive$1(this[key]);
-            }));
-        }
-    }
-    // end of the end | right outer bound | not after
-    /**
-     * @return {?}
-     */
-    get earliestDay() {
-        if (this.isEmpty())
-            return null;
-        /** @type {?} */
-        let min = Number.POSITIVE_INFINITY;
-        this.tpKeys.forEach((/**
-         * @param {?} key
-         * @return {?}
-         */
-        key => {
-            if (this[key]) {
-                /** @type {?} */
-                const current = this[key].julianDay;
-                // if this timePrimitive is earlier than min, set this as new min
-                min = current < min ? current : min;
-            }
-        }));
-        return min;
-    }
-    /**
-     * get the earliest and latest TimePrimitive of given array of TimePrimitives
-     *
-     * For earliest it compares the begin of TimePrimitive duration
-     * For latest it compares the last second of TimePrimitive duration
-     *
-     * @param {?} tps
-     * @return {?} object with min Date and max Date or null, if no TimePrimitive available
-     */
-    static getMinMaxTimePrimitveOfArray(tps) {
-        if (!tps || tps.length < 1)
-            return null;
-        /** @type {?} */
-        let min = tps[0];
-        /** @type {?} */
-        let max = tps[0];
-        tps.forEach((/**
-         * @param {?} tp
-         * @return {?}
-         */
-        tp => {
-            // if this timePrimitive is earlier than min, set this as new min
-            min = tp.getJulianSecond() < min.getJulianSecond() ? tp : min;
-            // if this timePrimitive is later than max, set this as new max
-            max = tp.getJulianSecond() > max.getJulianSecond() ? tp : max;
-            //  check if we would need the latest second here?
-            // max = tp.getLastSecond() > max.getLastSecond() ? tp : max;
-        }));
-        return { min: min, max: max };
-    }
-    /**
-     * @param {?=} d
-     * @return {?}
-     */
-    static fromTimeSpanDialogData(d = {}) {
-        if (!d)
-            d = {};
-        /** @type {?} */
-        const x = {};
-        if (d['72'])
-            x['p82'] = d['72'];
-        if (d['71'])
-            x['p81'] = d['71'];
-        if (d['152'])
-            x['p82a'] = d['152'];
-        if (d['150'])
-            x['p81a'] = d['150'];
-        if (d['151'])
-            x['p81b'] = d['151'];
-        if (d['153'])
-            x['p82b'] = d['153'];
-        return new TimeSpanUtil(x);
-    }
-    /**
-     * returns true if no TimePrimitive is there
-     * @return {?}
-     */
-    isEmpty() {
-        return !this.isNotEmpty();
-    }
-    /**
-     * returns true if at least one TimePrimitive is there
-     * @return {?}
-     */
-    isNotEmpty() {
-        if (this.p82 || this.p81 || this.p82a || this.p82b || this.p81a || this.p81b)
-            return true;
-        else
-            return false;
-    }
-    /**
-     * get the earliest and latest TimePrimitive of this TimeSpan
-     *
-     * For earliest it compares the begin of TimePrimitive duration
-     * For latest it compares the last second of TimePrimitive duration
-     *
-     * @return {?} object with min Date and max Date or null, if no TimePrimitive available
-     */
-    getMinMaxTimePrimitive() {
-        return TimeSpanUtil.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
-    }
-    /**
-     * @return {?} array of TimePrimitives of this TimeSpan
-     */
-    getArrayOfTimePrimitives() {
-        /** @type {?} */
-        const array = [];
-        this.tpKeys.forEach((/**
-         * @param {?} key
-         * @return {?}
-         */
-        key => {
-            if (this[key]) {
-                array.push(this[key]);
-            }
-        }));
-        return array;
-    }
-    /**
-     * @return {?}
-     */
-    getPrimitivesForPreview() {
-        /** @type {?} */
-        const single = this.p82 || this.p81;
-        /** @type {?} */
-        const begin = this.p82a || this.p81a;
-        /** @type {?} */
-        const end = this.p82b || this.p81b;
-        return { single, begin, end };
-    }
-}
-if (false) {
-    /** @type {?} */
-    TimeSpanUtil.prototype.tpKeys;
-    /** @type {?} */
-    TimeSpanUtil.prototype.p82;
-    /** @type {?} */
-    TimeSpanUtil.prototype.p81;
-    /** @type {?} */
-    TimeSpanUtil.prototype.p82a;
-    /** @type {?} */
-    TimeSpanUtil.prototype.p81a;
-    /** @type {?} */
-    TimeSpanUtil.prototype.p81b;
-    /** @type {?} */
-    TimeSpanUtil.prototype.p82b;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/time-span/public-api.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/time-span/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/date-time/date-time-commons.ts
+ * Generated from: lib/date-time/classes/date-time-commons.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
@@ -725,7 +506,7 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/date-time/julian-date-time.ts
+ * Generated from: lib/date-time/classes/julian-date-time.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
@@ -892,7 +673,7 @@ class JulianDateTime extends DateTimeCommons {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/date-time/gregorian-date-time.ts
+ * Generated from: lib/date-time/classes/gregorian-date-time.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
@@ -1104,7 +885,7 @@ class GregorianDateTime extends DateTimeCommons {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/date-time/time-primitive.ts
+ * Generated from: lib/date-time/classes/time-primitive.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
@@ -1257,6 +1038,373 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/date-time/pipes/time-primitive.pipe.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class TimePrimitivePipe {
+    /**
+     * @param {?} datePipe
+     */
+    constructor(datePipe) {
+        this.datePipe = datePipe;
+    }
+    /**
+     * @param {?} timePrimitive
+     * @return {?}
+     */
+    transform(timePrimitive) {
+        if (!timePrimitive)
+            return null;
+        /** @type {?} */
+        const tp = new TimePrimitive(timePrimitive);
+        if (!tp)
+            return null;
+        /** @type {?} */
+        const dt = tp.getDateTime();
+        if (!dt)
+            return null;
+        // This is a hack for dataPipe, because datePipe subtracts 1 year from BC
+        // Probably to avoid the year 0
+        if (dt.year < 0)
+            dt.year = dt.year + 1;
+        if (!dt.day)
+            dt.day = 31;
+        /** @type {?} */
+        const date = dt.getDate();
+        return this.datePipe.transform(date, tp.getShortesDateFormatString());
+    }
+}
+TimePrimitivePipe.decorators = [
+    { type: Pipe, args: [{
+                name: 'timePrimitive'
+            },] }
+];
+/** @nocollapse */
+TimePrimitivePipe.ctorParameters = () => [
+    { type: DatePipe }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    TimePrimitivePipe.prototype.datePipe;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/date-time/classes/time-span-util.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const x = undefined;
+/**
+ * @record
+ */
+function InfTimePrimitiveWithCalendar() { }
+if (false) {
+    /** @type {?} */
+    InfTimePrimitiveWithCalendar.prototype.calendar;
+}
+/**
+ * @record
+ */
+function TimeSpanWithNumberProps() { }
+if (false) {
+    /* Skipping unnamed member:
+    72?: InfTimePrimitiveWithCalendar;*/
+    /* Skipping unnamed member:
+    152?: InfTimePrimitiveWithCalendar;*/
+    /* Skipping unnamed member:
+    153?: InfTimePrimitiveWithCalendar;*/
+    /* Skipping unnamed member:
+    71?: InfTimePrimitiveWithCalendar;*/
+    /* Skipping unnamed member:
+    150?: InfTimePrimitiveWithCalendar;*/
+    /* Skipping unnamed member:
+    151?: InfTimePrimitiveWithCalendar;*/
+}
+class TimeSpanUtil {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        this.tpKeys = ['p82', 'p81', 'p82a', 'p82b', 'p81a', 'p81b'];
+        if (data) {
+            Object.keys(data).forEach((/**
+             * @param {?} key
+             * @return {?}
+             */
+            key => data[key] === undefined ? delete data[key] : ''));
+            Object.assign(this, data);
+            this.tpKeys.forEach((/**
+             * @param {?} key
+             * @return {?}
+             */
+            key => {
+                if (this[key])
+                    this[key] = new TimePrimitive(this[key]);
+            }));
+        }
+    }
+    // end of the end | right outer bound | not after
+    /**
+     * @return {?}
+     */
+    get earliestDay() {
+        if (this.isEmpty())
+            return null;
+        /** @type {?} */
+        let min = Number.POSITIVE_INFINITY;
+        this.tpKeys.forEach((/**
+         * @param {?} key
+         * @return {?}
+         */
+        key => {
+            if (this[key]) {
+                /** @type {?} */
+                const current = this[key].julianDay;
+                // if this timePrimitive is earlier than min, set this as new min
+                min = current < min ? current : min;
+            }
+        }));
+        return min;
+    }
+    /**
+     * get the earliest and latest TimePrimitive of given array of TimePrimitives
+     *
+     * For earliest it compares the begin of TimePrimitive duration
+     * For latest it compares the last second of TimePrimitive duration
+     *
+     * @param {?} tps
+     * @return {?} object with min Date and max Date or null, if no TimePrimitive available
+     */
+    static getMinMaxTimePrimitveOfArray(tps) {
+        if (!tps || tps.length < 1)
+            return null;
+        /** @type {?} */
+        let min = tps[0];
+        /** @type {?} */
+        let max = tps[0];
+        tps.forEach((/**
+         * @param {?} tp
+         * @return {?}
+         */
+        tp => {
+            // if this timePrimitive is earlier than min, set this as new min
+            min = tp.getJulianSecond() < min.getJulianSecond() ? tp : min;
+            // if this timePrimitive is later than max, set this as new max
+            max = tp.getJulianSecond() > max.getJulianSecond() ? tp : max;
+            //  check if we would need the latest second here?
+            // max = tp.getLastSecond() > max.getLastSecond() ? tp : max;
+        }));
+        return { min: min, max: max };
+    }
+    /**
+     * @param {?=} d
+     * @return {?}
+     */
+    static fromTimeSpanDialogData(d = {}) {
+        if (!d)
+            d = {};
+        /** @type {?} */
+        const x = {};
+        if (d['72'])
+            x['p82'] = d['72'];
+        if (d['71'])
+            x['p81'] = d['71'];
+        if (d['152'])
+            x['p82a'] = d['152'];
+        if (d['150'])
+            x['p81a'] = d['150'];
+        if (d['151'])
+            x['p81b'] = d['151'];
+        if (d['153'])
+            x['p82b'] = d['153'];
+        return new TimeSpanUtil(x);
+    }
+    /**
+     * returns true if no TimePrimitive is there
+     * @return {?}
+     */
+    isEmpty() {
+        return !this.isNotEmpty();
+    }
+    /**
+     * returns true if at least one TimePrimitive is there
+     * @return {?}
+     */
+    isNotEmpty() {
+        if (this.p82 || this.p81 || this.p82a || this.p82b || this.p81a || this.p81b)
+            return true;
+        else
+            return false;
+    }
+    /**
+     * get the earliest and latest TimePrimitive of this TimeSpan
+     *
+     * For earliest it compares the begin of TimePrimitive duration
+     * For latest it compares the last second of TimePrimitive duration
+     *
+     * @return {?} object with min Date and max Date or null, if no TimePrimitive available
+     */
+    getMinMaxTimePrimitive() {
+        return TimeSpanUtil.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
+    }
+    /**
+     * @return {?} array of TimePrimitives of this TimeSpan
+     */
+    getArrayOfTimePrimitives() {
+        /** @type {?} */
+        const array = [];
+        this.tpKeys.forEach((/**
+         * @param {?} key
+         * @return {?}
+         */
+        key => {
+            if (this[key]) {
+                array.push(this[key]);
+            }
+        }));
+        return array;
+    }
+    /**
+     * @return {?}
+     */
+    getPrimitivesForPreview() {
+        /** @type {?} */
+        const single = this.p82 || this.p81;
+        /** @type {?} */
+        const begin = this.p82a || this.p81a;
+        /** @type {?} */
+        const end = this.p82b || this.p81b;
+        return { single, begin, end };
+    }
+}
+if (false) {
+    /** @type {?} */
+    TimeSpanUtil.prototype.tpKeys;
+    /** @type {?} */
+    TimeSpanUtil.prototype.p82;
+    /** @type {?} */
+    TimeSpanUtil.prototype.p81;
+    /** @type {?} */
+    TimeSpanUtil.prototype.p82a;
+    /** @type {?} */
+    TimeSpanUtil.prototype.p81a;
+    /** @type {?} */
+    TimeSpanUtil.prototype.p81b;
+    /** @type {?} */
+    TimeSpanUtil.prototype.p82b;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/date-time/pipes/time-span.pipe.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class TimeSpanPipe {
+    /**
+     * @param {?} timePrimitivePipe
+     */
+    constructor(timePrimitivePipe) {
+        this.timePrimitivePipe = timePrimitivePipe;
+    }
+    /**
+     * @param {?} timeSpan
+     * @return {?}
+     */
+    transform(timeSpan) {
+        if (!timeSpan)
+            return null;
+        /** @type {?} */
+        const ts = new TimeSpanUtil(timeSpan).getPrimitivesForPreview();
+        // nothing
+        if (!ts.single && !ts.begin && !ts.end)
+            return '';
+        // only sinlge
+        if (ts.single && !(ts.begin || ts.end))
+            return this.getString(ts.single);
+        // only begin and end
+        if (ts.begin && ts.end && !ts.single)
+            return this.getString(ts.begin) + ' – ' + this.getString(ts.end);
+        // only sinlge and end
+        if (ts.single && ts.end && !ts.begin)
+            return this.getString(ts.single) + ' – ' + this.getString(ts.end);
+        // only begin and sinlge
+        if (ts.begin && ts.single && !ts.end)
+            return this.getString(ts.begin) + ' – ' + this.getString(ts.single);
+        // all three
+        return this.getString(ts.begin) + ' – ' + this.getString(ts.end);
+    }
+    /**
+     * @param {?} t
+     * @return {?}
+     */
+    getString(t) {
+        /** @type {?} */
+        const s = this.timePrimitivePipe.transform(t);
+        return s ? s : '(?)';
+    }
+}
+TimeSpanPipe.decorators = [
+    { type: Pipe, args: [{
+                name: 'timeSpan'
+            },] }
+];
+/** @nocollapse */
+TimeSpanPipe.ctorParameters = () => [
+    { type: TimePrimitivePipe }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    TimeSpanPipe.prototype.timePrimitivePipe;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/date-time/date-time.module.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DateTimeModule {
+}
+DateTimeModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                ],
+                providers: [
+                    TimePrimitivePipe,
+                    TimeSpanPipe
+                ],
+                declarations: [
+                    TimeSpanPipe,
+                    TimePrimitivePipe,
+                ],
+                exports: [
+                    TimeSpanPipe,
+                    TimePrimitivePipe,
+                ]
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/date-time/classes/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/date-time/pipes/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/date-time/public-api.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1279,5 +1427,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive, TimeSpanUtil, x };
+export { DateTimeCommons, DateTimeModule, GregorianDateTime, JulianDateTime, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil, x };
 //# sourceMappingURL=kleiolab-lib-utils.js.map

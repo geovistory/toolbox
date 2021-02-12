@@ -1,9 +1,8 @@
 
 
-export * from './time-primitive';
-export * from './date-time-commons';
-export { GregorianDateTime } from './gregorian-date-time';
-export { JulianDateTime } from './julian-date-time';
+export * from './date-time.module'
+export * from './classes'
+export * from './pipes'
 
 
 

@@ -1,6 +1,7 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { DateTimeModule } from '@kleiolab/lib-utils';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { CoreTableFilterModule } from 'projects/app-toolbox/src/app/shared/components/core-table/filter/filter.module';
@@ -29,13 +30,12 @@ import { DraggableXAxisDirective } from './directives/draggable-x-axis.directive
 import { RangeEmitterOnMouseDownDirective } from './directives/range-emitter-on-mouse-down.directive';
 import { WrapTextDirective } from './directives/wrap-text.directive';
 import { D3Service } from './shared/d3.service';
-import { TimeSpanPipeModule } from '../../shared/pipes/time-span/time-span.module';
 
 @NgModule({
   imports: [
     CommonModule,
     DimensionChangeModule,
-    TimeSpanPipeModule,
+    DateTimeModule,
     CoreTableFilterModule,
     CoreTableMenuModule,
     CoreTableVirtualScrollModule,

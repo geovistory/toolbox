@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
-import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
+import { TimePrimitivePipe } from '@kleiolab/lib-utils';
 
 @Pipe({
   name: 'infTimePrimitiveStatement'

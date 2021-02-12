@@ -3,8 +3,7 @@
  * Generated from: lib/date-time/public-api.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-export { TimePrimitive } from './time-primitive';
-export { DateTimeCommons } from './date-time-commons';
-export { GregorianDateTime } from './gregorian-date-time';
-export { JulianDateTime } from './julian-date-time';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItdXRpbHMvIiwic291cmNlcyI6WyJsaWIvZGF0ZS10aW1lL3B1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFFQSw4QkFBYyxrQkFBa0IsQ0FBQztBQUNqQyxnQ0FBYyxxQkFBcUIsQ0FBQztBQUNwQyxPQUFPLEVBQUUsaUJBQWlCLEVBQUUsTUFBTSx1QkFBdUIsQ0FBQztBQUMxRCxPQUFPLEVBQUUsY0FBYyxFQUFFLE1BQU0sb0JBQW9CLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJcblxuZXhwb3J0ICogZnJvbSAnLi90aW1lLXByaW1pdGl2ZSc7XG5leHBvcnQgKiBmcm9tICcuL2RhdGUtdGltZS1jb21tb25zJztcbmV4cG9ydCB7IEdyZWdvcmlhbkRhdGVUaW1lIH0gZnJvbSAnLi9ncmVnb3JpYW4tZGF0ZS10aW1lJztcbmV4cG9ydCB7IEp1bGlhbkRhdGVUaW1lIH0gZnJvbSAnLi9qdWxpYW4tZGF0ZS10aW1lJztcblxuXG5cbiJdfQ==
+export { DateTimeModule } from './date-time.module';
+export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive, x, TimeSpanUtil } from './classes';
+export { TimePrimitivePipe, TimeSpanPipe } from './pipes';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItdXRpbHMvIiwic291cmNlcyI6WyJsaWIvZGF0ZS10aW1lL3B1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFFQSwrQkFBYyxvQkFBb0IsQ0FBQTtBQUNsQyxtR0FBYyxXQUFXLENBQUE7QUFDekIsZ0RBQWMsU0FBUyxDQUFBIiwic291cmNlc0NvbnRlbnQiOlsiXG5cbmV4cG9ydCAqIGZyb20gJy4vZGF0ZS10aW1lLm1vZHVsZSdcbmV4cG9ydCAqIGZyb20gJy4vY2xhc3NlcydcbmV4cG9ydCAqIGZyb20gJy4vcGlwZXMnXG5cblxuXG4iXX0=

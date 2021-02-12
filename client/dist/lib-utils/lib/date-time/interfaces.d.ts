@@ -1,7 +1,6 @@
 import { EventEmitter } from '@angular/core';
-import { Granularity } from './date-time-commons';
-import { JulianDateTime } from './julian-date-time';
-import { GregorianDateTime } from './gregorian-date-time';
+import { Granularity } from './classes/date-time-commons';
+import { GregorianDateTime, JulianDateTime } from '.';
 export interface HoursMinutesSeconds {
     hours: number;
     minutes: number;

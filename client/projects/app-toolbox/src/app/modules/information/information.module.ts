@@ -13,7 +13,7 @@ import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/comp
 import { ListModule } from 'projects/app-toolbox/src/app/shared/components/list/list.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { InfTimePrimitivePipeModule } from 'projects/app-toolbox/src/app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
-import { TimePrimitivePipeModule } from 'projects/app-toolbox/src/app/shared/pipes/time-primitive/time-primitive.module';
+import { DateTimeModule } from '@kleiolab/lib-utils';
 import { DndModule } from 'ng2-dnd';
 import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
@@ -63,7 +63,7 @@ import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/mod
     DndModule,
     TreeviewModule,
     TableModule,
-    TimePrimitivePipeModule,
+    DateTimeModule,
     InfTimePrimitivePipeModule,
     DragDropModule,
     CdkTreeModule,

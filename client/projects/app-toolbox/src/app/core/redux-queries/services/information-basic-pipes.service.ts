@@ -1,14 +1,7 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { InfStatement, InfTemporalEntity, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { CalendarType, Granularity, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { IconType } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { TimePrimitive } from '@kleiolab/lib-utils';
-import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { TimeSpanUtil } from "@kleiolab/lib-utils";
-import { Granularity } from "@kleiolab/lib-utils";
-import { CalendarType } from "@kleiolab/lib-utils";
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { switchMapOr } from 'projects/app-toolbox/src/app/core/util/switchMapOr';
 import { DfhConfig } from 'projects/app-toolbox/src/app/modules/information/shared/dfh-config';
@@ -17,7 +10,6 @@ import { omit, values } from 'ramda';
 import { combineLatest, merge, Observable, of, pipe } from 'rxjs';
 import { auditTime, filter, map, switchMap } from 'rxjs/operators';
 import { BasicStatementItem, Subfield } from '../../../modules/base/components/properties-tree/properties-tree.models';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
