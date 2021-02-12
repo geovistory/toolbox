@@ -9,6 +9,15 @@
      * Generated from: lib/dfh-config.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * This file contains primary keys of data records
+     * from the dfh schema, that have a special meaning
+     * for the geovistory logic.
+     *
+     * Libraries and apps implementing logic depending on
+     * such primary keys should use this config file
+     * instead of putting the keys hard coded.
+     */
     var DfhConfig = /** @class */ (function () {
         function DfhConfig() {
         }
@@ -218,7 +227,143 @@
         DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM;
     }
 
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/sys-config.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Contains configuration of keys used in the the system-schema
+     * that are relevant for the app logic.
+     *
+     * Example: the ui-context keys are used to query the order of properties in different contexts
+     */
+    var SysConfig = /** @class */ (function () {
+        function SysConfig() {
+        }
+        /**
+         * ********************
+         * Ui Contexts
+         * **********************
+         */
+        // Toolbox-wide context
+        SysConfig.PK_UI_CONTEXT_ADD = 47;
+        // Entities context
+        SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE = 45;
+        SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE = 46;
+        // Sources context
+        SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE = 210;
+        SysConfig.PK_UI_CONTEXT_SOURCES_CREATE = 211;
+        // Data Settings > Types context
+        SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = 212;
+        SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = 213;
+        /**
+         * ********************
+         * Class Fields
+         * **********************
+         */
+        SysConfig.PK_CLASS_FIELD_WHEN = 48;
+        SysConfig.PK_CLASS_FIELD_SHORT_TITLE = 217;
+        SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE = 218;
+        SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION = 219;
+        SysConfig.PK_CLASS_FIELD_COMMENT = 3364;
+        /**
+         * ********************
+         * System Types
+         * **********************
+         */
+        SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
+        SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
+        SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
+        SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
+        SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DATA = 3295;
+        SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT = 3292;
+        SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC = 3293;
+        SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT = 3286;
+        SysConfig.PK_SYSTEM_TYPE__DIGITAL_TABLE = 3287;
+        /**
+         * ********************
+         * Analysis Types
+         * **********************
+         */
+        SysConfig.PK_ANALYSIS_TYPE__TIME_CONT = 3331;
+        SysConfig.PK_ANALYSIS_TYPE__TABLE = 3332;
+        SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT = 3333;
+        return SysConfig;
+    }());
+    if (false) {
+        /**
+         * ********************
+         * Ui Contexts
+         * **********************
+         * @type {?}
+         */
+        SysConfig.PK_UI_CONTEXT_ADD;
+        /** @type {?} */
+        SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+        /** @type {?} */
+        SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+        /** @type {?} */
+        SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE;
+        /** @type {?} */
+        SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+        /** @type {?} */
+        SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE;
+        /** @type {?} */
+        SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
+        /**
+         * ********************
+         * Class Fields
+         * **********************
+         * @type {?}
+         */
+        SysConfig.PK_CLASS_FIELD_WHEN;
+        /** @type {?} */
+        SysConfig.PK_CLASS_FIELD_SHORT_TITLE;
+        /** @type {?} */
+        SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE;
+        /** @type {?} */
+        SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION;
+        /** @type {?} */
+        SysConfig.PK_CLASS_FIELD_COMMENT;
+        /**
+         * ********************
+         * System Types
+         * **********************
+         * @type {?}
+         */
+        SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DATA;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT;
+        /** @type {?} */
+        SysConfig.PK_SYSTEM_TYPE__DIGITAL_TABLE;
+        /**
+         * ********************
+         * Analysis Types
+         * **********************
+         * @type {?}
+         */
+        SysConfig.PK_ANALYSIS_TYPE__TIME_CONT;
+        /** @type {?} */
+        SysConfig.PK_ANALYSIS_TYPE__TABLE;
+        /** @type {?} */
+        SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT;
+    }
+
     exports.DfhConfig = DfhConfig;
+    exports.SysConfig = SysConfig;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

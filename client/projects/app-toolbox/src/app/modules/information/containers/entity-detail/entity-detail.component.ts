@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { IconType, PeItTabData, Tab } from 'projects/app-toolbox/src/app/core';
+import { IconType, PeItTabData, PanelTab } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
@@ -50,7 +50,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
    */
 
   @Input() pkEntity: number;
-  @Input() tab: Tab<PeItTabData>;
+  @Input() tab: PanelTab<PeItTabData>;
 
   // // Visibility of header in left area
   @select() showHeader$: Observable<boolean>;

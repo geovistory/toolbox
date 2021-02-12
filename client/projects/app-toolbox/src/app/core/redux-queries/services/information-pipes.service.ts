@@ -6,7 +6,7 @@ import { CalendarType, Granularity, TimePrimitive, TimePrimitivePipe, TimeSpanPi
 import { limitTo, sortAbc, switchMapOr } from 'projects/app-toolbox/src/app/core';
 import { InfModelName, InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { U } from 'projects/app-toolbox/src/app/core/util/util';

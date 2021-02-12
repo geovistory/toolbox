@@ -14,7 +14,7 @@ import { createPaginateBy } from "../../base.helpers";
 import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
 import { temporalEntityListDefaultLimit } from "../../base.helpers";
 import { equals } from 'ramda';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { PageEvent, MatDialog } from '@angular/material';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 

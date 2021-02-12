@@ -1,3 +1,4 @@
+// TODO DELETE
 import { Subject } from 'rxjs';
 import { ObservableStore } from '@angular-redux/store';
 
@@ -6,7 +7,7 @@ import { ObservableStore } from '@angular-redux/store';
  * redux store.
  */
 export interface SubstoreComponent {
-    destroy$: Subject<boolean>;
-    localStore: ObservableStore<any>;
-    basePath?;
+  destroy$: Subject<boolean>;
+  localStore: ObservableStore<any>;
+  basePath?;
 }

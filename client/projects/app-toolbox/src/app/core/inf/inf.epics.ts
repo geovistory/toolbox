@@ -8,7 +8,7 @@ import { DatActions } from '../dat/dat.actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProActions } from '../pro/pro.actions';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../redux-store/actions';
+import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../redux-store/schema-actions-factory';
 import { SchemaObject } from '../redux-store/model';
 import { SchemaObjectService } from '../redux-store/schema-object.service';
 import { InfEpicsFactory } from './inf-epic-factory';

@@ -1,3 +1,12 @@
+/**
+ * This file contains primary keys of data records
+ * from the dfh schema, that have a special meaning
+ * for the geovistory logic.
+ *
+ * Libraries and apps implementing logic depending on
+ * such primary keys should use this config file
+ * instead of putting the keys hard coded.
+ */
 export declare class DfhConfig {
     static timePrimitiveClass: number;
     static existenceTimeToFk: {

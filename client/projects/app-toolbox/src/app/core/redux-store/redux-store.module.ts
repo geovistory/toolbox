@@ -10,11 +10,11 @@ import { equals } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { createEpicMiddleware } from 'redux-observable-es6-compat';
 import { ActiveProjectModule } from '../active-project/active-project.module';
-import { StandardActionsFactory } from './actions';
-import { RootEpics } from './epics';
+import { SchemaActionsFactory } from './schema-actions-factory';
+import { RootEpics } from './root-epics';
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
-import { rootReducer } from './reducers';
+import { rootReducer } from './root-reducer';
 import { SchemaObjectService } from './schema-object.service';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { LoadingBarModule } from '../loading-bar/loading-bar.module';
@@ -69,7 +69,7 @@ export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STAT
     RootEpics,
     AccountEpics,
     AccountActions,
-    StandardActionsFactory,
+    SchemaActionsFactory,
     SchemaObjectService,
     { provide: APP_INITIAL_STATE, useValue: {} }
   ]

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { ListType, Panel, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
+import { ListType, Panel, ProjectDetail, ProjectPreview, PanelTab, TypePeIt } from './active-project.models';
 
 // export interface ComQueryV extends ProQuery {
 //   versions: number[];
@@ -54,7 +54,7 @@ interface MetaData {
   currentPanelIndex?: number
   previousTabIndex?: number
   currentTabIndex?: number
-  tab?: Tab<any>;
+  tab?: PanelTab<any>;
 
   // Layout Modals
   // createOrAddEntity?: CreateOrAddEntity; // Check if this really belongt in state
@@ -175,7 +175,7 @@ export class ActiveProjectActions {
   }
 
   static ADD_TAB = 'ActiveProject::ADD_TAB';
-  addTab<TabData>(tab: Tab<TabData>): ActiveProjectAction {
+  addTab<TabData>(tab: PanelTab<TabData>): ActiveProjectAction {
     return {
       type: ActiveProjectActions.ADD_TAB,
       payload: null,

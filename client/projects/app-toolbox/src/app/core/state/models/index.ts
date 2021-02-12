@@ -1,3 +1,4 @@
+// TODO DELETE
 // start:ng42.barrel
 export * from './entity-preview';
 export * from './entity-detail';

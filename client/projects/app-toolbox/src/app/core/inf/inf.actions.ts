@@ -1,7 +1,7 @@
 
 import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { SchemaActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 
 import { InfPersistentItem, InfStatement, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString, InfDimension } from '@kleiolab/lib-sdk-lb3';
 
@@ -399,12 +399,12 @@ export class InfActions {
   statement = new InfStatementActionFactory(this.ngRedux).createActions()
 
   // TODO: pimp those up to real Inf Actions!
-  language = new StandardActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')
-  appellation = new StandardActionsFactory<Payload, InfAppellation>(this.ngRedux).createCrudActions(infRoot, 'appellation')
-  lang_string = new StandardActionsFactory<Payload, InfLangString>(this.ngRedux).createCrudActions(infRoot, 'lang_string')
-  dimension = new StandardActionsFactory<InfDimensionSlice, InfDimension>(this.ngRedux).createCrudActions(infRoot, 'dimension')
-  place = new StandardActionsFactory<Payload, InfPlace>(this.ngRedux).createCrudActions(infRoot, 'place')
-  time_primitive = new StandardActionsFactory<Payload, InfTimePrimitive>(this.ngRedux).createCrudActions(infRoot, 'time_primitive')
+  language = new SchemaActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')
+  appellation = new SchemaActionsFactory<Payload, InfAppellation>(this.ngRedux).createCrudActions(infRoot, 'appellation')
+  lang_string = new SchemaActionsFactory<Payload, InfLangString>(this.ngRedux).createCrudActions(infRoot, 'lang_string')
+  dimension = new SchemaActionsFactory<InfDimensionSlice, InfDimension>(this.ngRedux).createCrudActions(infRoot, 'dimension')
+  place = new SchemaActionsFactory<Payload, InfPlace>(this.ngRedux).createCrudActions(infRoot, 'place')
+  time_primitive = new SchemaActionsFactory<Payload, InfTimePrimitive>(this.ngRedux).createCrudActions(infRoot, 'time_primitive')
   text_property = new InfTextPropertyActionFactory(this.ngRedux).createActions()
 
   constructor(public ngRedux: NgRedux<IAppState>) { }

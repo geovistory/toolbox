@@ -1,15 +1,15 @@
 import { dispatch, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef } from '@angular/core';
-import { Tab } from 'projects/app-toolbox/src/app/core';
+import { PanelTab } from 'projects/app-toolbox/src/app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TabLayoutAcitons } from './tab-layout.actions';
 import { tabBaseReducer } from './tab-layout.reducer';
+import { TabLayoutMode } from './tab-layout.models';
 
-export type TabLayoutMode = 'left-only' | 'right-only' | 'both';
 
-type Payload = Tab<any>;
+type Payload = PanelTab<any>;
 interface MetaData {
   tabTitle?: string,
   tabTooltip?: string,

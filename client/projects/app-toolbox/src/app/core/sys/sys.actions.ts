@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { StandardActionsFactory } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { SchemaActionsFactory } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
@@ -17,14 +17,14 @@ export type SysAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class SysActions {
 
-  system_relevant_class = new StandardActionsFactory<Payload, SysSystemRelevantClass>
+  system_relevant_class = new SchemaActionsFactory<Payload, SysSystemRelevantClass>
     (this.ngRedux).createCrudActions(sysRoot, 'system_relevant_class');
 
   // analysis_type = new StandardActionsFactory<Payload, SysAnalysisType>
   //   (this.ngRedux).createCrudActions(sysRoot, 'analysis_type');
 
 
-  config = new StandardActionsFactory<Payload, SysConfigValue>
+  config = new SchemaActionsFactory<Payload, SysConfigValue>
     (this.ngRedux).createCrudActions(sysRoot, 'config');
 
   constructor(public ngRedux: NgRedux<IAppState>) { }

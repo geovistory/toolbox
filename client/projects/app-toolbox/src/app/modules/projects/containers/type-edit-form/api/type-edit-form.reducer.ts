@@ -1,3 +1,4 @@
+// TODO DELETE
 import { indexBy, prop } from 'ramda';
 import { Action } from 'redux';
 import { TypeEditForm } from './type-edit-form.models';

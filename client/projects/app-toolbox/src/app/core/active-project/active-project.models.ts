@@ -50,11 +50,11 @@ export type IconType = 'text' | 'table' | 'persistent-entity' | 'temporal-entity
 
 export interface Panel {
   id: number;
-  tabs: Tab<any>[];
+  tabs: PanelTab<any>[];
 }
 
 export type ListType = '' | 'entities' | 'sources' | 'analysis' | 'queries' | 'visuals' | 'stories' | 'settings';
-export interface Tab<D> {
+export interface PanelTab<D> {
   // wheter tab is active or not
   active: boolean;
   // the root component included in this tab, in dash separate minuscles: PeItDetailComponent -> 'entity-detail'

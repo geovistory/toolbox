@@ -4,8 +4,8 @@ import { getSpecificVersion, latestVersion, SubstoreComponent } from 'projects/a
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { DatDigital } from '@kleiolab/lib-sdk-lb3';
 import { DatChunk } from '@kleiolab/lib-sdk-lb3';
-import { SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabBase } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.models';

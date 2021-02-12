@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// start:ng42.barrel
+export { accountRootReducer } from './account.reducers';
+export { activeProjectReducer } from './active-project.reducer';
+export { informationReducer } from './entity-list.reducer';
+export { loadingBarReducer } from './loading-bar.reducer';
+export { notificationsReducer } from './notifications.reducer';
+export { createProjectsReducer } from './projects.reducers';
+export { sourceListReducer } from './source-list.reducer';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXJlZHV4L3NyYy9saWIvcmVkdXgtc3RvcmUvIiwic291cmNlcyI6WyJzdGF0ZS1ndWkvcmVkdWNlcnMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQ0EsbUNBQWMsb0JBQW9CLENBQUM7QUFDbkMscUNBQWMsMEJBQTBCLENBQUM7QUFDekMsbUNBQWMsdUJBQXVCLENBQUM7QUFDdEMsa0NBQWMsdUJBQXVCLENBQUM7QUFDdEMscUNBQWMseUJBQXlCLENBQUM7QUFDeEMsc0NBQWMscUJBQXFCLENBQUM7QUFDcEMsa0NBQWMsdUJBQXVCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBzdGFydDpuZzQyLmJhcnJlbFxuZXhwb3J0ICogZnJvbSAnLi9hY2NvdW50LnJlZHVjZXJzJztcbmV4cG9ydCAqIGZyb20gJy4vYWN0aXZlLXByb2plY3QucmVkdWNlcic7XG5leHBvcnQgKiBmcm9tICcuL2VudGl0eS1saXN0LnJlZHVjZXInO1xuZXhwb3J0ICogZnJvbSAnLi9sb2FkaW5nLWJhci5yZWR1Y2VyJztcbmV4cG9ydCAqIGZyb20gJy4vbm90aWZpY2F0aW9ucy5yZWR1Y2VyJztcbmV4cG9ydCAqIGZyb20gJy4vcHJvamVjdHMucmVkdWNlcnMnO1xuZXhwb3J0ICogZnJvbSAnLi9zb3VyY2UtbGlzdC5yZWR1Y2VyJztcbi8vIGVuZDpuZzQyLmJhcnJlbFxuXG4iXX0=

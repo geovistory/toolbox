@@ -120,7 +120,7 @@
     "ts-mockito": "^2.5.0",
     "ts-node": "~3.0.4",
     "tsickle": "^0.37.0",
-    "tslint": "~5.3.2",
+    "tslint": "^5.5.0",
     "typescript": "~3.5.3",
     "typings-quill-delta": "0.0.2",
     "webpack-bundle-analyzer": "^4.4.0"

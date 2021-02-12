@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ProjectCrm, SubstoreComponent, SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { SysSelector } from 'projects/app-toolbox/src/app/core/sys/sys.service';
 import { ClassAndTypePk } from 'projects/app-toolbox/src/app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { Information } from 'projects/app-toolbox/src/app/modules/information/containers/entity-list/api/entity-list.models';

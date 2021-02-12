@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
 import { Flattener, storeFlattened } from 'projects/app-toolbox/src/app/core/redux-store/flattener';
-import { StandardEpicsFactory } from "projects/app-toolbox/src/app/core/redux-store/StandardEpicsFactory";
+import { SchemaEpicsFactory } from "projects/app-toolbox/src/app/core/redux-store/schema-epics-factory";
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { InfActions } from '../inf/inf.actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProActions } from '../pro/pro.actions';
-import { LoadActionMeta, ModifyActionMeta } from '../redux-store/actions';
+import { LoadActionMeta, ModifyActionMeta } from '../redux-store/schema-actions-factory';
 import { SchemaObject } from '../redux-store/model';
 import { SchemaObjectService } from '../redux-store/schema-object.service';
 import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, LoadVersionAction } from './dat.actions';
@@ -29,16 +29,16 @@ export class DatEpics {
   ) { }
 
   public createEpics(): Epic {
-    const digitalEpicsFactory = new StandardEpicsFactory<DigitalSlice, DatDigital>
+    const digitalEpicsFactory = new SchemaEpicsFactory<DigitalSlice, DatDigital>
       (datRoot, 'digital', this.datActions.digital, this.notification);
 
-    const chunkEpicsFactory = new StandardEpicsFactory<ChunkSlice, DatChunk>
+    const chunkEpicsFactory = new SchemaEpicsFactory<ChunkSlice, DatChunk>
       (datRoot, 'chunk', this.datActions.chunk, this.notification);
 
-    const namespaceEpicsFactory = new StandardEpicsFactory<NamespaceSlice, DatNamespace>
+    const namespaceEpicsFactory = new SchemaEpicsFactory<NamespaceSlice, DatNamespace>
       (datRoot, 'namespace', this.datActions.namespace, this.notification);
 
-    const columnEpicsFactory = new StandardEpicsFactory<ColumnSlice, DatColumn>
+    const columnEpicsFactory = new SchemaEpicsFactory<ColumnSlice, DatColumn>
       (datRoot, 'column', this.datActions.column, this.notification);
 
     return combineEpics(

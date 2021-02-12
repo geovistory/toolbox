@@ -1,7 +1,7 @@
 
 import { takeUntil, map } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Tab } from 'projects/app-toolbox/src/app/core';
+import { PanelTab } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { Observable, Subject, combineLatest } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { Observable, Subject, combineLatest } from 'rxjs';
 export class TabHandleComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  @Input() tab: Tab<any>;
+  @Input() tab: PanelTab<any>;
   @Output() activateTab = new EventEmitter<void>()
   @Output() closeTab = new EventEmitter<void>()
 

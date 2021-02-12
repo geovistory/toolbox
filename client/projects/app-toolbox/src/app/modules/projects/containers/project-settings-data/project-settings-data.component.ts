@@ -9,7 +9,7 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 import { U } from "projects/app-toolbox/src/app/core/util/util";
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
 import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from 'projects/app-toolbox/src/app/modules/class-config/components/class-config-dialog/class-config-dialog.component';

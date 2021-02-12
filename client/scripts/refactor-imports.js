@@ -2,7 +2,7 @@ const { readdirSync } = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
 
-const ROOT_DIRECTORY = "../projects/app-toolbox";
+const ROOT_DIRECTORY = "../projects/lib-redux";
 
 async function refactor(path) {
   console.log(`Refactor files in: ${path}`);
@@ -13,12 +13,12 @@ async function refactor(path) {
       "-p",
       path,
       "-s",
-      ".+information/shared.+",
+      ".+redux-store.+",
       "-t",
-      "@kleiolab/lib-config",
+      "../_helpers",
       "-f",
       "-e",
-      "DfhConfig",
+      "ReducerFactory",
     ]);
 
     child.stdout.pipe(process.stdout);

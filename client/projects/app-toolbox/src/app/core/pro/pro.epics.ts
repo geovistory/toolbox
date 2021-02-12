@@ -9,8 +9,8 @@ import { Flattener, storeFlattened } from 'projects/app-toolbox/src/app/core/red
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProProject, ProProjectApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../redux-store/actions';
-import { StandardEpicsFactory } from '../redux-store/StandardEpicsFactory';
+import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../redux-store/schema-actions-factory';
+import { SchemaEpicsFactory } from '../redux-store/schema-epics-factory';
 import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkStatementAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
 import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { SchemaObject } from '../redux-store/model';
@@ -38,25 +38,25 @@ export class ProEpics {
   ) { }
 
   public createEpics(): Epic {
-    const proProjectEpicsFactory = new StandardEpicsFactory<ProProjectSlice, ProProject>
+    const proProjectEpicsFactory = new SchemaEpicsFactory<ProProjectSlice, ProProject>
       (proRoot, 'project', this.proActions.project, this.notification);
 
-    const proInfoProjRelEpicsFactory = new StandardEpicsFactory<ProInfoProjRelSlice, ProInfoProjRel>
+    const proInfoProjRelEpicsFactory = new SchemaEpicsFactory<ProInfoProjRelSlice, ProInfoProjRel>
       (proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
 
-    const proDfhClassProjRelEpicsFactory = new StandardEpicsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>
+    const proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>
       (proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
 
-    const proDfhProfileProjRelEpicsFactory = new StandardEpicsFactory<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>
+    const proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>
       (proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
 
-    const proClassFieldConfigEpicsFactory = new StandardEpicsFactory<ProClassFieldConfigSlice, ProClassFieldConfig>
+    const proClassFieldConfigEpicsFactory = new SchemaEpicsFactory<ProClassFieldConfigSlice, ProClassFieldConfig>
       (proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
 
-    const proTextPropertyEpicsFactory = new StandardEpicsFactory<ProTextPropertySlice, ProTextProperty>
+    const proTextPropertyEpicsFactory = new SchemaEpicsFactory<ProTextPropertySlice, ProTextProperty>
       (proRoot, 'text_property', this.proActions.text_property, this.notification);
 
-    const proAnalysisEpicsFactory = new StandardEpicsFactory<ProAnalysisSlice, ProAnalysis>
+    const proAnalysisEpicsFactory = new SchemaEpicsFactory<ProAnalysisSlice, ProAnalysis>
       (proRoot, 'analysis', this.proActions.analysis, this.notification);
 
 

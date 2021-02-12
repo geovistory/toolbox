@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DatChunk, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { U } from 'projects/app-toolbox/src/app/core/util/util';
 import { IAppState } from '../redux-store/model';
 import { DatClassColumnMapping } from "@kleiolab/lib-sdk-lb4";
@@ -11,7 +11,7 @@ import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, Namespa
 
 export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number }
 
-export class DigitalActionsFactory extends StandardActionsFactory<DigitalSlice, DatDigital> {
+export class DigitalActionsFactory extends SchemaActionsFactory<DigitalSlice, DatDigital> {
 
   // Suffixes of load action types
   static readonly LOAD_VERSION = 'LOAD_VERSION';
@@ -47,7 +47,7 @@ export class DigitalActionsFactory extends StandardActionsFactory<DigitalSlice, 
 
 export interface LoadChunksOfDigitalAction extends LoadActionMeta { pkDigital: number }
 
-export class ChunkActionsFactory extends StandardActionsFactory<ChunkSlice, DatChunk> {
+export class ChunkActionsFactory extends SchemaActionsFactory<ChunkSlice, DatChunk> {
 
   // Suffixes of load action types
   static readonly CHUNKS_OF_DIGITAL = 'CHUNKS_OF_DIGITAL';
@@ -83,7 +83,7 @@ export class ChunkActionsFactory extends StandardActionsFactory<ChunkSlice, DatC
 
 export interface LoadColumnsOfTableAction extends LoadActionMeta { pkDigital: number }
 
-export class ColumnActionsFactory extends StandardActionsFactory<ColumnSlice, DatColumn> {
+export class ColumnActionsFactory extends SchemaActionsFactory<ColumnSlice, DatColumn> {
 
   // Suffixes of load action types
   static readonly COLUMNS_OF_TABLE = 'COLUMNS_OF_TABLE';
@@ -126,11 +126,11 @@ export class DatActions {
 
   column = new ColumnActionsFactory(this.ngRedux).createActions()
 
-  class_column_mapping = new StandardActionsFactory<ClassColumnMappingSlice, DatClassColumnMapping>(this.ngRedux).createCrudActions(datRoot, 'class_column_mapping')
+  class_column_mapping = new SchemaActionsFactory<ClassColumnMappingSlice, DatClassColumnMapping>(this.ngRedux).createCrudActions(datRoot, 'class_column_mapping')
 
-  namespace = new StandardActionsFactory<NamespaceSlice, DatNamespace>(this.ngRedux).createCrudActions(datRoot, 'namespace')
+  namespace = new SchemaActionsFactory<NamespaceSlice, DatNamespace>(this.ngRedux).createCrudActions(datRoot, 'namespace')
 
-  text_property = new StandardActionsFactory<TextPropertySlice, DatTextProperty>(this.ngRedux).createCrudActions(datRoot, 'text_property')
+  text_property = new SchemaActionsFactory<TextPropertySlice, DatTextProperty>(this.ngRedux).createCrudActions(datRoot, 'text_property')
 
   constructor(public ngRedux: NgRedux<IAppState>) { }
 

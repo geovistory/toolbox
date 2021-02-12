@@ -7,7 +7,7 @@ import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-p
 import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
 import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
 import { SchemaSelectorsService } from 'projects/app-toolbox/src/app/core/redux-queries/services/schema-selectors.service';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { ByPk, IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { DatChunk, DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";

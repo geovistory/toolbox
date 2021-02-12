@@ -5,7 +5,7 @@ import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, takeUntil, first } from 'rxjs/operators';
 import { Subfield } from '../components/properties-tree/properties-tree.models';
-import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
 import { PaginatedStatementList } from 'projects/app-toolbox/src/app/core/inf/inf.actions';

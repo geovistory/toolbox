@@ -1,4 +1,5 @@
-import { TabLayoutMode } from './tab-layout';
+// TODO DELETE
+export type TabLayoutMode = 'left-only' | 'right-only' | 'both';
 
 // Class of this slice of store
 export class TabBase {

@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { AccountList, BoAccount, BoAccounts } from './api/account-list.models';
 import { AccountListAPIEpics } from './api/account-list.epics';
 import { AccountListAPIActions } from './api/account-list.actions';

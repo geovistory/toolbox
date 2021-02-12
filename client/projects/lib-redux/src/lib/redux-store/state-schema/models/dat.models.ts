@@ -1,9 +1,8 @@
 import { DatColumn, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { DatClassColumnMapping, DatDigital } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../root/models';
-import { DatDigital } from "@kleiolab/lib-sdk-lb4";
 
 
-import { DatClassColumnMapping } from "@kleiolab/lib-sdk-lb4";
 
 
 export class DigitalSlice {

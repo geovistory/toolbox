@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { Subject } from 'rxjs';
 
 

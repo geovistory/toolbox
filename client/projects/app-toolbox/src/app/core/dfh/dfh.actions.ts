@@ -2,7 +2,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { filter } from 'rxjs/operators';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
@@ -13,7 +13,7 @@ import { DfhClass } from "@kleiolab/lib-sdk-lb4";
 import { IAppState } from '../redux-store/model';
 
 
-export class DfhProfileActionFactory extends StandardActionsFactory<Payload, DfhProfile> {
+export class DfhProfileActionFactory extends SchemaActionsFactory<Payload, DfhProfile> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -48,7 +48,7 @@ export class DfhProfileActionFactory extends StandardActionsFactory<Payload, Dfh
 }
 
 
-export class DfhClassActionFactory extends StandardActionsFactory<Payload, DfhClass> {
+export class DfhClassActionFactory extends SchemaActionsFactory<Payload, DfhClass> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -83,7 +83,7 @@ export class DfhClassActionFactory extends StandardActionsFactory<Payload, DfhCl
 }
 
 
-export class DfhPropertyActionFactory extends StandardActionsFactory<Payload, DfhProperty> {
+export class DfhPropertyActionFactory extends SchemaActionsFactory<Payload, DfhProperty> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -117,7 +117,7 @@ export class DfhPropertyActionFactory extends StandardActionsFactory<Payload, Df
   }
 }
 
-export class DfhLabelActionFactory extends StandardActionsFactory<Payload, DfhLabel> {
+export class DfhLabelActionFactory extends SchemaActionsFactory<Payload, DfhLabel> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';

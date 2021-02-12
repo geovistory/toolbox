@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":4,"exports":[{"from":"./actions"},{"from":"./epics"},{"from":"./models"},{"from":"./models/active-project"},{"from":"./reducers"}],"metadata":{},"origins":{},"importAs":"@kleiolab/lib-redux/src/lib/redux-store"}

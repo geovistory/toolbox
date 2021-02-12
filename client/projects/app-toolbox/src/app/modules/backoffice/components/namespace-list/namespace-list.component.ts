@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core'
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { NamespaceList } from './api/namespace-list.models';
 import { NamespaceListAPIEpics } from './api/namespace-list.epics';
 import { NamespaceListAPIActions } from './api/namespace-list.actions';

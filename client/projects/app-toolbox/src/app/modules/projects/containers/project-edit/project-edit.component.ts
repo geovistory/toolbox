@@ -5,7 +5,7 @@ import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, 
 import { MatDialog } from '@angular/material';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
-import { ListType, Tab } from 'projects/app-toolbox/src/app/core';
+import { ListType, PanelTab } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { SDKStorage } from '@kleiolab/lib-sdk-lb3';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -35,7 +35,7 @@ export class OnActivateTabDirective {
 
 
 
-export interface TabBody extends Tab<any> {
+export interface TabBody extends PanelTab<any> {
   panelId: number;
   panelIndex: number;
   tabIndex: number;
@@ -209,7 +209,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     return index; // or item.id
   }
 
-  trackByPath(index, item: Tab<any>) {
+  trackByPath(index, item: PanelTab<any>) {
     return item.path.join('');
   }
 

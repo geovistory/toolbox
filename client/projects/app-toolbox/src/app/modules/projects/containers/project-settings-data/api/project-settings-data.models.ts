@@ -1,3 +1,5 @@
+// TODO DELETE
+
 import { ClassConfig } from 'projects/app-toolbox/src/app/core';
 
 export type EntityType = 'teEnt' | 'peIt' | 'other';

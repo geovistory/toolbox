@@ -5,7 +5,7 @@ import { Observable, combineLatest, pipe, of } from 'rxjs';
 import { filter, first, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel, InfDimension } from '@kleiolab/lib-sdk-lb3';
-import { PaginateByParam } from '../redux-store/actions';
+import { PaginateByParam } from '../redux-store/schema-actions-factory';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 import { infDefinitions, infRoot, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementByObject, indexStatementByObject } from './inf.config';
 import { values } from 'd3';

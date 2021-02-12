@@ -25,7 +25,7 @@ import { EntityDetail } from '../state/models';
 import { SysSelector } from '../sys/sys.service';
 import { TabSelector } from '../tab/tab.service';
 import { ActiveProjectActions } from './active-project.action';
-import { ListType, Panel, ProjectDetail, RamSource, Tab, TypesByPk } from './active-project.models';
+import { ListType, Panel, ProjectDetail, RamSource, PanelTab, TypesByPk } from './active-project.models';
 
 
 
@@ -284,7 +284,7 @@ export class ActiveProjectService {
   closeTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
   }
-  addTab<D>(tab: Tab<D>) {
+  addTab<D>(tab: PanelTab<D>) {
     this.ngRedux.dispatch(this.actions.addTab(tab))
   }
   focusPanel(panelIndex: number) {

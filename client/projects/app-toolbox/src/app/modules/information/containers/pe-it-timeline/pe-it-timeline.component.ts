@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { SubstoreComponent, TeEntAccentuation } from 'projects/app-toolbox/src/app/core';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from 'projects/app-toolbox/src/app/modules/timeline/models/timeline';
 import { Observable, Subject } from 'rxjs';
 

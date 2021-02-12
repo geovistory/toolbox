@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from 'projects/app-toolbox/src/app/core/redux-store/StandardEpicsFactory';
+import { SchemaEpicsFactory } from 'projects/app-toolbox/src/app/core/redux-store/schema-epics-factory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { SystemConfigurationService } from "@kleiolab/lib-sdk-lb4";
 import { SysConfigValue } from "@kleiolab/lib-sdk-lb4";
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 import { SysSystemRelevantClassApi } from '@kleiolab/lib-sdk-lb3';
-import { ModifyActionMeta } from '../redux-store/actions';
+import { ModifyActionMeta } from '../redux-store/schema-actions-factory';
 import { SysActions } from './sys.actions';
 import { sysRoot } from './sys.config';
 import { SysConfigSlice, SysRelevantClassSlice } from './sys.models';
@@ -24,13 +24,13 @@ export class SysEpics {
   ) { }
 
   public createEpics(): Epic {
-    const systemRelevantClassEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysSystemRelevantClass>
+    const systemRelevantClassEpicsFactory = new SchemaEpicsFactory<SysRelevantClassSlice, SysSystemRelevantClass>
       (sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
 
     // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
     //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
 
-    const configEpicsFactory = new StandardEpicsFactory<SysConfigSlice, SysConfigValue>
+    const configEpicsFactory = new SchemaEpicsFactory<SysConfigSlice, SysConfigValue>
       (sysRoot, 'config', this.actions.config, this.notification);
 
 

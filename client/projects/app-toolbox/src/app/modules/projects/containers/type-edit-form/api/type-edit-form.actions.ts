@@ -1,3 +1,4 @@
+// TODO DELETE
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -49,10 +50,10 @@ export class TypeEditFormAPIActions {
   /*********************************************************************
   *  Method to distroy the slice of store
   *********************************************************************/
- @dispatch()
- destroy = (): TypeEditFormAPIAction => ({
-   type: TypeEditFormAPIActions.DESTROY,
-   meta: null,
-   payload: null
- })
+  @dispatch()
+  destroy = (): TypeEditFormAPIAction => ({
+    type: TypeEditFormAPIActions.DESTROY,
+    meta: null,
+    payload: null
+  })
 }

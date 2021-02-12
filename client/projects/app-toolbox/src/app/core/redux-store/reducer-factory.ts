@@ -2,7 +2,7 @@ import { U } from "projects/app-toolbox/src/app/core/util/util";
 import { FluxStandardAction } from "flux-standard-action";
 import { clone, equals, indexBy, omit, values, keys } from "ramda";
 import { combineReducers, Reducer, AnyAction } from "redux";
-import { LoadPageMeta, PaginateByParam, LoadPageSucceededMeta } from "./actions";
+import { LoadPageMeta, PaginateByParam, LoadPageSucceededMeta } from "./schema-actions-factory";
 import { composeReducers } from '@angular-redux/form';
 
 export const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap'

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';

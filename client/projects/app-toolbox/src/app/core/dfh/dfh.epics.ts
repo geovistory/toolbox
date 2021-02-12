@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from 'projects/app-toolbox/src/app/core/redux-store/StandardEpicsFactory';
+import { SchemaEpicsFactory } from 'projects/app-toolbox/src/app/core/redux-store/schema-epics-factory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { LoadActionMeta } from '../redux-store/actions';
+import { LoadActionMeta } from '../redux-store/schema-actions-factory';
 import { DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
 import { DfhProperty } from "@kleiolab/lib-sdk-lb4";
 import { DfhClassControllerService } from "@kleiolab/lib-sdk-lb4";
@@ -25,10 +25,10 @@ export class DfhEpics {
   ) { }
 
   public createEpics(): Epic {
-    const dfhProfileEpicsFactory = new StandardEpicsFactory<DfhProfileSlice, DfhProfile>('dfh', 'profile', this.actions.profile, this.notification);
-    const dfhClassEpicsFactory = new StandardEpicsFactory<DfhClassSlice, DfhClass>('dfh', 'klass', this.actions.klass, this.notification);
-    const dfhLabelEpicsFactory = new StandardEpicsFactory<DfhLabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
-    const dfhPropertyEpicsFactory = new StandardEpicsFactory<DfhPropertySlice, DfhProperty>('dfh', 'property', this.actions.property, this.notification);
+    const dfhProfileEpicsFactory = new SchemaEpicsFactory<DfhProfileSlice, DfhProfile>('dfh', 'profile', this.actions.profile, this.notification);
+    const dfhClassEpicsFactory = new SchemaEpicsFactory<DfhClassSlice, DfhClass>('dfh', 'klass', this.actions.klass, this.notification);
+    const dfhLabelEpicsFactory = new SchemaEpicsFactory<DfhLabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
+    const dfhPropertyEpicsFactory = new SchemaEpicsFactory<DfhPropertySlice, DfhProperty>('dfh', 'property', this.actions.property, this.notification);
 
     return combineEpics(
       // Profile Loaders

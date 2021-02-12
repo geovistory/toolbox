@@ -27,14 +27,6 @@
       "dom"
     ],
     "paths": {
-      "@kleiolab/lib-core/*": [
-        "projects/lib-core/*",
-        "projects/lib-core"
-      ],
-      "@kleiolab/lib-core": [
-        "dist/lib-core/*",
-        "dist/lib-core"
-      ],
       "@kleiolab/lib-sdk-lb3/*": [
         "dist/lib-sdk-lb3/*"
       ],
@@ -59,6 +51,18 @@
       "@kleiolab/lib-config": [
         "dist/lib-config"
       ],
+      "lib-sockets": [
+        "dist/lib-sockets"
+      ],
+      "lib-sockets/*": [
+        "dist/lib-sockets/*"
+      ],
+      "lib-redux": [
+        "dist/lib-redux"
+      ],
+      "lib-redux/*": [
+        "dist/lib-redux/*"
+      ]
     }
   },
   "exclude": [

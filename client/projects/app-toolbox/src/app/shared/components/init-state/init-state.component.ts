@@ -1,7 +1,7 @@
 import { DevToolsExtension, NgRedux, ObservableStore } from '@angular-redux/store';
 import { Component, Input, OnInit, AfterViewInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { ActiveProjectActions, ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project';
-import { INIT_SANDBOX_STATE, sandboxStateReducer } from 'projects/app-toolbox/src/app/core/redux-store/reducers';
+import { INIT_SANDBOX_STATE, sandboxStateReducer } from 'projects/app-toolbox/src/app/core/redux-store/root-reducer';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Subject, timer, Observable, combineLatest } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

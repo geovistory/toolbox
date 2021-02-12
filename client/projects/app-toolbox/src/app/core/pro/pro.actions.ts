@@ -3,7 +3,7 @@ import { filter } from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ProInfoProjRel, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProProject, ProDfhProfileProjRel } from '@kleiolab/lib-sdk-lb3';
-import { LoadActionMeta, StandardActionsFactory, ActionResultObservable, SucceedActionMeta, LoadByPkANsVersionActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/actions';
+import { LoadActionMeta, SchemaActionsFactory, ActionResultObservable, SucceedActionMeta, LoadByPkANsVersionActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { proRoot } from './pro.config';
 import { ProInfoProjRelSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProAnalysisSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -16,7 +16,7 @@ type Payload = ProInfoProjRelSlice;
 export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number };
 
 
-export class ProProjectActionFactory extends StandardActionsFactory<Payload, ProProject> {
+export class ProProjectActionFactory extends SchemaActionsFactory<Payload, ProProject> {
 
   // Suffixes of load action types
   static readonly OF_ACCOUNT = 'OF_ACCOUNT';
@@ -82,7 +82,7 @@ export interface MarkStatementAsFavoriteActionMeta {
   pkStatement: number
   isOutgoing: boolean
 }
-export class ProInfoProjRelActionFactory extends StandardActionsFactory<Payload, ProInfoProjRel> {
+export class ProInfoProjRelActionFactory extends SchemaActionsFactory<Payload, ProInfoProjRel> {
 
   // Suffixes of load action types
   static readonly MARK_ROLE_AS_FAVORITE = 'MARK_ROLE_AS_FAVORITE';
@@ -119,7 +119,7 @@ export class ProInfoProjRelActionFactory extends StandardActionsFactory<Payload,
 }
 
 
-export class ProDfhClassProjRelActionFactory extends StandardActionsFactory<Payload, ProDfhClassProjRel> {
+export class ProDfhClassProjRelActionFactory extends SchemaActionsFactory<Payload, ProDfhClassProjRel> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -154,7 +154,7 @@ export class ProDfhClassProjRelActionFactory extends StandardActionsFactory<Payl
 }
 
 
-export class ProDfhProfileProjRelActionFactory extends StandardActionsFactory<Payload, ProDfhProfileProjRel> {
+export class ProDfhProfileProjRelActionFactory extends SchemaActionsFactory<Payload, ProDfhProfileProjRel> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -188,7 +188,7 @@ export class ProDfhProfileProjRelActionFactory extends StandardActionsFactory<Pa
   }
 }
 
-export class ProClassFieldConfigActionFactory extends StandardActionsFactory<Payload, ProClassFieldConfig> {
+export class ProClassFieldConfigActionFactory extends SchemaActionsFactory<Payload, ProClassFieldConfig> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -222,7 +222,7 @@ export class ProClassFieldConfigActionFactory extends StandardActionsFactory<Pay
   }
 }
 
-export class ProTextPropertyActionFactory extends StandardActionsFactory<Payload, ProTextProperty> {
+export class ProTextPropertyActionFactory extends SchemaActionsFactory<Payload, ProTextProperty> {
 
   // Suffixes of load action types
   static readonly OF_PROJECT = 'OF_PROJECT';
@@ -256,7 +256,7 @@ export class ProTextPropertyActionFactory extends StandardActionsFactory<Payload
   }
 }
 
-export class ProAnalysisActionFactory extends StandardActionsFactory<ProAnalysisSlice, ProAnalysis> {
+export class ProAnalysisActionFactory extends SchemaActionsFactory<ProAnalysisSlice, ProAnalysis> {
 
   // Suffixes of load action types
   static readonly BY_PK_AND_VERSION = 'BY_PK_AND_VERSION';

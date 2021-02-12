@@ -7,12 +7,12 @@ import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
 import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
-import { StandardActionsFactory } from './actions';
+import { SchemaActionsFactory } from './schema-actions-factory';
 
-export class ModelFlattener<Payload, Model> {
+class ModelFlattener<Payload, Model> {
   items: Model[]
   constructor(
-    public actions: StandardActionsFactory<Payload, Model>,
+    public actions: SchemaActionsFactory<Payload, Model>,
     public modelDefinition: any,
     public flattenCb: (items: Model[]) => void,
   ) { }

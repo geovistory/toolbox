@@ -5,13 +5,13 @@ import { Observable } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 import { NotificationsAPIActions } from "../notifications/components/api/notifications.actions";
 import { ProInfoProjRelApi, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { ModifyActionMeta } from "../redux-store/actions";
-import { StandardEpicsFactory } from "../redux-store/StandardEpicsFactory";
+import { ModifyActionMeta } from "../redux-store/schema-actions-factory";
+import { SchemaEpicsFactory } from "../redux-store/schema-epics-factory";
 import { InfActionFactory } from "./inf-action-factory";
 import { pathOr } from "ramda";
 import { ProActions } from '../pro/pro.actions';
 
-export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payload, Model> {
+export class InfEpicsFactory<Payload, Model> extends SchemaEpicsFactory<Payload, Model> {
   constructor(
     public actionPrefix: string,
     public modelName: string,

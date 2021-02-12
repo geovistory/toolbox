@@ -1,3 +1,4 @@
+// TODO DELETE
 export type RightPanelTab = 'linked-sources' | 'linked-digitals' | 'content-tree';
 
 export interface PeItDetailList { [pk_entity: number]: EntityDetail };

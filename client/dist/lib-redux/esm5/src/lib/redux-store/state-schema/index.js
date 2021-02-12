@@ -1,0 +1,9 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// start:ng42.barrel
+export { DigitalActionsFactory, ChunkActionsFactory, ColumnActionsFactory, DatActions, DfhProfileActionFactory, DfhClassActionFactory, DfhPropertyActionFactory, DfhLabelActionFactory, DfhActions, InfPersistentItemActionFactory, InfTemporalEntityActionFactory, InfStatementActionFactory, InfTextPropertyActionFactory, InfActions, ProProjectActionFactory, ProInfoProjRelActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProClassFieldConfigActionFactory, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProActions, SysActions, TabActions, WarActions } from './actions';
+export { DigitalSlice, ChunkSlice, ColumnSlice, ClassColumnMappingSlice, TextPropertySlice, NamespaceSlice, DfhProfileSlice, DfhClassSlice, DfhPropertySlice, DfhLabelSlice, InfPersistentItemSlice, InfTemporalEntitySlice, InfStatementSlice, InfPlaceSlice, InfTimePrimitiveSlice, InfLanguageSlice, InfAppellationSlice, InfLangStringSlice, InfDimensionSlice, InfTextPropertySlice, TabCellSlice } from './models';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXJlZHV4L3NyYy9saWIvcmVkdXgtc3RvcmUvIiwic291cmNlcyI6WyJzdGF0ZS1zY2hlbWEvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQ0EsbWxCQUFjLFdBQVcsQ0FBQztBQUMxQiw4WUFBYyxVQUFVLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBzdGFydDpuZzQyLmJhcnJlbFxuZXhwb3J0ICogZnJvbSAnLi9hY3Rpb25zJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzJztcbi8vIGVuZDpuZzQyLmJhcnJlbFxuXG4iXX0=

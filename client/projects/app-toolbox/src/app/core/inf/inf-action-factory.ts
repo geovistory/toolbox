@@ -1,4 +1,4 @@
-import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "projects/app-toolbox/src/app/core/redux-store/actions";
+import { SchemaActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "projects/app-toolbox/src/app/core/redux-store/schema-actions-factory";
 import { Observable } from "rxjs";
 import { NgRedux } from "@angular-redux/store";
 import { U } from "projects/app-toolbox/src/app/core/util/util";
@@ -7,7 +7,7 @@ import { Injectable } from "@angular/core";
 import { IAppState } from '../redux-store/model';
 
 @Injectable()
-export class InfActionFactory<Payload, Model> extends StandardActionsFactory<Payload, Model> {
+export class InfActionFactory<Payload, Model> extends SchemaActionsFactory<Payload, Model> {
 
 
   /**

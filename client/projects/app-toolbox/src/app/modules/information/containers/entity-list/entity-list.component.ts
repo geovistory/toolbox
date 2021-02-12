@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SubstoreComponent, SysConfig } from 'projects/app-toolbox/src/app/core';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
 import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { ClassAndTypePk } from 'projects/app-toolbox/src/app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';

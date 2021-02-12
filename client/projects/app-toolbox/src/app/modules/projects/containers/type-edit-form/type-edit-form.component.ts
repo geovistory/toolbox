@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, EventEmitter, HostBinding, Inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { EntityDetail } from 'projects/app-toolbox/src/app/core';
 import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/epics';
+import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
 import { Observable, Subject } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';

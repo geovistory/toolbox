@@ -397,6 +397,76 @@
           }
         }
       }
+    },
+    "lib-sockets": {
+      "projectType": "library",
+      "root": "projects/lib-sockets",
+      "sourceRoot": "projects/lib-sockets/src",
+      "prefix": "gv",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/lib-sockets/tsconfig.lib.json",
+            "project": "projects/lib-sockets/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/lib-sockets/src/test.ts",
+            "tsConfig": "projects/lib-sockets/tsconfig.spec.json",
+            "karmaConfig": "projects/lib-sockets/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/lib-sockets/tsconfig.lib.json",
+              "projects/lib-sockets/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "lib-redux": {
+      "projectType": "library",
+      "root": "projects/lib-redux",
+      "sourceRoot": "projects/lib-redux/src",
+      "prefix": "gv",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/lib-redux/tsconfig.lib.json",
+            "project": "projects/lib-redux/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/lib-redux/src/test.ts",
+            "tsConfig": "projects/lib-redux/tsconfig.spec.json",
+            "karmaConfig": "projects/lib-redux/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/lib-redux/tsconfig.lib.json",
+              "projects/lib-redux/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   }
 }
