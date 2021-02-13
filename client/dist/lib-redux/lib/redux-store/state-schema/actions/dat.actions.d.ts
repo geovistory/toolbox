@@ -1,8 +1,8 @@
 import { NgRedux } from '@angular-redux/store';
 import { DatChunk, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
-import { IAppState } from '../../root/models';
-import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models';
+import { IAppState } from '../../root/models/model';
+import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models/dat.models';
 import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 export declare class DigitalActionsFactory extends SchemaActionsFactory<DigitalSlice, DatDigital> {
     ngRedux: NgRedux<IAppState>;

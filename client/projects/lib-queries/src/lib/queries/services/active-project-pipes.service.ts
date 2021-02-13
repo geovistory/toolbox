@@ -6,7 +6,7 @@ import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, first, switchMap } from 'rxjs/operators';
-import { cache } from '../decorators';
+import { cache } from '../decorators/method-decorators';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
 @Injectable({

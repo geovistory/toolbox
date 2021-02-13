@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { SysSystemRelevantClass, SysSystemRelevantClassApi } from '@kleiolab/lib-sdk-lb3';
-import { SysConfigValue, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4/public-api';
+import { SysConfigValue, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { map } from 'rxjs/operators';
-import { SysActions } from '../actions';
-import { SysConfigSlice, SysRelevantClassSlice } from '../models';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { sysRoot } from '../reducer-configs';
-import { ModifyActionMeta, SchemaEpicsFactory } from '../_helpers';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { SysActions } from '../actions/sys.actions';
+import { SysConfigSlice, SysRelevantClassSlice } from '../models/sys.models';
+import { sysRoot } from '../reducer-configs/sys.config';
+import { ModifyActionMeta } from '../_helpers/schema-actions-factory';
+import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
+
 
 
 @Injectable()

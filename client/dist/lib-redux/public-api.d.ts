@@ -1,1 +1,1 @@
-export * from './lib/redux-store/index';
+export * from './lib/redux-store/public-api';

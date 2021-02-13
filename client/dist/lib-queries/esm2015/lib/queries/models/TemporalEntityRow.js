@@ -1,0 +1,10 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/queries/models/TemporalEntityRow.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function TemporalEntityRow() { }
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiVGVtcG9yYWxFbnRpdHlSb3cuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXF1ZXJpZXMvIiwic291cmNlcyI6WyJsaWIvcXVlcmllcy9tb2RlbHMvVGVtcG9yYWxFbnRpdHlSb3cudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7QUFDQSx1Q0FFQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFRlbXBvcmFsRW50aXR5Q2VsbCB9IGZyb20gJy4vVGVtcG9yYWxFbnRpdHlDZWxsJztcbmV4cG9ydCBpbnRlcmZhY2UgVGVtcG9yYWxFbnRpdHlSb3cge1xuICAgIFtrZXk6IHN0cmluZ106IFRlbXBvcmFsRW50aXR5Q2VsbDtcbn1cbiJdfQ==

@@ -18,7 +18,7 @@ class Selector {
     const all$ = this.ngRedux.select<ByPk<M>>([warRoot, this.model, indexKey])
 
     const key = (x: string | (string | number)[]): Observable<M> => {
-      const k = typeof x === 'string' ? x : x.map((part: string | number) => toString(part)).join('_'); ;
+      const k = typeof x === 'string' ? x : x.map((part: string | number) => toString(part)).join('_');;
 
       return this.ngRedux.select<M>([warRoot, this.model, indexKey, k])
     }
@@ -38,7 +38,9 @@ class WarEntityPreviewSelector extends Selector {
 }
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WarSelector extends WarActions {
 
   entity_preview$ = new WarEntityPreviewSelector(this.ngRedux, warDefinitions, 'entity_preview');

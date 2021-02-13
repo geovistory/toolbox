@@ -1,6 +1,6 @@
 import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
-import { ByPk } from '../../root/models';
+import { ByPk } from '../../root/models/model';
 
 export interface ProProjectSlice {
   by_pk_entity?: ByPk<ProProject>;

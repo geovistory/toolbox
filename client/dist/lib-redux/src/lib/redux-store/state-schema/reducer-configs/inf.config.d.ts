@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from '../_helpers';
+import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 export declare const infRoot = "inf";
 export declare const infDefinitions: ReducerConfigCollection;
 /**

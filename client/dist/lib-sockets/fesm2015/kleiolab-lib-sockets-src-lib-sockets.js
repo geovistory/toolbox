@@ -1,5 +1,5 @@
-import { Injectable, Optional } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
+import { Injectable, Optional, NgModule, SkipSelf } from '@angular/core';
+import { Socket, SocketIoModule } from 'ngx-socket-io';
 import { WarActions } from '@kleiolab/lib-redux';
 
 /**
@@ -16,12 +16,6 @@ if (false) {
     /** @type {?} */
     SocketsConfig.prototype.baseUrl;
 }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -118,9 +112,50 @@ SysStatusSocket.ctorParameters = () => [
 
 /**
  * @fileoverview added by tsickle
- * Generated from: services/index.ts
+ * Generated from: sockets.module.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class SocketsModule {
+    /**
+     * @param {?=} parentModule
+     */
+    constructor(parentModule) {
+        if (parentModule) {
+            throw new Error('SocketsModule is already loaded. Import it in the AppModule only');
+        }
+    }
+    /**
+     * @param {?} config
+     * @return {?}
+     */
+    static forRoot(config) {
+        return {
+            ngModule: SocketsModule,
+            providers: [
+                { provide: SocketsConfig, useValue: config },
+                EntityPreviewSocket,
+                ImportTableSocket,
+                SysStatusSocket
+            ],
+        };
+    }
+}
+SocketsModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [
+                // components
+                ],
+                imports: [
+                    SocketIoModule,
+                ],
+                providers: [EntityPreviewSocket, ImportTableSocket, SysStatusSocket],
+                bootstrap: [ /** AppComponent **/]
+            },] }
+];
+/** @nocollapse */
+SocketsModule.ctorParameters = () => [
+    { type: SocketsModule, decorators: [{ type: Optional }, { type: SkipSelf }] }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -134,5 +169,5 @@ SysStatusSocket.ctorParameters = () => [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { EntityPreviewSocket, ImportTableSocket, SocketsConfig, SysStatusSocket };
+export { EntityPreviewSocket, ImportTableSocket, SocketsConfig, SocketsModule, SysStatusSocket };
 //# sourceMappingURL=kleiolab-lib-sockets-src-lib-sockets.js.map

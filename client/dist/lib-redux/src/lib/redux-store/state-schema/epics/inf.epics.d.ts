@@ -1,8 +1,10 @@
 import { InfPersistentItemApi, InfStatementApi, InfTemporalEntityApi, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
 import { Epic } from 'redux-observable-es6-compat';
-import { DatActions, InfActions, ProActions } from '../actions';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { SchemaObjectService } from '../_helpers';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { DatActions } from '../actions/dat.actions';
+import { InfActions } from '../actions/inf.actions';
+import { ProActions } from '../actions/pro.actions';
+import { SchemaObjectService } from '../services/schema-object.service';
 export declare class InfEpics {
     notification: NotificationsAPIActions;
     peItApi: InfPersistentItemApi;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectPreview } from '../models';
+import { ProjectPreview } from '../models/active-project.models';
 export type ProjectsAction = FluxStandardAction<ProjectPreview[], {}>;
 
 

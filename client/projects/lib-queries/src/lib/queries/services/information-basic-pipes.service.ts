@@ -6,11 +6,12 @@ import { CalendarType, combineLatestOrEmpty, Granularity, TimePrimitive, TimeSpa
 import { omit, values } from 'ramda';
 import { combineLatest, merge, Observable, of, pipe, BehaviorSubject } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { spyTag } from '../decorators';
-import { BasicStatementItem, Subfield } from '../models';
+import { spyTag } from '../decorators/method-decorators';
+import { BasicStatementItem, } from '../models/BasicStatementItem';
+import { Subfield } from '../models/Subfield';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
-import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4/public-api';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 
 
 

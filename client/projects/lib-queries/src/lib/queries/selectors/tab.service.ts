@@ -33,7 +33,9 @@ class TabCellSelections extends Selector {
 
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TabSelector extends TabActions {
 
   cell$ = new TabCellSelections(this.ngRedux, tabDefinitions, 'cell');

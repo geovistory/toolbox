@@ -2,9 +2,15 @@ import { NgRedux } from '@angular-redux/store';
 import { ProProjectApi } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Epic } from 'redux-observable-es6-compat';
-import { IAppState } from '../../root/models';
-import { DatActions, DfhActions, InfActions, ProActions, SysActions } from '../../state-schema/actions';
-import { ActiveProjectActions, LoadingBarActions, NotificationsAPIActions } from '../actions';
+import { IAppState } from '../../root/models/model';
+import { ActiveProjectActions } from '../../state-gui/actions/active-project.action';
+import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { DatActions } from '../../state-schema/actions/dat.actions';
+import { DfhActions } from '../../state-schema/actions/dfh.actions';
+import { InfActions } from '../../state-schema/actions/inf.actions';
+import { ProActions } from '../../state-schema/actions/pro.actions';
+import { SysActions } from '../../state-schema/actions/sys.actions';
 export declare class ActiveProjectEpics {
     private sys;
     private dat;

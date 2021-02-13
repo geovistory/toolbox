@@ -1,0 +1,50 @@
+import { indexBy, mapObjIndexed } from 'ramda';
+import { BehaviorSubject } from 'rxjs';
+import { MatTableDataSource } from '@angular/material';
+import { first, map, takeUntil } from 'rxjs/operators';
+export class TemporalEntityTable {
+    constructor(rows$, columDefs$, destroy$, listDefinition, customColumns) {
+        this.rows$ = rows$;
+        this.columDefs$ = columDefs$;
+        this.destroy$ = destroy$;
+        this.listDefinition = listDefinition;
+        this.dataSource = new MatTableDataSource();
+        // table view
+        this.dataColumnsMap$ = new BehaviorSubject({});
+        this.dataColumns$ = new BehaviorSubject([]);
+        this.displayedColumns$ = this.dataColumnsMap$.pipe(map((dataColumnsMap) => {
+            let checked = [];
+            for (const key in dataColumnsMap) {
+                if (dataColumnsMap[key])
+                    checked.push(key);
+            }
+            checked = [...customColumns.columnsBefore, ...checked, ...customColumns.columnsAfter];
+            if (checked.length === 0)
+                checked.push('_empty_');
+            return checked;
+        }));
+        this.displayedColumns$.pipe(takeUntil(destroy$)).subscribe();
+        this.columDefs$.pipe(first(fs => fs.length > 0), takeUntil(destroy$)).subscribe((fieldDefinitions) => {
+            const dataColumnsMap = mapObjIndexed((val, key, obj) => true, indexBy((l) => l.label, fieldDefinitions));
+            const circularField = fieldDefinitions.find(f => f.property.pkProperty === listDefinition.property.pkProperty);
+            if (circularField && circularField.targetMaxQuantity === 1) {
+                // hideCircularField
+                const circularCol = circularField.label;
+                dataColumnsMap[circularCol] = false;
+            }
+            this.dataColumnsMap$.next(dataColumnsMap);
+            const dataColumns = fieldDefinitions.map(fieldDefinition => ({ name: fieldDefinition.label, fieldDefinition }));
+            this.dataColumns$.next(dataColumns);
+            this.rows$.pipe(takeUntil(this.destroy$)).subscribe((rows) => {
+                this.dataSource.data = rows;
+            });
+        });
+    }
+    toggleCol(x) {
+        this.dataColumnsMap$.pipe(first()).subscribe(map => {
+            map[x] = !map[x];
+            this.dataColumnsMap$.next(map);
+        });
+    }
+}
+//# sourceMappingURL=TemporalEntityTable.js.map

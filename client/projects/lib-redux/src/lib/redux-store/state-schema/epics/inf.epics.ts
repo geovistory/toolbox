@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
+import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { SchemaObject } from '../../root/models';
-import { DatActions, FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeStatements, LoadPaginatedStatementListMeta, PaginatedStatementList, ProActions, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from '../actions';
-import { InfPersistentItemSlice, InfStatementSlice, InfTemporalEntitySlice, InfTextPropertySlice } from '../models';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { infRoot } from '../reducer-configs';
-import { Flattener, FluxActionObservable, InfEpicsFactory, ModifyActionMeta, PaginateByParam, SchemaObjectService, storeFlattened } from '../_helpers';
-import { Action } from 'redux';
+import { SchemaObject } from '../../root/models/model';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { DatActions } from '../actions/dat.actions';
+import { FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeStatements, LoadPaginatedStatementListMeta, PaginatedStatementList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from '../actions/inf.actions';
+import { ProActions } from '../actions/pro.actions';
+import { InfPersistentItemSlice, InfStatementSlice, InfTemporalEntitySlice, InfTextPropertySlice } from '../models/inf.models';
+import { infRoot } from '../reducer-configs/inf.config';
+import { SchemaObjectService } from '../services/schema-object.service';
+import { Flattener, storeFlattened } from '../_helpers/flattener';
+import { InfEpicsFactory } from '../_helpers/inf-epic-factory';
+import { FluxActionObservable, PaginateByParam, ModifyActionMeta } from '../_helpers/schema-actions-factory';
 
 @Injectable()
 export class InfEpics {

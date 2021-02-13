@@ -3,10 +3,18 @@ import { Action } from 'redux';
 import { ActionsObservable, combineEpics, Epic, StateObservable } from 'redux-observable-es6-compat';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { AccountEpics, ActiveProjectEpics, LoadingBarEpics, NotificationsAPIEpics } from '../state-gui/epics';
-import { DatEpics, DfhEpics, InfEpics, ProEpics, SysEpics } from '../state-schema/epics';
-import { ActionResolverEpics } from '../state-schema/_helpers';
-import { IAppState } from './models';
+import { LoadingBarEpics } from '../state-gui/epics/loading-bar.epics';
+import { NotificationsAPIEpics } from '../state-gui/epics/notifications.epics';
+import { ActiveProjectEpics } from '../state-gui/epics/active-project.epics';
+import { AccountEpics } from '../state-gui/epics/account.epics';
+import { SysEpics } from '../state-schema/epics/sys.epics';
+import { DfhEpics } from '../state-schema/epics/dfh.epics';
+import { InfEpics } from '../state-schema/epics/inf.epics';
+import { DatEpics } from '../state-schema/epics/dat.epics';
+import { ProEpics } from '../state-schema/epics/pro.epics';
+import { ActionResolverEpics } from '../state-schema/epics/action-resolver.epics';
+import { IAppState } from './models/model';
+
 
 @Injectable()
 export class RootEpics {

@@ -15,9 +15,11 @@ import { fieldsOfManifestationSingleton } from '../../../__tests__/helpers/data/
 import { project1 } from '../../../__tests__/helpers/data/positive-schema-objects/project-1';
 import { sysConfig } from '../../../__tests__/helpers/data/positive-schema-objects/sys-config';
 import { setAppState } from '../../../__tests__/helpers/set-app-state';
-import { Field, SubfieldType } from '../models';
+import { Field } from '../models/Field';
+import { SubfieldType } from '../models/SubfieldType';
 import { ReduxQueriesModule } from '../module/redux-queries.module';
 import { ConfigurationPipesService } from './configuration-pipes.service';
+import { SocketsModule } from '@kleiolab/lib-sockets';
 
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
@@ -28,6 +30,7 @@ describe('ConfigurationPipeService', () => {
     TestBed.configureTestingModule({
       imports: [
         SDKBrowserModule.forRoot(),
+        SocketsModule.forRoot({ baseUrl: '' }),
         ReduxQueriesModule
       ]
     });
@@ -198,7 +201,7 @@ describe('ConfigurationPipeService', () => {
     });
   })
 
-  fdescribe('#pipeBasicAndSpecificFields', () => {
+  describe('#pipeBasicAndSpecificFields', () => {
     it('should return correct fields of temporal entity', (done) => {
       // setAppState(ngRedux, IAppStateMock.state2)
       // const x = ngRedux.getState()
@@ -218,7 +221,7 @@ describe('ConfigurationPipeService', () => {
       //     done);
 
     });
-    fit('should return correct fields of manifestation singleton', (done) => {
+    it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeGv(new BehaviorSubject(fieldsOfManifestationSingleton), PK_DEFAULT_CONFIG_PROJECT)

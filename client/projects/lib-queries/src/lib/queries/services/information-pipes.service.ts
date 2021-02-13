@@ -5,19 +5,47 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState, PaginateByParam } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { CalendarType, combineLatestOrEmpty, Granularity, limitTo, sortAbc, switchMapOr, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
-
 import { equals, flatten, groupBy, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { cache, spyTag } from '../decorators';
+import { cache, spyTag } from '../decorators/method-decorators';
 import { timeSpanItemToTimeSpan } from '../functions/functions';
-import { AppellationItem, BasicStatementItem, ClassAndTypeNode, ClassAndTypeSelectModel, CtrlTimeSpanDialogResult, DimensionItem, EntityPreviewItem, EntityProperties, Field, ItemList, LangStringItem, LanguageItem, PlaceItem, PropertyOption, PropertySelectModel, StatementItem, Subfield, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../models';
+import { AppellationItem } from '../models/AppellationItem';
+import { BasicStatementItem } from '../models/BasicStatementItem';
+import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
+import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
+import { CtrlTimeSpanDialogResult } from '../models/CtrlTimeSpanDialogResult';
+import { DimensionItem } from '../models/DimensionItem';
+import { EntityPreviewItem } from '../models/EntityPreviewItem';
+import { EntityProperties } from '../models/EntityProperties';
+import { Field } from '../models/Field';
+import { ItemList } from '../models/ItemList';
+import { LangStringItem } from '../models/LangStringItem';
+import { LanguageItem } from '../models/LanguageItem';
+import { PlaceItem } from '../models/PlaceItem';
+import { PropertyOption } from '../models/PropertyOption';
+import { PropertySelectModel } from '../models/PropertySelectModel';
+import { StatementItem } from '../models/StatementItem';
+import { Subfield } from '../models/Subfield';
+import { TemporalEntityCell } from '../models/TemporalEntityCell';
+import { TemporalEntityItem } from '../models/TemporalEntityItem';
+import { TemporalEntityRemoveProperties } from '../models/TemporalEntityRemoveProperties';
+import { TemporalEntityRow } from '../models/TemporalEntityRow';
+import { TimePrimitiveItem } from '../models/TimePrimitiveItem';
+import { TimeSpanItem } from '../models/TimeSpanItem';
+import { TimeSpanProperty } from '../models/TimeSpanProperty';
+import { InfModelName, InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
-import { InfSelector, InfModelName } from '../selectors/inf.service';
+
+
+
+
+
+
 
 @Injectable()
 /**

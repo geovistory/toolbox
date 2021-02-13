@@ -2,8 +2,14 @@ import { SchemaObjectApi } from '@kleiolab/lib-sdk-lb3';
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { SchemaObject } from '../../root/models/model';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { DatActions, DfhActions, InfActions, ProActions, SysActions, TabActions, WarActions } from '../actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { DatActions } from '../actions/dat.actions';
+import { DfhActions } from '../actions/dfh.actions';
+import { InfActions } from '../actions/inf.actions';
+import { ProActions } from '../actions/pro.actions';
+import { SysActions } from '../actions/sys.actions';
+import { TabActions } from '../actions/tab.actions';
+import { WarActions } from '../actions/war.actions';
 export declare class SchemaObjectService {
     api: SchemaObjectApi;
     infActions: InfActions;

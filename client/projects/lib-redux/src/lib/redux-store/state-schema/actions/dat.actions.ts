@@ -4,9 +4,9 @@ import { DatChunk, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '
 import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
-import { IAppState } from '../../root/models';
-import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models';
-import { datRoot } from '../reducer-configs';
+import { IAppState } from '../../root/models/model';
+import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models/dat.models';
+import { datRoot } from '../reducer-configs/dat.config';
 import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta, LoadVersionAction } from '../_helpers/schema-actions-factory';
 
 

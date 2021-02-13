@@ -5,9 +5,9 @@ import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, I
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { filter } from 'rxjs/operators';
-import { IAppState, SchemaObject } from '../../root/models';
-import { InfDimensionSlice, InfPersistentItemSlice } from '../models';
-import { infRoot } from '../reducer-configs';
+import { IAppState, SchemaObject } from '../../root/models/model';
+import { InfDimensionSlice, InfPersistentItemSlice } from '../models/inf.models';
+import { infRoot } from '../reducer-configs/inf.config';
 import { InfActionFactory } from '../_helpers/inf-action-factory';
 import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 

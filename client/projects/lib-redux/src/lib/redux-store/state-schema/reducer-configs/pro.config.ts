@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from '../_helpers';
+import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjRel } from '@kleiolab/lib-sdk-lb3';
 import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 

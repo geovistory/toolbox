@@ -1,7 +1,18 @@
 import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { IAccount, Information, IProjectList, LoadingBar, ProjectDetail, SourceList } from '../../state-gui/models';
-import { Dat, Dfh, Inf, Pro, Sys, Tab, War } from '../../state-schema/models';
+import { IAccount } from '../../state-gui/models/account.model';
+import { LoadingBar } from '../../state-gui/models/loading-bar.models';
+import { IProjectList } from '../../state-gui/models/projects.model';
+import { Sys } from '../../state-schema/models/sys.models';
+import { Dfh } from '../../state-schema/models/dfh.models';
+import { Inf } from '../../state-schema/models/inf.models';
+import { Dat } from '../../state-schema/models/dat.models';
+import { Tab } from '../../state-schema/models/tab.models';
+import { War } from '../../state-schema/models/war.models';
+import { Pro } from '../../state-schema/models/pro.models';
+import { ProjectDetail } from '../../state-gui/models/active-project.models';
+import { Information } from '../../state-gui/models/entity-list.models';
+import { SourceList } from '../../state-gui/models/source-list.models';
 export interface InfObject {
     persistent_item: InfPersistentItem[];
     temporal_entity: InfTemporalEntity[];

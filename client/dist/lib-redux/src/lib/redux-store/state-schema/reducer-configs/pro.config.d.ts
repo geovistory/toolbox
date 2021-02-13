@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from '../_helpers';
+import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 import { ProClassFieldConfig, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 export declare const proRoot = "pro";
 export declare const textPropertyByFksKey: (d: Partial<ProTextProperty>) => string;

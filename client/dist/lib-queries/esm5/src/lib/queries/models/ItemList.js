@@ -1,0 +1,6 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: models/ItemList.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiSXRlbUxpc3QuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXF1ZXJpZXMvc3JjL2xpYi9xdWVyaWVzLyIsInNvdXJjZXMiOlsibW9kZWxzL0l0ZW1MaXN0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJdGVtIH0gZnJvbSAnLi9JdGVtJztcbmV4cG9ydCB0eXBlIEl0ZW1MaXN0ID0gSXRlbVtdO1xuIl19

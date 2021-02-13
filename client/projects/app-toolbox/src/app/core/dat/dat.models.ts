@@ -1,9 +1,8 @@
 import { DatColumn, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ByPk } from "projects/app-toolbox/src/app/core/redux-store/model";
-import { DatDigital } from "@kleiolab/lib-sdk-lb4";
+import { DatClassColumnMapping, DatDigital } from '@kleiolab/lib-sdk-lb4';
+import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
 
 
-import { DatClassColumnMapping } from "@kleiolab/lib-sdk-lb4";
 
 
 export class DigitalSlice {

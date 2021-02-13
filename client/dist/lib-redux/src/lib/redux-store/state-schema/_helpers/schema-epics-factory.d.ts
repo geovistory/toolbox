@@ -1,7 +1,7 @@
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
 import { Observable, Subscriber } from 'rxjs';
-import { NotificationsAPIActions } from '../../state-gui/actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { LoadActionMeta, ModifyActionMeta, SchemaActionsFactory } from './schema-actions-factory';
 export declare class SchemaEpicsFactory<Payload, Model> {
     actionPrefix: string;

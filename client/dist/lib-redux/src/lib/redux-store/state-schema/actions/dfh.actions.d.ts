@@ -2,8 +2,8 @@ import { NgRedux } from '@angular-redux/store';
 import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
 import { DfhClass, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { ActionResultObservable, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
-import { IAppState } from '../../root/models';
-import { DfhClassSlice } from '../models';
+import { IAppState } from '../../root/models/model';
+import { DfhClassSlice } from '../models/dfh.models';
 export declare class DfhProfileActionFactory extends SchemaActionsFactory<Payload, DfhProfile> {
     ngRedux: NgRedux<IAppState>;
     static readonly OF_PROJECT = "OF_PROJECT";

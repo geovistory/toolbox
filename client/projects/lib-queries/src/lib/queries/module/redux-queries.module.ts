@@ -5,7 +5,8 @@ import { ConfigurationPipesService } from '../services/configuration-pipes.servi
 import { InformationBasicPipesService } from '../services/information-basic-pipes.service';
 import { InformationPipesService } from '../services/information-pipes.service';
 import { SchemaSelectorsService } from '../services/schema-selectors.service';
-import { ReduxStoreModule } from '@kleiolab/lib-redux/lib/redux-store/module/redux-store.module';
+import { ReduxStoreModule } from '@kleiolab/lib-redux';
+import { SocketsModule } from '@kleiolab/lib-sockets';
 
 
 
@@ -13,7 +14,7 @@ import { ReduxStoreModule } from '@kleiolab/lib-redux/lib/redux-store/module/red
   declarations: [],
   imports: [
     CommonModule,
-    ReduxStoreModule
+    ReduxStoreModule,
   ],
   providers: [
     SchemaSelectorsService,

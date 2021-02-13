@@ -1,178 +1,336 @@
 import { dispatch, NgRedux, NgReduxModule, DevToolsExtension } from '@angular-redux/store';
 import { Injectable, ɵɵdefineInjectable, InjectionToken, NgModule, Inject } from '@angular/core';
+import { SlimLoadingBarService, SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
+import { ToastyService, ToastyConfig, ToastyModule } from '@cime/ngx-toasty';
+import { ProProjectApi, PubAccountApi, SysSystemRelevantClassApi, DfhProfileApi, DfhLabelApi, SchemaObjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
+import { SystemConfigurationService, DfhClassControllerService, DfhPropertyControllerService, AnalysisService, ApiModule } from '@kleiolab/lib-sdk-lb4';
 import { keys, omit, values, pathOr, equals, indexBy } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
-import { Observable, combineLatest, of, Subject, BehaviorSubject } from 'rxjs';
-import { mergeMap, filter, switchMap, mapTo, map } from 'rxjs/operators';
-import { PubAccountApi, ProProjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, SchemaObjectApi, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi } from '@kleiolab/lib-sdk-lb3';
+import { Observable, combineLatest, Subject, of, BehaviorSubject } from 'rxjs';
+import { switchMap, filter, mapTo, mergeMap, map } from 'rxjs/operators';
 import { __decorate, __metadata, __extends, __spread, __assign } from 'tslib';
 import { SysConfig } from '@kleiolab/lib-config';
 import { U } from '@kleiolab/lib-utils';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ToastyService, ToastyConfig } from '@cime/ngx-toasty';
 import { composeReducers, defaultFormReducer } from '@angular-redux/form';
-import { combineReducers } from 'redux';
-import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4/public-api';
 import { routerReducer } from '@angular-redux/router';
+import { combineReducers } from 'redux';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/actions/account.actions.ts
+ * Generated from: state-gui/actions/loading-bar.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function AccountActionMeta() { }
+function MetaData() { }
 if (false) {
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountId;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountRoles;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.account;
+    /** @type {?} */
+    MetaData.prototype.null;
 }
 ;
-var AccountActions = /** @class */ (function () {
-    function AccountActions() {
+/**
+ * This actions start, stop and complete the global loading bar
+ * using a SlimLoadingBarService instantiated within the loading-bar
+ * module.
+ *
+ * In order to show a loading bar in GUI, use the LoadingBarComponent
+ * exported by this module.
+ */
+var LoadingBarActions = /** @class */ (function () {
+    function LoadingBarActions() {
+        this.startLoading = (/**
+         * @return {?}
+         */
+        function () { return ({
+            type: LoadingBarActions.START,
+            meta: null,
+            payload: null,
+        }); });
+        this.stopLoading = (/**
+         * @return {?}
+         */
+        function () { return ({
+            type: LoadingBarActions.STOP,
+            meta: null,
+            payload: null
+        }); });
+        this.completeLoading = (/**
+         * @return {?}
+         */
+        function () { return ({
+            type: LoadingBarActions.COPMLETE,
+            meta: null,
+            payload: null,
+        }); });
+    }
+    LoadingBarActions.START = 'LOADING_BAR_START';
+    LoadingBarActions.STOP = 'LOADING_BAR_STOP';
+    LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
+    LoadingBarActions.decorators = [
+        { type: Injectable }
+    ];
+    __decorate([
+        dispatch(),
+        __metadata("design:type", Object)
+    ], LoadingBarActions.prototype, "startLoading", void 0);
+    __decorate([
+        dispatch(),
+        __metadata("design:type", Object)
+    ], LoadingBarActions.prototype, "stopLoading", void 0);
+    __decorate([
+        dispatch(),
+        __metadata("design:type", Object)
+    ], LoadingBarActions.prototype, "completeLoading", void 0);
+    return LoadingBarActions;
+}());
+if (false) {
+    /** @type {?} */
+    LoadingBarActions.START;
+    /** @type {?} */
+    LoadingBarActions.STOP;
+    /** @type {?} */
+    LoadingBarActions.COPMLETE;
+    /** @type {?} */
+    LoadingBarActions.prototype.startLoading;
+    /** @type {?} */
+    LoadingBarActions.prototype.stopLoading;
+    /** @type {?} */
+    LoadingBarActions.prototype.completeLoading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/epics/loading-bar.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var LoadingBarEpics = /** @class */ (function () {
+    function LoadingBarEpics(service, actions) {
+        this.service = service;
+        this.actions = actions;
     }
     /**
      * @return {?}
      */
-    AccountActions.prototype.login = /**
+    LoadingBarEpics.prototype.createEpics = /**
      * @return {?}
      */
     function () {
-        return {
-            type: AccountActions.LOGIN,
-            payload: null,
-            meta: null
-        };
+        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
     };
     /**
-     * @param {?} account
+     * @private
      * @return {?}
      */
-    AccountActions.prototype.loginSucceeded = /**
-     * @param {?} account
+    LoadingBarEpics.prototype.createCompleteLoadingBarEpic = /**
+     * @private
      * @return {?}
      */
-    function (account) {
-        return {
-            type: AccountActions.LOGIN_SUCCEEDED,
-            payload: null,
-            meta: { account: account }
-        };
+    function () {
+        var _this = this;
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) { return action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
+         * @return {?}
+         */
+        function () {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            function (observer) {
+                _this.service.complete();
+                // observer.next(this.actions.stopLoading())
+            }));
+        }))); });
     };
     /**
-     * @param {?} error
+     * @private
      * @return {?}
      */
-    AccountActions.prototype.loginFailed = /**
-     * @param {?} error
+    LoadingBarEpics.prototype.createStartLoadingBarEpic = /**
+     * @private
      * @return {?}
      */
-    function (error) {
-        return {
-            type: AccountActions.LOGIN_FAILED,
-            payload: null,
-            meta: null,
-            error: error
-        };
+    function () {
+        var _this = this;
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) { return action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
+         * @return {?}
+         */
+        function () {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            function (observer) {
+                _this.service.start();
+            }));
+        }))); });
     };
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    AccountActions.prototype.accountUpdated = /**
-     * @param {?} account
-     * @return {?}
-     */
-    function (account) {
-        return {
-            type: AccountActions.ACCOUNT_UPDATED,
-            payload: null,
-            meta: { account: account }
-        };
-    };
-    // Roles of the account, used to check permissions
-    // Roles of the account, used to check permissions
-    /**
-     * @param {?} accountId
-     * @return {?}
-     */
-    AccountActions.prototype.loadRoles = 
-    // Roles of the account, used to check permissions
-    /**
-     * @param {?} accountId
-     * @return {?}
-     */
-    function (accountId) {
-        return {
-            type: AccountActions.LOAD_ROLES,
-            payload: null,
-            meta: { accountId: accountId }
-        };
-    };
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    AccountActions.prototype.loadRolesSucceeded = /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    function (accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_SUCCEEDED,
-            payload: null,
-            meta: { accountRoles: accountRoles }
-        };
-    };
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    AccountActions.prototype.loadRolesFailed = /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    function (accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_FAILED,
-            payload: null,
-            meta: null
-        };
-    };
-    AccountActions.LOGIN = 'Account::LOGIN';
-    AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
-    AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
-    AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
-    AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
-    AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
-    AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
-    AccountActions.decorators = [
+    LoadingBarEpics.decorators = [
         { type: Injectable }
     ];
-    return AccountActions;
+    /** @nocollapse */
+    LoadingBarEpics.ctorParameters = function () { return [
+        { type: SlimLoadingBarService },
+        { type: LoadingBarActions }
+    ]; };
+    return LoadingBarEpics;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    LoadingBarEpics.prototype.service;
+    /**
+     * @type {?}
+     * @private
+     */
+    LoadingBarEpics.prototype.actions;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/notifications.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData$1() { }
+if (false) {
+    /** @type {?|undefined} */
+    MetaData$1.prototype.itemsArray;
+}
+;
+var NotificationsAPIActions = /** @class */ (function () {
+    function NotificationsAPIActions() {
+        this.addToast = (/**
+         * @param {?} payload
+         * @return {?}
+         */
+        function (payload) { return ({
+            type: NotificationsAPIActions.ADD_TOAST,
+            meta: null,
+            payload: payload
+        }); });
+    }
+    NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
+    NotificationsAPIActions.decorators = [
+        { type: Injectable }
+    ];
+    return NotificationsAPIActions;
 }());
 if (false) {
     /** @type {?} */
-    AccountActions.LOGIN;
+    NotificationsAPIActions.ADD_TOAST;
     /** @type {?} */
-    AccountActions.LOGIN_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOGIN_FAILED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_FAILED;
-    /** @type {?} */
-    AccountActions.ACCOUNT_UPDATED;
+    NotificationsAPIActions.prototype.addToast;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/epics/notifications.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var NotificationsAPIEpics = /** @class */ (function () {
+    function NotificationsAPIEpics(toastyService, toastyConfig) {
+        this.toastyService = toastyService;
+        this.toastyConfig = toastyConfig;
+        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
+        // Possible values: default, bootstrap, material
+        this.toastyConfig.theme = 'bootstrap';
+    }
+    /**
+     * @return {?}
+     */
+    NotificationsAPIEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        return combineEpics(this.createAddToastEpic());
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    NotificationsAPIEpics.prototype.createAddToastEpic = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) {
+            return action$.pipe(
+            /**
+             * Filter the actions that triggers this epic
+             */
+            filter((/**
+             * @param {?} a
+             * @return {?}
+             */
+            function (a) {
+                return a;
+            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new Observable((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            function (observer) {
+                /**
+                 * Add Toast
+                 * @type {?}
+                 */
+                var a = (/** @type {?} */ (action));
+                if (!a.payload.options.title && !a.payload.options.msg) {
+                    if (a.payload.type === 'error') {
+                        a.payload.options.title = 'Oops, something went wrong!';
+                    }
+                }
+                _this.toastyService[a.payload.type](a.payload.options);
+            })); })));
+        });
+    };
+    NotificationsAPIEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    NotificationsAPIEpics.ctorParameters = function () { return [
+        { type: ToastyService },
+        { type: ToastyConfig }
+    ]; };
+    return NotificationsAPIEpics;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyService;
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyConfig;
 }
 
 /**
@@ -1051,393 +1209,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/actions/entity-list.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var InformationAPIActions = /** @class */ (function () {
-    function InformationAPIActions() {
-        /**
-         * ******************************************************************
-         *  Method to distroy the slice of store
-         * *******************************************************************
-         */
-        this.destroy = (/**
-         * @return {?}
-         */
-        function () { return ({
-            type: InformationAPIActions.DESTROY,
-            meta: null,
-            payload: null
-        }); });
-    }
-    InformationAPIActions.DESTROY = 'Information::DESTROY';
-    InformationAPIActions.decorators = [
-        { type: Injectable }
-    ];
-    __decorate([
-        dispatch(),
-        __metadata("design:type", Object)
-    ], InformationAPIActions.prototype, "destroy", void 0);
-    return InformationAPIActions;
-}());
-if (false) {
-    /** @type {?} */
-    InformationAPIActions.DESTROY;
-    /**
-     * ******************************************************************
-     *  Method to distroy the slice of store
-     * *******************************************************************
-     * @type {?}
-     */
-    InformationAPIActions.prototype.destroy;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/loading-bar.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData() { }
-if (false) {
-    /** @type {?} */
-    MetaData.prototype.null;
-}
-;
-/**
- * This actions start, stop and complete the global loading bar
- * using a SlimLoadingBarService instantiated within the loading-bar
- * module.
- *
- * In order to show a loading bar in GUI, use the LoadingBarComponent
- * exported by this module.
- */
-var LoadingBarActions = /** @class */ (function () {
-    function LoadingBarActions() {
-        this.startLoading = (/**
-         * @return {?}
-         */
-        function () { return ({
-            type: LoadingBarActions.START,
-            meta: null,
-            payload: null,
-        }); });
-        this.stopLoading = (/**
-         * @return {?}
-         */
-        function () { return ({
-            type: LoadingBarActions.STOP,
-            meta: null,
-            payload: null
-        }); });
-        this.completeLoading = (/**
-         * @return {?}
-         */
-        function () { return ({
-            type: LoadingBarActions.COPMLETE,
-            meta: null,
-            payload: null,
-        }); });
-    }
-    LoadingBarActions.START = 'LOADING_BAR_START';
-    LoadingBarActions.STOP = 'LOADING_BAR_STOP';
-    LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
-    LoadingBarActions.decorators = [
-        { type: Injectable }
-    ];
-    __decorate([
-        dispatch(),
-        __metadata("design:type", Object)
-    ], LoadingBarActions.prototype, "startLoading", void 0);
-    __decorate([
-        dispatch(),
-        __metadata("design:type", Object)
-    ], LoadingBarActions.prototype, "stopLoading", void 0);
-    __decorate([
-        dispatch(),
-        __metadata("design:type", Object)
-    ], LoadingBarActions.prototype, "completeLoading", void 0);
-    return LoadingBarActions;
-}());
-if (false) {
-    /** @type {?} */
-    LoadingBarActions.START;
-    /** @type {?} */
-    LoadingBarActions.STOP;
-    /** @type {?} */
-    LoadingBarActions.COPMLETE;
-    /** @type {?} */
-    LoadingBarActions.prototype.startLoading;
-    /** @type {?} */
-    LoadingBarActions.prototype.stopLoading;
-    /** @type {?} */
-    LoadingBarActions.prototype.completeLoading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/notifications.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$1() { }
-if (false) {
-    /** @type {?|undefined} */
-    MetaData$1.prototype.itemsArray;
-}
-;
-var NotificationsAPIActions = /** @class */ (function () {
-    function NotificationsAPIActions() {
-        this.addToast = (/**
-         * @param {?} payload
-         * @return {?}
-         */
-        function (payload) { return ({
-            type: NotificationsAPIActions.ADD_TOAST,
-            meta: null,
-            payload: payload
-        }); });
-    }
-    NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
-    NotificationsAPIActions.decorators = [
-        { type: Injectable }
-    ];
-    return NotificationsAPIActions;
-}());
-if (false) {
-    /** @type {?} */
-    NotificationsAPIActions.ADD_TOAST;
-    /** @type {?} */
-    NotificationsAPIActions.prototype.addToast;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/projects.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var ProjectsActions = /** @class */ (function () {
-    function ProjectsActions() {
-    }
-    /**
-     * @param {?} payload
-     * @return {?}
-     */
-    ProjectsActions.prototype.loadProjectsSucceeded = /**
-     * @param {?} payload
-     * @return {?}
-     */
-    function (payload) {
-        return {
-            type: ProjectsActions.LOAD_PROJECTS_SUCCEEDED,
-            payload: payload,
-            meta: null
-        };
-    };
-    ProjectsActions.LOAD_PROJECTS_SUCCEEDED = 'LOAD_PROJECTS_SUCCEEDED';
-    ProjectsActions.decorators = [
-        { type: Injectable }
-    ];
-    return ProjectsActions;
-}());
-if (false) {
-    /** @type {?} */
-    ProjectsActions.LOAD_PROJECTS_SUCCEEDED;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/source-list.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$2() { }
-if (false) {
-    /** @type {?|undefined} */
-    MetaData$2.prototype.pkAllowedClasses;
-}
-;
-var SourceListAPIActions = /** @class */ (function () {
-    function SourceListAPIActions() {
-        /**
-         * ******************************************************************
-         *  Actions to manage the list
-         * *******************************************************************
-         */
-        this.initializeList = (/**
-         * @param {?} pkAllowedClasses
-         * @return {?}
-         */
-        function (pkAllowedClasses) { return ({
-            type: SourceListAPIActions.INITIALIZE_LIST,
-            meta: { pkAllowedClasses: pkAllowedClasses },
-            payload: null
-        }); });
-        /**
-         * ******************************************************************
-         *  Method to distroy the slice of store
-         * *******************************************************************
-         */
-        this.destroy = (/**
-         * @return {?}
-         */
-        function () { return ({
-            type: SourceListAPIActions.DESTROY,
-            meta: null,
-            payload: null
-        }); });
-    }
-    SourceListAPIActions.INITIALIZE_LIST = 'SourceList::INITIALIZE_LIST';
-    SourceListAPIActions.DESTROY = 'SourceList::DESTROY';
-    SourceListAPIActions.decorators = [
-        { type: Injectable }
-    ];
-    __decorate([
-        dispatch(),
-        __metadata("design:type", Object)
-    ], SourceListAPIActions.prototype, "initializeList", void 0);
-    __decorate([
-        dispatch(),
-        __metadata("design:type", Object)
-    ], SourceListAPIActions.prototype, "destroy", void 0);
-    return SourceListAPIActions;
-}());
-if (false) {
-    /** @type {?} */
-    SourceListAPIActions.INITIALIZE_LIST;
-    /** @type {?} */
-    SourceListAPIActions.DESTROY;
-    /**
-     * ******************************************************************
-     *  Actions to manage the list
-     * *******************************************************************
-     * @type {?}
-     */
-    SourceListAPIActions.prototype.initializeList;
-    /**
-     * ******************************************************************
-     *  Method to distroy the slice of store
-     * *******************************************************************
-     * @type {?}
-     */
-    SourceListAPIActions.prototype.destroy;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/actions/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/epics/account.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var AccountEpics = /** @class */ (function () {
-    function AccountEpics(actions, loadingBarActions, accountApi, notificationActions) {
-        this.actions = actions;
-        this.loadingBarActions = loadingBarActions;
-        this.accountApi = accountApi;
-        this.notificationActions = notificationActions;
-    }
-    /**
-     * @return {?}
-     */
-    AccountEpics.prototype.createEpics = /**
-     * @return {?}
-     */
-    function () {
-        return combineEpics(this.loadRoles());
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    AccountEpics.prototype.loadRoles = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) { return action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return new Observable((/**
-         * @param {?} globalStore
-         * @return {?}
-         */
-        function (globalStore) {
-            globalStore.next(_this.loadingBarActions.startLoading());
-            _this.accountApi.getRoles(action.meta.accountId)
-                .subscribe((/**
-             * @param {?} data
-             * @return {?}
-             */
-            function (data) {
-                globalStore.next(_this.loadingBarActions.completeLoading());
-                globalStore.next(_this.actions.loadRolesSucceeded(data));
-            }), (/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) {
-                globalStore.next(_this.notificationActions.addToast({
-                    type: 'error',
-                    options: { title: error }
-                }));
-            }));
-        })); }))); });
-    };
-    AccountEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    AccountEpics.ctorParameters = function () { return [
-        { type: AccountActions },
-        { type: LoadingBarActions },
-        { type: PubAccountApi },
-        { type: NotificationsAPIActions }
-    ]; };
-    return AccountEpics;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.loadingBarActions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.accountApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.notificationActions;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: state-schema/reducer-configs/dat.config.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1593,774 +1364,6 @@ var datDefinitions = {
         ]
     }
 };
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/dfh.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var dfhRoot = 'dfh';
-/** @type {?} */
-var dfhLabelByFksKey = (/**
- * @param {?} item
- * @return {?}
- */
-function (item) { return (item.type || null) + "_" + (item.language || null) + "_" + (item.fk_class || null) + "_" + (item.fk_profile || null) + "_" + (item.fk_property || null) + "_" + (item.fk_project || null); });
-var ɵ0$1 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_profile.toString(); }, ɵ1$1 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_class.toString(); }, ɵ2$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.basic_type.toString(); }, ɵ3$1 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_property + '_' + item.has_domain + '_' + item.has_range; }, ɵ4$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.pk_property.toString(); }, ɵ5$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.has_domain.toString(); }, ɵ6$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.has_range.toString(); }, ɵ7$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.has_domain + '_' + d.pk_property; }, ɵ8$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.has_range + '_' + d.pk_property; }, ɵ9$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined; }, ɵ10$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return !d.fk_class ? undefined : d.fk_class + "_" + d.type; }, ɵ11$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return !d.fk_property ? undefined : d.fk_property + "_" + d.type; }, ɵ12$1 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return !d.fk_profile ? undefined : d.fk_profile + "_" + d.type; };
-/** @type {?} */
-var dfhDefinitions = {
-    profile: {
-        indexBy: {
-            keyInStore: 'pk_profile',
-            indexByFn: (ɵ0$1)
-        }
-    },
-    klass: {
-        indexBy: {
-            keyInStore: 'pk_class',
-            indexByFn: (ɵ1$1),
-        },
-        groupBy: [
-            {
-                keyInStore: 'basic_type',
-                groupByFn: (ɵ2$1)
-            },
-        ]
-    },
-    property: {
-        indexBy: {
-            keyInStore: 'pk_property__has_domain__has_range',
-            indexByFn: (ɵ3$1)
-        },
-        groupBy: [
-            {
-                keyInStore: 'pk_property',
-                groupByFn: (ɵ4$1)
-            },
-            {
-                keyInStore: 'has_domain',
-                groupByFn: (ɵ5$1)
-            },
-            {
-                keyInStore: 'has_range',
-                groupByFn: (ɵ6$1)
-            },
-            {
-                keyInStore: 'has_domain__fk_property',
-                groupByFn: (ɵ7$1)
-            },
-            {
-                keyInStore: 'has_range__fk_property',
-                groupByFn: (ɵ8$1)
-            },
-            {
-                keyInStore: 'is_has_type_subproperty',
-                groupByFn: (ɵ9$1)
-            }
-        ]
-    },
-    label: {
-        indexBy: {
-            keyInStore: 'fks',
-            indexByFn: dfhLabelByFksKey
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class__type',
-                groupByFn: (ɵ10$1)
-            },
-            {
-                keyInStore: 'fk_property__type',
-                groupByFn: (ɵ11$1)
-            },
-            {
-                keyInStore: 'fk_profile__type',
-                groupByFn: (ɵ12$1)
-            }
-        ]
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/inf.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var infRoot = 'inf';
-var ɵ0$2 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ1$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_class.toString(); }, ɵ2$2 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ3$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_class.toString(); }, ɵ4$2 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ5$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return indexStatementBySubject(d); }, ɵ6$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return indexStatementBySubjectProperty(d); }, ɵ7$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return indexStatementByObject(d); }, ɵ8$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return indexStatementByObjectProperty(d); }, ɵ9$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return U.toStr0undef(d.fk_subject_data); }, ɵ10$2 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ11$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_concerned_entity + '_' + d.fk_class_field; }, ɵ12$2 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_concerned_entity.toString(); }, ɵ13$1 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ14 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ15 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ16 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ17 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ18 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-};
-/** @type {?} */
-var infDefinitions = {
-    persistent_item: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class',
-                groupByFn: (ɵ1$2)
-            }
-        ]
-    },
-    temporal_entity: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ2$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class',
-                groupByFn: (ɵ3$2)
-            }
-        ]
-    },
-    statement: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ4$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'subject',
-                groupByFn: (ɵ5$2)
-            },
-            {
-                keyInStore: 'subject+property',
-                groupByFn: (ɵ6$2)
-            },
-            {
-                keyInStore: 'object',
-                groupByFn: (ɵ7$2)
-            },
-            {
-                keyInStore: 'object+property',
-                groupByFn: (ɵ8$2)
-            },
-            {
-                keyInStore: 'fk_subject_data',
-                groupByFn: (ɵ9$2)
-            },
-        ]
-    },
-    text_property: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ10$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_concerned_entity__fk_class_field',
-                groupByFn: (ɵ11$2)
-            },
-            {
-                keyInStore: 'fk_concerned_entity',
-                groupByFn: (ɵ12$2)
-            },
-        ]
-    },
-    lang_string: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ13$1)
-        },
-        groupBy: []
-    },
-    appellation: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ14)
-        },
-        groupBy: []
-    },
-    time_primitive: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ15)
-        },
-        groupBy: []
-    },
-    place: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ16)
-        },
-        groupBy: []
-    },
-    language: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ17)
-        },
-        groupBy: []
-    },
-    dimension: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ18)
-        },
-        groupBy: []
-    },
-}
-/**
- * This function creates a key for the given statement by
- * - subject (all subject foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same subject
- * or to retrieve statements from such a group index
- */
-;
-/**
- * This function creates a key for the given statement by
- * - subject (all subject foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same subject
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementBySubject(fks) {
-    if (fks === void 0) { fks = {}; }
-    return (fks.fk_subject_info || '0') + "-" + (fks.fk_subject_data || '0') + "-" + ((fks.fk_subject_tables_row) || '0') + "-" + ((fks.fk_subject_tables_cell) || '0');
-}
-/**
- * @record
- */
-function IndexStatementBySubject() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_info;
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_data;
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_tables_cell;
-}
-;
-/**
- * This function creates a key for the given statement by
- * - object (all object foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same object
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementByObject(fks) {
-    if (fks === void 0) { fks = {}; }
-    return (fks.fk_object_info || '0') + "-" + (fks.fk_object_data || '0') + "-" + (fks.fk_object_tables_row || '0') + "-" + (fks.fk_object_tables_cell || '0');
-}
-/**
- * @record
- */
-function IndexStatementByObject() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_info;
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_data;
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_tables_cell;
-}
-;
-/**
- * This function creates a key for the given statement by
- * - subject (all subject foreign keys)
- * - property (all property foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same subject + property
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementBySubjectProperty(fks) {
-    if (fks === void 0) { fks = {}; }
-    return (fks.fk_subject_info || '0') + "-" + (fks.fk_subject_data || '0') + "-" + ((fks.fk_subject_tables_row) || '0') + "-" + ((fks.fk_subject_tables_cell) || '0') + "-" + (fks.fk_property || '0') + "-" + (fks.fk_property_of_property || '0');
-}
-/**
- * @record
- */
-function IndexStatementBySubjectProperty() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_info;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_data;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_tables_cell;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_property;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_property_of_property;
-}
-/**
- * This function creates a key for the given statement by
- * - object (all object foreign keys)
- * - property (all property foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same object + property
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementByObjectProperty(fks) {
-    if (fks === void 0) { fks = {}; }
-    return (fks.fk_object_info || '0') + "-" + (fks.fk_object_data || '0') + "-" + (fks.fk_object_tables_row || '0') + "-" + (fks.fk_object_tables_cell || '0') + "-" + (fks.fk_property || '0') + "-" + (fks.fk_property_of_property || '0');
-}
-/**
- * @record
- */
-function IndexStatementByObjectProperty() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_info;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_data;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_tables_cell;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_property;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_property_of_property;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/pro.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var proRoot = 'pro';
-/** @type {?} */
-var textPropertyByFksKey = (/**
- * @param {?} d
- * @return {?}
- */
-function (d) { return (d.fk_project || null) + "_" + (d.fk_system_type || null) + "_" + (d.fk_language || null) + "_" + (d.fk_dfh_class || null) + "_" + (d.fk_dfh_property || null) + "_" + (d.fk_dfh_property_domain || null) + "_" + (d.fk_dfh_property_range || null); });
-/** @type {?} */
-var textPropertyByFksWithoutLang = (/**
- * @param {?} d
- * @return {?}
- */
-function (d) { return (d.fk_project || null) + "_" + (d.fk_system_type || null) + "_" + (d.fk_dfh_class || null) + "_" + (d.fk_dfh_property || null) + "_" + (d.fk_dfh_property_domain || null) + "_" + (d.fk_dfh_property_range || null); });
-/** @type {?} */
-var proClassFieldConfgByProjectAndClassKey = (/**
- * @param {?} d
- * @return {?}
- */
-function (d) {
-    /** @type {?} */
-    var fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field;
-    return (d.fk_project || null) + "_" + (fk_class || null);
-});
-var ɵ0$3 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_entity.toString(); }, ɵ1$3 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.fk_project.toString() + '_' + item.fk_entity.toString(); }, ɵ2$3 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_entity.toString(); }, ɵ3$3 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.fk_project + '_' + item.fk_class; }, ɵ4$3 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_project + '_' + d.enabled_in_entities; }, ɵ5$3 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_project.toString(); }, ɵ6$3 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.fk_project + '_' + item.fk_profile; }, ɵ7$3 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_project + '_' + d.enabled; }, ɵ8$3 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_project.toString(); }, ɵ9$3 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_entity.toString(); };
-/** @type {?} */
-var proDefinitions = {
-    project: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$3)
-        }
-    },
-    info_proj_rel: {
-        indexBy: {
-            keyInStore: 'fk_project__fk_entity',
-            indexByFn: (ɵ1$3)
-        }
-    },
-    class_field_config: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ2$3)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_project__fk_class',
-                groupByFn: proClassFieldConfgByProjectAndClassKey
-            }
-        ]
-    },
-    dfh_class_proj_rel: {
-        indexBy: {
-            keyInStore: 'fk_project__fk_class',
-            indexByFn: (ɵ3$3)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_project__enabled_in_entities',
-                groupByFn: (ɵ4$3)
-            },
-            {
-                keyInStore: 'fk_project',
-                groupByFn: (ɵ5$3)
-            }
-        ],
-    },
-    dfh_profile_proj_rel: {
-        indexBy: {
-            keyInStore: 'fk_project__fk_profile',
-            indexByFn: (ɵ6$3)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_project__enabled',
-                groupByFn: (ɵ7$3)
-            },
-            {
-                keyInStore: 'fk_project',
-                groupByFn: (ɵ8$3)
-            }
-        ],
-    },
-    text_property: {
-        indexBy: {
-            keyInStore: 'fks',
-            indexByFn: textPropertyByFksKey
-        },
-        groupBy: [
-            {
-                keyInStore: 'fks_without_lang',
-                groupByFn: textPropertyByFksWithoutLang
-            }
-        ]
-    },
-    analysis: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ9$3)
-        }
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/sys.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var sysRoot = 'sys';
-var ɵ0$4 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) {
-    return item.pk_entity.toString();
-}, ɵ1$4 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.fk_class.toString(); }, ɵ2$4 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return d.required_by_sources.toString(); }, ɵ3$4 = /**
- * @param {?} d
- * @return {?}
- */
-function (d) { return (d.required_by_sources || d.required_by_entities || d.required_by_basics) ? 'true' : 'false'; }, ɵ4$4 = /**
- * @return {?}
- */
-function () { return 'main'; };
-/** @type {?} */
-var sysDefinitions = {
-    system_relevant_class: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$4)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class',
-                groupByFn: (ɵ1$4)
-            },
-            {
-                keyInStore: 'required_by_sources',
-                groupByFn: (ɵ2$4)
-            },
-            {
-                keyInStore: 'required',
-                groupByFn: (ɵ3$4)
-            }
-        ]
-    },
-    config: {
-        indexBy: {
-            keyInStore: 'main',
-            indexByFn: (ɵ4$4)
-        }
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/tab.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var tabRoot = 'tab';
-var ɵ0$5 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_cell.toString(); }, ɵ1$5 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.fk_column + '_' + item.fk_row; };
-/** @type {?} */
-var tabDefinitions = {
-    cell: {
-        indexBy: {
-            keyInStore: 'pk_cell',
-            indexByFn: (ɵ0$5)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_column_fk_row',
-                groupByFn: (ɵ1$5)
-            }
-        ]
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/war.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var warRoot = 'war';
-var ɵ0$6 = /**
- * @param {?} item
- * @return {?}
- */
-function (item) { return item.pk_entity.toString(); };
-/** @type {?} */
-var warDefinitions = {
-    entity_preview: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$6)
-        }
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducer-configs/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -3013,6 +2016,146 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: state-schema/reducer-configs/dfh.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var dfhRoot = 'dfh';
+/** @type {?} */
+var dfhLabelByFksKey = (/**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return (item.type || null) + "_" + (item.language || null) + "_" + (item.fk_class || null) + "_" + (item.fk_profile || null) + "_" + (item.fk_property || null) + "_" + (item.fk_project || null); });
+var ɵ0$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_profile.toString(); }, ɵ1$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_class.toString(); }, ɵ2$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.basic_type.toString(); }, ɵ3$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_property + '_' + item.has_domain + '_' + item.has_range; }, ɵ4$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.pk_property.toString(); }, ɵ5$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.has_domain.toString(); }, ɵ6$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.has_range.toString(); }, ɵ7$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.has_domain + '_' + d.pk_property; }, ɵ8$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.has_range + '_' + d.pk_property; }, ɵ9$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined; }, ɵ10$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return !d.fk_class ? undefined : d.fk_class + "_" + d.type; }, ɵ11$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return !d.fk_property ? undefined : d.fk_property + "_" + d.type; }, ɵ12$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return !d.fk_profile ? undefined : d.fk_profile + "_" + d.type; };
+/** @type {?} */
+var dfhDefinitions = {
+    profile: {
+        indexBy: {
+            keyInStore: 'pk_profile',
+            indexByFn: (ɵ0$1)
+        }
+    },
+    klass: {
+        indexBy: {
+            keyInStore: 'pk_class',
+            indexByFn: (ɵ1$1),
+        },
+        groupBy: [
+            {
+                keyInStore: 'basic_type',
+                groupByFn: (ɵ2$1)
+            },
+        ]
+    },
+    property: {
+        indexBy: {
+            keyInStore: 'pk_property__has_domain__has_range',
+            indexByFn: (ɵ3$1)
+        },
+        groupBy: [
+            {
+                keyInStore: 'pk_property',
+                groupByFn: (ɵ4$1)
+            },
+            {
+                keyInStore: 'has_domain',
+                groupByFn: (ɵ5$1)
+            },
+            {
+                keyInStore: 'has_range',
+                groupByFn: (ɵ6$1)
+            },
+            {
+                keyInStore: 'has_domain__fk_property',
+                groupByFn: (ɵ7$1)
+            },
+            {
+                keyInStore: 'has_range__fk_property',
+                groupByFn: (ɵ8$1)
+            },
+            {
+                keyInStore: 'is_has_type_subproperty',
+                groupByFn: (ɵ9$1)
+            }
+        ]
+    },
+    label: {
+        indexBy: {
+            keyInStore: 'fks',
+            indexByFn: dfhLabelByFksKey
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class__type',
+                groupByFn: (ɵ10$1)
+            },
+            {
+                keyInStore: 'fk_property__type',
+                groupByFn: (ɵ11$1)
+            },
+            {
+                keyInStore: 'fk_profile__type',
+                groupByFn: (ɵ12$1)
+            }
+        ]
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: state-schema/actions/dfh.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -3272,6 +2415,367 @@ if (false) {
     DfhActions.prototype.label;
     /** @type {?} */
     DfhActions.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducer-configs/inf.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var infRoot = 'inf';
+var ɵ0$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ1$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_class.toString(); }, ɵ2$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ3$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_class.toString(); }, ɵ4$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ5$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return indexStatementBySubject(d); }, ɵ6$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return indexStatementBySubjectProperty(d); }, ɵ7$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return indexStatementByObject(d); }, ɵ8$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return indexStatementByObjectProperty(d); }, ɵ9$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return U.toStr0undef(d.fk_subject_data); }, ɵ10$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ11$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_concerned_entity + '_' + d.fk_class_field; }, ɵ12$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_concerned_entity.toString(); }, ɵ13$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ14 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ15 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ16 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ17 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ18 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+};
+/** @type {?} */
+var infDefinitions = {
+    persistent_item: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class',
+                groupByFn: (ɵ1$2)
+            }
+        ]
+    },
+    temporal_entity: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ2$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class',
+                groupByFn: (ɵ3$2)
+            }
+        ]
+    },
+    statement: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ4$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'subject',
+                groupByFn: (ɵ5$2)
+            },
+            {
+                keyInStore: 'subject+property',
+                groupByFn: (ɵ6$2)
+            },
+            {
+                keyInStore: 'object',
+                groupByFn: (ɵ7$2)
+            },
+            {
+                keyInStore: 'object+property',
+                groupByFn: (ɵ8$2)
+            },
+            {
+                keyInStore: 'fk_subject_data',
+                groupByFn: (ɵ9$2)
+            },
+        ]
+    },
+    text_property: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ10$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_concerned_entity__fk_class_field',
+                groupByFn: (ɵ11$2)
+            },
+            {
+                keyInStore: 'fk_concerned_entity',
+                groupByFn: (ɵ12$2)
+            },
+        ]
+    },
+    lang_string: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ13$1)
+        },
+        groupBy: []
+    },
+    appellation: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ14)
+        },
+        groupBy: []
+    },
+    time_primitive: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ15)
+        },
+        groupBy: []
+    },
+    place: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ16)
+        },
+        groupBy: []
+    },
+    language: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ17)
+        },
+        groupBy: []
+    },
+    dimension: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ18)
+        },
+        groupBy: []
+    },
+}
+/**
+ * This function creates a key for the given statement by
+ * - subject (all subject foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same subject
+ * or to retrieve statements from such a group index
+ */
+;
+/**
+ * This function creates a key for the given statement by
+ * - subject (all subject foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same subject
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementBySubject(fks) {
+    if (fks === void 0) { fks = {}; }
+    return (fks.fk_subject_info || '0') + "-" + (fks.fk_subject_data || '0') + "-" + ((fks.fk_subject_tables_row) || '0') + "-" + ((fks.fk_subject_tables_cell) || '0');
+}
+/**
+ * @record
+ */
+function IndexStatementBySubject() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_info;
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_data;
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_tables_cell;
+}
+;
+/**
+ * This function creates a key for the given statement by
+ * - object (all object foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same object
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementByObject(fks) {
+    if (fks === void 0) { fks = {}; }
+    return (fks.fk_object_info || '0') + "-" + (fks.fk_object_data || '0') + "-" + (fks.fk_object_tables_row || '0') + "-" + (fks.fk_object_tables_cell || '0');
+}
+/**
+ * @record
+ */
+function IndexStatementByObject() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_info;
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_data;
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_tables_cell;
+}
+;
+/**
+ * This function creates a key for the given statement by
+ * - subject (all subject foreign keys)
+ * - property (all property foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same subject + property
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementBySubjectProperty(fks) {
+    if (fks === void 0) { fks = {}; }
+    return (fks.fk_subject_info || '0') + "-" + (fks.fk_subject_data || '0') + "-" + ((fks.fk_subject_tables_row) || '0') + "-" + ((fks.fk_subject_tables_cell) || '0') + "-" + (fks.fk_property || '0') + "-" + (fks.fk_property_of_property || '0');
+}
+/**
+ * @record
+ */
+function IndexStatementBySubjectProperty() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_info;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_data;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_tables_cell;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_property;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_property_of_property;
+}
+/**
+ * This function creates a key for the given statement by
+ * - object (all object foreign keys)
+ * - property (all property foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same object + property
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementByObjectProperty(fks) {
+    if (fks === void 0) { fks = {}; }
+    return (fks.fk_object_info || '0') + "-" + (fks.fk_object_data || '0') + "-" + (fks.fk_object_tables_row || '0') + "-" + (fks.fk_object_tables_cell || '0') + "-" + (fks.fk_property || '0') + "-" + (fks.fk_property_of_property || '0');
+}
+/**
+ * @record
+ */
+function IndexStatementByObjectProperty() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_info;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_data;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_tables_cell;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_property;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_property_of_property;
 }
 
 /**
@@ -4070,6 +3574,154 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: state-schema/reducer-configs/pro.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var proRoot = 'pro';
+/** @type {?} */
+var textPropertyByFksKey = (/**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return (d.fk_project || null) + "_" + (d.fk_system_type || null) + "_" + (d.fk_language || null) + "_" + (d.fk_dfh_class || null) + "_" + (d.fk_dfh_property || null) + "_" + (d.fk_dfh_property_domain || null) + "_" + (d.fk_dfh_property_range || null); });
+/** @type {?} */
+var textPropertyByFksWithoutLang = (/**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return (d.fk_project || null) + "_" + (d.fk_system_type || null) + "_" + (d.fk_dfh_class || null) + "_" + (d.fk_dfh_property || null) + "_" + (d.fk_dfh_property_domain || null) + "_" + (d.fk_dfh_property_range || null); });
+/** @type {?} */
+var proClassFieldConfgByProjectAndClassKey = (/**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) {
+    /** @type {?} */
+    var fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field;
+    return (d.fk_project || null) + "_" + (fk_class || null);
+});
+var ɵ0$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_entity.toString(); }, ɵ1$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.fk_project.toString() + '_' + item.fk_entity.toString(); }, ɵ2$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_entity.toString(); }, ɵ3$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.fk_project + '_' + item.fk_class; }, ɵ4$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_project + '_' + d.enabled_in_entities; }, ɵ5$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_project.toString(); }, ɵ6$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.fk_project + '_' + item.fk_profile; }, ɵ7$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_project + '_' + d.enabled; }, ɵ8$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_project.toString(); }, ɵ9$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_entity.toString(); };
+/** @type {?} */
+var proDefinitions = {
+    project: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$3)
+        }
+    },
+    info_proj_rel: {
+        indexBy: {
+            keyInStore: 'fk_project__fk_entity',
+            indexByFn: (ɵ1$3)
+        }
+    },
+    class_field_config: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ2$3)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_project__fk_class',
+                groupByFn: proClassFieldConfgByProjectAndClassKey
+            }
+        ]
+    },
+    dfh_class_proj_rel: {
+        indexBy: {
+            keyInStore: 'fk_project__fk_class',
+            indexByFn: (ɵ3$3)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_project__enabled_in_entities',
+                groupByFn: (ɵ4$3)
+            },
+            {
+                keyInStore: 'fk_project',
+                groupByFn: (ɵ5$3)
+            }
+        ],
+    },
+    dfh_profile_proj_rel: {
+        indexBy: {
+            keyInStore: 'fk_project__fk_profile',
+            indexByFn: (ɵ6$3)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_project__enabled',
+                groupByFn: (ɵ7$3)
+            },
+            {
+                keyInStore: 'fk_project',
+                groupByFn: (ɵ8$3)
+            }
+        ],
+    },
+    text_property: {
+        indexBy: {
+            keyInStore: 'fks',
+            indexByFn: textPropertyByFksKey
+        },
+        groupBy: [
+            {
+                keyInStore: 'fks_without_lang',
+                groupByFn: textPropertyByFksWithoutLang
+            }
+        ]
+    },
+    analysis: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ9$3)
+        }
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: state-schema/actions/pro.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -4570,16 +4222,75 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: state-schema/reducer-configs/sys.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var sysRoot = 'sys';
+var ɵ0$4 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) {
+    return item.pk_entity.toString();
+}, ɵ1$4 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.fk_class.toString(); }, ɵ2$4 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return d.required_by_sources.toString(); }, ɵ3$4 = /**
+ * @param {?} d
+ * @return {?}
+ */
+function (d) { return (d.required_by_sources || d.required_by_entities || d.required_by_basics) ? 'true' : 'false'; }, ɵ4$4 = /**
+ * @return {?}
+ */
+function () { return 'main'; };
+/** @type {?} */
+var sysDefinitions = {
+    system_relevant_class: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$4)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class',
+                groupByFn: (ɵ1$4)
+            },
+            {
+                keyInStore: 'required_by_sources',
+                groupByFn: (ɵ2$4)
+            },
+            {
+                keyInStore: 'required',
+                groupByFn: (ɵ3$4)
+            }
+        ]
+    },
+    config: {
+        indexBy: {
+            keyInStore: 'main',
+            indexByFn: (ɵ4$4)
+        }
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: state-schema/actions/sys.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function MetaData$3() { }
+function MetaData$2() { }
 if (false) {
     /** @type {?|undefined} */
-    MetaData$3.prototype.systemRelevantClasses;
+    MetaData$2.prototype.systemRelevantClasses;
 }
 ;
 var SysActions = /** @class */ (function () {
@@ -4607,64 +4318,6 @@ if (false) {
     /** @type {?} */
     SysActions.prototype.ngRedux;
 }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/actions/tab.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var TabActions = /** @class */ (function () {
-    function TabActions(ngRedux) {
-        this.ngRedux = ngRedux;
-        this.cell = new SchemaActionsFactory(this.ngRedux).createCrudActions(tabRoot, 'cell');
-    }
-    TabActions.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    TabActions.ctorParameters = function () { return [
-        { type: NgRedux }
-    ]; };
-    return TabActions;
-}());
-if (false) {
-    /** @type {?} */
-    TabActions.prototype.cell;
-    /** @type {?} */
-    TabActions.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/actions/war.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var WarActions = /** @class */ (function () {
-    function WarActions(ngRedux) {
-        this.ngRedux = ngRedux;
-        this.entity_preview = new SchemaActionsFactory(this.ngRedux).createCrudActions(warRoot, 'entity_preview');
-    }
-    WarActions.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    WarActions.ctorParameters = function () { return [
-        { type: NgRedux }
-    ]; };
-    return WarActions;
-}());
-if (false) {
-    /** @type {?} */
-    WarActions.prototype.entity_preview;
-    /** @type {?} */
-    WarActions.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/actions/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -5148,28 +4801,188 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/epics/loading-bar.epics.ts
+ * Generated from: state-gui/actions/account.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var LoadingBarEpics = /** @class */ (function () {
-    function LoadingBarEpics(service, actions) {
-        this.service = service;
-        this.actions = actions;
+/**
+ * @record
+ */
+function AccountActionMeta() { }
+if (false) {
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.accountId;
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.accountRoles;
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.account;
+}
+;
+var AccountActions = /** @class */ (function () {
+    function AccountActions() {
     }
     /**
      * @return {?}
      */
-    LoadingBarEpics.prototype.createEpics = /**
+    AccountActions.prototype.login = /**
      * @return {?}
      */
     function () {
-        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
+        return {
+            type: AccountActions.LOGIN,
+            payload: null,
+            meta: null
+        };
+    };
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    AccountActions.prototype.loginSucceeded = /**
+     * @param {?} account
+     * @return {?}
+     */
+    function (account) {
+        return {
+            type: AccountActions.LOGIN_SUCCEEDED,
+            payload: null,
+            meta: { account: account }
+        };
+    };
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    AccountActions.prototype.loginFailed = /**
+     * @param {?} error
+     * @return {?}
+     */
+    function (error) {
+        return {
+            type: AccountActions.LOGIN_FAILED,
+            payload: null,
+            meta: null,
+            error: error
+        };
+    };
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    AccountActions.prototype.accountUpdated = /**
+     * @param {?} account
+     * @return {?}
+     */
+    function (account) {
+        return {
+            type: AccountActions.ACCOUNT_UPDATED,
+            payload: null,
+            meta: { account: account }
+        };
+    };
+    // Roles of the account, used to check permissions
+    // Roles of the account, used to check permissions
+    /**
+     * @param {?} accountId
+     * @return {?}
+     */
+    AccountActions.prototype.loadRoles = 
+    // Roles of the account, used to check permissions
+    /**
+     * @param {?} accountId
+     * @return {?}
+     */
+    function (accountId) {
+        return {
+            type: AccountActions.LOAD_ROLES,
+            payload: null,
+            meta: { accountId: accountId }
+        };
+    };
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    AccountActions.prototype.loadRolesSucceeded = /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    function (accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_SUCCEEDED,
+            payload: null,
+            meta: { accountRoles: accountRoles }
+        };
+    };
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    AccountActions.prototype.loadRolesFailed = /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    function (accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_FAILED,
+            payload: null,
+            meta: null
+        };
+    };
+    AccountActions.LOGIN = 'Account::LOGIN';
+    AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
+    AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
+    AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
+    AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
+    AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
+    AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
+    AccountActions.decorators = [
+        { type: Injectable }
+    ];
+    return AccountActions;
+}());
+if (false) {
+    /** @type {?} */
+    AccountActions.LOGIN;
+    /** @type {?} */
+    AccountActions.LOGIN_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOGIN_FAILED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_FAILED;
+    /** @type {?} */
+    AccountActions.ACCOUNT_UPDATED;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/epics/account.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var AccountEpics = /** @class */ (function () {
+    function AccountEpics(actions, loadingBarActions, accountApi, notificationActions) {
+        this.actions = actions;
+        this.loadingBarActions = loadingBarActions;
+        this.accountApi = accountApi;
+        this.notificationActions = notificationActions;
+    }
+    /**
+     * @return {?}
+     */
+    AccountEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        return combineEpics(this.loadRoles());
     };
     /**
      * @private
      * @return {?}
      */
-    LoadingBarEpics.prototype.createCompleteLoadingBarEpic = /**
+    AccountEpics.prototype.loadRoles = /**
      * @private
      * @return {?}
      */
@@ -5180,102 +4993,104 @@ var LoadingBarEpics = /** @class */ (function () {
          * @param {?} store
          * @return {?}
          */
-        function (action$, store) { return action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
+        function (action$, store) { return action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
+         * @param {?} action
          * @return {?}
          */
-        function () {
-            return Observable.create((/**
-             * @param {?} observer
+        function (action) { return new Observable((/**
+         * @param {?} globalStore
+         * @return {?}
+         */
+        function (globalStore) {
+            globalStore.next(_this.loadingBarActions.startLoading());
+            _this.accountApi.getRoles(action.meta.accountId)
+                .subscribe((/**
+             * @param {?} data
              * @return {?}
              */
-            function (observer) {
-                _this.service.complete();
-                // observer.next(this.actions.stopLoading())
-            }));
-        }))); });
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    LoadingBarEpics.prototype.createStartLoadingBarEpic = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) { return action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
-         * @return {?}
-         */
-        function () {
-            return Observable.create((/**
-             * @param {?} observer
+            function (data) {
+                globalStore.next(_this.loadingBarActions.completeLoading());
+                globalStore.next(_this.actions.loadRolesSucceeded(data));
+            }), (/**
+             * @param {?} error
              * @return {?}
              */
-            function (observer) {
-                _this.service.start();
+            function (error) {
+                globalStore.next(_this.notificationActions.addToast({
+                    type: 'error',
+                    options: { title: error }
+                }));
             }));
-        }))); });
+        })); }))); });
     };
-    LoadingBarEpics.decorators = [
+    AccountEpics.decorators = [
         { type: Injectable }
     ];
     /** @nocollapse */
-    LoadingBarEpics.ctorParameters = function () { return [
-        { type: SlimLoadingBarService },
-        { type: LoadingBarActions }
+    AccountEpics.ctorParameters = function () { return [
+        { type: AccountActions },
+        { type: LoadingBarActions },
+        { type: PubAccountApi },
+        { type: NotificationsAPIActions }
     ]; };
-    return LoadingBarEpics;
+    return AccountEpics;
 }());
 if (false) {
     /**
      * @type {?}
      * @private
      */
-    LoadingBarEpics.prototype.service;
+    AccountEpics.prototype.actions;
     /**
      * @type {?}
      * @private
      */
-    LoadingBarEpics.prototype.actions;
+    AccountEpics.prototype.loadingBarActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.accountApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.notificationActions;
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/epics/notifications.epics.ts
+ * Generated from: state-schema/_helpers/schema-epics-factory.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var NotificationsAPIEpics = /** @class */ (function () {
-    function NotificationsAPIEpics(toastyService, toastyConfig) {
-        this.toastyService = toastyService;
-        this.toastyConfig = toastyConfig;
-        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-        // Possible values: default, bootstrap, material
-        this.toastyConfig.theme = 'bootstrap';
+/**
+ * @template Payload, Model
+ */
+var  /**
+ * @template Payload, Model
+ */
+SchemaEpicsFactory = /** @class */ (function () {
+    function SchemaEpicsFactory(actionPrefix, modelName, actions, notifications) {
+        this.actionPrefix = actionPrefix;
+        this.modelName = modelName;
+        this.actions = actions;
+        this.notifications = notifications;
     }
     /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?} actionSuffix
+     * @param {?=} onSuccessHook
      * @return {?}
      */
-    NotificationsAPIEpics.prototype.createEpics = /**
+    SchemaEpicsFactory.prototype.createLoadEpic = /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?} actionSuffix
+     * @param {?=} onSuccessHook
      * @return {?}
      */
-    function () {
-        return combineEpics(this.createAddToastEpic());
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    NotificationsAPIEpics.prototype.createAddToastEpic = /**
-     * @private
-     * @return {?}
-     */
-    function () {
+    function (apiFn, actionSuffix, onSuccessHook) {
         var _this = this;
         return (/**
          * @param {?} action$
@@ -5283,119 +5098,743 @@ var NotificationsAPIEpics = /** @class */ (function () {
          * @return {?}
          */
         function (action$, store) {
-            return action$.pipe(
-            /**
-             * Filter the actions that triggers this epic
-             */
-            filter((/**
-             * @param {?} a
-             * @return {?}
-             */
-            function (a) {
-                return a;
-            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
+            return action$.pipe(ofType(_this.type('LOAD', actionSuffix)), mergeMap((/**
              * @param {?} action
              * @return {?}
              */
             function (action) { return new Observable((/**
-             * @param {?} observer
+             * @param {?} globalActions
              * @return {?}
              */
-            function (observer) {
-                /**
-                 * Add Toast
-                 * @type {?}
+            function (globalActions) {
+                /** @type {?} */
+                var pendingKey = action.meta.addPending;
+                /** @type {?} */
+                var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
                  */
-                var a = (/** @type {?} */ (action));
-                if (!a.payload.options.title && !a.payload.options.msg) {
-                    if (a.payload.type === 'error') {
-                        a.payload.options.title = 'Oops, something went wrong!';
+                function (data) {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk, meta);
+                        _this.actions.succeeded(data, pendingKey, action.meta.pk);
                     }
-                }
-                _this.toastyService[a.payload.type](a.payload.options);
+                    else {
+                        _this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    _this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
             })); })));
         });
     };
-    NotificationsAPIEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    NotificationsAPIEpics.ctorParameters = function () { return [
-        { type: ToastyService },
-        { type: ToastyConfig }
-    ]; };
-    return NotificationsAPIEpics;
-}());
-if (false) {
     /**
-     * @type {?}
-     * @private
+     * @template T
+     * @param {?} apiFn
+     * @param {?=} onSuccessHook
+     * @return {?}
      */
-    NotificationsAPIEpics.prototype.toastyService;
-    /**
-     * @type {?}
-     * @private
+    SchemaEpicsFactory.prototype.createUpsertEpic = /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?=} onSuccessHook
+     * @return {?}
      */
-    NotificationsAPIEpics.prototype.toastyConfig;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/epics/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/epics/action-resolver.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var ActionResolverEpics = /** @class */ (function () {
-    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
-    function ActionResolverEpics() {
+    function (apiFn, onSuccessHook) {
         var _this = this;
-        this.createEpics = (/**
-         * @return {?}
-         */
-        function () { return combineEpics(_this.createResolveEpic()); });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    ActionResolverEpics.prototype.createResolveEpic = /**
-     * @private
-     * @return {?}
-     */
-    function () {
         return (/**
          * @param {?} action$
          * @param {?} store
          * @return {?}
          */
-        function (action$, store) { return action$.pipe(filter((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return !!action && !!action.meta && !!action.meta.removePending; })), switchMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } })); }))); });
+        function (action$, store) {
+            return action$.pipe(ofType(_this.actionPrefix + '.' + _this.modelName + '::UPSERT'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            function (globalActions) {
+                /** @type {?} */
+                var pendingKey = action.meta.addPending;
+                /** @type {?} */
+                var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk);
+                        _this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        _this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    _this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })); })));
+        });
     };
-    ActionResolverEpics.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root'
-                },] }
-    ];
-    /** @nocollapse */
-    ActionResolverEpics.ctorParameters = function () { return []; };
-    /** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
-    return ActionResolverEpics;
+    /**
+     * @param {?} apiFn
+     * @return {?}
+     */
+    SchemaEpicsFactory.prototype.createDeleteEpic = /**
+     * @param {?} apiFn
+     * @return {?}
+     */
+    function (apiFn) {
+        var _this = this;
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) {
+            return action$.pipe(ofType(_this.actionPrefix + '.' + _this.modelName + '::DELETE'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            function (globalActions) {
+                /** @type {?} */
+                var pendingKey = action.meta.addPending;
+                apiFn(action.meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    _this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    _this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })); })));
+        });
+    };
+    /**
+     * Create the string used as action.type
+     */
+    /**
+     * Create the string used as action.type
+     * @param {?} operation
+     * @param {?} actionSuffix
+     * @return {?}
+     */
+    SchemaEpicsFactory.prototype.type = /**
+     * Create the string used as action.type
+     * @param {?} operation
+     * @param {?} actionSuffix
+     * @return {?}
+     */
+    function (operation, actionSuffix) {
+        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
+    };
+    /**
+    * Create the onError logic for standard actions
+    * @param globalActions pass in the subscriber to the action$ stream
+    */
+    /**
+     * Create the onError logic for standard actions
+     * @param {?} globalActions pass in the subscriber to the action$ stream
+     * @param {?} error
+     * @param {?} pendingKey
+     * @param {?} pkProject
+     * @return {?}
+     */
+    SchemaEpicsFactory.prototype.onError = /**
+     * Create the onError logic for standard actions
+     * @param {?} globalActions pass in the subscriber to the action$ stream
+     * @param {?} error
+     * @param {?} pendingKey
+     * @param {?} pkProject
+     * @return {?}
+     */
+    function (globalActions, error, pendingKey, pkProject) {
+        globalActions.next(this.notifications.addToast({
+            type: 'error',
+            options: { title: error.message }
+        }));
+        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
+    };
+    return SchemaEpicsFactory;
 }());
 if (false) {
     /** @type {?} */
-    ActionResolverEpics.prototype.createEpics;
+    SchemaEpicsFactory.prototype.actionPrefix;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.modelName;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.actions;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.notifications;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/sys.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var SysEpics = /** @class */ (function () {
+    function SysEpics(actions, notification, sysRelevantClassApi, sysConfigApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.sysRelevantClassApi = sysRelevantClassApi;
+        this.sysConfigApi = sysConfigApi;
+    }
+    /**
+     * @return {?}
+     */
+    SysEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
+        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
+        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
+        /** @type {?} */
+        var configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
+        return combineEpics(
+        // SystemRelevantClass Epics
+        systemRelevantClassEpicsFactory.createLoadEpic((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return _this.sysRelevantClassApi.find(); }), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items); })), 
+        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
+        configEpicsFactory.createLoadEpic((/**
+         * @return {?}
+         */
+        function () { return _this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) { return [x]; }))); }), ''));
+    };
+    SysEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    SysEpics.ctorParameters = function () { return [
+        { type: SysActions },
+        { type: NotificationsAPIActions },
+        { type: SysSystemRelevantClassApi },
+        { type: SystemConfigurationService }
+    ]; };
+    return SysEpics;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysRelevantClassApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysConfigApi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/dfh.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var DfhEpics = /** @class */ (function () {
+    function DfhEpics(actions, notification, profileApi, classApi, propertyApi, labelApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.profileApi = profileApi;
+        this.classApi = classApi;
+        this.propertyApi = propertyApi;
+        this.labelApi = labelApi;
+    }
+    /**
+     * @return {?}
+     */
+    DfhEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
+        /** @type {?} */
+        var dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
+        /** @type {?} */
+        var dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
+        /** @type {?} */
+        var dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
+        return combineEpics(
+        // Profile Loaders
+        dfhProfileEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.profileApi.ofProject(meta.pk); }), DfhProfileActionFactory.OF_PROJECT), 
+        // Property Loaders
+        dfhPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.propertyApi.dfhPropertyControllerOfProject(meta.pk); }), DfhPropertyActionFactory.OF_PROJECT), 
+        // Class Loaders
+        dfhClassEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.classApi.dfhClassControllerOfProject(meta.pk); }), DfhClassActionFactory.OF_PROJECT), 
+        // Label Loaders
+        dfhLabelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.labelApi.ofProject(meta.pk); }), DfhLabelActionFactory.OF_PROJECT));
+    };
+    DfhEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    DfhEpics.ctorParameters = function () { return [
+        { type: DfhActions },
+        { type: NotificationsAPIActions },
+        { type: DfhProfileApi },
+        { type: DfhClassControllerService },
+        { type: DfhPropertyControllerService },
+        { type: DfhLabelApi }
+    ]; };
+    return DfhEpics;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.profileApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.classApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.propertyApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.labelApi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducer-configs/tab.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var tabRoot = 'tab';
+var ɵ0$5 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_cell.toString(); }, ɵ1$5 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.fk_column + '_' + item.fk_row; };
+/** @type {?} */
+var tabDefinitions = {
+    cell: {
+        indexBy: {
+            keyInStore: 'pk_cell',
+            indexByFn: (ɵ0$5)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_column_fk_row',
+                groupByFn: (ɵ1$5)
+            }
+        ]
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/actions/tab.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var TabActions = /** @class */ (function () {
+    function TabActions(ngRedux) {
+        this.ngRedux = ngRedux;
+        this.cell = new SchemaActionsFactory(this.ngRedux).createCrudActions(tabRoot, 'cell');
+    }
+    TabActions.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    TabActions.ctorParameters = function () { return [
+        { type: NgRedux }
+    ]; };
+    return TabActions;
+}());
+if (false) {
+    /** @type {?} */
+    TabActions.prototype.cell;
+    /** @type {?} */
+    TabActions.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducer-configs/war.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var warRoot = 'war';
+var ɵ0$6 = /**
+ * @param {?} item
+ * @return {?}
+ */
+function (item) { return item.pk_entity.toString(); };
+/** @type {?} */
+var warDefinitions = {
+    entity_preview: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$6)
+        }
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/actions/war.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var WarActions = /** @class */ (function () {
+    function WarActions(ngRedux) {
+        this.ngRedux = ngRedux;
+        this.entity_preview = new SchemaActionsFactory(this.ngRedux).createCrudActions(warRoot, 'entity_preview');
+    }
+    WarActions.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    WarActions.ctorParameters = function () { return [
+        { type: NgRedux }
+    ]; };
+    return WarActions;
+}());
+if (false) {
+    /** @type {?} */
+    WarActions.prototype.entity_preview;
+    /** @type {?} */
+    WarActions.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/services/schema-object.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var SchemaObjectService = /** @class */ (function () {
+    function SchemaObjectService(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
+        this.api = api;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.warActions = warActions;
+        this.tabActions = tabActions;
+        this.dfhActions = dfhActions;
+        this.sysActions = sysActions;
+        this.notifications = notifications;
+    }
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param apiCall$
+     * @param pkProject primary key of project or 'ofRepo', if repo versions
+     */
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    SchemaObjectService.prototype.store = /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    function (apiCall$, pkProject) {
+        var _this = this;
+        /** @type {?} */
+        var s$ = new Subject();
+        apiCall$.subscribe((/**
+         * @param {?} result
+         * @return {?}
+         */
+        function (result) {
+            _this.storeSchemaObject(result, pkProject === 'ofRepo' ? null : pkProject);
+            s$.next(result);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) {
+            _this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            });
+            s$.error(error);
+        }));
+        return s$;
+    };
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param apiCall$
+     * @param pkProject primary key of project or 'ofRepo', if repo versions
+     */
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    SchemaObjectService.prototype.storeGv = /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    function (apiCall$, pkProject) {
+        var _this = this;
+        /** @type {?} */
+        var s$ = new Subject();
+        apiCall$.subscribe((/**
+         * @param {?} result
+         * @return {?}
+         */
+        function (result) {
+            _this.storeSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject);
+            s$.next(result);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) {
+            _this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            });
+            s$.error(error);
+        }));
+        return s$;
+    };
+    /**
+     *
+     * @param object
+     * @param pkProject primary key of project or null, if repo versions
+     */
+    /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    SchemaObjectService.prototype.storeSchemaObject = /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    function (object, pkProject) {
+        var _this = this;
+        if (object && Object.keys(object).length > 0) {
+            Object.keys(object).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            function (schema) {
+                /** @type {?} */
+                var actions;
+                if (schema === 'inf')
+                    actions = _this.infActions;
+                else if (schema === 'pro')
+                    actions = _this.proActions;
+                else if (schema === 'dat')
+                    actions = _this.datActions;
+                else if (schema === 'war')
+                    actions = _this.warActions;
+                if (actions) {
+                    Object.keys(object[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    function (model) {
+                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+                    }));
+                }
+            }));
+        }
+    };
+    /**
+     *
+     * @param object
+     * @param pkProject primary key of project or null, if repo versions
+     */
+    /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    SchemaObjectService.prototype.storeSchemaObjectGv = /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    function (object, pkProject) {
+        var _this = this;
+        if (object && Object.keys(object).length > 0) {
+            Object.keys(object).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            function (schema) {
+                /** @type {?} */
+                var actions;
+                if (schema === 'inf')
+                    actions = _this.infActions;
+                else if (schema === 'pro')
+                    actions = _this.proActions;
+                else if (schema === 'dat')
+                    actions = _this.datActions;
+                else if (schema === 'war')
+                    actions = _this.warActions;
+                else if (schema === 'tab')
+                    actions = _this.tabActions;
+                else if (schema === 'dfh')
+                    actions = _this.dfhActions;
+                else if (schema === 'sys')
+                    actions = _this.sysActions;
+                if (actions) {
+                    Object.keys(object[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    function (model) {
+                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+                    }));
+                }
+            }));
+            // this.extendEntityPreviewStream(object, pkProject);
+            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
+        }
+    };
+    SchemaObjectService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    SchemaObjectService.ctorParameters = function () { return [
+        { type: SchemaObjectApi },
+        { type: InfActions },
+        { type: ProActions },
+        { type: DatActions },
+        { type: WarActions },
+        { type: TabActions },
+        { type: DfhActions },
+        { type: SysActions },
+        { type: NotificationsAPIActions }
+    ]; };
+    return SchemaObjectService;
+}());
+if (false) {
+    /** @type {?} */
+    SchemaObjectService.prototype.api;
+    /** @type {?} */
+    SchemaObjectService.prototype.infActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.proActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.datActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.warActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.tabActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.dfhActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.sysActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.notifications;
 }
 
 /**
@@ -5866,237 +6305,6 @@ function (flattened, pk, type) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/_helpers/schema-epics-factory.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template Payload, Model
- */
-var  /**
- * @template Payload, Model
- */
-SchemaEpicsFactory = /** @class */ (function () {
-    function SchemaEpicsFactory(actionPrefix, modelName, actions, notifications) {
-        this.actionPrefix = actionPrefix;
-        this.modelName = modelName;
-        this.actions = actions;
-        this.notifications = notifications;
-    }
-    /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?} actionSuffix
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    SchemaEpicsFactory.prototype.createLoadEpic = /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?} actionSuffix
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    function (apiFn, actionSuffix, onSuccessHook) {
-        var _this = this;
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) {
-            return action$.pipe(ofType(_this.type('LOAD', actionSuffix)), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            function (globalActions) {
-                /** @type {?} */
-                var pendingKey = action.meta.addPending;
-                /** @type {?} */
-                var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                apiFn(meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    if (onSuccessHook) {
-                        onSuccessHook(data, action.meta.pk, meta);
-                        _this.actions.succeeded(data, pendingKey, action.meta.pk);
-                    }
-                    else {
-                        _this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
-                    }
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    _this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })); })));
-        });
-    };
-    /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    SchemaEpicsFactory.prototype.createUpsertEpic = /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    function (apiFn, onSuccessHook) {
-        var _this = this;
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) {
-            return action$.pipe(ofType(_this.actionPrefix + '.' + _this.modelName + '::UPSERT'), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            function (globalActions) {
-                /** @type {?} */
-                var pendingKey = action.meta.addPending;
-                /** @type {?} */
-                var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                apiFn(meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    if (onSuccessHook) {
-                        onSuccessHook(data, action.meta.pk);
-                        _this.actions.succeeded(data, pendingKey, action.meta.pk);
-                    }
-                    else {
-                        _this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
-                    }
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    _this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })); })));
-        });
-    };
-    /**
-     * @param {?} apiFn
-     * @return {?}
-     */
-    SchemaEpicsFactory.prototype.createDeleteEpic = /**
-     * @param {?} apiFn
-     * @return {?}
-     */
-    function (apiFn) {
-        var _this = this;
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) {
-            return action$.pipe(ofType(_this.actionPrefix + '.' + _this.modelName + '::DELETE'), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            function (globalActions) {
-                /** @type {?} */
-                var pendingKey = action.meta.addPending;
-                apiFn(action.meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    _this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    _this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })); })));
-        });
-    };
-    /**
-     * Create the string used as action.type
-     */
-    /**
-     * Create the string used as action.type
-     * @param {?} operation
-     * @param {?} actionSuffix
-     * @return {?}
-     */
-    SchemaEpicsFactory.prototype.type = /**
-     * Create the string used as action.type
-     * @param {?} operation
-     * @param {?} actionSuffix
-     * @return {?}
-     */
-    function (operation, actionSuffix) {
-        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
-    };
-    /**
-    * Create the onError logic for standard actions
-    * @param globalActions pass in the subscriber to the action$ stream
-    */
-    /**
-     * Create the onError logic for standard actions
-     * @param {?} globalActions pass in the subscriber to the action$ stream
-     * @param {?} error
-     * @param {?} pendingKey
-     * @param {?} pkProject
-     * @return {?}
-     */
-    SchemaEpicsFactory.prototype.onError = /**
-     * Create the onError logic for standard actions
-     * @param {?} globalActions pass in the subscriber to the action$ stream
-     * @param {?} error
-     * @param {?} pendingKey
-     * @param {?} pkProject
-     * @return {?}
-     */
-    function (globalActions, error, pendingKey, pkProject) {
-        globalActions.next(this.notifications.addToast({
-            type: 'error',
-            options: { title: error.message }
-        }));
-        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
-    };
-    return SchemaEpicsFactory;
-}());
-if (false) {
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.actionPrefix;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.modelName;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.actions;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.notifications;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: state-schema/_helpers/inf-epic-factory.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -6349,6 +6557,1674 @@ if (false) {
     /** @type {?} */
     InfEpicsFactory.prototype.proActions;
 }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/inf.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var InfEpics = /** @class */ (function () {
+    function InfEpics(notification, peItApi, teEnApi, statementApi, textPropertyApi, infActions, proActions, datActions, infoProjRelApi, schemaObjectService) {
+        this.notification = notification;
+        this.peItApi = peItApi;
+        this.teEnApi = teEnApi;
+        this.statementApi = statementApi;
+        this.textPropertyApi = textPropertyApi;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.infoProjRelApi = infoProjRelApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    InfEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var infPersistentItemEpicsFactory = new InfEpicsFactory(infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        var infTemporalEntityEpicsFactory = new InfEpicsFactory(infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        var infStatementEpicsFactory = new InfEpicsFactory(infRoot, 'statement', this.infActions.statement, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        var infTextPropertyEpicsFactory = new InfEpicsFactory(infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
+        return combineEpics(
+        /**
+         * Perstistent Item
+         *
+         */
+        infPersistentItemEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.peItApi.ownProperties(meta.pk, meta.pkEntity); }), InfPersistentItemActionFactory.MINIMAL_BY_PK, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            // call action to store records
+            Object.keys(schemas).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            function (schema) {
+                /** @type {?} */
+                var actions;
+                if (schema === 'inf')
+                    actions = _this.infActions;
+                else if (schema === 'pro')
+                    actions = _this.proActions;
+                if (actions) {
+                    Object.keys(schemas[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    function (model) {
+                        actions[model].loadSucceeded(schemas[schema][model], undefined, pk);
+                    }));
+                }
+            }));
+        })), infPersistentItemEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.peItApi.typesOfProject(meta.pk); }), InfPersistentItemActionFactory.TYPES_OF_PROJECT, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var schemaObject = (/** @type {?} */ (results));
+            _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })), 
+        // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
+        //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
+        //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+        //   (results, pk) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.persistent_item.flatten(results);
+        //     storeFlattened(flattener.getFlattened(), pk);
+        //   }
+        // ),
+        infPersistentItemEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.peItApi
+            .findOrCreateInfPersistentItems(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.persistent_item.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), infPersistentItemEpicsFactory.createRemoveEpic(), 
+        /**
+         * Temporal Entity
+         *
+         */
+        infTemporalEntityEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.teEnApi.ownProperties(meta.pk, meta.pkEntity); }), InfTemporalEntityActionFactory.OWN_PROPERTIES, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var schemaObject = (/** @type {?} */ (results));
+            _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })), (
+        /**
+         * Epic to load paginated Temporal Entity List
+         */
+        /**
+         * Epic to load paginated Temporal Entity List
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) { return action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        function (globalActions) {
+            /** @type {?} */
+            var meta = action.meta;
+            /** @type {?} */
+            var apiCal$ = _this.teEnApi.temporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            var pkProject = meta.pk;
+            _this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        })); }))); }), (
+        /**
+         * Epic to load paginated Alternative Temporal Entity List
+         */
+        /**
+         * Epic to load paginated Alternative Temporal Entity List
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) { return action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        function (globalActions) {
+            /** @type {?} */
+            var meta = action.meta;
+            /** @type {?} */
+            var apiCal$ = _this.teEnApi.alternativeTemporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            var pkProject = null;
+            _this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        })); }))); }), infTemporalEntityEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.teEnApi
+            .findOrCreateInfTemporalEntities(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.temporal_entity.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), infTemporalEntityEpicsFactory.createRemoveEpic(), 
+        /**
+         * Statement
+         *
+         */
+        infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk); }), InfStatementActionFactory.ALTERNATIVES_INGOING, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), null);
+        })), infStatementEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.statementApi
+            .findOrCreateInfStatements(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) { return action$.pipe(ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        function (globalActions) {
+            /** @type {?} */
+            var meta = action.meta;
+            /** @type {?} */
+            var apiCal$ = _this.statementApi.paginatedListTargetingEntityPreviews(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            var pkProject = meta.pk;
+            _this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
+        })); }))); }), infStatementEpicsFactory.createRemoveEpic(), infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.statementApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty); }), InfStatementActionFactory.BY_PARAMS, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'LOAD');
+        })), infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.statementApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity); }), InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var res = (/** @type {?} */ ((/** @type {?} */ (results))));
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.statement.flatten(res.statements);
+            storeFlattened(flattener.getFlattened(), pk);
+            /** @type {?} */
+            var flattener2 = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener2.digital.flatten(res.digitals);
+            storeFlattened(flattener2.getFlattened(), pk);
+        })), 
+        /**
+         * Text Property
+         *
+         */
+        infTextPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.textPropertyApi
+            .findAlternativeTextProperties(meta.pk, meta.fkEntity, meta.fkClassField); }), InfTextPropertyActionFactory.ALTERNATIVES, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.text_property.flatten(results);
+            storeFlattened(flattener.getFlattened(), null);
+        })), infTextPropertyEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.textPropertyApi
+            .findOrCreateInfTextProperties(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.text_property.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), infTextPropertyEpicsFactory.createRemoveEpic());
+    };
+    /**
+     * handles the update of store for paginated temporal entity lists.
+     * @param pkProject if null, list is handled as 'repo' list
+     */
+    /**
+     * handles the update of store for paginated temporal entity lists.
+     * @private
+     * @template M
+     * @param {?} action
+     * @param {?} epicsFactory
+     * @param {?} globalActions
+     * @param {?} apiCall$
+     * @param {?} pkProject if null, list is handled as 'repo' list
+     * @return {?}
+     */
+    InfEpics.prototype.handleTemporalEntityListAction = /**
+     * handles the update of store for paginated temporal entity lists.
+     * @private
+     * @template M
+     * @param {?} action
+     * @param {?} epicsFactory
+     * @param {?} globalActions
+     * @param {?} apiCall$
+     * @param {?} pkProject if null, list is handled as 'repo' list
+     * @return {?}
+     */
+    function (action, epicsFactory, globalActions, apiCall$, pkProject) {
+        var _a, _b;
+        var _this = this;
+        /** @type {?} */
+        var meta = action.meta;
+        /** @type {?} */
+        var pendingKey = meta.addPending;
+        /** @type {?} */
+        var paginateBy = [
+            { fk_property: meta.pkProperty },
+            { fk_target_class: meta.fkTargetClass },
+            (_a = {}, _a[meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info'] = meta.pkSourceEntity, _a),
+            (_b = {}, _b[meta.alternatives ? 'alternatives' : 'ofProject'] = meta.alternatives, _b)
+        ];
+        // call action to set pagination loading on true
+        this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+        // call api to load data
+        apiCall$.subscribe((/**
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) {
+            // call action to store records
+            _this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
+            // call action to store pagination
+            _this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+            // call action to conclude the pending request
+            epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) {
+            // call action to handle error
+            epicsFactory.onError(globalActions, error, pendingKey, pkProject);
+        }));
+    };
+    InfEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    InfEpics.ctorParameters = function () { return [
+        { type: NotificationsAPIActions },
+        { type: InfPersistentItemApi },
+        { type: InfTemporalEntityApi },
+        { type: InfStatementApi },
+        { type: InfTextPropertyApi },
+        { type: InfActions },
+        { type: ProActions },
+        { type: DatActions },
+        { type: ProInfoProjRelApi },
+        { type: SchemaObjectService }
+    ]; };
+    return InfEpics;
+}());
+if (false) {
+    /** @type {?} */
+    InfEpics.prototype.notification;
+    /** @type {?} */
+    InfEpics.prototype.peItApi;
+    /** @type {?} */
+    InfEpics.prototype.teEnApi;
+    /** @type {?} */
+    InfEpics.prototype.statementApi;
+    /** @type {?} */
+    InfEpics.prototype.textPropertyApi;
+    /** @type {?} */
+    InfEpics.prototype.infActions;
+    /** @type {?} */
+    InfEpics.prototype.proActions;
+    /** @type {?} */
+    InfEpics.prototype.datActions;
+    /** @type {?} */
+    InfEpics.prototype.infoProjRelApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    InfEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/dat.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var DatEpics = /** @class */ (function () {
+    function DatEpics(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
+        this.notification = notification;
+        this.datActions = datActions;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.digitalApi = digitalApi;
+        this.chunkApi = chunkApi;
+        this.columnApi = columnApi;
+        this.namespaceApi = namespaceApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    DatEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
+        /** @type {?} */
+        var chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
+        /** @type {?} */
+        var namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
+        /** @type {?} */
+        var columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
+        return combineEpics(
+        // Digital
+        digitalEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null); }), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.digitalApi.bulkUpsert(meta.pk, meta.items); })), digitalEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.digitalApi.bulkDelete(meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) { return item.pk_entity; }))); })), 
+        // Chunk
+        chunkEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.chunkApi.ofDigital(meta.pk, meta.pkDigital); }), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.chunk.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), 
+        // Namespace
+        namespaceEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.namespaceApi.byProject(meta.pk); }), ''), columnEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.columnApi.ofDigital(meta.pk, meta.pkDigital); }), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var schemaObject = (/** @type {?} */ ((/** @type {?} */ (results))));
+            _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })));
+    };
+    DatEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    DatEpics.ctorParameters = function () { return [
+        { type: NotificationsAPIActions },
+        { type: DatActions },
+        { type: InfActions },
+        { type: ProActions },
+        { type: DatDigitalApi },
+        { type: DatChunkApi },
+        { type: DatColumnApi },
+        { type: DatNamespaceApi },
+        { type: SchemaObjectService }
+    ]; };
+    return DatEpics;
+}());
+if (false) {
+    /** @type {?} */
+    DatEpics.prototype.notification;
+    /** @type {?} */
+    DatEpics.prototype.datActions;
+    /** @type {?} */
+    DatEpics.prototype.infActions;
+    /** @type {?} */
+    DatEpics.prototype.proActions;
+    /** @type {?} */
+    DatEpics.prototype.digitalApi;
+    /** @type {?} */
+    DatEpics.prototype.chunkApi;
+    /** @type {?} */
+    DatEpics.prototype.columnApi;
+    /** @type {?} */
+    DatEpics.prototype.namespaceApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/pro.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProEpics = /** @class */ (function () {
+    function ProEpics(notification, infActions, proActions, datActions, projectApi, infoProjRelApi, classProjRelApi, profileProjRelApi, classFieldConfApi, textPropertyApi, analysisApi, schemaObjectService) {
+        this.notification = notification;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.projectApi = projectApi;
+        this.infoProjRelApi = infoProjRelApi;
+        this.classProjRelApi = classProjRelApi;
+        this.profileProjRelApi = profileProjRelApi;
+        this.classFieldConfApi = classFieldConfApi;
+        this.textPropertyApi = textPropertyApi;
+        this.analysisApi = analysisApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    ProEpics.prototype.createEpics = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var proProjectEpicsFactory = new SchemaEpicsFactory(proRoot, 'project', this.proActions.project, this.notification);
+        /** @type {?} */
+        var proInfoProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
+        /** @type {?} */
+        var proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
+        /** @type {?} */
+        var proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
+        /** @type {?} */
+        var proClassFieldConfigEpicsFactory = new SchemaEpicsFactory(proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
+        /** @type {?} */
+        var proTextPropertyEpicsFactory = new SchemaEpicsFactory(proRoot, 'text_property', this.proActions.text_property, this.notification);
+        /** @type {?} */
+        var proAnalysisEpicsFactory = new SchemaEpicsFactory(proRoot, 'analysis', this.proActions.analysis, this.notification);
+        return combineEpics(
+        /**
+        * ProProject
+        */
+        proProjectEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.projectApi
+            .ofAccount(meta.pk); }), ProProjectActionFactory.OF_ACCOUNT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        function (results) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_project.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proProjectEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.projectApi
+            .getBasics(meta.pk); }), ProProjectActionFactory.LOAD_BASICS, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        function (results) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_project.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), 
+        /**
+         * ProInfoProjRel
+         */
+        proInfoProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.infoProjRelApi
+            .bulkUpdateEprAttributes(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.info_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), proInfoProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.infoProjRelApi
+            .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing); }), ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.info_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+         * ProClassFieldConfig
+         */
+        proClassFieldConfigEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.classFieldConfApi.ofProject(meta.pk); }), ProClassFieldConfigActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        function (results) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_class_field_config.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proClassFieldConfigEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.classFieldConfApi
+            .bulkUpsert(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_class_field_config.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+         * ProProDfhClassProjRel
+         */
+        proDfhClassProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.classProjRelApi.ofProject(meta.pk); }), ProDfhClassProjRelActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        function (results) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_dfh_class_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proDfhClassProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.classProjRelApi
+            .bulkUpsert(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_dfh_class_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+        * ProDfhProfileProjRel
+        */
+        proDfhProfileProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.profileProjRelApi.ofProject(meta.pk); }), ProDfhProfileProjRelActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        function (results) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_dfh_profile_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proDfhProfileProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.profileProjRelApi
+            .bulkUpsert(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+            flattener.pro_dfh_profile_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+        * ProTextProperty
+        */
+        proTextPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.textPropertyApi.ofProject(meta.pk); }), ProTextPropertyActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            _this.schemaObjectService.storeSchemaObject(schemas, pk);
+        })), proTextPropertyEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.textPropertyApi
+            .bulkUpsert(meta.pk, meta.items); }), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        function (results, pk) {
+            /** @type {?} */
+            var schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            _this.schemaObjectService.storeSchemaObject(schemas, pk);
+        })), proTextPropertyEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.textPropertyApi.bulkDelete(meta.pk, meta.items); })), 
+        /**
+        * ProAnalysis
+        */
+        // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
+        //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
+        //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
+        //   (results) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.analysis.flatten(results);
+        //     storeFlattened(flattener.getFlattened());
+        //   }
+        // ),
+        // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
+        //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
+        //   (results, pk) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.analysis.flatten(results);
+        //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        //   }
+        // ),
+        proAnalysisEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        function (meta) { return _this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) { return item.pk_entity; }))); })));
+    };
+    ProEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ProEpics.ctorParameters = function () { return [
+        { type: NotificationsAPIActions },
+        { type: InfActions },
+        { type: ProActions },
+        { type: DatActions },
+        { type: ProProjectApi },
+        { type: ProInfoProjRelApi },
+        { type: ProDfhClassProjRelApi },
+        { type: ProDfhProfileProjRelApi },
+        { type: ProClassFieldConfigApi },
+        { type: ProTextPropertyApi },
+        { type: AnalysisService },
+        { type: SchemaObjectService }
+    ]; };
+    return ProEpics;
+}());
+if (false) {
+    /** @type {?} */
+    ProEpics.prototype.notification;
+    /** @type {?} */
+    ProEpics.prototype.infActions;
+    /** @type {?} */
+    ProEpics.prototype.proActions;
+    /** @type {?} */
+    ProEpics.prototype.datActions;
+    /** @type {?} */
+    ProEpics.prototype.projectApi;
+    /** @type {?} */
+    ProEpics.prototype.infoProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.classProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.profileProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.classFieldConfApi;
+    /** @type {?} */
+    ProEpics.prototype.textPropertyApi;
+    /** @type {?} */
+    ProEpics.prototype.analysisApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/action-resolver.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ActionResolverEpics = /** @class */ (function () {
+    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+    function ActionResolverEpics() {
+        var _this = this;
+        this.createEpics = (/**
+         * @return {?}
+         */
+        function () { return combineEpics(_this.createResolveEpic()); });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    ActionResolverEpics.prototype.createResolveEpic = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        function (action$, store) { return action$.pipe(filter((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return !!action && !!action.meta && !!action.meta.removePending; })), switchMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } })); }))); });
+    };
+    ActionResolverEpics.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root'
+                },] }
+    ];
+    /** @nocollapse */
+    ActionResolverEpics.ctorParameters = function () { return []; };
+    /** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+    return ActionResolverEpics;
+}());
+if (false) {
+    /** @type {?} */
+    ActionResolverEpics.prototype.createEpics;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/root-epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var RootEpics = /** @class */ (function () {
+    function RootEpics(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, systemEpics, dfhEpics, infEpics, datEpics, proEpics, actionResolver) {
+        var _this = this;
+        this.loadingBarEpics = loadingBarEpics;
+        this.notificationEpics = notificationEpics;
+        this.activeProjectEpics = activeProjectEpics;
+        this.accountEpics = accountEpics;
+        this.systemEpics = systemEpics;
+        this.dfhEpics = dfhEpics;
+        this.infEpics = infEpics;
+        this.datEpics = datEpics;
+        this.proEpics = proEpics;
+        this.actionResolver = actionResolver;
+        this.rootEpicStream$ = new BehaviorSubject(combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.systemEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), 
+        // important: this needs to be the last epic in
+        this.actionResolver.createEpics()));
+        this.rootEpic = (/**
+         * @param {?} action$
+         * @param {?} state$
+         * @param {?=} dependencies
+         * @return {?}
+         */
+        function (action$, state$, dependencies) {
+            if (dependencies === void 0) { dependencies = undefined; }
+            return _this.rootEpicStream$.pipe(mergeMap((/**
+             * @param {?} epic
+             * @return {?}
+             */
+            function (epic) { return epic(action$, state$, dependencies); })));
+        });
+    }
+    /**
+     * @return {?}
+     */
+    RootEpics.prototype.getRootEpic = /**
+     * @return {?}
+     */
+    function () {
+        return this.rootEpic;
+    };
+    /**
+     * Adds an epic to the RootEpic middleware
+     * @param epic that will be added to the RootEpics
+     */
+    /**
+     * Adds an epic to the RootEpic middleware
+     * @param {?} epic that will be added to the RootEpics
+     * @return {?}
+     */
+    RootEpics.prototype.addEpic = /**
+     * Adds an epic to the RootEpic middleware
+     * @param {?} epic that will be added to the RootEpics
+     * @return {?}
+     */
+    function (epic) {
+        this.rootEpicStream$.next(epic);
+    };
+    RootEpics.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    RootEpics.ctorParameters = function () { return [
+        { type: LoadingBarEpics },
+        { type: NotificationsAPIEpics },
+        { type: ActiveProjectEpics },
+        { type: AccountEpics },
+        { type: SysEpics },
+        { type: DfhEpics },
+        { type: InfEpics },
+        { type: DatEpics },
+        { type: ProEpics },
+        { type: ActionResolverEpics }
+    ]; };
+    return RootEpics;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.rootEpicStream$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.rootEpic;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.loadingBarEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.notificationEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.activeProjectEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.accountEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.systemEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.dfhEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.infEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.datEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.proEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.actionResolver;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/account.reducers.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INITIAL_STATE = {
+    account: undefined,
+    roles: undefined
+};
+/** @type {?} */
+var accountRootReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+function (lastState, action) {
+    if (lastState === void 0) { lastState = INITIAL_STATE; }
+    switch (action.type) {
+        case AccountActions.LOGIN_SUCCEEDED:
+            lastState = __assign({}, lastState, { account: action.meta.account });
+            break;
+        case AccountActions.ACCOUNT_UPDATED:
+            lastState = __assign({}, lastState, { account: action.meta.account });
+            break;
+        case AccountActions.LOAD_ROLES_SUCCEEDED:
+            lastState = __assign({}, lastState, { roles: action.meta.accountRoles });
+            break;
+        case AccountActions.LOAD_ROLES_FAILED:
+            lastState = __assign({}, lastState, { roles: [] });
+            break;
+    }
+    return lastState;
+});
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/loading-bar.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INITIAL_STATE$1 = {
+    loading: false,
+    progress: 0,
+};
+/**
+ * @param {?=} state
+ * @param {?=} a
+ * @return {?}
+ */
+function loadingBarReducer(state, a) {
+    if (state === void 0) { state = INITIAL_STATE$1; }
+    /** @type {?} */
+    var action = (/** @type {?} */ (a));
+    switch (action.type) {
+        case LoadingBarActions.START:
+            return __assign({}, state, { loading: true });
+        case LoadingBarActions.STOP:
+            return __assign({}, state, { loading: false });
+        case LoadingBarActions.COPMLETE:
+            return __assign({}, state, { loading: false });
+    }
+    return state;
+}
+;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/active-project.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INITIAL_STATE$2 = {
+    label: '',
+    list: '',
+    uiIdSerial: 0,
+    panelSerial: 0,
+    focusedPanel: 0,
+    panels: []
+};
+/** @type {?} */
+var activeProjectReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function (state, action) {
+    var _a, _b, _c, _d, _e, _f, _g;
+    if (state === void 0) { state = INITIAL_STATE$2; }
+    /** @type {?} */
+    var pi;
+    /** @type {?} */
+    var ti;
+    /** @type {?} */
+    var ppi;
+    /** @type {?} */
+    var cpi;
+    /** @type {?} */
+    var pti;
+    /** @type {?} */
+    var cti;
+    switch (action.type) {
+        /************************************************************************************
+         * Load project data (metadata, crm)
+        ************************************************************************************/
+        case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
+            state = __assign({}, state, action.meta.projectPreview);
+            break;
+        case ActiveProjectActions.LOAD_PROJECT_CONFIG:
+            state = __assign({}, state, { loadingConfigData: true });
+            break;
+        case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
+            state = __assign({}, state, { configDataInitialized: true, loadingConfigData: false });
+            break;
+        /************************************************************************************
+         * Layout -- Tabs
+        ************************************************************************************/
+        case ActiveProjectActions.SET_PANELS:
+            state = __assign({}, state, { panels: action.meta.panels, uiIdSerial: action.meta.uiIdSerial, panelSerial: action.meta.panelSerial, focusedPanel: action.meta.focusedPanel });
+            break;
+        case ActiveProjectActions.SET_LIST_TYPE:
+            state = __assign({}, state, { list: action.meta.list });
+            break;
+        case ActiveProjectActions.ACTIVATE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_a = {},
+                    _a[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs).map((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        function (tab, index) {
+                            tab.active = (index === ti);
+                            return tab;
+                        })) }),
+                    _a)) });
+            break;
+        case ActiveProjectActions.MOVE_TAB:
+            ppi = action.meta.previousPanelIndex;
+            cpi = action.meta.currentPanelIndex;
+            pti = action.meta.previousTabIndex;
+            cti = action.meta.currentTabIndex;
+            if (ppi === cpi) {
+                /** @type {?} */
+                var tabs = __spread(state.panels[cpi].tabs);
+                moveItemInArray(tabs, pti, cti);
+                state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_b = {},
+                        _b[cpi] = __assign({}, state.panels[cpi], { tabs: tabs }),
+                        _b)) });
+            }
+            else {
+                /** @type {?} */
+                var pTabs_1 = __spread(state.panels[ppi].tabs);
+                /** @type {?} */
+                var cTabs = __spread(state.panels[cpi].tabs);
+                transferArrayItem(pTabs_1, cTabs, pti, cti);
+                state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_c = {},
+                        _c[ppi] = __assign({}, state.panels[ppi], { tabs: pTabs_1.map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            function (tab, index) {
+                                tab.active = (index === (pti < pTabs_1.length ? pti : (pti - 1)));
+                                return tab;
+                            })) }),
+                        _c[cpi] = __assign({}, state.panels[cpi], { tabs: cTabs.map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            function (tab, index) {
+                                tab.active = (index === cti);
+                                return tab;
+                            })) }),
+                        _c)) });
+            }
+            break;
+        case ActiveProjectActions.ADD_TAB:
+            if (state.panels.length === 0) {
+                state = __assign({}, state, { panels: [
+                        {
+                            id: state.panelSerial,
+                            tabs: []
+                        }
+                    ], focusedPanel: 0, panelSerial: state.panelSerial + 1 });
+            }
+            pi = state.focusedPanel;
+            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_d = {},
+                    _d[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs.map((/**
+                         * @param {?} t
+                         * @return {?}
+                         */
+                        function (t) {
+                            t.active = false;
+                            return t;
+                        })), [
+                            __assign({}, omit(['pathSegment'], action.meta.tab), { path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()] })
+                        ]) }),
+                    _d)), uiIdSerial: (state.uiIdSerial + 1) });
+            break;
+        case ActiveProjectActions.CLOSE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            // remove the closing tab
+            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_e = {},
+                    _e[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs).filter((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        function (tab, index) { return index !== ti; })) }),
+                    _e)) });
+            // activate a sibling tab, if needed and possible
+            if (!state.panels[pi].tabs.find((/**
+             * @param {?} t
+             * @return {?}
+             */
+            function (t) { return t.active; }))) {
+                state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_f = {},
+                        _f[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs).map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            function (tab, index) {
+                                tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
+                                return tab;
+                            })) }),
+                        _f)) });
+            }
+            break;
+        case ActiveProjectActions.CLOSE_PANEL:
+            pi = action.meta.panelIndex;
+            /** @type {?} */
+            var panels = __spread(state.panels);
+            panels.splice(pi, 1);
+            state = __assign({}, state, { panels: panels });
+            break;
+        case ActiveProjectActions.FOCUS_PANEL:
+            state = __assign({}, state, { focusedPanel: action.meta.panelIndex });
+            break;
+        case ActiveProjectActions.SPLIT_PANEL:
+            ppi = action.meta.previousPanelIndex;
+            ti = action.meta.tabIndex;
+            cpi = action.meta.currentPanelIndex;
+            /** @type {?} */
+            var moveTab = state.panels[ppi].tabs[ti];
+            // removes tab from old panel
+            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_g = {},
+                    _g[ppi] = __assign({}, state.panels[ppi], { tabs: __spread(state.panels[ppi].tabs).filter((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        function (tab, index) { return index !== ti; }))
+                            .map((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        function (tab, index) {
+                            if (index === 0)
+                                tab.active = true;
+                            return tab;
+                        })) }),
+                    _g)) });
+            // insert a new panel at position of cpi
+            /** @type {?} */
+            var newPanels = __spread(state.panels);
+            newPanels.splice(cpi, 0, {
+                id: state.panelSerial,
+                tabs: [moveTab]
+            });
+            state = __assign({}, state, { panels: newPanels, panelSerial: state.panelSerial + 1 });
+            break;
+        case ActiveProjectActions.SET_REFINING_CHUNK:
+            state = __assign({}, state, { refiningChunk: action.payload.refiningChunk });
+            break;
+        case ActiveProjectActions.SET_CREATING_MENTIONING:
+            state = __assign({}, state, { creatingMentioning: action.payload.creatingMentioning });
+            break;
+        /************************************************************************************
+        * Highlighting of mentionings in the gui
+        ************************************************************************************/
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
+            state = __assign({}, state, { mentioningsFocusedInText: action.payload.mentioningsFocusedInText });
+            break;
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
+            state = __assign({}, state, { mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable });
+            break;
+        /************************************************************************************
+         * Destroy the active project state (on closing a project)
+        ************************************************************************************/
+        case ActiveProjectActions.DESTROY:
+            state = INITIAL_STATE$2;
+            break;
+    }
+    return state;
+});
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/entity-list.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var Information = /** @class */ (function () {
+    function Information(data) {
+        Object.assign(this, data);
+    }
+    return Information;
+}());
+if (false) {
+    /** @type {?} */
+    Information.prototype.items;
+    /** @type {?} */
+    Information.prototype.loading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/entity-list.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var InformationAPIActions = /** @class */ (function () {
+    function InformationAPIActions() {
+        /**
+         * ******************************************************************
+         *  Method to distroy the slice of store
+         * *******************************************************************
+         */
+        this.destroy = (/**
+         * @return {?}
+         */
+        function () { return ({
+            type: InformationAPIActions.DESTROY,
+            meta: null,
+            payload: null
+        }); });
+    }
+    InformationAPIActions.DESTROY = 'Information::DESTROY';
+    InformationAPIActions.decorators = [
+        { type: Injectable }
+    ];
+    __decorate([
+        dispatch(),
+        __metadata("design:type", Object)
+    ], InformationAPIActions.prototype, "destroy", void 0);
+    return InformationAPIActions;
+}());
+if (false) {
+    /** @type {?} */
+    InformationAPIActions.DESTROY;
+    /**
+     * ******************************************************************
+     *  Method to distroy the slice of store
+     * *******************************************************************
+     * @type {?}
+     */
+    InformationAPIActions.prototype.destroy;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/entity-list.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INITIAL_STATE$3 = new Information();
+/**
+ * @param {?=} state
+ * @param {?=} a
+ * @return {?}
+ */
+function informationReducer(state, a) {
+    if (state === void 0) { state = INITIAL_STATE$3; }
+    /** @type {?} */
+    var action = (/** @type {?} */ (a));
+    switch (action.type) {
+        /*****************************************************
+        * Reducers called on destroy of component
+        *****************************************************/
+        case InformationAPIActions.DESTROY:
+            state = {};
+            break;
+    }
+    return state;
+}
+;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/source-list.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData$3() { }
+if (false) {
+    /** @type {?|undefined} */
+    MetaData$3.prototype.pkAllowedClasses;
+}
+;
+var SourceListAPIActions = /** @class */ (function () {
+    function SourceListAPIActions() {
+        /**
+         * ******************************************************************
+         *  Actions to manage the list
+         * *******************************************************************
+         */
+        this.initializeList = (/**
+         * @param {?} pkAllowedClasses
+         * @return {?}
+         */
+        function (pkAllowedClasses) { return ({
+            type: SourceListAPIActions.INITIALIZE_LIST,
+            meta: { pkAllowedClasses: pkAllowedClasses },
+            payload: null
+        }); });
+        /**
+         * ******************************************************************
+         *  Method to distroy the slice of store
+         * *******************************************************************
+         */
+        this.destroy = (/**
+         * @return {?}
+         */
+        function () { return ({
+            type: SourceListAPIActions.DESTROY,
+            meta: null,
+            payload: null
+        }); });
+    }
+    SourceListAPIActions.INITIALIZE_LIST = 'SourceList::INITIALIZE_LIST';
+    SourceListAPIActions.DESTROY = 'SourceList::DESTROY';
+    SourceListAPIActions.decorators = [
+        { type: Injectable }
+    ];
+    __decorate([
+        dispatch(),
+        __metadata("design:type", Object)
+    ], SourceListAPIActions.prototype, "initializeList", void 0);
+    __decorate([
+        dispatch(),
+        __metadata("design:type", Object)
+    ], SourceListAPIActions.prototype, "destroy", void 0);
+    return SourceListAPIActions;
+}());
+if (false) {
+    /** @type {?} */
+    SourceListAPIActions.INITIALIZE_LIST;
+    /** @type {?} */
+    SourceListAPIActions.DESTROY;
+    /**
+     * ******************************************************************
+     *  Actions to manage the list
+     * *******************************************************************
+     * @type {?}
+     */
+    SourceListAPIActions.prototype.initializeList;
+    /**
+     * ******************************************************************
+     *  Method to distroy the slice of store
+     * *******************************************************************
+     * @type {?}
+     */
+    SourceListAPIActions.prototype.destroy;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/source-list.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+var  
+// Class of this slice of store
+SourceList = /** @class */ (function () {
+    function SourceList(data) {
+        Object.assign(this, data);
+    }
+    return SourceList;
+}());
+if (false) {
+    /** @type {?} */
+    SourceList.prototype.list;
+    /** @type {?} */
+    SourceList.prototype.loading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/source-list.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INITIAL_STATE$4 = new SourceList();
+/**
+ * @param {?=} state
+ * @param {?=} a
+ * @return {?}
+ */
+function sourceListReducer(state, a) {
+    if (state === void 0) { state = INITIAL_STATE$4; }
+    /** @type {?} */
+    var action = (/** @type {?} */ (a));
+    switch (action.type) {
+        case SourceListAPIActions.INITIALIZE_LIST:
+            state = __assign({}, state, { list: {
+                    pkAllowedClasses: action.meta.pkAllowedClasses
+                } });
+            break;
+        /*****************************************************
+        * Reducers called on destroy of component
+        *****************************************************/
+        case SourceListAPIActions.DESTROY:
+            state = {};
+            break;
+    }
+    return state;
+}
+;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/actions/projects.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProjectsActions = /** @class */ (function () {
+    function ProjectsActions() {
+    }
+    /**
+     * @param {?} payload
+     * @return {?}
+     */
+    ProjectsActions.prototype.loadProjectsSucceeded = /**
+     * @param {?} payload
+     * @return {?}
+     */
+    function (payload) {
+        return {
+            type: ProjectsActions.LOAD_PROJECTS_SUCCEEDED,
+            payload: payload,
+            meta: null
+        };
+    };
+    ProjectsActions.LOAD_PROJECTS_SUCCEEDED = 'LOAD_PROJECTS_SUCCEEDED';
+    ProjectsActions.decorators = [
+        { type: Injectable }
+    ];
+    return ProjectsActions;
+}());
+if (false) {
+    /** @type {?} */
+    ProjectsActions.LOAD_PROJECTS_SUCCEEDED;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/reducers/projects.reducers.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INITIAL_STATE$5 = {
+    records: []
+};
+/** @type {?} */
+var projectListReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+function (lastState, action) {
+    if (lastState === void 0) { lastState = INITIAL_STATE$5; }
+    switch (action.type) {
+        case ProjectsActions.LOAD_PROJECTS_SUCCEEDED: return __assign({}, lastState, { records: action.payload.map((/**
+             * @param {?} record
+             * @return {?}
+             */
+            function (record) { return ({ record: record }); })) });
+    }
+    return lastState;
+});
+var ɵ0$7 = projectListReducer;
+/** @type {?} */
+var createProjectsReducer = (/**
+ * @return {?}
+ */
+function () {
+    return projectListReducer;
+});
 
 /**
  * @fileoverview added by tsickle
@@ -7256,1329 +9132,197 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/services/schema-object.service.ts
+ * Generated from: state-schema/reducers/sys.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var SchemaObjectService = /** @class */ (function () {
-    function SchemaObjectService(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
-        this.api = api;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.datActions = datActions;
-        this.warActions = warActions;
-        this.tabActions = tabActions;
-        this.dfhActions = dfhActions;
-        this.sysActions = sysActions;
-        this.notifications = notifications;
-    }
-    /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param apiCall$
-     * @param pkProject primary key of project or 'ofRepo', if repo versions
-     */
-    /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param {?} apiCall$
-     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
-     * @return {?}
-     */
-    SchemaObjectService.prototype.store = /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param {?} apiCall$
-     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
-     * @return {?}
-     */
-    function (apiCall$, pkProject) {
-        var _this = this;
-        /** @type {?} */
-        var s$ = new Subject();
-        apiCall$.subscribe((/**
-         * @param {?} result
-         * @return {?}
-         */
-        function (result) {
-            _this.storeSchemaObject(result, pkProject === 'ofRepo' ? null : pkProject);
-            s$.next(result);
-        }), (/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) {
-            _this.notifications.addToast({
-                type: 'error',
-                options: { title: error.message }
-            });
-            s$.error(error);
-        }));
-        return s$;
-    };
-    /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param apiCall$
-     * @param pkProject primary key of project or 'ofRepo', if repo versions
-     */
-    /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param {?} apiCall$
-     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
-     * @return {?}
-     */
-    SchemaObjectService.prototype.storeGv = /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param {?} apiCall$
-     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
-     * @return {?}
-     */
-    function (apiCall$, pkProject) {
-        var _this = this;
-        /** @type {?} */
-        var s$ = new Subject();
-        apiCall$.subscribe((/**
-         * @param {?} result
-         * @return {?}
-         */
-        function (result) {
-            _this.storeSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject);
-            s$.next(result);
-        }), (/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) {
-            _this.notifications.addToast({
-                type: 'error',
-                options: { title: error.message }
-            });
-            s$.error(error);
-        }));
-        return s$;
-    };
-    /**
-     *
-     * @param object
-     * @param pkProject primary key of project or null, if repo versions
-     */
-    /**
-     *
-     * @param {?} object
-     * @param {?} pkProject primary key of project or null, if repo versions
-     * @return {?}
-     */
-    SchemaObjectService.prototype.storeSchemaObject = /**
-     *
-     * @param {?} object
-     * @param {?} pkProject primary key of project or null, if repo versions
-     * @return {?}
-     */
-    function (object, pkProject) {
-        var _this = this;
-        if (object && Object.keys(object).length > 0) {
-            Object.keys(object).forEach((/**
-             * @param {?} schema
-             * @return {?}
-             */
-            function (schema) {
-                /** @type {?} */
-                var actions;
-                if (schema === 'inf')
-                    actions = _this.infActions;
-                else if (schema === 'pro')
-                    actions = _this.proActions;
-                else if (schema === 'dat')
-                    actions = _this.datActions;
-                else if (schema === 'war')
-                    actions = _this.warActions;
-                if (actions) {
-                    Object.keys(object[schema]).forEach((/**
-                     * @param {?} model
-                     * @return {?}
-                     */
-                    function (model) {
-                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
-                    }));
-                }
-            }));
-        }
-    };
-    /**
-     *
-     * @param object
-     * @param pkProject primary key of project or null, if repo versions
-     */
-    /**
-     *
-     * @param {?} object
-     * @param {?} pkProject primary key of project or null, if repo versions
-     * @return {?}
-     */
-    SchemaObjectService.prototype.storeSchemaObjectGv = /**
-     *
-     * @param {?} object
-     * @param {?} pkProject primary key of project or null, if repo versions
-     * @return {?}
-     */
-    function (object, pkProject) {
-        var _this = this;
-        if (object && Object.keys(object).length > 0) {
-            Object.keys(object).forEach((/**
-             * @param {?} schema
-             * @return {?}
-             */
-            function (schema) {
-                /** @type {?} */
-                var actions;
-                if (schema === 'inf')
-                    actions = _this.infActions;
-                else if (schema === 'pro')
-                    actions = _this.proActions;
-                else if (schema === 'dat')
-                    actions = _this.datActions;
-                else if (schema === 'war')
-                    actions = _this.warActions;
-                else if (schema === 'tab')
-                    actions = _this.tabActions;
-                else if (schema === 'dfh')
-                    actions = _this.dfhActions;
-                else if (schema === 'sys')
-                    actions = _this.sysActions;
-                if (actions) {
-                    Object.keys(object[schema]).forEach((/**
-                     * @param {?} model
-                     * @return {?}
-                     */
-                    function (model) {
-                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
-                    }));
-                }
-            }));
-            // this.extendEntityPreviewStream(object, pkProject);
-            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
-        }
-    };
-    SchemaObjectService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    SchemaObjectService.ctorParameters = function () { return [
-        { type: SchemaObjectApi },
-        { type: InfActions },
-        { type: ProActions },
-        { type: DatActions },
-        { type: WarActions },
-        { type: TabActions },
-        { type: DfhActions },
-        { type: SysActions },
-        { type: NotificationsAPIActions }
-    ]; };
-    return SchemaObjectService;
-}());
-if (false) {
-    /** @type {?} */
-    SchemaObjectService.prototype.api;
-    /** @type {?} */
-    SchemaObjectService.prototype.infActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.proActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.datActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.warActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.tabActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.dfhActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.sysActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.notifications;
+/**
+ * @return {?}
+ */
+function createSysReducer() {
+    return new ReducerFactory(sysRoot, sysDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/_helpers/index.ts
+ * Generated from: state-schema/reducers/dfh.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
 /**
- * @fileoverview added by tsickle
- * Generated from: state-schema/epics/dat.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @return {?}
  */
-var DatEpics = /** @class */ (function () {
-    function DatEpics(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
-        this.notification = notification;
-        this.datActions = datActions;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.digitalApi = digitalApi;
-        this.chunkApi = chunkApi;
-        this.columnApi = columnApi;
-        this.namespaceApi = namespaceApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    DatEpics.prototype.createEpics = /**
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        /** @type {?} */
-        var digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
-        /** @type {?} */
-        var chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
-        /** @type {?} */
-        var namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
-        /** @type {?} */
-        var columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
-        return combineEpics(
-        // Digital
-        digitalEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null); }), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.digitalApi.bulkUpsert(meta.pk, meta.items); })), digitalEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.digitalApi.bulkDelete(meta.items.map((/**
-         * @param {?} item
-         * @return {?}
-         */
-        function (item) { return item.pk_entity; }))); })), 
-        // Chunk
-        chunkEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.chunkApi.ofDigital(meta.pk, meta.pkDigital); }), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.chunk.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk);
-        })), 
-        // Namespace
-        namespaceEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.namespaceApi.byProject(meta.pk); }), ''), columnEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.columnApi.ofDigital(meta.pk, meta.pkDigital); }), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var schemaObject = (/** @type {?} */ (results));
-            _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })));
-    };
-    DatEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    DatEpics.ctorParameters = function () { return [
-        { type: NotificationsAPIActions },
-        { type: DatActions },
-        { type: InfActions },
-        { type: ProActions },
-        { type: DatDigitalApi },
-        { type: DatChunkApi },
-        { type: DatColumnApi },
-        { type: DatNamespaceApi },
-        { type: SchemaObjectService }
-    ]; };
-    return DatEpics;
-}());
-if (false) {
-    /** @type {?} */
-    DatEpics.prototype.notification;
-    /** @type {?} */
-    DatEpics.prototype.datActions;
-    /** @type {?} */
-    DatEpics.prototype.infActions;
-    /** @type {?} */
-    DatEpics.prototype.proActions;
-    /** @type {?} */
-    DatEpics.prototype.digitalApi;
-    /** @type {?} */
-    DatEpics.prototype.chunkApi;
-    /** @type {?} */
-    DatEpics.prototype.columnApi;
-    /** @type {?} */
-    DatEpics.prototype.namespaceApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DatEpics.prototype.schemaObjectService;
+function createDfhReducer() {
+    return new ReducerFactory('dfh', dfhDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/epics/dfh.epics.ts
+ * Generated from: state-schema/reducers/inf.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var DfhEpics = /** @class */ (function () {
-    function DfhEpics(actions, notification, profileApi, classApi, propertyApi, labelApi) {
-        this.actions = actions;
-        this.notification = notification;
-        this.profileApi = profileApi;
-        this.classApi = classApi;
-        this.propertyApi = propertyApi;
-        this.labelApi = labelApi;
-    }
-    /**
-     * @return {?}
-     */
-    DfhEpics.prototype.createEpics = /**
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        /** @type {?} */
-        var dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
-        /** @type {?} */
-        var dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
-        /** @type {?} */
-        var dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
-        /** @type {?} */
-        var dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
-        return combineEpics(
-        // Profile Loaders
-        dfhProfileEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.profileApi.ofProject(meta.pk); }), DfhProfileActionFactory.OF_PROJECT), 
-        // Property Loaders
-        dfhPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.propertyApi.dfhPropertyControllerOfProject(meta.pk); }), DfhPropertyActionFactory.OF_PROJECT), 
-        // Class Loaders
-        dfhClassEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.classApi.dfhClassControllerOfProject(meta.pk); }), DfhClassActionFactory.OF_PROJECT), 
-        // Label Loaders
-        dfhLabelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.labelApi.ofProject(meta.pk); }), DfhLabelActionFactory.OF_PROJECT));
-    };
-    DfhEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    DfhEpics.ctorParameters = function () { return [
-        { type: DfhActions },
-        { type: NotificationsAPIActions },
-        { type: DfhProfileApi },
-        { type: DfhClassControllerService },
-        { type: DfhPropertyControllerService },
-        { type: DfhLabelApi }
-    ]; };
-    return DfhEpics;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.notification;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.profileApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.classApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.propertyApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.labelApi;
+/**
+ * @return {?}
+ */
+function createInfReducer() {
+    return new ReducerFactory(infRoot, infDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/epics/inf.epics.ts
+ * Generated from: state-schema/reducers/dat.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var InfEpics = /** @class */ (function () {
-    function InfEpics(notification, peItApi, teEnApi, statementApi, textPropertyApi, infActions, proActions, datActions, infoProjRelApi, schemaObjectService) {
-        this.notification = notification;
-        this.peItApi = peItApi;
-        this.teEnApi = teEnApi;
-        this.statementApi = statementApi;
-        this.textPropertyApi = textPropertyApi;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.datActions = datActions;
-        this.infoProjRelApi = infoProjRelApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    InfEpics.prototype.createEpics = /**
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        /** @type {?} */
-        var infPersistentItemEpicsFactory = new InfEpicsFactory(infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
-        /** @type {?} */
-        var infTemporalEntityEpicsFactory = new InfEpicsFactory(infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
-        /** @type {?} */
-        var infStatementEpicsFactory = new InfEpicsFactory(infRoot, 'statement', this.infActions.statement, this.notification, this.infoProjRelApi, this.proActions);
-        /** @type {?} */
-        var infTextPropertyEpicsFactory = new InfEpicsFactory(infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
-        return combineEpics(
-        /**
-         * Perstistent Item
-         *
-         */
-        infPersistentItemEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.peItApi.ownProperties(meta.pk, meta.pkEntity); }), InfPersistentItemActionFactory.MINIMAL_BY_PK, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
-            // call action to store records
-            Object.keys(schemas).forEach((/**
-             * @param {?} schema
-             * @return {?}
-             */
-            function (schema) {
-                /** @type {?} */
-                var actions;
-                if (schema === 'inf')
-                    actions = _this.infActions;
-                else if (schema === 'pro')
-                    actions = _this.proActions;
-                if (actions) {
-                    Object.keys(schemas[schema]).forEach((/**
-                     * @param {?} model
-                     * @return {?}
-                     */
-                    function (model) {
-                        actions[model].loadSucceeded(schemas[schema][model], undefined, pk);
-                    }));
-                }
-            }));
-        })), infPersistentItemEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.peItApi.typesOfProject(meta.pk); }), InfPersistentItemActionFactory.TYPES_OF_PROJECT, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var schemaObject = (/** @type {?} */ (results));
-            _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })), 
-        // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
-        //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
-        //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
-        //   (results, pk) => {
-        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-        //     flattener.persistent_item.flatten(results);
-        //     storeFlattened(flattener.getFlattened(), pk);
-        //   }
-        // ),
-        infPersistentItemEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.peItApi
-            .findOrCreateInfPersistentItems(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.persistent_item.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), infPersistentItemEpicsFactory.createRemoveEpic(), 
-        /**
-         * Temporal Entity
-         *
-         */
-        infTemporalEntityEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.teEnApi.ownProperties(meta.pk, meta.pkEntity); }), InfTemporalEntityActionFactory.OWN_PROPERTIES, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var schemaObject = (/** @type {?} */ (results));
-            _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })), (
-        /**
-         * Epic to load paginated Temporal Entity List
-         */
-        /**
-         * Epic to load paginated Temporal Entity List
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) { return action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return new Observable((/**
-         * @param {?} globalActions
-         * @return {?}
-         */
-        function (globalActions) {
-            /** @type {?} */
-            var meta = action.meta;
-            /** @type {?} */
-            var apiCal$ = _this.teEnApi.temporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
-            /** @type {?} */
-            var pkProject = meta.pk;
-            _this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
-        })); }))); }), (
-        /**
-         * Epic to load paginated Alternative Temporal Entity List
-         */
-        /**
-         * Epic to load paginated Alternative Temporal Entity List
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) { return action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return new Observable((/**
-         * @param {?} globalActions
-         * @return {?}
-         */
-        function (globalActions) {
-            /** @type {?} */
-            var meta = action.meta;
-            /** @type {?} */
-            var apiCal$ = _this.teEnApi.alternativeTemporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
-            /** @type {?} */
-            var pkProject = null;
-            _this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
-        })); }))); }), infTemporalEntityEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.teEnApi
-            .findOrCreateInfTemporalEntities(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.temporal_entity.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), infTemporalEntityEpicsFactory.createRemoveEpic(), 
-        /**
-         * Statement
-         *
-         */
-        infStatementEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk); }), InfStatementActionFactory.ALTERNATIVES_INGOING, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.statement.flatten(results);
-            storeFlattened(flattener.getFlattened(), null);
-        })), infStatementEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.statementApi
-            .findOrCreateInfStatements(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.statement.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        function (action$, store) { return action$.pipe(ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return new Observable((/**
-         * @param {?} globalActions
-         * @return {?}
-         */
-        function (globalActions) {
-            /** @type {?} */
-            var meta = action.meta;
-            /** @type {?} */
-            var apiCal$ = _this.statementApi.paginatedListTargetingEntityPreviews(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
-            /** @type {?} */
-            var pkProject = meta.pk;
-            _this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
-        })); }))); }), infStatementEpicsFactory.createRemoveEpic(), infStatementEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.statementApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty); }), InfStatementActionFactory.BY_PARAMS, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.statement.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'LOAD');
-        })), infStatementEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.statementApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity); }), InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var res = (/** @type {?} */ ((/** @type {?} */ (results))));
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.statement.flatten(res.statements);
-            storeFlattened(flattener.getFlattened(), pk);
-            /** @type {?} */
-            var flattener2 = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener2.digital.flatten(res.digitals);
-            storeFlattened(flattener2.getFlattened(), pk);
-        })), 
-        /**
-         * Text Property
-         *
-         */
-        infTextPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.textPropertyApi
-            .findAlternativeTextProperties(meta.pk, meta.fkEntity, meta.fkClassField); }), InfTextPropertyActionFactory.ALTERNATIVES, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.text_property.flatten(results);
-            storeFlattened(flattener.getFlattened(), null);
-        })), infTextPropertyEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.textPropertyApi
-            .findOrCreateInfTextProperties(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.text_property.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk);
-        })), infTextPropertyEpicsFactory.createRemoveEpic());
-    };
-    /**
-     * handles the update of store for paginated temporal entity lists.
-     * @param pkProject if null, list is handled as 'repo' list
-     */
-    /**
-     * handles the update of store for paginated temporal entity lists.
-     * @private
-     * @template M
-     * @param {?} action
-     * @param {?} epicsFactory
-     * @param {?} globalActions
-     * @param {?} apiCall$
-     * @param {?} pkProject if null, list is handled as 'repo' list
-     * @return {?}
-     */
-    InfEpics.prototype.handleTemporalEntityListAction = /**
-     * handles the update of store for paginated temporal entity lists.
-     * @private
-     * @template M
-     * @param {?} action
-     * @param {?} epicsFactory
-     * @param {?} globalActions
-     * @param {?} apiCall$
-     * @param {?} pkProject if null, list is handled as 'repo' list
-     * @return {?}
-     */
-    function (action, epicsFactory, globalActions, apiCall$, pkProject) {
-        var _a, _b;
-        var _this = this;
-        /** @type {?} */
-        var meta = action.meta;
-        /** @type {?} */
-        var pendingKey = meta.addPending;
-        /** @type {?} */
-        var paginateBy = [
-            { fk_property: meta.pkProperty },
-            { fk_target_class: meta.fkTargetClass },
-            (_a = {}, _a[meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info'] = meta.pkSourceEntity, _a),
-            (_b = {}, _b[meta.alternatives ? 'alternatives' : 'ofProject'] = meta.alternatives, _b)
-        ];
-        // call action to set pagination loading on true
-        this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
-        // call api to load data
-        apiCall$.subscribe((/**
-         * @param {?} data
-         * @return {?}
-         */
-        function (data) {
-            // call action to store records
-            _this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
-            // call action to store pagination
-            _this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
-            // call action to conclude the pending request
-            epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
-        }), (/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) {
-            // call action to handle error
-            epicsFactory.onError(globalActions, error, pendingKey, pkProject);
-        }));
-    };
-    InfEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    InfEpics.ctorParameters = function () { return [
-        { type: NotificationsAPIActions },
-        { type: InfPersistentItemApi },
-        { type: InfTemporalEntityApi },
-        { type: InfStatementApi },
-        { type: InfTextPropertyApi },
-        { type: InfActions },
-        { type: ProActions },
-        { type: DatActions },
-        { type: ProInfoProjRelApi },
-        { type: SchemaObjectService }
-    ]; };
-    return InfEpics;
-}());
-if (false) {
-    /** @type {?} */
-    InfEpics.prototype.notification;
-    /** @type {?} */
-    InfEpics.prototype.peItApi;
-    /** @type {?} */
-    InfEpics.prototype.teEnApi;
-    /** @type {?} */
-    InfEpics.prototype.statementApi;
-    /** @type {?} */
-    InfEpics.prototype.textPropertyApi;
-    /** @type {?} */
-    InfEpics.prototype.infActions;
-    /** @type {?} */
-    InfEpics.prototype.proActions;
-    /** @type {?} */
-    InfEpics.prototype.datActions;
-    /** @type {?} */
-    InfEpics.prototype.infoProjRelApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    InfEpics.prototype.schemaObjectService;
+/**
+ * @return {?}
+ */
+function createDatReducer() {
+    return new ReducerFactory(datRoot, datDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/epics/pro.epics.ts
+ * Generated from: state-schema/reducers/pro.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProEpics = /** @class */ (function () {
-    function ProEpics(notification, infActions, proActions, datActions, projectApi, infoProjRelApi, classProjRelApi, profileProjRelApi, classFieldConfApi, textPropertyApi, analysisApi, schemaObjectService) {
-        this.notification = notification;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.datActions = datActions;
-        this.projectApi = projectApi;
-        this.infoProjRelApi = infoProjRelApi;
-        this.classProjRelApi = classProjRelApi;
-        this.profileProjRelApi = profileProjRelApi;
-        this.classFieldConfApi = classFieldConfApi;
-        this.textPropertyApi = textPropertyApi;
-        this.analysisApi = analysisApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    ProEpics.prototype.createEpics = /**
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        /** @type {?} */
-        var proProjectEpicsFactory = new SchemaEpicsFactory(proRoot, 'project', this.proActions.project, this.notification);
-        /** @type {?} */
-        var proInfoProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
-        /** @type {?} */
-        var proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
-        /** @type {?} */
-        var proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
-        /** @type {?} */
-        var proClassFieldConfigEpicsFactory = new SchemaEpicsFactory(proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
-        /** @type {?} */
-        var proTextPropertyEpicsFactory = new SchemaEpicsFactory(proRoot, 'text_property', this.proActions.text_property, this.notification);
-        /** @type {?} */
-        var proAnalysisEpicsFactory = new SchemaEpicsFactory(proRoot, 'analysis', this.proActions.analysis, this.notification);
-        return combineEpics(
-        /**
-        * ProProject
-        */
-        proProjectEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.projectApi
-            .ofAccount(meta.pk); }), ProProjectActionFactory.OF_ACCOUNT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        function (results) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_project.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proProjectEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.projectApi
-            .getBasics(meta.pk); }), ProProjectActionFactory.LOAD_BASICS, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        function (results) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_project.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), 
-        /**
-         * ProInfoProjRel
-         */
-        proInfoProjRelEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.infoProjRelApi
-            .bulkUpdateEprAttributes(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.info_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), proInfoProjRelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.infoProjRelApi
-            .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing); }), ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.info_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-         * ProClassFieldConfig
-         */
-        proClassFieldConfigEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.classFieldConfApi.ofProject(meta.pk); }), ProClassFieldConfigActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        function (results) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_class_field_config.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proClassFieldConfigEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.classFieldConfApi
-            .bulkUpsert(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_class_field_config.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-         * ProProDfhClassProjRel
-         */
-        proDfhClassProjRelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.classProjRelApi.ofProject(meta.pk); }), ProDfhClassProjRelActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        function (results) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_dfh_class_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proDfhClassProjRelEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.classProjRelApi
-            .bulkUpsert(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_dfh_class_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-        * ProDfhProfileProjRel
-        */
-        proDfhProfileProjRelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.profileProjRelApi.ofProject(meta.pk); }), ProDfhProfileProjRelActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        function (results) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_dfh_profile_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proDfhProfileProjRelEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.profileProjRelApi
-            .bulkUpsert(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-            flattener.pro_dfh_profile_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-        * ProTextProperty
-        */
-        proTextPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.textPropertyApi.ofProject(meta.pk); }), ProTextPropertyActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
-            _this.schemaObjectService.storeSchemaObject(schemas, pk);
-        })), proTextPropertyEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.textPropertyApi
-            .bulkUpsert(meta.pk, meta.items); }), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        function (results, pk) {
-            /** @type {?} */
-            var schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
-            _this.schemaObjectService.storeSchemaObject(schemas, pk);
-        })), proTextPropertyEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.textPropertyApi.bulkDelete(meta.pk, meta.items); })), 
-        /**
-        * ProAnalysis
-        */
-        // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
-        //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
-        //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
-        //   (results) => {
-        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-        //     flattener.analysis.flatten(results);
-        //     storeFlattened(flattener.getFlattened());
-        //   }
-        // ),
-        // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
-        //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
-        //   (results, pk) => {
-        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-        //     flattener.analysis.flatten(results);
-        //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        //   }
-        // ),
-        proAnalysisEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map((/**
-         * @param {?} item
-         * @return {?}
-         */
-        function (item) { return item.pk_entity; }))); })));
-    };
-    ProEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    ProEpics.ctorParameters = function () { return [
-        { type: NotificationsAPIActions },
-        { type: InfActions },
-        { type: ProActions },
-        { type: DatActions },
-        { type: ProProjectApi },
-        { type: ProInfoProjRelApi },
-        { type: ProDfhClassProjRelApi },
-        { type: ProDfhProfileProjRelApi },
-        { type: ProClassFieldConfigApi },
-        { type: ProTextPropertyApi },
-        { type: AnalysisService },
-        { type: SchemaObjectService }
-    ]; };
-    return ProEpics;
-}());
-if (false) {
-    /** @type {?} */
-    ProEpics.prototype.notification;
-    /** @type {?} */
-    ProEpics.prototype.infActions;
-    /** @type {?} */
-    ProEpics.prototype.proActions;
-    /** @type {?} */
-    ProEpics.prototype.datActions;
-    /** @type {?} */
-    ProEpics.prototype.projectApi;
-    /** @type {?} */
-    ProEpics.prototype.infoProjRelApi;
-    /** @type {?} */
-    ProEpics.prototype.classProjRelApi;
-    /** @type {?} */
-    ProEpics.prototype.profileProjRelApi;
-    /** @type {?} */
-    ProEpics.prototype.classFieldConfApi;
-    /** @type {?} */
-    ProEpics.prototype.textPropertyApi;
-    /** @type {?} */
-    ProEpics.prototype.analysisApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    ProEpics.prototype.schemaObjectService;
+/**
+ * @return {?}
+ */
+function createProReducer() {
+    return new ReducerFactory(proRoot, proDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/epics/sys.epics.ts
+ * Generated from: state-schema/reducers/war.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var SysEpics = /** @class */ (function () {
-    function SysEpics(actions, notification, sysRelevantClassApi, sysConfigApi) {
-        this.actions = actions;
-        this.notification = notification;
-        this.sysRelevantClassApi = sysRelevantClassApi;
-        this.sysConfigApi = sysConfigApi;
-    }
-    /**
-     * @return {?}
-     */
-    SysEpics.prototype.createEpics = /**
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        /** @type {?} */
-        var systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
-        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
-        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
-        /** @type {?} */
-        var configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
-        return combineEpics(
-        // SystemRelevantClass Epics
-        systemRelevantClassEpicsFactory.createLoadEpic((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) { return _this.sysRelevantClassApi.find(); }), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        function (meta) { return _this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items); })), 
-        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
-        configEpicsFactory.createLoadEpic((/**
-         * @return {?}
-         */
-        function () { return _this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
-         * @param {?} x
-         * @return {?}
-         */
-        function (x) { return [x]; }))); }), ''));
-    };
-    SysEpics.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    SysEpics.ctorParameters = function () { return [
-        { type: SysActions },
-        { type: NotificationsAPIActions },
-        { type: SysSystemRelevantClassApi },
-        { type: SystemConfigurationService }
-    ]; };
-    return SysEpics;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.notification;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.sysRelevantClassApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.sysConfigApi;
+/**
+ * @return {?}
+ */
+function createWarReducer() {
+    return new ReducerFactory(warRoot, warDefinitions).createReducers();
 }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/reducers/tab.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createTabReducer() {
+    return new ReducerFactory(tabRoot, tabDefinitions).createReducers();
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: root/root-reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
+/** @type {?} */
+var sandboxStateReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+function (lastState, action) {
+    if (lastState === void 0) { lastState = {}; }
+    if (action.type === INIT_SANDBOX_STATE) {
+        lastState = __assign({}, lastState, action.payload);
+    }
+    return lastState;
+});
+/** @type {?} */
+var pendingRequestReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function (state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    if (action && action.meta && action.meta.addPending) {
+        /** @type {?} */
+        var uuid = action.meta.addPending;
+        state = __assign({}, state, (_a = {}, _a[uuid] = true, _a));
+        // console.log('add ' + uuid + ' ' + Date.now())
+    }
+    if (action && action.meta && action.meta.removePending) {
+        /** @type {?} */
+        var uuid = action.meta.removePending;
+        state = __assign({}, omit([uuid], state));
+    }
+    return state;
+});
+/** @type {?} */
+var resolvedRequestReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function (state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    if (action && action.meta && action.meta.removePending) {
+        /** @type {?} */
+        var uuid = action.meta.removePending;
+        state = __assign({}, state, (_a = {}, _a[uuid] = action.meta, _a));
+    }
+    return state;
+});
+/** @type {?} */
+var cleanupResolved = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function (state, action) {
+    if (state === void 0) { state = {}; }
+    if (action && action.type === 'CLEAN_UP_RESOLVED') {
+        /** @type {?} */
+        var uuid = action.meta.uuid;
+        state = __assign({}, omit([uuid], state));
+        // console.log('resolve ' + uuid + ' ' + Date.now().toString())
+    }
+    return state;
+});
+/** @type {?} */
+var SET_APP_STATE = 'SET_APP_STATE';
+/** @type {?} */
+var setAppState = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function (state, action) {
+    if (state === void 0) { state = {}; }
+    if (action && action.type === SET_APP_STATE) {
+        state = action.payload;
+    }
+    return state;
+});
+/** @type {?} */
+var rootReducer = composeReducers(defaultFormReducer(), combineReducers({
+    account: accountRootReducer,
+    loadingBar: loadingBarReducer,
+    activeProject: activeProjectReducer,
+    routes: routerReducer,
+    information: informationReducer,
+    sources: sourceListReducer,
+    sandboxState: sandboxStateReducer,
+    projects: createProjectsReducer(),
+    sys: createSysReducer(),
+    dfh: createDfhReducer(),
+    inf: createInfReducer(),
+    dat: createDatReducer(),
+    pro: createProReducer(),
+    war: createWarReducer(),
+    tab: createTabReducer(),
+    pending: pendingRequestReducer,
+    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
+}), setAppState);
 
 /**
  * @fileoverview added by tsickle
@@ -8632,448 +9376,354 @@ var WarEpics = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/epics/index.ts
+ * Generated from: module/redux-store.module.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
 /**
- * @fileoverview added by tsickle
- * Generated from: root/root-epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * Function to use in combination with rxjs/operator .filter()
+ * in order to get only actions dispached with a fractalkey
+ * equal to the provided path.
+ *
+ * example:
+ * pipe(
+ *    filter(action => ofSubstore(c.basePath)(action)),
+ *    ofType('Foo')
+ * )
+ * \@param path
+ * @type {?}
  */
-var RootEpics = /** @class */ (function () {
-    function RootEpics(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, systemEpics, dfhEpics, infEpics, datEpics, proEpics, actionResolver) {
-        var _this = this;
-        this.loadingBarEpics = loadingBarEpics;
-        this.notificationEpics = notificationEpics;
-        this.activeProjectEpics = activeProjectEpics;
-        this.accountEpics = accountEpics;
-        this.systemEpics = systemEpics;
-        this.dfhEpics = dfhEpics;
-        this.infEpics = infEpics;
-        this.datEpics = datEpics;
-        this.proEpics = proEpics;
-        this.actionResolver = actionResolver;
-        this.rootEpicStream$ = new BehaviorSubject(combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.systemEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), 
-        // important: this needs to be the last epic in
-        this.actionResolver.createEpics()));
-        this.rootEpic = (/**
-         * @param {?} action$
-         * @param {?} state$
-         * @param {?=} dependencies
-         * @return {?}
-         */
-        function (action$, state$, dependencies) {
-            if (dependencies === void 0) { dependencies = undefined; }
-            return _this.rootEpicStream$.pipe(mergeMap((/**
-             * @param {?} epic
-             * @return {?}
-             */
-            function (epic) { return epic(action$, state$, dependencies); })));
-        });
+var ofSubstore = (/**
+ * @param {?} path
+ * @return {?}
+ */
+function (path) { return (/**
+ * @param {?} action
+ * @return {?}
+ */
+function (action) {
+    if (!('@angular-redux::fractalkey' in action))
+        return false;
+    /** @type {?} */
+    var actionPath = JSON.parse(action['@angular-redux::fractalkey']);
+    /** @type {?} */
+    var bool = equals(actionPath, path);
+    return bool;
+}); });
+/** @type {?} */
+var APP_INITIAL_STATE = new InjectionToken('app.INITIAL_STATE');
+var ɵ0$8 = {};
+var ReduxStoreModule = /** @class */ (function () {
+    function ReduxStoreModule(ngRedux, devTools, 
+    // ngReduxRouter: NgReduxRouter,
+    rootEpics, initialState) {
+        this.ngRedux = ngRedux;
+        /** @type {?} */
+        var epicMiddleware = createEpicMiddleware();
+        // Tell Redux about our reducers and epics. If the Redux DevTools
+        // chrome extension is available in the browser, tell Redux about
+        // it too.
+        ngRedux.configureStore(
+        // RootReducer
+        rootReducer, 
+        // Initial state
+        initialState, 
+        // Middleware
+        [
+            // createLogger(),
+            epicMiddleware,
+            dynamicMiddlewares,
+        ], 
+        // Enhancers
+        devTools.isEnabled() ? [devTools.enhancer()] : []);
+        // Apply rootEpic
+        epicMiddleware.run(rootEpics.getRootEpic());
+        // // Enable syncing of Angular router state with our Redux store.
+        // if (ngReduxRouter) {
+        //     ngReduxRouter.initialize();
+        // }
+        // Enable syncing of Angular form state with our Redux store.
+        // provideReduxForms(ngRedux);
     }
-    /**
-     * @return {?}
-     */
-    RootEpics.prototype.getRootEpic = /**
-     * @return {?}
-     */
-    function () {
-        return this.rootEpic;
-    };
-    /**
-     * Adds an epic to the RootEpic middleware
-     * @param epic that will be added to the RootEpics
-     */
-    /**
-     * Adds an epic to the RootEpic middleware
-     * @param {?} epic that will be added to the RootEpics
-     * @return {?}
-     */
-    RootEpics.prototype.addEpic = /**
-     * Adds an epic to the RootEpic middleware
-     * @param {?} epic that will be added to the RootEpics
-     * @return {?}
-     */
-    function (epic) {
-        this.rootEpicStream$.next(epic);
-    };
-    RootEpics.decorators = [
-        { type: Injectable }
+    ReduxStoreModule.decorators = [
+        { type: NgModule, args: [{
+                    imports: [
+                        NgReduxModule,
+                        // for gui-state epics
+                        SlimLoadingBarModule,
+                        ToastyModule.forRoot(),
+                        // for schema-state epics
+                        SDKBrowserModule.forRoot(),
+                        ApiModule,
+                    ],
+                    providers: [
+                        AccountActions,
+                        ActiveProjectActions,
+                        LoadingBarActions,
+                        NotificationsAPIActions,
+                        AccountEpics,
+                        ActiveProjectEpics,
+                        LoadingBarEpics,
+                        NotificationsAPIEpics,
+                        DatActions,
+                        DfhActions,
+                        InfActions,
+                        ProActions,
+                        SysActions,
+                        TabActions,
+                        WarActions,
+                        DatEpics,
+                        DfhEpics,
+                        InfEpics,
+                        ProEpics,
+                        SysEpics,
+                        TabEpics,
+                        WarEpics,
+                        RootEpics,
+                        // SchemaActionsFactory,
+                        SchemaObjectService,
+                        { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
+                    ]
+                },] }
     ];
     /** @nocollapse */
-    RootEpics.ctorParameters = function () { return [
-        { type: LoadingBarEpics },
-        { type: NotificationsAPIEpics },
-        { type: ActiveProjectEpics },
-        { type: AccountEpics },
-        { type: SysEpics },
-        { type: DfhEpics },
-        { type: InfEpics },
-        { type: DatEpics },
-        { type: ProEpics },
-        { type: ActionResolverEpics }
+    ReduxStoreModule.ctorParameters = function () { return [
+        { type: NgRedux },
+        { type: DevToolsExtension },
+        { type: RootEpics },
+        { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] }
     ]; };
-    return RootEpics;
+    return ReduxStoreModule;
 }());
 if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.rootEpicStream$;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.rootEpic;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.loadingBarEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.notificationEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.activeProjectEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.accountEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.systemEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.dfhEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.infEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.datEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.proEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.actionResolver;
+    /** @type {?} */
+    ReduxStoreModule.prototype.ngRedux;
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/account.reducers.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE = {
-    account: undefined,
-    roles: undefined
-};
-/** @type {?} */
-var accountRootReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-function (lastState, action) {
-    if (lastState === void 0) { lastState = INITIAL_STATE; }
-    switch (action.type) {
-        case AccountActions.LOGIN_SUCCEEDED:
-            lastState = __assign({}, lastState, { account: action.meta.account });
-            break;
-        case AccountActions.ACCOUNT_UPDATED:
-            lastState = __assign({}, lastState, { account: action.meta.account });
-            break;
-        case AccountActions.LOAD_ROLES_SUCCEEDED:
-            lastState = __assign({}, lastState, { roles: action.meta.accountRoles });
-            break;
-        case AccountActions.LOAD_ROLES_FAILED:
-            lastState = __assign({}, lastState, { roles: [] });
-            break;
-    }
-    return lastState;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/active-project.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE$1 = {
-    label: '',
-    list: '',
-    uiIdSerial: 0,
-    panelSerial: 0,
-    focusedPanel: 0,
-    panels: []
-};
-/** @type {?} */
-var activeProjectReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function (state, action) {
-    var _a, _b, _c, _d, _e, _f, _g;
-    if (state === void 0) { state = INITIAL_STATE$1; }
-    /** @type {?} */
-    var pi;
-    /** @type {?} */
-    var ti;
-    /** @type {?} */
-    var ppi;
-    /** @type {?} */
-    var cpi;
-    /** @type {?} */
-    var pti;
-    /** @type {?} */
-    var cti;
-    switch (action.type) {
-        /************************************************************************************
-         * Load project data (metadata, crm)
-        ************************************************************************************/
-        case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
-            state = __assign({}, state, action.meta.projectPreview);
-            break;
-        case ActiveProjectActions.LOAD_PROJECT_CONFIG:
-            state = __assign({}, state, { loadingConfigData: true });
-            break;
-        case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
-            state = __assign({}, state, { configDataInitialized: true, loadingConfigData: false });
-            break;
-        /************************************************************************************
-         * Layout -- Tabs
-        ************************************************************************************/
-        case ActiveProjectActions.SET_PANELS:
-            state = __assign({}, state, { panels: action.meta.panels, uiIdSerial: action.meta.uiIdSerial, panelSerial: action.meta.panelSerial, focusedPanel: action.meta.focusedPanel });
-            break;
-        case ActiveProjectActions.SET_LIST_TYPE:
-            state = __assign({}, state, { list: action.meta.list });
-            break;
-        case ActiveProjectActions.ACTIVATE_TAB:
-            pi = action.meta.panelIndex;
-            ti = action.meta.tabIndex;
-            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_a = {},
-                    _a[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs).map((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        function (tab, index) {
-                            tab.active = (index === ti);
-                            return tab;
-                        })) }),
-                    _a)) });
-            break;
-        case ActiveProjectActions.MOVE_TAB:
-            ppi = action.meta.previousPanelIndex;
-            cpi = action.meta.currentPanelIndex;
-            pti = action.meta.previousTabIndex;
-            cti = action.meta.currentTabIndex;
-            if (ppi === cpi) {
-                /** @type {?} */
-                var tabs = __spread(state.panels[cpi].tabs);
-                moveItemInArray(tabs, pti, cti);
-                state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_b = {},
-                        _b[cpi] = __assign({}, state.panels[cpi], { tabs: tabs }),
-                        _b)) });
-            }
-            else {
-                /** @type {?} */
-                var pTabs_1 = __spread(state.panels[ppi].tabs);
-                /** @type {?} */
-                var cTabs = __spread(state.panels[cpi].tabs);
-                transferArrayItem(pTabs_1, cTabs, pti, cti);
-                state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_c = {},
-                        _c[ppi] = __assign({}, state.panels[ppi], { tabs: pTabs_1.map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            function (tab, index) {
-                                tab.active = (index === (pti < pTabs_1.length ? pti : (pti - 1)));
-                                return tab;
-                            })) }),
-                        _c[cpi] = __assign({}, state.panels[cpi], { tabs: cTabs.map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            function (tab, index) {
-                                tab.active = (index === cti);
-                                return tab;
-                            })) }),
-                        _c)) });
-            }
-            break;
-        case ActiveProjectActions.ADD_TAB:
-            if (state.panels.length === 0) {
-                state = __assign({}, state, { panels: [
-                        {
-                            id: state.panelSerial,
-                            tabs: []
-                        }
-                    ], focusedPanel: 0, panelSerial: state.panelSerial + 1 });
-            }
-            pi = state.focusedPanel;
-            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_d = {},
-                    _d[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs.map((/**
-                         * @param {?} t
-                         * @return {?}
-                         */
-                        function (t) {
-                            t.active = false;
-                            return t;
-                        })), [
-                            __assign({}, omit(['pathSegment'], action.meta.tab), { path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()] })
-                        ]) }),
-                    _d)), uiIdSerial: (state.uiIdSerial + 1) });
-            break;
-        case ActiveProjectActions.CLOSE_TAB:
-            pi = action.meta.panelIndex;
-            ti = action.meta.tabIndex;
-            // remove the closing tab
-            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_e = {},
-                    _e[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs).filter((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        function (tab, index) { return index !== ti; })) }),
-                    _e)) });
-            // activate a sibling tab, if needed and possible
-            if (!state.panels[pi].tabs.find((/**
-             * @param {?} t
-             * @return {?}
-             */
-            function (t) { return t.active; }))) {
-                state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_f = {},
-                        _f[pi] = __assign({}, state.panels[pi], { tabs: __spread(state.panels[pi].tabs).map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            function (tab, index) {
-                                tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
-                                return tab;
-                            })) }),
-                        _f)) });
-            }
-            break;
-        case ActiveProjectActions.CLOSE_PANEL:
-            pi = action.meta.panelIndex;
-            /** @type {?} */
-            var panels = __spread(state.panels);
-            panels.splice(pi, 1);
-            state = __assign({}, state, { panels: panels });
-            break;
-        case ActiveProjectActions.FOCUS_PANEL:
-            state = __assign({}, state, { focusedPanel: action.meta.panelIndex });
-            break;
-        case ActiveProjectActions.SPLIT_PANEL:
-            ppi = action.meta.previousPanelIndex;
-            ti = action.meta.tabIndex;
-            cpi = action.meta.currentPanelIndex;
-            /** @type {?} */
-            var moveTab = state.panels[ppi].tabs[ti];
-            // removes tab from old panel
-            state = __assign({}, state, { panels: Object.assign(__spread(state.panels), (_g = {},
-                    _g[ppi] = __assign({}, state.panels[ppi], { tabs: __spread(state.panels[ppi].tabs).filter((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        function (tab, index) { return index !== ti; }))
-                            .map((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        function (tab, index) {
-                            if (index === 0)
-                                tab.active = true;
-                            return tab;
-                        })) }),
-                    _g)) });
-            // insert a new panel at position of cpi
-            /** @type {?} */
-            var newPanels = __spread(state.panels);
-            newPanels.splice(cpi, 0, {
-                id: state.panelSerial,
-                tabs: [moveTab]
-            });
-            state = __assign({}, state, { panels: newPanels, panelSerial: state.panelSerial + 1 });
-            break;
-        case ActiveProjectActions.SET_REFINING_CHUNK:
-            state = __assign({}, state, { refiningChunk: action.payload.refiningChunk });
-            break;
-        case ActiveProjectActions.SET_CREATING_MENTIONING:
-            state = __assign({}, state, { creatingMentioning: action.payload.creatingMentioning });
-            break;
-        /************************************************************************************
-        * Highlighting of mentionings in the gui
-        ************************************************************************************/
-        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
-            state = __assign({}, state, { mentioningsFocusedInText: action.payload.mentioningsFocusedInText });
-            break;
-        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
-            state = __assign({}, state, { mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable });
-            break;
-        /************************************************************************************
-         * Destroy the active project state (on closing a project)
-        ************************************************************************************/
-        case ActiveProjectActions.DESTROY:
-            state = INITIAL_STATE$1;
-            break;
-    }
-    return state;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/account.model.ts
+ * Generated from: root/models/model.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function AccountRole() { }
+function InfObject() { }
 if (false) {
     /** @type {?} */
-    AccountRole.prototype.id;
+    InfObject.prototype.persistent_item;
     /** @type {?} */
-    AccountRole.prototype.name;
+    InfObject.prototype.temporal_entity;
+    /** @type {?} */
+    InfObject.prototype.statement;
+    /** @type {?} */
+    InfObject.prototype.place;
+    /** @type {?} */
+    InfObject.prototype.language;
+    /** @type {?} */
+    InfObject.prototype.appellation;
+    /** @type {?} */
+    InfObject.prototype.time_primitive;
+    /** @type {?} */
+    InfObject.prototype.text_property;
+    /** @type {?} */
+    InfObject.prototype.lang_string;
+    /** @type {?} */
+    InfObject.prototype.dimension;
 }
 /**
  * @record
  */
-function IAccount() { }
+function ProObject() { }
 if (false) {
     /** @type {?} */
-    IAccount.prototype.account;
+    ProObject.prototype.info_proj_rel;
+}
+/**
+ * @record
+ */
+function DatObject() { }
+if (false) {
+    /** @type {?} */
+    DatObject.prototype.digital;
+}
+/**
+ * @record
+ */
+function WarObject() { }
+if (false) {
+    /** @type {?} */
+    WarObject.prototype.entity_preview;
+}
+/**
+ * @record
+ */
+function SchemaObject() { }
+if (false) {
     /** @type {?|undefined} */
-    IAccount.prototype.roles;
+    SchemaObject.prototype.inf;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.pro;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.dat;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.war;
+}
+/**
+ * @record
+ */
+function PaginationObject() { }
+if (false) {
+    /** @type {?} */
+    PaginationObject.prototype.count;
+    /** @type {?} */
+    PaginationObject.prototype.schemas;
+    /** @type {?} */
+    PaginationObject.prototype.statements;
+}
+/**
+ * @record
+ */
+function IAppState() { }
+if (false) {
+    /** @type {?|undefined} */
+    IAppState.prototype.account;
+    /** @type {?|undefined} */
+    IAppState.prototype.loadingBar;
+    /** @type {?|undefined} */
+    IAppState.prototype.projects;
+    /** @type {?|undefined} */
+    IAppState.prototype.sys;
+    /** @type {?|undefined} */
+    IAppState.prototype.dfh;
+    /** @type {?|undefined} */
+    IAppState.prototype.inf;
+    /** @type {?|undefined} */
+    IAppState.prototype.dat;
+    /** @type {?|undefined} */
+    IAppState.prototype.pro;
+    /** @type {?|undefined} */
+    IAppState.prototype.war;
+    /** @type {?|undefined} */
+    IAppState.prototype.tab;
+    /** @type {?|undefined} */
+    IAppState.prototype.activeProject;
+    /** @type {?|undefined} */
+    IAppState.prototype.routes;
+    /** @type {?|undefined} */
+    IAppState.prototype.information;
+    /** @type {?|undefined} */
+    IAppState.prototype.sources;
+    /** @type {?|undefined} */
+    IAppState.prototype.sandboxState;
+    /** @type {?|undefined} */
+    IAppState.prototype.pending;
+}
+/**
+ * @record
+ * @template T
+ */
+function ByPk() { }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/projects.model.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function IProject() { }
+if (false) {
+    /** @type {?} */
+    IProject.prototype.record;
+}
+/**
+ * @record
+ */
+function IProjectList() { }
+if (false) {
+    /** @type {?} */
+    IProjectList.prototype.records;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/notifications.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function NotificationsI() { }
+if (false) {
+    /** @type {?} */
+    NotificationsI.prototype.type;
+    /** @type {?} */
+    NotificationsI.prototype.options;
+}
+// Class of this slice of store
+var  
+// Class of this slice of store
+Notifications = /** @class */ (function () {
+    function Notifications(data) {
+        Object.assign(this, data);
+    }
+    return Notifications;
+}());
+if (false) {
+    /** @type {?} */
+    Notifications.prototype.type;
+    /** @type {?} */
+    Notifications.prototype.options;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/loading-bar.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function LoadingBar() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoadingBar.prototype.loading;
+    /** @type {?|undefined} */
+    LoadingBar.prototype.progress;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/models/list.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+var  
+// Class of this slice of store
+List = /** @class */ (function () {
+    function List(data) {
+        Object.assign(this, data);
+        if (true) {
+        }
+        else {
+        }
+    }
+    return List;
+}());
+if (false) {
+    /** @type {?} */
+    List.prototype.searchString;
+    /** @type {?} */
+    List.prototype.pkAllowedClasses;
+    /** @type {?} */
+    List.prototype.collectionSize;
+    /** @type {?} */
+    List.prototype.items;
+    /** @type {?} */
+    List.prototype.loading;
+    /** @type {?} */
+    List.prototype.error;
 }
 
 /**
@@ -9377,761 +10027,29 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/models/entity-list.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var Information = /** @class */ (function () {
-    function Information(data) {
-        Object.assign(this, data);
-    }
-    return Information;
-}());
-if (false) {
-    /** @type {?} */
-    Information.prototype.items;
-    /** @type {?} */
-    Information.prototype.loading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/list.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-var  
-// Class of this slice of store
-List = /** @class */ (function () {
-    function List(data) {
-        Object.assign(this, data);
-        if (true) {
-        }
-        else {
-        }
-    }
-    return List;
-}());
-if (false) {
-    /** @type {?} */
-    List.prototype.searchString;
-    /** @type {?} */
-    List.prototype.pkAllowedClasses;
-    /** @type {?} */
-    List.prototype.collectionSize;
-    /** @type {?} */
-    List.prototype.items;
-    /** @type {?} */
-    List.prototype.loading;
-    /** @type {?} */
-    List.prototype.error;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/loading-bar.models.ts
+ * Generated from: state-gui/models/account.model.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function LoadingBar() { }
-if (false) {
-    /** @type {?|undefined} */
-    LoadingBar.prototype.loading;
-    /** @type {?|undefined} */
-    LoadingBar.prototype.progress;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/notifications.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function NotificationsI() { }
+function AccountRole() { }
 if (false) {
     /** @type {?} */
-    NotificationsI.prototype.type;
+    AccountRole.prototype.id;
     /** @type {?} */
-    NotificationsI.prototype.options;
-}
-// Class of this slice of store
-var  
-// Class of this slice of store
-Notifications = /** @class */ (function () {
-    function Notifications(data) {
-        Object.assign(this, data);
-    }
-    return Notifications;
-}());
-if (false) {
-    /** @type {?} */
-    Notifications.prototype.type;
-    /** @type {?} */
-    Notifications.prototype.options;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/projects.model.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function IProject() { }
-if (false) {
-    /** @type {?} */
-    IProject.prototype.record;
+    AccountRole.prototype.name;
 }
 /**
  * @record
  */
-function IProjectList() { }
+function IAccount() { }
 if (false) {
     /** @type {?} */
-    IProjectList.prototype.records;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/source-list.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-var  
-// Class of this slice of store
-SourceList = /** @class */ (function () {
-    function SourceList(data) {
-        Object.assign(this, data);
-    }
-    return SourceList;
-}());
-if (false) {
-    /** @type {?} */
-    SourceList.prototype.list;
-    /** @type {?} */
-    SourceList.prototype.loading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/entity-list.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE$2 = new Information();
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function informationReducer(state, a) {
-    if (state === void 0) { state = INITIAL_STATE$2; }
-    /** @type {?} */
-    var action = (/** @type {?} */ (a));
-    switch (action.type) {
-        /*****************************************************
-        * Reducers called on destroy of component
-        *****************************************************/
-        case InformationAPIActions.DESTROY:
-            state = {};
-            break;
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/loading-bar.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE$3 = {
-    loading: false,
-    progress: 0,
-};
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function loadingBarReducer(state, a) {
-    if (state === void 0) { state = INITIAL_STATE$3; }
-    /** @type {?} */
-    var action = (/** @type {?} */ (a));
-    switch (action.type) {
-        case LoadingBarActions.START:
-            return __assign({}, state, { loading: true });
-        case LoadingBarActions.STOP:
-            return __assign({}, state, { loading: false });
-        case LoadingBarActions.COPMLETE:
-            return __assign({}, state, { loading: false });
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/notifications.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE$4 = new Notifications();
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function notificationsReducer(state, a) {
-    if (state === void 0) { state = INITIAL_STATE$4; }
-    /** @type {?} */
-    var action = (/** @type {?} */ (a));
-    switch (action.type) {
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/projects.reducers.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE$5 = {
-    records: []
-};
-/** @type {?} */
-var projectListReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-function (lastState, action) {
-    if (lastState === void 0) { lastState = INITIAL_STATE$5; }
-    switch (action.type) {
-        case ProjectsActions.LOAD_PROJECTS_SUCCEEDED: return __assign({}, lastState, { records: action.payload.map((/**
-             * @param {?} record
-             * @return {?}
-             */
-            function (record) { return ({ record: record }); })) });
-    }
-    return lastState;
-});
-var ɵ0$7 = projectListReducer;
-/** @type {?} */
-var createProjectsReducer = (/**
- * @return {?}
- */
-function () {
-    return projectListReducer;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/source-list.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INITIAL_STATE$6 = new SourceList();
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function sourceListReducer(state, a) {
-    if (state === void 0) { state = INITIAL_STATE$6; }
-    /** @type {?} */
-    var action = (/** @type {?} */ (a));
-    switch (action.type) {
-        case SourceListAPIActions.INITIALIZE_LIST:
-            state = __assign({}, state, { list: {
-                    pkAllowedClasses: action.meta.pkAllowedClasses
-                } });
-            break;
-        /*****************************************************
-        * Reducers called on destroy of component
-        *****************************************************/
-        case SourceListAPIActions.DESTROY:
-            state = {};
-            break;
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/reducers/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/dat.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createDatReducer() {
-    return new ReducerFactory(datRoot, datDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/dfh.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createDfhReducer() {
-    return new ReducerFactory('dfh', dfhDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/inf.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createInfReducer() {
-    return new ReducerFactory(infRoot, infDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/pro.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createProReducer() {
-    return new ReducerFactory(proRoot, proDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/sys.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createSysReducer() {
-    return new ReducerFactory(sysRoot, sysDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/tab.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createTabReducer() {
-    return new ReducerFactory(tabRoot, tabDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/war.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createWarReducer() {
-    return new ReducerFactory(warRoot, warDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/reducers/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: root/root-reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
-/** @type {?} */
-var sandboxStateReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-function (lastState, action) {
-    if (lastState === void 0) { lastState = {}; }
-    if (action.type === INIT_SANDBOX_STATE) {
-        lastState = __assign({}, lastState, action.payload);
-    }
-    return lastState;
-});
-/** @type {?} */
-var pendingRequestReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function (state, action) {
-    var _a;
-    if (state === void 0) { state = {}; }
-    if (action && action.meta && action.meta.addPending) {
-        /** @type {?} */
-        var uuid = action.meta.addPending;
-        state = __assign({}, state, (_a = {}, _a[uuid] = true, _a));
-        // console.log('add ' + uuid + ' ' + Date.now())
-    }
-    if (action && action.meta && action.meta.removePending) {
-        /** @type {?} */
-        var uuid = action.meta.removePending;
-        state = __assign({}, omit([uuid], state));
-    }
-    return state;
-});
-/** @type {?} */
-var resolvedRequestReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function (state, action) {
-    var _a;
-    if (state === void 0) { state = {}; }
-    if (action && action.meta && action.meta.removePending) {
-        /** @type {?} */
-        var uuid = action.meta.removePending;
-        state = __assign({}, state, (_a = {}, _a[uuid] = action.meta, _a));
-    }
-    return state;
-});
-/** @type {?} */
-var cleanupResolved = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function (state, action) {
-    if (state === void 0) { state = {}; }
-    if (action && action.type === 'CLEAN_UP_RESOLVED') {
-        /** @type {?} */
-        var uuid = action.meta.uuid;
-        state = __assign({}, omit([uuid], state));
-        // console.log('resolve ' + uuid + ' ' + Date.now().toString())
-    }
-    return state;
-});
-/** @type {?} */
-var SET_APP_STATE = 'SET_APP_STATE';
-/** @type {?} */
-var setAppState = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function (state, action) {
-    if (state === void 0) { state = {}; }
-    if (action && action.type === SET_APP_STATE) {
-        state = action.payload;
-    }
-    return state;
-});
-/** @type {?} */
-var rootReducer = composeReducers(defaultFormReducer(), combineReducers({
-    account: accountRootReducer,
-    loadingBar: loadingBarReducer,
-    activeProject: activeProjectReducer,
-    routes: routerReducer,
-    information: informationReducer,
-    sources: sourceListReducer,
-    sandboxState: sandboxStateReducer,
-    projects: createProjectsReducer(),
-    sys: createSysReducer(),
-    dfh: createDfhReducer(),
-    inf: createInfReducer(),
-    dat: createDatReducer(),
-    pro: createProReducer(),
-    war: createWarReducer(),
-    tab: createTabReducer(),
-    pending: pendingRequestReducer,
-    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
-}), setAppState);
-
-/**
- * @fileoverview added by tsickle
- * Generated from: module/redux-store.module.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Function to use in combination with rxjs/operator .filter()
- * in order to get only actions dispached with a fractalkey
- * equal to the provided path.
- *
- * example:
- * pipe(
- *    filter(action => ofSubstore(c.basePath)(action)),
- *    ofType('Foo')
- * )
- * \@param path
- * @type {?}
- */
-var ofSubstore = (/**
- * @param {?} path
- * @return {?}
- */
-function (path) { return (/**
- * @param {?} action
- * @return {?}
- */
-function (action) {
-    if (!('@angular-redux::fractalkey' in action))
-        return false;
-    /** @type {?} */
-    var actionPath = JSON.parse(action['@angular-redux::fractalkey']);
-    /** @type {?} */
-    var bool = equals(actionPath, path);
-    return bool;
-}); });
-/** @type {?} */
-var APP_INITIAL_STATE = new InjectionToken('app.INITIAL_STATE');
-var ɵ0$8 = {};
-var ReduxStoreModule = /** @class */ (function () {
-    function ReduxStoreModule(ngRedux, devTools, 
-    // ngReduxRouter: NgReduxRouter,
-    rootEpics, initialState) {
-        this.ngRedux = ngRedux;
-        /** @type {?} */
-        var epicMiddleware = createEpicMiddleware();
-        // Tell Redux about our reducers and epics. If the Redux DevTools
-        // chrome extension is available in the browser, tell Redux about
-        // it too.
-        ngRedux.configureStore(
-        // RootReducer
-        rootReducer, 
-        // Initial state
-        initialState, 
-        // Middleware
-        [
-            // createLogger(),
-            epicMiddleware,
-            dynamicMiddlewares,
-        ], 
-        // Enhancers
-        devTools.isEnabled() ? [devTools.enhancer()] : []);
-        // Apply rootEpic
-        epicMiddleware.run(rootEpics.getRootEpic());
-        // // Enable syncing of Angular router state with our Redux store.
-        // if (ngReduxRouter) {
-        //     ngReduxRouter.initialize();
-        // }
-        // Enable syncing of Angular form state with our Redux store.
-        // provideReduxForms(ngRedux);
-    }
-    ReduxStoreModule.decorators = [
-        { type: NgModule, args: [{
-                    imports: [
-                        NgReduxModule,
-                    ],
-                    providers: [
-                        AccountActions,
-                        ActiveProjectActions,
-                        LoadingBarActions,
-                        NotificationsAPIActions,
-                        AccountEpics,
-                        ActiveProjectEpics,
-                        LoadingBarEpics,
-                        NotificationsAPIEpics,
-                        DatActions,
-                        DfhActions,
-                        InfActions,
-                        ProActions,
-                        SysActions,
-                        TabActions,
-                        WarActions,
-                        DatEpics,
-                        DfhEpics,
-                        InfEpics,
-                        ProEpics,
-                        SysEpics,
-                        TabEpics,
-                        WarEpics,
-                        RootEpics,
-                        SchemaActionsFactory,
-                        SchemaObjectService,
-                        { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
-                    ]
-                },] }
-    ];
-    /** @nocollapse */
-    ReduxStoreModule.ctorParameters = function () { return [
-        { type: NgRedux },
-        { type: DevToolsExtension },
-        { type: RootEpics },
-        { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] }
-    ]; };
-    return ReduxStoreModule;
-}());
-if (false) {
-    /** @type {?} */
-    ReduxStoreModule.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: root/models/model.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function InfObject() { }
-if (false) {
-    /** @type {?} */
-    InfObject.prototype.persistent_item;
-    /** @type {?} */
-    InfObject.prototype.temporal_entity;
-    /** @type {?} */
-    InfObject.prototype.statement;
-    /** @type {?} */
-    InfObject.prototype.place;
-    /** @type {?} */
-    InfObject.prototype.language;
-    /** @type {?} */
-    InfObject.prototype.appellation;
-    /** @type {?} */
-    InfObject.prototype.time_primitive;
-    /** @type {?} */
-    InfObject.prototype.text_property;
-    /** @type {?} */
-    InfObject.prototype.lang_string;
-    /** @type {?} */
-    InfObject.prototype.dimension;
-}
-/**
- * @record
- */
-function ProObject() { }
-if (false) {
-    /** @type {?} */
-    ProObject.prototype.info_proj_rel;
-}
-/**
- * @record
- */
-function DatObject() { }
-if (false) {
-    /** @type {?} */
-    DatObject.prototype.digital;
-}
-/**
- * @record
- */
-function WarObject() { }
-if (false) {
-    /** @type {?} */
-    WarObject.prototype.entity_preview;
-}
-/**
- * @record
- */
-function SchemaObject() { }
-if (false) {
+    IAccount.prototype.account;
     /** @type {?|undefined} */
-    SchemaObject.prototype.inf;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.pro;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.dat;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.war;
+    IAccount.prototype.roles;
 }
-/**
- * @record
- */
-function PaginationObject() { }
-if (false) {
-    /** @type {?} */
-    PaginationObject.prototype.count;
-    /** @type {?} */
-    PaginationObject.prototype.schemas;
-    /** @type {?} */
-    PaginationObject.prototype.statements;
-}
-/**
- * @record
- */
-function IAppState() { }
-if (false) {
-    /** @type {?|undefined} */
-    IAppState.prototype.account;
-    /** @type {?|undefined} */
-    IAppState.prototype.loadingBar;
-    /** @type {?|undefined} */
-    IAppState.prototype.projects;
-    /** @type {?|undefined} */
-    IAppState.prototype.sys;
-    /** @type {?|undefined} */
-    IAppState.prototype.dfh;
-    /** @type {?|undefined} */
-    IAppState.prototype.inf;
-    /** @type {?|undefined} */
-    IAppState.prototype.dat;
-    /** @type {?|undefined} */
-    IAppState.prototype.pro;
-    /** @type {?|undefined} */
-    IAppState.prototype.war;
-    /** @type {?|undefined} */
-    IAppState.prototype.tab;
-    /** @type {?|undefined} */
-    IAppState.prototype.activeProject;
-    /** @type {?|undefined} */
-    IAppState.prototype.routes;
-    /** @type {?|undefined} */
-    IAppState.prototype.information;
-    /** @type {?|undefined} */
-    IAppState.prototype.sources;
-    /** @type {?|undefined} */
-    IAppState.prototype.sandboxState;
-    /** @type {?|undefined} */
-    IAppState.prototype.pending;
-}
-/**
- * @record
- * @template T
- */
-function ByPk() { }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: root/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: root/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -10265,18 +10183,6 @@ if (false) {
     /** @type {?} */
     Types.prototype.tabTitle;
 }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/models/active-project/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -10825,24 +10731,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/services/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
  * Generated from: public-api.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -10853,5 +10741,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { AccountActions, AccountEpics, ActionResolverEpics, ActiveProjectActions, ActiveProjectEpics, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, InformationAPIActions, List, LoadingBarActions, LoadingBarEpics, NamespaceSlice, Notifications, NotificationsAPIActions, NotificationsAPIEpics, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxStoreModule, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SourceListAPIActions, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, accountRootReducer, activeProjectReducer, by, createProjectsReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, informationReducer, loadingBarReducer, notificationsReducer, pag, paginateKey, paginateName, paginatedBy, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, sourceListReducer, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, AccountActions as ɵb, SchemaObjectService as ɵba, ActiveProjectActions as ɵc, LoadingBarActions as ɵd, NotificationsAPIActions as ɵe, AccountEpics as ɵf, ActiveProjectEpics as ɵg, LoadingBarEpics as ɵh, NotificationsAPIEpics as ɵi, DatActions as ɵj, DfhActions as ɵk, InfActions as ɵl, ProActions as ɵm, SysActions as ɵn, TabActions as ɵo, WarActions as ɵp, DatEpics as ɵq, DfhEpics as ɵr, InfEpics as ɵs, ProEpics as ɵt, SysEpics as ɵu, TabEpics as ɵv, WarEpics as ɵw, RootEpics as ɵx, ActionResolverEpics as ɵy, SchemaActionsFactory as ɵz };
+export { ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, NamespaceSlice, Notifications, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ReducerFactory, ReduxStoreModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, pag, paginateKey, paginateName, paginatedBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, AccountActions as ɵb, ActiveProjectActions as ɵc, LoadingBarActions as ɵd, NotificationsAPIActions as ɵe, AccountEpics as ɵf, ActiveProjectEpics as ɵg, LoadingBarEpics as ɵh, NotificationsAPIEpics as ɵi, DatEpics as ɵj, DfhEpics as ɵk, InfEpics as ɵl, ProEpics as ɵm, SysEpics as ɵn, TabEpics as ɵo, WarEpics as ɵp, ActionResolverEpics as ɵq, accountRootReducer as ɵr, loadingBarReducer as ɵs, activeProjectReducer as ɵt, informationReducer as ɵu, sourceListReducer as ɵv, createProjectsReducer as ɵw };
 //# sourceMappingURL=kleiolab-lib-redux-src-lib-redux-store.js.map

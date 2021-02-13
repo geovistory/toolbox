@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
-import { IAppState } from '../../root/models';
+import { IAppState } from '../../root/models/model';
 import { ActionResultObservable, ModifyActionMeta, SchemaActionsFactory, SucceedActionMeta } from './schema-actions-factory';
 
 @Injectable()

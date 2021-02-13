@@ -1,0 +1,6 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: models/SpecialFieldType.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiU3BlY2lhbEZpZWxkVHlwZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItcXVlcmllcy9zcmMvbGliL3F1ZXJpZXMvIiwic291cmNlcyI6WyJtb2RlbHMvU3BlY2lhbEZpZWxkVHlwZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IHR5cGUgU3BlY2lhbEZpZWxkVHlwZSA9ICd0aW1lLXNwYW4nIHwgJ2hhcy10eXBlJyB8IGZhbHNlO1xuIl19

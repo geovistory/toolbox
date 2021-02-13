@@ -1,0 +1,58 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/queries/public-api.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { ReduxQueriesModule } from './module/redux-queries.module';
+export { spyTag, cache } from './decorators/method-decorators';
+export { DatSelector } from './selectors/dat.service';
+export { DfhSelector } from './selectors/dfh.service';
+export { InfSelector } from './selectors/inf.service';
+export { ProSelector } from './selectors/pro.service';
+export { SysSelector } from './selectors/sys.service';
+export { TabSelector } from './selectors/tab.service';
+export { WarSelector } from './selectors/war.service';
+export { ActiveProjectPipesService } from './services/active-project-pipes.service';
+export { ConfigurationPipesService } from './services/configuration-pipes.service';
+export { InformationBasicPipesService } from './services/information-basic-pipes.service';
+export { propertyOptionFieldKey, InformationPipesService } from './services/information-pipes.service';
+export { SchemaSelectorsService } from './services/schema-selectors.service';
+export { ShouldPauseService } from './services/should-pause.service';
+export {} from './models/AppellationItem';
+export {} from './models/BasicStatementItem';
+export {} from './models/ClassAndTypeNode';
+export {} from './models/ClassAndTypePk';
+export {} from './models/ClassAndTypeSelectModel';
+export {} from './models/CtrlTimeSpanDialogData';
+export {} from './models/CtrlTimeSpanDialogResult';
+export {} from './models/DimensionItem';
+export {} from './models/EntityPreviewItem';
+export {} from './models/EntityProperties';
+export {} from './models/Field';
+export {} from './models/FieldBase';
+export {} from './models/FieldPosition';
+export {} from './models/FieldProperty';
+export {} from './models/Item';
+export {} from './models/ItemBasics';
+export {} from './models/ItemList';
+export {} from './models/ItemType';
+export {} from './models/LangStringItem';
+export {} from './models/LanguageItem';
+export {} from './models/PlaceItem';
+export {} from './models/PropertyItemTypeMap';
+export {} from './models/PropertyOption';
+export {} from './models/PropertySelectModel';
+export {} from './models/SpecialFieldType';
+export {} from './models/StatementItem';
+export {} from './models/Subfield';
+export {} from './models/SubfieldType';
+export {} from './models/TemporalEntityCell';
+export {} from './models/TemporalEntityItem';
+export {} from './models/TemporalEntityRemoveProperties';
+export {} from './models/TemporalEntityRow';
+export {} from './models/TemporalEntityTableI';
+export {} from './models/TextPropertyItem';
+export {} from './models/TimePrimitiveItem';
+export {} from './models/TimeSpanItem';
+export {} from './models/TimeSpanProperty';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItcXVlcmllcy8iLCJzb3VyY2VzIjpbImxpYi9xdWVyaWVzL3B1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFFQSxPQUFPLEVBQUUsa0JBQWtCLEVBQUUsTUFBTSwrQkFBK0IsQ0FBQztBQUVuRSw4QkFBYyxnQ0FBZ0MsQ0FBQztBQUUvQyw0QkFBYyx5QkFBeUIsQ0FBQztBQUN4Qyw0QkFBYyx5QkFBeUIsQ0FBQztBQUN4Qyw0QkFBYyx5QkFBeUIsQ0FBQztBQUN4Qyw0QkFBYyx5QkFBeUIsQ0FBQztBQUN4Qyw0QkFBYyx5QkFBeUIsQ0FBQztBQUN4Qyw0QkFBYyx5QkFBeUIsQ0FBQztBQUN4Qyw0QkFBYyx5QkFBeUIsQ0FBQztBQUV4QywwQ0FBYyx5Q0FBeUMsQ0FBQztBQUN4RCwwQ0FBYyx3Q0FBd0MsQ0FBQztBQUN2RCw2Q0FBYyw0Q0FBNEMsQ0FBQztBQUMzRCxnRUFBYyxzQ0FBc0MsQ0FBQztBQUNyRCx1Q0FBYyxxQ0FBcUMsQ0FBQztBQUNwRCxtQ0FBYyxpQ0FBaUMsQ0FBQztBQUdoRCxlQUFjLDBCQUEwQixDQUFDO0FBQ3pDLGVBQWMsNkJBQTZCLENBQUM7QUFDNUMsZUFBYywyQkFBMkIsQ0FBQztBQUMxQyxlQUFjLHlCQUF5QixDQUFDO0FBQ3hDLGVBQWMsa0NBQWtDLENBQUM7QUFDakQsZUFBYyxpQ0FBaUMsQ0FBQztBQUNoRCxlQUFjLG1DQUFtQyxDQUFDO0FBQ2xELGVBQWMsd0JBQXdCLENBQUM7QUFDdkMsZUFBYyw0QkFBNEIsQ0FBQztBQUMzQyxlQUFjLDJCQUEyQixDQUFDO0FBQzFDLGVBQWMsZ0JBQWdCLENBQUM7QUFDL0IsZUFBYyxvQkFBb0IsQ0FBQztBQUNuQyxlQUFjLHdCQUF3QixDQUFDO0FBQ3ZDLGVBQWMsd0JBQXdCLENBQUM7QUFDdkMsZUFBYyxlQUFlLENBQUM7QUFDOUIsZUFBYyxxQkFBcUIsQ0FBQztBQUNwQyxlQUFjLG1CQUFtQixDQUFDO0FBQ2xDLGVBQWMsbUJBQW1CLENBQUM7QUFDbEMsZUFBYyx5QkFBeUIsQ0FBQztBQUN4QyxlQUFjLHVCQUF1QixDQUFDO0FBQ3RDLGVBQWMsb0JBQW9CLENBQUM7QUFDbkMsZUFBYyw4QkFBOEIsQ0FBQztBQUM3QyxlQUFjLHlCQUF5QixDQUFDO0FBQ3hDLGVBQWMsOEJBQThCLENBQUM7QUFDN0MsZUFBYywyQkFBMkIsQ0FBQztBQUMxQyxlQUFjLHdCQUF3QixDQUFDO0FBQ3ZDLGVBQWMsbUJBQW1CLENBQUM7QUFDbEMsZUFBYyx1QkFBdUIsQ0FBQztBQUN0QyxlQUFjLDZCQUE2QixDQUFDO0FBQzVDLGVBQWMsNkJBQTZCLENBQUM7QUFDNUMsZUFBYyx5Q0FBeUMsQ0FBQztBQUN4RCxlQUFjLDRCQUE0QixDQUFDO0FBQzNDLGVBQWMsK0JBQStCLENBQUM7QUFDOUMsZUFBYywyQkFBMkIsQ0FBQztBQUMxQyxlQUFjLDRCQUE0QixDQUFDO0FBQzNDLGVBQWMsdUJBQXVCLENBQUM7QUFDdEMsZUFBYywyQkFBMkIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIlxuXG5leHBvcnQgeyBSZWR1eFF1ZXJpZXNNb2R1bGUgfSBmcm9tICcuL21vZHVsZS9yZWR1eC1xdWVyaWVzLm1vZHVsZSc7XG5cbmV4cG9ydCAqIGZyb20gJy4vZGVjb3JhdG9ycy9tZXRob2QtZGVjb3JhdG9ycyc7XG5cbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL2RhdC5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL2RmaC5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL2luZi5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL3Byby5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL3N5cy5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL3RhYi5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0b3JzL3dhci5zZXJ2aWNlJztcblxuZXhwb3J0ICogZnJvbSAnLi9zZXJ2aWNlcy9hY3RpdmUtcHJvamVjdC1waXBlcy5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VydmljZXMvY29uZmlndXJhdGlvbi1waXBlcy5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vc2VydmljZXMvaW5mb3JtYXRpb24tYmFzaWMtcGlwZXMuc2VydmljZSc7XG5leHBvcnQgKiBmcm9tICcuL3NlcnZpY2VzL2luZm9ybWF0aW9uLXBpcGVzLnNlcnZpY2UnO1xuZXhwb3J0ICogZnJvbSAnLi9zZXJ2aWNlcy9zY2hlbWEtc2VsZWN0b3JzLnNlcnZpY2UnO1xuZXhwb3J0ICogZnJvbSAnLi9zZXJ2aWNlcy9zaG91bGQtcGF1c2Uuc2VydmljZSc7XG5cblxuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvQXBwZWxsYXRpb25JdGVtJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL0Jhc2ljU3RhdGVtZW50SXRlbSc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9DbGFzc0FuZFR5cGVOb2RlJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL0NsYXNzQW5kVHlwZVBrJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL0NsYXNzQW5kVHlwZVNlbGVjdE1vZGVsJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL0N0cmxUaW1lU3BhbkRpYWxvZ0RhdGEnO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvQ3RybFRpbWVTcGFuRGlhbG9nUmVzdWx0JztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL0RpbWVuc2lvbkl0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvRW50aXR5UHJldmlld0l0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvRW50aXR5UHJvcGVydGllcyc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9GaWVsZCc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9GaWVsZEJhc2UnO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvRmllbGRQb3NpdGlvbic7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9GaWVsZFByb3BlcnR5JztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL0l0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvSXRlbUJhc2ljcyc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9JdGVtTGlzdCc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9JdGVtVHlwZSc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9MYW5nU3RyaW5nSXRlbSc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9MYW5ndWFnZUl0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvUGxhY2VJdGVtJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1Byb3BlcnR5SXRlbVR5cGVNYXAnO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvUHJvcGVydHlPcHRpb24nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvUHJvcGVydHlTZWxlY3RNb2RlbCc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9TcGVjaWFsRmllbGRUeXBlJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1N0YXRlbWVudEl0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvU3ViZmllbGQnO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvU3ViZmllbGRUeXBlJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1RlbXBvcmFsRW50aXR5Q2VsbCc7XG5leHBvcnQgKiBmcm9tICcuL21vZGVscy9UZW1wb3JhbEVudGl0eUl0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvVGVtcG9yYWxFbnRpdHlSZW1vdmVQcm9wZXJ0aWVzJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1RlbXBvcmFsRW50aXR5Um93JztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1RlbXBvcmFsRW50aXR5VGFibGVJJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1RleHRQcm9wZXJ0eUl0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvVGltZVByaW1pdGl2ZUl0ZW0nO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvVGltZVNwYW5JdGVtJztcbmV4cG9ydCAqIGZyb20gJy4vbW9kZWxzL1RpbWVTcGFuUHJvcGVydHknO1xuIl19

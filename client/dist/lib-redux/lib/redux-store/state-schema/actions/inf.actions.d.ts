@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { IAppState, SchemaObject } from '../../root/models';
-import { InfDimensionSlice, InfPersistentItemSlice } from '../models';
+import { IAppState, SchemaObject } from '../../root/models/model';
+import { InfDimensionSlice, InfPersistentItemSlice } from '../models/inf.models';
 import { InfActionFactory } from '../_helpers/inf-action-factory';
 import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 declare type Payload = InfPersistentItemSlice;

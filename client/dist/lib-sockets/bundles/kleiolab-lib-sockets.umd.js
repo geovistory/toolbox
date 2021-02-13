@@ -219,12 +219,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/sockets/models/index.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: lib/sockets/services/entity-preview-socket.service.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -320,9 +314,59 @@
         return SysStatusSocket;
     }(ngxSocketIo.Socket));
 
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/sockets/sockets.module.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SocketsModule = /** @class */ (function () {
+        function SocketsModule(parentModule) {
+            if (parentModule) {
+                throw new Error('SocketsModule is already loaded. Import it in the AppModule only');
+            }
+        }
+        /**
+         * @param {?} config
+         * @return {?}
+         */
+        SocketsModule.forRoot = /**
+         * @param {?} config
+         * @return {?}
+         */
+        function (config) {
+            return {
+                ngModule: SocketsModule,
+                providers: [
+                    { provide: SocketsConfig, useValue: config },
+                    EntityPreviewSocket,
+                    ImportTableSocket,
+                    SysStatusSocket
+                ],
+            };
+        };
+        SocketsModule.decorators = [
+            { type: core.NgModule, args: [{
+                        declarations: [
+                        // components
+                        ],
+                        imports: [
+                            ngxSocketIo.SocketIoModule,
+                        ],
+                        providers: [EntityPreviewSocket, ImportTableSocket, SysStatusSocket],
+                        bootstrap: [ /** AppComponent **/]
+                    },] }
+        ];
+        /** @nocollapse */
+        SocketsModule.ctorParameters = function () { return [
+            { type: SocketsModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] }
+        ]; };
+        return SocketsModule;
+    }());
+
     exports.EntityPreviewSocket = EntityPreviewSocket;
     exports.ImportTableSocket = ImportTableSocket;
     exports.SocketsConfig = SocketsConfig;
+    exports.SocketsModule = SocketsModule;
     exports.SysStatusSocket = SysStatusSocket;
 
     Object.defineProperty(exports, '__esModule', { value: true });

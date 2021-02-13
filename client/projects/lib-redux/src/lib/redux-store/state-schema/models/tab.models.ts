@@ -1,5 +1,5 @@
-import { ByPk } from '../../root/models';
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
+import { ByPk } from '../../root/models/model';
 
 export class TabCellSlice {
   by_pk_cell?: ByPk<TabCell>;

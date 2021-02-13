@@ -1,5 +1,5 @@
 import { FluxStandardAction } from 'flux-standard-action';
-import { NotificationsI } from '../models';
+import { NotificationsI } from '../models/notifications.models';
 declare type Payload = NotificationsI;
 interface MetaData {
     itemsArray?: any[];

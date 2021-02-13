@@ -3,8 +3,8 @@ import { ToastyConfig, ToastyService } from '@cime/ngx-toasty';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIAction, NotificationsAPIActions } from '../actions';
+import { filter, switchMap } from 'rxjs/operators';
+import { NotificationsAPIActions, NotificationsAPIAction } from '../../state-gui/actions/notifications.actions';
 
 @Injectable()
 export class NotificationsAPIEpics {

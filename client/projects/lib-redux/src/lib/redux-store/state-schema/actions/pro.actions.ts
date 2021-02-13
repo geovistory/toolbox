@@ -6,9 +6,9 @@ import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { filter } from 'rxjs/operators';
-import { IAppState } from '../../root/models';
-import { ProAnalysisSlice, ProInfoProjRelSlice } from '../models';
-import { proRoot } from '../reducer-configs';
+import { IAppState } from '../../root/models/model';
+import { ProAnalysisSlice, ProInfoProjRelSlice } from '../models/pro.models';
+import { proRoot } from '../reducer-configs/pro.config';
 import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta, LoadByPkAndVersionActionMeta } from '../_helpers/schema-actions-factory';
 
 

@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ProClassFieldConfig, ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi, ProInfoProjRel, ProInfoProjRelApi, ProProject, ProProjectApi, ProTextProperty, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
-import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4/public-api';
+import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { SchemaObject } from '../../root/models';
-import { DatActions, InfActions, MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory } from '../actions';
-import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../models';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { proRoot } from '../reducer-configs';
-import { Flattener, LoadActionMeta, ModifyActionMeta, SchemaEpicsFactory, SchemaObjectService, storeFlattened } from '../_helpers';
+import { SchemaObject } from '../../root/models/model';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { DatActions } from '../actions/dat.actions';
+import { InfActions } from '../actions/inf.actions';
+import { MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
+import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../models/pro.models';
+import { proRoot } from '../reducer-configs/pro.config';
+import { SchemaObjectService } from '../services/schema-object.service';
+import { Flattener, storeFlattened } from '../_helpers/flattener';
+import { ModifyActionMeta, LoadActionMeta } from '../_helpers/schema-actions-factory';
+import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 
 
 

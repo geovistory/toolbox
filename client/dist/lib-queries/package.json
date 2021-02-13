@@ -1,0 +1,21 @@
+{
+  "name": "@kleiolab/lib-queries",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.2.14",
+    "@angular/core": "^8.2.14"
+  },
+  "main": "bundles/kleiolab-lib-queries.umd.js",
+  "module": "fesm5/kleiolab-lib-queries.js",
+  "es2015": "fesm2015/kleiolab-lib-queries.js",
+  "esm5": "esm5/kleiolab-lib-queries.js",
+  "esm2015": "esm2015/kleiolab-lib-queries.js",
+  "fesm5": "fesm5/kleiolab-lib-queries.js",
+  "fesm2015": "fesm2015/kleiolab-lib-queries.js",
+  "typings": "kleiolab-lib-queries.d.ts",
+  "metadata": "kleiolab-lib-queries.metadata.json",
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}

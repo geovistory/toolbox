@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import { DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
+import { DatChunk, DatChunkApi, DatColumn, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, SchemaObject, DatColumnApi } from '@kleiolab/lib-sdk-lb3';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { SchemaObject } from '../../root/models';
-import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, InfActions, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, ProActions } from '../actions';
-import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from '../models';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { datRoot } from '../reducer-configs';
-import { Flattener, LoadActionMeta, ModifyActionMeta, SchemaEpicsFactory, SchemaObjectService, storeFlattened, LoadVersionAction } from '../_helpers';
+import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction } from '../actions/dat.actions';
+import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from '../models/dat.models';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { datRoot } from '../reducer-configs/dat.config';
+import { LoadActionMeta, ModifyActionMeta, } from '../_helpers/schema-actions-factory';
+import { LoadVersionAction } from '../_helpers/schema-actions-factory';
+import { InfActions } from '../actions/inf.actions';
+import { ProActions } from '../actions/pro.actions';
+import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
+import { Flattener, storeFlattened } from '../_helpers/flattener';
 
 
 @Injectable()
@@ -70,7 +75,7 @@ export class DatEpics {
         (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital),
         ColumnActionsFactory.COLUMNS_OF_TABLE,
         (results, pk) => {
-          const schemaObject = results as SchemaObject;
+          const schemaObject = results as unknown as SchemaObject;
 
           this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }

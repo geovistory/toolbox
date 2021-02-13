@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { NotificationsAPIAction } from '../actions';
-import { Notifications } from '../models';
+import { NotificationsAPIAction } from '../actions/notifications.actions';
+import { Notifications } from '../models/notifications.models';
 
 const INITIAL_STATE = new Notifications();
 

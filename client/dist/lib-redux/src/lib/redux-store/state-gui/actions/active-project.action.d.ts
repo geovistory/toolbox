@@ -1,6 +1,6 @@
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ListType, Panel, ProjectDetail, ProjectPreview, PanelTab, TypePeIt } from '../models';
+import { ListType, Panel, ProjectDetail, ProjectPreview, PanelTab, TypePeIt } from '../models/active-project.models';
 export interface ActiveProjectMeta {
     projectPreview?: ProjectPreview;
     pk_project?: number;

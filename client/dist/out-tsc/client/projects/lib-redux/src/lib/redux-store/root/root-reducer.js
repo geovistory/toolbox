@@ -1,0 +1,78 @@
+import { composeReducers, defaultFormReducer } from '@angular-redux/form';
+import { routerReducer } from '@angular-redux/router';
+import { omit } from 'ramda';
+import { combineReducers } from 'redux';
+import { accountRootReducer } from '../state-gui/reducers/account.reducers';
+import { loadingBarReducer } from '../state-gui/reducers/loading-bar.reducer';
+import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
+import { informationReducer } from '../state-gui/reducers/entity-list.reducer';
+import { sourceListReducer } from '../state-gui/reducers/source-list.reducer';
+import { createProjectsReducer } from '../state-gui/reducers/projects.reducers';
+import { createSysReducer } from '../state-schema/reducers/sys.reducer';
+import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
+import { createInfReducer } from '../state-schema/reducers/inf.reducer';
+import { createDatReducer } from '../state-schema/reducers/dat.reducer';
+import { createProReducer } from '../state-schema/reducers/pro.reducer';
+import { createWarReducer } from '../state-schema/reducers/war.reducer';
+import { createTabReducer } from '../state-schema/reducers/tab.reducer';
+export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
+export const sandboxStateReducer = (lastState = {}, action) => {
+    if (action.type === INIT_SANDBOX_STATE) {
+        lastState = Object.assign({}, lastState, action.payload);
+    }
+    return lastState;
+};
+export const pendingRequestReducer = (state = {}, action) => {
+    if (action && action.meta && action.meta.addPending) {
+        const uuid = action.meta.addPending;
+        state = Object.assign({}, state, { [uuid]: true });
+        // console.log('add ' + uuid + ' ' + Date.now())
+    }
+    if (action && action.meta && action.meta.removePending) {
+        const uuid = action.meta.removePending;
+        state = Object.assign({}, omit([uuid], state));
+    }
+    return state;
+};
+export const resolvedRequestReducer = (state = {}, action) => {
+    if (action && action.meta && action.meta.removePending) {
+        const uuid = action.meta.removePending;
+        state = Object.assign({}, state, { [uuid]: action.meta });
+    }
+    return state;
+};
+export const cleanupResolved = (state = {}, action) => {
+    if (action && action.type === 'CLEAN_UP_RESOLVED') {
+        const uuid = action.meta.uuid;
+        state = Object.assign({}, omit([uuid], state));
+        // console.log('resolve ' + uuid + ' ' + Date.now().toString())
+    }
+    return state;
+};
+export const SET_APP_STATE = 'SET_APP_STATE';
+export const setAppState = (state = {}, action) => {
+    if (action && action.type === SET_APP_STATE) {
+        state = action.payload;
+    }
+    return state;
+};
+export const rootReducer = composeReducers(defaultFormReducer(), combineReducers({
+    account: accountRootReducer,
+    loadingBar: loadingBarReducer,
+    activeProject: activeProjectReducer,
+    routes: routerReducer,
+    information: informationReducer,
+    sources: sourceListReducer,
+    sandboxState: sandboxStateReducer,
+    projects: createProjectsReducer(),
+    sys: createSysReducer(),
+    dfh: createDfhReducer(),
+    inf: createInfReducer(),
+    dat: createDatReducer(),
+    pro: createProReducer(),
+    war: createWarReducer(),
+    tab: createTabReducer(),
+    pending: pendingRequestReducer,
+    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
+}), setAppState);
+//# sourceMappingURL=root-reducer.js.map

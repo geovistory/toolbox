@@ -1,6 +1,6 @@
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
-import { ByPk } from '../../root/models';
+import { ByPk } from '../../root/models/model';
 
 export interface SysRelevantClassSlice {
   by_pk_entity?: ByPk<SysSystemRelevantClass>;

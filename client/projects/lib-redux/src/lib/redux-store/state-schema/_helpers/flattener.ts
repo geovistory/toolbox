@@ -1,8 +1,12 @@
 import { DatChunk, DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { keys, omit, values } from 'ramda';
-import { DatActions, InfActions, ProActions } from '../actions';
-import { ChunkSlice, DigitalSlice, InfAppellationSlice, InfDimensionSlice, InfLangStringSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../models';
+import { DatActions } from '../actions/dat.actions';
+import { InfActions } from '../actions/inf.actions';
+import { ProActions } from '../actions/pro.actions';
+import { ChunkSlice, DigitalSlice } from '../models/dat.models';
+import { InfAppellationSlice, InfDimensionSlice, InfLangStringSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from '../models/inf.models';
+import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../models/pro.models';
 import { SchemaActionsFactory } from './schema-actions-factory';
 
 class ModelFlattener<Payload, Model> {

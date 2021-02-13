@@ -1,5 +1,5 @@
-import { ReducerFactory } from '../_helpers';
-import { proDefinitions, proRoot } from '../reducer-configs';
+import { ReducerFactory } from '../_helpers/reducer-factory';
+import { proDefinitions, proRoot } from '../reducer-configs/pro.config';
 
 
 

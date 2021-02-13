@@ -1,5 +1,6 @@
-import { ProjectsAction, ProjectsActions } from '../actions';
-import { IProjectList, ProjectPreview } from '../models';
+import { ProjectsAction, ProjectsActions } from '../actions/projects.actions';
+import { IProjectList } from '../models/projects.model';
+import { ProjectPreview } from '../models/active-project.models';
 
 const INITIAL_STATE: IProjectList = {
   records: []

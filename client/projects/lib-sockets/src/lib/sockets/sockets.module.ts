@@ -1,7 +1,9 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { SocketIoModule } from 'ngx-socket-io';
-import { EntityPreviewSocket, ImportTableSocket, SysStatusSocket } from './services';
 import { SocketsConfig } from './models/SocketsConfig';
+import { EntityPreviewSocket } from './services/entity-preview-socket.service';
+import { ImportTableSocket } from './services/import-table-socket-socket.service';
+import { SysStatusSocket } from './services/sys-status-socket.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,7 @@ export class SocketsModule {
   constructor(@Optional() @SkipSelf() parentModule?: SocketsModule) {
     if (parentModule) {
       throw new Error(
-        'GreetingModule is already loaded. Import it in the AppModule only');
+        'SocketsModule is already loaded. Import it in the AppModule only');
     }
   }
 

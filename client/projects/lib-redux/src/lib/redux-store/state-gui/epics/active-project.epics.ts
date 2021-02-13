@@ -7,10 +7,16 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
-import { IAppState } from '../../root/models';
-import { DatActions, DfhActions, InfActions, ProActions, SysActions } from '../../state-schema/actions';
-import { ActiveProjectAction, ActiveProjectActions, LoadingBarActions, NotificationsAPIActions } from '../actions';
-import { ProjectPreview } from '../models';
+import { IAppState } from '../../root/models/model';
+import { ActiveProjectActions, ActiveProjectAction } from '../../state-gui/actions/active-project.action';
+import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { DatActions } from '../../state-schema/actions/dat.actions';
+import { DfhActions } from '../../state-schema/actions/dfh.actions';
+import { InfActions } from '../../state-schema/actions/inf.actions';
+import { ProActions } from '../../state-schema/actions/pro.actions';
+import { SysActions } from '../../state-schema/actions/sys.actions';
+import { ProjectPreview } from '../models/active-project.models';
 
 /**
  * Transform ProProject to ProjectPreview

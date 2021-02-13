@@ -1,6 +1,7 @@
 import { Action } from 'redux';
-import { InformationAPIAction, InformationAPIActions } from '../actions';
-import { Information } from '../models';
+import { Information } from '../models/entity-list.models';
+import { InformationAPIAction, InformationAPIActions } from '../actions/entity-list.actions';
+
 
 const INITIAL_STATE = new Information();
 

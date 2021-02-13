@@ -5,9 +5,10 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { AccountAction, AccountActions, LoadingBarActions, NotificationsAPIActions } from '../actions';
+import { AccountActions, AccountAction } from '../actions/account.actions';
 import { AccountRole } from '../models/account.model';
-
+import { LoadingBarActions } from '../actions/loading-bar.actions';
+import { NotificationsAPIActions } from '../actions/notifications.actions';
 
 
 

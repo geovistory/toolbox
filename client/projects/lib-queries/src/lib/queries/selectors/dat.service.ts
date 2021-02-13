@@ -100,7 +100,9 @@ class DatTextPropertySelections extends Selector {
   ) { super(ngRedux, configs, model) }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DatSelector extends DatActions {
 
   digital$ = new DatDigitalSelections(this.ngRedux, datDefinitions, 'digital');

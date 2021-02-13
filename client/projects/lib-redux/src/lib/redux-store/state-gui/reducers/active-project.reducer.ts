@@ -1,7 +1,8 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { omit } from 'ramda';
-import { ActiveProjectAction, ActiveProjectActions } from '../actions';
-import { ProjectDetail } from '../models';
+import { ActiveProjectActions, ActiveProjectAction } from '../../state-gui/actions/active-project.action';
+import { ProjectDetail } from '../models/active-project.models';
+
 
 const INITIAL_STATE: ProjectDetail = {
   label: '',

@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { LoadingBarAction, LoadingBarActions } from '../actions';
-import { LoadingBar } from '../models';
+import { LoadingBarAction, LoadingBarActions } from '../actions/loading-bar.actions';
+import { LoadingBar } from '../models/loading-bar.models';
 
 const INITIAL_STATE: LoadingBar = {
   loading: false,

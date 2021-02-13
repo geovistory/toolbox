@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
-import { IAppState } from '../../root/models';
-import { TabCellSlice } from '../models';
+import { IAppState } from '../../root/models/model';
+import { TabCellSlice } from '../models/tab.models';
 import { SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 export declare class TabActions {
     ngRedux: NgRedux<IAppState>;

@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { SourceListAPIAction, SourceListAPIActions } from '../actions';
-import { SourceList } from '../models';
+import { SourceListAPIAction, SourceListAPIActions } from '../actions/source-list.actions';
+import { SourceList } from '../models/source-list.models';
 
 const INITIAL_STATE = new SourceList();
 

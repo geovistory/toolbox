@@ -7,9 +7,9 @@ import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 import { filter } from 'rxjs/operators';
-import { IAppState } from '../../root/models';
-import { DfhClassSlice } from '../models';
-import { dfhRoot } from '../reducer-configs';
+import { IAppState } from '../../root/models/model';
+import { DfhClassSlice } from '../models/dfh.models';
+import { dfhRoot } from '../reducer-configs/dfh.config';
 
 
 export class DfhProfileActionFactory extends SchemaActionsFactory<Payload, DfhProfile> {

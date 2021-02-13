@@ -3,6 +3,7 @@ import { ByPk, IAppState, ReducerConfigCollection, SysActions, SysConfigSlice, s
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 class Selector<Slice> {
 
@@ -60,7 +61,9 @@ class SysConfigSelections extends Selector<SysConfigSlice> {
   ) { super(ngRedux, configs, model) }
 }
 
-
+@Injectable({
+  providedIn: 'root'
+})
 export class SysSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
   // analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')

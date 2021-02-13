@@ -1,0 +1,10 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/queries/models/PropertyItemTypeMap.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+export function PropertyItemTypeMap() { }
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUHJvcGVydHlJdGVtVHlwZU1hcC5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItcXVlcmllcy8iLCJzb3VyY2VzIjpbImxpYi9xdWVyaWVzL21vZGVscy9Qcm9wZXJ0eUl0ZW1UeXBlTWFwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7O0FBQ0EseUNBS0MiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJdGVtVHlwZSB9IGZyb20gJy4vSXRlbVR5cGUnO1xuZXhwb3J0IGludGVyZmFjZSBQcm9wZXJ0eUl0ZW1UeXBlTWFwIHtcbiAgICBba2V5OiBzdHJpbmddOiB7XG4gICAgICAgIGxpc3RUeXBlOiBJdGVtVHlwZTtcbiAgICAgICAgaXNPdXRnb2luZzogYm9vbGVhbjtcbiAgICB9O1xufVxuIl19

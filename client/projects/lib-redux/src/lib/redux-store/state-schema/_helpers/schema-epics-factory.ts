@@ -3,7 +3,7 @@ import { Action } from 'redux';
 import { ofType } from 'redux-observable-es6-compat';
 import { Observable, Subscriber } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { NotificationsAPIActions } from '../../state-gui/actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { FluxActionObservable, LoadActionMeta, ModifyActionMeta, SchemaActionsFactory } from './schema-actions-factory';
 
 export class SchemaEpicsFactory<Payload, Model> {

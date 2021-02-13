@@ -1,6 +1,6 @@
 import { DevToolsExtension, NgRedux } from '@angular-redux/store';
 import { InjectionToken } from '@angular/core';
-import { IAppState } from '../root/models';
+import { IAppState } from '../root/models/model';
 import { RootEpics } from '../root/root-epics';
 /**
  * Function to use in combination with rxjs/operator .filter()

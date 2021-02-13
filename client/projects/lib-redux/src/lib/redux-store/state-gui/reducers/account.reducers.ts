@@ -1,5 +1,6 @@
-import { AccountAction, AccountActions } from '../actions';
-import { IAccount } from '../models';
+import { AccountActions, AccountAction } from '../../state-gui/actions/account.actions';
+import { IAccount } from '../models/account.model';
+
 
 const INITIAL_STATE: IAccount = {
   account: undefined,

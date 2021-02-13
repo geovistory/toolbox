@@ -1,4 +1,4 @@
-import { ReducerConfigCollection } from '../_helpers';
+import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
 
 export const sysRoot = 'sys';

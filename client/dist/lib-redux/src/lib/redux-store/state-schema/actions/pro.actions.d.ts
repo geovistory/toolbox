@@ -1,8 +1,8 @@
 import { NgRedux } from '@angular-redux/store';
 import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
-import { IAppState } from '../../root/models';
-import { ProAnalysisSlice, ProInfoProjRelSlice } from '../models';
+import { IAppState } from '../../root/models/model';
+import { ProAnalysisSlice, ProInfoProjRelSlice } from '../models/pro.models';
 import { ActionResultObservable, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 declare type Payload = ProInfoProjRelSlice;
 export declare class ProProjectActionFactory extends SchemaActionsFactory<Payload, ProProject> {

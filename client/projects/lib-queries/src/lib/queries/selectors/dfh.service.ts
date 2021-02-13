@@ -77,7 +77,9 @@ class DfhLabelSelections extends Selector<DfhLabelSlice> {
 }
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhSelector extends DfhActions {
 
   profile$ = new DfhProfileSelections(this.ngRedux, dfhDefinitions, 'profile', this.pause.shouldPause$)

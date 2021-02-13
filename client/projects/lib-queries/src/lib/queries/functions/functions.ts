@@ -1,4 +1,4 @@
-import { TimeSpanItem } from '../models';
+import { TimeSpanItem } from '../models/TimeSpanItem';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { DfhConfig } from '@kleiolab/lib-config';
 

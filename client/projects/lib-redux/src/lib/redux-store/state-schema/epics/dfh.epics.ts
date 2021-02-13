@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
-import { DfhClass, DfhClassControllerService, DfhProperty, DfhPropertyControllerService } from '@kleiolab/lib-sdk-lb4/public-api';
+import { DfhClass, DfhClassControllerService, DfhProperty, DfhPropertyControllerService } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory, DfhProfileActionFactory, DfhPropertyActionFactory } from '../actions';
-import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from '../models';
-import { NotificationsAPIActions } from '../../state-gui/actions';
-import { LoadActionMeta, SchemaEpicsFactory } from '../_helpers';
+import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory, DfhProfileActionFactory, DfhPropertyActionFactory } from '../actions/dfh.actions';
+import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from '../models/dfh.models';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { LoadActionMeta } from '../_helpers/schema-actions-factory';
+import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 
 
 @Injectable()

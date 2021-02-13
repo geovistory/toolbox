@@ -21,7 +21,7 @@ class Selector {
     const all$ = this.ngRedux.select<ByPk<M>>([proRoot, this.model, indexKey])
 
     const key = (x: string | (string | number)[]): Observable<M> => {
-      const k = typeof x === 'string' ? x : x.map((part: string | number) => toString(part)).join('_'); ;
+      const k = typeof x === 'string' ? x : x.map((part: string | number) => toString(part)).join('_');;
 
       return this.ngRedux.select<M>([proRoot, this.model, indexKey, k])
     }
@@ -112,7 +112,9 @@ class ProAnalysisSelector extends Selector {
   ) { super(ngRedux, configs, model) }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProSelector extends ProActions {
 
   project$ = new ProProjectSelector(this.ngRedux, proDefinitions, 'project');

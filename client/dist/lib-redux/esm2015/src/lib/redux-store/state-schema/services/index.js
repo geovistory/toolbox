@@ -1,8 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/services/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// start:ng42.barrel
-export { SchemaObjectService } from './schema-object.service';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXJlZHV4L3NyYy9saWIvcmVkdXgtc3RvcmUvIiwic291cmNlcyI6WyJzdGF0ZS1zY2hlbWEvc2VydmljZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQ0Esb0NBQWMseUJBQXlCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBzdGFydDpuZzQyLmJhcnJlbFxuZXhwb3J0ICogZnJvbSAnLi9zY2hlbWEtb2JqZWN0LnNlcnZpY2UnO1xuLy8gZW5kOm5nNDIuYmFycmVsXG5cbiJdfQ==

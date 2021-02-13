@@ -30,6 +30,7 @@ export type FluxActionObservable<Payload, Meta> = ActionsObservable<FluxStandard
  * A: Schema Action Type (e.g. DfhAction)
  * M: Model for whitch the Actions are produced
  */
+
 export class SchemaActionsFactory<Payload, Model> {
 
   load: (suffix?: string, pk?: number) => ActionResultObservable<Model>;

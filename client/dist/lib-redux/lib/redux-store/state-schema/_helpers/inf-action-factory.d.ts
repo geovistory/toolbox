@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from '../../root/models';
+import { IAppState } from '../../root/models/model';
 import { ActionResultObservable, SchemaActionsFactory } from './schema-actions-factory';
 export declare class InfActionFactory<Payload, Model> extends SchemaActionsFactory<Payload, Model> {
     ngRedux: NgRedux<IAppState>;

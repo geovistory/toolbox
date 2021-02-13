@@ -7,8 +7,12 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
-import { cache, spyTag } from '../decorators';
-import { Field, FieldPlaceOfDisplay, SpecialFieldType, Subfield, SubfieldType } from '../models';
+import { cache, spyTag } from '../decorators/method-decorators';
+import { Field, } from '../models/Field'
+import { FieldPlaceOfDisplay } from '../models/FieldPosition'
+import { SpecialFieldType } from '../models/SpecialFieldType'
+import { Subfield } from '../models/Subfield'
+import { SubfieldType } from '../models/SubfieldType'
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
 

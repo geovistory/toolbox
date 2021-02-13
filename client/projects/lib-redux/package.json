@@ -7,6 +7,8 @@
     "@angular-redux/store": "^10.0.0",
     "@cime/ngx-toasty": "^7.0.2",
     "@kleiolab/lib-utils": "0.0.1",
+    "@kleiolab/lib-sdk-lb3": "0.0.1",
+    "@kleiolab/lib-sdk-lb4": "0.0.1",
     "redux": "4.0.1",
     "redux-observable-es6-compat": "^1.2.1",
     "flux-standard-action": "~2.0.1",

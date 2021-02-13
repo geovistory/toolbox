@@ -1,0 +1,1 @@
+{"version":3,"file":"sys-config.js","sourceRoot":"","sources":["../../../../../../../../../../projects/lib-queries/src/__tests__/helpers/data/positive-schema-objects/sys-config.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,kBAAkB,EAAE,MAAM,gCAAgC,CAAC;AAEpE,MAAM,CAAC,MAAM,SAAS,GAAmB;IACvC,GAAG,EAAE;QACH,MAAM,EAAE;YACN,kBAAkB,CAAC,gBAAgB;SACpC;KACF;CACF,CAAA"}

@@ -1,0 +1,39 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/queries/models/Field.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * A Field contains all information to create the different GUI's to display and edit
+ * statements of an entity.
+ *
+ * The Fields of an entity depend on the properties of its class. Each Field contains or represents
+ * the properties that have the given class as as domain or range and share the same pk_property.
+ *
+ * Explanation:
+ * The identity (uniqueness) of a property is defined by its domain, pk_propery and its range,
+ * It is possible that one class has two outgoing properties with the same pk_property but different
+ * ranges. The Field then contains both of them.
+ *
+ * The Subfields (listDefinitions) are then representing only one property with a uniqur domain, pk_propery and range
+ * All Subfields of a Field share all properties defined in FieldBase.
+ *
+ * In practice the Field a wrapper for SubFileds containing all information that is equal amongst all Subfields.
+ * @record
+ */
+export function Field() { }
+if (false) {
+    /** @type {?} */
+    Field.prototype.placeOfDisplay;
+    /** @type {?|undefined} */
+    Field.prototype.fieldConfig;
+    /** @type {?} */
+    Field.prototype.targetClasses;
+    /** @type {?} */
+    Field.prototype.listDefinitions;
+    /** @type {?} */
+    Field.prototype.allSubfieldsRemovedFromAllProfiles;
+    /** @type {?} */
+    Field.prototype.isSpecialField;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiRmllbGQuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXF1ZXJpZXMvIiwic291cmNlcyI6WyJsaWIvcXVlcmllcy9tb2RlbHMvRmllbGQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFzQkEsMkJBYUM7OztJQVhHLCtCQUFvQzs7SUFFcEMsNEJBQWtDOztJQUVsQyw4QkFBd0I7O0lBRXhCLGdDQUE0Qjs7SUFFNUIsbURBQTRDOztJQUU1QywrQkFBaUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBQcm9DbGFzc0ZpZWxkQ29uZmlnIH0gZnJvbSAnQGtsZWlvbGFiL2xpYi1zZGstbGI0JztcbmltcG9ydCB7IEZpZWxkQmFzZSB9IGZyb20gJy4vRmllbGRCYXNlJztcbmltcG9ydCB7IEZpZWxkUGxhY2VPZkRpc3BsYXkgfSBmcm9tICcuL0ZpZWxkUG9zaXRpb24nO1xuaW1wb3J0IHsgU3BlY2lhbEZpZWxkVHlwZSB9IGZyb20gJy4vU3BlY2lhbEZpZWxkVHlwZSc7XG5pbXBvcnQgeyBTdWJmaWVsZCB9IGZyb20gJy4vU3ViZmllbGQnO1xuLyoqXG4gKiBBIEZpZWxkIGNvbnRhaW5zIGFsbCBpbmZvcm1hdGlvbiB0byBjcmVhdGUgdGhlIGRpZmZlcmVudCBHVUkncyB0byBkaXNwbGF5IGFuZCBlZGl0XG4gKiBzdGF0ZW1lbnRzIG9mIGFuIGVudGl0eS5cbiAqXG4gKiBUaGUgRmllbGRzIG9mIGFuIGVudGl0eSBkZXBlbmQgb24gdGhlIHByb3BlcnRpZXMgb2YgaXRzIGNsYXNzLiBFYWNoIEZpZWxkIGNvbnRhaW5zIG9yIHJlcHJlc2VudHNcbiAqIHRoZSBwcm9wZXJ0aWVzIHRoYXQgaGF2ZSB0aGUgZ2l2ZW4gY2xhc3MgYXMgYXMgZG9tYWluIG9yIHJhbmdlIGFuZCBzaGFyZSB0aGUgc2FtZSBwa19wcm9wZXJ0eS5cbiAqXG4gKiBFeHBsYW5hdGlvbjpcbiAqIFRoZSBpZGVudGl0eSAodW5pcXVlbmVzcykgb2YgYSBwcm9wZXJ0eSBpcyBkZWZpbmVkIGJ5IGl0cyBkb21haW4sIHBrX3Byb3BlcnkgYW5kIGl0cyByYW5nZSxcbiAqIEl0IGlzIHBvc3NpYmxlIHRoYXQgb25lIGNsYXNzIGhhcyB0d28gb3V0Z29pbmcgcHJvcGVydGllcyB3aXRoIHRoZSBzYW1lIHBrX3Byb3BlcnR5IGJ1dCBkaWZmZXJlbnRcbiAqIHJhbmdlcy4gVGhlIEZpZWxkIHRoZW4gY29udGFpbnMgYm90aCBvZiB0aGVtLlxuICpcbiAqIFRoZSBTdWJmaWVsZHMgKGxpc3REZWZpbml0aW9ucykgYXJlIHRoZW4gcmVwcmVzZW50aW5nIG9ubHkgb25lIHByb3BlcnR5IHdpdGggYSB1bmlxdXIgZG9tYWluLCBwa19wcm9wZXJ5IGFuZCByYW5nZVxuICogQWxsIFN1YmZpZWxkcyBvZiBhIEZpZWxkIHNoYXJlIGFsbCBwcm9wZXJ0aWVzIGRlZmluZWQgaW4gRmllbGRCYXNlLlxuICpcbiAqIEluIHByYWN0aWNlIHRoZSBGaWVsZCBhIHdyYXBwZXIgZm9yIFN1YkZpbGVkcyBjb250YWluaW5nIGFsbCBpbmZvcm1hdGlvbiB0aGF0IGlzIGVxdWFsIGFtb25nc3QgYWxsIFN1YmZpZWxkcy5cbiAqL1xuZXhwb3J0IGludGVyZmFjZSBGaWVsZCBleHRlbmRzIEZpZWxkQmFzZSB7XG4gICAgLy8gZGVmaW5lcyB3aGVyZSB0aGUgZmllbGQgaXMgYmVpbmcgZGlzcGxheWVkXG4gICAgcGxhY2VPZkRpc3BsYXk6IEZpZWxkUGxhY2VPZkRpc3BsYXk7XG4gICAgLy8gY29uZmlndXJhdGlvbiBvZiB0aGUgZmllbGQgKGNvbnRhaW5pbmcgcG9zaXRpb24gaW4gbGlzdCksIGdpdmVuIGJ5IHRoZSBwcm9qZWN0IG9yIHRoZSBkZWZhdWx0LWNvbmZpZ3VyYXRpb24tcHJvamVjdFxuICAgIGZpZWxkQ29uZmlnPzogUHJvQ2xhc3NGaWVsZENvbmZpZztcbiAgICAvLyB0aGUgdGFyZ2V0IGNsYXNzZXMgb2YgdGhlIGZpZWxkIChpZiBpcyBvdXRnb2luZyByYW5nZSBlbHNlIGRvbWFpbilcbiAgICB0YXJnZXRDbGFzc2VzOiBudW1iZXJbXTtcbiAgICAvLyBzdWJmaWVsZHMgKHRoZXkgc2hhcmUgdGhlIHNvdXJjZSBjbGFzcyBhbmQgcHJvcGVydHkgYnV0IGhhdmUgZGlmZmVyZW50IHRhcmdldCBjbGFzcyBhbmQgdGh1cyBsaXN0IHR5cGUpXG4gICAgbGlzdERlZmluaXRpb25zOiBTdWJmaWVsZFtdO1xuICAgIC8vIHRydWUgaWYgYWxsIHN1YmZpZWxkcyBhcmUgcmVtb3ZlZCBmcm9tIGFsbCBwcm9maWxlcyBhY3RpdmF0ZWQgYnkgdGhlIHByb2plY3RcbiAgICBhbGxTdWJmaWVsZHNSZW1vdmVkRnJvbUFsbFByb2ZpbGVzOiBib29sZWFuO1xuICAgIC8vIHNwZWNpYWwgZmllbGRzIGFyZSBub3QgdXNpbmcgdGhlIGRlZmF1bHQgc3ViZmllbGQgYXBwcm9hY2ggdG8gc2hvdy9lZGl0IGRhdGFcbiAgICBpc1NwZWNpYWxGaWVsZDogU3BlY2lhbEZpZWxkVHlwZTtcbn1cbiJdfQ==

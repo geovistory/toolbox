@@ -1,6 +1,6 @@
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
-import { ByPk } from '../../root/models';
+import { ByPk } from '../../root/models/model';
 interface PaginationInfo {
     loading: {
         [key: string]: boolean;

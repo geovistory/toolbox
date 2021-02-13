@@ -1,145 +1,319 @@
 import { dispatch, NgRedux, NgReduxModule, DevToolsExtension } from '@angular-redux/store';
 import { Injectable, ɵɵdefineInjectable, InjectionToken, NgModule, Inject } from '@angular/core';
+import { SlimLoadingBarService, SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
+import { ToastyService, ToastyConfig, ToastyModule } from '@cime/ngx-toasty';
+import { ProProjectApi, PubAccountApi, SysSystemRelevantClassApi, DfhProfileApi, DfhLabelApi, SchemaObjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
+import { SystemConfigurationService, DfhClassControllerService, DfhPropertyControllerService, AnalysisService, ApiModule } from '@kleiolab/lib-sdk-lb4';
 import { keys, omit, values, pathOr, equals, indexBy } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
-import { Observable, combineLatest, of, Subject, BehaviorSubject } from 'rxjs';
-import { mergeMap, filter, switchMap, mapTo, map } from 'rxjs/operators';
-import { PubAccountApi, ProProjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, SchemaObjectApi, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi } from '@kleiolab/lib-sdk-lb3';
+import { Observable, combineLatest, Subject, of, BehaviorSubject } from 'rxjs';
+import { switchMap, filter, mapTo, mergeMap, map } from 'rxjs/operators';
 import { __decorate, __metadata } from 'tslib';
 import { SysConfig } from '@kleiolab/lib-config';
 import { U } from '@kleiolab/lib-utils';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ToastyService, ToastyConfig } from '@cime/ngx-toasty';
 import { composeReducers, defaultFormReducer } from '@angular-redux/form';
-import { combineReducers } from 'redux';
-import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4/public-api';
 import { routerReducer } from '@angular-redux/router';
+import { combineReducers } from 'redux';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/account.actions.ts
+ * Generated from: lib/redux-store/state-gui/actions/loading-bar.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function AccountActionMeta() { }
+function MetaData() { }
 if (false) {
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountId;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountRoles;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.account;
+    /** @type {?} */
+    MetaData.prototype.null;
 }
 ;
-class AccountActions {
-    /**
-     * @return {?}
-     */
-    login() {
-        return {
-            type: AccountActions.LOGIN,
-            payload: null,
-            meta: null
-        };
-    }
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    loginSucceeded(account) {
-        return {
-            type: AccountActions.LOGIN_SUCCEEDED,
-            payload: null,
-            meta: { account }
-        };
-    }
-    /**
-     * @param {?} error
-     * @return {?}
-     */
-    loginFailed(error) {
-        return {
-            type: AccountActions.LOGIN_FAILED,
-            payload: null,
+/**
+ * This actions start, stop and complete the global loading bar
+ * using a SlimLoadingBarService instantiated within the loading-bar
+ * module.
+ *
+ * In order to show a loading bar in GUI, use the LoadingBarComponent
+ * exported by this module.
+ */
+class LoadingBarActions {
+    constructor() {
+        this.startLoading = (/**
+         * @return {?}
+         */
+        () => ({
+            type: LoadingBarActions.START,
             meta: null,
-            error
-        };
-    }
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    accountUpdated(account) {
-        return {
-            type: AccountActions.ACCOUNT_UPDATED,
             payload: null,
-            meta: { account }
-        };
-    }
-    // Roles of the account, used to check permissions
-    /**
-     * @param {?} accountId
-     * @return {?}
-     */
-    loadRoles(accountId) {
-        return {
-            type: AccountActions.LOAD_ROLES,
+        }));
+        this.stopLoading = (/**
+         * @return {?}
+         */
+        () => ({
+            type: LoadingBarActions.STOP,
+            meta: null,
+            payload: null
+        }));
+        this.completeLoading = (/**
+         * @return {?}
+         */
+        () => ({
+            type: LoadingBarActions.COPMLETE,
+            meta: null,
             payload: null,
-            meta: { accountId }
-        };
-    }
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    loadRolesSucceeded(accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_SUCCEEDED,
-            payload: null,
-            meta: { accountRoles }
-        };
-    }
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    loadRolesFailed(accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_FAILED,
-            payload: null,
-            meta: null
-        };
+        }));
     }
 }
-AccountActions.LOGIN = 'Account::LOGIN';
-AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
-AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
-AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
-AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
-AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
-AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
-AccountActions.decorators = [
+LoadingBarActions.START = 'LOADING_BAR_START';
+LoadingBarActions.STOP = 'LOADING_BAR_STOP';
+LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
+LoadingBarActions.decorators = [
+    { type: Injectable }
+];
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], LoadingBarActions.prototype, "startLoading", void 0);
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], LoadingBarActions.prototype, "stopLoading", void 0);
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], LoadingBarActions.prototype, "completeLoading", void 0);
+if (false) {
+    /** @type {?} */
+    LoadingBarActions.START;
+    /** @type {?} */
+    LoadingBarActions.STOP;
+    /** @type {?} */
+    LoadingBarActions.COPMLETE;
+    /** @type {?} */
+    LoadingBarActions.prototype.startLoading;
+    /** @type {?} */
+    LoadingBarActions.prototype.stopLoading;
+    /** @type {?} */
+    LoadingBarActions.prototype.completeLoading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class LoadingBarEpics {
+    /**
+     * @param {?} service
+     * @param {?} actions
+     */
+    constructor(service, actions) {
+        this.service = service;
+        this.actions = actions;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createCompleteLoadingBarEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
+         * @return {?}
+         */
+        () => {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            observer => {
+                this.service.complete();
+                // observer.next(this.actions.stopLoading())
+            }));
+        }))));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createStartLoadingBarEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
+         * @return {?}
+         */
+        () => {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            observer => {
+                this.service.start();
+            }));
+        }))));
+    }
+}
+LoadingBarEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+LoadingBarEpics.ctorParameters = () => [
+    { type: SlimLoadingBarService },
+    { type: LoadingBarActions }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    LoadingBarEpics.prototype.service;
+    /**
+     * @type {?}
+     * @private
+     */
+    LoadingBarEpics.prototype.actions;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/actions/notifications.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData$1() { }
+if (false) {
+    /** @type {?|undefined} */
+    MetaData$1.prototype.itemsArray;
+}
+;
+class NotificationsAPIActions {
+    constructor() {
+        this.addToast = (/**
+         * @param {?} payload
+         * @return {?}
+         */
+        (payload) => ({
+            type: NotificationsAPIActions.ADD_TOAST,
+            meta: null,
+            payload
+        }));
+    }
+}
+NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
+NotificationsAPIActions.decorators = [
     { type: Injectable }
 ];
 if (false) {
     /** @type {?} */
-    AccountActions.LOGIN;
+    NotificationsAPIActions.ADD_TOAST;
     /** @type {?} */
-    AccountActions.LOGIN_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOGIN_FAILED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_FAILED;
-    /** @type {?} */
-    AccountActions.ACCOUNT_UPDATED;
+    NotificationsAPIActions.prototype.addToast;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class NotificationsAPIEpics {
+    /**
+     * @param {?} toastyService
+     * @param {?} toastyConfig
+     */
+    constructor(toastyService, toastyConfig) {
+        this.toastyService = toastyService;
+        this.toastyConfig = toastyConfig;
+        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
+        // Possible values: default, bootstrap, material
+        this.toastyConfig.theme = 'bootstrap';
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics(this.createAddToastEpic());
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createAddToastEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(
+            /**
+             * Filter the actions that triggers this epic
+             */
+            filter((/**
+             * @param {?} a
+             * @return {?}
+             */
+            (a) => {
+                return a;
+            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            (observer) => {
+                /**
+                 * Add Toast
+                 * @type {?}
+                 */
+                const a = (/** @type {?} */ (action));
+                if (!a.payload.options.title && !a.payload.options.msg) {
+                    if (a.payload.type === 'error') {
+                        a.payload.options.title = 'Oops, something went wrong!';
+                    }
+                }
+                this.toastyService[a.payload.type](a.payload.options);
+            })))));
+        });
+    }
+}
+NotificationsAPIEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+NotificationsAPIEpics.ctorParameters = () => [
+    { type: ToastyService },
+    { type: ToastyConfig }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyService;
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyConfig;
 }
 
 /**
@@ -919,379 +1093,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/entity-list.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class InformationAPIActions {
-    constructor() {
-        /**
-         * ******************************************************************
-         *  Method to distroy the slice of store
-         * *******************************************************************
-         */
-        this.destroy = (/**
-         * @return {?}
-         */
-        () => ({
-            type: InformationAPIActions.DESTROY,
-            meta: null,
-            payload: null
-        }));
-    }
-}
-InformationAPIActions.DESTROY = 'Information::DESTROY';
-InformationAPIActions.decorators = [
-    { type: Injectable }
-];
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], InformationAPIActions.prototype, "destroy", void 0);
-if (false) {
-    /** @type {?} */
-    InformationAPIActions.DESTROY;
-    /**
-     * ******************************************************************
-     *  Method to distroy the slice of store
-     * *******************************************************************
-     * @type {?}
-     */
-    InformationAPIActions.prototype.destroy;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/loading-bar.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData() { }
-if (false) {
-    /** @type {?} */
-    MetaData.prototype.null;
-}
-;
-/**
- * This actions start, stop and complete the global loading bar
- * using a SlimLoadingBarService instantiated within the loading-bar
- * module.
- *
- * In order to show a loading bar in GUI, use the LoadingBarComponent
- * exported by this module.
- */
-class LoadingBarActions {
-    constructor() {
-        this.startLoading = (/**
-         * @return {?}
-         */
-        () => ({
-            type: LoadingBarActions.START,
-            meta: null,
-            payload: null,
-        }));
-        this.stopLoading = (/**
-         * @return {?}
-         */
-        () => ({
-            type: LoadingBarActions.STOP,
-            meta: null,
-            payload: null
-        }));
-        this.completeLoading = (/**
-         * @return {?}
-         */
-        () => ({
-            type: LoadingBarActions.COPMLETE,
-            meta: null,
-            payload: null,
-        }));
-    }
-}
-LoadingBarActions.START = 'LOADING_BAR_START';
-LoadingBarActions.STOP = 'LOADING_BAR_STOP';
-LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
-LoadingBarActions.decorators = [
-    { type: Injectable }
-];
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], LoadingBarActions.prototype, "startLoading", void 0);
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], LoadingBarActions.prototype, "stopLoading", void 0);
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], LoadingBarActions.prototype, "completeLoading", void 0);
-if (false) {
-    /** @type {?} */
-    LoadingBarActions.START;
-    /** @type {?} */
-    LoadingBarActions.STOP;
-    /** @type {?} */
-    LoadingBarActions.COPMLETE;
-    /** @type {?} */
-    LoadingBarActions.prototype.startLoading;
-    /** @type {?} */
-    LoadingBarActions.prototype.stopLoading;
-    /** @type {?} */
-    LoadingBarActions.prototype.completeLoading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/notifications.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$1() { }
-if (false) {
-    /** @type {?|undefined} */
-    MetaData$1.prototype.itemsArray;
-}
-;
-class NotificationsAPIActions {
-    constructor() {
-        this.addToast = (/**
-         * @param {?} payload
-         * @return {?}
-         */
-        (payload) => ({
-            type: NotificationsAPIActions.ADD_TOAST,
-            meta: null,
-            payload
-        }));
-    }
-}
-NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
-NotificationsAPIActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /** @type {?} */
-    NotificationsAPIActions.ADD_TOAST;
-    /** @type {?} */
-    NotificationsAPIActions.prototype.addToast;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/projects.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ProjectsActions {
-    /**
-     * @param {?} payload
-     * @return {?}
-     */
-    loadProjectsSucceeded(payload) {
-        return {
-            type: ProjectsActions.LOAD_PROJECTS_SUCCEEDED,
-            payload,
-            meta: null
-        };
-    }
-}
-ProjectsActions.LOAD_PROJECTS_SUCCEEDED = 'LOAD_PROJECTS_SUCCEEDED';
-ProjectsActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /** @type {?} */
-    ProjectsActions.LOAD_PROJECTS_SUCCEEDED;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/source-list.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function MetaData$2() { }
-if (false) {
-    /** @type {?|undefined} */
-    MetaData$2.prototype.pkAllowedClasses;
-}
-;
-class SourceListAPIActions {
-    constructor() {
-        /**
-         * ******************************************************************
-         *  Actions to manage the list
-         * *******************************************************************
-         */
-        this.initializeList = (/**
-         * @param {?} pkAllowedClasses
-         * @return {?}
-         */
-        (pkAllowedClasses) => ({
-            type: SourceListAPIActions.INITIALIZE_LIST,
-            meta: { pkAllowedClasses },
-            payload: null
-        }));
-        /**
-         * ******************************************************************
-         *  Method to distroy the slice of store
-         * *******************************************************************
-         */
-        this.destroy = (/**
-         * @return {?}
-         */
-        () => ({
-            type: SourceListAPIActions.DESTROY,
-            meta: null,
-            payload: null
-        }));
-    }
-}
-SourceListAPIActions.INITIALIZE_LIST = 'SourceList::INITIALIZE_LIST';
-SourceListAPIActions.DESTROY = 'SourceList::DESTROY';
-SourceListAPIActions.decorators = [
-    { type: Injectable }
-];
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], SourceListAPIActions.prototype, "initializeList", void 0);
-__decorate([
-    dispatch(),
-    __metadata("design:type", Object)
-], SourceListAPIActions.prototype, "destroy", void 0);
-if (false) {
-    /** @type {?} */
-    SourceListAPIActions.INITIALIZE_LIST;
-    /** @type {?} */
-    SourceListAPIActions.DESTROY;
-    /**
-     * ******************************************************************
-     *  Actions to manage the list
-     * *******************************************************************
-     * @type {?}
-     */
-    SourceListAPIActions.prototype.initializeList;
-    /**
-     * ******************************************************************
-     *  Method to distroy the slice of store
-     * *******************************************************************
-     * @type {?}
-     */
-    SourceListAPIActions.prototype.destroy;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/account.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class AccountEpics {
-    /**
-     * @param {?} actions
-     * @param {?} loadingBarActions
-     * @param {?} accountApi
-     * @param {?} notificationActions
-     */
-    constructor(actions, loadingBarActions, accountApi, notificationActions) {
-        this.actions = actions;
-        this.loadingBarActions = loadingBarActions;
-        this.accountApi = accountApi;
-        this.notificationActions = notificationActions;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics(this.loadRoles());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    loadRoles() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => new Observable((/**
-         * @param {?} globalStore
-         * @return {?}
-         */
-        (globalStore) => {
-            globalStore.next(this.loadingBarActions.startLoading());
-            this.accountApi.getRoles(action.meta.accountId)
-                .subscribe((/**
-             * @param {?} data
-             * @return {?}
-             */
-            (data) => {
-                globalStore.next(this.loadingBarActions.completeLoading());
-                globalStore.next(this.actions.loadRolesSucceeded(data));
-            }), (/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                globalStore.next(this.notificationActions.addToast({
-                    type: 'error',
-                    options: { title: error }
-                }));
-            }));
-        }))))));
-    }
-}
-AccountEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-AccountEpics.ctorParameters = () => [
-    { type: AccountActions },
-    { type: LoadingBarActions },
-    { type: PubAccountApi },
-    { type: NotificationsAPIActions }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.loadingBarActions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.accountApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.notificationActions;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: lib/redux-store/state-schema/reducer-configs/dat.config.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1447,770 +1248,6 @@ const datDefinitions = {
         ]
     }
 };
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/dfh.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const dfhRoot = 'dfh';
-/** @type {?} */
-const dfhLabelByFksKey = (/**
- * @param {?} item
- * @return {?}
- */
-(item) => `${item.type || null}_${item.language || null}_${item.fk_class || null}_${item.fk_profile || null}_${item.fk_property || null}_${item.fk_project || null}`);
-const ɵ0$1 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_profile.toString(), ɵ1$1 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_class.toString(), ɵ2$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.basic_type.toString(), ɵ3$1 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_property + '_' + item.has_domain + '_' + item.has_range, ɵ4$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.pk_property.toString(), ɵ5$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.has_domain.toString(), ɵ6$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.has_range.toString(), ɵ7$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.has_domain + '_' + d.pk_property, ɵ8$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.has_range + '_' + d.pk_property, ɵ9$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined, ɵ10$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => !d.fk_class ? undefined : `${d.fk_class}_${d.type}`, ɵ11$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => !d.fk_property ? undefined : `${d.fk_property}_${d.type}`, ɵ12$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => !d.fk_profile ? undefined : `${d.fk_profile}_${d.type}`;
-/** @type {?} */
-const dfhDefinitions = {
-    profile: {
-        indexBy: {
-            keyInStore: 'pk_profile',
-            indexByFn: (ɵ0$1)
-        }
-    },
-    klass: {
-        indexBy: {
-            keyInStore: 'pk_class',
-            indexByFn: (ɵ1$1),
-        },
-        groupBy: [
-            {
-                keyInStore: 'basic_type',
-                groupByFn: (ɵ2$1)
-            },
-        ]
-    },
-    property: {
-        indexBy: {
-            keyInStore: 'pk_property__has_domain__has_range',
-            indexByFn: (ɵ3$1)
-        },
-        groupBy: [
-            {
-                keyInStore: 'pk_property',
-                groupByFn: (ɵ4$1)
-            },
-            {
-                keyInStore: 'has_domain',
-                groupByFn: (ɵ5$1)
-            },
-            {
-                keyInStore: 'has_range',
-                groupByFn: (ɵ6$1)
-            },
-            {
-                keyInStore: 'has_domain__fk_property',
-                groupByFn: (ɵ7$1)
-            },
-            {
-                keyInStore: 'has_range__fk_property',
-                groupByFn: (ɵ8$1)
-            },
-            {
-                keyInStore: 'is_has_type_subproperty',
-                groupByFn: (ɵ9$1)
-            }
-        ]
-    },
-    label: {
-        indexBy: {
-            keyInStore: 'fks',
-            indexByFn: dfhLabelByFksKey
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class__type',
-                groupByFn: (ɵ10$1)
-            },
-            {
-                keyInStore: 'fk_property__type',
-                groupByFn: (ɵ11$1)
-            },
-            {
-                keyInStore: 'fk_profile__type',
-                groupByFn: (ɵ12$1)
-            }
-        ]
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/inf.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const infRoot = 'inf';
-const ɵ0$2 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ1$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_class.toString(), ɵ2$2 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ3$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_class.toString(), ɵ4$2 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ5$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => indexStatementBySubject(d), ɵ6$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => indexStatementBySubjectProperty(d), ɵ7$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => indexStatementByObject(d), ɵ8$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => indexStatementByObjectProperty(d), ɵ9$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => U.toStr0undef(d.fk_subject_data), ɵ10$2 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ11$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_concerned_entity + '_' + d.fk_class_field, ɵ12$2 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_concerned_entity.toString(), ɵ13$1 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ14 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ15 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ16 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ17 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ18 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-};
-/** @type {?} */
-const infDefinitions = {
-    persistent_item: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class',
-                groupByFn: (ɵ1$2)
-            }
-        ]
-    },
-    temporal_entity: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ2$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class',
-                groupByFn: (ɵ3$2)
-            }
-        ]
-    },
-    statement: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ4$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'subject',
-                groupByFn: (ɵ5$2)
-            },
-            {
-                keyInStore: 'subject+property',
-                groupByFn: (ɵ6$2)
-            },
-            {
-                keyInStore: 'object',
-                groupByFn: (ɵ7$2)
-            },
-            {
-                keyInStore: 'object+property',
-                groupByFn: (ɵ8$2)
-            },
-            {
-                keyInStore: 'fk_subject_data',
-                groupByFn: (ɵ9$2)
-            },
-        ]
-    },
-    text_property: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ10$2)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_concerned_entity__fk_class_field',
-                groupByFn: (ɵ11$2)
-            },
-            {
-                keyInStore: 'fk_concerned_entity',
-                groupByFn: (ɵ12$2)
-            },
-        ]
-    },
-    lang_string: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ13$1)
-        },
-        groupBy: []
-    },
-    appellation: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ14)
-        },
-        groupBy: []
-    },
-    time_primitive: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ15)
-        },
-        groupBy: []
-    },
-    place: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ16)
-        },
-        groupBy: []
-    },
-    language: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ17)
-        },
-        groupBy: []
-    },
-    dimension: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ18)
-        },
-        groupBy: []
-    },
-}
-/**
- * This function creates a key for the given statement by
- * - subject (all subject foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same subject
- * or to retrieve statements from such a group index
- */
-;
-/**
- * This function creates a key for the given statement by
- * - subject (all subject foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same subject
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementBySubject(fks = {}) {
-    return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`;
-}
-/**
- * @record
- */
-function IndexStatementBySubject() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_info;
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_data;
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementBySubject.prototype.fk_subject_tables_cell;
-}
-;
-/**
- * This function creates a key for the given statement by
- * - object (all object foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same object
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementByObject(fks = {}) {
-    return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`;
-}
-/**
- * @record
- */
-function IndexStatementByObject() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_info;
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_data;
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementByObject.prototype.fk_object_tables_cell;
-}
-;
-/**
- * This function creates a key for the given statement by
- * - subject (all subject foreign keys)
- * - property (all property foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same subject + property
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementBySubjectProperty(fks = {}) {
-    return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`;
-}
-/**
- * @record
- */
-function IndexStatementBySubjectProperty() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_info;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_data;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_subject_tables_cell;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_property;
-    /** @type {?|undefined} */
-    IndexStatementBySubjectProperty.prototype.fk_property_of_property;
-}
-/**
- * This function creates a key for the given statement by
- * - object (all object foreign keys)
- * - property (all property foreign keys)
- *
- * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
- *
- * Use this function to index groups of statements with the same object + property
- * or to retrieve statements from such a group index
- * @param {?=} fks
- * @return {?}
- */
-function indexStatementByObjectProperty(fks = {}) {
-    return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`;
-}
-/**
- * @record
- */
-function IndexStatementByObjectProperty() { }
-if (false) {
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_info;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_data;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_tables_row;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_object_tables_cell;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_property;
-    /** @type {?|undefined} */
-    IndexStatementByObjectProperty.prototype.fk_property_of_property;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/pro.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const proRoot = 'pro';
-/** @type {?} */
-const textPropertyByFksKey = (/**
- * @param {?} d
- * @return {?}
- */
-(d) => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_language || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}`);
-/** @type {?} */
-const textPropertyByFksWithoutLang = (/**
- * @param {?} d
- * @return {?}
- */
-(d) => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}`);
-/** @type {?} */
-const proClassFieldConfgByProjectAndClassKey = (/**
- * @param {?} d
- * @return {?}
- */
-(d) => {
-    /** @type {?} */
-    const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field;
-    return `${d.fk_project || null}_${fk_class || null}`;
-});
-const ɵ0$3 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_entity.toString(), ɵ1$3 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.fk_project.toString() + '_' + item.fk_entity.toString(), ɵ2$3 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_entity.toString(), ɵ3$3 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.fk_project + '_' + item.fk_class, ɵ4$3 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_project + '_' + d.enabled_in_entities, ɵ5$3 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_project.toString(), ɵ6$3 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.fk_project + '_' + item.fk_profile, ɵ7$3 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_project + '_' + d.enabled, ɵ8$3 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_project.toString(), ɵ9$3 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_entity.toString();
-/** @type {?} */
-const proDefinitions = {
-    project: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$3)
-        }
-    },
-    info_proj_rel: {
-        indexBy: {
-            keyInStore: 'fk_project__fk_entity',
-            indexByFn: (ɵ1$3)
-        }
-    },
-    class_field_config: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ2$3)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_project__fk_class',
-                groupByFn: proClassFieldConfgByProjectAndClassKey
-            }
-        ]
-    },
-    dfh_class_proj_rel: {
-        indexBy: {
-            keyInStore: 'fk_project__fk_class',
-            indexByFn: (ɵ3$3)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_project__enabled_in_entities',
-                groupByFn: (ɵ4$3)
-            },
-            {
-                keyInStore: 'fk_project',
-                groupByFn: (ɵ5$3)
-            }
-        ],
-    },
-    dfh_profile_proj_rel: {
-        indexBy: {
-            keyInStore: 'fk_project__fk_profile',
-            indexByFn: (ɵ6$3)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_project__enabled',
-                groupByFn: (ɵ7$3)
-            },
-            {
-                keyInStore: 'fk_project',
-                groupByFn: (ɵ8$3)
-            }
-        ],
-    },
-    text_property: {
-        indexBy: {
-            keyInStore: 'fks',
-            indexByFn: textPropertyByFksKey
-        },
-        groupBy: [
-            {
-                keyInStore: 'fks_without_lang',
-                groupByFn: textPropertyByFksWithoutLang
-            }
-        ]
-    },
-    analysis: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ9$3)
-        }
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/sys.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const sysRoot = 'sys';
-const ɵ0$4 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => {
-    return item.pk_entity.toString();
-}, ɵ1$4 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.fk_class.toString(), ɵ2$4 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => d.required_by_sources.toString(), ɵ3$4 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => (d.required_by_sources || d.required_by_entities || d.required_by_basics) ? 'true' : 'false', ɵ4$4 = /**
- * @return {?}
- */
-() => 'main';
-/** @type {?} */
-const sysDefinitions = {
-    system_relevant_class: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$4)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_class',
-                groupByFn: (ɵ1$4)
-            },
-            {
-                keyInStore: 'required_by_sources',
-                groupByFn: (ɵ2$4)
-            },
-            {
-                keyInStore: 'required',
-                groupByFn: (ɵ3$4)
-            }
-        ]
-    },
-    config: {
-        indexBy: {
-            keyInStore: 'main',
-            indexByFn: (ɵ4$4)
-        }
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/tab.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const tabRoot = 'tab';
-const ɵ0$5 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_cell.toString(), ɵ1$5 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.fk_column + '_' + item.fk_row;
-/** @type {?} */
-const tabDefinitions = {
-    cell: {
-        indexBy: {
-            keyInStore: 'pk_cell',
-            indexByFn: (ɵ0$5)
-        },
-        groupBy: [
-            {
-                keyInStore: 'fk_column_fk_row',
-                groupByFn: (ɵ1$5)
-            }
-        ]
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/war.config.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const warRoot = 'war';
-const ɵ0$6 = /**
- * @param {?} item
- * @return {?}
- */
-(item) => item.pk_entity.toString();
-/** @type {?} */
-const warDefinitions = {
-    entity_preview: {
-        indexBy: {
-            keyInStore: 'pk_entity',
-            indexByFn: (ɵ0$6)
-        }
-    }
-};
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducer-configs/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -2843,6 +1880,146 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducer-configs/dfh.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const dfhRoot = 'dfh';
+/** @type {?} */
+const dfhLabelByFksKey = (/**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => `${item.type || null}_${item.language || null}_${item.fk_class || null}_${item.fk_profile || null}_${item.fk_property || null}_${item.fk_project || null}`);
+const ɵ0$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_profile.toString(), ɵ1$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_class.toString(), ɵ2$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.basic_type.toString(), ɵ3$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_property + '_' + item.has_domain + '_' + item.has_range, ɵ4$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.pk_property.toString(), ɵ5$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.has_domain.toString(), ɵ6$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.has_range.toString(), ɵ7$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.has_domain + '_' + d.pk_property, ɵ8$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.has_range + '_' + d.pk_property, ɵ9$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined, ɵ10$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => !d.fk_class ? undefined : `${d.fk_class}_${d.type}`, ɵ11$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => !d.fk_property ? undefined : `${d.fk_property}_${d.type}`, ɵ12$1 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => !d.fk_profile ? undefined : `${d.fk_profile}_${d.type}`;
+/** @type {?} */
+const dfhDefinitions = {
+    profile: {
+        indexBy: {
+            keyInStore: 'pk_profile',
+            indexByFn: (ɵ0$1)
+        }
+    },
+    klass: {
+        indexBy: {
+            keyInStore: 'pk_class',
+            indexByFn: (ɵ1$1),
+        },
+        groupBy: [
+            {
+                keyInStore: 'basic_type',
+                groupByFn: (ɵ2$1)
+            },
+        ]
+    },
+    property: {
+        indexBy: {
+            keyInStore: 'pk_property__has_domain__has_range',
+            indexByFn: (ɵ3$1)
+        },
+        groupBy: [
+            {
+                keyInStore: 'pk_property',
+                groupByFn: (ɵ4$1)
+            },
+            {
+                keyInStore: 'has_domain',
+                groupByFn: (ɵ5$1)
+            },
+            {
+                keyInStore: 'has_range',
+                groupByFn: (ɵ6$1)
+            },
+            {
+                keyInStore: 'has_domain__fk_property',
+                groupByFn: (ɵ7$1)
+            },
+            {
+                keyInStore: 'has_range__fk_property',
+                groupByFn: (ɵ8$1)
+            },
+            {
+                keyInStore: 'is_has_type_subproperty',
+                groupByFn: (ɵ9$1)
+            }
+        ]
+    },
+    label: {
+        indexBy: {
+            keyInStore: 'fks',
+            indexByFn: dfhLabelByFksKey
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class__type',
+                groupByFn: (ɵ10$1)
+            },
+            {
+                keyInStore: 'fk_property__type',
+                groupByFn: (ɵ11$1)
+            },
+            {
+                keyInStore: 'fk_profile__type',
+                groupByFn: (ɵ12$1)
+            }
+        ]
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/redux-store/state-schema/actions/dfh.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -3088,6 +2265,363 @@ if (false) {
     DfhActions.prototype.label;
     /** @type {?} */
     DfhActions.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducer-configs/inf.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const infRoot = 'inf';
+const ɵ0$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ1$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_class.toString(), ɵ2$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ3$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_class.toString(), ɵ4$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ5$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => indexStatementBySubject(d), ɵ6$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => indexStatementBySubjectProperty(d), ɵ7$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => indexStatementByObject(d), ɵ8$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => indexStatementByObjectProperty(d), ɵ9$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => U.toStr0undef(d.fk_subject_data), ɵ10$2 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ11$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_concerned_entity + '_' + d.fk_class_field, ɵ12$2 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_concerned_entity.toString(), ɵ13$1 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ14 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ15 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ16 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ17 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ18 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+};
+/** @type {?} */
+const infDefinitions = {
+    persistent_item: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class',
+                groupByFn: (ɵ1$2)
+            }
+        ]
+    },
+    temporal_entity: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ2$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class',
+                groupByFn: (ɵ3$2)
+            }
+        ]
+    },
+    statement: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ4$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'subject',
+                groupByFn: (ɵ5$2)
+            },
+            {
+                keyInStore: 'subject+property',
+                groupByFn: (ɵ6$2)
+            },
+            {
+                keyInStore: 'object',
+                groupByFn: (ɵ7$2)
+            },
+            {
+                keyInStore: 'object+property',
+                groupByFn: (ɵ8$2)
+            },
+            {
+                keyInStore: 'fk_subject_data',
+                groupByFn: (ɵ9$2)
+            },
+        ]
+    },
+    text_property: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ10$2)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_concerned_entity__fk_class_field',
+                groupByFn: (ɵ11$2)
+            },
+            {
+                keyInStore: 'fk_concerned_entity',
+                groupByFn: (ɵ12$2)
+            },
+        ]
+    },
+    lang_string: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ13$1)
+        },
+        groupBy: []
+    },
+    appellation: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ14)
+        },
+        groupBy: []
+    },
+    time_primitive: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ15)
+        },
+        groupBy: []
+    },
+    place: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ16)
+        },
+        groupBy: []
+    },
+    language: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ17)
+        },
+        groupBy: []
+    },
+    dimension: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ18)
+        },
+        groupBy: []
+    },
+}
+/**
+ * This function creates a key for the given statement by
+ * - subject (all subject foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same subject
+ * or to retrieve statements from such a group index
+ */
+;
+/**
+ * This function creates a key for the given statement by
+ * - subject (all subject foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same subject
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementBySubject(fks = {}) {
+    return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`;
+}
+/**
+ * @record
+ */
+function IndexStatementBySubject() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_info;
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_data;
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementBySubject.prototype.fk_subject_tables_cell;
+}
+;
+/**
+ * This function creates a key for the given statement by
+ * - object (all object foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same object
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementByObject(fks = {}) {
+    return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`;
+}
+/**
+ * @record
+ */
+function IndexStatementByObject() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_info;
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_data;
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementByObject.prototype.fk_object_tables_cell;
+}
+;
+/**
+ * This function creates a key for the given statement by
+ * - subject (all subject foreign keys)
+ * - property (all property foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same subject + property
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementBySubjectProperty(fks = {}) {
+    return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`;
+}
+/**
+ * @record
+ */
+function IndexStatementBySubjectProperty() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_info;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_data;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_subject_tables_cell;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_property;
+    /** @type {?|undefined} */
+    IndexStatementBySubjectProperty.prototype.fk_property_of_property;
+}
+/**
+ * This function creates a key for the given statement by
+ * - object (all object foreign keys)
+ * - property (all property foreign keys)
+ *
+ * The key is created on the basis of the given foreign keys.
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
+ *
+ * Use this function to index groups of statements with the same object + property
+ * or to retrieve statements from such a group index
+ * @param {?=} fks
+ * @return {?}
+ */
+function indexStatementByObjectProperty(fks = {}) {
+    return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`;
+}
+/**
+ * @record
+ */
+function IndexStatementByObjectProperty() { }
+if (false) {
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_info;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_data;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_tables_row;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_object_tables_cell;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_property;
+    /** @type {?|undefined} */
+    IndexStatementByObjectProperty.prototype.fk_property_of_property;
 }
 
 /**
@@ -3866,6 +3400,154 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducer-configs/pro.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const proRoot = 'pro';
+/** @type {?} */
+const textPropertyByFksKey = (/**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_language || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}`);
+/** @type {?} */
+const textPropertyByFksWithoutLang = (/**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}`);
+/** @type {?} */
+const proClassFieldConfgByProjectAndClassKey = (/**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => {
+    /** @type {?} */
+    const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field;
+    return `${d.fk_project || null}_${fk_class || null}`;
+});
+const ɵ0$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_entity.toString(), ɵ1$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.fk_project.toString() + '_' + item.fk_entity.toString(), ɵ2$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_entity.toString(), ɵ3$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.fk_project + '_' + item.fk_class, ɵ4$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_project + '_' + d.enabled_in_entities, ɵ5$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_project.toString(), ɵ6$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.fk_project + '_' + item.fk_profile, ɵ7$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_project + '_' + d.enabled, ɵ8$3 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_project.toString(), ɵ9$3 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_entity.toString();
+/** @type {?} */
+const proDefinitions = {
+    project: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$3)
+        }
+    },
+    info_proj_rel: {
+        indexBy: {
+            keyInStore: 'fk_project__fk_entity',
+            indexByFn: (ɵ1$3)
+        }
+    },
+    class_field_config: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ2$3)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_project__fk_class',
+                groupByFn: proClassFieldConfgByProjectAndClassKey
+            }
+        ]
+    },
+    dfh_class_proj_rel: {
+        indexBy: {
+            keyInStore: 'fk_project__fk_class',
+            indexByFn: (ɵ3$3)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_project__enabled_in_entities',
+                groupByFn: (ɵ4$3)
+            },
+            {
+                keyInStore: 'fk_project',
+                groupByFn: (ɵ5$3)
+            }
+        ],
+    },
+    dfh_profile_proj_rel: {
+        indexBy: {
+            keyInStore: 'fk_project__fk_profile',
+            indexByFn: (ɵ6$3)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_project__enabled',
+                groupByFn: (ɵ7$3)
+            },
+            {
+                keyInStore: 'fk_project',
+                groupByFn: (ɵ8$3)
+            }
+        ],
+    },
+    text_property: {
+        indexBy: {
+            keyInStore: 'fks',
+            indexByFn: textPropertyByFksKey
+        },
+        groupBy: [
+            {
+                keyInStore: 'fks_without_lang',
+                groupByFn: textPropertyByFksWithoutLang
+            }
+        ]
+    },
+    analysis: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ9$3)
+        }
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/redux-store/state-schema/actions/pro.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -4340,16 +4022,75 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducer-configs/sys.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const sysRoot = 'sys';
+const ɵ0$4 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => {
+    return item.pk_entity.toString();
+}, ɵ1$4 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.fk_class.toString(), ɵ2$4 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => d.required_by_sources.toString(), ɵ3$4 = /**
+ * @param {?} d
+ * @return {?}
+ */
+(d) => (d.required_by_sources || d.required_by_entities || d.required_by_basics) ? 'true' : 'false', ɵ4$4 = /**
+ * @return {?}
+ */
+() => 'main';
+/** @type {?} */
+const sysDefinitions = {
+    system_relevant_class: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$4)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_class',
+                groupByFn: (ɵ1$4)
+            },
+            {
+                keyInStore: 'required_by_sources',
+                groupByFn: (ɵ2$4)
+            },
+            {
+                keyInStore: 'required',
+                groupByFn: (ɵ3$4)
+            }
+        ]
+    },
+    config: {
+        indexBy: {
+            keyInStore: 'main',
+            indexByFn: (ɵ4$4)
+        }
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/redux-store/state-schema/actions/sys.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function MetaData$3() { }
+function MetaData$2() { }
 if (false) {
     /** @type {?|undefined} */
-    MetaData$3.prototype.systemRelevantClasses;
+    MetaData$2.prototype.systemRelevantClasses;
 }
 ;
 class SysActions {
@@ -4379,68 +4120,6 @@ if (false) {
     /** @type {?} */
     SysActions.prototype.ngRedux;
 }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/actions/tab.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TabActions {
-    /**
-     * @param {?} ngRedux
-     */
-    constructor(ngRedux) {
-        this.ngRedux = ngRedux;
-        this.cell = new SchemaActionsFactory(this.ngRedux).createCrudActions(tabRoot, 'cell');
-    }
-}
-TabActions.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-TabActions.ctorParameters = () => [
-    { type: NgRedux }
-];
-if (false) {
-    /** @type {?} */
-    TabActions.prototype.cell;
-    /** @type {?} */
-    TabActions.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/actions/war.actions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class WarActions {
-    /**
-     * @param {?} ngRedux
-     */
-    constructor(ngRedux) {
-        this.ngRedux = ngRedux;
-        this.entity_preview = new SchemaActionsFactory(this.ngRedux).createCrudActions(warRoot, 'entity_preview');
-    }
-}
-WarActions.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-WarActions.ctorParameters = () => [
-    { type: NgRedux }
-];
-if (false) {
-    /** @type {?} */
-    WarActions.prototype.entity_preview;
-    /** @type {?} */
-    WarActions.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/actions/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -4865,233 +4544,926 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
+ * Generated from: lib/redux-store/state-gui/actions/account.actions.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class LoadingBarEpics {
+/**
+ * @record
+ */
+function AccountActionMeta() { }
+if (false) {
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.accountId;
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.accountRoles;
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.account;
+}
+;
+class AccountActions {
     /**
-     * @param {?} service
-     * @param {?} actions
+     * @return {?}
      */
-    constructor(service, actions) {
-        this.service = service;
+    login() {
+        return {
+            type: AccountActions.LOGIN,
+            payload: null,
+            meta: null
+        };
+    }
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    loginSucceeded(account) {
+        return {
+            type: AccountActions.LOGIN_SUCCEEDED,
+            payload: null,
+            meta: { account }
+        };
+    }
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    loginFailed(error) {
+        return {
+            type: AccountActions.LOGIN_FAILED,
+            payload: null,
+            meta: null,
+            error
+        };
+    }
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    accountUpdated(account) {
+        return {
+            type: AccountActions.ACCOUNT_UPDATED,
+            payload: null,
+            meta: { account }
+        };
+    }
+    // Roles of the account, used to check permissions
+    /**
+     * @param {?} accountId
+     * @return {?}
+     */
+    loadRoles(accountId) {
+        return {
+            type: AccountActions.LOAD_ROLES,
+            payload: null,
+            meta: { accountId }
+        };
+    }
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    loadRolesSucceeded(accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_SUCCEEDED,
+            payload: null,
+            meta: { accountRoles }
+        };
+    }
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    loadRolesFailed(accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_FAILED,
+            payload: null,
+            meta: null
+        };
+    }
+}
+AccountActions.LOGIN = 'Account::LOGIN';
+AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
+AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
+AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
+AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
+AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
+AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
+AccountActions.decorators = [
+    { type: Injectable }
+];
+if (false) {
+    /** @type {?} */
+    AccountActions.LOGIN;
+    /** @type {?} */
+    AccountActions.LOGIN_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOGIN_FAILED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_FAILED;
+    /** @type {?} */
+    AccountActions.ACCOUNT_UPDATED;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/epics/account.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class AccountEpics {
+    /**
+     * @param {?} actions
+     * @param {?} loadingBarActions
+     * @param {?} accountApi
+     * @param {?} notificationActions
+     */
+    constructor(actions, loadingBarActions, accountApi, notificationActions) {
         this.actions = actions;
+        this.loadingBarActions = loadingBarActions;
+        this.accountApi = accountApi;
+        this.notificationActions = notificationActions;
     }
     /**
      * @return {?}
      */
     createEpics() {
-        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
+        return combineEpics(this.loadRoles());
     }
     /**
      * @private
      * @return {?}
      */
-    createCompleteLoadingBarEpic() {
+    loadRoles() {
         return (/**
          * @param {?} action$
          * @param {?} store
          * @return {?}
          */
-        (action$, store) => action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
+        (action$, store) => action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
+         * @param {?} action
          * @return {?}
          */
-        () => {
-            return Observable.create((/**
-             * @param {?} observer
+        (action) => new Observable((/**
+         * @param {?} globalStore
+         * @return {?}
+         */
+        (globalStore) => {
+            globalStore.next(this.loadingBarActions.startLoading());
+            this.accountApi.getRoles(action.meta.accountId)
+                .subscribe((/**
+             * @param {?} data
              * @return {?}
              */
-            observer => {
-                this.service.complete();
-                // observer.next(this.actions.stopLoading())
-            }));
-        }))));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createStartLoadingBarEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
-         * @return {?}
-         */
-        () => {
-            return Observable.create((/**
-             * @param {?} observer
+            (data) => {
+                globalStore.next(this.loadingBarActions.completeLoading());
+                globalStore.next(this.actions.loadRolesSucceeded(data));
+            }), (/**
+             * @param {?} error
              * @return {?}
              */
-            observer => {
-                this.service.start();
+            error => {
+                globalStore.next(this.notificationActions.addToast({
+                    type: 'error',
+                    options: { title: error }
+                }));
             }));
-        }))));
+        }))))));
     }
 }
-LoadingBarEpics.decorators = [
+AccountEpics.decorators = [
     { type: Injectable }
 ];
 /** @nocollapse */
-LoadingBarEpics.ctorParameters = () => [
-    { type: SlimLoadingBarService },
-    { type: LoadingBarActions }
+AccountEpics.ctorParameters = () => [
+    { type: AccountActions },
+    { type: LoadingBarActions },
+    { type: PubAccountApi },
+    { type: NotificationsAPIActions }
 ];
 if (false) {
     /**
      * @type {?}
      * @private
      */
-    LoadingBarEpics.prototype.service;
+    AccountEpics.prototype.actions;
     /**
      * @type {?}
      * @private
      */
-    LoadingBarEpics.prototype.actions;
+    AccountEpics.prototype.loadingBarActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.accountApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.notificationActions;
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
+ * Generated from: lib/redux-store/state-schema/_helpers/schema-epics-factory.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class NotificationsAPIEpics {
+/**
+ * @template Payload, Model
+ */
+class SchemaEpicsFactory {
     /**
-     * @param {?} toastyService
-     * @param {?} toastyConfig
+     * @param {?} actionPrefix
+     * @param {?} modelName
+     * @param {?} actions
+     * @param {?} notifications
      */
-    constructor(toastyService, toastyConfig) {
-        this.toastyService = toastyService;
-        this.toastyConfig = toastyConfig;
-        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-        // Possible values: default, bootstrap, material
-        this.toastyConfig.theme = 'bootstrap';
+    constructor(actionPrefix, modelName, actions, notifications) {
+        this.actionPrefix = actionPrefix;
+        this.modelName = modelName;
+        this.actions = actions;
+        this.notifications = notifications;
     }
     /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?} actionSuffix
+     * @param {?=} onSuccessHook
      * @return {?}
      */
-    createEpics() {
-        return combineEpics(this.createAddToastEpic());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createAddToastEpic() {
+    createLoadEpic(apiFn, actionSuffix, onSuccessHook) {
         return (/**
          * @param {?} action$
          * @param {?} store
          * @return {?}
          */
         (action$, store) => {
-            return action$.pipe(
-            /**
-             * Filter the actions that triggers this epic
-             */
-            filter((/**
-             * @param {?} a
-             * @return {?}
-             */
-            (a) => {
-                return a;
-            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
+            return action$.pipe(ofType(this.type('LOAD', actionSuffix)), mergeMap((/**
              * @param {?} action
              * @return {?}
              */
             (action) => new Observable((/**
-             * @param {?} observer
+             * @param {?} globalActions
              * @return {?}
              */
-            (observer) => {
-                /**
-                 * Add Toast
-                 * @type {?}
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
                  */
-                const a = (/** @type {?} */ (action));
-                if (!a.payload.options.title && !a.payload.options.msg) {
-                    if (a.payload.type === 'error') {
-                        a.payload.options.title = 'Oops, something went wrong!';
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk, meta);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
                     }
-                }
-                this.toastyService[a.payload.type](a.payload.options);
+                    else {
+                        this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
             })))));
         });
     }
-}
-NotificationsAPIEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-NotificationsAPIEpics.ctorParameters = () => [
-    { type: ToastyService },
-    { type: ToastyConfig }
-];
-if (false) {
     /**
-     * @type {?}
-     * @private
-     */
-    NotificationsAPIEpics.prototype.toastyService;
-    /**
-     * @type {?}
-     * @private
-     */
-    NotificationsAPIEpics.prototype.toastyConfig;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ActionResolverEpics {
-    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
-    constructor() {
-        this.createEpics = (/**
-         * @return {?}
-         */
-        () => combineEpics(this.createResolveEpic()));
-    }
-    /**
-     * @private
+     * @template T
+     * @param {?} apiFn
+     * @param {?=} onSuccessHook
      * @return {?}
      */
-    createResolveEpic() {
+    createUpsertEpic(apiFn, onSuccessHook) {
         return (/**
          * @param {?} action$
          * @param {?} store
          * @return {?}
          */
-        (action$, store) => action$.pipe(filter((/**
-         * @param {?} action
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * @param {?} apiFn
+     * @return {?}
+     */
+    createDeleteEpic(apiFn) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
          * @return {?}
          */
-        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                apiFn(action.meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * Create the string used as action.type
+     * @param {?} operation
+     * @param {?} actionSuffix
+     * @return {?}
+     */
+    type(operation, actionSuffix) {
+        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
+    }
+    /**
+     * Create the onError logic for standard actions
+     * @param {?} globalActions pass in the subscriber to the action$ stream
+     * @param {?} error
+     * @param {?} pendingKey
+     * @param {?} pkProject
+     * @return {?}
+     */
+    onError(globalActions, error, pendingKey, pkProject) {
+        globalActions.next(this.notifications.addToast({
+            type: 'error',
+            options: { title: error.message }
+        }));
+        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
     }
 }
-ActionResolverEpics.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-ActionResolverEpics.ctorParameters = () => [];
-/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
 if (false) {
     /** @type {?} */
-    ActionResolverEpics.prototype.createEpics;
+    SchemaEpicsFactory.prototype.actionPrefix;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.modelName;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.actions;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.notifications;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/sys.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SysEpics {
+    /**
+     * @param {?} actions
+     * @param {?} notification
+     * @param {?} sysRelevantClassApi
+     * @param {?} sysConfigApi
+     */
+    constructor(actions, notification, sysRelevantClassApi, sysConfigApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.sysRelevantClassApi = sysRelevantClassApi;
+        this.sysConfigApi = sysConfigApi;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
+        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
+        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
+        /** @type {?} */
+        const configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
+        return combineEpics(
+        // SystemRelevantClass Epics
+        systemRelevantClassEpicsFactory.createLoadEpic((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => this.sysRelevantClassApi.find()), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items))), 
+        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
+        configEpicsFactory.createLoadEpic((/**
+         * @return {?}
+         */
+        () => this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
+         * @param {?} x
+         * @return {?}
+         */
+        x => [x])))), ''));
+    }
+}
+SysEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SysEpics.ctorParameters = () => [
+    { type: SysActions },
+    { type: NotificationsAPIActions },
+    { type: SysSystemRelevantClassApi },
+    { type: SystemConfigurationService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysRelevantClassApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysConfigApi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/dfh.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DfhEpics {
+    /**
+     * @param {?} actions
+     * @param {?} notification
+     * @param {?} profileApi
+     * @param {?} classApi
+     * @param {?} propertyApi
+     * @param {?} labelApi
+     */
+    constructor(actions, notification, profileApi, classApi, propertyApi, labelApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.profileApi = profileApi;
+        this.classApi = classApi;
+        this.propertyApi = propertyApi;
+        this.labelApi = labelApi;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
+        /** @type {?} */
+        const dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
+        /** @type {?} */
+        const dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
+        /** @type {?} */
+        const dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
+        return combineEpics(
+        // Profile Loaders
+        dfhProfileEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileApi.ofProject(meta.pk)), DfhProfileActionFactory.OF_PROJECT), 
+        // Property Loaders
+        dfhPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.propertyApi.dfhPropertyControllerOfProject(meta.pk)), DfhPropertyActionFactory.OF_PROJECT), 
+        // Class Loaders
+        dfhClassEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classApi.dfhClassControllerOfProject(meta.pk)), DfhClassActionFactory.OF_PROJECT), 
+        // Label Loaders
+        dfhLabelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.labelApi.ofProject(meta.pk)), DfhLabelActionFactory.OF_PROJECT));
+    }
+}
+DfhEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+DfhEpics.ctorParameters = () => [
+    { type: DfhActions },
+    { type: NotificationsAPIActions },
+    { type: DfhProfileApi },
+    { type: DfhClassControllerService },
+    { type: DfhPropertyControllerService },
+    { type: DfhLabelApi }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.profileApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.classApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.propertyApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.labelApi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducer-configs/tab.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const tabRoot = 'tab';
+const ɵ0$5 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_cell.toString(), ɵ1$5 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.fk_column + '_' + item.fk_row;
+/** @type {?} */
+const tabDefinitions = {
+    cell: {
+        indexBy: {
+            keyInStore: 'pk_cell',
+            indexByFn: (ɵ0$5)
+        },
+        groupBy: [
+            {
+                keyInStore: 'fk_column_fk_row',
+                groupByFn: (ɵ1$5)
+            }
+        ]
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/actions/tab.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class TabActions {
+    /**
+     * @param {?} ngRedux
+     */
+    constructor(ngRedux) {
+        this.ngRedux = ngRedux;
+        this.cell = new SchemaActionsFactory(this.ngRedux).createCrudActions(tabRoot, 'cell');
+    }
+}
+TabActions.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+TabActions.ctorParameters = () => [
+    { type: NgRedux }
+];
+if (false) {
+    /** @type {?} */
+    TabActions.prototype.cell;
+    /** @type {?} */
+    TabActions.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducer-configs/war.config.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const warRoot = 'war';
+const ɵ0$6 = /**
+ * @param {?} item
+ * @return {?}
+ */
+(item) => item.pk_entity.toString();
+/** @type {?} */
+const warDefinitions = {
+    entity_preview: {
+        indexBy: {
+            keyInStore: 'pk_entity',
+            indexByFn: (ɵ0$6)
+        }
+    }
+};
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/actions/war.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class WarActions {
+    /**
+     * @param {?} ngRedux
+     */
+    constructor(ngRedux) {
+        this.ngRedux = ngRedux;
+        this.entity_preview = new SchemaActionsFactory(this.ngRedux).createCrudActions(warRoot, 'entity_preview');
+    }
+}
+WarActions.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+WarActions.ctorParameters = () => [
+    { type: NgRedux }
+];
+if (false) {
+    /** @type {?} */
+    WarActions.prototype.entity_preview;
+    /** @type {?} */
+    WarActions.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/services/schema-object.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Class to put schema objects into store
+ */
+class SchemaObjectService {
+    /**
+     * @param {?} api
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} datActions
+     * @param {?} warActions
+     * @param {?} tabActions
+     * @param {?} dfhActions
+     * @param {?} sysActions
+     * @param {?} notifications
+     */
+    constructor(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
+        this.api = api;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.warActions = warActions;
+        this.tabActions = tabActions;
+        this.dfhActions = dfhActions;
+        this.sysActions = sysActions;
+        this.notifications = notifications;
+    }
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    store(apiCall$, pkProject) {
+        /** @type {?} */
+        const s$ = new Subject();
+        apiCall$.subscribe((/**
+         * @param {?} result
+         * @return {?}
+         */
+        result => {
+            this.storeSchemaObject(result, pkProject === 'ofRepo' ? null : pkProject);
+            s$.next(result);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => {
+            this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            });
+            s$.error(error);
+        }));
+        return s$;
+    }
+    /**
+     * watches an Observable<SchemaObject>
+     * on success stores the parts of the object at right place of store
+     * on error emits error message
+     *
+     * @param {?} apiCall$
+     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
+     * @return {?}
+     */
+    storeGv(apiCall$, pkProject) {
+        /** @type {?} */
+        const s$ = new Subject();
+        apiCall$.subscribe((/**
+         * @param {?} result
+         * @return {?}
+         */
+        result => {
+            this.storeSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject);
+            s$.next(result);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => {
+            this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            });
+            s$.error(error);
+        }));
+        return s$;
+    }
+    /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    storeSchemaObject(object, pkProject) {
+        if (object && Object.keys(object).length > 0) {
+            Object.keys(object).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            schema => {
+                /** @type {?} */
+                let actions;
+                if (schema === 'inf')
+                    actions = this.infActions;
+                else if (schema === 'pro')
+                    actions = this.proActions;
+                else if (schema === 'dat')
+                    actions = this.datActions;
+                else if (schema === 'war')
+                    actions = this.warActions;
+                if (actions) {
+                    Object.keys(object[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    model => {
+                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+                    }));
+                }
+            }));
+        }
+    }
+    /**
+     *
+     * @param {?} object
+     * @param {?} pkProject primary key of project or null, if repo versions
+     * @return {?}
+     */
+    storeSchemaObjectGv(object, pkProject) {
+        if (object && Object.keys(object).length > 0) {
+            Object.keys(object).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            schema => {
+                /** @type {?} */
+                let actions;
+                if (schema === 'inf')
+                    actions = this.infActions;
+                else if (schema === 'pro')
+                    actions = this.proActions;
+                else if (schema === 'dat')
+                    actions = this.datActions;
+                else if (schema === 'war')
+                    actions = this.warActions;
+                else if (schema === 'tab')
+                    actions = this.tabActions;
+                else if (schema === 'dfh')
+                    actions = this.dfhActions;
+                else if (schema === 'sys')
+                    actions = this.sysActions;
+                if (actions) {
+                    Object.keys(object[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    model => {
+                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+                    }));
+                }
+            }));
+            // this.extendEntityPreviewStream(object, pkProject);
+            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
+        }
+    }
+}
+SchemaObjectService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SchemaObjectService.ctorParameters = () => [
+    { type: SchemaObjectApi },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatActions },
+    { type: WarActions },
+    { type: TabActions },
+    { type: DfhActions },
+    { type: SysActions },
+    { type: NotificationsAPIActions }
+];
+if (false) {
+    /** @type {?} */
+    SchemaObjectService.prototype.api;
+    /** @type {?} */
+    SchemaObjectService.prototype.infActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.proActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.datActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.warActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.tabActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.dfhActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.sysActions;
+    /** @type {?} */
+    SchemaObjectService.prototype.notifications;
 }
 
 /**
@@ -5557,198 +5929,6 @@ const storeFlattened = (/**
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/_helpers/schema-epics-factory.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template Payload, Model
- */
-class SchemaEpicsFactory {
-    /**
-     * @param {?} actionPrefix
-     * @param {?} modelName
-     * @param {?} actions
-     * @param {?} notifications
-     */
-    constructor(actionPrefix, modelName, actions, notifications) {
-        this.actionPrefix = actionPrefix;
-        this.modelName = modelName;
-        this.actions = actions;
-        this.notifications = notifications;
-    }
-    /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?} actionSuffix
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    createLoadEpic(apiFn, actionSuffix, onSuccessHook) {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(this.type('LOAD', actionSuffix)), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            (globalActions) => {
-                /** @type {?} */
-                const pendingKey = action.meta.addPending;
-                /** @type {?} */
-                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                apiFn(meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    if (onSuccessHook) {
-                        onSuccessHook(data, action.meta.pk, meta);
-                        this.actions.succeeded(data, pendingKey, action.meta.pk);
-                    }
-                    else {
-                        this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
-                    }
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                error => {
-                    this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })))));
-        });
-    }
-    /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    createUpsertEpic(apiFn, onSuccessHook) {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            (globalActions) => {
-                /** @type {?} */
-                const pendingKey = action.meta.addPending;
-                /** @type {?} */
-                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                apiFn(meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    if (onSuccessHook) {
-                        onSuccessHook(data, action.meta.pk);
-                        this.actions.succeeded(data, pendingKey, action.meta.pk);
-                    }
-                    else {
-                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
-                    }
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                error => {
-                    this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })))));
-        });
-    }
-    /**
-     * @param {?} apiFn
-     * @return {?}
-     */
-    createDeleteEpic(apiFn) {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            (globalActions) => {
-                /** @type {?} */
-                const pendingKey = action.meta.addPending;
-                apiFn(action.meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                error => {
-                    this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })))));
-        });
-    }
-    /**
-     * Create the string used as action.type
-     * @param {?} operation
-     * @param {?} actionSuffix
-     * @return {?}
-     */
-    type(operation, actionSuffix) {
-        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
-    }
-    /**
-     * Create the onError logic for standard actions
-     * @param {?} globalActions pass in the subscriber to the action$ stream
-     * @param {?} error
-     * @param {?} pendingKey
-     * @param {?} pkProject
-     * @return {?}
-     */
-    onError(globalActions, error, pendingKey, pkProject) {
-        globalActions.next(this.notifications.addToast({
-            type: 'error',
-            options: { title: error.message }
-        }));
-        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
-    }
-}
-if (false) {
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.actionPrefix;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.modelName;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.actions;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.notifications;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: lib/redux-store/state-schema/_helpers/inf-epic-factory.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -5960,6 +6140,1652 @@ if (false) {
     /** @type {?} */
     InfEpicsFactory.prototype.proActions;
 }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/inf.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class InfEpics {
+    /**
+     * @param {?} notification
+     * @param {?} peItApi
+     * @param {?} teEnApi
+     * @param {?} statementApi
+     * @param {?} textPropertyApi
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} datActions
+     * @param {?} infoProjRelApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, peItApi, teEnApi, statementApi, textPropertyApi, infActions, proActions, datActions, infoProjRelApi, schemaObjectService) {
+        this.notification = notification;
+        this.peItApi = peItApi;
+        this.teEnApi = teEnApi;
+        this.statementApi = statementApi;
+        this.textPropertyApi = textPropertyApi;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.infoProjRelApi = infoProjRelApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const infPersistentItemEpicsFactory = new InfEpicsFactory(infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        const infTemporalEntityEpicsFactory = new InfEpicsFactory(infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        const infStatementEpicsFactory = new InfEpicsFactory(infRoot, 'statement', this.infActions.statement, this.notification, this.infoProjRelApi, this.proActions);
+        /** @type {?} */
+        const infTextPropertyEpicsFactory = new InfEpicsFactory(infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
+        return combineEpics(
+        /**
+         * Perstistent Item
+         *
+         */
+        infPersistentItemEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.peItApi.ownProperties(meta.pk, meta.pkEntity)), InfPersistentItemActionFactory.MINIMAL_BY_PK, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            // call action to store records
+            Object.keys(schemas).forEach((/**
+             * @param {?} schema
+             * @return {?}
+             */
+            schema => {
+                /** @type {?} */
+                let actions;
+                if (schema === 'inf')
+                    actions = this.infActions;
+                else if (schema === 'pro')
+                    actions = this.proActions;
+                if (actions) {
+                    Object.keys(schemas[schema]).forEach((/**
+                     * @param {?} model
+                     * @return {?}
+                     */
+                    model => {
+                        actions[model].loadSucceeded(schemas[schema][model], undefined, pk);
+                    }));
+                }
+            }));
+        })), infPersistentItemEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.peItApi.typesOfProject(meta.pk)), InfPersistentItemActionFactory.TYPES_OF_PROJECT, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ (results));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })), 
+        // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
+        //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
+        //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+        //   (results, pk) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.persistent_item.flatten(results);
+        //     storeFlattened(flattener.getFlattened(), pk);
+        //   }
+        // ),
+        infPersistentItemEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.peItApi
+            .findOrCreateInfPersistentItems(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.persistent_item.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), infPersistentItemEpicsFactory.createRemoveEpic(), 
+        /**
+         * Temporal Entity
+         *
+         */
+        infTemporalEntityEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.teEnApi.ownProperties(meta.pk, meta.pkEntity)), InfTemporalEntityActionFactory.OWN_PROPERTIES, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ (results));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })), (/**
+         * Epic to load paginated Temporal Entity List
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        (globalActions) => {
+            /** @type {?} */
+            const meta = action.meta;
+            /** @type {?} */
+            const apiCal$ = this.teEnApi.temporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            const pkProject = meta.pk;
+            this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        })))))), (/**
+         * Epic to load paginated Alternative Temporal Entity List
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        (globalActions) => {
+            /** @type {?} */
+            const meta = action.meta;
+            /** @type {?} */
+            const apiCal$ = this.teEnApi.alternativeTemporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            const pkProject = null;
+            this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        })))))), infTemporalEntityEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.teEnApi
+            .findOrCreateInfTemporalEntities(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.temporal_entity.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), infTemporalEntityEpicsFactory.createRemoveEpic(), 
+        /**
+         * Statement
+         *
+         */
+        infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk)), InfStatementActionFactory.ALTERNATIVES_INGOING, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), null);
+        })), infStatementEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi
+            .findOrCreateInfStatements(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => new Observable((/**
+         * @param {?} globalActions
+         * @return {?}
+         */
+        (globalActions) => {
+            /** @type {?} */
+            const meta = action.meta;
+            /** @type {?} */
+            const apiCal$ = this.statementApi.paginatedListTargetingEntityPreviews(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
+            /** @type {?} */
+            const pkProject = meta.pk;
+            this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
+        })))))), infStatementEpicsFactory.createRemoveEpic(), infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty)), InfStatementActionFactory.BY_PARAMS, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'LOAD');
+        })), infStatementEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.statementApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity)), InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const res = (/** @type {?} */ ((/** @type {?} */ (results))));
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.statement.flatten(res.statements);
+            storeFlattened(flattener.getFlattened(), pk);
+            /** @type {?} */
+            const flattener2 = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener2.digital.flatten(res.digitals);
+            storeFlattened(flattener2.getFlattened(), pk);
+        })), 
+        /**
+         * Text Property
+         *
+         */
+        infTextPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi
+            .findAlternativeTextProperties(meta.pk, meta.fkEntity, meta.fkClassField)), InfTextPropertyActionFactory.ALTERNATIVES, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.text_property.flatten(results);
+            storeFlattened(flattener.getFlattened(), null);
+        })), infTextPropertyEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi
+            .findOrCreateInfTextProperties(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.text_property.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), infTextPropertyEpicsFactory.createRemoveEpic());
+    }
+    /**
+     * handles the update of store for paginated temporal entity lists.
+     * @private
+     * @template M
+     * @param {?} action
+     * @param {?} epicsFactory
+     * @param {?} globalActions
+     * @param {?} apiCall$
+     * @param {?} pkProject if null, list is handled as 'repo' list
+     * @return {?}
+     */
+    handleTemporalEntityListAction(action, epicsFactory, globalActions, apiCall$, pkProject) {
+        /** @type {?} */
+        const meta = action.meta;
+        /** @type {?} */
+        const pendingKey = meta.addPending;
+        /** @type {?} */
+        const paginateBy = [
+            { fk_property: meta.pkProperty },
+            { fk_target_class: meta.fkTargetClass },
+            { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
+            { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
+        ];
+        // call action to set pagination loading on true
+        this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+        // call api to load data
+        apiCall$.subscribe((/**
+         * @param {?} data
+         * @return {?}
+         */
+        (data) => {
+            // call action to store records
+            this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
+            // call action to store pagination
+            this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+            // call action to conclude the pending request
+            epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
+        }), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => {
+            // call action to handle error
+            epicsFactory.onError(globalActions, error, pendingKey, pkProject);
+        }));
+    }
+}
+InfEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+InfEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: InfPersistentItemApi },
+    { type: InfTemporalEntityApi },
+    { type: InfStatementApi },
+    { type: InfTextPropertyApi },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatActions },
+    { type: ProInfoProjRelApi },
+    { type: SchemaObjectService }
+];
+if (false) {
+    /** @type {?} */
+    InfEpics.prototype.notification;
+    /** @type {?} */
+    InfEpics.prototype.peItApi;
+    /** @type {?} */
+    InfEpics.prototype.teEnApi;
+    /** @type {?} */
+    InfEpics.prototype.statementApi;
+    /** @type {?} */
+    InfEpics.prototype.textPropertyApi;
+    /** @type {?} */
+    InfEpics.prototype.infActions;
+    /** @type {?} */
+    InfEpics.prototype.proActions;
+    /** @type {?} */
+    InfEpics.prototype.datActions;
+    /** @type {?} */
+    InfEpics.prototype.infoProjRelApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    InfEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/dat.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DatEpics {
+    /**
+     * @param {?} notification
+     * @param {?} datActions
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} digitalApi
+     * @param {?} chunkApi
+     * @param {?} columnApi
+     * @param {?} namespaceApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
+        this.notification = notification;
+        this.datActions = datActions;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.digitalApi = digitalApi;
+        this.chunkApi = chunkApi;
+        this.columnApi = columnApi;
+        this.namespaceApi = namespaceApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
+        /** @type {?} */
+        const chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
+        /** @type {?} */
+        const namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
+        /** @type {?} */
+        const columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
+        return combineEpics(
+        // Digital
+        digitalEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null)), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items))), digitalEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.bulkDelete(meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.pk_entity))))), 
+        // Chunk
+        chunkEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital)), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.chunk.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), 
+        // Namespace
+        namespaceEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.namespaceApi.byProject(meta.pk)), ''), columnEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital)), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ ((/** @type {?} */ (results))));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })));
+    }
+}
+DatEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+DatEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: DatActions },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatDigitalApi },
+    { type: DatChunkApi },
+    { type: DatColumnApi },
+    { type: DatNamespaceApi },
+    { type: SchemaObjectService }
+];
+if (false) {
+    /** @type {?} */
+    DatEpics.prototype.notification;
+    /** @type {?} */
+    DatEpics.prototype.datActions;
+    /** @type {?} */
+    DatEpics.prototype.infActions;
+    /** @type {?} */
+    DatEpics.prototype.proActions;
+    /** @type {?} */
+    DatEpics.prototype.digitalApi;
+    /** @type {?} */
+    DatEpics.prototype.chunkApi;
+    /** @type {?} */
+    DatEpics.prototype.columnApi;
+    /** @type {?} */
+    DatEpics.prototype.namespaceApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/pro.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ProEpics {
+    /**
+     * @param {?} notification
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} datActions
+     * @param {?} projectApi
+     * @param {?} infoProjRelApi
+     * @param {?} classProjRelApi
+     * @param {?} profileProjRelApi
+     * @param {?} classFieldConfApi
+     * @param {?} textPropertyApi
+     * @param {?} analysisApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, infActions, proActions, datActions, projectApi, infoProjRelApi, classProjRelApi, profileProjRelApi, classFieldConfApi, textPropertyApi, analysisApi, schemaObjectService) {
+        this.notification = notification;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.datActions = datActions;
+        this.projectApi = projectApi;
+        this.infoProjRelApi = infoProjRelApi;
+        this.classProjRelApi = classProjRelApi;
+        this.profileProjRelApi = profileProjRelApi;
+        this.classFieldConfApi = classFieldConfApi;
+        this.textPropertyApi = textPropertyApi;
+        this.analysisApi = analysisApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const proProjectEpicsFactory = new SchemaEpicsFactory(proRoot, 'project', this.proActions.project, this.notification);
+        /** @type {?} */
+        const proInfoProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
+        /** @type {?} */
+        const proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
+        /** @type {?} */
+        const proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
+        /** @type {?} */
+        const proClassFieldConfigEpicsFactory = new SchemaEpicsFactory(proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
+        /** @type {?} */
+        const proTextPropertyEpicsFactory = new SchemaEpicsFactory(proRoot, 'text_property', this.proActions.text_property, this.notification);
+        /** @type {?} */
+        const proAnalysisEpicsFactory = new SchemaEpicsFactory(proRoot, 'analysis', this.proActions.analysis, this.notification);
+        return combineEpics(
+        /**
+        * ProProject
+        */
+        proProjectEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.projectApi
+            .ofAccount(meta.pk)), ProProjectActionFactory.OF_ACCOUNT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_project.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proProjectEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.projectApi
+            .getBasics(meta.pk)), ProProjectActionFactory.LOAD_BASICS, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_project.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), 
+        /**
+         * ProInfoProjRel
+         */
+        proInfoProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.infoProjRelApi
+            .bulkUpdateEprAttributes(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.info_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), proInfoProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.infoProjRelApi
+            .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing)), ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.info_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+         * ProClassFieldConfig
+         */
+        proClassFieldConfigEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classFieldConfApi.ofProject(meta.pk)), ProClassFieldConfigActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_class_field_config.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proClassFieldConfigEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classFieldConfApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_class_field_config.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+         * ProProDfhClassProjRel
+         */
+        proDfhClassProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classProjRelApi.ofProject(meta.pk)), ProDfhClassProjRelActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_class_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proDfhClassProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classProjRelApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_class_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+        * ProDfhProfileProjRel
+        */
+        proDfhProfileProjRelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileProjRelApi.ofProject(meta.pk)), ProDfhProfileProjRelActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @return {?}
+         */
+        (results) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_profile_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened());
+        })), proDfhProfileProjRelEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileProjRelApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.pro_dfh_profile_proj_rel.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        })), 
+        /**
+        * ProTextProperty
+        */
+        proTextPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi.ofProject(meta.pk)), ProTextPropertyActionFactory.OF_PROJECT, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            this.schemaObjectService.storeSchemaObject(schemas, pk);
+        })), proTextPropertyEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi
+            .bulkUpsert(meta.pk, meta.items)), (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
+            this.schemaObjectService.storeSchemaObject(schemas, pk);
+        })), proTextPropertyEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.textPropertyApi.bulkDelete(meta.pk, meta.items))), 
+        /**
+        * ProAnalysis
+        */
+        // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
+        //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
+        //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
+        //   (results) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.analysis.flatten(results);
+        //     storeFlattened(flattener.getFlattened());
+        //   }
+        // ),
+        // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
+        //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
+        //   (results, pk) => {
+        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+        //     flattener.analysis.flatten(results);
+        //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        //   }
+        // ),
+        proAnalysisEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.pk_entity))))));
+    }
+}
+ProEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ProEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatActions },
+    { type: ProProjectApi },
+    { type: ProInfoProjRelApi },
+    { type: ProDfhClassProjRelApi },
+    { type: ProDfhProfileProjRelApi },
+    { type: ProClassFieldConfigApi },
+    { type: ProTextPropertyApi },
+    { type: AnalysisService },
+    { type: SchemaObjectService }
+];
+if (false) {
+    /** @type {?} */
+    ProEpics.prototype.notification;
+    /** @type {?} */
+    ProEpics.prototype.infActions;
+    /** @type {?} */
+    ProEpics.prototype.proActions;
+    /** @type {?} */
+    ProEpics.prototype.datActions;
+    /** @type {?} */
+    ProEpics.prototype.projectApi;
+    /** @type {?} */
+    ProEpics.prototype.infoProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.classProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.profileProjRelApi;
+    /** @type {?} */
+    ProEpics.prototype.classFieldConfApi;
+    /** @type {?} */
+    ProEpics.prototype.textPropertyApi;
+    /** @type {?} */
+    ProEpics.prototype.analysisApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ActionResolverEpics {
+    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+    constructor() {
+        this.createEpics = (/**
+         * @return {?}
+         */
+        () => combineEpics(this.createResolveEpic()));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createResolveEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(filter((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
+    }
+}
+ActionResolverEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+ActionResolverEpics.ctorParameters = () => [];
+/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ActionResolverEpics.prototype.createEpics;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/root/root-epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class RootEpics {
+    /**
+     * @param {?} loadingBarEpics
+     * @param {?} notificationEpics
+     * @param {?} activeProjectEpics
+     * @param {?} accountEpics
+     * @param {?} systemEpics
+     * @param {?} dfhEpics
+     * @param {?} infEpics
+     * @param {?} datEpics
+     * @param {?} proEpics
+     * @param {?} actionResolver
+     */
+    constructor(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, systemEpics, dfhEpics, infEpics, datEpics, proEpics, actionResolver) {
+        this.loadingBarEpics = loadingBarEpics;
+        this.notificationEpics = notificationEpics;
+        this.activeProjectEpics = activeProjectEpics;
+        this.accountEpics = accountEpics;
+        this.systemEpics = systemEpics;
+        this.dfhEpics = dfhEpics;
+        this.infEpics = infEpics;
+        this.datEpics = datEpics;
+        this.proEpics = proEpics;
+        this.actionResolver = actionResolver;
+        this.rootEpicStream$ = new BehaviorSubject(combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.systemEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), 
+        // important: this needs to be the last epic in
+        this.actionResolver.createEpics()));
+        this.rootEpic = (/**
+         * @param {?} action$
+         * @param {?} state$
+         * @param {?=} dependencies
+         * @return {?}
+         */
+        (action$, state$, dependencies = undefined) => {
+            return this.rootEpicStream$.pipe(mergeMap((/**
+             * @param {?} epic
+             * @return {?}
+             */
+            (epic) => epic(action$, state$, dependencies))));
+        });
+    }
+    /**
+     * @return {?}
+     */
+    getRootEpic() {
+        return this.rootEpic;
+    }
+    /**
+     * Adds an epic to the RootEpic middleware
+     * @param {?} epic that will be added to the RootEpics
+     * @return {?}
+     */
+    addEpic(epic) {
+        this.rootEpicStream$.next(epic);
+    }
+}
+RootEpics.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+RootEpics.ctorParameters = () => [
+    { type: LoadingBarEpics },
+    { type: NotificationsAPIEpics },
+    { type: ActiveProjectEpics },
+    { type: AccountEpics },
+    { type: SysEpics },
+    { type: DfhEpics },
+    { type: InfEpics },
+    { type: DatEpics },
+    { type: ProEpics },
+    { type: ActionResolverEpics }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.rootEpicStream$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.rootEpic;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.loadingBarEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.notificationEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.activeProjectEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.accountEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.systemEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.dfhEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.infEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.datEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.proEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    RootEpics.prototype.actionResolver;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/reducers/account.reducers.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE = {
+    account: undefined,
+    roles: undefined
+};
+/** @type {?} */
+const accountRootReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+(lastState = INITIAL_STATE, action) => {
+    switch (action.type) {
+        case AccountActions.LOGIN_SUCCEEDED:
+            lastState = Object.assign({}, lastState, { account: action.meta.account });
+            break;
+        case AccountActions.ACCOUNT_UPDATED:
+            lastState = Object.assign({}, lastState, { account: action.meta.account });
+            break;
+        case AccountActions.LOAD_ROLES_SUCCEEDED:
+            lastState = Object.assign({}, lastState, { roles: action.meta.accountRoles });
+            break;
+        case AccountActions.LOAD_ROLES_FAILED:
+            lastState = Object.assign({}, lastState, { roles: [] });
+            break;
+    }
+    return lastState;
+});
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/reducers/loading-bar.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE$1 = {
+    loading: false,
+    progress: 0,
+};
+/**
+ * @param {?=} state
+ * @param {?=} a
+ * @return {?}
+ */
+function loadingBarReducer(state = INITIAL_STATE$1, a) {
+    /** @type {?} */
+    const action = (/** @type {?} */ (a));
+    switch (action.type) {
+        case LoadingBarActions.START:
+            return Object.assign({}, state, { loading: true });
+        case LoadingBarActions.STOP:
+            return Object.assign({}, state, { loading: false });
+        case LoadingBarActions.COPMLETE:
+            return Object.assign({}, state, { loading: false });
+    }
+    return state;
+}
+;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/reducers/active-project.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE$2 = {
+    label: '',
+    list: '',
+    uiIdSerial: 0,
+    panelSerial: 0,
+    focusedPanel: 0,
+    panels: []
+};
+/** @type {?} */
+const activeProjectReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = INITIAL_STATE$2, action) => {
+    /** @type {?} */
+    let pi;
+    /** @type {?} */
+    let ti;
+    /** @type {?} */
+    let ppi;
+    /** @type {?} */
+    let cpi;
+    /** @type {?} */
+    let pti;
+    /** @type {?} */
+    let cti;
+    switch (action.type) {
+        /************************************************************************************
+         * Load project data (metadata, crm)
+        ************************************************************************************/
+        case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
+            state = Object.assign({}, state, action.meta.projectPreview);
+            break;
+        case ActiveProjectActions.LOAD_PROJECT_CONFIG:
+            state = Object.assign({}, state, { loadingConfigData: true });
+            break;
+        case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
+            state = Object.assign({}, state, { configDataInitialized: true, loadingConfigData: false });
+            break;
+        /************************************************************************************
+         * Layout -- Tabs
+        ************************************************************************************/
+        case ActiveProjectActions.SET_PANELS:
+            state = Object.assign({}, state, { panels: action.meta.panels, uiIdSerial: action.meta.uiIdSerial, panelSerial: action.meta.panelSerial, focusedPanel: action.meta.focusedPanel });
+            break;
+        case ActiveProjectActions.SET_LIST_TYPE:
+            state = Object.assign({}, state, { list: action.meta.list });
+            break;
+        case ActiveProjectActions.ACTIVATE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs].map((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => {
+                            tab.active = (index === ti);
+                            return tab;
+                        })) })
+                }) });
+            break;
+        case ActiveProjectActions.MOVE_TAB:
+            ppi = action.meta.previousPanelIndex;
+            cpi = action.meta.currentPanelIndex;
+            pti = action.meta.previousTabIndex;
+            cti = action.meta.currentTabIndex;
+            if (ppi === cpi) {
+                /** @type {?} */
+                const tabs = [...state.panels[cpi].tabs];
+                moveItemInArray(tabs, pti, cti);
+                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                        [cpi]: Object.assign({}, state.panels[cpi], { tabs })
+                    }) });
+            }
+            else {
+                /** @type {?} */
+                const pTabs = [...state.panels[ppi].tabs];
+                /** @type {?} */
+                const cTabs = [...state.panels[cpi].tabs];
+                transferArrayItem(pTabs, cTabs, pti, cti);
+                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                        [ppi]: Object.assign({}, state.panels[ppi], { tabs: pTabs.map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            (tab, index) => {
+                                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
+                                return tab;
+                            })) }),
+                        [cpi]: Object.assign({}, state.panels[cpi], { tabs: cTabs.map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            (tab, index) => {
+                                tab.active = (index === cti);
+                                return tab;
+                            })) })
+                    }) });
+            }
+            break;
+        case ActiveProjectActions.ADD_TAB:
+            if (state.panels.length === 0) {
+                state = Object.assign({}, state, { panels: [
+                        {
+                            id: state.panelSerial,
+                            tabs: []
+                        }
+                    ], focusedPanel: 0, panelSerial: state.panelSerial + 1 });
+            }
+            pi = state.focusedPanel;
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [pi]: Object.assign({}, state.panels[pi], { tabs: [
+                            ...state.panels[pi].tabs.map((/**
+                             * @param {?} t
+                             * @return {?}
+                             */
+                            t => {
+                                t.active = false;
+                                return t;
+                            })),
+                            Object.assign({}, omit(['pathSegment'], action.meta.tab), { path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()] })
+                        ] })
+                }), uiIdSerial: (state.uiIdSerial + 1) });
+            break;
+        case ActiveProjectActions.CLOSE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            // remove the closing tab
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
+                            .filter((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => index !== ti)) })
+                }) });
+            // activate a sibling tab, if needed and possible
+            if (!state.panels[pi].tabs.find((/**
+             * @param {?} t
+             * @return {?}
+             */
+            t => t.active))) {
+                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                        [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
+                                .map((/**
+                             * @param {?} tab
+                             * @param {?} index
+                             * @return {?}
+                             */
+                            (tab, index) => {
+                                tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
+                                return tab;
+                            })) })
+                    }) });
+            }
+            break;
+        case ActiveProjectActions.CLOSE_PANEL:
+            pi = action.meta.panelIndex;
+            /** @type {?} */
+            const panels = [...state.panels];
+            panels.splice(pi, 1);
+            state = Object.assign({}, state, { panels });
+            break;
+        case ActiveProjectActions.FOCUS_PANEL:
+            state = Object.assign({}, state, { focusedPanel: action.meta.panelIndex });
+            break;
+        case ActiveProjectActions.SPLIT_PANEL:
+            ppi = action.meta.previousPanelIndex;
+            ti = action.meta.tabIndex;
+            cpi = action.meta.currentPanelIndex;
+            /** @type {?} */
+            const moveTab = state.panels[ppi].tabs[ti];
+            // removes tab from old panel
+            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
+                    [ppi]: Object.assign({}, state.panels[ppi], { tabs: [...state.panels[ppi].tabs]
+                            .filter((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => index !== ti))
+                            .map((/**
+                         * @param {?} tab
+                         * @param {?} index
+                         * @return {?}
+                         */
+                        (tab, index) => {
+                            if (index === 0)
+                                tab.active = true;
+                            return tab;
+                        })) })
+                }) });
+            // insert a new panel at position of cpi
+            /** @type {?} */
+            const newPanels = [...state.panels];
+            newPanels.splice(cpi, 0, {
+                id: state.panelSerial,
+                tabs: [moveTab]
+            });
+            state = Object.assign({}, state, { panels: newPanels, panelSerial: state.panelSerial + 1 });
+            break;
+        case ActiveProjectActions.SET_REFINING_CHUNK:
+            state = Object.assign({}, state, { refiningChunk: action.payload.refiningChunk });
+            break;
+        case ActiveProjectActions.SET_CREATING_MENTIONING:
+            state = Object.assign({}, state, { creatingMentioning: action.payload.creatingMentioning });
+            break;
+        /************************************************************************************
+        * Highlighting of mentionings in the gui
+        ************************************************************************************/
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
+            state = Object.assign({}, state, { mentioningsFocusedInText: action.payload.mentioningsFocusedInText });
+            break;
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
+            state = Object.assign({}, state, { mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable });
+            break;
+        /************************************************************************************
+         * Destroy the active project state (on closing a project)
+        ************************************************************************************/
+        case ActiveProjectActions.DESTROY:
+            state = INITIAL_STATE$2;
+            break;
+    }
+    return state;
+});
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/entity-list.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class Information {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    Information.prototype.items;
+    /** @type {?} */
+    Information.prototype.loading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/actions/entity-list.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class InformationAPIActions {
+    constructor() {
+        /**
+         * ******************************************************************
+         *  Method to distroy the slice of store
+         * *******************************************************************
+         */
+        this.destroy = (/**
+         * @return {?}
+         */
+        () => ({
+            type: InformationAPIActions.DESTROY,
+            meta: null,
+            payload: null
+        }));
+    }
+}
+InformationAPIActions.DESTROY = 'Information::DESTROY';
+InformationAPIActions.decorators = [
+    { type: Injectable }
+];
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], InformationAPIActions.prototype, "destroy", void 0);
+if (false) {
+    /** @type {?} */
+    InformationAPIActions.DESTROY;
+    /**
+     * ******************************************************************
+     *  Method to distroy the slice of store
+     * *******************************************************************
+     * @type {?}
+     */
+    InformationAPIActions.prototype.destroy;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/reducers/entity-list.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE$3 = new Information();
+/**
+ * @param {?=} state
+ * @param {?=} a
+ * @return {?}
+ */
+function informationReducer(state = INITIAL_STATE$3, a) {
+    /** @type {?} */
+    const action = (/** @type {?} */ (a));
+    switch (action.type) {
+        /*****************************************************
+        * Reducers called on destroy of component
+        *****************************************************/
+        case InformationAPIActions.DESTROY:
+            state = {};
+            break;
+    }
+    return state;
+}
+;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/actions/source-list.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function MetaData$3() { }
+if (false) {
+    /** @type {?|undefined} */
+    MetaData$3.prototype.pkAllowedClasses;
+}
+;
+class SourceListAPIActions {
+    constructor() {
+        /**
+         * ******************************************************************
+         *  Actions to manage the list
+         * *******************************************************************
+         */
+        this.initializeList = (/**
+         * @param {?} pkAllowedClasses
+         * @return {?}
+         */
+        (pkAllowedClasses) => ({
+            type: SourceListAPIActions.INITIALIZE_LIST,
+            meta: { pkAllowedClasses },
+            payload: null
+        }));
+        /**
+         * ******************************************************************
+         *  Method to distroy the slice of store
+         * *******************************************************************
+         */
+        this.destroy = (/**
+         * @return {?}
+         */
+        () => ({
+            type: SourceListAPIActions.DESTROY,
+            meta: null,
+            payload: null
+        }));
+    }
+}
+SourceListAPIActions.INITIALIZE_LIST = 'SourceList::INITIALIZE_LIST';
+SourceListAPIActions.DESTROY = 'SourceList::DESTROY';
+SourceListAPIActions.decorators = [
+    { type: Injectable }
+];
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], SourceListAPIActions.prototype, "initializeList", void 0);
+__decorate([
+    dispatch(),
+    __metadata("design:type", Object)
+], SourceListAPIActions.prototype, "destroy", void 0);
+if (false) {
+    /** @type {?} */
+    SourceListAPIActions.INITIALIZE_LIST;
+    /** @type {?} */
+    SourceListAPIActions.DESTROY;
+    /**
+     * ******************************************************************
+     *  Actions to manage the list
+     * *******************************************************************
+     * @type {?}
+     */
+    SourceListAPIActions.prototype.initializeList;
+    /**
+     * ******************************************************************
+     *  Method to distroy the slice of store
+     * *******************************************************************
+     * @type {?}
+     */
+    SourceListAPIActions.prototype.destroy;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/source-list.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+class SourceList {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    SourceList.prototype.list;
+    /** @type {?} */
+    SourceList.prototype.loading;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/reducers/source-list.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE$4 = new SourceList();
+/**
+ * @param {?=} state
+ * @param {?=} a
+ * @return {?}
+ */
+function sourceListReducer(state = INITIAL_STATE$4, a) {
+    /** @type {?} */
+    const action = (/** @type {?} */ (a));
+    switch (action.type) {
+        case SourceListAPIActions.INITIALIZE_LIST:
+            state = Object.assign({}, state, { list: {
+                    pkAllowedClasses: action.meta.pkAllowedClasses
+                } });
+            break;
+        /*****************************************************
+        * Reducers called on destroy of component
+        *****************************************************/
+        case SourceListAPIActions.DESTROY:
+            state = {};
+            break;
+    }
+    return state;
+}
+;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/actions/projects.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ProjectsActions {
+    /**
+     * @param {?} payload
+     * @return {?}
+     */
+    loadProjectsSucceeded(payload) {
+        return {
+            type: ProjectsActions.LOAD_PROJECTS_SUCCEEDED,
+            payload,
+            meta: null
+        };
+    }
+}
+ProjectsActions.LOAD_PROJECTS_SUCCEEDED = 'LOAD_PROJECTS_SUCCEEDED';
+ProjectsActions.decorators = [
+    { type: Injectable }
+];
+if (false) {
+    /** @type {?} */
+    ProjectsActions.LOAD_PROJECTS_SUCCEEDED;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/reducers/projects.reducers.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INITIAL_STATE$5 = {
+    records: []
+};
+/** @type {?} */
+const projectListReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+(lastState = INITIAL_STATE$5, action) => {
+    switch (action.type) {
+        case ProjectsActions.LOAD_PROJECTS_SUCCEEDED: return Object.assign({}, lastState, { records: action.payload.map((/**
+             * @param {?} record
+             * @return {?}
+             */
+            (record) => ({ record: record }))) });
+    }
+    return lastState;
+});
+const ɵ0$7 = projectListReducer;
+/** @type {?} */
+const createProjectsReducer = (/**
+ * @return {?}
+ */
+() => {
+    return projectListReducer;
+});
 
 /**
  * @fileoverview added by tsickle
@@ -6694,1283 +8520,190 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/services/schema-object.service.ts
+ * Generated from: lib/redux-store/state-schema/reducers/sys.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
- * Class to put schema objects into store
+ * @return {?}
  */
-class SchemaObjectService {
-    /**
-     * @param {?} api
-     * @param {?} infActions
-     * @param {?} proActions
-     * @param {?} datActions
-     * @param {?} warActions
-     * @param {?} tabActions
-     * @param {?} dfhActions
-     * @param {?} sysActions
-     * @param {?} notifications
-     */
-    constructor(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
-        this.api = api;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.datActions = datActions;
-        this.warActions = warActions;
-        this.tabActions = tabActions;
-        this.dfhActions = dfhActions;
-        this.sysActions = sysActions;
-        this.notifications = notifications;
-    }
-    /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param {?} apiCall$
-     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
-     * @return {?}
-     */
-    store(apiCall$, pkProject) {
-        /** @type {?} */
-        const s$ = new Subject();
-        apiCall$.subscribe((/**
-         * @param {?} result
-         * @return {?}
-         */
-        result => {
-            this.storeSchemaObject(result, pkProject === 'ofRepo' ? null : pkProject);
-            s$.next(result);
-        }), (/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => {
-            this.notifications.addToast({
-                type: 'error',
-                options: { title: error.message }
-            });
-            s$.error(error);
-        }));
-        return s$;
-    }
-    /**
-     * watches an Observable<SchemaObject>
-     * on success stores the parts of the object at right place of store
-     * on error emits error message
-     *
-     * @param {?} apiCall$
-     * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
-     * @return {?}
-     */
-    storeGv(apiCall$, pkProject) {
-        /** @type {?} */
-        const s$ = new Subject();
-        apiCall$.subscribe((/**
-         * @param {?} result
-         * @return {?}
-         */
-        result => {
-            this.storeSchemaObjectGv(result, pkProject === 'ofRepo' ? null : pkProject);
-            s$.next(result);
-        }), (/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => {
-            this.notifications.addToast({
-                type: 'error',
-                options: { title: error.message }
-            });
-            s$.error(error);
-        }));
-        return s$;
-    }
-    /**
-     *
-     * @param {?} object
-     * @param {?} pkProject primary key of project or null, if repo versions
-     * @return {?}
-     */
-    storeSchemaObject(object, pkProject) {
-        if (object && Object.keys(object).length > 0) {
-            Object.keys(object).forEach((/**
-             * @param {?} schema
-             * @return {?}
-             */
-            schema => {
-                /** @type {?} */
-                let actions;
-                if (schema === 'inf')
-                    actions = this.infActions;
-                else if (schema === 'pro')
-                    actions = this.proActions;
-                else if (schema === 'dat')
-                    actions = this.datActions;
-                else if (schema === 'war')
-                    actions = this.warActions;
-                if (actions) {
-                    Object.keys(object[schema]).forEach((/**
-                     * @param {?} model
-                     * @return {?}
-                     */
-                    model => {
-                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
-                    }));
-                }
-            }));
-        }
-    }
-    /**
-     *
-     * @param {?} object
-     * @param {?} pkProject primary key of project or null, if repo versions
-     * @return {?}
-     */
-    storeSchemaObjectGv(object, pkProject) {
-        if (object && Object.keys(object).length > 0) {
-            Object.keys(object).forEach((/**
-             * @param {?} schema
-             * @return {?}
-             */
-            schema => {
-                /** @type {?} */
-                let actions;
-                if (schema === 'inf')
-                    actions = this.infActions;
-                else if (schema === 'pro')
-                    actions = this.proActions;
-                else if (schema === 'dat')
-                    actions = this.datActions;
-                else if (schema === 'war')
-                    actions = this.warActions;
-                else if (schema === 'tab')
-                    actions = this.tabActions;
-                else if (schema === 'dfh')
-                    actions = this.dfhActions;
-                else if (schema === 'sys')
-                    actions = this.sysActions;
-                if (actions) {
-                    Object.keys(object[schema]).forEach((/**
-                     * @param {?} model
-                     * @return {?}
-                     */
-                    model => {
-                        actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
-                    }));
-                }
-            }));
-            // this.extendEntityPreviewStream(object, pkProject);
-            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
-        }
-    }
-}
-SchemaObjectService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-SchemaObjectService.ctorParameters = () => [
-    { type: SchemaObjectApi },
-    { type: InfActions },
-    { type: ProActions },
-    { type: DatActions },
-    { type: WarActions },
-    { type: TabActions },
-    { type: DfhActions },
-    { type: SysActions },
-    { type: NotificationsAPIActions }
-];
-if (false) {
-    /** @type {?} */
-    SchemaObjectService.prototype.api;
-    /** @type {?} */
-    SchemaObjectService.prototype.infActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.proActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.datActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.warActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.tabActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.dfhActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.sysActions;
-    /** @type {?} */
-    SchemaObjectService.prototype.notifications;
+function createSysReducer() {
+    return new ReducerFactory(sysRoot, sysDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/_helpers/index.ts
+ * Generated from: lib/redux-store/state-schema/reducers/dfh.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
 /**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/dat.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @return {?}
  */
-class DatEpics {
-    /**
-     * @param {?} notification
-     * @param {?} datActions
-     * @param {?} infActions
-     * @param {?} proActions
-     * @param {?} digitalApi
-     * @param {?} chunkApi
-     * @param {?} columnApi
-     * @param {?} namespaceApi
-     * @param {?} schemaObjectService
-     */
-    constructor(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
-        this.notification = notification;
-        this.datActions = datActions;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.digitalApi = digitalApi;
-        this.chunkApi = chunkApi;
-        this.columnApi = columnApi;
-        this.namespaceApi = namespaceApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
-        /** @type {?} */
-        const chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
-        /** @type {?} */
-        const namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
-        /** @type {?} */
-        const columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
-        return combineEpics(
-        // Digital
-        digitalEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null)), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items))), digitalEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.digitalApi.bulkDelete(meta.items.map((/**
-         * @param {?} item
-         * @return {?}
-         */
-        item => item.pk_entity))))), 
-        // Chunk
-        chunkEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital)), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.chunk.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk);
-        })), 
-        // Namespace
-        namespaceEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.namespaceApi.byProject(meta.pk)), ''), columnEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital)), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemaObject = (/** @type {?} */ (results));
-            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })));
-    }
-}
-DatEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-DatEpics.ctorParameters = () => [
-    { type: NotificationsAPIActions },
-    { type: DatActions },
-    { type: InfActions },
-    { type: ProActions },
-    { type: DatDigitalApi },
-    { type: DatChunkApi },
-    { type: DatColumnApi },
-    { type: DatNamespaceApi },
-    { type: SchemaObjectService }
-];
-if (false) {
-    /** @type {?} */
-    DatEpics.prototype.notification;
-    /** @type {?} */
-    DatEpics.prototype.datActions;
-    /** @type {?} */
-    DatEpics.prototype.infActions;
-    /** @type {?} */
-    DatEpics.prototype.proActions;
-    /** @type {?} */
-    DatEpics.prototype.digitalApi;
-    /** @type {?} */
-    DatEpics.prototype.chunkApi;
-    /** @type {?} */
-    DatEpics.prototype.columnApi;
-    /** @type {?} */
-    DatEpics.prototype.namespaceApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DatEpics.prototype.schemaObjectService;
+function createDfhReducer() {
+    return new ReducerFactory('dfh', dfhDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/dfh.epics.ts
+ * Generated from: lib/redux-store/state-schema/reducers/inf.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class DfhEpics {
-    /**
-     * @param {?} actions
-     * @param {?} notification
-     * @param {?} profileApi
-     * @param {?} classApi
-     * @param {?} propertyApi
-     * @param {?} labelApi
-     */
-    constructor(actions, notification, profileApi, classApi, propertyApi, labelApi) {
-        this.actions = actions;
-        this.notification = notification;
-        this.profileApi = profileApi;
-        this.classApi = classApi;
-        this.propertyApi = propertyApi;
-        this.labelApi = labelApi;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
-        /** @type {?} */
-        const dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
-        /** @type {?} */
-        const dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
-        /** @type {?} */
-        const dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
-        return combineEpics(
-        // Profile Loaders
-        dfhProfileEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.profileApi.ofProject(meta.pk)), DfhProfileActionFactory.OF_PROJECT), 
-        // Property Loaders
-        dfhPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.propertyApi.dfhPropertyControllerOfProject(meta.pk)), DfhPropertyActionFactory.OF_PROJECT), 
-        // Class Loaders
-        dfhClassEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.classApi.dfhClassControllerOfProject(meta.pk)), DfhClassActionFactory.OF_PROJECT), 
-        // Label Loaders
-        dfhLabelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.labelApi.ofProject(meta.pk)), DfhLabelActionFactory.OF_PROJECT));
-    }
-}
-DfhEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-DfhEpics.ctorParameters = () => [
-    { type: DfhActions },
-    { type: NotificationsAPIActions },
-    { type: DfhProfileApi },
-    { type: DfhClassControllerService },
-    { type: DfhPropertyControllerService },
-    { type: DfhLabelApi }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.notification;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.profileApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.classApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.propertyApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.labelApi;
+/**
+ * @return {?}
+ */
+function createInfReducer() {
+    return new ReducerFactory(infRoot, infDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/inf.epics.ts
+ * Generated from: lib/redux-store/state-schema/reducers/dat.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class InfEpics {
-    /**
-     * @param {?} notification
-     * @param {?} peItApi
-     * @param {?} teEnApi
-     * @param {?} statementApi
-     * @param {?} textPropertyApi
-     * @param {?} infActions
-     * @param {?} proActions
-     * @param {?} datActions
-     * @param {?} infoProjRelApi
-     * @param {?} schemaObjectService
-     */
-    constructor(notification, peItApi, teEnApi, statementApi, textPropertyApi, infActions, proActions, datActions, infoProjRelApi, schemaObjectService) {
-        this.notification = notification;
-        this.peItApi = peItApi;
-        this.teEnApi = teEnApi;
-        this.statementApi = statementApi;
-        this.textPropertyApi = textPropertyApi;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.datActions = datActions;
-        this.infoProjRelApi = infoProjRelApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const infPersistentItemEpicsFactory = new InfEpicsFactory(infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
-        /** @type {?} */
-        const infTemporalEntityEpicsFactory = new InfEpicsFactory(infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
-        /** @type {?} */
-        const infStatementEpicsFactory = new InfEpicsFactory(infRoot, 'statement', this.infActions.statement, this.notification, this.infoProjRelApi, this.proActions);
-        /** @type {?} */
-        const infTextPropertyEpicsFactory = new InfEpicsFactory(infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
-        return combineEpics(
-        /**
-         * Perstistent Item
-         *
-         */
-        infPersistentItemEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.peItApi.ownProperties(meta.pk, meta.pkEntity)), InfPersistentItemActionFactory.MINIMAL_BY_PK, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
-            // call action to store records
-            Object.keys(schemas).forEach((/**
-             * @param {?} schema
-             * @return {?}
-             */
-            schema => {
-                /** @type {?} */
-                let actions;
-                if (schema === 'inf')
-                    actions = this.infActions;
-                else if (schema === 'pro')
-                    actions = this.proActions;
-                if (actions) {
-                    Object.keys(schemas[schema]).forEach((/**
-                     * @param {?} model
-                     * @return {?}
-                     */
-                    model => {
-                        actions[model].loadSucceeded(schemas[schema][model], undefined, pk);
-                    }));
-                }
-            }));
-        })), infPersistentItemEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.peItApi.typesOfProject(meta.pk)), InfPersistentItemActionFactory.TYPES_OF_PROJECT, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemaObject = (/** @type {?} */ (results));
-            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })), 
-        // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
-        //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
-        //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
-        //   (results, pk) => {
-        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-        //     flattener.persistent_item.flatten(results);
-        //     storeFlattened(flattener.getFlattened(), pk);
-        //   }
-        // ),
-        infPersistentItemEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.peItApi
-            .findOrCreateInfPersistentItems(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.persistent_item.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), infPersistentItemEpicsFactory.createRemoveEpic(), 
-        /**
-         * Temporal Entity
-         *
-         */
-        infTemporalEntityEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.teEnApi.ownProperties(meta.pk, meta.pkEntity)), InfTemporalEntityActionFactory.OWN_PROPERTIES, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemaObject = (/** @type {?} */ (results));
-            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })), (/**
-         * Epic to load paginated Temporal Entity List
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        action => new Observable((/**
-         * @param {?} globalActions
-         * @return {?}
-         */
-        (globalActions) => {
-            /** @type {?} */
-            const meta = action.meta;
-            /** @type {?} */
-            const apiCal$ = this.teEnApi.temporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
-            /** @type {?} */
-            const pkProject = meta.pk;
-            this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
-        })))))), (/**
-         * Epic to load paginated Alternative Temporal Entity List
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        action => new Observable((/**
-         * @param {?} globalActions
-         * @return {?}
-         */
-        (globalActions) => {
-            /** @type {?} */
-            const meta = action.meta;
-            /** @type {?} */
-            const apiCal$ = this.teEnApi.alternativeTemporalEntityList(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
-            /** @type {?} */
-            const pkProject = null;
-            this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
-        })))))), infTemporalEntityEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.teEnApi
-            .findOrCreateInfTemporalEntities(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.temporal_entity.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), infTemporalEntityEpicsFactory.createRemoveEpic(), 
-        /**
-         * Statement
-         *
-         */
-        infStatementEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk)), InfStatementActionFactory.ALTERNATIVES_INGOING, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.statement.flatten(results);
-            storeFlattened(flattener.getFlattened(), null);
-        })), infStatementEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.statementApi
-            .findOrCreateInfStatements(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.statement.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)), mergeMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        action => new Observable((/**
-         * @param {?} globalActions
-         * @return {?}
-         */
-        (globalActions) => {
-            /** @type {?} */
-            const meta = action.meta;
-            /** @type {?} */
-            const apiCal$ = this.statementApi.paginatedListTargetingEntityPreviews(meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset);
-            /** @type {?} */
-            const pkProject = meta.pk;
-            this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
-        })))))), infStatementEpicsFactory.createRemoveEpic(), infStatementEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.statementApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty)), InfStatementActionFactory.BY_PARAMS, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.statement.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'LOAD');
-        })), infStatementEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.statementApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity)), InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const res = (/** @type {?} */ ((/** @type {?} */ (results))));
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.statement.flatten(res.statements);
-            storeFlattened(flattener.getFlattened(), pk);
-            /** @type {?} */
-            const flattener2 = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener2.digital.flatten(res.digitals);
-            storeFlattened(flattener2.getFlattened(), pk);
-        })), 
-        /**
-         * Text Property
-         *
-         */
-        infTextPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.textPropertyApi
-            .findAlternativeTextProperties(meta.pk, meta.fkEntity, meta.fkClassField)), InfTextPropertyActionFactory.ALTERNATIVES, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.text_property.flatten(results);
-            storeFlattened(flattener.getFlattened(), null);
-        })), infTextPropertyEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.textPropertyApi
-            .findOrCreateInfTextProperties(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.text_property.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk);
-        })), infTextPropertyEpicsFactory.createRemoveEpic());
-    }
-    /**
-     * handles the update of store for paginated temporal entity lists.
-     * @private
-     * @template M
-     * @param {?} action
-     * @param {?} epicsFactory
-     * @param {?} globalActions
-     * @param {?} apiCall$
-     * @param {?} pkProject if null, list is handled as 'repo' list
-     * @return {?}
-     */
-    handleTemporalEntityListAction(action, epicsFactory, globalActions, apiCall$, pkProject) {
-        /** @type {?} */
-        const meta = action.meta;
-        /** @type {?} */
-        const pendingKey = meta.addPending;
-        /** @type {?} */
-        const paginateBy = [
-            { fk_property: meta.pkProperty },
-            { fk_target_class: meta.fkTargetClass },
-            { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
-            { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
-        ];
-        // call action to set pagination loading on true
-        this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
-        // call api to load data
-        apiCall$.subscribe((/**
-         * @param {?} data
-         * @return {?}
-         */
-        (data) => {
-            // call action to store records
-            this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
-            // call action to store pagination
-            this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
-            // call action to conclude the pending request
-            epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
-        }), (/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => {
-            // call action to handle error
-            epicsFactory.onError(globalActions, error, pendingKey, pkProject);
-        }));
-    }
-}
-InfEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-InfEpics.ctorParameters = () => [
-    { type: NotificationsAPIActions },
-    { type: InfPersistentItemApi },
-    { type: InfTemporalEntityApi },
-    { type: InfStatementApi },
-    { type: InfTextPropertyApi },
-    { type: InfActions },
-    { type: ProActions },
-    { type: DatActions },
-    { type: ProInfoProjRelApi },
-    { type: SchemaObjectService }
-];
-if (false) {
-    /** @type {?} */
-    InfEpics.prototype.notification;
-    /** @type {?} */
-    InfEpics.prototype.peItApi;
-    /** @type {?} */
-    InfEpics.prototype.teEnApi;
-    /** @type {?} */
-    InfEpics.prototype.statementApi;
-    /** @type {?} */
-    InfEpics.prototype.textPropertyApi;
-    /** @type {?} */
-    InfEpics.prototype.infActions;
-    /** @type {?} */
-    InfEpics.prototype.proActions;
-    /** @type {?} */
-    InfEpics.prototype.datActions;
-    /** @type {?} */
-    InfEpics.prototype.infoProjRelApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    InfEpics.prototype.schemaObjectService;
+/**
+ * @return {?}
+ */
+function createDatReducer() {
+    return new ReducerFactory(datRoot, datDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/pro.epics.ts
+ * Generated from: lib/redux-store/state-schema/reducers/pro.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class ProEpics {
-    /**
-     * @param {?} notification
-     * @param {?} infActions
-     * @param {?} proActions
-     * @param {?} datActions
-     * @param {?} projectApi
-     * @param {?} infoProjRelApi
-     * @param {?} classProjRelApi
-     * @param {?} profileProjRelApi
-     * @param {?} classFieldConfApi
-     * @param {?} textPropertyApi
-     * @param {?} analysisApi
-     * @param {?} schemaObjectService
-     */
-    constructor(notification, infActions, proActions, datActions, projectApi, infoProjRelApi, classProjRelApi, profileProjRelApi, classFieldConfApi, textPropertyApi, analysisApi, schemaObjectService) {
-        this.notification = notification;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.datActions = datActions;
-        this.projectApi = projectApi;
-        this.infoProjRelApi = infoProjRelApi;
-        this.classProjRelApi = classProjRelApi;
-        this.profileProjRelApi = profileProjRelApi;
-        this.classFieldConfApi = classFieldConfApi;
-        this.textPropertyApi = textPropertyApi;
-        this.analysisApi = analysisApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const proProjectEpicsFactory = new SchemaEpicsFactory(proRoot, 'project', this.proActions.project, this.notification);
-        /** @type {?} */
-        const proInfoProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
-        /** @type {?} */
-        const proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
-        /** @type {?} */
-        const proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory(proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
-        /** @type {?} */
-        const proClassFieldConfigEpicsFactory = new SchemaEpicsFactory(proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
-        /** @type {?} */
-        const proTextPropertyEpicsFactory = new SchemaEpicsFactory(proRoot, 'text_property', this.proActions.text_property, this.notification);
-        /** @type {?} */
-        const proAnalysisEpicsFactory = new SchemaEpicsFactory(proRoot, 'analysis', this.proActions.analysis, this.notification);
-        return combineEpics(
-        /**
-        * ProProject
-        */
-        proProjectEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.projectApi
-            .ofAccount(meta.pk)), ProProjectActionFactory.OF_ACCOUNT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        (results) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_project.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proProjectEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.projectApi
-            .getBasics(meta.pk)), ProProjectActionFactory.LOAD_BASICS, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        (results) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_project.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), 
-        /**
-         * ProInfoProjRel
-         */
-        proInfoProjRelEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.infoProjRelApi
-            .bulkUpdateEprAttributes(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.info_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), proInfoProjRelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.infoProjRelApi
-            .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing)), ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.info_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-         * ProClassFieldConfig
-         */
-        proClassFieldConfigEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.classFieldConfApi.ofProject(meta.pk)), ProClassFieldConfigActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        (results) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_class_field_config.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proClassFieldConfigEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.classFieldConfApi
-            .bulkUpsert(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_class_field_config.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-         * ProProDfhClassProjRel
-         */
-        proDfhClassProjRelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.classProjRelApi.ofProject(meta.pk)), ProDfhClassProjRelActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        (results) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_dfh_class_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proDfhClassProjRelEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.classProjRelApi
-            .bulkUpsert(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_dfh_class_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-        * ProDfhProfileProjRel
-        */
-        proDfhProfileProjRelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.profileProjRelApi.ofProject(meta.pk)), ProDfhProfileProjRelActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @return {?}
-         */
-        (results) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_dfh_profile_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened());
-        })), proDfhProfileProjRelEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.profileProjRelApi
-            .bulkUpsert(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.pro_dfh_profile_proj_rel.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        })), 
-        /**
-        * ProTextProperty
-        */
-        proTextPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.textPropertyApi.ofProject(meta.pk)), ProTextPropertyActionFactory.OF_PROJECT, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
-            this.schemaObjectService.storeSchemaObject(schemas, pk);
-        })), proTextPropertyEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.textPropertyApi
-            .bulkUpsert(meta.pk, meta.items)), (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemas = (/** @type {?} */ ((/** @type {?} */ (results))));
-            this.schemaObjectService.storeSchemaObject(schemas, pk);
-        })), proTextPropertyEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.textPropertyApi.bulkDelete(meta.pk, meta.items))), 
-        /**
-        * ProAnalysis
-        */
-        // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
-        //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
-        //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
-        //   (results) => {
-        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-        //     flattener.analysis.flatten(results);
-        //     storeFlattened(flattener.getFlattened());
-        //   }
-        // ),
-        // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
-        //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
-        //   (results, pk) => {
-        //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-        //     flattener.analysis.flatten(results);
-        //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        //   }
-        // ),
-        proAnalysisEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map((/**
-         * @param {?} item
-         * @return {?}
-         */
-        item => item.pk_entity))))));
-    }
-}
-ProEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-ProEpics.ctorParameters = () => [
-    { type: NotificationsAPIActions },
-    { type: InfActions },
-    { type: ProActions },
-    { type: DatActions },
-    { type: ProProjectApi },
-    { type: ProInfoProjRelApi },
-    { type: ProDfhClassProjRelApi },
-    { type: ProDfhProfileProjRelApi },
-    { type: ProClassFieldConfigApi },
-    { type: ProTextPropertyApi },
-    { type: AnalysisService },
-    { type: SchemaObjectService }
-];
-if (false) {
-    /** @type {?} */
-    ProEpics.prototype.notification;
-    /** @type {?} */
-    ProEpics.prototype.infActions;
-    /** @type {?} */
-    ProEpics.prototype.proActions;
-    /** @type {?} */
-    ProEpics.prototype.datActions;
-    /** @type {?} */
-    ProEpics.prototype.projectApi;
-    /** @type {?} */
-    ProEpics.prototype.infoProjRelApi;
-    /** @type {?} */
-    ProEpics.prototype.classProjRelApi;
-    /** @type {?} */
-    ProEpics.prototype.profileProjRelApi;
-    /** @type {?} */
-    ProEpics.prototype.classFieldConfApi;
-    /** @type {?} */
-    ProEpics.prototype.textPropertyApi;
-    /** @type {?} */
-    ProEpics.prototype.analysisApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    ProEpics.prototype.schemaObjectService;
+/**
+ * @return {?}
+ */
+function createProReducer() {
+    return new ReducerFactory(proRoot, proDefinitions).createReducers();
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/sys.epics.ts
+ * Generated from: lib/redux-store/state-schema/reducers/war.reducer.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class SysEpics {
-    /**
-     * @param {?} actions
-     * @param {?} notification
-     * @param {?} sysRelevantClassApi
-     * @param {?} sysConfigApi
-     */
-    constructor(actions, notification, sysRelevantClassApi, sysConfigApi) {
-        this.actions = actions;
-        this.notification = notification;
-        this.sysRelevantClassApi = sysRelevantClassApi;
-        this.sysConfigApi = sysConfigApi;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
-        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
-        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
-        /** @type {?} */
-        const configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
-        return combineEpics(
-        // SystemRelevantClass Epics
-        systemRelevantClassEpicsFactory.createLoadEpic((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => this.sysRelevantClassApi.find()), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items))), 
-        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
-        configEpicsFactory.createLoadEpic((/**
-         * @return {?}
-         */
-        () => this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
-         * @param {?} x
-         * @return {?}
-         */
-        x => [x])))), ''));
-    }
+/**
+ * @return {?}
+ */
+function createWarReducer() {
+    return new ReducerFactory(warRoot, warDefinitions).createReducers();
 }
-SysEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-SysEpics.ctorParameters = () => [
-    { type: SysActions },
-    { type: NotificationsAPIActions },
-    { type: SysSystemRelevantClassApi },
-    { type: SystemConfigurationService }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.notification;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.sysRelevantClassApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.sysConfigApi;
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/reducers/tab.reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function createTabReducer() {
+    return new ReducerFactory(tabRoot, tabDefinitions).createReducers();
 }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/root/root-reducer.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
+/** @type {?} */
+const sandboxStateReducer = (/**
+ * @param {?=} lastState
+ * @param {?=} action
+ * @return {?}
+ */
+(lastState = {}, action) => {
+    if (action.type === INIT_SANDBOX_STATE) {
+        lastState = Object.assign({}, lastState, action.payload);
+    }
+    return lastState;
+});
+/** @type {?} */
+const pendingRequestReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.meta && action.meta.addPending) {
+        /** @type {?} */
+        const uuid = action.meta.addPending;
+        state = Object.assign({}, state, { [uuid]: true });
+        // console.log('add ' + uuid + ' ' + Date.now())
+    }
+    if (action && action.meta && action.meta.removePending) {
+        /** @type {?} */
+        const uuid = action.meta.removePending;
+        state = Object.assign({}, omit([uuid], state));
+    }
+    return state;
+});
+/** @type {?} */
+const resolvedRequestReducer = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.meta && action.meta.removePending) {
+        /** @type {?} */
+        const uuid = action.meta.removePending;
+        state = Object.assign({}, state, { [uuid]: action.meta });
+    }
+    return state;
+});
+/** @type {?} */
+const cleanupResolved = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.type === 'CLEAN_UP_RESOLVED') {
+        /** @type {?} */
+        const uuid = action.meta.uuid;
+        state = Object.assign({}, omit([uuid], state));
+        // console.log('resolve ' + uuid + ' ' + Date.now().toString())
+    }
+    return state;
+});
+/** @type {?} */
+const SET_APP_STATE = 'SET_APP_STATE';
+/** @type {?} */
+const setAppState = (/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+(state = {}, action) => {
+    if (action && action.type === SET_APP_STATE) {
+        state = action.payload;
+    }
+    return state;
+});
+/** @type {?} */
+const rootReducer = composeReducers(defaultFormReducer(), combineReducers({
+    account: accountRootReducer,
+    loadingBar: loadingBarReducer,
+    activeProject: activeProjectReducer,
+    routes: routerReducer,
+    information: informationReducer,
+    sources: sourceListReducer,
+    sandboxState: sandboxStateReducer,
+    projects: createProjectsReducer(),
+    sys: createSysReducer(),
+    dfh: createDfhReducer(),
+    inf: createInfReducer(),
+    dat: createDatReducer(),
+    pro: createProReducer(),
+    war: createWarReducer(),
+    tab: createTabReducer(),
+    pending: pendingRequestReducer,
+    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
+}), setAppState);
 
 /**
  * @fileoverview added by tsickle
@@ -8014,446 +8747,359 @@ WarEpics.ctorParameters = () => [];
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/index.ts
+ * Generated from: lib/redux-store/module/redux-store.module.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
 /**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/root/root-epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * Function to use in combination with rxjs/operator .filter()
+ * in order to get only actions dispached with a fractalkey
+ * equal to the provided path.
+ *
+ * example:
+ * pipe(
+ *    filter(action => ofSubstore(c.basePath)(action)),
+ *    ofType('Foo')
+ * )
+ * \@param path
+ * @type {?}
  */
-class RootEpics {
+const ofSubstore = (/**
+ * @param {?} path
+ * @return {?}
+ */
+(path) => (/**
+ * @param {?} action
+ * @return {?}
+ */
+(action) => {
+    if (!('@angular-redux::fractalkey' in action))
+        return false;
+    /** @type {?} */
+    const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
+    /** @type {?} */
+    const bool = equals(actionPath, path);
+    return bool;
+}));
+/** @type {?} */
+const APP_INITIAL_STATE = new InjectionToken('app.INITIAL_STATE');
+const ɵ0$8 = {};
+class ReduxStoreModule {
     /**
-     * @param {?} loadingBarEpics
-     * @param {?} notificationEpics
-     * @param {?} activeProjectEpics
-     * @param {?} accountEpics
-     * @param {?} systemEpics
-     * @param {?} dfhEpics
-     * @param {?} infEpics
-     * @param {?} datEpics
-     * @param {?} proEpics
-     * @param {?} actionResolver
+     * @param {?} ngRedux
+     * @param {?} devTools
+     * @param {?} rootEpics
+     * @param {?} initialState
      */
-    constructor(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, systemEpics, dfhEpics, infEpics, datEpics, proEpics, actionResolver) {
-        this.loadingBarEpics = loadingBarEpics;
-        this.notificationEpics = notificationEpics;
-        this.activeProjectEpics = activeProjectEpics;
-        this.accountEpics = accountEpics;
-        this.systemEpics = systemEpics;
-        this.dfhEpics = dfhEpics;
-        this.infEpics = infEpics;
-        this.datEpics = datEpics;
-        this.proEpics = proEpics;
-        this.actionResolver = actionResolver;
-        this.rootEpicStream$ = new BehaviorSubject(combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.systemEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), 
-        // important: this needs to be the last epic in
-        this.actionResolver.createEpics()));
-        this.rootEpic = (/**
-         * @param {?} action$
-         * @param {?} state$
-         * @param {?=} dependencies
-         * @return {?}
-         */
-        (action$, state$, dependencies = undefined) => {
-            return this.rootEpicStream$.pipe(mergeMap((/**
-             * @param {?} epic
-             * @return {?}
-             */
-            (epic) => epic(action$, state$, dependencies))));
-        });
-    }
-    /**
-     * @return {?}
-     */
-    getRootEpic() {
-        return this.rootEpic;
-    }
-    /**
-     * Adds an epic to the RootEpic middleware
-     * @param {?} epic that will be added to the RootEpics
-     * @return {?}
-     */
-    addEpic(epic) {
-        this.rootEpicStream$.next(epic);
+    constructor(ngRedux, devTools, 
+    // ngReduxRouter: NgReduxRouter,
+    rootEpics, initialState) {
+        this.ngRedux = ngRedux;
+        /** @type {?} */
+        const epicMiddleware = createEpicMiddleware();
+        // Tell Redux about our reducers and epics. If the Redux DevTools
+        // chrome extension is available in the browser, tell Redux about
+        // it too.
+        ngRedux.configureStore(
+        // RootReducer
+        rootReducer, 
+        // Initial state
+        initialState, 
+        // Middleware
+        [
+            // createLogger(),
+            epicMiddleware,
+            dynamicMiddlewares,
+        ], 
+        // Enhancers
+        devTools.isEnabled() ? [devTools.enhancer()] : []);
+        // Apply rootEpic
+        epicMiddleware.run(rootEpics.getRootEpic());
+        // // Enable syncing of Angular router state with our Redux store.
+        // if (ngReduxRouter) {
+        //     ngReduxRouter.initialize();
+        // }
+        // Enable syncing of Angular form state with our Redux store.
+        // provideReduxForms(ngRedux);
     }
 }
-RootEpics.decorators = [
-    { type: Injectable }
+ReduxStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    NgReduxModule,
+                    // for gui-state epics
+                    SlimLoadingBarModule,
+                    ToastyModule.forRoot(),
+                    // for schema-state epics
+                    SDKBrowserModule.forRoot(),
+                    ApiModule,
+                ],
+                providers: [
+                    AccountActions,
+                    ActiveProjectActions,
+                    LoadingBarActions,
+                    NotificationsAPIActions,
+                    AccountEpics,
+                    ActiveProjectEpics,
+                    LoadingBarEpics,
+                    NotificationsAPIEpics,
+                    DatActions,
+                    DfhActions,
+                    InfActions,
+                    ProActions,
+                    SysActions,
+                    TabActions,
+                    WarActions,
+                    DatEpics,
+                    DfhEpics,
+                    InfEpics,
+                    ProEpics,
+                    SysEpics,
+                    TabEpics,
+                    WarEpics,
+                    RootEpics,
+                    // SchemaActionsFactory,
+                    SchemaObjectService,
+                    { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
+                ]
+            },] }
 ];
 /** @nocollapse */
-RootEpics.ctorParameters = () => [
-    { type: LoadingBarEpics },
-    { type: NotificationsAPIEpics },
-    { type: ActiveProjectEpics },
-    { type: AccountEpics },
-    { type: SysEpics },
-    { type: DfhEpics },
-    { type: InfEpics },
-    { type: DatEpics },
-    { type: ProEpics },
-    { type: ActionResolverEpics }
+ReduxStoreModule.ctorParameters = () => [
+    { type: NgRedux },
+    { type: DevToolsExtension },
+    { type: RootEpics },
+    { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] }
 ];
 if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.rootEpicStream$;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.rootEpic;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.loadingBarEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.notificationEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.activeProjectEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.accountEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.systemEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.dfhEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.infEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.datEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.proEpics;
-    /**
-     * @type {?}
-     * @private
-     */
-    RootEpics.prototype.actionResolver;
+    /** @type {?} */
+    ReduxStoreModule.prototype.ngRedux;
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/account.reducers.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE = {
-    account: undefined,
-    roles: undefined
-};
-/** @type {?} */
-const accountRootReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-(lastState = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case AccountActions.LOGIN_SUCCEEDED:
-            lastState = Object.assign({}, lastState, { account: action.meta.account });
-            break;
-        case AccountActions.ACCOUNT_UPDATED:
-            lastState = Object.assign({}, lastState, { account: action.meta.account });
-            break;
-        case AccountActions.LOAD_ROLES_SUCCEEDED:
-            lastState = Object.assign({}, lastState, { roles: action.meta.accountRoles });
-            break;
-        case AccountActions.LOAD_ROLES_FAILED:
-            lastState = Object.assign({}, lastState, { roles: [] });
-            break;
-    }
-    return lastState;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/active-project.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$1 = {
-    label: '',
-    list: '',
-    uiIdSerial: 0,
-    panelSerial: 0,
-    focusedPanel: 0,
-    panels: []
-};
-/** @type {?} */
-const activeProjectReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-(state = INITIAL_STATE$1, action) => {
-    /** @type {?} */
-    let pi;
-    /** @type {?} */
-    let ti;
-    /** @type {?} */
-    let ppi;
-    /** @type {?} */
-    let cpi;
-    /** @type {?} */
-    let pti;
-    /** @type {?} */
-    let cti;
-    switch (action.type) {
-        /************************************************************************************
-         * Load project data (metadata, crm)
-        ************************************************************************************/
-        case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
-            state = Object.assign({}, state, action.meta.projectPreview);
-            break;
-        case ActiveProjectActions.LOAD_PROJECT_CONFIG:
-            state = Object.assign({}, state, { loadingConfigData: true });
-            break;
-        case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
-            state = Object.assign({}, state, { configDataInitialized: true, loadingConfigData: false });
-            break;
-        /************************************************************************************
-         * Layout -- Tabs
-        ************************************************************************************/
-        case ActiveProjectActions.SET_PANELS:
-            state = Object.assign({}, state, { panels: action.meta.panels, uiIdSerial: action.meta.uiIdSerial, panelSerial: action.meta.panelSerial, focusedPanel: action.meta.focusedPanel });
-            break;
-        case ActiveProjectActions.SET_LIST_TYPE:
-            state = Object.assign({}, state, { list: action.meta.list });
-            break;
-        case ActiveProjectActions.ACTIVATE_TAB:
-            pi = action.meta.panelIndex;
-            ti = action.meta.tabIndex;
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs].map((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => {
-                            tab.active = (index === ti);
-                            return tab;
-                        })) })
-                }) });
-            break;
-        case ActiveProjectActions.MOVE_TAB:
-            ppi = action.meta.previousPanelIndex;
-            cpi = action.meta.currentPanelIndex;
-            pti = action.meta.previousTabIndex;
-            cti = action.meta.currentTabIndex;
-            if (ppi === cpi) {
-                /** @type {?} */
-                const tabs = [...state.panels[cpi].tabs];
-                moveItemInArray(tabs, pti, cti);
-                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                        [cpi]: Object.assign({}, state.panels[cpi], { tabs })
-                    }) });
-            }
-            else {
-                /** @type {?} */
-                const pTabs = [...state.panels[ppi].tabs];
-                /** @type {?} */
-                const cTabs = [...state.panels[cpi].tabs];
-                transferArrayItem(pTabs, cTabs, pti, cti);
-                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                        [ppi]: Object.assign({}, state.panels[ppi], { tabs: pTabs.map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            (tab, index) => {
-                                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
-                                return tab;
-                            })) }),
-                        [cpi]: Object.assign({}, state.panels[cpi], { tabs: cTabs.map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            (tab, index) => {
-                                tab.active = (index === cti);
-                                return tab;
-                            })) })
-                    }) });
-            }
-            break;
-        case ActiveProjectActions.ADD_TAB:
-            if (state.panels.length === 0) {
-                state = Object.assign({}, state, { panels: [
-                        {
-                            id: state.panelSerial,
-                            tabs: []
-                        }
-                    ], focusedPanel: 0, panelSerial: state.panelSerial + 1 });
-            }
-            pi = state.focusedPanel;
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [pi]: Object.assign({}, state.panels[pi], { tabs: [
-                            ...state.panels[pi].tabs.map((/**
-                             * @param {?} t
-                             * @return {?}
-                             */
-                            t => {
-                                t.active = false;
-                                return t;
-                            })),
-                            Object.assign({}, omit(['pathSegment'], action.meta.tab), { path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()] })
-                        ] })
-                }), uiIdSerial: (state.uiIdSerial + 1) });
-            break;
-        case ActiveProjectActions.CLOSE_TAB:
-            pi = action.meta.panelIndex;
-            ti = action.meta.tabIndex;
-            // remove the closing tab
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
-                            .filter((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => index !== ti)) })
-                }) });
-            // activate a sibling tab, if needed and possible
-            if (!state.panels[pi].tabs.find((/**
-             * @param {?} t
-             * @return {?}
-             */
-            t => t.active))) {
-                state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                        [pi]: Object.assign({}, state.panels[pi], { tabs: [...state.panels[pi].tabs]
-                                .map((/**
-                             * @param {?} tab
-                             * @param {?} index
-                             * @return {?}
-                             */
-                            (tab, index) => {
-                                tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
-                                return tab;
-                            })) })
-                    }) });
-            }
-            break;
-        case ActiveProjectActions.CLOSE_PANEL:
-            pi = action.meta.panelIndex;
-            /** @type {?} */
-            const panels = [...state.panels];
-            panels.splice(pi, 1);
-            state = Object.assign({}, state, { panels });
-            break;
-        case ActiveProjectActions.FOCUS_PANEL:
-            state = Object.assign({}, state, { focusedPanel: action.meta.panelIndex });
-            break;
-        case ActiveProjectActions.SPLIT_PANEL:
-            ppi = action.meta.previousPanelIndex;
-            ti = action.meta.tabIndex;
-            cpi = action.meta.currentPanelIndex;
-            /** @type {?} */
-            const moveTab = state.panels[ppi].tabs[ti];
-            // removes tab from old panel
-            state = Object.assign({}, state, { panels: Object.assign([...state.panels], {
-                    [ppi]: Object.assign({}, state.panels[ppi], { tabs: [...state.panels[ppi].tabs]
-                            .filter((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => index !== ti))
-                            .map((/**
-                         * @param {?} tab
-                         * @param {?} index
-                         * @return {?}
-                         */
-                        (tab, index) => {
-                            if (index === 0)
-                                tab.active = true;
-                            return tab;
-                        })) })
-                }) });
-            // insert a new panel at position of cpi
-            /** @type {?} */
-            const newPanels = [...state.panels];
-            newPanels.splice(cpi, 0, {
-                id: state.panelSerial,
-                tabs: [moveTab]
-            });
-            state = Object.assign({}, state, { panels: newPanels, panelSerial: state.panelSerial + 1 });
-            break;
-        case ActiveProjectActions.SET_REFINING_CHUNK:
-            state = Object.assign({}, state, { refiningChunk: action.payload.refiningChunk });
-            break;
-        case ActiveProjectActions.SET_CREATING_MENTIONING:
-            state = Object.assign({}, state, { creatingMentioning: action.payload.creatingMentioning });
-            break;
-        /************************************************************************************
-        * Highlighting of mentionings in the gui
-        ************************************************************************************/
-        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
-            state = Object.assign({}, state, { mentioningsFocusedInText: action.payload.mentioningsFocusedInText });
-            break;
-        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
-            state = Object.assign({}, state, { mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable });
-            break;
-        /************************************************************************************
-         * Destroy the active project state (on closing a project)
-        ************************************************************************************/
-        case ActiveProjectActions.DESTROY:
-            state = INITIAL_STATE$1;
-            break;
-    }
-    return state;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/account.model.ts
+ * Generated from: lib/redux-store/root/models/model.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function AccountRole() { }
+function InfObject() { }
 if (false) {
     /** @type {?} */
-    AccountRole.prototype.id;
+    InfObject.prototype.persistent_item;
     /** @type {?} */
-    AccountRole.prototype.name;
+    InfObject.prototype.temporal_entity;
+    /** @type {?} */
+    InfObject.prototype.statement;
+    /** @type {?} */
+    InfObject.prototype.place;
+    /** @type {?} */
+    InfObject.prototype.language;
+    /** @type {?} */
+    InfObject.prototype.appellation;
+    /** @type {?} */
+    InfObject.prototype.time_primitive;
+    /** @type {?} */
+    InfObject.prototype.text_property;
+    /** @type {?} */
+    InfObject.prototype.lang_string;
+    /** @type {?} */
+    InfObject.prototype.dimension;
 }
 /**
  * @record
  */
-function IAccount() { }
+function ProObject() { }
 if (false) {
     /** @type {?} */
-    IAccount.prototype.account;
+    ProObject.prototype.info_proj_rel;
+}
+/**
+ * @record
+ */
+function DatObject() { }
+if (false) {
+    /** @type {?} */
+    DatObject.prototype.digital;
+}
+/**
+ * @record
+ */
+function WarObject() { }
+if (false) {
+    /** @type {?} */
+    WarObject.prototype.entity_preview;
+}
+/**
+ * @record
+ */
+function SchemaObject() { }
+if (false) {
     /** @type {?|undefined} */
-    IAccount.prototype.roles;
+    SchemaObject.prototype.inf;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.pro;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.dat;
+    /** @type {?|undefined} */
+    SchemaObject.prototype.war;
+}
+/**
+ * @record
+ */
+function PaginationObject() { }
+if (false) {
+    /** @type {?} */
+    PaginationObject.prototype.count;
+    /** @type {?} */
+    PaginationObject.prototype.schemas;
+    /** @type {?} */
+    PaginationObject.prototype.statements;
+}
+/**
+ * @record
+ */
+function IAppState() { }
+if (false) {
+    /** @type {?|undefined} */
+    IAppState.prototype.account;
+    /** @type {?|undefined} */
+    IAppState.prototype.loadingBar;
+    /** @type {?|undefined} */
+    IAppState.prototype.projects;
+    /** @type {?|undefined} */
+    IAppState.prototype.sys;
+    /** @type {?|undefined} */
+    IAppState.prototype.dfh;
+    /** @type {?|undefined} */
+    IAppState.prototype.inf;
+    /** @type {?|undefined} */
+    IAppState.prototype.dat;
+    /** @type {?|undefined} */
+    IAppState.prototype.pro;
+    /** @type {?|undefined} */
+    IAppState.prototype.war;
+    /** @type {?|undefined} */
+    IAppState.prototype.tab;
+    /** @type {?|undefined} */
+    IAppState.prototype.activeProject;
+    /** @type {?|undefined} */
+    IAppState.prototype.routes;
+    /** @type {?|undefined} */
+    IAppState.prototype.information;
+    /** @type {?|undefined} */
+    IAppState.prototype.sources;
+    /** @type {?|undefined} */
+    IAppState.prototype.sandboxState;
+    /** @type {?|undefined} */
+    IAppState.prototype.pending;
+}
+/**
+ * @record
+ * @template T
+ */
+function ByPk() { }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/projects.model.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function IProject() { }
+if (false) {
+    /** @type {?} */
+    IProject.prototype.record;
+}
+/**
+ * @record
+ */
+function IProjectList() { }
+if (false) {
+    /** @type {?} */
+    IProjectList.prototype.records;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/notifications.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function NotificationsI() { }
+if (false) {
+    /** @type {?} */
+    NotificationsI.prototype.type;
+    /** @type {?} */
+    NotificationsI.prototype.options;
+}
+// Class of this slice of store
+class Notifications {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    Notifications.prototype.type;
+    /** @type {?} */
+    Notifications.prototype.options;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/loading-bar.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function LoadingBar() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoadingBar.prototype.loading;
+    /** @type {?|undefined} */
+    LoadingBar.prototype.progress;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/list.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+class List {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+        if (true) {
+        }
+        else {
+        }
+    }
+}
+if (false) {
+    /** @type {?} */
+    List.prototype.searchString;
+    /** @type {?} */
+    List.prototype.pkAllowedClasses;
+    /** @type {?} */
+    List.prototype.collectionSize;
+    /** @type {?} */
+    List.prototype.items;
+    /** @type {?} */
+    List.prototype.loading;
+    /** @type {?} */
+    List.prototype.error;
 }
 
 /**
@@ -8757,756 +9403,29 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/entity-list.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class Information {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    Information.prototype.items;
-    /** @type {?} */
-    Information.prototype.loading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/list.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-class List {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-        if (true) {
-        }
-        else {
-        }
-    }
-}
-if (false) {
-    /** @type {?} */
-    List.prototype.searchString;
-    /** @type {?} */
-    List.prototype.pkAllowedClasses;
-    /** @type {?} */
-    List.prototype.collectionSize;
-    /** @type {?} */
-    List.prototype.items;
-    /** @type {?} */
-    List.prototype.loading;
-    /** @type {?} */
-    List.prototype.error;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/loading-bar.models.ts
+ * Generated from: lib/redux-store/state-gui/models/account.model.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function LoadingBar() { }
-if (false) {
-    /** @type {?|undefined} */
-    LoadingBar.prototype.loading;
-    /** @type {?|undefined} */
-    LoadingBar.prototype.progress;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/notifications.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function NotificationsI() { }
+function AccountRole() { }
 if (false) {
     /** @type {?} */
-    NotificationsI.prototype.type;
+    AccountRole.prototype.id;
     /** @type {?} */
-    NotificationsI.prototype.options;
-}
-// Class of this slice of store
-class Notifications {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    Notifications.prototype.type;
-    /** @type {?} */
-    Notifications.prototype.options;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/projects.model.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function IProject() { }
-if (false) {
-    /** @type {?} */
-    IProject.prototype.record;
+    AccountRole.prototype.name;
 }
 /**
  * @record
  */
-function IProjectList() { }
+function IAccount() { }
 if (false) {
     /** @type {?} */
-    IProjectList.prototype.records;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/source-list.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-class SourceList {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    SourceList.prototype.list;
-    /** @type {?} */
-    SourceList.prototype.loading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/entity-list.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$2 = new Information();
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function informationReducer(state = INITIAL_STATE$2, a) {
-    /** @type {?} */
-    const action = (/** @type {?} */ (a));
-    switch (action.type) {
-        /*****************************************************
-        * Reducers called on destroy of component
-        *****************************************************/
-        case InformationAPIActions.DESTROY:
-            state = {};
-            break;
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/loading-bar.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$3 = {
-    loading: false,
-    progress: 0,
-};
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function loadingBarReducer(state = INITIAL_STATE$3, a) {
-    /** @type {?} */
-    const action = (/** @type {?} */ (a));
-    switch (action.type) {
-        case LoadingBarActions.START:
-            return Object.assign({}, state, { loading: true });
-        case LoadingBarActions.STOP:
-            return Object.assign({}, state, { loading: false });
-        case LoadingBarActions.COPMLETE:
-            return Object.assign({}, state, { loading: false });
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/notifications.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$4 = new Notifications();
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function notificationsReducer(state = INITIAL_STATE$4, a) {
-    /** @type {?} */
-    const action = (/** @type {?} */ (a));
-    switch (action.type) {
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/projects.reducers.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$5 = {
-    records: []
-};
-/** @type {?} */
-const projectListReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-(lastState = INITIAL_STATE$5, action) => {
-    switch (action.type) {
-        case ProjectsActions.LOAD_PROJECTS_SUCCEEDED: return Object.assign({}, lastState, { records: action.payload.map((/**
-             * @param {?} record
-             * @return {?}
-             */
-            (record) => ({ record: record }))) });
-    }
-    return lastState;
-});
-const ɵ0$7 = projectListReducer;
-/** @type {?} */
-const createProjectsReducer = (/**
- * @return {?}
- */
-() => {
-    return projectListReducer;
-});
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/source-list.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INITIAL_STATE$6 = new SourceList();
-/**
- * @param {?=} state
- * @param {?=} a
- * @return {?}
- */
-function sourceListReducer(state = INITIAL_STATE$6, a) {
-    /** @type {?} */
-    const action = (/** @type {?} */ (a));
-    switch (action.type) {
-        case SourceListAPIActions.INITIALIZE_LIST:
-            state = Object.assign({}, state, { list: {
-                    pkAllowedClasses: action.meta.pkAllowedClasses
-                } });
-            break;
-        /*****************************************************
-        * Reducers called on destroy of component
-        *****************************************************/
-        case SourceListAPIActions.DESTROY:
-            state = {};
-            break;
-    }
-    return state;
-}
-;
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/reducers/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/dat.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createDatReducer() {
-    return new ReducerFactory(datRoot, datDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/dfh.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createDfhReducer() {
-    return new ReducerFactory('dfh', dfhDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/inf.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createInfReducer() {
-    return new ReducerFactory(infRoot, infDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/pro.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createProReducer() {
-    return new ReducerFactory(proRoot, proDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/sys.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createSysReducer() {
-    return new ReducerFactory(sysRoot, sysDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/tab.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createTabReducer() {
-    return new ReducerFactory(tabRoot, tabDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/war.reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function createWarReducer() {
-    return new ReducerFactory(warRoot, warDefinitions).createReducers();
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/reducers/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/root/root-reducer.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
-/** @type {?} */
-const sandboxStateReducer = (/**
- * @param {?=} lastState
- * @param {?=} action
- * @return {?}
- */
-(lastState = {}, action) => {
-    if (action.type === INIT_SANDBOX_STATE) {
-        lastState = Object.assign({}, lastState, action.payload);
-    }
-    return lastState;
-});
-/** @type {?} */
-const pendingRequestReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-(state = {}, action) => {
-    if (action && action.meta && action.meta.addPending) {
-        /** @type {?} */
-        const uuid = action.meta.addPending;
-        state = Object.assign({}, state, { [uuid]: true });
-        // console.log('add ' + uuid + ' ' + Date.now())
-    }
-    if (action && action.meta && action.meta.removePending) {
-        /** @type {?} */
-        const uuid = action.meta.removePending;
-        state = Object.assign({}, omit([uuid], state));
-    }
-    return state;
-});
-/** @type {?} */
-const resolvedRequestReducer = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-(state = {}, action) => {
-    if (action && action.meta && action.meta.removePending) {
-        /** @type {?} */
-        const uuid = action.meta.removePending;
-        state = Object.assign({}, state, { [uuid]: action.meta });
-    }
-    return state;
-});
-/** @type {?} */
-const cleanupResolved = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-(state = {}, action) => {
-    if (action && action.type === 'CLEAN_UP_RESOLVED') {
-        /** @type {?} */
-        const uuid = action.meta.uuid;
-        state = Object.assign({}, omit([uuid], state));
-        // console.log('resolve ' + uuid + ' ' + Date.now().toString())
-    }
-    return state;
-});
-/** @type {?} */
-const SET_APP_STATE = 'SET_APP_STATE';
-/** @type {?} */
-const setAppState = (/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-(state = {}, action) => {
-    if (action && action.type === SET_APP_STATE) {
-        state = action.payload;
-    }
-    return state;
-});
-/** @type {?} */
-const rootReducer = composeReducers(defaultFormReducer(), combineReducers({
-    account: accountRootReducer,
-    loadingBar: loadingBarReducer,
-    activeProject: activeProjectReducer,
-    routes: routerReducer,
-    information: informationReducer,
-    sources: sourceListReducer,
-    sandboxState: sandboxStateReducer,
-    projects: createProjectsReducer(),
-    sys: createSysReducer(),
-    dfh: createDfhReducer(),
-    inf: createInfReducer(),
-    dat: createDatReducer(),
-    pro: createProReducer(),
-    war: createWarReducer(),
-    tab: createTabReducer(),
-    pending: pendingRequestReducer,
-    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
-}), setAppState);
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/module/redux-store.module.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Function to use in combination with rxjs/operator .filter()
- * in order to get only actions dispached with a fractalkey
- * equal to the provided path.
- *
- * example:
- * pipe(
- *    filter(action => ofSubstore(c.basePath)(action)),
- *    ofType('Foo')
- * )
- * \@param path
- * @type {?}
- */
-const ofSubstore = (/**
- * @param {?} path
- * @return {?}
- */
-(path) => (/**
- * @param {?} action
- * @return {?}
- */
-(action) => {
-    if (!('@angular-redux::fractalkey' in action))
-        return false;
-    /** @type {?} */
-    const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
-    /** @type {?} */
-    const bool = equals(actionPath, path);
-    return bool;
-}));
-/** @type {?} */
-const APP_INITIAL_STATE = new InjectionToken('app.INITIAL_STATE');
-const ɵ0$8 = {};
-class ReduxStoreModule {
-    /**
-     * @param {?} ngRedux
-     * @param {?} devTools
-     * @param {?} rootEpics
-     * @param {?} initialState
-     */
-    constructor(ngRedux, devTools, 
-    // ngReduxRouter: NgReduxRouter,
-    rootEpics, initialState) {
-        this.ngRedux = ngRedux;
-        /** @type {?} */
-        const epicMiddleware = createEpicMiddleware();
-        // Tell Redux about our reducers and epics. If the Redux DevTools
-        // chrome extension is available in the browser, tell Redux about
-        // it too.
-        ngRedux.configureStore(
-        // RootReducer
-        rootReducer, 
-        // Initial state
-        initialState, 
-        // Middleware
-        [
-            // createLogger(),
-            epicMiddleware,
-            dynamicMiddlewares,
-        ], 
-        // Enhancers
-        devTools.isEnabled() ? [devTools.enhancer()] : []);
-        // Apply rootEpic
-        epicMiddleware.run(rootEpics.getRootEpic());
-        // // Enable syncing of Angular router state with our Redux store.
-        // if (ngReduxRouter) {
-        //     ngReduxRouter.initialize();
-        // }
-        // Enable syncing of Angular form state with our Redux store.
-        // provideReduxForms(ngRedux);
-    }
-}
-ReduxStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    NgReduxModule,
-                ],
-                providers: [
-                    AccountActions,
-                    ActiveProjectActions,
-                    LoadingBarActions,
-                    NotificationsAPIActions,
-                    AccountEpics,
-                    ActiveProjectEpics,
-                    LoadingBarEpics,
-                    NotificationsAPIEpics,
-                    DatActions,
-                    DfhActions,
-                    InfActions,
-                    ProActions,
-                    SysActions,
-                    TabActions,
-                    WarActions,
-                    DatEpics,
-                    DfhEpics,
-                    InfEpics,
-                    ProEpics,
-                    SysEpics,
-                    TabEpics,
-                    WarEpics,
-                    RootEpics,
-                    SchemaActionsFactory,
-                    SchemaObjectService,
-                    { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
-                ]
-            },] }
-];
-/** @nocollapse */
-ReduxStoreModule.ctorParameters = () => [
-    { type: NgRedux },
-    { type: DevToolsExtension },
-    { type: RootEpics },
-    { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] }
-];
-if (false) {
-    /** @type {?} */
-    ReduxStoreModule.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/root/models/model.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function InfObject() { }
-if (false) {
-    /** @type {?} */
-    InfObject.prototype.persistent_item;
-    /** @type {?} */
-    InfObject.prototype.temporal_entity;
-    /** @type {?} */
-    InfObject.prototype.statement;
-    /** @type {?} */
-    InfObject.prototype.place;
-    /** @type {?} */
-    InfObject.prototype.language;
-    /** @type {?} */
-    InfObject.prototype.appellation;
-    /** @type {?} */
-    InfObject.prototype.time_primitive;
-    /** @type {?} */
-    InfObject.prototype.text_property;
-    /** @type {?} */
-    InfObject.prototype.lang_string;
-    /** @type {?} */
-    InfObject.prototype.dimension;
-}
-/**
- * @record
- */
-function ProObject() { }
-if (false) {
-    /** @type {?} */
-    ProObject.prototype.info_proj_rel;
-}
-/**
- * @record
- */
-function DatObject() { }
-if (false) {
-    /** @type {?} */
-    DatObject.prototype.digital;
-}
-/**
- * @record
- */
-function WarObject() { }
-if (false) {
-    /** @type {?} */
-    WarObject.prototype.entity_preview;
-}
-/**
- * @record
- */
-function SchemaObject() { }
-if (false) {
+    IAccount.prototype.account;
     /** @type {?|undefined} */
-    SchemaObject.prototype.inf;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.pro;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.dat;
-    /** @type {?|undefined} */
-    SchemaObject.prototype.war;
+    IAccount.prototype.roles;
 }
-/**
- * @record
- */
-function PaginationObject() { }
-if (false) {
-    /** @type {?} */
-    PaginationObject.prototype.count;
-    /** @type {?} */
-    PaginationObject.prototype.schemas;
-    /** @type {?} */
-    PaginationObject.prototype.statements;
-}
-/**
- * @record
- */
-function IAppState() { }
-if (false) {
-    /** @type {?|undefined} */
-    IAppState.prototype.account;
-    /** @type {?|undefined} */
-    IAppState.prototype.loadingBar;
-    /** @type {?|undefined} */
-    IAppState.prototype.projects;
-    /** @type {?|undefined} */
-    IAppState.prototype.sys;
-    /** @type {?|undefined} */
-    IAppState.prototype.dfh;
-    /** @type {?|undefined} */
-    IAppState.prototype.inf;
-    /** @type {?|undefined} */
-    IAppState.prototype.dat;
-    /** @type {?|undefined} */
-    IAppState.prototype.pro;
-    /** @type {?|undefined} */
-    IAppState.prototype.war;
-    /** @type {?|undefined} */
-    IAppState.prototype.tab;
-    /** @type {?|undefined} */
-    IAppState.prototype.activeProject;
-    /** @type {?|undefined} */
-    IAppState.prototype.routes;
-    /** @type {?|undefined} */
-    IAppState.prototype.information;
-    /** @type {?|undefined} */
-    IAppState.prototype.sources;
-    /** @type {?|undefined} */
-    IAppState.prototype.sandboxState;
-    /** @type {?|undefined} */
-    IAppState.prototype.pending;
-}
-/**
- * @record
- * @template T
- */
-function ByPk() { }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/root/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/root/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -9642,18 +9561,6 @@ if (false) {
     /** @type {?} */
     Types.prototype.tabTitle;
 }
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/active-project/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -10139,31 +10046,7 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/models/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/services/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
  * Generated from: lib/redux-store/public-api.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/index.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
@@ -10179,5 +10062,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { AccountActions, AccountEpics, ActionResolverEpics, ActiveProjectActions, ActiveProjectEpics, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, InformationAPIActions, List, LoadingBarActions, LoadingBarEpics, NamespaceSlice, Notifications, NotificationsAPIActions, NotificationsAPIEpics, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxStoreModule, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SourceListAPIActions, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, accountRootReducer, activeProjectReducer, by, createProjectsReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, informationReducer, loadingBarReducer, notificationsReducer, pag, paginateKey, paginateName, paginatedBy, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, sourceListReducer, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, AccountActions as ɵb, SchemaObjectService as ɵba, ActiveProjectActions as ɵc, LoadingBarActions as ɵd, NotificationsAPIActions as ɵe, AccountEpics as ɵf, ActiveProjectEpics as ɵg, LoadingBarEpics as ɵh, NotificationsAPIEpics as ɵi, DatActions as ɵj, DfhActions as ɵk, InfActions as ɵl, ProActions as ɵm, SysActions as ɵn, TabActions as ɵo, WarActions as ɵp, DatEpics as ɵq, DfhEpics as ɵr, InfEpics as ɵs, ProEpics as ɵt, SysEpics as ɵu, TabEpics as ɵv, WarEpics as ɵw, RootEpics as ɵx, ActionResolverEpics as ɵy, SchemaActionsFactory as ɵz };
+export { ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, NamespaceSlice, Notifications, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ReducerFactory, ReduxStoreModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, pag, paginateKey, paginateName, paginatedBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, AccountActions as ɵb, ActiveProjectActions as ɵc, LoadingBarActions as ɵd, NotificationsAPIActions as ɵe, AccountEpics as ɵf, ActiveProjectEpics as ɵg, LoadingBarEpics as ɵh, NotificationsAPIEpics as ɵi, DatEpics as ɵj, DfhEpics as ɵk, InfEpics as ɵl, ProEpics as ɵm, SysEpics as ɵn, TabEpics as ɵo, WarEpics as ɵp, ActionResolverEpics as ɵq, accountRootReducer as ɵr, loadingBarReducer as ɵs, activeProjectReducer as ɵt, informationReducer as ɵu, sourceListReducer as ɵv, createProjectsReducer as ɵw };
 //# sourceMappingURL=kleiolab-lib-redux.js.map

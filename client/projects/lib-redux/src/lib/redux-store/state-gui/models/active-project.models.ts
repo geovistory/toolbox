@@ -1,7 +1,10 @@
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
 import { DfhProperty, InfLanguage, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { EntityDetail, ProjectSettingsData, TabBase, Types } from './active-project';
+import { Types } from './active-project/types.models';
+import { EntityDetail } from './active-project/entity-detail';
+import { TabBase } from './active-project/tab-layout.models';
+import { ProjectSettingsData } from './active-project/project-settings-data.models';
 
 
 export interface ProjectPreview {

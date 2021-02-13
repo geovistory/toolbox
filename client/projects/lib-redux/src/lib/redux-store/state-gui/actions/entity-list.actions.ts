@@ -1,7 +1,7 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Information } from '../models';
+import { Information } from '../models/entity-list.models';
 
 type Payload = Information;
 export type InformationAPIAction = FluxStandardAction<Payload, {}>;

@@ -1,7 +1,7 @@
 import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
 import { Observable } from 'rxjs';
-import { ProActions } from '../actions';
-import { NotificationsAPIActions } from '../../state-gui/actions';
+import { ProActions } from '../actions/pro.actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { InfActionFactory } from './inf-action-factory';
 import { SchemaEpicsFactory } from './schema-epics-factory';
 export declare class InfEpicsFactory<Payload, Model> extends SchemaEpicsFactory<Payload, Model> {

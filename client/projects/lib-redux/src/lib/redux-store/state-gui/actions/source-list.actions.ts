@@ -1,7 +1,7 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { SourceList } from '../models';
+import { SourceList } from '../models/source-list.models';
 
 type Payload = SourceList;
 interface MetaData {

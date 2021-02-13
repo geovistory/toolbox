@@ -1,4 +1,5 @@
-import { ReducerConfigCollection } from '../_helpers';
+import { ReducerConfigCollection } from '../_helpers/reducer-factory';
+
 import { InfStatement, InfTextProperty, InfDimension } from '@kleiolab/lib-sdk-lb3';
 import { U } from '@kleiolab/lib-utils';
 

@@ -1,8 +1,8 @@
 import { SysSystemRelevantClassApi } from '@kleiolab/lib-sdk-lb3';
-import { SystemConfigurationService } from '@kleiolab/lib-sdk-lb4/public-api';
+import { SystemConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Epic } from 'redux-observable-es6-compat';
-import { SysActions } from '../actions';
-import { NotificationsAPIActions } from '../../state-gui/actions';
+import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { SysActions } from '../actions/sys.actions';
 export declare class SysEpics {
     private actions;
     private notification;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { NotificationsI } from '../models';
+import { NotificationsI } from '../models/notifications.models';
 
 type Payload = NotificationsI;
 interface MetaData {

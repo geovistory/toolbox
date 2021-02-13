@@ -1,5 +1,5 @@
 import { FluxStandardAction } from 'flux-standard-action';
-import { SourceList } from '../models';
+import { SourceList } from '../models/source-list.models';
 declare type Payload = SourceList;
 interface MetaData {
     pkAllowedClasses?: number[];
