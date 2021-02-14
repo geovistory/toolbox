@@ -33,36 +33,47 @@ describe('SchemaSelectorsService', () => {
 
     schemaObjService.storeGv(new BehaviorSubject(gvSchemaObj), 100)
   });
+  describe('Service', () => {
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
+  })
+  describe('.pro', () => {
+    describe('.class_field_config', () => {
+      describe('.by_pk_entity$.key()', () => {
+        it('should get item', (done) => {
+          const x = ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME
+          const key = x.pk_entity + ''
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-  it('#pro.class_field_config.by_pk_entity$.key() should get item', (done) => {
-    const x = ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME
-    const key = x.pk_entity + ''
+          const q$ = service.pro$.class_field_config$.by_pk_entity$.key(key)
+          const expectedSequence: ProClassFieldConfig[] = [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]
+          q$.pipe(first(), toArray())
+            .subscribe(
+              actualSequence => {
+                expect(actualSequence).toEqual(expectedSequence)
+              },
+              null,
+              done);
+        });
+      })
+      describe('.by_fk_project__fk_class$.key()', () => {
+        it('should get item', (done) => {
+          const x = ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME
+          const key = x.fk_project + '_' + x.fk_domain_class
+          const q$ = service.pro$.class_field_config$.by_fk_project__fk_class$.key(key)
+          const expectedSequence: ByPk<ProClassFieldConfig>[] = [{ [x.pk_entity.toString()]: x }]
+          q$.pipe(first(), toArray())
+            .subscribe(
+              actualSequence => {
+                expect(actualSequence).toEqual(expectedSequence)
+              },
+              null,
+              done);
+        });
+      })
+    })
+  })
 
-    const q$ = service.pro$.class_field_config$.by_pk_entity$.key(key)
-    const expectedSequence: ProClassFieldConfig[] = [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]
-    q$.pipe(first(), toArray())
-      .subscribe(
-        actualSequence => {
-          expect(actualSequence).toEqual(expectedSequence)
-        },
-        null,
-        done);
-  });
-  it('#pro.class_field_config.by_fk_project__fk_class$.key() should get item', (done) => {
-    const x = ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME
-    const key = x.fk_project + '_' + x.fk_domain_class
-    const q$ = service.pro$.class_field_config$.by_fk_project__fk_class$.key(key)
-    const expectedSequence: ByPk<ProClassFieldConfig>[] = [{ [x.pk_entity.toString()]: x }]
-    q$.pipe(first(), toArray())
-      .subscribe(
-        actualSequence => {
-          expect(actualSequence).toEqual(expectedSequence)
-        },
-        null,
-        done);
-  });
+
 
 });

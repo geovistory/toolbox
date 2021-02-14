@@ -11,6 +11,7 @@ import { project1 } from '../../../__tests__/helpers/data/positive-schema-object
 import { setAppState } from '../../../__tests__/helpers/set-app-state';
 import { ReduxQueriesModule } from '../module/redux-queries.module';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
+import { SocketsModule } from '@kleiolab/lib-sockets';
 
 
 describe('ActiveProjectPipesService', () => {
@@ -22,6 +23,7 @@ describe('ActiveProjectPipesService', () => {
     TestBed.configureTestingModule({
       imports: [
         SDKBrowserModule.forRoot(),
+        SocketsModule.forRoot({ baseUrl: '' }),
         ReduxQueriesModule
       ]
     })
@@ -30,10 +32,12 @@ describe('ActiveProjectPipesService', () => {
     schemaObjServcie = TestBed.get(SchemaObjectService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-  describe('#pkProject$', () => {
+  describe('Service', () => {
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
+  })
+  describe('.pkProject$', () => {
     it('should return pkProject', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
 
@@ -47,11 +51,10 @@ describe('ActiveProjectPipesService', () => {
           done);
     });
   })
-  describe('#pipeActiveProject', () => {
+  describe('.pipeActiveProject()', () => {
     it('should return ProProject', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
-      console.log(JSON.stringify(ngRedux.getState().pro))
       const q$ = service.pipeActiveProject().pipe(first())
       q$.pipe(toArray())
         .subscribe(
@@ -62,7 +65,7 @@ describe('ActiveProjectPipesService', () => {
           done);
     });
   })
-  describe('#pipeActiveProjectLanguage', () => {
+  describe('.pipeActiveProjectLanguage()', () => {
     it('should return InfLanguage', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)

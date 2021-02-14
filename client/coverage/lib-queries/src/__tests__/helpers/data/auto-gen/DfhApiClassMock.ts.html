@@ -1,0 +1,1237 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for src/__tests__/helpers/data/auto-gen/DfhApiClassMock.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../../../index.html">All files</a> / <a href="index.html">src/__tests__/helpers/data/auto-gen</a> DfhApiClassMock.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>17/17</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>17/17</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a>
+<a name='L334'></a><a href='#L334'>334</a>
+<a name='L335'></a><a href='#L335'>335</a>
+<a name='L336'></a><a href='#L336'>336</a>
+<a name='L337'></a><a href='#L337'>337</a>
+<a name='L338'></a><a href='#L338'>338</a>
+<a name='L339'></a><a href='#L339'>339</a>
+<a name='L340'></a><a href='#L340'>340</a>
+<a name='L341'></a><a href='#L341'>341</a>
+<a name='L342'></a><a href='#L342'>342</a>
+<a name='L343'></a><a href='#L343'>343</a>
+<a name='L344'></a><a href='#L344'>344</a>
+<a name='L345'></a><a href='#L345'>345</a>
+<a name='L346'></a><a href='#L346'>346</a>
+<a name='L347'></a><a href='#L347'>347</a>
+<a name='L348'></a><a href='#L348'>348</a>
+<a name='L349'></a><a href='#L349'>349</a>
+<a name='L350'></a><a href='#L350'>350</a>
+<a name='L351'></a><a href='#L351'>351</a>
+<a name='L352'></a><a href='#L352'>352</a>
+<a name='L353'></a><a href='#L353'>353</a>
+<a name='L354'></a><a href='#L354'>354</a>
+<a name='L355'></a><a href='#L355'>355</a>
+<a name='L356'></a><a href='#L356'>356</a>
+<a name='L357'></a><a href='#L357'>357</a>
+<a name='L358'></a><a href='#L358'>358</a>
+<a name='L359'></a><a href='#L359'>359</a>
+<a name='L360'></a><a href='#L360'>360</a>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a>
+<a name='L370'></a><a href='#L370'>370</a>
+<a name='L371'></a><a href='#L371'>371</a>
+<a name='L372'></a><a href='#L372'>372</a>
+<a name='L373'></a><a href='#L373'>373</a>
+<a name='L374'></a><a href='#L374'>374</a>
+<a name='L375'></a><a href='#L375'>375</a>
+<a name='L376'></a><a href='#L376'>376</a>
+<a name='L377'></a><a href='#L377'>377</a>
+<a name='L378'></a><a href='#L378'>378</a>
+<a name='L379'></a><a href='#L379'>379</a>
+<a name='L380'></a><a href='#L380'>380</a>
+<a name='L381'></a><a href='#L381'>381</a>
+<a name='L382'></a><a href='#L382'>382</a>
+<a name='L383'></a><a href='#L383'>383</a>
+<a name='L384'></a><a href='#L384'>384</a>
+<a name='L385'></a><a href='#L385'>385</a>
+<a name='L386'></a><a href='#L386'>386</a>
+<a name='L387'></a><a href='#L387'>387</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {DfhApiClass} from './local-model.helpers'
+&nbsp;
+export class DfhApiClassMock {
+  static readonly EN_365_NAMING: DfhApiClass = {
+    'pk_entity': 3737,
+    'dfh_pk_class': 365,
+    'dfh_basic_type': 9,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Appellation in a language (time-indexed)',
+    'dfh_fk_namespace': 3,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'HistDMI generic classes and properties – ongoing',
+    'dfh_basic_type_label': 'Temporal Entity',
+    'dfh_class_scope_note': 'This class refers to the fact that an entity (actor, group, concept, etc.) can be identified using a specific appellation in a language during a given time span.The class does not refer to the activity of continously or repetedly naming an entity with this specific appellation but to the possibility of identifying the entity with the given appellation in a given language.\r\nThe appellation is in this sense a property of the entity at given time and for a given language. The FRBRoo class F52_Name_Use_Activity models the activity actually carried out by a person or a group to use a given appellation, which is a distinct phenomenon. F52_Name_Use_Activity is a subclass of activity while the present class is about the given possibility (by use or by law) of using an appellation for identifying a given entity.',
+    'tmsp_last_modification': '2020-07-15T14:27:09.844581+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C10'
+  }
+&nbsp;
+  static readonly EN_523_SHIP_VOYAGE: DfhApiClass = {
+    'pk_entity': 3809,
+    'dfh_pk_class': 523,
+    'dfh_basic_type': 9,
+    'dfh_fk_profile': 8,
+    'dfh_class_label': 'Ship voyage',
+    'dfh_fk_namespace': 66,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Maritime history',
+    'dfh_namespace_label': 'Maritime history ongoing',
+    'dfh_basic_type_label': 'Temporal Entity',
+    'dfh_class_scope_note': 'Used to denote a (long) journey, especially by ship, going from a place of departure to a place of arrival.',
+    'tmsp_last_modification': '2020-01-05T07:40:56.599142+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C1'
+  }
+&nbsp;
+&nbsp;
+  static readonly EN_21_PERSON: DfhApiClass = {
+    'pk_entity': 3650,
+    'dfh_pk_class': 21,
+    'dfh_basic_type': 8,
+    'dfh_fk_profile': 4,
+    'dfh_class_label': 'Person',
+    'dfh_fk_namespace': 1,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Generic Historical Information Profile',
+    'dfh_namespace_label': 'CIDOC CRM version 6.2',
+    'dfh_basic_type_label': 'Persistent Item',
+    'dfh_class_scope_note': 'This class comprises real persons who live or are assumed to have lived. Legendary figures that may have existed, such as Ulysses and\n            King Arthur, fall into this class if the documentation refers to them as historical figures. In cases where doubt exists as to whether\n            several persons are in fact identical, multiple instances can be created and linked to indicate their relationship. The CRM does not\n            propose a specific form to support reasoning about possible identity. ',
+    'tmsp_last_modification': '2020-07-15T14:27:17.710051+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'E21'
+  }
+&nbsp;
+  static readonly EN_40_APPELLATION: DfhApiClass = {
+    'pk_entity': 3726,
+    'dfh_pk_class': 40,
+    'dfh_basic_type': 8,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Appellation',
+    'dfh_fk_namespace': 1,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'CIDOC CRM version 6.2',
+    'dfh_basic_type_label': 'Persistent Item',
+    'dfh_class_scope_note': 'This class comprises signs, either meaningful or not, or arrangements of signs following a specific syntax, that are used or can be\n            used to refer to and identify a specific instance of some class or category within a certain context. Instances of E41 Appellation do not\n            identify things by their meaning, even if they happen to have one, but instead by convention, tradition, or agreement. Instances of E41\n            Appellation are cultural constructs; as such, they have a context, a history, and a use in time and space by some group of users. A given\n            instance of E41 Appellation can have alternative forms, i.e., other instances of E41 Appellation that are always regarded as equivalent\n            independent from the thing it denotes. Specific subclasses of E41 Appellation should be used when instances of E41 Appellation of a\n            characteristic form are used for particular objects. Instances of E49 Time Appellation, for example, which take the form of instances of\n            E50 Date, can be easily recognised. E41 Appellation should not be confused with the act of naming something. Cf. E15 Identifier Assignment ',
+    'tmsp_last_modification': '2020-07-15T14:27:09.844581+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'E41'
+  }
+&nbsp;
+  static readonly EN_364_GEO_PLACE_TYPE: DfhApiClass = {
+    'pk_entity': 3664,
+    'dfh_pk_class': 364,
+    'dfh_basic_type': 30,
+    'dfh_fk_profile': 4,
+    'dfh_class_label': 'Geographical place type',
+    'dfh_fk_namespace': 3,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Generic Historical Information Profile',
+    'dfh_namespace_label': 'CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing',
+    'dfh_basic_type_label': 'Type (controlled vocabulary)',
+    'dfh_class_scope_note': 'This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of the \'hictC8 Geographical place\'.',
+    'tmsp_last_modification': '2020-03-07T11:47:40.970195+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'histC9'
+  }
+&nbsp;
+  static readonly EN_363_GEO_PLACE: DfhApiClass = {
+    'pk_entity': 3663,
+    'dfh_pk_class': 363,
+    'dfh_basic_type': 8,
+    'dfh_fk_profile': 4,
+    'dfh_class_label': 'Geographical Place',
+    'dfh_fk_namespace': 3,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Generic Historical Information Profile',
+    'dfh_namespace_label': 'CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing',
+    'dfh_basic_type_label': 'Persistent Item',
+    'dfh_class_scope_note': 'This class refers to portions of the surface of the Earth intended as constellations of matter which can be represented by photographs, paintings and maps. The relevant portion of the surface of the Earth can be covered by water (river, sea, ...). The more specific identity of instances of this class is provided by a controlled vocabulary of geographical place types.',
+    'tmsp_last_modification': '2020-03-07T11:47:40.970195+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'histC8'
+  }
+  static readonly EN_335_TIME_PRIMITIVE: DfhApiClass = {
+    'pk_entity': 3735,
+    'dfh_pk_class': 335,
+    'dfh_basic_type': 0,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Time Primitive',
+    'dfh_fk_namespace': 1,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'CIDOC CRM version 6.2',
+    'dfh_basic_type_label': null,
+    'dfh_class_scope_note': 'This class comprises instances of E59 Primitive Value for time that should be implemented with appropriate validation, precision and interval logic to express date ranges relevant to cultural documentation. \r\n \r\nE61 Time Primitive is not further elaborated upon within the model.',
+    'tmsp_last_modification': '2020-01-27T08:03:07.706645+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'inferred',
+    'dfh_class_scope_note_language': '',
+    'dfh_class_identifier_in_namespace': 'E61'
+  }
+&nbsp;
+  static readonly EN_61_BIRTH: DfhApiClass = {
+    'pk_entity': 3652,
+    'dfh_pk_class': 61,
+    'dfh_basic_type': 9,
+    'dfh_fk_profile': 4,
+    'dfh_class_label': 'Birth',
+    'dfh_fk_namespace': 1,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Generic Historical Information Profile',
+    'dfh_namespace_label': 'CIDOC CRM version 6.2',
+    'dfh_basic_type_label': 'Temporal Entity',
+    'dfh_class_scope_note': 'This class comprises the births of human beings. E67 Birth is a biological event focussing on the context of people coming into life.\n            (E63 Beginning of Existence comprises the coming into life of any living beings). Twins, triplets etc. are brought into life by the same\n            E67 Birth event. The introduction of the E67 Birth event as a documentation element allows the description of a range of family\n            relationships in a simple model. Suitable extensions may describe more details and the complexity of motherhood with the intervention of\n            modern medicine. In this model, the biological father is not seen as a necessary participant in the E67 Birth event. ',
+    'tmsp_last_modification': '2020-07-15T14:27:17.710051+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'inferred',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'E67'
+  }
+&nbsp;
+  static readonly EN_633_UNION: DfhApiClass = {
+    'pk_entity': 3909,
+    'dfh_pk_class': 633,
+    'dfh_basic_type': 9,
+    'dfh_fk_profile': 12,
+    'dfh_class_label': 'Union',
+    'dfh_fk_namespace': 112,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Biographical basics and family',
+    'dfh_namespace_label': 'Social and economic life (HistDMI) ongoing',
+    'dfh_basic_type_label': 'Temporal Entity',
+    'dfh_class_scope_note': '[under construction] This class models the fact of the union of two persons for a certain period of time, which may give rise to the birth of children.It is inspired by the GEDCOM modeling used by genealogists (http://fr.wikipedia.org/wiki/Norme_GEDCOM): the "Union" class indicates the existence over time of a couple, to which births, adoptions, etc. can be linked. The class "Union" models all kinds of relationships, regardless of their legal, emotional or social form, and indicates the time span of their duration (start/end date). Same-sex unions are also to be encoded with this class. A type is used to specify the nature of the union (marriage, common-law union, etc.).\r\n[deprecated and to be replaced by characteristic] If a union has several phases, with successive time spans, we create several instances of the class \'Union\', with their respective type and time-span, then we associate them to a global union, for the whole duration of the union by using the property is component of (has component) – histP29 .',
+    'tmsp_last_modification': '2020-08-29T07:16:38.971896+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C9'
+  }
+&nbsp;
+  static readonly EN_219_MANIFESTATION_PRODUCT_TYPE: DfhApiClass = {
+    'pk_entity': 3732,
+    'dfh_pk_class': 219,
+    'dfh_basic_type': 30,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Manifestation Product Type',
+    'dfh_fk_namespace': 6,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'FRBRoo version 2.4',
+    'dfh_basic_type_label': 'Type (controlled vocabulary)',
+    'dfh_class_scope_note': 'This class comprises the definitions of publication products.\r\nAn instance of F3 Manifestation Product Type is the “species”, and all copies of a given object are “specimens” of it. An instance of F3 Manifestation Product Type defines all of the features or traits that instances of F5 Item normally display in order that they may be recognised as copies of a particular publication. However, due to production problems or subsequent events, one or more instances of F5 Item may not exhibit all these features or traits; yet such instances still retain their relationship to the same instance of F3 Manifestation Product Type.\r\nThe features that characterise a given instance of F3 Manifestation Product Type include: one instance of F24 Publication Expression, containing one or more than one instance of F2 Expression, reflecting the authors’ content of the manifestation and all additional input by the publisher; and the appropriate types of physical features for that form of the object. For example, hardcover and paperback are two distinct publications (i.e. two distinct instances of F3 Manifestation Product Type) even though authorial and editorial content are otherwise identical in both publications. The activity of cataloguing aims at the most accurate listing of features or traits of an instance of F3 Manifestation Product Type that are sufficient to distinguish it from another instance of F3 Manifestation Product Type.',
+    'tmsp_last_modification': '2020-07-21T15:41:15.55671+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'F3'
+  }
+&nbsp;
+  static readonly EN_220_MANIFESTATION_SINGLETON: DfhApiClass = {
+    'pk_entity': 3733,
+    'dfh_pk_class': 220,
+    'dfh_basic_type': 8,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Manifestation Singleton',
+    'dfh_fk_namespace': 6,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'FRBRoo version 2.4',
+    'dfh_basic_type_label': 'Persistent Item',
+    'dfh_class_scope_note': 'This class comprises physical objects that each carry an instance of F2 Expression, and that were produced as unique objects, with no\n\t\t\tsiblings intended in the course of their production. It should be noted that if all but one copy of a given publication are destroyed,\n\t\t\tthen that copy does not become an instance of F4 Manifestation Singleton, because it was produced together with sibling copies, even\n\t\t\tthough it now happens to be unique. Examples of instances of F4 Manifestation Singleton include manuscripts, preparatory sketches and the\n\t\t\tfinal clean draft sent by an author or a composer to a publisher. ',
+    'tmsp_last_modification': '2020-07-21T15:41:15.55671+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'F4'
+  }
+&nbsp;
+  static readonly EN_450_MANIFESTATION_SINGLETON_TYPE: DfhApiClass = {
+    'pk_entity': 3740,
+    'dfh_pk_class': 450,
+    'dfh_basic_type': 30,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Manifestation singleton type',
+    'dfh_fk_namespace': 110,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'CIDOC CRM supplement (HistDMI) ongoing',
+    'dfh_basic_type_label': 'Type (controlled vocabulary)',
+    'dfh_class_scope_note': 'This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of \'F4 Manifestation Singleton\'.',
+    'tmsp_last_modification': '2020-12-21T20:45:14.592171+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C10'
+  }
+  static readonly EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE: DfhApiClass = {
+    'pk_entity': 3741,
+    'dfh_pk_class': 452,
+    'dfh_basic_type': 30,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Type of manifestation product type',
+    'dfh_fk_namespace': 110,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'HistTypes ongoing',
+    'dfh_basic_type_label': 'Type (controlled vocabulary)',
+    'dfh_class_scope_note': 'This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of the Manifestation Product Type – F3 class.',
+    'tmsp_last_modification': '2020-07-21T15:41:15.55671+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C19'
+  }
+  static readonly EN_218_EXPRESSION: DfhApiClass = {
+    'pk_entity': 3731,
+    'dfh_pk_class': 218,
+    'dfh_basic_type': 8,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Expression',
+    'dfh_fk_namespace': 6,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'FRBRoo version 2.4',
+    'dfh_basic_type_label': 'Persistent Item',
+    'dfh_class_scope_note': 'This class comprises the intellectual or artistic realisations of works in the form of identifiable immaterial objects, such as texts, poems, jokes, musical or choreographic notations, movement pattern, sound pattern, images, multimedia objects, or any combination of such forms that have objectively recognisable structures. The substance of F2 Expression is signs.\r\nExpressions cannot exist without a physical carrier, but do not depend on a specific physical carrier and can exist on one or more carriers simultaneously. Carriers may include human memory.\r\nInasmuch as the form of F2 Expression is an inherent characteristic of the F2 Expression, any change in form (e.g., from alpha-numeric notation to spoken word, a poem created in capitals and rendered in lower case) is a new F2 Expression. Similarly, changes in the intellectual conventions or instruments that are employed to express a work (e.g., translation from one language to another) result in the creation of a new F2 Expression. Thus, if a text is revised or modified, the resulting F2 Expression is considered to be a new F2 Expression. Minor changes, such as corrections of spelling and punctuation, etc., are normally considered variations within the same F2 Expression. On a practical level, the degree to which distinctions are made between variant expressions of a work will depend to some extent on the nature of the F1 Work itself, and on the anticipated needs of users.\r\nThe genre of the work may provide an indication of which features are essential to the expression. In some cases, aspects of physical form, such as typeface and page layout, are not integral to the intellectual or artistic realisation of the work as such, and therefore are not distinctive criteria for the respective expressions. For another work, features such as layout may be essential. For instance, the author or a graphic designer may wrap a poem around an image.\r\nAn expression of a work may include expressions of other works within it. For instance, an anthology of poems is regarded as a work in its own right that makes use of expressions of the individual poems that have been selected and ordered as part of an intellectual process. This does not make the contents of the aggregated expressions part of this work, but only parts of the resulting expression.\r\nIf an instance of F2 Expression is of a specific form, such as text, image, etc., it may be simultaneously instantiated in the specific classes representing these forms in CIDOC CRM. Thereby one can make use of the more specific properties of these classes, such as language (which is applicable to instances of E33 Linguistic Object only).',
+    'tmsp_last_modification': '2020-07-21T15:41:15.55671+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'F2'
+  }
+  static readonly EN_244_EXPRESSION_CREATION: DfhApiClass = {
+    'pk_entity': 3661,
+    'dfh_pk_class': 244,
+    'dfh_basic_type': 9,
+    'dfh_fk_profile': 4,
+    'dfh_class_label': 'Expression Creation',
+    'dfh_fk_namespace': 6,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Generic Historical Information Profile',
+    'dfh_namespace_label': 'FRBRoo version 2.4',
+    'dfh_basic_type_label': 'Temporal Entity',
+    'dfh_class_scope_note': 'This class comprises activities that result in instances of F2 Expression coming into existence. This class characterises the\n\t\t\texternalisation of an Individual Work. Although F2 Expression is an abstract entity, a conceptual object, the creation of an expression\n\t\t\tinevitably also affects the physical world: when you scribble the first draft of a poem on a sheet of paper, you produce an instance of F4\n\t\t\tManifestation Singleton; F28 Expression Creation is a subclass of E12 Production because the recording of the expression causes a physical\n\t\t\tmodification of the carrying E18 Physical Thing. The work becomes manifest by being expressed on a physical carrier different from the\n\t\t\tcreator’s brain. The spatio-temporal circumstances under which the expression is created are necessarily the same spatio-temporal\n\t\t\tcircumstances under which the first instance of F4 Manifestation Singleton is produced. The mechanisms through which oral tradition (of\n\t\t\tmyths, tales, music, etc.) operates are not further investigated in this model. As far as bibliographic practice is concerned, only those\n\t\t\tinstances of F2 Expression that are externalised on physical carriers other than both the creator’s brain and the auditor’s brain are\n\t\t\ttaken into account (for a discussion of the modelling of oral traditions, see: Nicolas, Yann. ‘Folklore Requirements for Bibliographic\n\t\t\tRecords: oral traditions and FRBR.’ In: Cataloging Classification Quarterly (2005). Vol. 39, No. 3-4. P. 179-195). It is possible to use\n\t\t\tthe P2 has type (is type of) property in order to specify that the creation of a given expression of a given work played a particular role\n\t\t\twith regard to the overall bibliographic history of that work (e.g., that it was the creation of the progenitor expression on which all\n\t\t\tother expressions of the same work are based; or that it was the creation of the critical edition that served as the basis for canonical\n\t\t\treferences to the work). ',
+    'tmsp_last_modification': '2020-11-19T08:56:59.307795+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'F28'
+  }
+&nbsp;
+  static readonly EN_784_SHORT_TITLE: DfhApiClass = {
+    'pk_entity': 8422,
+    'dfh_pk_class': 784,
+    'dfh_basic_type': 0,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Short title',
+    'dfh_fk_namespace': 30,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'Geovistory (ongoing)',
+    'dfh_basic_type_label': null,
+    'dfh_class_scope_note': 'An abbreviated form of an appellation or name by which an entity is commonly known and cited, contrasting with the full one which is more descriptive but is too long to be of use in most purposes.\r\nA short title should be used as metadata in the information system while the full appellation is the historical or identifying one.',
+    'tmsp_last_modification': '2020-12-21T20:45:14.592171+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C15'
+  }
+&nbsp;
+  static readonly EN_785_TEXT: DfhApiClass = {
+    'pk_entity': 8528,
+    'dfh_pk_class': 785,
+    'dfh_basic_type': 8,
+    'dfh_fk_profile': 5,
+    'dfh_class_label': 'Text',
+    'dfh_fk_namespace': 30,
+    'dfh_namespace_uri': null,
+    'dfh_profile_label': 'Geovistory Basics',
+    'dfh_namespace_label': 'Geovistory (ongoing)',
+    'dfh_basic_type_label': 'Persistent Item',
+    'dfh_class_scope_note': 'Instances of this class are all the texts written by Geovistory users, whether they are reproductions of sources, descriptive notices of entities, stories, etc.',
+    'tmsp_last_modification': '2020-12-21T20:45:14.592171+00:00',
+    'dfh_class_label_language': 'en',
+    'dfh_profile_label_language': 'en',
+    'dfh_namespace_label_language': 'en',
+    'dfh_profile_association_type': 'selected',
+    'dfh_class_scope_note_language': 'en',
+    'dfh_class_identifier_in_namespace': 'C16'
+}
+}
+&nbsp;
+&nbsp;
+&nbsp;
+/**
+ * SQL to create mock items
+ */
+// SELECT jsonb_pretty(jsonb_build_object(
+//   'pk_entity',pk_entity,
+//   'tmsp_last_modification', tmsp_last_modification,
+//   'dfh_pk_class',dfh_pk_class,
+//   'dfh_class_identifier_in_namespace',dfh_class_identifier_in_namespace,
+//   'dfh_class_label_language',dfh_class_label_language,
+//   'dfh_class_label',dfh_class_label,
+//   'dfh_class_scope_note_language',dfh_class_scope_note_language,
+//   'dfh_class_scope_note',dfh_class_scope_note,
+//   'dfh_basic_type',dfh_basic_type,
+//   'dfh_basic_type_label',dfh_basic_type_label,
+//   'dfh_fk_namespace',dfh_fk_namespace,
+//   'dfh_namespace_label_language',dfh_namespace_label_language,
+//   'dfh_namespace_label',dfh_namespace_label,
+//   'dfh_namespace_uri',dfh_namespace_uri,
+//   'dfh_profile_association_type',dfh_profile_association_type,
+//   'dfh_fk_profile',dfh_fk_profile,
+//   'dfh_profile_label_language',dfh_profile_label_language,
+//   'dfh_profile_label',dfh_profile_label
+//   ))
+//   FROM data_for_history.api_class t1
+//   WHERE dfh_pk_class = 365
+//   AND dfh_profile_association_type='selected'
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+                at Sat Feb 13 2021 22:04:36 GMT+0100 (Central European Standard Time)
+            </div>
+        </div>
+        <script src="../../../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../../../sorter.js"></script>
+        <script src="../../../../../block-navigation.js"></script>
+    </body>
+</html>
+    

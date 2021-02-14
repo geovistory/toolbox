@@ -6,6 +6,9 @@ export namespace IAppStateMock {
   export const state1: IAppState = {
     activeProject: ProjectDetailMock.project1,
   }
+  export const stateDefaultConfigProject: IAppState = {
+    activeProject: ProjectDetailMock.defaultConfigProject,
+  }
 
 
   export const state2: IAppState = {

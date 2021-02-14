@@ -40,13 +40,15 @@ describe('ConfigurationPipeService', () => {
 
 
   });
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  describe('Service', () => {
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
+  })
 
-  describe('#pipeClassFieldConfigs', () => {
+  describe('.pipeClassFieldConfigs()', () => {
     it('should return class config for class C365_NAMING', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
+      setAppState(ngRedux, IAppStateMock.stateDefaultConfigProject)
       // seeding data
       const gvSchemaObj: GvSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] } }
       schemaObjServcie.storeGv(new BehaviorSubject(gvSchemaObj), PK_DEFAULT_CONFIG_PROJECT)
@@ -73,7 +75,7 @@ describe('ConfigurationPipeService', () => {
 
   })
 
-  describe('#pipeFieldLabel', () => {
+  describe('.pipeFieldLabel()', () => {
     it('should return label for EN_1111_IS_APPE_OF', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
@@ -124,7 +126,7 @@ describe('ConfigurationPipeService', () => {
     });
   })
 
-  describe('#pipeSubfieldTypeOfClass', () => {
+  describe('.pipeSubfieldTypeOfClass()', () => {
     it('should return subfieldtype for EN_784_SHORT_TITLE', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(sysConfig), PK_DEFAULT_CONFIG_PROJECT)
@@ -175,7 +177,7 @@ describe('ConfigurationPipeService', () => {
     });
   })
 
-  describe('#pipeFields', () => {
+  describe('.pipeFields()', () => {
 
     it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
@@ -201,26 +203,26 @@ describe('ConfigurationPipeService', () => {
     });
   })
 
-  describe('#pipeBasicAndSpecificFields', () => {
-    it('should return correct fields of temporal entity', (done) => {
-      // setAppState(ngRedux, IAppStateMock.state2)
-      // const x = ngRedux.getState()
+  describe('.pipeBasicAndSpecificFields()', () => {
+    // it('should return correct fields of temporal entity', (done) => {
+    // setAppState(ngRedux, IAppStateMock.state2)
+    // const x = ngRedux.getState()
 
-      // // using pipe
-      // const q$ = service.pipeClassFieldConfigs(21)
+    // // using pipe
+    // const q$ = service.pipeClassFieldConfigs(21)
 
-      // // testing pipe
-      // const expectedSequence = [[ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]]
+    // // testing pipe
+    // const expectedSequence = [[ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME]]
 
-      // q$.pipe(first(), toArray())
-      //   .subscribe(
-      //     actualSequence => {
-      //       expect(actualSequence).toEqual(expectedSequence)
-      //     },
-      //     null,
-      //     done);
+    // q$.pipe(first(), toArray())
+    //   .subscribe(
+    //     actualSequence => {
+    //       expect(actualSequence).toEqual(expectedSequence)
+    //     },
+    //     null,
+    //     done);
 
-    });
+    // });
     it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.state1)
       schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
@@ -237,7 +239,7 @@ describe('ConfigurationPipeService', () => {
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
-            console.log(JSON.stringify(actualSequence))
+            // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
 
             expect(fs[0].placeOfDisplay.basicFields.position).toEqual(1)
