@@ -1,21 +1,18 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { PageEvent } from '@angular/material';
+import { ConfigurationPipesService, InformationPipesService, Subfield, TemporalEntityCell, TemporalEntityItem } from '@kleiolab/lib-queries';
+import { InfActions, PaginateByParam } from '@kleiolab/lib-redux';
 import { InfStatementApi } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { PageEvent } from '@angular/material';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
+import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
-import { Subfield, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
-import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
-import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../../base.helpers';
 
 
 
@@ -24,7 +21,7 @@ import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, cre
   templateUrl: './temporal-entity-list.component.html',
   styleUrls: ['./temporal-entity-list.component.scss']
 })
-export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyListComponentInterface {
+export class TemporalEntityListComponent implements OnInit, OnDestroy {
 
 
 

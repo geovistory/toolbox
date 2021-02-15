@@ -1,14 +1,14 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ProProject, ProProjectApi } from '@kleiolab/lib-sdk-lb3';
+import { ProProject, ProProjectApi, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
-import { ActiveProjectActions, ActiveProjectAction } from '../../state-gui/actions/active-project.action';
+import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actions/active-project.action';
 import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../../state-schema/actions/dat.actions';
@@ -18,20 +18,25 @@ import { ProActions } from '../../state-schema/actions/pro.actions';
 import { SysActions } from '../../state-schema/actions/sys.actions';
 import { ProjectPreview } from '../models/active-project.models';
 
+function firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
+  return (textProperties.find(t => t.fk_system_type === fkSystemType) || { string: '' }).string
+}
 /**
  * Transform ProProject to ProjectPreview
  */
 function proProjectToProjectPreview(project: ProProject): ProjectPreview {
   return {
-    label: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-    description: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+    label: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+    description: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
     default_language: project.default_language,
     pk_project: project.pk_entity
   }
 }
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ActiveProjectEpics {
   constructor(
     private sys: SysActions,

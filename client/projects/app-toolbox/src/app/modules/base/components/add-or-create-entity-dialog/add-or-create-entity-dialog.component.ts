@@ -1,14 +1,14 @@
-import { Component, HostBinding, Inject, OnDestroy, OnInit, Input, ViewChild } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ClassAndTypePk } from "@kleiolab/lib-queries";
+import { SchemaObject } from '@kleiolab/lib-redux';
+import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DfhConfig } from "@kleiolab/lib-config";
-import { SchemaObject } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
 
 
 export interface AddOrCreateEntityDialogData {
@@ -18,8 +18,6 @@ export interface AddOrCreateEntityDialogData {
   notInProjectBtnText: string
   notInProjectClickBehavior: NotInProjectClickBehavior
 }
-// TODO DELETE
-export interface ClassAndTypePk { pkClass: number, pkType: number }
 
 export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
 export type NotInProjectClickBehavior = 'addToProject' | 'selectOnly';

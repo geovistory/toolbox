@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from "projects/app-toolbox/src/app/core/loading-bar/api/loading-bar.actions";
+import { LoadingBarActions } from "@kleiolab/lib-redux";
 import { DatNamespace } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';

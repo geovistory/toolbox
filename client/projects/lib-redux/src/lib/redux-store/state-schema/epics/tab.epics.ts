@@ -3,7 +3,9 @@ import { combineEpics, Epic } from 'redux-observable-es6-compat';
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TabEpics {
   constructor() { }
   public createEpics(): Epic {

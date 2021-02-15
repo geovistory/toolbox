@@ -11,12 +11,14 @@ import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, Pr
 import { proRoot } from '../reducer-configs/pro.config';
 import { SchemaObjectService } from '../services/schema-object.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
-import { ModifyActionMeta, LoadActionMeta } from '../_helpers/schema-actions-factory';
+import { LoadActionMeta, ModifyActionMeta } from '../_helpers/schema-actions-factory';
 import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProEpics {
   constructor(
     public notification: NotificationsAPIActions,

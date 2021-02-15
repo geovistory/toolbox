@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

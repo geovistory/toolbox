@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project';
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { FactoidControllerService } from "@kleiolab/lib-sdk-lb4";
 import { FactoidEntity } from "@kleiolab/lib-sdk-lb4";
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

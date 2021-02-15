@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
-import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
+import { classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
+import { propertiesRequiredValidator } from '../property-select/property-select.component';
+import { PropertySelectModel } from "@kleiolab/lib-queries";
+import { PropertyOption } from "@kleiolab/lib-queries";
 import { ClassFilterCondition, FilterDefNode, QfArrayClassesInitVal, QfArrayConditionInitVal, QfArraySubgroup, QfArraySubgroupInitVal, QfFormNodeConfig, SubgroupOperator } from './query-filter.component';
 
 @Injectable({

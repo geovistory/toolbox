@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ImportTableSocket } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
+import { ImportTableSocket } from "@kleiolab/lib-sockets";
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ContentTreeNode } from '../content-tree/content-tree.component';

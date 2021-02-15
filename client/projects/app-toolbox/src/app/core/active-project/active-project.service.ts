@@ -2,30 +2,30 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, SysSelector, TabSelector } from '@kleiolab/lib-queries';
+import { IAppState, InfActions, SchemaObject, SchemaObjectService } from '@kleiolab/lib-redux';
 import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { ProProject } from "@kleiolab/lib-sdk-lb4";
-import { ProSelector } from 'projects/app-toolbox/src/app/core/pro/pro.service';
+import { ProProject } from '@kleiolab/lib-sdk-lb4';
+import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DatSelector } from '../dat/dat.service';
-import { DfhSelector } from '../dfh/dfh.service';
-import { InfActions } from '../inf/inf.actions';
-import { InfSelector } from '../inf/inf.service';
-import { ActiveProjectPipesService } from '../redux-queries/services/active-project-pipes.service';
-import { IAppState, SchemaObject } from '../redux-store/model';
-import { SchemaObjectService } from '../redux-store/schema-object.service';
-import { ShouldPauseService } from '../services/should-pause.service';
-import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityDetail } from '../state/models';
-import { SysSelector } from '../sys/sys.service';
-import { TabSelector } from '../tab/tab.service';
-import { ActiveProjectActions } from './active-project.action';
-import { ListType, Panel, ProjectDetail, RamSource, PanelTab, TypesByPk } from './active-project.models';
+import { ShouldPauseService } from "@kleiolab/lib-queries";
+import { EntityDetail } from "@kleiolab/lib-redux";
+import { ActiveProjectActions } from "@kleiolab/lib-redux";
+import { TypesByPk } from "@kleiolab/lib-redux";
+
+
+
+import { RamSource } from "@kleiolab/lib-redux";
+import { ProjectDetail } from "@kleiolab/lib-redux";
+import { PanelTab } from "@kleiolab/lib-redux";
+import { Panel } from "@kleiolab/lib-redux";
+import { ListType } from "@kleiolab/lib-redux";
 
 
 

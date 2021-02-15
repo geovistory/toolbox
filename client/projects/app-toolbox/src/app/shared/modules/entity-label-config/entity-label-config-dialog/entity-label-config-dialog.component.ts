@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { ProjectConfigurationService } from "@kleiolab/lib-sdk-lb4";
 import { ProEntityLabelConfig } from "@kleiolab/lib-sdk-lb4";
 import { LabelPartField } from "@kleiolab/lib-sdk-lb4";

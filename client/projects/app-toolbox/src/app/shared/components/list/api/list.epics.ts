@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from "projects/app-toolbox/src/app/core/loading-bar/api/loading-bar.actions";
-import { NotificationsAPIActions } from 'projects/app-toolbox/src/app/core/notifications/components/api/notifications.actions';
-import { ofSubstore } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
+import { LoadingBarActions, NotificationsAPIActions, ofSubstore } from '@kleiolab/lib-redux';
+import { WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -9,7 +8,6 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ListComponent } from '../components/list/list.component';
 import { ListAPIAction, ListAPIActions } from './list.actions';
 import { SearchResponse } from './list.models';
-import { WarEntityPreviewControllerService } from "@kleiolab/lib-sdk-lb4";
 
 @Injectable()
 export class ListAPIEpics {

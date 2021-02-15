@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { AnalysisTableCellValue } from "@kleiolab/lib-sdk-lb4";
 import { WarStatementObjectValue } from "@kleiolab/lib-sdk-lb4";
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";

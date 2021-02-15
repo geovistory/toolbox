@@ -9,11 +9,12 @@ import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LoadingBarEpics {
   constructor(
     private service: SlimLoadingBarService,
-    private actions: LoadingBarActions,
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {

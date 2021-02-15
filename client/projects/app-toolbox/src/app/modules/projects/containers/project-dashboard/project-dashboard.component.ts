@@ -2,9 +2,8 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ProjectCrm, ProjectDetail } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { IAppState, ProjectCrm, ProjectDetail } from '@kleiolab/lib-redux';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 

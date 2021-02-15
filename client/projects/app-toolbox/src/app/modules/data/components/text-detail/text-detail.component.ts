@@ -1,23 +1,20 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { getSpecificVersion, latestVersion, SubstoreComponent } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { DatDigital } from '@kleiolab/lib-sdk-lb3';
-import { DatChunk } from '@kleiolab/lib-sdk-lb3';
-import { SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { MatDialog } from '@angular/material';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { IAppState, RootEpics, SucceedActionMeta, TabBase } from '@kleiolab/lib-redux';
+import { DatChunk, DatDigital } from '@kleiolab/lib-sdk-lb3';
+import { getSpecificVersion, latestVersion } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
+import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
-import { TabBase } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.models';
 import { BehaviorSubject, combineLatest, Observable, Subject, timer } from 'rxjs';
-import { delay, filter, first, map, takeUntil, switchMap, skipWhile, distinctUntilChanged } from 'rxjs/operators';
+import { delay, distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { MentioningListOf, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
 import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
 import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
-import { MatDialog } from '@angular/material';
-import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
-import { DfhConfig } from "@kleiolab/lib-config";
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 
 
 export interface Version {

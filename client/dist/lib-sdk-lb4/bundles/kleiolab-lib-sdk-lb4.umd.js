@@ -6,84 +6,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/sdk-lb4/encoder.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Custom HttpParameterCodec
-     * Workaround for https://github.com/angular/angular/issues/18261
-     */
-    var /**
-     * Custom HttpParameterCodec
-     * Workaround for https://github.com/angular/angular/issues/18261
-     */
-    CustomHttpParameterCodec = /** @class */ (function () {
-        function CustomHttpParameterCodec() {
-        }
-        /**
-         * @param {?} k
-         * @return {?}
-         */
-        CustomHttpParameterCodec.prototype.encodeKey = /**
-         * @param {?} k
-         * @return {?}
-         */
-        function (k) {
-            return encodeURIComponent(k);
-        };
-        /**
-         * @param {?} v
-         * @return {?}
-         */
-        CustomHttpParameterCodec.prototype.encodeValue = /**
-         * @param {?} v
-         * @return {?}
-         */
-        function (v) {
-            return encodeURIComponent(v);
-        };
-        /**
-         * @param {?} k
-         * @return {?}
-         */
-        CustomHttpParameterCodec.prototype.decodeKey = /**
-         * @param {?} k
-         * @return {?}
-         */
-        function (k) {
-            return decodeURIComponent(k);
-        };
-        /**
-         * @param {?} v
-         * @return {?}
-         */
-        CustomHttpParameterCodec.prototype.decodeValue = /**
-         * @param {?} v
-         * @return {?}
-         */
-        function (v) {
-            return decodeURIComponent(v);
-        };
-        return CustomHttpParameterCodec;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/sdk-lb4/variables.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var BASE_PATH = new core.InjectionToken('basePath');
-    /** @type {?} */
-    var COLLECTION_FORMATS = {
-        'csv': ',',
-        'tsv': '   ',
-        'ssv': ' ',
-        'pipes': '|'
-    };
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: lib/sdk-lb4/configuration.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -313,6 +235,129 @@
          */
         Configuration.prototype.credentials;
     }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/sdk-lb4/api.module.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ApiModule = /** @class */ (function () {
+        function ApiModule(parentModule, http) {
+            if (parentModule) {
+                throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
+            }
+            if (!http) {
+                throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
+                    'See also https://github.com/angular/angular/issues/20575');
+            }
+        }
+        /**
+         * @param {?} configurationFactory
+         * @return {?}
+         */
+        ApiModule.forRoot = /**
+         * @param {?} configurationFactory
+         * @return {?}
+         */
+        function (configurationFactory) {
+            return {
+                ngModule: ApiModule,
+                providers: [{ provide: Configuration, useFactory: configurationFactory }]
+            };
+        };
+        ApiModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [],
+                        declarations: [],
+                        exports: [],
+                        providers: []
+                    },] }
+        ];
+        /** @nocollapse */
+        ApiModule.ctorParameters = function () { return [
+            { type: ApiModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] },
+            { type: http.HttpClient, decorators: [{ type: core.Optional }] }
+        ]; };
+        return ApiModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/sdk-lb4/encoder.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Custom HttpParameterCodec
+     * Workaround for https://github.com/angular/angular/issues/18261
+     */
+    var /**
+     * Custom HttpParameterCodec
+     * Workaround for https://github.com/angular/angular/issues/18261
+     */
+    CustomHttpParameterCodec = /** @class */ (function () {
+        function CustomHttpParameterCodec() {
+        }
+        /**
+         * @param {?} k
+         * @return {?}
+         */
+        CustomHttpParameterCodec.prototype.encodeKey = /**
+         * @param {?} k
+         * @return {?}
+         */
+        function (k) {
+            return encodeURIComponent(k);
+        };
+        /**
+         * @param {?} v
+         * @return {?}
+         */
+        CustomHttpParameterCodec.prototype.encodeValue = /**
+         * @param {?} v
+         * @return {?}
+         */
+        function (v) {
+            return encodeURIComponent(v);
+        };
+        /**
+         * @param {?} k
+         * @return {?}
+         */
+        CustomHttpParameterCodec.prototype.decodeKey = /**
+         * @param {?} k
+         * @return {?}
+         */
+        function (k) {
+            return decodeURIComponent(k);
+        };
+        /**
+         * @param {?} v
+         * @return {?}
+         */
+        CustomHttpParameterCodec.prototype.decodeValue = /**
+         * @param {?} v
+         * @return {?}
+         */
+        function (v) {
+            return decodeURIComponent(v);
+        };
+        return CustomHttpParameterCodec;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/sdk-lb4/variables.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var BASE_PATH = new core.InjectionToken('basePath');
+    /** @type {?} */
+    var COLLECTION_FORMATS = {
+        'csv': ',',
+        'tsv': '   ',
+        'ssv': ' ',
+        'pipes': '|'
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -17833,61 +17878,9 @@
         WareEntityPreviewPage.prototype.data;
     }
 
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/sdk-lb4/model/models.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/sdk-lb4/api.module.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ApiModule = /** @class */ (function () {
-        function ApiModule(parentModule, http) {
-            if (parentModule) {
-                throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
-            }
-            if (!http) {
-                throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
-                    'See also https://github.com/angular/angular/issues/20575');
-            }
-        }
-        /**
-         * @param {?} configurationFactory
-         * @return {?}
-         */
-        ApiModule.forRoot = /**
-         * @param {?} configurationFactory
-         * @return {?}
-         */
-        function (configurationFactory) {
-            return {
-                ngModule: ApiModule,
-                providers: [{ provide: Configuration, useFactory: configurationFactory }]
-            };
-        };
-        ApiModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [],
-                        declarations: [],
-                        exports: [],
-                        providers: []
-                    },] }
-        ];
-        /** @nocollapse */
-        ApiModule.ctorParameters = function () { return [
-            { type: ApiModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] },
-            { type: http.HttpClient, decorators: [{ type: core.Optional }] }
-        ]; };
-        return ApiModule;
-    }());
-
     exports.APIS = APIS;
     exports.AccountService = AccountService;
     exports.AnalysisService = AnalysisService;
-    exports.ApiModule = ApiModule;
     exports.BASE_PATH = BASE_PATH;
     exports.COLLECTION_FORMATS = COLLECTION_FORMATS;
     exports.Configuration = Configuration;
@@ -17921,6 +17914,7 @@
     exports.PubAccountService = PubAccountService;
     exports.RamListService = RamListService;
     exports.SchemaObjectService = SchemaObjectService;
+    exports.SdkLb4Module = ApiModule;
     exports.SysClassFieldService = SysClassFieldService;
     exports.SysClassHasTypePropertyService = SysClassHasTypePropertyService;
     exports.SysSystemRelevantClassService = SysSystemRelevantClassService;

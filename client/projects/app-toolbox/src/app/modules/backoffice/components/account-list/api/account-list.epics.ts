@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from "projects/app-toolbox/src/app/core/loading-bar/api/loading-bar.actions";
+import { LoadingBarActions, NotificationsAPIActions, ofSubstore } from '@kleiolab/lib-redux';
 import { PubAccountApi } from '@kleiolab/lib-sdk-lb3';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'projects/app-toolbox/src/app/core/notifications/components/api/notifications.actions';
 import { AccountListComponent } from '../account-list.component';
-import { AccountListAPIActions, AccountListAPIAction } from './account-list.actions';
-import { ofSubstore } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
+import { AccountListAPIAction, AccountListAPIActions } from './account-list.actions';
 
 @Injectable()
 export class AccountListAPIEpics {

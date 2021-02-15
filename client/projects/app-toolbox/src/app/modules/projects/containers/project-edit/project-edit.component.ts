@@ -2,15 +2,14 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkPortal } from '@angular/cdk/portal';
 import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { MatDialog } from '@angular/material';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
-import { ListType, PanelTab } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ListType, PanelTab } from '@kleiolab/lib-redux';
 import { SDKStorage } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { BasicService } from 'projects/app-toolbox/src/app/core/basic/basic.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { BasicService } from 'projects/app-toolbox/src/app/core/basic/basic.service';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 

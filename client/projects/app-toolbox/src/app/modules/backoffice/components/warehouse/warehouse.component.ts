@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { RootEpics } from "@kleiolab/lib-redux";
 import { Subject } from 'rxjs';
 
 

@@ -1,17 +1,9 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { ClassAndTypeNode, ClassAndTypePk, InformationPipesService } from '@kleiolab/lib-queries';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
-import { ClassAndTypePk } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
-
-// TODO DELETE
-export interface ClassAndTypeNode {
-  label: string;
-  data: ClassAndTypePk
-  children?: ClassAndTypeNode[];
-}
 
 
 /** Flat node with expandable and level information */

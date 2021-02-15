@@ -9,8 +9,8 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
-import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
 // TODO Change

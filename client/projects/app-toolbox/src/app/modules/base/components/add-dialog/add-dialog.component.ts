@@ -1,14 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { InfTemporalEntityApi } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { ClassAndTypePk, ConfigurationPipesService, Subfield } from '@kleiolab/lib-queries';
+import { InfStatement, InfTemporalEntityApi } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
 import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.helpers';
-import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
-import { Subfield } from '../properties-tree/properties-tree.models';
+import { NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 

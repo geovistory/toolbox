@@ -1,14 +1,14 @@
 import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
+import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { RootEpics } from "@kleiolab/lib-redux";
 import { SystemTypeList } from './api/system-type-list.models';
 import { SystemTypeListAPIEpics } from './api/system-type-list.epics';
 import { SystemTypeListAPIActions } from './api/system-type-list.actions';
 import { systemtypeListReducer } from './api/system-type-list.reducer';
 import { SysSystemType } from '@kleiolab/lib-sdk-lb3';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { IAppState } from "@kleiolab/lib-redux";
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

@@ -6,6 +6,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
+import { DndModule } from 'ng2-dnd';
 import { LanguageSearchTypeaheadModule, NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
 import { DrawerContainerResizeModule } from 'projects/app-toolbox/src/app/shared/components/drawer-container-resize/drawer-container-resize.module';
 import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
@@ -15,7 +16,6 @@ import { AnalysisIconModule } from 'projects/app-toolbox/src/app/shared/pipes/an
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.module';
 import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
-import { DndModule } from 'ng2-dnd';
 import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';

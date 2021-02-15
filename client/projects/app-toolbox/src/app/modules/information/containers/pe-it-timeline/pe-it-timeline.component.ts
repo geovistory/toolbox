@@ -1,15 +1,13 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { SubstoreComponent, TeEntAccentuation } from 'projects/app-toolbox/src/app/core';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { IAppState, RootEpics } from '@kleiolab/lib-redux';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from 'projects/app-toolbox/src/app/modules/timeline/models/timeline';
 import { Observable, Subject } from 'rxjs';
-
 import { PeItTimelineAPIActions } from './api/pe-it-timeline.actions';
 import { PeItTimeline } from './api/pe-it-timeline.models';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
-import { InformationBasicPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-basic-pipes.service';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+
 
 // @WithSubStore({
 //   basePathMethodName: 'getBasePath',
@@ -36,7 +34,7 @@ export class PeItTimelineComponent extends PeItTimelineAPIActions implements OnI
 
   timeLineData$: Observable<TimeLineData>;
 
-  previousAccentuationMap = new Map<string[], TeEntAccentuation>();
+  // previousAccentuationMap = new Map<string[], TeEntAccentuation>();
 
   constructor(
     protected rootEpics: RootEpics,

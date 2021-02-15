@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit } from '@angular/core';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
+import { U } from "@kleiolab/lib-utils";
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { CONTAINER_DATA, FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
@@ -9,9 +9,12 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
 import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
 import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
-import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
+import { InformationPipesService } from "@kleiolab/lib-queries";
+import { classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
+import { propertiesRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
+import { PropertySelectModel } from "@kleiolab/lib-queries";
+import { PropertyOption } from "@kleiolab/lib-queries";
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";

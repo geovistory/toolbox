@@ -1,10 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { ActiveProjectPipesService } from '../../../core/redux-queries/services/active-project-pipes.service';
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-entity-preview',

@@ -1,60 +1,5 @@
-import { InjectionToken, Injectable, Optional, Inject, ɵɵdefineInjectable, ɵɵinject, NgModule, SkipSelf } from '@angular/core';
-import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/sdk-lb4/encoder.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Custom HttpParameterCodec
- * Workaround for https://github.com/angular/angular/issues/18261
- */
-class CustomHttpParameterCodec {
-    /**
-     * @param {?} k
-     * @return {?}
-     */
-    encodeKey(k) {
-        return encodeURIComponent(k);
-    }
-    /**
-     * @param {?} v
-     * @return {?}
-     */
-    encodeValue(v) {
-        return encodeURIComponent(v);
-    }
-    /**
-     * @param {?} k
-     * @return {?}
-     */
-    decodeKey(k) {
-        return decodeURIComponent(k);
-    }
-    /**
-     * @param {?} v
-     * @return {?}
-     */
-    decodeValue(v) {
-        return decodeURIComponent(v);
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/sdk-lb4/variables.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const BASE_PATH = new InjectionToken('basePath');
-/** @type {?} */
-const COLLECTION_FORMATS = {
-    'csv': ',',
-    'tsv': '   ',
-    'ssv': ' ',
-    'pipes': '|'
-};
+import { NgModule, Optional, SkipSelf, InjectionToken, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 /**
  * @fileoverview added by tsickle
@@ -233,6 +178,105 @@ if (false) {
      */
     Configuration.prototype.credentials;
 }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/api.module.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ApiModule {
+    /**
+     * @param {?} parentModule
+     * @param {?} http
+     */
+    constructor(parentModule, http) {
+        if (parentModule) {
+            throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
+        }
+        if (!http) {
+            throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
+                'See also https://github.com/angular/angular/issues/20575');
+        }
+    }
+    /**
+     * @param {?} configurationFactory
+     * @return {?}
+     */
+    static forRoot(configurationFactory) {
+        return {
+            ngModule: ApiModule,
+            providers: [{ provide: Configuration, useFactory: configurationFactory }]
+        };
+    }
+}
+ApiModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [],
+                declarations: [],
+                exports: [],
+                providers: []
+            },] }
+];
+/** @nocollapse */
+ApiModule.ctorParameters = () => [
+    { type: ApiModule, decorators: [{ type: Optional }, { type: SkipSelf }] },
+    { type: HttpClient, decorators: [{ type: Optional }] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/encoder.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Custom HttpParameterCodec
+ * Workaround for https://github.com/angular/angular/issues/18261
+ */
+class CustomHttpParameterCodec {
+    /**
+     * @param {?} k
+     * @return {?}
+     */
+    encodeKey(k) {
+        return encodeURIComponent(k);
+    }
+    /**
+     * @param {?} v
+     * @return {?}
+     */
+    encodeValue(v) {
+        return encodeURIComponent(v);
+    }
+    /**
+     * @param {?} k
+     * @return {?}
+     */
+    decodeKey(k) {
+        return decodeURIComponent(k);
+    }
+    /**
+     * @param {?} v
+     * @return {?}
+     */
+    decodeValue(v) {
+        return decodeURIComponent(v);
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/variables.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const BASE_PATH = new InjectionToken('basePath');
+/** @type {?} */
+const COLLECTION_FORMATS = {
+    'csv': ',',
+    'tsv': '   ',
+    'ssv': ' ',
+    'pipes': '|'
+};
 
 /**
  * @fileoverview added by tsickle
@@ -16215,56 +16259,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/sdk-lb4/api.module.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ApiModule {
-    /**
-     * @param {?} parentModule
-     * @param {?} http
-     */
-    constructor(parentModule, http) {
-        if (parentModule) {
-            throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
-        }
-        if (!http) {
-            throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
-                'See also https://github.com/angular/angular/issues/20575');
-        }
-    }
-    /**
-     * @param {?} configurationFactory
-     * @return {?}
-     */
-    static forRoot(configurationFactory) {
-        return {
-            ngModule: ApiModule,
-            providers: [{ provide: Configuration, useFactory: configurationFactory }]
-        };
-    }
-}
-ApiModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [],
-                declarations: [],
-                exports: [],
-                providers: []
-            },] }
-];
-/** @nocollapse */
-ApiModule.ctorParameters = () => [
-    { type: ApiModule, decorators: [{ type: Optional }, { type: SkipSelf }] },
-    { type: HttpClient, decorators: [{ type: Optional }] }
-];
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/sdk-lb4/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
  * Generated from: public-api.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -16275,5 +16269,5 @@ ApiModule.ctorParameters = () => [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { APIS, AccountService, AnalysisService, AnalysisTableExportRequest, ApiModule, BASE_PATH, COLLECTION_FORMATS, ColDef, Configuration, ContentTreeService, DatChunkControllerService, DatChunkService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, GetTablePageOptions, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, QueryFilterData, QueryPathSegment, RamListService, SchemaObjectService, SysClassFieldService, SysClassHasTypePropertyService, SysConfigValueObjectType, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TColFilterNum, TColFilterTxt, TableService, TimePrimitiveWithCal, WarEntityPreviewControllerService, WarStatementGeoJson, WarStatementTimePrimitiveVT };
+export { APIS, AccountService, AnalysisService, AnalysisTableExportRequest, BASE_PATH, COLLECTION_FORMATS, ColDef, Configuration, ContentTreeService, DatChunkControllerService, DatChunkService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, GetTablePageOptions, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, QueryFilterData, QueryPathSegment, RamListService, SchemaObjectService, ApiModule as SdkLb4Module, SysClassFieldService, SysClassHasTypePropertyService, SysConfigValueObjectType, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TColFilterNum, TColFilterTxt, TableService, TimePrimitiveWithCal, WarEntityPreviewControllerService, WarStatementGeoJson, WarStatementTimePrimitiveVT };
 //# sourceMappingURL=kleiolab-lib-sdk-lb4.js.map

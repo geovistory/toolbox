@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { InfLangString } from '@kleiolab/lib-sdk-lb3';
@@ -9,7 +9,7 @@ import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 
 /**

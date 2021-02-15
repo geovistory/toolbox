@@ -1,10 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ContentTreeNode } from '../content-tree/content-tree.component';
-import { latestVersion, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { latestVersion } from "@kleiolab/lib-utils";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { Observable, of } from 'rxjs';
 import { map, filter, shareReplay } from 'rxjs/operators';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-content-tree-node-label',

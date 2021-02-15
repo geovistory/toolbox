@@ -1,22 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, ElementRef } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators, FormControl } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Granularity } from "@kleiolab/lib-utils";
+import { CalendarType, Granularity, GregorianDateTime, InfTimePrimitiveWithCalendar, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
+import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { Subject } from 'rxjs';
-import { ValidationService } from "projects/app-toolbox/src/app/core/validation/validation.service";
-import { JulianDateTime } from '@kleiolab/lib-utils';
-import { GregorianDateTime } from '@kleiolab/lib-utils';
-import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { TimePrimitive } from "@kleiolab/lib-utils";
-import { CalendarType } from "@kleiolab/lib-utils";
 import { takeUntil } from 'rxjs/operators';
-
-// TODO DELETE
-export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
-  calendar: CalendarType
-}
 
 type CtrlModel = InfTimePrimitiveWithCalendar;
 

@@ -1,6 +1,6 @@
 import { IProjectList } from '../projects.model';
 import { ProjectsAction, ProjectsActions } from './projects.actions';
-import { ProjectPreview } from 'projects/app-toolbox/src/app/core';
+import { ProjectPreview } from "@kleiolab/lib-redux";
 
 const INITIAL_STATE: IProjectList = {
   records: []

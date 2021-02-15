@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
+import { InfActions } from "@kleiolab/lib-redux";
+import { SchemaObjectService } from "@kleiolab/lib-redux";
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { RamListService } from "@kleiolab/lib-sdk-lb4";
 import { DatDigital } from "@kleiolab/lib-sdk-lb4";
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
+import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
 import { DfhConfig } from "@kleiolab/lib-config";
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { equals, values } from 'ramda';
@@ -17,8 +17,8 @@ import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeU
 import { GraphPathEntity, GraphPathSegment } from '../graph-path/graph-path.component';
 import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListRemoveDialogComponent, RamListRemoveDialogData } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
-import { SchemaSelectorsService } from 'projects/app-toolbox/src/app/core/redux-queries/services/schema-selectors.service';
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
+import { SchemaSelectorsService } from "@kleiolab/lib-queries";
 
 interface GraphPath {
   segments: GraphPathSegment[];

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
+import { RootEpics } from "@kleiolab/lib-redux";
 import { AccountList, BoAccount, BoAccounts } from './api/account-list.models';
 import { AccountListAPIEpics } from './api/account-list.epics';
 import { AccountListAPIActions } from './api/account-list.actions';
@@ -11,7 +11,7 @@ import { Config } from 'protractor';
 import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
 import { KeysPipe } from 'projects/app-toolbox/src/app/shared/pipes/keys.pipe';
 import { first, takeUntil } from 'rxjs/operators';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { IAppState } from "@kleiolab/lib-redux";
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

@@ -8,7 +8,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
 import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
 import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
 import { QueryFilterInjectData, CtrlClasses } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathInjectData } from 'projects/app-toolbox/src/app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
 import { equals } from 'ramda';
@@ -16,7 +16,7 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
 import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 

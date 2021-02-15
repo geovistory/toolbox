@@ -1,19 +1,20 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SubstoreComponent, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { SysConfig } from "@kleiolab/lib-config";
+import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { RootEpics } from "@kleiolab/lib-redux";
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { ClassAndTypePk } from 'projects/app-toolbox/src/app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { ClassAndTypePk } from "@kleiolab/lib-queries";
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InformationAPIActions } from './api/entity-list.actions';
 import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { IAppState } from "@kleiolab/lib-redux";
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 
 @WithSubStore({

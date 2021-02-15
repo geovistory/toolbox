@@ -34,55 +34,55 @@
 * export class AppModule { }
 *
 **/
-import { ErrorHandler } from './services/core/error.service';
-import { LoopBackAuth } from './services/core/auth.service';
-import { LoggerService } from './services/custom/logger.service';
-import { SDKModels } from './services/custom/SDKModels';
-import { InternalStorage, SDKStorage } from './storage/storage.swaps';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { NgModule, ModuleWithProviders } from '@angular/core';
-import { CookieBrowser } from './storage/cookie.browser';
-import { StorageBrowser } from './storage/storage.browser';
-import { SocketBrowser } from './sockets/socket.browser';
-import { SocketDriver } from './sockets/socket.driver';
-import { SocketConnection } from './sockets/socket.connections';
+import { HttpClientModule } from '@angular/common/http';
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { LoopBackAuth } from './services/core/auth.service';
+import { ErrorHandler } from './services/core/error.service';
 import { RealTime } from './services/core/real.time';
-import { SchemaObjectApi } from './services/custom/SchemaObject';
-import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
-import { SysClassFieldApi } from './services/custom/SysClassField';
-import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
-import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
-import { PubAccountApi } from './services/custom/PubAccount';
-import { EmailApi } from './services/custom/Email';
-import { ProProjectApi } from './services/custom/ProProject';
-import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
-import { ProTextPropertyApi } from './services/custom/ProTextProperty';
-import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
-import { DfhProfileApi } from './services/custom/DfhProfile';
-import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DatChunkApi } from './services/custom/DatChunk';
 import { DatColumnApi } from './services/custom/DatColumn';
-import { DatTextPropertyApi } from './services/custom/DatTextProperty';
 import { DatDigitalApi } from './services/custom/DatDigital';
-import { SysAppContextApi } from './services/custom/SysAppContext';
+import { DatNamespaceApi } from './services/custom/DatNamespace';
+import { DatTextPropertyApi } from './services/custom/DatTextProperty';
+import { DfhLabelApi } from './services/custom/DfhLabel';
+import { DfhProfileApi } from './services/custom/DfhProfile';
+import { EmailApi } from './services/custom/Email';
+import { InfAppellationApi } from './services/custom/InfAppellation';
+import { InfDimensionApi } from './services/custom/InfDimension';
+import { InfLangStringApi } from './services/custom/InfLangString';
+import { InfLanguageApi } from './services/custom/InfLanguage';
+import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
+import { InfPlaceApi } from './services/custom/InfPlace';
+import { InfStatementApi } from './services/custom/InfStatement';
+import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
+import { InfTextPropertyApi } from './services/custom/InfTextProperty';
+import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
+import { LoggerService } from './services/custom/logger.service';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
 import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel';
-import { InfAppellationApi } from './services/custom/InfAppellation';
-import { InfLangStringApi } from './services/custom/InfLangString';
-import { InfDimensionApi } from './services/custom/InfDimension';
-import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
-import { InfStatementApi } from './services/custom/InfStatement';
-import { InfLanguageApi } from './services/custom/InfLanguage';
-import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
-import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
-import { InfPlaceApi } from './services/custom/InfPlace';
-import { DatNamespaceApi } from './services/custom/DatNamespace';
-import { InfTextPropertyApi } from './services/custom/InfTextProperty';
+import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
+import { ProProjectApi } from './services/custom/ProProject';
+import { ProTextPropertyApi } from './services/custom/ProTextProperty';
+import { PubAccountApi } from './services/custom/PubAccount';
+import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
+import { SchemaObjectApi } from './services/custom/SchemaObject';
+import { SDKModels } from './services/custom/SDKModels';
+import { SysAppContextApi } from './services/custom/SysAppContext';
+import { SysClassFieldApi } from './services/custom/SysClassField';
+import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
+import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
+import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
 import { SysSystemTypeApi } from './services/custom/SysSystemType';
+import { SocketBrowser } from './sockets/socket.browser';
+import { SocketConnection } from './sockets/socket.connections';
+import { SocketDriver } from './sockets/socket.driver';
+import { CookieBrowser } from './storage/cookie.browser';
+import { StorageBrowser } from './storage/storage.browser';
+import { InternalStorage, SDKStorage } from './storage/storage.swaps';
 /**
-* @module SDKBrowserModule
+* @module SdkLb3Module
 * @description
 * This module should be imported when building a Web Application in the following scenarios:
 *
@@ -99,13 +99,13 @@ import { SysSystemTypeApi } from './services/custom/SysSystemType';
     SocketConnection
   ]
 })
-export class SDKBrowserModule {
+export class SdkLb3Module {
   static forRoot(internalStorageProvider: any = {
     provide: InternalStorage,
     useClass: CookieBrowser
   }): ModuleWithProviders {
     return {
-      ngModule: SDKBrowserModule,
+      ngModule: SdkLb3Module,
       providers: [
         LoopBackAuth,
         LoggerService,
@@ -155,10 +155,10 @@ export class SDKBrowserModule {
 * Have Fun!!!
 * - Jon
 **/
+export * from './lb.config';
 export * from './models/index';
 export * from './services/index';
-export * from './lb.config';
-export * from './storage/storage.swaps';
 export { CookieBrowser } from './storage/cookie.browser';
 export { StorageBrowser } from './storage/storage.browser';
+export * from './storage/storage.swaps';
 

@@ -1,19 +1,13 @@
-import { Component, Input, OnInit, Optional, Self, Directive } from '@angular/core';
-import { NgControl, AbstractControl, ValidatorFn, Validator, NG_VALIDATORS } from '@angular/forms';
+import { Component, Directive, Input, OnInit, Optional, Self } from '@angular/core';
+import { AbstractControl, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { ClassAndTypeNode, ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-queries';
 import { AbstractChecklistControl } from 'projects/app-toolbox/src/app/shared/components/checklist-control/classes/abstract-checklist-control';
-import { NestedNode, ChecklistControlService } from 'projects/app-toolbox/src/app/shared/components/checklist-control/services/checklist-control.service';
-import { distinct, switchMap, map, distinctUntilChanged } from 'rxjs/operators';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
-import { ClassAndTypeNode } from 'projects/app-toolbox/src/app/modules/base/components/classes-and-types-select/classes-and-types-select.component';
+import { ChecklistControlService, NestedNode } from 'projects/app-toolbox/src/app/shared/components/checklist-control/services/checklist-control.service';
 import { equals } from 'ramda';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
-// TODO DELETE
-export interface ClassAndTypeSelectModel {
-  classes?: number[]
-  types?: number[]
-}
 
 export interface NodeData {
   label: string;

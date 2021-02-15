@@ -1,17 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
+import { InfActions } from "@kleiolab/lib-redux";
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { sum } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { isValueObjectSubfield } from '../../base.helpers';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { PaginationService } from '../../services/pagination.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
-import { Field, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
+import { SubfieldType } from "@kleiolab/lib-queries";
+import { Subfield } from "@kleiolab/lib-queries";
+import { Field } from "@kleiolab/lib-queries";
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
 

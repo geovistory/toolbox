@@ -8,7 +8,9 @@ interface MetaData {
 };
 export type NotificationsAPIAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class NotificationsAPIActions {
   static readonly ADD_TOAST = 'Notifications::ADD_TOAST';
 

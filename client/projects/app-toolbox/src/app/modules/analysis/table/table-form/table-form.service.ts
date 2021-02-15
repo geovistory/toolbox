@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
 import { FilterDefinition, QueryFilterComponent } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathFormComponent } from 'projects/app-toolbox/src/app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
 import { values } from 'd3';

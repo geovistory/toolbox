@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { TabBaseAPIAction } from './tab-layout';
 import { TabLayoutAcitons } from './tab-layout.actions';
-import { TabBase } from './tab-layout.models';
+import { TabBase } from "@kleiolab/lib-redux";
 
 const INITIAL_STATE = new TabBase();
 

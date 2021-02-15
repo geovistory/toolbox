@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
-import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { InformationPipesService } from "@kleiolab/lib-queries";
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
 import { switchMap, map, first, mergeMap, shareReplay } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';
-import { PropertySelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/property-select/property-select.component';
+import { PropertySelectModel } from "@kleiolab/lib-queries";
 import { BehaviorSubject } from 'rxjs';
 import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 

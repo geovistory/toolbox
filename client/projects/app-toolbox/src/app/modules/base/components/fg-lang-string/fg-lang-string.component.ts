@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfLangString } from '@kleiolab/lib-sdk-lb3';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
 import { InfAppellation } from '@kleiolab/lib-sdk-lb3';

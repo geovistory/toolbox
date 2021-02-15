@@ -1,9 +1,9 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { combineLatest, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { Field } from '../../../base/components/properties-tree/properties-tree.models';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { Field } from "@kleiolab/lib-queries";
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 
 
 @Component({

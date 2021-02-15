@@ -1,21 +1,151 @@
 import { dispatch, NgRedux, NgReduxModule, DevToolsExtension } from '@angular-redux/store';
-import { Injectable, ɵɵdefineInjectable, InjectionToken, NgModule, Inject } from '@angular/core';
+import { Injectable, ɵɵdefineInjectable, ɵɵinject, InjectionToken, NgModule, Inject, Optional, SkipSelf } from '@angular/core';
 import { SlimLoadingBarService, SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ToastyService, ToastyConfig, ToastyModule } from '@cime/ngx-toasty';
-import { ProProjectApi, PubAccountApi, SysSystemRelevantClassApi, DfhProfileApi, DfhLabelApi, SchemaObjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
-import { SystemConfigurationService, DfhClassControllerService, DfhPropertyControllerService, AnalysisService, ApiModule } from '@kleiolab/lib-sdk-lb4';
+import { PubAccountApi, ProProjectApi, SchemaObjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
+import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SystemConfigurationService, Configuration, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { keys, omit, values, pathOr, equals, indexBy } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
-import { Observable, combineLatest, Subject, of, BehaviorSubject } from 'rxjs';
-import { switchMap, filter, mapTo, mergeMap, map } from 'rxjs/operators';
+import { Observable, combineLatest, of, Subject, BehaviorSubject } from 'rxjs';
+import { mergeMap, filter, switchMap, mapTo, map } from 'rxjs/operators';
 import { __decorate, __metadata } from 'tslib';
 import { SysConfig } from '@kleiolab/lib-config';
 import { U } from '@kleiolab/lib-utils';
+import { SlimLoadingBarService as SlimLoadingBarService$1 } from '@cime/ngx-slim-loading-bar/src/slim-loading-bar.service';
+import { ToastyService as ToastyService$1, ToastyConfig as ToastyConfig$1 } from '@cime/ngx-toasty/src/toasty.service';
 import { composeReducers, defaultFormReducer } from '@angular-redux/form';
 import { routerReducer } from '@angular-redux/router';
 import { combineReducers } from 'redux';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/actions/account.actions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function AccountActionMeta() { }
+if (false) {
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.accountId;
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.accountRoles;
+    /** @type {?|undefined} */
+    AccountActionMeta.prototype.account;
+}
+;
+class AccountActions {
+    /**
+     * @return {?}
+     */
+    login() {
+        return {
+            type: AccountActions.LOGIN,
+            payload: null,
+            meta: null
+        };
+    }
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    loginSucceeded(account) {
+        return {
+            type: AccountActions.LOGIN_SUCCEEDED,
+            payload: null,
+            meta: { account }
+        };
+    }
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    loginFailed(error) {
+        return {
+            type: AccountActions.LOGIN_FAILED,
+            payload: null,
+            meta: null,
+            error
+        };
+    }
+    /**
+     * @param {?} account
+     * @return {?}
+     */
+    accountUpdated(account) {
+        return {
+            type: AccountActions.ACCOUNT_UPDATED,
+            payload: null,
+            meta: { account }
+        };
+    }
+    // Roles of the account, used to check permissions
+    /**
+     * @param {?} accountId
+     * @return {?}
+     */
+    loadRoles(accountId) {
+        return {
+            type: AccountActions.LOAD_ROLES,
+            payload: null,
+            meta: { accountId }
+        };
+    }
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    loadRolesSucceeded(accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_SUCCEEDED,
+            payload: null,
+            meta: { accountRoles }
+        };
+    }
+    /**
+     * @param {?} accountRoles
+     * @return {?}
+     */
+    loadRolesFailed(accountRoles) {
+        return {
+            type: AccountActions.LOAD_ROLES_FAILED,
+            payload: null,
+            meta: null
+        };
+    }
+}
+AccountActions.LOGIN = 'Account::LOGIN';
+AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
+AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
+AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
+AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
+AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
+AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
+AccountActions.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */ AccountActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function AccountActions_Factory() { return new AccountActions(); }, token: AccountActions, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    AccountActions.LOGIN;
+    /** @type {?} */
+    AccountActions.LOGIN_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOGIN_FAILED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_SUCCEEDED;
+    /** @type {?} */
+    AccountActions.LOAD_ROLES_FAILED;
+    /** @type {?} */
+    AccountActions.ACCOUNT_UPDATED;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -71,8 +201,11 @@ LoadingBarActions.START = 'LOADING_BAR_START';
 LoadingBarActions.STOP = 'LOADING_BAR_STOP';
 LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
 LoadingBarActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
+/** @nocollapse */ LoadingBarActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function LoadingBarActions_Factory() { return new LoadingBarActions(); }, token: LoadingBarActions, providedIn: "root" });
 __decorate([
     dispatch(),
     __metadata("design:type", Object)
@@ -98,95 +231,6 @@ if (false) {
     LoadingBarActions.prototype.stopLoading;
     /** @type {?} */
     LoadingBarActions.prototype.completeLoading;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class LoadingBarEpics {
-    /**
-     * @param {?} service
-     * @param {?} actions
-     */
-    constructor(service, actions) {
-        this.service = service;
-        this.actions = actions;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createCompleteLoadingBarEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
-         * @return {?}
-         */
-        () => {
-            return Observable.create((/**
-             * @param {?} observer
-             * @return {?}
-             */
-            observer => {
-                this.service.complete();
-                // observer.next(this.actions.stopLoading())
-            }));
-        }))));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createStartLoadingBarEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
-         * @return {?}
-         */
-        () => {
-            return Observable.create((/**
-             * @param {?} observer
-             * @return {?}
-             */
-            observer => {
-                this.service.start();
-            }));
-        }))));
-    }
-}
-LoadingBarEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-LoadingBarEpics.ctorParameters = () => [
-    { type: SlimLoadingBarService },
-    { type: LoadingBarActions }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    LoadingBarEpics.prototype.service;
-    /**
-     * @type {?}
-     * @private
-     */
-    LoadingBarEpics.prototype.actions;
 }
 
 /**
@@ -218,8 +262,11 @@ class NotificationsAPIActions {
 }
 NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
 NotificationsAPIActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
+/** @nocollapse */ NotificationsAPIActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotificationsAPIActions_Factory() { return new NotificationsAPIActions(); }, token: NotificationsAPIActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     NotificationsAPIActions.ADD_TOAST;
@@ -229,91 +276,103 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
+ * Generated from: lib/redux-store/state-gui/epics/account.epics.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class NotificationsAPIEpics {
+class AccountEpics {
     /**
-     * @param {?} toastyService
-     * @param {?} toastyConfig
+     * @param {?} actions
+     * @param {?} loadingBarActions
+     * @param {?} accountApi
+     * @param {?} notificationActions
      */
-    constructor(toastyService, toastyConfig) {
-        this.toastyService = toastyService;
-        this.toastyConfig = toastyConfig;
-        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-        // Possible values: default, bootstrap, material
-        this.toastyConfig.theme = 'bootstrap';
+    constructor(actions, loadingBarActions, accountApi, notificationActions) {
+        this.actions = actions;
+        this.loadingBarActions = loadingBarActions;
+        this.accountApi = accountApi;
+        this.notificationActions = notificationActions;
     }
     /**
      * @return {?}
      */
     createEpics() {
-        return combineEpics(this.createAddToastEpic());
+        return combineEpics(this.loadRoles());
     }
     /**
      * @private
      * @return {?}
      */
-    createAddToastEpic() {
+    loadRoles() {
         return (/**
          * @param {?} action$
          * @param {?} store
          * @return {?}
          */
-        (action$, store) => {
-            return action$.pipe(
-            /**
-             * Filter the actions that triggers this epic
-             */
-            filter((/**
-             * @param {?} a
+        (action$, store) => action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => new Observable((/**
+         * @param {?} globalStore
+         * @return {?}
+         */
+        (globalStore) => {
+            globalStore.next(this.loadingBarActions.startLoading());
+            this.accountApi.getRoles(action.meta.accountId)
+                .subscribe((/**
+             * @param {?} data
              * @return {?}
              */
-            (a) => {
-                return a;
-            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
-             * @param {?} action
+            (data) => {
+                globalStore.next(this.loadingBarActions.completeLoading());
+                globalStore.next(this.actions.loadRolesSucceeded(data));
+            }), (/**
+             * @param {?} error
              * @return {?}
              */
-            (action) => new Observable((/**
-             * @param {?} observer
-             * @return {?}
-             */
-            (observer) => {
-                /**
-                 * Add Toast
-                 * @type {?}
-                 */
-                const a = (/** @type {?} */ (action));
-                if (!a.payload.options.title && !a.payload.options.msg) {
-                    if (a.payload.type === 'error') {
-                        a.payload.options.title = 'Oops, something went wrong!';
-                    }
-                }
-                this.toastyService[a.payload.type](a.payload.options);
-            })))));
-        });
+            error => {
+                globalStore.next(this.notificationActions.addToast({
+                    type: 'error',
+                    options: { title: error }
+                }));
+            }));
+        }))))));
     }
 }
-NotificationsAPIEpics.decorators = [
-    { type: Injectable }
+AccountEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
-NotificationsAPIEpics.ctorParameters = () => [
-    { type: ToastyService },
-    { type: ToastyConfig }
+AccountEpics.ctorParameters = () => [
+    { type: AccountActions },
+    { type: LoadingBarActions },
+    { type: PubAccountApi },
+    { type: NotificationsAPIActions }
 ];
+/** @nocollapse */ AccountEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function AccountEpics_Factory() { return new AccountEpics(ɵɵinject(AccountActions), ɵɵinject(LoadingBarActions), ɵɵinject(PubAccountApi), ɵɵinject(NotificationsAPIActions)); }, token: AccountEpics, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
      * @private
      */
-    NotificationsAPIEpics.prototype.toastyService;
+    AccountEpics.prototype.actions;
     /**
      * @type {?}
      * @private
      */
-    NotificationsAPIEpics.prototype.toastyConfig;
+    AccountEpics.prototype.loadingBarActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.accountApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    AccountEpics.prototype.notificationActions;
 }
 
 /**
@@ -1021,8 +1080,11 @@ ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE = 'ActiveProject::SET_MENT
  */
 ActiveProjectActions.DESTROY = 'ActiveProject::DESTROY';
 ActiveProjectActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
+/** @nocollapse */ ActiveProjectActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActiveProjectActions_Factory() { return new ActiveProjectActions(); }, token: ActiveProjectActions, providedIn: "root" });
 if (false) {
     /**
      * *********************************************************************************
@@ -1855,12 +1917,15 @@ class DatActions {
     }
 }
 DatActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 DatActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ DatActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function DatActions_Factory() { return new DatActions(ɵɵinject(NgRedux)); }, token: DatActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     DatActions.prototype.digital;
@@ -2248,12 +2313,15 @@ class DfhActions {
     }
 }
 DfhActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 DfhActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ DfhActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function DfhActions_Factory() { return new DfhActions(ɵɵinject(NgRedux)); }, token: DfhActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     DfhActions.prototype.profile;
@@ -3367,12 +3435,15 @@ class InfActions {
     }
 }
 InfActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 InfActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ InfActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function InfActions_Factory() { return new InfActions(ɵɵinject(NgRedux)); }, token: InfActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     InfActions.prototype.persistent_item;
@@ -3995,12 +4066,15 @@ class ProActions {
     }
 }
 ProActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 ProActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ ProActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProActions_Factory() { return new ProActions(ɵɵinject(NgRedux)); }, token: ProActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     ProActions.prototype.project;
@@ -4106,12 +4180,15 @@ class SysActions {
     }
 }
 SysActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 SysActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ SysActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function SysActions_Factory() { return new SysActions(ɵɵinject(NgRedux)); }, token: SysActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     SysActions.prototype.system_relevant_class;
@@ -4127,14 +4204,26 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
+ * @param {?} textProperties
+ * @param {?} fkSystemType
+ * @return {?}
+ */
+function firstProTextPropStringOfType(textProperties, fkSystemType) {
+    return (textProperties.find((/**
+     * @param {?} t
+     * @return {?}
+     */
+    t => t.fk_system_type === fkSystemType)) || { string: '' }).string;
+}
+/**
  * Transform ProProject to ProjectPreview
  * @param {?} project
  * @return {?}
  */
 function proProjectToProjectPreview(project) {
     return {
-        label: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-        description: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+        label: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+        description: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
         default_language: project.default_language,
         pk_project: project.pk_entity
     };
@@ -4474,7 +4563,9 @@ class ActiveProjectEpics {
     }
 }
 ActiveProjectEpics.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 ActiveProjectEpics.ctorParameters = () => [
@@ -4489,6 +4580,7 @@ ActiveProjectEpics.ctorParameters = () => [
     { type: LoadingBarActions },
     { type: NgRedux }
 ];
+/** @nocollapse */ ActiveProjectEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(ɵɵinject(SysActions), ɵɵinject(DatActions), ɵɵinject(DfhActions), ɵɵinject(ProActions), ɵɵinject(InfActions), ɵɵinject(ProProjectApi), ɵɵinject(ActiveProjectActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(LoadingBarActions), ɵɵinject(NgRedux)); }, token: ActiveProjectEpics, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
@@ -4544,606 +4636,225 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/actions/account.actions.ts
+ * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @record
- */
-function AccountActionMeta() { }
-if (false) {
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountId;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.accountRoles;
-    /** @type {?|undefined} */
-    AccountActionMeta.prototype.account;
-}
-;
-class AccountActions {
+class LoadingBarEpics {
     /**
-     * @return {?}
+     * @param {?} service
      */
-    login() {
-        return {
-            type: AccountActions.LOGIN,
-            payload: null,
-            meta: null
-        };
-    }
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    loginSucceeded(account) {
-        return {
-            type: AccountActions.LOGIN_SUCCEEDED,
-            payload: null,
-            meta: { account }
-        };
-    }
-    /**
-     * @param {?} error
-     * @return {?}
-     */
-    loginFailed(error) {
-        return {
-            type: AccountActions.LOGIN_FAILED,
-            payload: null,
-            meta: null,
-            error
-        };
-    }
-    /**
-     * @param {?} account
-     * @return {?}
-     */
-    accountUpdated(account) {
-        return {
-            type: AccountActions.ACCOUNT_UPDATED,
-            payload: null,
-            meta: { account }
-        };
-    }
-    // Roles of the account, used to check permissions
-    /**
-     * @param {?} accountId
-     * @return {?}
-     */
-    loadRoles(accountId) {
-        return {
-            type: AccountActions.LOAD_ROLES,
-            payload: null,
-            meta: { accountId }
-        };
-    }
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    loadRolesSucceeded(accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_SUCCEEDED,
-            payload: null,
-            meta: { accountRoles }
-        };
-    }
-    /**
-     * @param {?} accountRoles
-     * @return {?}
-     */
-    loadRolesFailed(accountRoles) {
-        return {
-            type: AccountActions.LOAD_ROLES_FAILED,
-            payload: null,
-            meta: null
-        };
-    }
-}
-AccountActions.LOGIN = 'Account::LOGIN';
-AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
-AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
-AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
-AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
-AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
-AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
-AccountActions.decorators = [
-    { type: Injectable }
-];
-if (false) {
-    /** @type {?} */
-    AccountActions.LOGIN;
-    /** @type {?} */
-    AccountActions.LOGIN_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOGIN_FAILED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_SUCCEEDED;
-    /** @type {?} */
-    AccountActions.LOAD_ROLES_FAILED;
-    /** @type {?} */
-    AccountActions.ACCOUNT_UPDATED;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/epics/account.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class AccountEpics {
-    /**
-     * @param {?} actions
-     * @param {?} loadingBarActions
-     * @param {?} accountApi
-     * @param {?} notificationActions
-     */
-    constructor(actions, loadingBarActions, accountApi, notificationActions) {
-        this.actions = actions;
-        this.loadingBarActions = loadingBarActions;
-        this.accountApi = accountApi;
-        this.notificationActions = notificationActions;
+    constructor(service) {
+        this.service = service;
     }
     /**
      * @return {?}
      */
     createEpics() {
-        return combineEpics(this.loadRoles());
+        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
     }
     /**
      * @private
      * @return {?}
      */
-    loadRoles() {
+    createCompleteLoadingBarEpic() {
         return (/**
          * @param {?} action$
          * @param {?} store
          * @return {?}
          */
-        (action$, store) => action$.pipe(ofType(AccountActions.LOAD_ROLES), mergeMap((/**
-         * @param {?} action
+        (action$, store) => action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
          * @return {?}
          */
-        (action) => new Observable((/**
-         * @param {?} globalStore
-         * @return {?}
-         */
-        (globalStore) => {
-            globalStore.next(this.loadingBarActions.startLoading());
-            this.accountApi.getRoles(action.meta.accountId)
-                .subscribe((/**
-             * @param {?} data
+        () => {
+            return Observable.create((/**
+             * @param {?} observer
              * @return {?}
              */
-            (data) => {
-                globalStore.next(this.loadingBarActions.completeLoading());
-                globalStore.next(this.actions.loadRolesSucceeded(data));
-            }), (/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                globalStore.next(this.notificationActions.addToast({
-                    type: 'error',
-                    options: { title: error }
-                }));
+            observer => {
+                this.service.complete();
+                // observer.next(this.actions.stopLoading())
             }));
-        }))))));
+        }))));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createStartLoadingBarEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
+         * @return {?}
+         */
+        () => {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            observer => {
+                this.service.start();
+            }));
+        }))));
     }
 }
-AccountEpics.decorators = [
-    { type: Injectable }
+LoadingBarEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
-AccountEpics.ctorParameters = () => [
-    { type: AccountActions },
-    { type: LoadingBarActions },
-    { type: PubAccountApi },
-    { type: NotificationsAPIActions }
+LoadingBarEpics.ctorParameters = () => [
+    { type: SlimLoadingBarService }
 ];
+/** @nocollapse */ LoadingBarEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function LoadingBarEpics_Factory() { return new LoadingBarEpics(ɵɵinject(SlimLoadingBarService$1)); }, token: LoadingBarEpics, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
      * @private
      */
-    AccountEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.loadingBarActions;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.accountApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    AccountEpics.prototype.notificationActions;
+    LoadingBarEpics.prototype.service;
 }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/_helpers/schema-epics-factory.ts
+ * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @template Payload, Model
- */
-class SchemaEpicsFactory {
+class NotificationsAPIEpics {
     /**
-     * @param {?} actionPrefix
-     * @param {?} modelName
-     * @param {?} actions
-     * @param {?} notifications
+     * @param {?} toastyService
+     * @param {?} toastyConfig
      */
-    constructor(actionPrefix, modelName, actions, notifications) {
-        this.actionPrefix = actionPrefix;
-        this.modelName = modelName;
-        this.actions = actions;
-        this.notifications = notifications;
-    }
-    /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?} actionSuffix
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    createLoadEpic(apiFn, actionSuffix, onSuccessHook) {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(this.type('LOAD', actionSuffix)), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            (globalActions) => {
-                /** @type {?} */
-                const pendingKey = action.meta.addPending;
-                /** @type {?} */
-                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                apiFn(meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    if (onSuccessHook) {
-                        onSuccessHook(data, action.meta.pk, meta);
-                        this.actions.succeeded(data, pendingKey, action.meta.pk);
-                    }
-                    else {
-                        this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
-                    }
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                error => {
-                    this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })))));
-        });
-    }
-    /**
-     * @template T
-     * @param {?} apiFn
-     * @param {?=} onSuccessHook
-     * @return {?}
-     */
-    createUpsertEpic(apiFn, onSuccessHook) {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            (globalActions) => {
-                /** @type {?} */
-                const pendingKey = action.meta.addPending;
-                /** @type {?} */
-                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                apiFn(meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    if (onSuccessHook) {
-                        onSuccessHook(data, action.meta.pk);
-                        this.actions.succeeded(data, pendingKey, action.meta.pk);
-                    }
-                    else {
-                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
-                    }
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                error => {
-                    this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })))));
-        });
-    }
-    /**
-     * @param {?} apiFn
-     * @return {?}
-     */
-    createDeleteEpic(apiFn) {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalActions
-             * @return {?}
-             */
-            (globalActions) => {
-                /** @type {?} */
-                const pendingKey = action.meta.addPending;
-                apiFn(action.meta).subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                (data) => {
-                    this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                error => {
-                    this.onError(globalActions, error, pendingKey, action.meta.pk);
-                }));
-            })))));
-        });
-    }
-    /**
-     * Create the string used as action.type
-     * @param {?} operation
-     * @param {?} actionSuffix
-     * @return {?}
-     */
-    type(operation, actionSuffix) {
-        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
-    }
-    /**
-     * Create the onError logic for standard actions
-     * @param {?} globalActions pass in the subscriber to the action$ stream
-     * @param {?} error
-     * @param {?} pendingKey
-     * @param {?} pkProject
-     * @return {?}
-     */
-    onError(globalActions, error, pendingKey, pkProject) {
-        globalActions.next(this.notifications.addToast({
-            type: 'error',
-            options: { title: error.message }
-        }));
-        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
-    }
-}
-if (false) {
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.actionPrefix;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.modelName;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.actions;
-    /** @type {?} */
-    SchemaEpicsFactory.prototype.notifications;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/sys.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class SysEpics {
-    /**
-     * @param {?} actions
-     * @param {?} notification
-     * @param {?} sysRelevantClassApi
-     * @param {?} sysConfigApi
-     */
-    constructor(actions, notification, sysRelevantClassApi, sysConfigApi) {
-        this.actions = actions;
-        this.notification = notification;
-        this.sysRelevantClassApi = sysRelevantClassApi;
-        this.sysConfigApi = sysConfigApi;
+    constructor(toastyService, toastyConfig) {
+        this.toastyService = toastyService;
+        this.toastyConfig = toastyConfig;
+        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
+        // Possible values: default, bootstrap, material
+        this.toastyConfig.theme = 'bootstrap';
     }
     /**
      * @return {?}
      */
     createEpics() {
-        /** @type {?} */
-        const systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
-        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
-        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
-        /** @type {?} */
-        const configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
-        return combineEpics(
-        // SystemRelevantClass Epics
-        systemRelevantClassEpicsFactory.createLoadEpic((/**
+        return combineEpics(this.createAddToastEpic());
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createAddToastEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(
+            /**
+             * Filter the actions that triggers this epic
+             */
+            filter((/**
+             * @param {?} a
+             * @return {?}
+             */
+            (a) => {
+                return a;
+            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            (observer) => {
+                /**
+                 * Add Toast
+                 * @type {?}
+                 */
+                const a = (/** @type {?} */ (action));
+                if (!a.payload.options.title && !a.payload.options.msg) {
+                    if (a.payload.type === 'error') {
+                        a.payload.options.title = 'Oops, something went wrong!';
+                    }
+                }
+                this.toastyService[a.payload.type](a.payload.options);
+            })))));
+        });
+    }
+}
+NotificationsAPIEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+NotificationsAPIEpics.ctorParameters = () => [
+    { type: ToastyService },
+    { type: ToastyConfig }
+];
+/** @nocollapse */ NotificationsAPIEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotificationsAPIEpics_Factory() { return new NotificationsAPIEpics(ɵɵinject(ToastyService$1), ɵɵinject(ToastyConfig$1)); }, token: NotificationsAPIEpics, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyService;
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyConfig;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ActionResolverEpics {
+    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+    constructor() {
+        this.createEpics = (/**
+         * @return {?}
+         */
+        () => combineEpics(this.createResolveEpic()));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createResolveEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(filter((/**
          * @param {?} action
          * @return {?}
          */
-        (action) => this.sysRelevantClassApi.find()), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
+        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
+         * @param {?} action
          * @return {?}
          */
-        (meta) => this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items))), 
-        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
-        configEpicsFactory.createLoadEpic((/**
-         * @return {?}
-         */
-        () => this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
-         * @param {?} x
-         * @return {?}
-         */
-        x => [x])))), ''));
+        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
     }
 }
-SysEpics.decorators = [
-    { type: Injectable }
+ActionResolverEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
-SysEpics.ctorParameters = () => [
-    { type: SysActions },
-    { type: NotificationsAPIActions },
-    { type: SysSystemRelevantClassApi },
-    { type: SystemConfigurationService }
-];
+ActionResolverEpics.ctorParameters = () => [];
+/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
 if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.notification;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.sysRelevantClassApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    SysEpics.prototype.sysConfigApi;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/dfh.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class DfhEpics {
-    /**
-     * @param {?} actions
-     * @param {?} notification
-     * @param {?} profileApi
-     * @param {?} classApi
-     * @param {?} propertyApi
-     * @param {?} labelApi
-     */
-    constructor(actions, notification, profileApi, classApi, propertyApi, labelApi) {
-        this.actions = actions;
-        this.notification = notification;
-        this.profileApi = profileApi;
-        this.classApi = classApi;
-        this.propertyApi = propertyApi;
-        this.labelApi = labelApi;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
-        /** @type {?} */
-        const dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
-        /** @type {?} */
-        const dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
-        /** @type {?} */
-        const dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
-        return combineEpics(
-        // Profile Loaders
-        dfhProfileEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.profileApi.ofProject(meta.pk)), DfhProfileActionFactory.OF_PROJECT), 
-        // Property Loaders
-        dfhPropertyEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.propertyApi.dfhPropertyControllerOfProject(meta.pk)), DfhPropertyActionFactory.OF_PROJECT), 
-        // Class Loaders
-        dfhClassEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.classApi.dfhClassControllerOfProject(meta.pk)), DfhClassActionFactory.OF_PROJECT), 
-        // Label Loaders
-        dfhLabelEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.labelApi.ofProject(meta.pk)), DfhLabelActionFactory.OF_PROJECT));
-    }
-}
-DfhEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-DfhEpics.ctorParameters = () => [
-    { type: DfhActions },
-    { type: NotificationsAPIActions },
-    { type: DfhProfileApi },
-    { type: DfhClassControllerService },
-    { type: DfhPropertyControllerService },
-    { type: DfhLabelApi }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.notification;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.profileApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.classApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.propertyApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DfhEpics.prototype.labelApi;
+    /** @type {?} */
+    ActionResolverEpics.prototype.createEpics;
 }
 
 /**
@@ -5193,12 +4904,15 @@ class TabActions {
     }
 }
 TabActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 TabActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ TabActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function TabActions_Factory() { return new TabActions(ɵɵinject(NgRedux)); }, token: TabActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     TabActions.prototype.cell;
@@ -5243,12 +4957,15 @@ class WarActions {
     }
 }
 WarActions.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 WarActions.ctorParameters = () => [
     { type: NgRedux }
 ];
+/** @nocollapse */ WarActions.ngInjectableDef = ɵɵdefineInjectable({ factory: function WarActions_Factory() { return new WarActions(ɵɵinject(NgRedux)); }, token: WarActions, providedIn: "root" });
 if (false) {
     /** @type {?} */
     WarActions.prototype.entity_preview;
@@ -5431,7 +5148,9 @@ class SchemaObjectService {
     }
 }
 SchemaObjectService.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 SchemaObjectService.ctorParameters = () => [
@@ -5445,6 +5164,7 @@ SchemaObjectService.ctorParameters = () => [
     { type: SysActions },
     { type: NotificationsAPIActions }
 ];
+/** @nocollapse */ SchemaObjectService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SchemaObjectService_Factory() { return new SchemaObjectService(ɵɵinject(SchemaObjectApi), ɵɵinject(InfActions), ɵɵinject(ProActions), ɵɵinject(DatActions), ɵɵinject(WarActions), ɵɵinject(TabActions), ɵɵinject(DfhActions), ɵɵinject(SysActions), ɵɵinject(NotificationsAPIActions)); }, token: SchemaObjectService, providedIn: "root" });
 if (false) {
     /** @type {?} */
     SchemaObjectService.prototype.api;
@@ -5926,6 +5646,445 @@ const storeFlattened = (/**
         }
     }));
 });
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/_helpers/schema-epics-factory.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template Payload, Model
+ */
+class SchemaEpicsFactory {
+    /**
+     * @param {?} actionPrefix
+     * @param {?} modelName
+     * @param {?} actions
+     * @param {?} notifications
+     */
+    constructor(actionPrefix, modelName, actions, notifications) {
+        this.actionPrefix = actionPrefix;
+        this.modelName = modelName;
+        this.actions = actions;
+        this.notifications = notifications;
+    }
+    /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?} actionSuffix
+     * @param {?=} onSuccessHook
+     * @return {?}
+     */
+    createLoadEpic(apiFn, actionSuffix, onSuccessHook) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.type('LOAD', actionSuffix)), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk, meta);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * @template T
+     * @param {?} apiFn
+     * @param {?=} onSuccessHook
+     * @return {?}
+     */
+    createUpsertEpic(apiFn, onSuccessHook) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                /** @type {?} */
+                const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                apiFn(meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    if (onSuccessHook) {
+                        onSuccessHook(data, action.meta.pk);
+                        this.actions.succeeded(data, pendingKey, action.meta.pk);
+                    }
+                    else {
+                        this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                    }
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * @param {?} apiFn
+     * @return {?}
+     */
+    createDeleteEpic(apiFn) {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalActions
+             * @return {?}
+             */
+            (globalActions) => {
+                /** @type {?} */
+                const pendingKey = action.meta.addPending;
+                apiFn(action.meta).subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                (data) => {
+                    this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => {
+                    this.onError(globalActions, error, pendingKey, action.meta.pk);
+                }));
+            })))));
+        });
+    }
+    /**
+     * Create the string used as action.type
+     * @param {?} operation
+     * @param {?} actionSuffix
+     * @return {?}
+     */
+    type(operation, actionSuffix) {
+        return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
+    }
+    /**
+     * Create the onError logic for standard actions
+     * @param {?} globalActions pass in the subscriber to the action$ stream
+     * @param {?} error
+     * @param {?} pendingKey
+     * @param {?} pkProject
+     * @return {?}
+     */
+    onError(globalActions, error, pendingKey, pkProject) {
+        globalActions.next(this.notifications.addToast({
+            type: 'error',
+            options: { title: error.message }
+        }));
+        this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
+    }
+}
+if (false) {
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.actionPrefix;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.modelName;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.actions;
+    /** @type {?} */
+    SchemaEpicsFactory.prototype.notifications;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/dat.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DatEpics {
+    /**
+     * @param {?} notification
+     * @param {?} datActions
+     * @param {?} infActions
+     * @param {?} proActions
+     * @param {?} digitalApi
+     * @param {?} chunkApi
+     * @param {?} columnApi
+     * @param {?} namespaceApi
+     * @param {?} schemaObjectService
+     */
+    constructor(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
+        this.notification = notification;
+        this.datActions = datActions;
+        this.infActions = infActions;
+        this.proActions = proActions;
+        this.digitalApi = digitalApi;
+        this.chunkApi = chunkApi;
+        this.columnApi = columnApi;
+        this.namespaceApi = namespaceApi;
+        this.schemaObjectService = schemaObjectService;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
+        /** @type {?} */
+        const chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
+        /** @type {?} */
+        const namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
+        /** @type {?} */
+        const columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
+        return combineEpics(
+        // Digital
+        digitalEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null)), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items))), digitalEpicsFactory.createDeleteEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.digitalApi.bulkDelete(meta.items.map((/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => item.pk_entity))))), 
+        // Chunk
+        chunkEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital)), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+            flattener.chunk.flatten(results);
+            storeFlattened(flattener.getFlattened(), pk);
+        })), 
+        // Namespace
+        namespaceEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.namespaceApi.byProject(meta.pk)), ''), columnEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital)), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
+         * @param {?} results
+         * @param {?} pk
+         * @return {?}
+         */
+        (results, pk) => {
+            /** @type {?} */
+            const schemaObject = (/** @type {?} */ ((/** @type {?} */ (results))));
+            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+        })));
+    }
+}
+DatEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+DatEpics.ctorParameters = () => [
+    { type: NotificationsAPIActions },
+    { type: DatActions },
+    { type: InfActions },
+    { type: ProActions },
+    { type: DatDigitalApi },
+    { type: DatChunkApi },
+    { type: DatColumnApi },
+    { type: DatNamespaceApi },
+    { type: SchemaObjectService }
+];
+/** @nocollapse */ DatEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function DatEpics_Factory() { return new DatEpics(ɵɵinject(NotificationsAPIActions), ɵɵinject(DatActions), ɵɵinject(InfActions), ɵɵinject(ProActions), ɵɵinject(DatDigitalApi), ɵɵinject(DatChunkApi), ɵɵinject(DatColumnApi), ɵɵinject(DatNamespaceApi), ɵɵinject(SchemaObjectService)); }, token: DatEpics, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    DatEpics.prototype.notification;
+    /** @type {?} */
+    DatEpics.prototype.datActions;
+    /** @type {?} */
+    DatEpics.prototype.infActions;
+    /** @type {?} */
+    DatEpics.prototype.proActions;
+    /** @type {?} */
+    DatEpics.prototype.digitalApi;
+    /** @type {?} */
+    DatEpics.prototype.chunkApi;
+    /** @type {?} */
+    DatEpics.prototype.columnApi;
+    /** @type {?} */
+    DatEpics.prototype.namespaceApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatEpics.prototype.schemaObjectService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/epics/dfh.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class DfhEpics {
+    /**
+     * @param {?} actions
+     * @param {?} notification
+     * @param {?} profileApi
+     * @param {?} classApi
+     * @param {?} propertyApi
+     * @param {?} labelApi
+     */
+    constructor(actions, notification, profileApi, classApi, propertyApi, labelApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.profileApi = profileApi;
+        this.classApi = classApi;
+        this.propertyApi = propertyApi;
+        this.labelApi = labelApi;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        /** @type {?} */
+        const dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
+        /** @type {?} */
+        const dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
+        /** @type {?} */
+        const dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
+        /** @type {?} */
+        const dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
+        return combineEpics(
+        // Profile Loaders
+        dfhProfileEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.profileApi.ofProject(meta.pk)), DfhProfileActionFactory.OF_PROJECT), 
+        // Property Loaders
+        dfhPropertyEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.propertyApi.dfhPropertyControllerOfProject(meta.pk)), DfhPropertyActionFactory.OF_PROJECT), 
+        // Class Loaders
+        dfhClassEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.classApi.dfhClassControllerOfProject(meta.pk)), DfhClassActionFactory.OF_PROJECT), 
+        // Label Loaders
+        dfhLabelEpicsFactory.createLoadEpic((/**
+         * @param {?} meta
+         * @return {?}
+         */
+        (meta) => this.labelApi.ofProject(meta.pk)), DfhLabelActionFactory.OF_PROJECT));
+    }
+}
+DfhEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+DfhEpics.ctorParameters = () => [
+    { type: DfhActions },
+    { type: NotificationsAPIActions },
+    { type: DfhProfileApi },
+    { type: DfhClassControllerService },
+    { type: DfhPropertyControllerService },
+    { type: DfhLabelApi }
+];
+/** @nocollapse */ DfhEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function DfhEpics_Factory() { return new DfhEpics(ɵɵinject(DfhActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(DfhProfileApi), ɵɵinject(DfhClassControllerService), ɵɵinject(DfhPropertyControllerService), ɵɵinject(DfhLabelApi)); }, token: DfhEpics, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.profileApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.classApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.propertyApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    DfhEpics.prototype.labelApi;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -6511,7 +6670,9 @@ class InfEpics {
     }
 }
 InfEpics.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 InfEpics.ctorParameters = () => [
@@ -6526,6 +6687,7 @@ InfEpics.ctorParameters = () => [
     { type: ProInfoProjRelApi },
     { type: SchemaObjectService }
 ];
+/** @nocollapse */ InfEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function InfEpics_Factory() { return new InfEpics(ɵɵinject(NotificationsAPIActions), ɵɵinject(InfPersistentItemApi), ɵɵinject(InfTemporalEntityApi), ɵɵinject(InfStatementApi), ɵɵinject(InfTextPropertyApi), ɵɵinject(InfActions), ɵɵinject(ProActions), ɵɵinject(DatActions), ɵɵinject(ProInfoProjRelApi), ɵɵinject(SchemaObjectService)); }, token: InfEpics, providedIn: "root" });
 if (false) {
     /** @type {?} */
     InfEpics.prototype.notification;
@@ -6550,141 +6712,6 @@ if (false) {
      * @private
      */
     InfEpics.prototype.schemaObjectService;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/dat.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class DatEpics {
-    /**
-     * @param {?} notification
-     * @param {?} datActions
-     * @param {?} infActions
-     * @param {?} proActions
-     * @param {?} digitalApi
-     * @param {?} chunkApi
-     * @param {?} columnApi
-     * @param {?} namespaceApi
-     * @param {?} schemaObjectService
-     */
-    constructor(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
-        this.notification = notification;
-        this.datActions = datActions;
-        this.infActions = infActions;
-        this.proActions = proActions;
-        this.digitalApi = digitalApi;
-        this.chunkApi = chunkApi;
-        this.columnApi = columnApi;
-        this.namespaceApi = namespaceApi;
-        this.schemaObjectService = schemaObjectService;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        /** @type {?} */
-        const digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
-        /** @type {?} */
-        const chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
-        /** @type {?} */
-        const namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
-        /** @type {?} */
-        const columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
-        return combineEpics(
-        // Digital
-        digitalEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null)), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items))), digitalEpicsFactory.createDeleteEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.digitalApi.bulkDelete(meta.items.map((/**
-         * @param {?} item
-         * @return {?}
-         */
-        item => item.pk_entity))))), 
-        // Chunk
-        chunkEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital)), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-            flattener.chunk.flatten(results);
-            storeFlattened(flattener.getFlattened(), pk);
-        })), 
-        // Namespace
-        namespaceEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.namespaceApi.byProject(meta.pk)), ''), columnEpicsFactory.createLoadEpic((/**
-         * @param {?} meta
-         * @return {?}
-         */
-        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital)), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
-         * @param {?} results
-         * @param {?} pk
-         * @return {?}
-         */
-        (results, pk) => {
-            /** @type {?} */
-            const schemaObject = (/** @type {?} */ ((/** @type {?} */ (results))));
-            this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-        })));
-    }
-}
-DatEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-DatEpics.ctorParameters = () => [
-    { type: NotificationsAPIActions },
-    { type: DatActions },
-    { type: InfActions },
-    { type: ProActions },
-    { type: DatDigitalApi },
-    { type: DatChunkApi },
-    { type: DatColumnApi },
-    { type: DatNamespaceApi },
-    { type: SchemaObjectService }
-];
-if (false) {
-    /** @type {?} */
-    DatEpics.prototype.notification;
-    /** @type {?} */
-    DatEpics.prototype.datActions;
-    /** @type {?} */
-    DatEpics.prototype.infActions;
-    /** @type {?} */
-    DatEpics.prototype.proActions;
-    /** @type {?} */
-    DatEpics.prototype.digitalApi;
-    /** @type {?} */
-    DatEpics.prototype.chunkApi;
-    /** @type {?} */
-    DatEpics.prototype.columnApi;
-    /** @type {?} */
-    DatEpics.prototype.namespaceApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    DatEpics.prototype.schemaObjectService;
 }
 
 /**
@@ -6969,7 +6996,9 @@ class ProEpics {
     }
 }
 ProEpics.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 ProEpics.ctorParameters = () => [
@@ -6986,6 +7015,7 @@ ProEpics.ctorParameters = () => [
     { type: AnalysisService },
     { type: SchemaObjectService }
 ];
+/** @nocollapse */ ProEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProEpics_Factory() { return new ProEpics(ɵɵinject(NotificationsAPIActions), ɵɵinject(InfActions), ɵɵinject(ProActions), ɵɵinject(DatActions), ɵɵinject(ProProjectApi), ɵɵinject(ProInfoProjRelApi), ɵɵinject(ProDfhClassProjRelApi), ɵɵinject(ProDfhProfileProjRelApi), ɵɵinject(ProClassFieldConfigApi), ɵɵinject(ProTextPropertyApi), ɵɵinject(AnalysisService), ɵɵinject(SchemaObjectService)); }, token: ProEpics, providedIn: "root" });
 if (false) {
     /** @type {?} */
     ProEpics.prototype.notification;
@@ -7018,49 +7048,88 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
+ * Generated from: lib/redux-store/state-schema/epics/sys.epics.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class ActionResolverEpics {
-    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
-    constructor() {
-        this.createEpics = (/**
-         * @return {?}
-         */
-        () => combineEpics(this.createResolveEpic()));
+class SysEpics {
+    /**
+     * @param {?} actions
+     * @param {?} notification
+     * @param {?} sysRelevantClassApi
+     * @param {?} sysConfigApi
+     */
+    constructor(actions, notification, sysRelevantClassApi, sysConfigApi) {
+        this.actions = actions;
+        this.notification = notification;
+        this.sysRelevantClassApi = sysRelevantClassApi;
+        this.sysConfigApi = sysConfigApi;
     }
     /**
-     * @private
      * @return {?}
      */
-    createResolveEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(filter((/**
+    createEpics() {
+        /** @type {?} */
+        const systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
+        // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
+        //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
+        /** @type {?} */
+        const configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
+        return combineEpics(
+        // SystemRelevantClass Epics
+        systemRelevantClassEpicsFactory.createLoadEpic((/**
          * @param {?} action
          * @return {?}
          */
-        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
-         * @param {?} action
+        (action) => this.sysRelevantClassApi.find()), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
+         * @param {?} meta
          * @return {?}
          */
-        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
+        (meta) => this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items))), 
+        // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
+        configEpicsFactory.createLoadEpic((/**
+         * @return {?}
+         */
+        () => this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(map((/**
+         * @param {?} x
+         * @return {?}
+         */
+        x => [x])))), ''));
     }
 }
-ActionResolverEpics.decorators = [
+SysEpics.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root'
             },] }
 ];
 /** @nocollapse */
-ActionResolverEpics.ctorParameters = () => [];
-/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+SysEpics.ctorParameters = () => [
+    { type: SysActions },
+    { type: NotificationsAPIActions },
+    { type: SysSystemRelevantClassApi },
+    { type: SystemConfigurationService }
+];
+/** @nocollapse */ SysEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function SysEpics_Factory() { return new SysEpics(ɵɵinject(SysActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(SysSystemRelevantClassApi), ɵɵinject(SystemConfigurationService)); }, token: SysEpics, providedIn: "root" });
 if (false) {
-    /** @type {?} */
-    ActionResolverEpics.prototype.createEpics;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.notification;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysRelevantClassApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    SysEpics.prototype.sysConfigApi;
 }
 
 /**
@@ -7125,7 +7194,9 @@ class RootEpics {
     }
 }
 RootEpics.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 RootEpics.ctorParameters = () => [
@@ -7140,6 +7211,7 @@ RootEpics.ctorParameters = () => [
     { type: ProEpics },
     { type: ActionResolverEpics }
 ];
+/** @nocollapse */ RootEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function RootEpics_Factory() { return new RootEpics(ɵɵinject(LoadingBarEpics), ɵɵinject(NotificationsAPIEpics), ɵɵinject(ActiveProjectEpics), ɵɵinject(AccountEpics), ɵɵinject(SysEpics), ɵɵinject(DfhEpics), ɵɵinject(InfEpics), ɵɵinject(DatEpics), ɵɵinject(ProEpics), ɵɵinject(ActionResolverEpics)); }, token: RootEpics, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
@@ -8707,46 +8779,6 @@ const rootReducer = composeReducers(defaultFormReducer(), combineReducers({
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/tab.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class TabEpics {
-    constructor() { }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics();
-    }
-}
-TabEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-TabEpics.ctorParameters = () => [];
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-schema/epics/war.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class WarEpics {
-    constructor() { }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics();
-    }
-}
-WarEpics.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-WarEpics.ctorParameters = () => [];
-
-/**
- * @fileoverview added by tsickle
  * Generated from: lib/redux-store/module/redux-store.module.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -8782,18 +8814,38 @@ const ofSubstore = (/**
 }));
 /** @type {?} */
 const APP_INITIAL_STATE = new InjectionToken('app.INITIAL_STATE');
-const ɵ0$8 = {};
-class ReduxStoreModule {
+/**
+ * @return {?}
+ */
+function apiConfigFactory() {
+    /** @type {?} */
+    const params = {
+    // set configuration parameters here.
+    };
+    return new Configuration(params);
+}
+class ReduxModule {
     /**
      * @param {?} ngRedux
      * @param {?} devTools
      * @param {?} rootEpics
      * @param {?} initialState
+     * @param {?} parentModule
+     * @param {?} sdkLb3
+     * @param {?} sdkLb4
      */
-    constructor(ngRedux, devTools, 
-    // ngReduxRouter: NgReduxRouter,
-    rootEpics, initialState) {
+    constructor(ngRedux, devTools, rootEpics, initialState, parentModule, sdkLb3, sdkLb4) {
         this.ngRedux = ngRedux;
+        /** @type {?} */
+        const errors = [];
+        if (parentModule)
+            errors.push('ReduxModule is already loaded. Import in your base AppModule only.');
+        if (!sdkLb3)
+            errors.push('You need to import the SdkLb3Module in your AppModule!');
+        if (!sdkLb4)
+            errors.push('You need to import the SdkLb4Module in your AppModule!');
+        if (errors.length)
+            throw new Error(errors.join('\n'));
         /** @type {?} */
         const epicMiddleware = createEpicMiddleware();
         // Tell Redux about our reducers and epics. If the Redux DevTools
@@ -8821,58 +8873,67 @@ class ReduxStoreModule {
         // Enable syncing of Angular form state with our Redux store.
         // provideReduxForms(ngRedux);
     }
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: ReduxModule,
+            providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]
+        };
+    }
 }
-ReduxStoreModule.decorators = [
+ReduxModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
                     NgReduxModule,
                     // for gui-state epics
                     SlimLoadingBarModule,
                     ToastyModule.forRoot(),
-                    // for schema-state epics
-                    SDKBrowserModule.forRoot(),
-                    ApiModule,
                 ],
                 providers: [
-                    AccountActions,
-                    ActiveProjectActions,
-                    LoadingBarActions,
-                    NotificationsAPIActions,
-                    AccountEpics,
-                    ActiveProjectEpics,
-                    LoadingBarEpics,
-                    NotificationsAPIEpics,
-                    DatActions,
-                    DfhActions,
-                    InfActions,
-                    ProActions,
-                    SysActions,
-                    TabActions,
-                    WarActions,
-                    DatEpics,
-                    DfhEpics,
-                    InfEpics,
-                    ProEpics,
-                    SysEpics,
-                    TabEpics,
-                    WarEpics,
-                    RootEpics,
-                    // SchemaActionsFactory,
-                    SchemaObjectService,
-                    { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
+                // AccountActions,
+                // ActiveProjectActions,
+                // LoadingBarActions,
+                // NotificationsAPIActions,
+                // AccountEpics,
+                // ActiveProjectEpics,
+                // LoadingBarEpics,
+                // NotificationsAPIEpics,
+                // DatActions,
+                // DfhActions,
+                // InfActions,
+                // ProActions,
+                // SysActions,
+                // TabActions,
+                // WarActions,
+                // DatEpics,
+                // DfhEpics,
+                // InfEpics,
+                // ProEpics,
+                // SysEpics,
+                // TabEpics,
+                // WarEpics,
+                // RootEpics,
+                // // SchemaActionsFactory,
+                // SchemaObjectService,
+                // { provide: APP_INITIAL_STATE, useValue: {} }
                 ]
             },] }
 ];
 /** @nocollapse */
-ReduxStoreModule.ctorParameters = () => [
+ReduxModule.ctorParameters = () => [
     { type: NgRedux },
     { type: DevToolsExtension },
     { type: RootEpics },
-    { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] }
+    { type: undefined, decorators: [{ type: Inject, args: [APP_INITIAL_STATE,] }] },
+    { type: ReduxModule, decorators: [{ type: Optional }, { type: SkipSelf }] },
+    { type: SdkLb3Module, decorators: [{ type: Optional }] },
+    { type: SdkLb4Module, decorators: [{ type: Optional }] }
 ];
 if (false) {
     /** @type {?} */
-    ReduxStoreModule.prototype.ngRedux;
+    ReduxModule.prototype.ngRedux;
 }
 
 /**
@@ -9002,104 +9063,28 @@ function ByPk() { }
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/projects.model.ts
+ * Generated from: lib/redux-store/state-gui/models/account.model.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @record
  */
-function IProject() { }
+function AccountRole() { }
 if (false) {
     /** @type {?} */
-    IProject.prototype.record;
+    AccountRole.prototype.id;
+    /** @type {?} */
+    AccountRole.prototype.name;
 }
 /**
  * @record
  */
-function IProjectList() { }
+function IAccount() { }
 if (false) {
     /** @type {?} */
-    IProjectList.prototype.records;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/notifications.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function NotificationsI() { }
-if (false) {
-    /** @type {?} */
-    NotificationsI.prototype.type;
-    /** @type {?} */
-    NotificationsI.prototype.options;
-}
-// Class of this slice of store
-class Notifications {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-    }
-}
-if (false) {
-    /** @type {?} */
-    Notifications.prototype.type;
-    /** @type {?} */
-    Notifications.prototype.options;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/loading-bar.models.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function LoadingBar() { }
-if (false) {
+    IAccount.prototype.account;
     /** @type {?|undefined} */
-    LoadingBar.prototype.loading;
-    /** @type {?|undefined} */
-    LoadingBar.prototype.progress;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/list.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// Class of this slice of store
-class List {
-    /**
-     * @param {?=} data
-     */
-    constructor(data) {
-        Object.assign(this, data);
-        if (true) {
-        }
-        else {
-        }
-    }
-}
-if (false) {
-    /** @type {?} */
-    List.prototype.searchString;
-    /** @type {?} */
-    List.prototype.pkAllowedClasses;
-    /** @type {?} */
-    List.prototype.collectionSize;
-    /** @type {?} */
-    List.prototype.items;
-    /** @type {?} */
-    List.prototype.loading;
-    /** @type {?} */
-    List.prototype.error;
+    IAccount.prototype.roles;
 }
 
 /**
@@ -9403,32 +9388,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/redux-store/state-gui/models/account.model.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function AccountRole() { }
-if (false) {
-    /** @type {?} */
-    AccountRole.prototype.id;
-    /** @type {?} */
-    AccountRole.prototype.name;
-}
-/**
- * @record
- */
-function IAccount() { }
-if (false) {
-    /** @type {?} */
-    IAccount.prototype.account;
-    /** @type {?|undefined} */
-    IAccount.prototype.roles;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: lib/redux-store/state-gui/models/active-project/entity-detail.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -9560,6 +9519,108 @@ if (false) {
     Types.prototype.error;
     /** @type {?} */
     Types.prototype.tabTitle;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/list.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Class of this slice of store
+class List {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+        if (true) {
+        }
+        else {
+        }
+    }
+}
+if (false) {
+    /** @type {?} */
+    List.prototype.searchString;
+    /** @type {?} */
+    List.prototype.pkAllowedClasses;
+    /** @type {?} */
+    List.prototype.collectionSize;
+    /** @type {?} */
+    List.prototype.items;
+    /** @type {?} */
+    List.prototype.loading;
+    /** @type {?} */
+    List.prototype.error;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/loading-bar.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function LoadingBar() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoadingBar.prototype.loading;
+    /** @type {?|undefined} */
+    LoadingBar.prototype.progress;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/notifications.models.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function NotificationsI() { }
+if (false) {
+    /** @type {?} */
+    NotificationsI.prototype.type;
+    /** @type {?} */
+    NotificationsI.prototype.options;
+}
+// Class of this slice of store
+class Notifications {
+    /**
+     * @param {?=} data
+     */
+    constructor(data) {
+        Object.assign(this, data);
+    }
+}
+if (false) {
+    /** @type {?} */
+    Notifications.prototype.type;
+    /** @type {?} */
+    Notifications.prototype.options;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-gui/models/projects.model.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function IProject() { }
+if (false) {
+    /** @type {?} */
+    IProject.prototype.record;
+}
+/**
+ * @record
+ */
+function IProjectList() { }
+if (false) {
+    /** @type {?} */
+    IProjectList.prototype.records;
 }
 
 /**
@@ -10062,5 +10123,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, NamespaceSlice, Notifications, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ReducerFactory, ReduxStoreModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, pag, paginateKey, paginateName, paginatedBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, AccountActions as ɵb, ActiveProjectActions as ɵc, LoadingBarActions as ɵd, NotificationsAPIActions as ɵe, AccountEpics as ɵf, ActiveProjectEpics as ɵg, LoadingBarEpics as ɵh, NotificationsAPIEpics as ɵi, DatEpics as ɵj, DfhEpics as ɵk, InfEpics as ɵl, ProEpics as ɵm, SysEpics as ɵn, TabEpics as ɵo, WarEpics as ɵp, ActionResolverEpics as ɵq, accountRootReducer as ɵr, loadingBarReducer as ɵs, activeProjectReducer as ɵt, informationReducer as ɵu, sourceListReducer as ɵv, createProjectsReducer as ɵw };
+export { AccountActions, ActiveProjectActions, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, LoadingBarActions, NamespaceSlice, Notifications, NotificationsAPIActions, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaObjectService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, ofSubstore, pag, paginateKey, paginateName, paginatedBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, APP_INITIAL_STATE as ɵa, LoadingBarEpics as ɵb, NotificationsAPIEpics as ɵc, ActiveProjectEpics as ɵd, AccountEpics as ɵe, SysEpics as ɵf, DfhEpics as ɵg, InfEpics as ɵh, DatEpics as ɵi, ProEpics as ɵj, ActionResolverEpics as ɵk, accountRootReducer as ɵl, loadingBarReducer as ɵm, activeProjectReducer as ɵn, informationReducer as ɵo, sourceListReducer as ɵp, createProjectsReducer as ɵq };
 //# sourceMappingURL=kleiolab-lib-redux.js.map

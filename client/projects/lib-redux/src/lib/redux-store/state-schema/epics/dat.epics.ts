@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-import { DatChunk, DatChunkApi, DatColumn, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, SchemaObject, DatColumnApi } from '@kleiolab/lib-sdk-lb3';
+import { DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, SchemaObject } from '@kleiolab/lib-sdk-lb3';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction } from '../actions/dat.actions';
-import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from '../models/dat.models';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { datRoot } from '../reducer-configs/dat.config';
-import { LoadActionMeta, ModifyActionMeta, } from '../_helpers/schema-actions-factory';
-import { LoadVersionAction } from '../_helpers/schema-actions-factory';
+import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction } from '../actions/dat.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
+import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from '../models/dat.models';
+import { datRoot } from '../reducer-configs/dat.config';
 import { SchemaObjectService } from '../services/schema-object.service';
-import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
+import { LoadActionMeta, LoadVersionAction, ModifyActionMeta } from '../_helpers/schema-actions-factory';
+import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DatEpics {
   constructor(
     public notification: NotificationsAPIActions,

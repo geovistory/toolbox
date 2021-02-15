@@ -1,8 +1,8 @@
 
 import { takeUntil, map } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { PanelTab } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { PanelTab } from "@kleiolab/lib-redux";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { Observable, Subject, combineLatest } from 'rxjs';
 
 @Component({

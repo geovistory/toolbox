@@ -5,8 +5,9 @@ import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
-import { PropertyOption, PropertySelectComponent } from './property-select.component';
-import { propertyOptionFieldKey } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { PropertySelectComponent } from './property-select.component';
+import { PropertyOption } from "@kleiolab/lib-queries";
+import { propertyOptionFieldKey } from "@kleiolab/lib-queries";
 
 
 const options$ = new BehaviorSubject(null)

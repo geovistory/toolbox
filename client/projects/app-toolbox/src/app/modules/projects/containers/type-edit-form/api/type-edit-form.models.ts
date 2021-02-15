@@ -1,5 +1,4 @@
-// TODO DELETE
-import { EntityDetail } from 'projects/app-toolbox/src/app/core';
+import { EntityDetail } from '@kleiolab/lib-redux';
 
 // Interface of this slice of store
 export interface TypeEditFormI {

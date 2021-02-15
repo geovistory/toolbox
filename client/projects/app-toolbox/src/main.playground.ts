@@ -7,38 +7,31 @@ import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
+import { DatModule, DfhModule, InfModule, ProModule, ReduxModule, SysModule, TabModule, WarModule } from "@kleiolab/lib-redux";
+import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
+import { SocketsModule } from "@kleiolab/lib-sockets";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularCesiumModule } from 'angular-cesium';
 import { PlaygroundModule } from 'angular-playground';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
-import { AuthModule } from 'projects/app-toolbox/src/app/core/auth/auth.module';
-import { DatModule } from 'projects/app-toolbox/src/app/core/dat/dat.module';
-import { DfhModule } from 'projects/app-toolbox/src/app/core/dfh/dfh.module';
-import { InfModule } from 'projects/app-toolbox/src/app/core/inf/inf.module';
-import { LoadingBarModule } from 'projects/app-toolbox/src/app/core/loading-bar/loading-bar.module';
-import { NotificationsModule } from 'projects/app-toolbox/src/app/core/notifications/notifications.module';
-import { ProModule } from 'projects/app-toolbox/src/app/core/pro/pro.module';
-import { ReduxStoreModule } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
-import { SysModule } from 'projects/app-toolbox/src/app/core/sys/sys.module';
-import { WarModule } from 'projects/app-toolbox/src/app/core/war/war.module';
-import { FormFactoryModule } from 'projects/app-toolbox/src/app/modules/form-factory/form-factory.module';
-import { ControlMessagesModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
-import { ChecklistControlModule } from 'projects/app-toolbox/src/app/shared/components/checklist-control/checklist-control.module';
-import { ExampleTableModule } from 'projects/app-toolbox/src/app/shared/components/core-table/example-table/example-table.module';
-import { ProjectSandboxModule } from 'projects/app-toolbox/src/app/shared/components/project-sandbox/project-sandbox.module';
 import { buildModuleUrl } from 'cesium';
 import 'hammerjs';
 import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { TreeviewModule } from 'ngx-treeview';
+import { AuthModule } from 'projects/app-toolbox/src/app/core/auth/auth.module';
 import { CookiesModule } from 'projects/app-toolbox/src/app/core/cookies/cookies.module';
-import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
-import { TabModule } from 'projects/app-toolbox/src/app/core/tab/tab.module';
-import { SocketsModule } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
-import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
+import { LoadingBarModule } from 'projects/app-toolbox/src/app/core/loading-bar/loading-bar.module';
+import { NotificationsModule } from 'projects/app-toolbox/src/app/core/notifications/notifications.module';
 import { ValidationDirectivesModule } from 'projects/app-toolbox/src/app/core/validation/validation.directives';
+import { FormFactoryModule } from 'projects/app-toolbox/src/app/modules/form-factory/form-factory.module';
+import { ControlMessagesModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
+import { ChecklistControlModule } from 'projects/app-toolbox/src/app/shared/components/checklist-control/checklist-control.module';
+import { ExampleTableModule } from 'projects/app-toolbox/src/app/shared/components/core-table/example-table/example-table.module';
+import { ProjectSandboxModule } from 'projects/app-toolbox/src/app/shared/components/project-sandbox/project-sandbox.module';
+import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
 
 
 @NgModule()
@@ -54,7 +47,7 @@ PlaygroundModule
     selector: 'gv-root',
     overlay: false,
     modules: [
-      ReduxStoreModule,
+      ReduxModule,
       SysModule,
       InfModule,
       DatModule,
@@ -66,7 +59,7 @@ PlaygroundModule
       MatDialogModule,
       MatSliderModule, // needed because of https://github.com/angular/components/issues/4278
       NotificationsModule,
-      SDKBrowserModule.forRoot(),
+      SdkLb3Module.forRoot(),
       NgbModule.forRoot(),
       ElasticInputModule.forRoot(),
       SlimLoadingBarModule.forRoot(),

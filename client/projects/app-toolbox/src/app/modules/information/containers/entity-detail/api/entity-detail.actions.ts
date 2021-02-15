@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { EntityDetail } from 'projects/app-toolbox/src/app/core';
+import { EntityDetail } from "@kleiolab/lib-redux";
 import { FluxStandardAction } from 'flux-standard-action';
 
 type Payload = EntityDetail;

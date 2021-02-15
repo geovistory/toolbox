@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { InfActions } from "@kleiolab/lib-redux";
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 import { InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
+import { InformationPipesService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-type-item',

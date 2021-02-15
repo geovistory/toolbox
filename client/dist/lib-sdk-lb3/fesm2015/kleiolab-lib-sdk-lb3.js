@@ -1,22 +1,10 @@
 import { __decorate, __param } from 'tslib';
-import { Injectable, Inject, NgZone, Optional, NgModule } from '@angular/core';
-import { throwError, Subject, merge, Observable } from 'rxjs';
-import { HttpParams, HttpHeaders, HttpRequest, HttpResponse, HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { HttpParams, HttpHeaders, HttpRequest, HttpResponse, HttpClient, HttpClientModule } from '@angular/common/http';
+import { Inject, Injectable, NgZone, Optional, NgModule } from '@angular/core';
+import { throwError, Subject, merge, Observable } from 'rxjs';
+import { catchError, share, filter, map } from 'rxjs/operators';
 import io from 'socket.io-client';
-import { share, catchError, filter, map } from 'rxjs/operators';
-
-/**
- * Default error handler
- */
-let ErrorHandler = class ErrorHandler {
-    handleError(errorResponse) {
-        return throwError(errorResponse.error.error || 'Server error');
-    }
-};
-ErrorHandler = __decorate([
-    Injectable()
-], ErrorHandler);
 
 /* tslint:disable */
 /**
@@ -321,147 +309,1076 @@ LoopBackAuth = __decorate([
     __param(0, Inject(InternalStorage))
 ], LoopBackAuth);
 
-/* tslint:disable */
 /**
-* @module LoopBackConfig
-* @description
-*
-* The LoopBackConfig module help developers to externally
-* configure the base url and api version for loopback.io
-*
-* Example
-*
-* import { LoopBackConfig } from './sdk';
-*
-* @Component() // No metadata needed for this module
-*
-* export class MyApp {
-*   constructor() {
-*     LoopBackConfig.setBaseURL('http://localhost:3000');
-*     LoopBackConfig.setApiVersion('api');
-*   }
-* }
-**/
-class LoopBackConfig {
-    static setApiVersion(version = 'api') {
-        LoopBackConfig.version = version;
-    }
-    static getApiVersion() {
-        return LoopBackConfig.version;
-    }
-    static setBaseURL(url = '/') {
-        LoopBackConfig.path = url;
-    }
-    static getPath() {
-        return LoopBackConfig.path;
-    }
-    static setAuthPrefix(authPrefix = '') {
-        LoopBackConfig.authPrefix = authPrefix;
-    }
-    static getAuthPrefix() {
-        return LoopBackConfig.authPrefix;
-    }
-    static setDebugMode(isEnabled) {
-        LoopBackConfig.debug = isEnabled;
-    }
-    static debuggable() {
-        return LoopBackConfig.debug;
-    }
-    static filterOnUrl() {
-        LoopBackConfig.filterOn = 'url';
-    }
-    static filterOnHeaders() {
-        LoopBackConfig.filterOn = 'headers';
-    }
-    static whereOnUrl() {
-        LoopBackConfig.whereOn = 'url';
-    }
-    static whereOnHeaders() {
-        LoopBackConfig.whereOn = 'headers';
-    }
-    static isHeadersFilteringSet() {
-        return (LoopBackConfig.filterOn === 'headers');
-    }
-    static isHeadersWhereSet() {
-        return (LoopBackConfig.whereOn === 'headers');
-    }
-    static setSecureWebSockets() {
-        LoopBackConfig.secure = true;
-    }
-    static unsetSecureWebSockets() {
-        LoopBackConfig.secure = false;
-    }
-    static isSecureWebSocketsSet() {
-        return LoopBackConfig.secure;
-    }
-    static setRequestOptionsCredentials(withCredentials = false) {
-        LoopBackConfig.withCredentials = withCredentials;
-    }
-    static getRequestOptionsCredentials() {
-        return LoopBackConfig.withCredentials;
-    }
-}
-LoopBackConfig.path = '//:3000';
-LoopBackConfig.version = 'lb3-api';
-LoopBackConfig.authPrefix = '';
-LoopBackConfig.debug = true;
-LoopBackConfig.filterOn = 'headers';
-LoopBackConfig.whereOn = 'headers';
-LoopBackConfig.secure = false;
-LoopBackConfig.withCredentials = false;
-
-/**
-* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@johncasarrubias>
-* @module LoggerService
-* @license MIT
-* @description
-* Console Log wrapper that can be disabled in production mode
-**/
-let LoggerService = class LoggerService {
-    log(...args) {
-        if (LoopBackConfig.debuggable())
-            console.log.apply(console, args);
-    }
-    info(...args) {
-        if (LoopBackConfig.debuggable())
-            console.info.apply(console, args);
-    }
-    error(...args) {
-        if (LoopBackConfig.debuggable())
-            console.error.apply(console, args);
-    }
-    count(arg) {
-        if (LoopBackConfig.debuggable())
-            console.count(arg);
-    }
-    group(arg) {
-        if (LoopBackConfig.debuggable())
-            console.count(arg);
-    }
-    groupEnd() {
-        if (LoopBackConfig.debuggable())
-            console.groupEnd();
-    }
-    profile(arg) {
-        if (LoopBackConfig.debuggable())
-            console.count(arg);
-    }
-    profileEnd() {
-        if (LoopBackConfig.debuggable())
-            console.profileEnd();
-    }
-    time(arg) {
-        if (LoopBackConfig.debuggable())
-            console.time(arg);
-    }
-    timeEnd(arg) {
-        if (LoopBackConfig.debuggable())
-            console.timeEnd(arg);
+ * Default error handler
+ */
+let ErrorHandler = class ErrorHandler {
+    handleError(errorResponse) {
+        return throwError(errorResponse.error.error || 'Server error');
     }
 };
-LoggerService = __decorate([
+ErrorHandler = __decorate([
     Injectable()
-], LoggerService);
+], ErrorHandler);
+
+/* tslint:disable */
+class IO {
+    constructor(socket) {
+        this.observables = {};
+        this.socket = socket;
+    }
+    emit(event, data) {
+        this.socket.emit('ME:RT:1://event', {
+            event: event,
+            data: data
+        });
+    }
+    on(event) {
+        if (this.observables[event]) {
+            return this.observables[event];
+        }
+        let subject = new Subject();
+        this.socket.on(event, (res) => subject.next(res));
+        this.observables[event] = subject.asObservable();
+        return this.observables[event];
+    }
+}
+
+/* tslint:disable */
+class SchemaObject {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SchemaObject`.
+     */
+    static getModelName() {
+        return "SchemaObject";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of SchemaObject for dynamic purposes.
+    **/
+    static factory(data) {
+        return new SchemaObject(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'SchemaObject',
+            plural: 'SchemaObjects',
+            path: 'SchemaObjects',
+            idName: 'inf',
+            properties: {
+                "inf": {
+                    name: 'inf',
+                    type: 'any'
+                },
+                "pro": {
+                    name: 'pro',
+                    type: 'any'
+                },
+                "dat": {
+                    name: 'dat',
+                    type: 'any'
+                },
+                "sys": {
+                    name: 'sys',
+                    type: 'any'
+                },
+                "dfh": {
+                    name: 'dfh',
+                    type: 'any'
+                },
+            },
+            relations: {}
+        };
+    }
+}
+
+class SysClassFieldPropertyRel {
+    // property?: DfhProperty;
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysClassFieldPropertyRel`.
+     */
+    static getModelName() {
+        return "SysClassFieldPropertyRel";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of SysClassFieldPropertyRel for dynamic purposes.
+    **/
+    static factory(data) {
+        return new SysClassFieldPropertyRel(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'SysClassFieldPropertyRel',
+            plural: 'SysClassFieldPropertyRels',
+            path: 'SysClassFieldPropertyRels',
+            idName: 'pk_entity',
+            properties: {
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "fk_class_field": {
+                    name: 'fk_class_field',
+                    type: 'number'
+                },
+                "fk_property": {
+                    name: 'fk_property',
+                    type: 'number'
+                },
+                "property_is_outgoing": {
+                    name: 'property_is_outgoing',
+                    type: 'boolean'
+                },
+                "ord_num": {
+                    name: 'ord_num',
+                    type: 'number'
+                },
+            },
+            relations: {
+                class_field: {
+                    name: 'class_field',
+                    type: 'SysClassField',
+                    model: 'SysClassField',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_class_field',
+                    keyTo: 'pk_entity'
+                },
+                property: {
+                    name: 'property',
+                    type: 'DfhProperty',
+                    model: 'DfhProperty',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_property',
+                    keyTo: 'pk_property'
+                },
+            }
+        };
+    }
+}
+
+class SysClassField {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysClassField`.
+     */
+    static getModelName() {
+        return "SysClassField";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of SysClassField for dynamic purposes.
+    **/
+    static factory(data) {
+        return new SysClassField(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'SysClassField',
+            plural: 'SysClassFields',
+            path: 'SysClassFields',
+            idName: 'pk_entity',
+            properties: {
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "description": {
+                    name: 'description',
+                    type: 'string'
+                },
+                "label": {
+                    name: 'label',
+                    type: 'string'
+                },
+                "fk_system_type_ng_component": {
+                    name: 'fk_system_type_ng_component',
+                    type: 'number'
+                },
+                "used_table": {
+                    name: 'used_table',
+                    type: 'string'
+                },
+            },
+            relations: {
+                class_field_property_rel: {
+                    name: 'class_field_property_rel',
+                    type: 'SysClassFieldPropertyRel[]',
+                    model: 'SysClassFieldPropertyRel',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_class_field'
+                },
+                class_field_configs: {
+                    name: 'class_field_configs',
+                    type: 'ProClassFieldConfig[]',
+                    model: 'ProClassFieldConfig',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_class_field'
+                },
+                classes: {
+                    name: 'classes',
+                    type: 'DfhClass[]',
+                    model: 'DfhClass',
+                    relationType: 'hasMany',
+                    modelThrough: 'ProClassFieldConfig',
+                    keyThrough: 'fk_class_for_class_field',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_class_field'
+                },
+            }
+        };
+    }
+}
+
+/* tslint:disable */
+class SysClassHasTypeProperty {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysClassHasTypeProperty`.
+     */
+    static getModelName() {
+        return "SysClassHasTypeProperty";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of SysClassHasTypeProperty for dynamic purposes.
+    **/
+    static factory(data) {
+        return new SysClassHasTypeProperty(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'SysClassHasTypeProperty',
+            plural: 'SysClassHasTypeProperties',
+            path: 'SysClassHasTypeProperties',
+            idName: 'pk_entity',
+            properties: {
+                "pk_typed_class": {
+                    name: 'pk_typed_class',
+                    type: 'number'
+                },
+                "typed_class_label": {
+                    name: 'typed_class_label',
+                    type: 'string'
+                },
+                "dfh_pk_property": {
+                    name: 'dfh_pk_property',
+                    type: 'number'
+                },
+                "property_label": {
+                    name: 'property_label',
+                    type: 'string'
+                },
+                "pk_type_class": {
+                    name: 'pk_type_class',
+                    type: 'number'
+                },
+                "type_class_label": {
+                    name: 'type_class_label',
+                    type: 'string'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+            },
+            relations: {}
+        };
+    }
+}
+
+/* tslint:disable */
+class SysSystemRelevantClass {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysSystemRelevantClass`.
+     */
+    static getModelName() {
+        return "SysSystemRelevantClass";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of SysSystemRelevantClass for dynamic purposes.
+    **/
+    static factory(data) {
+        return new SysSystemRelevantClass(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'SysSystemRelevantClass',
+            plural: 'SysSystemRelevantClasses',
+            path: 'SysSystemRelevantClasses',
+            idName: 'pk_entity',
+            properties: {
+                "fk_class": {
+                    name: 'fk_class',
+                    type: 'number'
+                },
+                "required_by_entities": {
+                    name: 'required_by_entities',
+                    type: 'boolean'
+                },
+                "required_by_sources": {
+                    name: 'required_by_sources',
+                    type: 'boolean'
+                },
+                "required_by_basics": {
+                    name: 'required_by_basics',
+                    type: 'boolean'
+                },
+                "excluded_from_entities": {
+                    name: 'excluded_from_entities',
+                    type: 'boolean'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+            },
+            relations: {}
+        };
+    }
+}
+
+/* tslint:disable */
+class PubAccount {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `PubAccount`.
+     */
+    static getModelName() {
+        return "PubAccount";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of PubAccount for dynamic purposes.
+    **/
+    static factory(data) {
+        return new PubAccount(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'PubAccount',
+            plural: 'PubAccounts',
+            path: 'PubAccounts',
+            idName: 'id',
+            properties: {
+                "id": {
+                    name: 'id',
+                    type: 'number'
+                },
+                "realm": {
+                    name: 'realm',
+                    type: 'string'
+                },
+                "username": {
+                    name: 'username',
+                    type: 'string'
+                },
+                "email": {
+                    name: 'email',
+                    type: 'string'
+                },
+                "emailVerified": {
+                    name: 'emailVerified',
+                    type: 'boolean'
+                },
+            },
+            relations: {
+                accessTokens: {
+                    name: 'accessTokens',
+                    type: 'any[]',
+                    model: '',
+                    relationType: 'hasMany',
+                    keyFrom: 'id',
+                    keyTo: 'userId'
+                },
+                projects: {
+                    name: 'projects',
+                    type: 'any[]',
+                    model: '',
+                    relationType: 'hasMany',
+                    modelThrough: 'PubAccountProjectRel',
+                    keyThrough: 'fk_project',
+                    keyFrom: 'id',
+                    keyTo: 'account_id'
+                },
+            }
+        };
+    }
+}
+
+/* tslint:disable */
+class Email {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `Email`.
+     */
+    static getModelName() {
+        return "Email";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of Email for dynamic purposes.
+    **/
+    static factory(data) {
+        return new Email(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'Email',
+            plural: 'Emails',
+            path: 'Emails',
+            idName: 'id',
+            properties: {
+                "to": {
+                    name: 'to',
+                    type: 'string'
+                },
+                "from": {
+                    name: 'from',
+                    type: 'string'
+                },
+                "subject": {
+                    name: 'subject',
+                    type: 'string'
+                },
+                "text": {
+                    name: 'text',
+                    type: 'string'
+                },
+                "html": {
+                    name: 'html',
+                    type: 'string'
+                },
+                "id": {
+                    name: 'id',
+                    type: 'number'
+                },
+            },
+            relations: {}
+        };
+    }
+}
+
+class ProProject {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `ProProject`.
+     */
+    static getModelName() {
+        return "ProProject";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of ProProject for dynamic purposes.
+    **/
+    static factory(data) {
+        return new ProProject(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'ProProject',
+            plural: 'ProProjects',
+            path: 'ProProjects',
+            idName: 'pk_entity',
+            properties: {
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "fk_language": {
+                    name: 'fk_language',
+                    type: 'number'
+                },
+            },
+            relations: {
+                accounts: {
+                    name: 'accounts',
+                    type: 'PubAccount[]',
+                    model: 'PubAccount',
+                    relationType: 'hasMany',
+                    modelThrough: 'PubAccountProjectRel',
+                    keyThrough: 'account_id',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_project'
+                },
+                text_properties: {
+                    name: 'text_properties',
+                    type: 'ProTextProperty[]',
+                    model: 'ProTextProperty',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_project'
+                },
+                entity_version_project_rels: {
+                    name: 'entity_version_project_rels',
+                    type: 'ProInfoProjRel[]',
+                    model: 'ProInfoProjRel',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_project'
+                },
+                default_language: {
+                    name: 'default_language',
+                    type: 'InfLanguage',
+                    model: 'InfLanguage',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_language',
+                    keyTo: 'pk_entity'
+                },
+                persistent_items: {
+                    name: 'persistent_items',
+                    type: 'InfPersistentItem[]',
+                    model: 'InfPersistentItem',
+                    relationType: 'hasMany',
+                    modelThrough: 'ProInfoProjRel',
+                    keyThrough: 'fk_entity',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_project'
+                },
+                namespaces: {
+                    name: 'namespaces',
+                    type: 'DatNamespace[]',
+                    model: 'DatNamespace',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_project'
+                },
+            }
+        };
+    }
+}
+
+class PubAccountProjectRel {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `PubAccountProjectRel`.
+     */
+    static getModelName() {
+        return "PubAccountProjectRel";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of PubAccountProjectRel for dynamic purposes.
+    **/
+    static factory(data) {
+        return new PubAccountProjectRel(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'PubAccountProjectRel',
+            plural: 'PubAccountProjectRels',
+            path: 'PubAccountProjectRels',
+            idName: 'id',
+            properties: {
+                "role": {
+                    name: 'role',
+                    type: 'string',
+                    default: 'admin'
+                },
+                "fk_project": {
+                    name: 'fk_project',
+                    type: 'number'
+                },
+                "account_id": {
+                    name: 'account_id',
+                    type: 'number'
+                },
+                "id": {
+                    name: 'id',
+                    type: 'number'
+                },
+            },
+            relations: {
+                account: {
+                    name: 'account',
+                    type: 'PubAccount',
+                    model: 'PubAccount',
+                    relationType: 'belongsTo',
+                    keyFrom: 'account_id',
+                    keyTo: 'id'
+                },
+                project: {
+                    name: 'project',
+                    type: 'ProProject',
+                    model: 'ProProject',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_project',
+                    keyTo: 'pk_entity'
+                },
+            }
+        };
+    }
+}
+
+class ProTextProperty {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `ProTextProperty`.
+     */
+    static getModelName() {
+        return "ProTextProperty";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of ProTextProperty for dynamic purposes.
+    **/
+    static factory(data) {
+        return new ProTextProperty(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'ProTextProperty',
+            plural: 'ProTextProperties',
+            path: 'ProTextProperties',
+            idName: 'pk_entity',
+            properties: {
+                "string": {
+                    name: 'string',
+                    type: 'string'
+                },
+                "fk_system_type": {
+                    name: 'fk_system_type',
+                    type: 'number'
+                },
+                "fk_language": {
+                    name: 'fk_language',
+                    type: 'number'
+                },
+                "fk_project": {
+                    name: 'fk_project',
+                    type: 'number'
+                },
+                "fk_dfh_class": {
+                    name: 'fk_dfh_class',
+                    type: 'number'
+                },
+                "fk_dfh_property": {
+                    name: 'fk_dfh_property',
+                    type: 'number'
+                },
+                "fk_dfh_property_domain": {
+                    name: 'fk_dfh_property_domain',
+                    type: 'number'
+                },
+                "fk_dfh_property_range": {
+                    name: 'fk_dfh_property_range',
+                    type: 'number'
+                },
+                "fk_pro_project": {
+                    name: 'fk_pro_project',
+                    type: 'number'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "entity_version": {
+                    name: 'entity_version',
+                    type: 'number'
+                },
+                "tmsp_creation": {
+                    name: 'tmsp_creation',
+                    type: 'string'
+                },
+                "tmsp_last_modification": {
+                    name: 'tmsp_last_modification',
+                    type: 'string'
+                },
+            },
+            relations: {
+                project: {
+                    name: 'project',
+                    type: 'ProProject',
+                    model: 'ProProject',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_project',
+                    keyTo: 'pk_entity'
+                },
+                language: {
+                    name: 'language',
+                    type: 'InfLanguage',
+                    model: 'InfLanguage',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_language',
+                    keyTo: 'pk_entity'
+                },
+                systemType: {
+                    name: 'systemType',
+                    type: 'SysSystemType',
+                    model: 'SysSystemType',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_system_type',
+                    keyTo: 'pk_entity'
+                },
+            }
+        };
+    }
+}
+
+/* tslint:disable */
+class ProInfoProjRel {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `ProInfoProjRel`.
+     */
+    static getModelName() {
+        return "ProInfoProjRel";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of ProInfoProjRel for dynamic purposes.
+    **/
+    static factory(data) {
+        return new ProInfoProjRel(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'ProInfoProjRel',
+            plural: 'ProInfoProjRels',
+            path: 'ProInfoProjRels',
+            idName: 'pk_entity',
+            properties: {
+                "fk_project": {
+                    name: 'fk_project',
+                    type: 'number'
+                },
+                "fk_entity": {
+                    name: 'fk_entity',
+                    type: 'number'
+                },
+                "fk_entity_version": {
+                    name: 'fk_entity_version',
+                    type: 'string'
+                },
+                "fk_entity_version_concat": {
+                    name: 'fk_entity_version_concat',
+                    type: 'string'
+                },
+                "is_in_project": {
+                    name: 'is_in_project',
+                    type: 'boolean'
+                },
+                "is_standard_in_project": {
+                    name: 'is_standard_in_project',
+                    type: 'boolean'
+                },
+                "calendar": {
+                    name: 'calendar',
+                    type: 'string'
+                },
+                "ord_num_of_domain": {
+                    name: 'ord_num_of_domain',
+                    type: 'number'
+                },
+                "ord_num_of_range": {
+                    name: 'ord_num_of_range',
+                    type: 'number'
+                },
+                "ord_num_of_text_property": {
+                    name: 'ord_num_of_text_property',
+                    type: 'number'
+                },
+                "tmsp_last_modification": {
+                    name: 'tmsp_last_modification',
+                    type: 'string'
+                },
+                "fk_creator": {
+                    name: 'fk_creator',
+                    type: 'number'
+                },
+                "fk_last_modifier": {
+                    name: 'fk_last_modifier',
+                    type: 'number'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "entity_version": {
+                    name: 'entity_version',
+                    type: 'number'
+                },
+                "tmsp_creation": {
+                    name: 'tmsp_creation',
+                    type: 'string'
+                },
+            },
+            relations: {}
+        };
+    }
+}
+
+/* tslint:disable */
+class DfhProfile {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `DfhProfile`.
+     */
+    static getModelName() {
+        return "DfhProfile";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of DfhProfile for dynamic purposes.
+    **/
+    static factory(data) {
+        return new DfhProfile(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'DfhProfile',
+            plural: 'DfhProfiles',
+            path: 'DfhProfiles',
+            idName: 'pk_profile',
+            properties: {
+                "pk_profile": {
+                    name: 'pk_profile',
+                    type: 'number'
+                },
+                "owned_by_project": {
+                    name: 'owned_by_project',
+                    type: 'number'
+                },
+                "is_ongoing_forced_publication": {
+                    name: 'is_ongoing_forced_publication',
+                    type: 'boolean'
+                },
+                "date_profile_published": {
+                    name: 'date_profile_published',
+                    type: 'string'
+                },
+                "date_profile_deprecated": {
+                    name: 'date_profile_deprecated',
+                    type: 'string'
+                },
+                "tmsp_last_dfh_update": {
+                    name: 'tmsp_last_dfh_update',
+                    type: 'string'
+                },
+            },
+            relations: {}
+        };
+    }
+}
+
+/* tslint:disable */
+class DfhLabel {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `DfhLabel`.
+     */
+    static getModelName() {
+        return "DfhLabel";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of DfhLabel for dynamic purposes.
+    **/
+    static factory(data) {
+        return new DfhLabel(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'DfhLabel',
+            plural: 'DfhLabels',
+            path: 'DfhLabels',
+            idName: 'type',
+            properties: {
+                "type": {
+                    name: 'type',
+                    type: 'string'
+                },
+                "label": {
+                    name: 'label',
+                    type: 'string'
+                },
+                "language": {
+                    name: 'language',
+                    type: 'string'
+                },
+                "fk_profile": {
+                    name: 'fk_profile',
+                    type: 'number'
+                },
+                "fk_project": {
+                    name: 'fk_project',
+                    type: 'number'
+                },
+                "fk_property": {
+                    name: 'fk_property',
+                    type: 'number'
+                },
+                "fk_class": {
+                    name: 'fk_class',
+                    type: 'number'
+                },
+            },
+            relations: {}
+        };
+    }
+}
 
 class DatChunk {
     constructor(data) {
@@ -633,6 +1550,83 @@ class DatColumn {
     }
 }
 
+class DatTextProperty {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `DatTextProperty`.
+     */
+    static getModelName() {
+        return "DatTextProperty";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of DatTextProperty for dynamic purposes.
+    **/
+    static factory(data) {
+        return new DatTextProperty(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'DatTextProperty',
+            plural: 'DatTextProperties',
+            path: 'DatTextProperties',
+            idName: 'pk_entity',
+            properties: {
+                "string": {
+                    name: 'string',
+                    type: 'string'
+                },
+                "quill_doc": {
+                    name: 'quill_doc',
+                    type: 'any'
+                },
+                "fk_system_type": {
+                    name: 'fk_system_type',
+                    type: 'number'
+                },
+                "fk_language": {
+                    name: 'fk_language',
+                    type: 'number'
+                },
+                "fk_entity": {
+                    name: 'fk_entity',
+                    type: 'number'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "fk_namespace": {
+                    name: 'fk_namespace',
+                    type: 'number'
+                },
+            },
+            relations: {
+                namespace: {
+                    name: 'namespace',
+                    type: 'DatNamespace',
+                    model: 'DatNamespace',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_namespace',
+                    keyTo: 'pk_entity'
+                },
+            }
+        };
+    }
+}
+
 class DatDigital {
     constructor(data) {
         Object.assign(this, data);
@@ -711,25 +1705,25 @@ class DatDigital {
 }
 
 /* tslint:disable */
-class DatNamespace {
+class SysAppContext {
     constructor(data) {
         Object.assign(this, data);
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `DatNamespace`.
+     * i.e. `SysAppContext`.
      */
     static getModelName() {
-        return "DatNamespace";
+        return "SysAppContext";
     }
     /**
     * @method factory
     * @author Jonathan Casarrubias
     * @license MIT
-    * This method creates an instance of DatNamespace for dynamic purposes.
+    * This method creates an instance of SysAppContext for dynamic purposes.
     **/
     static factory(data) {
-        return new DatNamespace(data);
+        return new SysAppContext(data);
     }
     /**
     * @method getModelDefinition
@@ -740,25 +1734,21 @@ class DatNamespace {
     **/
     static getModelDefinition() {
         return {
-            name: 'DatNamespace',
-            plural: 'DatNamespaces',
-            path: 'DatNamespaces',
+            name: 'SysAppContext',
+            plural: 'SysAppContexts',
+            path: 'SysAppContexts',
             idName: 'pk_entity',
             properties: {
                 "pk_entity": {
                     name: 'pk_entity',
                     type: 'number'
                 },
-                "fk_root_namespace": {
-                    name: 'fk_root_namespace',
-                    type: 'number'
+                "description": {
+                    name: 'description',
+                    type: 'string'
                 },
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "standard_label": {
-                    name: 'standard_label',
+                "label": {
+                    name: 'label',
                     type: 'string'
                 },
             },
@@ -767,25 +1757,25 @@ class DatNamespace {
     }
 }
 
-class DatTextProperty {
+class ProClassFieldConfig {
     constructor(data) {
         Object.assign(this, data);
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `DatTextProperty`.
+     * i.e. `ProClassFieldConfig`.
      */
     static getModelName() {
-        return "DatTextProperty";
+        return "ProClassFieldConfig";
     }
     /**
     * @method factory
     * @author Jonathan Casarrubias
     * @license MIT
-    * This method creates an instance of DatTextProperty for dynamic purposes.
+    * This method creates an instance of ProClassFieldConfig for dynamic purposes.
     **/
     static factory(data) {
-        return new DatTextProperty(data);
+        return new ProClassFieldConfig(data);
     }
     /**
     * @method getModelDefinition
@@ -796,103 +1786,13 @@ class DatTextProperty {
     **/
     static getModelDefinition() {
         return {
-            name: 'DatTextProperty',
-            plural: 'DatTextProperties',
-            path: 'DatTextProperties',
+            name: 'ProClassFieldConfig',
+            plural: 'ProClassFieldConfigs',
+            path: 'ProClassFieldConfigs',
             idName: 'pk_entity',
             properties: {
-                "string": {
-                    name: 'string',
-                    type: 'string'
-                },
-                "quill_doc": {
-                    name: 'quill_doc',
-                    type: 'any'
-                },
-                "fk_system_type": {
-                    name: 'fk_system_type',
-                    type: 'number'
-                },
-                "fk_language": {
-                    name: 'fk_language',
-                    type: 'number'
-                },
-                "fk_entity": {
-                    name: 'fk_entity',
-                    type: 'number'
-                },
                 "pk_entity": {
                     name: 'pk_entity',
-                    type: 'number'
-                },
-                "fk_namespace": {
-                    name: 'fk_namespace',
-                    type: 'number'
-                },
-            },
-            relations: {
-                namespace: {
-                    name: 'namespace',
-                    type: 'DatNamespace',
-                    model: 'DatNamespace',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_namespace',
-                    keyTo: 'pk_entity'
-                },
-            }
-        };
-    }
-}
-
-/* tslint:disable */
-class DfhLabel {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `DfhLabel`.
-     */
-    static getModelName() {
-        return "DfhLabel";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of DfhLabel for dynamic purposes.
-    **/
-    static factory(data) {
-        return new DfhLabel(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'DfhLabel',
-            plural: 'DfhLabels',
-            path: 'DfhLabels',
-            idName: 'type',
-            properties: {
-                "type": {
-                    name: 'type',
-                    type: 'string'
-                },
-                "label": {
-                    name: 'label',
-                    type: 'string'
-                },
-                "language": {
-                    name: 'language',
-                    type: 'string'
-                },
-                "fk_profile": {
-                    name: 'fk_profile',
                     type: 'number'
                 },
                 "fk_project": {
@@ -903,75 +1803,108 @@ class DfhLabel {
                     name: 'fk_property',
                     type: 'number'
                 },
+                "fk_class_field": {
+                    name: 'fk_class_field',
+                    type: 'number'
+                },
+                "fk_domain_class": {
+                    name: 'fk_domain_class',
+                    type: 'number'
+                },
+                "fk_range_class": {
+                    name: 'fk_range_class',
+                    type: 'number'
+                },
+                "ord_num": {
+                    name: 'ord_num',
+                    type: 'number'
+                },
+                "fk_class_for_class_field": {
+                    name: 'fk_class_for_class_field',
+                    type: 'number'
+                },
+            },
+            relations: {
+                property: {
+                    name: 'property',
+                    type: 'DfhProperty',
+                    model: 'DfhProperty',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_property',
+                    keyTo: 'pk_property'
+                },
+                class_field: {
+                    name: 'class_field',
+                    type: 'SysClassField',
+                    model: 'SysClassField',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_class_field',
+                    keyTo: 'pk_entity'
+                },
+                project: {
+                    name: 'project',
+                    type: 'ProProject',
+                    model: 'ProProject',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_project',
+                    keyTo: 'pk_entity'
+                },
+            }
+        };
+    }
+}
+
+/* tslint:disable */
+class ProDfhClassProjRel {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `ProDfhClassProjRel`.
+     */
+    static getModelName() {
+        return "ProDfhClassProjRel";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of ProDfhClassProjRel for dynamic purposes.
+    **/
+    static factory(data) {
+        return new ProDfhClassProjRel(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'ProDfhClassProjRel',
+            plural: 'ProDfhClassProjRels',
+            path: 'ProDfhClassProjRels',
+            idName: 'pk_entity',
+            properties: {
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
                 "fk_class": {
                     name: 'fk_class',
                     type: 'number'
                 },
-            },
-            relations: {}
-        };
-    }
-}
-
-/* tslint:disable */
-class DfhProfile {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `DfhProfile`.
-     */
-    static getModelName() {
-        return "DfhProfile";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of DfhProfile for dynamic purposes.
-    **/
-    static factory(data) {
-        return new DfhProfile(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'DfhProfile',
-            plural: 'DfhProfiles',
-            path: 'DfhProfiles',
-            idName: 'pk_profile',
-            properties: {
-                "pk_profile": {
-                    name: 'pk_profile',
+                "fk_project": {
+                    name: 'fk_project',
                     type: 'number'
                 },
-                "owned_by_project": {
-                    name: 'owned_by_project',
-                    type: 'number'
-                },
-                "is_ongoing_forced_publication": {
-                    name: 'is_ongoing_forced_publication',
+                "enabled_in_entities": {
+                    name: 'enabled_in_entities',
                     type: 'boolean'
                 },
-                "date_profile_published": {
-                    name: 'date_profile_published',
-                    type: 'string'
-                },
-                "date_profile_deprecated": {
-                    name: 'date_profile_deprecated',
-                    type: 'string'
-                },
-                "tmsp_last_dfh_update": {
-                    name: 'tmsp_last_dfh_update',
-                    type: 'string'
-                },
             },
             relations: {}
         };
@@ -979,25 +1912,25 @@ class DfhProfile {
 }
 
 /* tslint:disable */
-class Email {
+class ProDfhProfileProjRel {
     constructor(data) {
         Object.assign(this, data);
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `Email`.
+     * i.e. `ProDfhProfileProjRel`.
      */
     static getModelName() {
-        return "Email";
+        return "ProDfhProfileProjRel";
     }
     /**
     * @method factory
     * @author Jonathan Casarrubias
     * @license MIT
-    * This method creates an instance of Email for dynamic purposes.
+    * This method creates an instance of ProDfhProfileProjRel for dynamic purposes.
     **/
     static factory(data) {
-        return new Email(data);
+        return new ProDfhProfileProjRel(data);
     }
     /**
     * @method getModelDefinition
@@ -1008,34 +1941,26 @@ class Email {
     **/
     static getModelDefinition() {
         return {
-            name: 'Email',
-            plural: 'Emails',
-            path: 'Emails',
-            idName: 'id',
+            name: 'ProDfhProfileProjRel',
+            plural: 'ProDfhProfileProjRels',
+            path: 'ProDfhProfileProjRels',
+            idName: 'pk_entity',
             properties: {
-                "to": {
-                    name: 'to',
-                    type: 'string'
-                },
-                "from": {
-                    name: 'from',
-                    type: 'string'
-                },
-                "subject": {
-                    name: 'subject',
-                    type: 'string'
-                },
-                "text": {
-                    name: 'text',
-                    type: 'string'
-                },
-                "html": {
-                    name: 'html',
-                    type: 'string'
-                },
-                "id": {
-                    name: 'id',
+                "pk_entity": {
+                    name: 'pk_entity',
                     type: 'number'
+                },
+                "fk_profile": {
+                    name: 'fk_profile',
+                    type: 'number'
+                },
+                "fk_project": {
+                    name: 'fk_project',
+                    type: 'number'
+                },
+                "enabled": {
+                    name: 'enabled',
+                    type: 'boolean'
                 },
             },
             relations: {}
@@ -1110,87 +2035,6 @@ class InfAppellation {
                     relationType: 'hasMany',
                     keyFrom: 'pk_entity',
                     keyTo: 'fk_object_info'
-                },
-            }
-        };
-    }
-}
-
-class InfDimension {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfDimension`.
-     */
-    static getModelName() {
-        return "InfDimension";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of InfDimension for dynamic purposes.
-    **/
-    static factory(data) {
-        return new InfDimension(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'InfDimension',
-            plural: 'InfDimensions',
-            path: 'InfDimensions',
-            idName: 'pk_entity',
-            properties: {
-                "fk_class": {
-                    name: 'fk_class',
-                    type: 'number'
-                },
-                "fk_measurement_unit": {
-                    name: 'fk_measurement_unit',
-                    type: 'number'
-                },
-                "numeric_value": {
-                    name: 'numeric_value',
-                    type: 'number'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-            },
-            relations: {
-                entity_version_project_rels: {
-                    name: 'entity_version_project_rels',
-                    type: 'ProInfoProjRel[]',
-                    model: 'ProInfoProjRel',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_entity'
-                },
-                incoming_statements: {
-                    name: 'incoming_statements',
-                    type: 'InfStatement[]',
-                    model: 'InfStatement',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_object_info'
-                },
-                measurement_unit: {
-                    name: 'measurement_unit',
-                    type: 'InfPersistentItem',
-                    model: 'InfPersistentItem',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_measurement_unit',
-                    keyTo: 'pk_entity'
                 },
             }
         };
@@ -1282,25 +2126,25 @@ class InfLangString {
     }
 }
 
-class InfLanguage {
+class InfDimension {
     constructor(data) {
         Object.assign(this, data);
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `InfLanguage`.
+     * i.e. `InfDimension`.
      */
     static getModelName() {
-        return "InfLanguage";
+        return "InfDimension";
     }
     /**
     * @method factory
     * @author Jonathan Casarrubias
     * @license MIT
-    * This method creates an instance of InfLanguage for dynamic purposes.
+    * This method creates an instance of InfDimension for dynamic purposes.
     **/
     static factory(data) {
-        return new InfLanguage(data);
+        return new InfDimension(data);
     }
     /**
     * @method getModelDefinition
@@ -1311,98 +2155,21 @@ class InfLanguage {
     **/
     static getModelDefinition() {
         return {
-            name: 'InfLanguage',
-            plural: 'InfLanguages',
-            path: 'InfLanguages',
+            name: 'InfDimension',
+            plural: 'InfDimensions',
+            path: 'InfDimensions',
             idName: 'pk_entity',
             properties: {
                 "fk_class": {
                     name: 'fk_class',
                     type: 'number'
                 },
-                "pk_language": {
-                    name: 'pk_language',
-                    type: 'string'
-                },
-                "lang_type": {
-                    name: 'lang_type',
-                    type: 'string'
-                },
-                "scope": {
-                    name: 'scope',
-                    type: 'string'
-                },
-                "iso6392b": {
-                    name: 'iso6392b',
-                    type: 'string'
-                },
-                "iso6392t": {
-                    name: 'iso6392t',
-                    type: 'string'
-                },
-                "iso6391": {
-                    name: 'iso6391',
-                    type: 'string'
-                },
-                "notes": {
-                    name: 'notes',
-                    type: 'string'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
+                "fk_measurement_unit": {
+                    name: 'fk_measurement_unit',
                     type: 'number'
                 },
-            },
-            relations: {
-                entity_version_project_rels: {
-                    name: 'entity_version_project_rels',
-                    type: 'ProInfoProjRel[]',
-                    model: 'ProInfoProjRel',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_entity'
-                },
-            }
-        };
-    }
-}
-
-class InfPersistentItem {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfPersistentItem`.
-     */
-    static getModelName() {
-        return "InfPersistentItem";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of InfPersistentItem for dynamic purposes.
-    **/
-    static factory(data) {
-        return new InfPersistentItem(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'InfPersistentItem',
-            plural: 'InfPersistentItems',
-            path: 'InfPersistentItems',
-            idName: 'pk_entity',
-            properties: {
-                "fk_class": {
-                    name: 'fk_class',
+                "numeric_value": {
+                    name: 'numeric_value',
                     type: 'number'
                 },
                 "pk_entity": {
@@ -1427,54 +2194,38 @@ class InfPersistentItem {
                     keyFrom: 'pk_entity',
                     keyTo: 'fk_object_info'
                 },
-                outgoing_statements: {
-                    name: 'outgoing_statements',
-                    type: 'InfStatement[]',
-                    model: 'InfStatement',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_subject_info'
-                },
-                dfh_class: {
-                    name: 'dfh_class',
-                    type: 'DfhClass',
-                    model: 'DfhClass',
+                measurement_unit: {
+                    name: 'measurement_unit',
+                    type: 'InfPersistentItem',
+                    model: 'InfPersistentItem',
                     relationType: 'belongsTo',
-                    keyFrom: 'fk_class',
-                    keyTo: 'pk_class'
-                },
-                text_properties: {
-                    name: 'text_properties',
-                    type: 'InfTextProperty[]',
-                    model: 'InfTextProperty',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_concerned_entity'
+                    keyFrom: 'fk_measurement_unit',
+                    keyTo: 'pk_entity'
                 },
             }
         };
     }
 }
 
-class InfPlace {
+class InfTemporalEntity {
     constructor(data) {
         Object.assign(this, data);
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `InfPlace`.
+     * i.e. `InfTemporalEntity`.
      */
     static getModelName() {
-        return "InfPlace";
+        return "InfTemporalEntity";
     }
     /**
     * @method factory
     * @author Jonathan Casarrubias
     * @license MIT
-    * This method creates an instance of InfPlace for dynamic purposes.
+    * This method creates an instance of InfTemporalEntity for dynamic purposes.
     **/
     static factory(data) {
-        return new InfPlace(data);
+        return new InfTemporalEntity(data);
     }
     /**
     * @method getModelDefinition
@@ -1485,19 +2236,11 @@ class InfPlace {
     **/
     static getModelDefinition() {
         return {
-            name: 'InfPlace',
-            plural: 'InfPlaces',
-            path: 'InfPlaces',
+            name: 'InfTemporalEntity',
+            plural: 'InfTemporalEntities',
+            path: 'InfTemporalEntities',
             idName: 'pk_entity',
             properties: {
-                "long": {
-                    name: 'long',
-                    type: 'number'
-                },
-                "lat": {
-                    name: 'lat',
-                    type: 'number'
-                },
                 "fk_class": {
                     name: 'fk_class',
                     type: 'number'
@@ -1515,6 +2258,30 @@ class InfPlace {
                     relationType: 'hasMany',
                     keyFrom: 'pk_entity',
                     keyTo: 'fk_entity'
+                },
+                outgoing_statements: {
+                    name: 'outgoing_statements',
+                    type: 'InfStatement[]',
+                    model: 'InfStatement',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_subject_info'
+                },
+                incoming_statements: {
+                    name: 'incoming_statements',
+                    type: 'InfStatement[]',
+                    model: 'InfStatement',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_object_info'
+                },
+                text_properties: {
+                    name: 'text_properties',
+                    type: 'InfTextProperty[]',
+                    model: 'InfTextProperty',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_concerned_entity'
                 },
             }
         };
@@ -1748,25 +2515,25 @@ class InfStatement {
     }
 }
 
-class InfTemporalEntity {
+class InfLanguage {
     constructor(data) {
         Object.assign(this, data);
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `InfTemporalEntity`.
+     * i.e. `InfLanguage`.
      */
     static getModelName() {
-        return "InfTemporalEntity";
+        return "InfLanguage";
     }
     /**
     * @method factory
     * @author Jonathan Casarrubias
     * @license MIT
-    * This method creates an instance of InfTemporalEntity for dynamic purposes.
+    * This method creates an instance of InfLanguage for dynamic purposes.
     **/
     static factory(data) {
-        return new InfTemporalEntity(data);
+        return new InfLanguage(data);
     }
     /**
     * @method getModelDefinition
@@ -1777,9 +2544,94 @@ class InfTemporalEntity {
     **/
     static getModelDefinition() {
         return {
-            name: 'InfTemporalEntity',
-            plural: 'InfTemporalEntities',
-            path: 'InfTemporalEntities',
+            name: 'InfLanguage',
+            plural: 'InfLanguages',
+            path: 'InfLanguages',
+            idName: 'pk_entity',
+            properties: {
+                "fk_class": {
+                    name: 'fk_class',
+                    type: 'number'
+                },
+                "pk_language": {
+                    name: 'pk_language',
+                    type: 'string'
+                },
+                "lang_type": {
+                    name: 'lang_type',
+                    type: 'string'
+                },
+                "scope": {
+                    name: 'scope',
+                    type: 'string'
+                },
+                "iso6392b": {
+                    name: 'iso6392b',
+                    type: 'string'
+                },
+                "iso6392t": {
+                    name: 'iso6392t',
+                    type: 'string'
+                },
+                "iso6391": {
+                    name: 'iso6391',
+                    type: 'string'
+                },
+                "notes": {
+                    name: 'notes',
+                    type: 'string'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+            },
+            relations: {
+                entity_version_project_rels: {
+                    name: 'entity_version_project_rels',
+                    type: 'ProInfoProjRel[]',
+                    model: 'ProInfoProjRel',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_entity'
+                },
+            }
+        };
+    }
+}
+
+class InfPersistentItem {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfPersistentItem`.
+     */
+    static getModelName() {
+        return "InfPersistentItem";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of InfPersistentItem for dynamic purposes.
+    **/
+    static factory(data) {
+        return new InfPersistentItem(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'InfPersistentItem',
+            plural: 'InfPersistentItems',
+            path: 'InfPersistentItems',
             idName: 'pk_entity',
             properties: {
                 "fk_class": {
@@ -1800,6 +2652,14 @@ class InfTemporalEntity {
                     keyFrom: 'pk_entity',
                     keyTo: 'fk_entity'
                 },
+                incoming_statements: {
+                    name: 'incoming_statements',
+                    type: 'InfStatement[]',
+                    model: 'InfStatement',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_object_info'
+                },
                 outgoing_statements: {
                     name: 'outgoing_statements',
                     type: 'InfStatement[]',
@@ -1808,13 +2668,13 @@ class InfTemporalEntity {
                     keyFrom: 'pk_entity',
                     keyTo: 'fk_subject_info'
                 },
-                incoming_statements: {
-                    name: 'incoming_statements',
-                    type: 'InfStatement[]',
-                    model: 'InfStatement',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_object_info'
+                dfh_class: {
+                    name: 'dfh_class',
+                    type: 'DfhClass',
+                    model: 'DfhClass',
+                    relationType: 'belongsTo',
+                    keyFrom: 'fk_class',
+                    keyTo: 'pk_class'
                 },
                 text_properties: {
                     name: 'text_properties',
@@ -1825,6 +2685,193 @@ class InfTemporalEntity {
                     keyTo: 'fk_concerned_entity'
                 },
             }
+        };
+    }
+}
+
+class InfTimePrimitive {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfTimePrimitive`.
+     */
+    static getModelName() {
+        return "InfTimePrimitive";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of InfTimePrimitive for dynamic purposes.
+    **/
+    static factory(data) {
+        return new InfTimePrimitive(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'InfTimePrimitive',
+            plural: 'InfTimePrimitives',
+            path: 'InfTimePrimitives',
+            idName: 'pk_entity',
+            properties: {
+                "fk_class": {
+                    name: 'fk_class',
+                    type: 'number'
+                },
+                "julian_day": {
+                    name: 'julian_day',
+                    type: 'number'
+                },
+                "duration": {
+                    name: 'duration',
+                    type: 'string'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+            },
+            relations: {
+                entity_version_project_rels: {
+                    name: 'entity_version_project_rels',
+                    type: 'ProInfoProjRel[]',
+                    model: 'ProInfoProjRel',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_entity'
+                },
+            }
+        };
+    }
+}
+
+class InfPlace {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfPlace`.
+     */
+    static getModelName() {
+        return "InfPlace";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of InfPlace for dynamic purposes.
+    **/
+    static factory(data) {
+        return new InfPlace(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'InfPlace',
+            plural: 'InfPlaces',
+            path: 'InfPlaces',
+            idName: 'pk_entity',
+            properties: {
+                "long": {
+                    name: 'long',
+                    type: 'number'
+                },
+                "lat": {
+                    name: 'lat',
+                    type: 'number'
+                },
+                "fk_class": {
+                    name: 'fk_class',
+                    type: 'number'
+                },
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+            },
+            relations: {
+                entity_version_project_rels: {
+                    name: 'entity_version_project_rels',
+                    type: 'ProInfoProjRel[]',
+                    model: 'ProInfoProjRel',
+                    relationType: 'hasMany',
+                    keyFrom: 'pk_entity',
+                    keyTo: 'fk_entity'
+                },
+            }
+        };
+    }
+}
+
+/* tslint:disable */
+class DatNamespace {
+    constructor(data) {
+        Object.assign(this, data);
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `DatNamespace`.
+     */
+    static getModelName() {
+        return "DatNamespace";
+    }
+    /**
+    * @method factory
+    * @author Jonathan Casarrubias
+    * @license MIT
+    * This method creates an instance of DatNamespace for dynamic purposes.
+    **/
+    static factory(data) {
+        return new DatNamespace(data);
+    }
+    /**
+    * @method getModelDefinition
+    * @author Julien Ledun
+    * @license MIT
+    * This method returns an object that represents some of the model
+    * definitions.
+    **/
+    static getModelDefinition() {
+        return {
+            name: 'DatNamespace',
+            plural: 'DatNamespaces',
+            path: 'DatNamespaces',
+            idName: 'pk_entity',
+            properties: {
+                "pk_entity": {
+                    name: 'pk_entity',
+                    type: 'number'
+                },
+                "fk_root_namespace": {
+                    name: 'fk_root_namespace',
+                    type: 'number'
+                },
+                "fk_project": {
+                    name: 'fk_project',
+                    type: 'number'
+                },
+                "standard_label": {
+                    name: 'standard_label',
+                    type: 'string'
+                },
+            },
+            relations: {}
         };
     }
 }
@@ -1934,1172 +2981,6 @@ class InfTextProperty {
     }
 }
 
-class InfTimePrimitive {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfTimePrimitive`.
-     */
-    static getModelName() {
-        return "InfTimePrimitive";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of InfTimePrimitive for dynamic purposes.
-    **/
-    static factory(data) {
-        return new InfTimePrimitive(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'InfTimePrimitive',
-            plural: 'InfTimePrimitives',
-            path: 'InfTimePrimitives',
-            idName: 'pk_entity',
-            properties: {
-                "fk_class": {
-                    name: 'fk_class',
-                    type: 'number'
-                },
-                "julian_day": {
-                    name: 'julian_day',
-                    type: 'number'
-                },
-                "duration": {
-                    name: 'duration',
-                    type: 'string'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-            },
-            relations: {
-                entity_version_project_rels: {
-                    name: 'entity_version_project_rels',
-                    type: 'ProInfoProjRel[]',
-                    model: 'ProInfoProjRel',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_entity'
-                },
-            }
-        };
-    }
-}
-
-class ProClassFieldConfig {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProClassFieldConfig`.
-     */
-    static getModelName() {
-        return "ProClassFieldConfig";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of ProClassFieldConfig for dynamic purposes.
-    **/
-    static factory(data) {
-        return new ProClassFieldConfig(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'ProClassFieldConfig',
-            plural: 'ProClassFieldConfigs',
-            path: 'ProClassFieldConfigs',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "fk_property": {
-                    name: 'fk_property',
-                    type: 'number'
-                },
-                "fk_class_field": {
-                    name: 'fk_class_field',
-                    type: 'number'
-                },
-                "fk_domain_class": {
-                    name: 'fk_domain_class',
-                    type: 'number'
-                },
-                "fk_range_class": {
-                    name: 'fk_range_class',
-                    type: 'number'
-                },
-                "ord_num": {
-                    name: 'ord_num',
-                    type: 'number'
-                },
-                "fk_class_for_class_field": {
-                    name: 'fk_class_for_class_field',
-                    type: 'number'
-                },
-            },
-            relations: {
-                property: {
-                    name: 'property',
-                    type: 'DfhProperty',
-                    model: 'DfhProperty',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_property',
-                    keyTo: 'pk_property'
-                },
-                class_field: {
-                    name: 'class_field',
-                    type: 'SysClassField',
-                    model: 'SysClassField',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_class_field',
-                    keyTo: 'pk_entity'
-                },
-                project: {
-                    name: 'project',
-                    type: 'ProProject',
-                    model: 'ProProject',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_project',
-                    keyTo: 'pk_entity'
-                },
-            }
-        };
-    }
-}
-
-/* tslint:disable */
-class ProDfhClassProjRel {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProDfhClassProjRel`.
-     */
-    static getModelName() {
-        return "ProDfhClassProjRel";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of ProDfhClassProjRel for dynamic purposes.
-    **/
-    static factory(data) {
-        return new ProDfhClassProjRel(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'ProDfhClassProjRel',
-            plural: 'ProDfhClassProjRels',
-            path: 'ProDfhClassProjRels',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "fk_class": {
-                    name: 'fk_class',
-                    type: 'number'
-                },
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "enabled_in_entities": {
-                    name: 'enabled_in_entities',
-                    type: 'boolean'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
-/* tslint:disable */
-class ProDfhProfileProjRel {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProDfhProfileProjRel`.
-     */
-    static getModelName() {
-        return "ProDfhProfileProjRel";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of ProDfhProfileProjRel for dynamic purposes.
-    **/
-    static factory(data) {
-        return new ProDfhProfileProjRel(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'ProDfhProfileProjRel',
-            plural: 'ProDfhProfileProjRels',
-            path: 'ProDfhProfileProjRels',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "fk_profile": {
-                    name: 'fk_profile',
-                    type: 'number'
-                },
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "enabled": {
-                    name: 'enabled',
-                    type: 'boolean'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
-/* tslint:disable */
-class ProInfoProjRel {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProInfoProjRel`.
-     */
-    static getModelName() {
-        return "ProInfoProjRel";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of ProInfoProjRel for dynamic purposes.
-    **/
-    static factory(data) {
-        return new ProInfoProjRel(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'ProInfoProjRel',
-            plural: 'ProInfoProjRels',
-            path: 'ProInfoProjRels',
-            idName: 'pk_entity',
-            properties: {
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "fk_entity": {
-                    name: 'fk_entity',
-                    type: 'number'
-                },
-                "fk_entity_version": {
-                    name: 'fk_entity_version',
-                    type: 'string'
-                },
-                "fk_entity_version_concat": {
-                    name: 'fk_entity_version_concat',
-                    type: 'string'
-                },
-                "is_in_project": {
-                    name: 'is_in_project',
-                    type: 'boolean'
-                },
-                "is_standard_in_project": {
-                    name: 'is_standard_in_project',
-                    type: 'boolean'
-                },
-                "calendar": {
-                    name: 'calendar',
-                    type: 'string'
-                },
-                "ord_num_of_domain": {
-                    name: 'ord_num_of_domain',
-                    type: 'number'
-                },
-                "ord_num_of_range": {
-                    name: 'ord_num_of_range',
-                    type: 'number'
-                },
-                "ord_num_of_text_property": {
-                    name: 'ord_num_of_text_property',
-                    type: 'number'
-                },
-                "tmsp_last_modification": {
-                    name: 'tmsp_last_modification',
-                    type: 'string'
-                },
-                "fk_creator": {
-                    name: 'fk_creator',
-                    type: 'number'
-                },
-                "fk_last_modifier": {
-                    name: 'fk_last_modifier',
-                    type: 'number'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "entity_version": {
-                    name: 'entity_version',
-                    type: 'number'
-                },
-                "tmsp_creation": {
-                    name: 'tmsp_creation',
-                    type: 'string'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
-class ProProject {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProProject`.
-     */
-    static getModelName() {
-        return "ProProject";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of ProProject for dynamic purposes.
-    **/
-    static factory(data) {
-        return new ProProject(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'ProProject',
-            plural: 'ProProjects',
-            path: 'ProProjects',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "fk_language": {
-                    name: 'fk_language',
-                    type: 'number'
-                },
-            },
-            relations: {
-                accounts: {
-                    name: 'accounts',
-                    type: 'PubAccount[]',
-                    model: 'PubAccount',
-                    relationType: 'hasMany',
-                    modelThrough: 'PubAccountProjectRel',
-                    keyThrough: 'account_id',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_project'
-                },
-                text_properties: {
-                    name: 'text_properties',
-                    type: 'ProTextProperty[]',
-                    model: 'ProTextProperty',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_project'
-                },
-                entity_version_project_rels: {
-                    name: 'entity_version_project_rels',
-                    type: 'ProInfoProjRel[]',
-                    model: 'ProInfoProjRel',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_project'
-                },
-                default_language: {
-                    name: 'default_language',
-                    type: 'InfLanguage',
-                    model: 'InfLanguage',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_language',
-                    keyTo: 'pk_entity'
-                },
-                persistent_items: {
-                    name: 'persistent_items',
-                    type: 'InfPersistentItem[]',
-                    model: 'InfPersistentItem',
-                    relationType: 'hasMany',
-                    modelThrough: 'ProInfoProjRel',
-                    keyThrough: 'fk_entity',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_project'
-                },
-                namespaces: {
-                    name: 'namespaces',
-                    type: 'DatNamespace[]',
-                    model: 'DatNamespace',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_project'
-                },
-            }
-        };
-    }
-}
-
-class ProTextProperty {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProTextProperty`.
-     */
-    static getModelName() {
-        return "ProTextProperty";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of ProTextProperty for dynamic purposes.
-    **/
-    static factory(data) {
-        return new ProTextProperty(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'ProTextProperty',
-            plural: 'ProTextProperties',
-            path: 'ProTextProperties',
-            idName: 'pk_entity',
-            properties: {
-                "string": {
-                    name: 'string',
-                    type: 'string'
-                },
-                "fk_system_type": {
-                    name: 'fk_system_type',
-                    type: 'number'
-                },
-                "fk_language": {
-                    name: 'fk_language',
-                    type: 'number'
-                },
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "fk_dfh_class": {
-                    name: 'fk_dfh_class',
-                    type: 'number'
-                },
-                "fk_dfh_property": {
-                    name: 'fk_dfh_property',
-                    type: 'number'
-                },
-                "fk_dfh_property_domain": {
-                    name: 'fk_dfh_property_domain',
-                    type: 'number'
-                },
-                "fk_dfh_property_range": {
-                    name: 'fk_dfh_property_range',
-                    type: 'number'
-                },
-                "fk_pro_project": {
-                    name: 'fk_pro_project',
-                    type: 'number'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "entity_version": {
-                    name: 'entity_version',
-                    type: 'number'
-                },
-                "tmsp_creation": {
-                    name: 'tmsp_creation',
-                    type: 'string'
-                },
-                "tmsp_last_modification": {
-                    name: 'tmsp_last_modification',
-                    type: 'string'
-                },
-            },
-            relations: {
-                project: {
-                    name: 'project',
-                    type: 'ProProject',
-                    model: 'ProProject',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_project',
-                    keyTo: 'pk_entity'
-                },
-                language: {
-                    name: 'language',
-                    type: 'InfLanguage',
-                    model: 'InfLanguage',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_language',
-                    keyTo: 'pk_entity'
-                },
-                systemType: {
-                    name: 'systemType',
-                    type: 'SysSystemType',
-                    model: 'SysSystemType',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_system_type',
-                    keyTo: 'pk_entity'
-                },
-            }
-        };
-    }
-}
-
-/* tslint:disable */
-class PubAccount {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `PubAccount`.
-     */
-    static getModelName() {
-        return "PubAccount";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of PubAccount for dynamic purposes.
-    **/
-    static factory(data) {
-        return new PubAccount(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'PubAccount',
-            plural: 'PubAccounts',
-            path: 'PubAccounts',
-            idName: 'id',
-            properties: {
-                "id": {
-                    name: 'id',
-                    type: 'number'
-                },
-                "realm": {
-                    name: 'realm',
-                    type: 'string'
-                },
-                "username": {
-                    name: 'username',
-                    type: 'string'
-                },
-                "email": {
-                    name: 'email',
-                    type: 'string'
-                },
-                "emailVerified": {
-                    name: 'emailVerified',
-                    type: 'boolean'
-                },
-            },
-            relations: {
-                accessTokens: {
-                    name: 'accessTokens',
-                    type: 'any[]',
-                    model: '',
-                    relationType: 'hasMany',
-                    keyFrom: 'id',
-                    keyTo: 'userId'
-                },
-                projects: {
-                    name: 'projects',
-                    type: 'any[]',
-                    model: '',
-                    relationType: 'hasMany',
-                    modelThrough: 'PubAccountProjectRel',
-                    keyThrough: 'fk_project',
-                    keyFrom: 'id',
-                    keyTo: 'account_id'
-                },
-            }
-        };
-    }
-}
-
-class PubAccountProjectRel {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `PubAccountProjectRel`.
-     */
-    static getModelName() {
-        return "PubAccountProjectRel";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of PubAccountProjectRel for dynamic purposes.
-    **/
-    static factory(data) {
-        return new PubAccountProjectRel(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'PubAccountProjectRel',
-            plural: 'PubAccountProjectRels',
-            path: 'PubAccountProjectRels',
-            idName: 'id',
-            properties: {
-                "role": {
-                    name: 'role',
-                    type: 'string',
-                    default: 'admin'
-                },
-                "fk_project": {
-                    name: 'fk_project',
-                    type: 'number'
-                },
-                "account_id": {
-                    name: 'account_id',
-                    type: 'number'
-                },
-                "id": {
-                    name: 'id',
-                    type: 'number'
-                },
-            },
-            relations: {
-                account: {
-                    name: 'account',
-                    type: 'PubAccount',
-                    model: 'PubAccount',
-                    relationType: 'belongsTo',
-                    keyFrom: 'account_id',
-                    keyTo: 'id'
-                },
-                project: {
-                    name: 'project',
-                    type: 'ProProject',
-                    model: 'ProProject',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_project',
-                    keyTo: 'pk_entity'
-                },
-            }
-        };
-    }
-}
-
-/* tslint:disable */
-class SchemaObject {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SchemaObject`.
-     */
-    static getModelName() {
-        return "SchemaObject";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of SchemaObject for dynamic purposes.
-    **/
-    static factory(data) {
-        return new SchemaObject(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'SchemaObject',
-            plural: 'SchemaObjects',
-            path: 'SchemaObjects',
-            idName: 'inf',
-            properties: {
-                "inf": {
-                    name: 'inf',
-                    type: 'any'
-                },
-                "pro": {
-                    name: 'pro',
-                    type: 'any'
-                },
-                "dat": {
-                    name: 'dat',
-                    type: 'any'
-                },
-                "sys": {
-                    name: 'sys',
-                    type: 'any'
-                },
-                "dfh": {
-                    name: 'dfh',
-                    type: 'any'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
-/* tslint:disable */
-class SysAppContext {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysAppContext`.
-     */
-    static getModelName() {
-        return "SysAppContext";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of SysAppContext for dynamic purposes.
-    **/
-    static factory(data) {
-        return new SysAppContext(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'SysAppContext',
-            plural: 'SysAppContexts',
-            path: 'SysAppContexts',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "description": {
-                    name: 'description',
-                    type: 'string'
-                },
-                "label": {
-                    name: 'label',
-                    type: 'string'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
-class SysClassField {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysClassField`.
-     */
-    static getModelName() {
-        return "SysClassField";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of SysClassField for dynamic purposes.
-    **/
-    static factory(data) {
-        return new SysClassField(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'SysClassField',
-            plural: 'SysClassFields',
-            path: 'SysClassFields',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "description": {
-                    name: 'description',
-                    type: 'string'
-                },
-                "label": {
-                    name: 'label',
-                    type: 'string'
-                },
-                "fk_system_type_ng_component": {
-                    name: 'fk_system_type_ng_component',
-                    type: 'number'
-                },
-                "used_table": {
-                    name: 'used_table',
-                    type: 'string'
-                },
-            },
-            relations: {
-                class_field_property_rel: {
-                    name: 'class_field_property_rel',
-                    type: 'SysClassFieldPropertyRel[]',
-                    model: 'SysClassFieldPropertyRel',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_class_field'
-                },
-                class_field_configs: {
-                    name: 'class_field_configs',
-                    type: 'ProClassFieldConfig[]',
-                    model: 'ProClassFieldConfig',
-                    relationType: 'hasMany',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_class_field'
-                },
-                classes: {
-                    name: 'classes',
-                    type: 'DfhClass[]',
-                    model: 'DfhClass',
-                    relationType: 'hasMany',
-                    modelThrough: 'ProClassFieldConfig',
-                    keyThrough: 'fk_class_for_class_field',
-                    keyFrom: 'pk_entity',
-                    keyTo: 'fk_class_field'
-                },
-            }
-        };
-    }
-}
-
-class SysClassFieldPropertyRel {
-    // property?: DfhProperty;
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysClassFieldPropertyRel`.
-     */
-    static getModelName() {
-        return "SysClassFieldPropertyRel";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of SysClassFieldPropertyRel for dynamic purposes.
-    **/
-    static factory(data) {
-        return new SysClassFieldPropertyRel(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'SysClassFieldPropertyRel',
-            plural: 'SysClassFieldPropertyRels',
-            path: 'SysClassFieldPropertyRels',
-            idName: 'pk_entity',
-            properties: {
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-                "fk_class_field": {
-                    name: 'fk_class_field',
-                    type: 'number'
-                },
-                "fk_property": {
-                    name: 'fk_property',
-                    type: 'number'
-                },
-                "property_is_outgoing": {
-                    name: 'property_is_outgoing',
-                    type: 'boolean'
-                },
-                "ord_num": {
-                    name: 'ord_num',
-                    type: 'number'
-                },
-            },
-            relations: {
-                class_field: {
-                    name: 'class_field',
-                    type: 'SysClassField',
-                    model: 'SysClassField',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_class_field',
-                    keyTo: 'pk_entity'
-                },
-                property: {
-                    name: 'property',
-                    type: 'DfhProperty',
-                    model: 'DfhProperty',
-                    relationType: 'belongsTo',
-                    keyFrom: 'fk_property',
-                    keyTo: 'pk_property'
-                },
-            }
-        };
-    }
-}
-
-/* tslint:disable */
-class SysClassHasTypeProperty {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysClassHasTypeProperty`.
-     */
-    static getModelName() {
-        return "SysClassHasTypeProperty";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of SysClassHasTypeProperty for dynamic purposes.
-    **/
-    static factory(data) {
-        return new SysClassHasTypeProperty(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'SysClassHasTypeProperty',
-            plural: 'SysClassHasTypeProperties',
-            path: 'SysClassHasTypeProperties',
-            idName: 'pk_entity',
-            properties: {
-                "pk_typed_class": {
-                    name: 'pk_typed_class',
-                    type: 'number'
-                },
-                "typed_class_label": {
-                    name: 'typed_class_label',
-                    type: 'string'
-                },
-                "dfh_pk_property": {
-                    name: 'dfh_pk_property',
-                    type: 'number'
-                },
-                "property_label": {
-                    name: 'property_label',
-                    type: 'string'
-                },
-                "pk_type_class": {
-                    name: 'pk_type_class',
-                    type: 'number'
-                },
-                "type_class_label": {
-                    name: 'type_class_label',
-                    type: 'string'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
-/* tslint:disable */
-class SysSystemRelevantClass {
-    constructor(data) {
-        Object.assign(this, data);
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysSystemRelevantClass`.
-     */
-    static getModelName() {
-        return "SysSystemRelevantClass";
-    }
-    /**
-    * @method factory
-    * @author Jonathan Casarrubias
-    * @license MIT
-    * This method creates an instance of SysSystemRelevantClass for dynamic purposes.
-    **/
-    static factory(data) {
-        return new SysSystemRelevantClass(data);
-    }
-    /**
-    * @method getModelDefinition
-    * @author Julien Ledun
-    * @license MIT
-    * This method returns an object that represents some of the model
-    * definitions.
-    **/
-    static getModelDefinition() {
-        return {
-            name: 'SysSystemRelevantClass',
-            plural: 'SysSystemRelevantClasses',
-            path: 'SysSystemRelevantClasses',
-            idName: 'pk_entity',
-            properties: {
-                "fk_class": {
-                    name: 'fk_class',
-                    type: 'number'
-                },
-                "required_by_entities": {
-                    name: 'required_by_entities',
-                    type: 'boolean'
-                },
-                "required_by_sources": {
-                    name: 'required_by_sources',
-                    type: 'boolean'
-                },
-                "required_by_basics": {
-                    name: 'required_by_basics',
-                    type: 'boolean'
-                },
-                "excluded_from_entities": {
-                    name: 'excluded_from_entities',
-                    type: 'boolean'
-                },
-                "pk_entity": {
-                    name: 'pk_entity',
-                    type: 'number'
-                },
-            },
-            relations: {}
-        };
-    }
-}
-
 /* tslint:disable */
 class SysSystemType {
     constructor(data) {
@@ -3166,473 +3047,6 @@ class SysSystemType {
             },
             relations: {}
         };
-    }
-}
-
-let SDKModels = class SDKModels {
-    constructor() {
-        this.models = {
-            SchemaObject: SchemaObject,
-            SysClassFieldPropertyRel: SysClassFieldPropertyRel,
-            SysClassField: SysClassField,
-            SysClassHasTypeProperty: SysClassHasTypeProperty,
-            SysSystemRelevantClass: SysSystemRelevantClass,
-            PubAccount: PubAccount,
-            Email: Email,
-            ProProject: ProProject,
-            PubAccountProjectRel: PubAccountProjectRel,
-            ProTextProperty: ProTextProperty,
-            ProInfoProjRel: ProInfoProjRel,
-            DfhProfile: DfhProfile,
-            DfhLabel: DfhLabel,
-            DatChunk: DatChunk,
-            DatColumn: DatColumn,
-            DatTextProperty: DatTextProperty,
-            DatDigital: DatDigital,
-            SysAppContext: SysAppContext,
-            ProClassFieldConfig: ProClassFieldConfig,
-            ProDfhClassProjRel: ProDfhClassProjRel,
-            ProDfhProfileProjRel: ProDfhProfileProjRel,
-            InfAppellation: InfAppellation,
-            InfLangString: InfLangString,
-            InfDimension: InfDimension,
-            InfTemporalEntity: InfTemporalEntity,
-            InfStatement: InfStatement,
-            InfLanguage: InfLanguage,
-            InfPersistentItem: InfPersistentItem,
-            InfTimePrimitive: InfTimePrimitive,
-            InfPlace: InfPlace,
-            DatNamespace: DatNamespace,
-            InfTextProperty: InfTextProperty,
-            SysSystemType: SysSystemType,
-        };
-    }
-    get(modelName) {
-        return this.models[modelName];
-    }
-    getAll() {
-        return this.models;
-    }
-    getModelNames() {
-        return Object.keys(this.models);
-    }
-};
-SDKModels = __decorate([
-    Injectable()
-], SDKModels);
-
-/**
-* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
-* @module CookieBrowser
-* @license MIT
-* @description
-* This module handle cookies, it will be provided using DI Swapping according the
-* SDK Socket Driver Available currently supporting Angular 2 for web and NativeScript 2.
-**/
-let CookieBrowser = class CookieBrowser {
-    /**
-    * @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
-    * @module CookieBrowser
-    * @license MIT
-    * @description
-    * This module handle cookies, it will be provided using DI Swapping according the
-    * SDK Socket Driver Available currently supporting Angular 2 for web and NativeScript 2.
-    **/
-    constructor() {
-        /**
-         * @type {CookieInterface}
-         **/
-        this.cookies = {};
-    }
-    /**
-     * @method get
-     * @param {string} key Cookie key name
-     * @return {any}
-     * @description
-     * The getter will return any type of data persisted in cookies.
-     **/
-    get(key) {
-        if (!this.cookies[key]) {
-            let cookie = window.document
-                .cookie.split('; ')
-                .filter((item) => item.split('=')[0] === key).pop();
-            if (!cookie) {
-                return null;
-            }
-            this.cookies[key] = this.parse(cookie.split('=').slice(1).join('='));
-        }
-        return this.cookies[key];
-    }
-    /**
-     * @method set
-     * @param {string} key Cookie key name
-     * @param {any} value Any value
-     * @param {Date=} expires The date of expiration (Optional)
-     * @return {void}
-     * @description
-     * The setter will return any type of data persisted in cookies.
-     **/
-    set(key, value, expires) {
-        this.cookies[key] = value;
-        let cookie = `${key}=${encodeURI(value)}; path=/${expires ? `; expires=${expires.toUTCString()}` : ''}`;
-        window.document.cookie = cookie;
-    }
-    /**
-     * @method remove
-     * @param {string} key Cookie key name
-     * @return {void}
-     * @description
-     * This method will remove a cookie from the client.
-     **/
-    remove(key) {
-        document.cookie = key + '=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        delete this.cookies[key];
-    }
-    /**
-     * @method parse
-     * @param {any} value Input data expected to be JSON
-     * @return {void}
-     * @description
-     * This method will parse the string as JSON if possible, otherwise will
-     * return the value itself.
-     **/
-    parse(value) {
-        try {
-            return JSON.parse(decodeURI(value));
-        }
-        catch (e) {
-            return value;
-        }
-    }
-};
-CookieBrowser = __decorate([
-    Injectable()
-], CookieBrowser);
-
-/**
-* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
-* @module StorageBrowser
-* @license MIT
-* @description
-* This module handle localStorage, it will be provided using DI Swapping according the
-* SDK Socket Driver Available currently supporting Angular 2 for web and NativeScript 2.
-**/
-let StorageBrowser = class StorageBrowser {
-    /**
-     * @method get
-     * @param {string} key Storage key name
-     * @return {any}
-     * @description
-     * The getter will return any type of data persisted in localStorage.
-     **/
-    get(key) {
-        let data = localStorage.getItem(key);
-        return this.parse(data);
-    }
-    /**
-     * @method set
-     * @param {string} key Storage key name
-     * @param {any} value Any value
-     * @return {void}
-     * @description
-     * The setter will return any type of data persisted in localStorage.
-     **/
-    set(key, value, expires) {
-        localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
-    }
-    /**
-     * @method remove
-     * @param {string} key Storage key name
-     * @return {void}
-     * @description
-     * This method will remove a localStorage item from the client.
-     **/
-    remove(key) {
-        if (localStorage[key]) {
-            localStorage.removeItem(key);
-        }
-        else {
-            console.log('Trying to remove unexisting key: ', key);
-        }
-    }
-    /**
-     * @method parse
-     * @param {any} value Input data expected to be JSON
-     * @return {void}
-     * @description
-     * This method will parse the string as JSON if possible, otherwise will
-     * return the value itself.
-     **/
-    parse(value) {
-        try {
-            return JSON.parse(value);
-        }
-        catch (e) {
-            return value;
-        }
-    }
-};
-StorageBrowser = __decorate([
-    Injectable()
-], StorageBrowser);
-
-/* tslint:disable */
-/**
-* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
-* @module SocketBrowser
-* @license MIT
-* @description
-* This module handle socket connections for web browsers, it will be DI Swapped
-* depending on the platform environment.
-* This module will be generated when the -d ng2web flag is set
-**/
-class SocketBrowser {
-    /**
-     * @method connect
-     * @param {string} url URL path to connect with the server.
-     * @param {any} options Any socket.io v1 =< valid options
-     * @return {any} Not currently a socket.io-client for web Typings implemented.
-     * @description
-     * This method will return a valid socket connection.
-     **/
-    connect(url, options) {
-        return io(url, options);
-    }
-}
-
-/* tslint:disable */
-/**
- * @module SocketDriver
- * @author Jonathan Casarrubias <t: johncasarrubias, gh: mean-expert-official>
- * @license MIT
- * @description
- * The SocketDriver class is used for dependency injection swapping.
- * It will be provided using factory method from different sources.
- **/
-class SocketDriver {
-    connect(url, options) { }
-}
-
-/**
-* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
-* @module SocketConnection
-* @license MIT
-* @description
-* This module handle socket connections and return singleton instances for each
-* connection, it will use the SDK Socket Driver Available currently supporting
-* Angular 2 for web, NativeScript 2 and Angular Universal.
-**/
-let SocketConnection = class SocketConnection {
-    /**
-     * @method constructor
-     * @param {SocketDriver} driver Socket IO Driver
-     * @param {NgZone} zone Angular 2 Zone
-     * @description
-     * The constructor will set references for the shared hot observables from
-     * the class subjects. Then it will subscribe each of these observables
-     * that will create a channel that later will be shared between subscribers.
-     **/
-    constructor(driver, zone) {
-        this.driver = driver;
-        this.zone = zone;
-        this.subjects = {
-            onConnect: new Subject(),
-            onDisconnect: new Subject(),
-            onAuthenticated: new Subject(),
-            onUnAuthorized: new Subject()
-        };
-        this.sharedObservables = {};
-        this.authenticated = false;
-        this.sharedObservables = {
-            sharedOnConnect: this.subjects.onConnect.asObservable().pipe(share()),
-            sharedOnDisconnect: this.subjects.onDisconnect.asObservable().pipe(share()),
-            sharedOnAuthenticated: this.subjects.onAuthenticated.asObservable().pipe(share()),
-            sharedOnUnAuthorized: this.subjects.onUnAuthorized.asObservable().pipe(share())
-        };
-        // This is needed to create the first channel, subsequents will share the connection
-        // We are using Hot Observables to avoid duplicating connection status events.
-        this.sharedObservables.sharedOnConnect.subscribe();
-        this.sharedObservables.sharedOnDisconnect.subscribe();
-        this.sharedObservables.sharedOnAuthenticated.subscribe();
-        this.sharedObservables.sharedOnUnAuthorized.subscribe();
-    }
-    /**
-     * @method connect
-     * @param {AccessToken} token AccesToken instance
-     * @return {void}
-     * @description
-     * This method will create a new socket connection when not previously established.
-     * If there is a broken connection it will re-connect.
-     **/
-    connect(token = null) {
-        if (!this.socket) {
-            console.info('Creating a new connection with: ', LoopBackConfig.getPath());
-            // Create new socket connection
-            this.socket = this.driver.connect(LoopBackConfig.getPath(), {
-                log: false,
-                secure: LoopBackConfig.isSecureWebSocketsSet(),
-                forceNew: true,
-                forceWebsockets: true,
-                transports: ['websocket']
-            });
-            // Listen for connection
-            this.on('connect', () => {
-                this.subjects.onConnect.next('connected');
-                // Authenticate or start heartbeat now    
-                this.emit('authentication', token);
-            });
-            // Listen for authentication
-            this.on('authenticated', () => {
-                this.authenticated = true;
-                this.subjects.onAuthenticated.next();
-                this.heartbeater();
-            });
-            // Listen for authentication
-            this.on('unauthorized', (err) => {
-                this.authenticated = false;
-                this.subjects.onUnAuthorized.next(err);
-            });
-            // Listen for disconnections
-            this.on('disconnect', (status) => this.subjects.onDisconnect.next(status));
-        }
-        else if (this.socket && !this.socket.connected) {
-            if (typeof this.socket.off === 'function') {
-                this.socket.off();
-            }
-            if (typeof this.socket.destroy === 'function') {
-                this.socket.destroy();
-            }
-            delete this.socket;
-            this.connect(token);
-        }
-    }
-    /**
-     * @method isConnected
-     * @return {boolean}
-     * @description
-     * This method will return true or false depending on established connections
-     **/
-    isConnected() {
-        return (this.socket && this.socket.connected);
-    }
-    /**
-     * @method on
-     * @param {string} event Event name
-     * @param {Function} handler Event listener handler
-     * @return {void}
-     * @description
-     * This method listen for server events from the current WebSocket connection.
-     * This method is a facade that will wrap the original "on" method and run it
-     * within the Angular Zone to avoid update issues.
-     **/
-    on(event, handler) {
-        this.socket.on(event, (data) => this.zone.run(() => handler(data)));
-    }
-    /**
-     * @method emit
-     * @param {string} event Event name
-     * @param {any=} data Any type of data
-     * @return {void}
-     * @description
-     * This method will send any type of data to the server according the event set.
-     **/
-    emit(event, data) {
-        if (data) {
-            this.socket.emit(event, data);
-        }
-        else {
-            this.socket.emit(event);
-        }
-    }
-    /**
-     * @method removeListener
-     * @param {string} event Event name
-     * @param {Function} handler Event listener handler
-     * @return {void}
-     * @description
-     * This method will wrap the original "on" method and run it within the Angular Zone
-     * Note: off is being used since the nativescript socket io client does not provide
-     * removeListener method, but only provides with off which is provided in any platform.
-     **/
-    removeListener(event, handler) {
-        if (typeof this.socket.off === 'function') {
-            this.socket.off(event, handler);
-        }
-    }
-    /**
-     * @method removeAllListeners
-     * @param {string} event Event name
-     * @param {Function} handler Event listener handler
-     * @return {void}
-     * @description
-     * This method will wrap the original "on" method and run it within the Angular Zone
-     * Note: off is being used since the nativescript socket io client does not provide
-     * removeListener method, but only provides with off which is provided in any platform.
-     **/
-    removeAllListeners(event) {
-        if (typeof this.socket.removeAllListeners === 'function') {
-            this.socket.removeAllListeners(event);
-        }
-    }
-    /**
-     * @method disconnect
-     * @return {void}
-     * @description
-     * This will disconnect the client from the server
-     **/
-    disconnect() {
-        this.socket.disconnect();
-    }
-    /**
-     * @method heartbeater
-     * @return {void}
-     * @description
-     * This will keep the connection as active, even when users are not sending
-     * data, this avoids disconnection because of a connection not being used.
-     **/
-    heartbeater() {
-        let heartbeater = setInterval(() => {
-            if (this.isConnected()) {
-                this.socket.emit('lb-ping');
-            }
-            else {
-                this.socket.removeAllListeners('lb-pong');
-                clearInterval(heartbeater);
-            }
-        }, 15000);
-        this.socket.on('lb-pong', (data) => console.info('Heartbeat: ', data));
-    }
-};
-SocketConnection.ctorParameters = () => [
-    { type: SocketDriver, decorators: [{ type: Inject, args: [SocketDriver,] }] },
-    { type: NgZone, decorators: [{ type: Inject, args: [NgZone,] }] }
-];
-SocketConnection = __decorate([
-    Injectable(),
-    __param(0, Inject(SocketDriver)),
-    __param(1, Inject(NgZone))
-], SocketConnection);
-
-/* tslint:disable */
-class IO {
-    constructor(socket) {
-        this.observables = {};
-        this.socket = socket;
-    }
-    emit(event, data) {
-        this.socket.emit('ME:RT:1://event', {
-            event: event,
-            data: data
-        });
-    }
-    on(event) {
-        if (this.observables[event]) {
-            return this.observables[event];
-        }
-        let subject = new Subject();
-        this.socket.on(event, (res) => subject.next(res));
-        this.observables[event] = subject.asObservable();
-        return this.observables[event];
     }
 }
 
@@ -3974,6 +3388,360 @@ class FireLoop {
         return this.references[name];
     }
 }
+
+/* tslint:disable */
+/**
+ * @module SocketDriver
+ * @author Jonathan Casarrubias <t: johncasarrubias, gh: mean-expert-official>
+ * @license MIT
+ * @description
+ * The SocketDriver class is used for dependency injection swapping.
+ * It will be provided using factory method from different sources.
+ **/
+class SocketDriver {
+    connect(url, options) { }
+}
+
+/* tslint:disable */
+/**
+* @module LoopBackConfig
+* @description
+*
+* The LoopBackConfig module help developers to externally
+* configure the base url and api version for loopback.io
+*
+* Example
+*
+* import { LoopBackConfig } from './sdk';
+*
+* @Component() // No metadata needed for this module
+*
+* export class MyApp {
+*   constructor() {
+*     LoopBackConfig.setBaseURL('http://localhost:3000');
+*     LoopBackConfig.setApiVersion('api');
+*   }
+* }
+**/
+class LoopBackConfig {
+    static setApiVersion(version = 'api') {
+        LoopBackConfig.version = version;
+    }
+    static getApiVersion() {
+        return LoopBackConfig.version;
+    }
+    static setBaseURL(url = '/') {
+        LoopBackConfig.path = url;
+    }
+    static getPath() {
+        return LoopBackConfig.path;
+    }
+    static setAuthPrefix(authPrefix = '') {
+        LoopBackConfig.authPrefix = authPrefix;
+    }
+    static getAuthPrefix() {
+        return LoopBackConfig.authPrefix;
+    }
+    static setDebugMode(isEnabled) {
+        LoopBackConfig.debug = isEnabled;
+    }
+    static debuggable() {
+        return LoopBackConfig.debug;
+    }
+    static filterOnUrl() {
+        LoopBackConfig.filterOn = 'url';
+    }
+    static filterOnHeaders() {
+        LoopBackConfig.filterOn = 'headers';
+    }
+    static whereOnUrl() {
+        LoopBackConfig.whereOn = 'url';
+    }
+    static whereOnHeaders() {
+        LoopBackConfig.whereOn = 'headers';
+    }
+    static isHeadersFilteringSet() {
+        return (LoopBackConfig.filterOn === 'headers');
+    }
+    static isHeadersWhereSet() {
+        return (LoopBackConfig.whereOn === 'headers');
+    }
+    static setSecureWebSockets() {
+        LoopBackConfig.secure = true;
+    }
+    static unsetSecureWebSockets() {
+        LoopBackConfig.secure = false;
+    }
+    static isSecureWebSocketsSet() {
+        return LoopBackConfig.secure;
+    }
+    static setRequestOptionsCredentials(withCredentials = false) {
+        LoopBackConfig.withCredentials = withCredentials;
+    }
+    static getRequestOptionsCredentials() {
+        return LoopBackConfig.withCredentials;
+    }
+}
+LoopBackConfig.path = '//:3000';
+LoopBackConfig.version = 'lb3-api';
+LoopBackConfig.authPrefix = '';
+LoopBackConfig.debug = true;
+LoopBackConfig.filterOn = 'headers';
+LoopBackConfig.whereOn = 'headers';
+LoopBackConfig.secure = false;
+LoopBackConfig.withCredentials = false;
+
+/**
+* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
+* @module SocketConnection
+* @license MIT
+* @description
+* This module handle socket connections and return singleton instances for each
+* connection, it will use the SDK Socket Driver Available currently supporting
+* Angular 2 for web, NativeScript 2 and Angular Universal.
+**/
+let SocketConnection = class SocketConnection {
+    /**
+     * @method constructor
+     * @param {SocketDriver} driver Socket IO Driver
+     * @param {NgZone} zone Angular 2 Zone
+     * @description
+     * The constructor will set references for the shared hot observables from
+     * the class subjects. Then it will subscribe each of these observables
+     * that will create a channel that later will be shared between subscribers.
+     **/
+    constructor(driver, zone) {
+        this.driver = driver;
+        this.zone = zone;
+        this.subjects = {
+            onConnect: new Subject(),
+            onDisconnect: new Subject(),
+            onAuthenticated: new Subject(),
+            onUnAuthorized: new Subject()
+        };
+        this.sharedObservables = {};
+        this.authenticated = false;
+        this.sharedObservables = {
+            sharedOnConnect: this.subjects.onConnect.asObservable().pipe(share()),
+            sharedOnDisconnect: this.subjects.onDisconnect.asObservable().pipe(share()),
+            sharedOnAuthenticated: this.subjects.onAuthenticated.asObservable().pipe(share()),
+            sharedOnUnAuthorized: this.subjects.onUnAuthorized.asObservable().pipe(share())
+        };
+        // This is needed to create the first channel, subsequents will share the connection
+        // We are using Hot Observables to avoid duplicating connection status events.
+        this.sharedObservables.sharedOnConnect.subscribe();
+        this.sharedObservables.sharedOnDisconnect.subscribe();
+        this.sharedObservables.sharedOnAuthenticated.subscribe();
+        this.sharedObservables.sharedOnUnAuthorized.subscribe();
+    }
+    /**
+     * @method connect
+     * @param {AccessToken} token AccesToken instance
+     * @return {void}
+     * @description
+     * This method will create a new socket connection when not previously established.
+     * If there is a broken connection it will re-connect.
+     **/
+    connect(token = null) {
+        if (!this.socket) {
+            console.info('Creating a new connection with: ', LoopBackConfig.getPath());
+            // Create new socket connection
+            this.socket = this.driver.connect(LoopBackConfig.getPath(), {
+                log: false,
+                secure: LoopBackConfig.isSecureWebSocketsSet(),
+                forceNew: true,
+                forceWebsockets: true,
+                transports: ['websocket']
+            });
+            // Listen for connection
+            this.on('connect', () => {
+                this.subjects.onConnect.next('connected');
+                // Authenticate or start heartbeat now    
+                this.emit('authentication', token);
+            });
+            // Listen for authentication
+            this.on('authenticated', () => {
+                this.authenticated = true;
+                this.subjects.onAuthenticated.next();
+                this.heartbeater();
+            });
+            // Listen for authentication
+            this.on('unauthorized', (err) => {
+                this.authenticated = false;
+                this.subjects.onUnAuthorized.next(err);
+            });
+            // Listen for disconnections
+            this.on('disconnect', (status) => this.subjects.onDisconnect.next(status));
+        }
+        else if (this.socket && !this.socket.connected) {
+            if (typeof this.socket.off === 'function') {
+                this.socket.off();
+            }
+            if (typeof this.socket.destroy === 'function') {
+                this.socket.destroy();
+            }
+            delete this.socket;
+            this.connect(token);
+        }
+    }
+    /**
+     * @method isConnected
+     * @return {boolean}
+     * @description
+     * This method will return true or false depending on established connections
+     **/
+    isConnected() {
+        return (this.socket && this.socket.connected);
+    }
+    /**
+     * @method on
+     * @param {string} event Event name
+     * @param {Function} handler Event listener handler
+     * @return {void}
+     * @description
+     * This method listen for server events from the current WebSocket connection.
+     * This method is a facade that will wrap the original "on" method and run it
+     * within the Angular Zone to avoid update issues.
+     **/
+    on(event, handler) {
+        this.socket.on(event, (data) => this.zone.run(() => handler(data)));
+    }
+    /**
+     * @method emit
+     * @param {string} event Event name
+     * @param {any=} data Any type of data
+     * @return {void}
+     * @description
+     * This method will send any type of data to the server according the event set.
+     **/
+    emit(event, data) {
+        if (data) {
+            this.socket.emit(event, data);
+        }
+        else {
+            this.socket.emit(event);
+        }
+    }
+    /**
+     * @method removeListener
+     * @param {string} event Event name
+     * @param {Function} handler Event listener handler
+     * @return {void}
+     * @description
+     * This method will wrap the original "on" method and run it within the Angular Zone
+     * Note: off is being used since the nativescript socket io client does not provide
+     * removeListener method, but only provides with off which is provided in any platform.
+     **/
+    removeListener(event, handler) {
+        if (typeof this.socket.off === 'function') {
+            this.socket.off(event, handler);
+        }
+    }
+    /**
+     * @method removeAllListeners
+     * @param {string} event Event name
+     * @param {Function} handler Event listener handler
+     * @return {void}
+     * @description
+     * This method will wrap the original "on" method and run it within the Angular Zone
+     * Note: off is being used since the nativescript socket io client does not provide
+     * removeListener method, but only provides with off which is provided in any platform.
+     **/
+    removeAllListeners(event) {
+        if (typeof this.socket.removeAllListeners === 'function') {
+            this.socket.removeAllListeners(event);
+        }
+    }
+    /**
+     * @method disconnect
+     * @return {void}
+     * @description
+     * This will disconnect the client from the server
+     **/
+    disconnect() {
+        this.socket.disconnect();
+    }
+    /**
+     * @method heartbeater
+     * @return {void}
+     * @description
+     * This will keep the connection as active, even when users are not sending
+     * data, this avoids disconnection because of a connection not being used.
+     **/
+    heartbeater() {
+        let heartbeater = setInterval(() => {
+            if (this.isConnected()) {
+                this.socket.emit('lb-ping');
+            }
+            else {
+                this.socket.removeAllListeners('lb-pong');
+                clearInterval(heartbeater);
+            }
+        }, 15000);
+        this.socket.on('lb-pong', (data) => console.info('Heartbeat: ', data));
+    }
+};
+SocketConnection.ctorParameters = () => [
+    { type: SocketDriver, decorators: [{ type: Inject, args: [SocketDriver,] }] },
+    { type: NgZone, decorators: [{ type: Inject, args: [NgZone,] }] }
+];
+SocketConnection = __decorate([
+    Injectable(),
+    __param(0, Inject(SocketDriver)),
+    __param(1, Inject(NgZone))
+], SocketConnection);
+
+let SDKModels = class SDKModels {
+    constructor() {
+        this.models = {
+            SchemaObject: SchemaObject,
+            SysClassFieldPropertyRel: SysClassFieldPropertyRel,
+            SysClassField: SysClassField,
+            SysClassHasTypeProperty: SysClassHasTypeProperty,
+            SysSystemRelevantClass: SysSystemRelevantClass,
+            PubAccount: PubAccount,
+            Email: Email,
+            ProProject: ProProject,
+            PubAccountProjectRel: PubAccountProjectRel,
+            ProTextProperty: ProTextProperty,
+            ProInfoProjRel: ProInfoProjRel,
+            DfhProfile: DfhProfile,
+            DfhLabel: DfhLabel,
+            DatChunk: DatChunk,
+            DatColumn: DatColumn,
+            DatTextProperty: DatTextProperty,
+            DatDigital: DatDigital,
+            SysAppContext: SysAppContext,
+            ProClassFieldConfig: ProClassFieldConfig,
+            ProDfhClassProjRel: ProDfhClassProjRel,
+            ProDfhProfileProjRel: ProDfhProfileProjRel,
+            InfAppellation: InfAppellation,
+            InfLangString: InfLangString,
+            InfDimension: InfDimension,
+            InfTemporalEntity: InfTemporalEntity,
+            InfStatement: InfStatement,
+            InfLanguage: InfLanguage,
+            InfPersistentItem: InfPersistentItem,
+            InfTimePrimitive: InfTimePrimitive,
+            InfPlace: InfPlace,
+            DatNamespace: DatNamespace,
+            InfTextProperty: InfTextProperty,
+            SysSystemType: SysSystemType,
+        };
+    }
+    get(modelName) {
+        return this.models[modelName];
+    }
+    getAll() {
+        return this.models;
+    }
+    getModelNames() {
+        return Object.keys(this.models);
+    }
+};
+SDKModels = __decorate([
+    Injectable()
+], SDKModels);
 
 /**
 * @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@johncasarrubias>
@@ -4720,9 +4488,9 @@ BaseLoopBackApi = __decorate([
 ], BaseLoopBackApi);
 
 /**
- * Api services for the `SchemaObject` model.
+ * Api services for the `DatChunk` model.
  */
-let SchemaObjectApi = class SchemaObjectApi extends BaseLoopBackApi {
+let DatChunkApi = class DatChunkApi extends BaseLoopBackApi {
     constructor(http, connection, models, auth, errorHandler) {
         super(http, connection, models, auth, errorHandler);
         this.http = http;
@@ -4732,11 +4500,11 @@ let SchemaObjectApi = class SchemaObjectApi extends BaseLoopBackApi {
         this.errorHandler = errorHandler;
     }
     /**
-     * Remove entity with outgoing statements and namings from project.
+     * Get the chunks related to the digital, with their statements.
      *
      * @param {number} pkProject Primary key of the project
      *
-     * @param {number} pkEntity Primary key of the entity
+     * @param {number} pkDigital Primary key of the digital
      *
      * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -4744,29 +4512,65 @@ let SchemaObjectApi = class SchemaObjectApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `SchemaObject` object.)
+     * This usually means the response is a `DatChunk` object.)
      * </em>
      */
-    removeEntityFromProject(pkProject, pkEntity, customHeaders) {
+    ofDigital(pkProject, pkDigital, customHeaders) {
         let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/SchemaObjects/remove-entity-from-project";
+            "/DatChunks/of-digital";
         let _routeParams = {};
         let _postBody = {};
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
-        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
-            _urlParams.pkEntity = pkEntity;
+        if (typeof pkDigital !== 'undefined' && pkDigital !== null)
+            _urlParams.pkDigital = pkDigital;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
-     * Add entity with outgoing statements and namings to project.
+     * The name of the model represented by this $resource,
+     * i.e. `DatChunk`.
+     */
+    getModelName() {
+        return "DatChunk";
+    }
+};
+DatChunkApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+DatChunkApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], DatChunkApi);
+
+/**
+ * Api services for the `DatColumn` model.
+ */
+let DatColumnApi = class DatColumnApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get the columns related to the digital (table).
      *
      * @param {number} pkProject Primary key of the project
      *
-     * @param {number} pkEntity Primary key of the entity
+     * @param {number} pkDigital Primary key of the digital
      *
      * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -4774,134 +4578,159 @@ let SchemaObjectApi = class SchemaObjectApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `SchemaObject` object.)
+     * This usually means the response is a `DatColumn` object.)
      * </em>
      */
-    addEntityToProject(pkProject, pkEntity, customHeaders) {
+    ofDigital(pkProject, pkDigital, customHeaders) {
         let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/SchemaObjects/add-entity-to-project";
+            "/DatColumns/of-digital";
         let _routeParams = {};
         let _postBody = {};
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
-        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
-            _urlParams.pkEntity = pkEntity;
+        if (typeof pkDigital !== 'undefined' && pkDigital !== null)
+            _urlParams.pkDigital = pkDigital;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
-     * Get a object containing apllations and definition of a type (project variant).
+     * The name of the model represented by this $resource,
+     * i.e. `DatColumn`.
+     */
+    getModelName() {
+        return "DatColumn";
+    }
+};
+DatColumnApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+DatColumnApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], DatColumnApi);
+
+/**
+ * Api services for the `DatDigital` model.
+ */
+let DatDigitalApi = class DatDigitalApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Creates or updates instances of DatDigital.
+     *
+     * @param {number} pkNamespace Namespace
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{DatDigital}` - Array DatDigital
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `DatDigital` object.)
+     * </em>
+     */
+    bulkUpsert(pkNamespace, data, customHeaders) {
+        let _method = "PUT";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/DatDigitals/bulk-upsert";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pkNamespace !== 'undefined' && pkNamespace !== null)
+            _urlParams.pkNamespace = pkNamespace;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Deletes instances of DatDigital.
+     *
+     * @param {object} data Request data.
+     *
+     *  - `pks` – `{number}` - Array of Primary Key of DatDigitals
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `DatDigital` object.)
+     * </em>
+     */
+    bulkDelete(pks, customHeaders) {
+        let _method = "PUT";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/DatDigitals/delete-delete";
+        let _routeParams = {};
+        let _postBody = {
+            pks: pks
+        };
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Finds the version of given digital. If no version specified, latest is returned.
+     *
+     * @param {number} pkEntity Primary Key of the digital object (pk_entity)
+     *
+     * @param {number} entityVersion Primary Key of the digital object (entity_version)
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `DatDigital` object.)
+     * </em>
+     */
+    getVersion(pkEntity, entityVersion = {}, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/DatDigitals/get-version";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
+            _urlParams.pkEntity = pkEntity;
+        if (typeof entityVersion !== 'undefined' && entityVersion !== null)
+            _urlParams.entityVersion = entityVersion;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get page of table
      *
      * @param {number} pkProject Pk of the project.
      *
-     * @param {number} pkType Pk of the type.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `SchemaObject` object.)
-     * </em>
-     */
-    typeOfProject(pkProject, pkType, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/SchemaObjects/type-of-project";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkType !== 'undefined' && pkType !== null)
-            _urlParams.pkType = pkType;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SchemaObject`.
-     */
-    getModelName() {
-        return "SchemaObject";
-    }
-};
-SchemaObjectApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-SchemaObjectApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], SchemaObjectApi);
-
-// import { DfhProperty } from '../../models/DfhProperty';
-/**
- * Api services for the `SysClassFieldPropertyRel` model.
- */
-let SysClassFieldPropertyRelApi = class SysClassFieldPropertyRelApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysClassFieldPropertyRel`.
-     */
-    getModelName() {
-        return "SysClassFieldPropertyRel";
-    }
-};
-SysClassFieldPropertyRelApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-SysClassFieldPropertyRelApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], SysClassFieldPropertyRelApi);
-
-/**
- * Api services for the `SysClassField` model.
- */
-let SysClassFieldApi = class SysClassFieldApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * <em>
-           * (The remote method definition does not provide any description.)
-           * </em>
+     * @param {number} pkEntity Pk of the table digital.
      *
      * @param {object} data Request data.
      *
-     * This method expects a subset of model properties as request parameters.
+     *  - `options` – `{object}` - options
      *
      * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -4909,743 +4738,16 @@ let SysClassFieldApi = class SysClassFieldApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `SysClassField` object.)
+     * This usually means the response is a `DatDigital` object.)
      * </em>
      */
-    findComplex(filter = {}, customHeaders) {
+    getTablePage(pkProject, pkEntity, options = {}, customHeaders) {
         let _method = "POST";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/SysClassFields/findComplex";
+            "/DatDigitals/getTablePage";
         let _routeParams = {};
         let _postBody = {
-            filter: filter
-        };
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new SysClassField(instance))));
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysClassField`.
-     */
-    getModelName() {
-        return "SysClassField";
-    }
-};
-SysClassFieldApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-SysClassFieldApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], SysClassFieldApi);
-
-/**
- * Api services for the `SysClassHasTypeProperty` model.
- */
-let SysClassHasTypePropertyApi = class SysClassHasTypePropertyApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysClassHasTypeProperty`.
-     */
-    getModelName() {
-        return "SysClassHasTypeProperty";
-    }
-};
-SysClassHasTypePropertyApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-SysClassHasTypePropertyApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], SysClassHasTypePropertyApi);
-
-/**
- * Api services for the `SysSystemRelevantClass` model.
- */
-let SysSystemRelevantClassApi = class SysSystemRelevantClassApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Replace or create all items in the array.
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{SysSystemRelevantClass}` - Array of SysSystemRelevantClass
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `SysSystemRelevantClass` object.)
-     * </em>
-     */
-    bulkReplaceOrCreate(data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/SysSystemRelevantClasses/bulk-replace-or-create";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `SysSystemRelevantClass`.
-     */
-    getModelName() {
-        return "SysSystemRelevantClass";
-    }
-};
-SysSystemRelevantClassApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-SysSystemRelevantClassApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], SysSystemRelevantClassApi);
-
-/**
- * Api services for the `PubAccount` model.
- */
-let PubAccountApi = class PubAccountApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Get Roles of the Account
-     *
-     * @param {number} id
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `PubAccount` object.)
-     * </em>
-     */
-    getRoles(id, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/PubAccounts/:id/get-roles";
-        let _routeParams = {
-            id: id
-        };
-        let _postBody = {};
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Get a list of all projects associated with this account.
-     *
-     * @param {number} id
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `PubAccount` object.)
-     * </em>
-     */
-    listProjects(id, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/PubAccounts/:id/list-projects";
-        let _routeParams = {
-            id: id
-        };
-        let _postBody = {};
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Get all accounts with their project pks and their roles
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `PubAccount` object.)
-     * </em>
-     */
-    withRolesAndProjects(customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/PubAccounts/with-roles-and-projects";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Login a user with username/email and password.
-     *
-     * @param {string} include Related objects to include in the response. See the description of return value for more details.
-     *
-     * @param {object} data Request data.
-     *
-     * This method expects a subset of model properties as request parameters.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * The response body contains properties of the AccessToken created on login.
-     * Depending on the value of `include` parameter, the body may contain additional properties:
-     *
-     *   - `user` - `U+007BPubAccountU+007D` - Data of the currently logged in user. (`include=user`)
-     *
-     *
-     */
-    login(credentials, include = {}, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/PubAccounts/login";
-        let _routeParams = {};
-        let _postBody = {
-            credentials: credentials
-        };
-        let _urlParams = {};
-        if (typeof include !== 'undefined' && include !== null)
-            _urlParams.include = include;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Logout a user with access token.
-     *
-     * @param {object} data Request data.
-     *
-     * This method does not accept any data. Supply an empty object.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * This method returns no data.
-     */
-    logout(customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/PubAccounts/logout";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `PubAccount`.
-     */
-    getModelName() {
-        return "PubAccount";
-    }
-};
-PubAccountApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-PubAccountApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], PubAccountApi);
-
-/**
- * Api services for the `Email` model.
- */
-let EmailApi = class EmailApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `Email`.
-     */
-    getModelName() {
-        return "Email";
-    }
-};
-EmailApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-EmailApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], EmailApi);
-
-/**
- * Api services for the `ProProject` model.
- */
-let ProProjectApi = class ProProjectApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Get the projects of account.
-     *
-     * @param {number} accountId Id of the account
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProProject` object.)
-     * </em>
-     */
-    ofAccount(accountId, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProProjects/of-account";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof accountId !== 'undefined' && accountId !== null)
-            _urlParams.accountId = accountId;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Create a new project with a label and a description.
-     *
-     * @param {number} accountId Id of account to associate the persistent item with.
-     *
-     * @param {string} pkLanguage Default language of the project, language of the label and the text property.
-     *
-     * @param {string} label Label of the project.
-     *
-     * @param {string} textProperty Description of the project.
-     *
-     * @param {object} data Request data.
-     *
-     * This method does not accept any data. Supply an empty object.
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProProject` object.)
-     * </em>
-     */
-    createWithLabelAndDescription(accountId, pkLanguage, label, textProperty = {}, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProProjects/create-with-label-and-description";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof accountId !== 'undefined' && accountId !== null)
-            _urlParams.accountId = accountId;
-        if (typeof pkLanguage !== 'undefined' && pkLanguage !== null)
-            _urlParams.pkLanguage = pkLanguage;
-        if (typeof label !== 'undefined' && label !== null)
-            _urlParams.label = label;
-        if (typeof textProperty !== 'undefined' && textProperty !== null)
-            _urlParams.textProperty = textProperty;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Get basic information about the project (language, name)
-     *
-     * @param {number} pkProject Pk of project
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProProject` object.)
-     * </em>
-     */
-    getBasics(pkProject, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProProjects/get-basics";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProProject`.
-     */
-    getModelName() {
-        return "ProProject";
-    }
-};
-ProProjectApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-ProProjectApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], ProProjectApi);
-
-/**
- * Api services for the `PubAccountProjectRel` model.
- */
-let PubAccountProjectRelApi = class PubAccountProjectRelApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `PubAccountProjectRel`.
-     */
-    getModelName() {
-        return "PubAccountProjectRel";
-    }
-};
-PubAccountProjectRelApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-PubAccountProjectRelApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], PubAccountProjectRelApi);
-
-/**
- * Api services for the `ProTextProperty` model.
- */
-let ProTextPropertyApi = class ProTextPropertyApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Get the text-properties of the project.
-     *
-     * @param {number} pkProject Pk of the project
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProTextProperty` object.)
-     * </em>
-     */
-    ofProject(pkProject, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProTextProperties/of-project";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Inserts or updates items in the array of ProTextProperty. If pk_entity is given and existing, an update is done, else an insert
-     *
-     * @param {number} pkProject Pk of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `items` – `{ProTextProperty}` - Array of ProTextPropertys
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProTextProperty` object.)
-     * </em>
-     */
-    bulkUpsert(pkProject, items, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProTextProperties/bulk-upsert";
-        let _routeParams = {};
-        let _postBody = {
-            items: items
-        };
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Dletes items in the array of ProTextProperty. Checks for each item if fk_project matches given pkProject
-     *
-     * @param {number} pkProject Pk of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `items` – `{ProTextProperty}` - Array of ProTextPropertys
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProTextProperty` object.)
-     * </em>
-     */
-    bulkDelete(pkProject, items, customHeaders) {
-        let _method = "PUT";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProTextProperties/bulk-delete";
-        let _routeParams = {};
-        let _postBody = {
-            items: items
-        };
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `ProTextProperty`.
-     */
-    getModelName() {
-        return "ProTextProperty";
-    }
-};
-ProTextPropertyApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-ProTextPropertyApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], ProTextPropertyApi);
-
-/**
- * Api services for the `ProInfoProjRel` model.
- */
-let ProInfoProjRelApi = class ProInfoProjRelApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Patch an existing model instance or insert a new one into the data source.
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{object}` - Model instance data
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProInfoProjRel` object.)
-     * </em>
-     */
-    patchOrCreate(data = {}, customHeaders) {
-        let _method = "PATCH";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProInfoProjRels";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Marks the statement as favorite for the given fk_project.
-     *
-     * @param {number} pkProject fk_project
-     *
-     * @param {number} pkStatement fk_entity
-     *
-     * @param {object} data Request data.
-     *
-     *  - `isOutgoing` – `{boolean}` - True, if the statement is outgoing, else false
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProInfoProjRel` object.)
-     * </em>
-     */
-    markStatementAsFavorite(pkProject, pkStatement, isOutgoing, customHeaders) {
-        let _method = "PUT";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProInfoProjRels/mark-statement-as-favorite";
-        let _routeParams = {};
-        let _postBody = {
-            isOutgoing: isOutgoing
-        };
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkStatement !== 'undefined' && pkStatement !== null)
-            _urlParams.pkStatement = pkStatement;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Updates the ProInfoProjRel found by fk_project and fk_entity.
-     *
-     * @param {number} pkProject fk_project
-     *
-     * @param {number} pkEntity fk_entity
-     *
-     * @param {object} data Request data.
-     *
-     *  - `eprAttributes` – `{ProInfoProjRel}` - Instance of ProInfoProjRel (fk_project and fk_entity will be ignored)
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProInfoProjRel` object.)
-     * </em>
-     */
-    updateEprAttributes(pkProject, pkEntity, eprAttributes, customHeaders) {
-        let _method = "PUT";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProInfoProjRels/updateEprAttributes";
-        let _routeParams = {};
-        let _postBody = {
-            eprAttributes: eprAttributes
+            options: options
         };
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
@@ -5656,31 +4758,61 @@ let ProInfoProjRelApi = class ProInfoProjRelApi extends BaseLoopBackApi {
         return result;
     }
     /**
-     * Updates the ProInfoProjRel of all found by fk_project and fk_entity.
+     * The name of the model represented by this $resource,
+     * i.e. `DatDigital`.
+     */
+    getModelName() {
+        return "DatDigital";
+    }
+};
+DatDigitalApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+DatDigitalApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], DatDigitalApi);
+
+/**
+ * Api services for the `DatNamespace` model.
+ */
+let DatNamespaceApi = class DatNamespaceApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Finds namespaces of a project.
      *
-     * @param {number} pkProject fk_project
+     * @param {number} pkProject Key of the Project for which the namespaces should be found.
      *
-     * @param {object} data Request data.
-     *
-     *  - `items` – `{ProInfoProjRel}` - Array of ProInfoProjRel (fk_project must be equal to pkProject)
-     *
-     * @returns {object} An empty reference that will be
+     * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
      *   from the server.
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `ProInfoProjRel` object.)
+     * This usually means the response is a `DatNamespace` object.)
      * </em>
      */
-    bulkUpdateEprAttributes(pkProject, items, customHeaders) {
-        let _method = "PUT";
+    byProject(pkProject, customHeaders) {
+        let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/ProInfoProjRels/bulk-update-attributes";
+            "/DatNamespaces/find-by-project";
         let _routeParams = {};
-        let _postBody = {
-            items: items
-        };
+        let _postBody = {};
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
@@ -5689,27 +4821,125 @@ let ProInfoProjRelApi = class ProInfoProjRelApi extends BaseLoopBackApi {
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `ProInfoProjRel`.
+     * i.e. `DatNamespace`.
      */
     getModelName() {
-        return "ProInfoProjRel";
+        return "DatNamespace";
     }
 };
-ProInfoProjRelApi.ctorParameters = () => [
+DatNamespaceApi.ctorParameters = () => [
     { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
     { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
     { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
     { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
     { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
 ];
-ProInfoProjRelApi = __decorate([
+DatNamespaceApi = __decorate([
     Injectable(),
     __param(0, Inject(HttpClient)),
     __param(1, Inject(SocketConnection)),
     __param(2, Inject(SDKModels)),
     __param(3, Inject(LoopBackAuth)),
     __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], ProInfoProjRelApi);
+], DatNamespaceApi);
+
+/**
+ * Api services for the `DatTextProperty` model.
+ */
+let DatTextPropertyApi = class DatTextPropertyApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `DatTextProperty`.
+     */
+    getModelName() {
+        return "DatTextProperty";
+    }
+};
+DatTextPropertyApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+DatTextPropertyApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], DatTextPropertyApi);
+
+/**
+ * Api services for the `DfhLabel` model.
+ */
+let DfhLabelApi = class DfhLabelApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get all dfh labels needed by the given project.
+     *
+     * @param {number} pkProject Project pk
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `DfhLabel` object.)
+     * </em>
+     */
+    ofProject(pkProject = {}, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/DfhLabels/of-project";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `DfhLabel`.
+     */
+    getModelName() {
+        return "DfhLabel";
+    }
+};
+DfhLabelApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+DfhLabelApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], DfhLabelApi);
 
 /**
  * Api services for the `DfhProfile` model.
@@ -5952,9 +5182,9 @@ DfhProfileApi = __decorate([
 ], DfhProfileApi);
 
 /**
- * Api services for the `DfhLabel` model.
+ * Api services for the `Email` model.
  */
-let DfhLabelApi = class DfhLabelApi extends BaseLoopBackApi {
+let EmailApi = class EmailApi extends BaseLoopBackApi {
     constructor(http, connection, models, auth, errorHandler) {
         super(http, connection, models, auth, errorHandler);
         this.http = http;
@@ -5964,9 +5194,153 @@ let DfhLabelApi = class DfhLabelApi extends BaseLoopBackApi {
         this.errorHandler = errorHandler;
     }
     /**
-     * Get all dfh labels needed by the given project.
+     * The name of the model represented by this $resource,
+     * i.e. `Email`.
+     */
+    getModelName() {
+        return "Email";
+    }
+};
+EmailApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+EmailApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], EmailApi);
+
+/**
+ * Api services for the `InfAppellation` model.
+ */
+let InfAppellationApi = class InfAppellationApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfAppellation`.
+     */
+    getModelName() {
+        return "InfAppellation";
+    }
+};
+InfAppellationApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfAppellationApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfAppellationApi);
+
+/**
+ * Api services for the `InfDimension` model.
+ */
+let InfDimensionApi = class InfDimensionApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfDimension`.
+     */
+    getModelName() {
+        return "InfDimension";
+    }
+};
+InfDimensionApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfDimensionApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfDimensionApi);
+
+/**
+ * Api services for the `InfLangString` model.
+ */
+let InfLangStringApi = class InfLangStringApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfLangString`.
+     */
+    getModelName() {
+        return "InfLangString";
+    }
+};
+InfLangStringApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfLangStringApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfLangStringApi);
+
+/**
+ * Api services for the `InfLanguage` model.
+ */
+let InfLanguageApi = class InfLanguageApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Perform a ranked search on languages by search string.
      *
-     * @param {number} pkProject Project pk
+     * @param {string} queryString
      *
      * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -5974,49 +5348,49 @@ let DfhLabelApi = class DfhLabelApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `DfhLabel` object.)
+     * This usually means the response is a `InfLanguage` object.)
      * </em>
      */
-    ofProject(pkProject = {}, customHeaders) {
+    queryByString(queryString = {}, customHeaders) {
         let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DfhLabels/of-project";
+            "/InfLanguages/query-by-string";
         let _routeParams = {};
         let _postBody = {};
         let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
+        if (typeof queryString !== 'undefined' && queryString !== null)
+            _urlParams.queryString = queryString;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `DfhLabel`.
+     * i.e. `InfLanguage`.
      */
     getModelName() {
-        return "DfhLabel";
+        return "InfLanguage";
     }
 };
-DfhLabelApi.ctorParameters = () => [
+InfLanguageApi.ctorParameters = () => [
     { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
     { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
     { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
     { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
     { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
 ];
-DfhLabelApi = __decorate([
+InfLanguageApi = __decorate([
     Injectable(),
     __param(0, Inject(HttpClient)),
     __param(1, Inject(SocketConnection)),
     __param(2, Inject(SDKModels)),
     __param(3, Inject(LoopBackAuth)),
     __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], DfhLabelApi);
+], InfLanguageApi);
 
 /**
- * Api services for the `DatChunk` model.
+ * Api services for the `InfPersistentItem` model.
  */
-let DatChunkApi = class DatChunkApi extends BaseLoopBackApi {
+let InfPersistentItemApi = class InfPersistentItemApi extends BaseLoopBackApi {
     constructor(http, connection, models, auth, errorHandler) {
         super(http, connection, models, auth, errorHandler);
         this.http = http;
@@ -6026,211 +5400,43 @@ let DatChunkApi = class DatChunkApi extends BaseLoopBackApi {
         this.errorHandler = errorHandler;
     }
     /**
-     * Get the chunks related to the digital, with their statements.
+     * Find or create many information persistent items.
      *
-     * @param {number} pkProject Primary key of the project
-     *
-     * @param {number} pkDigital Primary key of the digital
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatChunk` object.)
-     * </em>
-     */
-    ofDigital(pkProject, pkDigital, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatChunks/of-digital";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkDigital !== 'undefined' && pkDigital !== null)
-            _urlParams.pkDigital = pkDigital;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `DatChunk`.
-     */
-    getModelName() {
-        return "DatChunk";
-    }
-};
-DatChunkApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-DatChunkApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], DatChunkApi);
-
-/**
- * Api services for the `DatColumn` model.
- */
-let DatColumnApi = class DatColumnApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Get the columns related to the digital (table).
-     *
-     * @param {number} pkProject Primary key of the project
-     *
-     * @param {number} pkDigital Primary key of the digital
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatColumn` object.)
-     * </em>
-     */
-    ofDigital(pkProject, pkDigital, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatColumns/of-digital";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkDigital !== 'undefined' && pkDigital !== null)
-            _urlParams.pkDigital = pkDigital;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `DatColumn`.
-     */
-    getModelName() {
-        return "DatColumn";
-    }
-};
-DatColumnApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-DatColumnApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], DatColumnApi);
-
-/**
- * Api services for the `DatTextProperty` model.
- */
-let DatTextPropertyApi = class DatTextPropertyApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `DatTextProperty`.
-     */
-    getModelName() {
-        return "DatTextProperty";
-    }
-};
-DatTextPropertyApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-DatTextPropertyApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], DatTextPropertyApi);
-
-/**
- * Api services for the `DatDigital` model.
- */
-let DatDigitalApi = class DatDigitalApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Creates or updates instances of DatDigital.
-     *
-     * @param {number} pkNamespace Namespace
+     * @param {number} pk_project Pk of the project
      *
      * @param {object} data Request data.
      *
-     *  - `data` – `{DatDigital}` - Array DatDigital
+     *  - `data` – `{InfPersistentItem}` - data
      *
-     * @returns {object} An empty reference that will be
+     * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
      *   from the server.
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatDigital` object.)
+     * This usually means the response is a `InfPersistentItem` object.)
      * </em>
      */
-    bulkUpsert(pkNamespace, data, customHeaders) {
-        let _method = "PUT";
+    findOrCreateInfPersistentItems(pk_project, data, customHeaders) {
+        let _method = "POST";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatDigitals/bulk-upsert";
+            "/InfPersistentItems/find-or-create-many";
         let _routeParams = {};
         let _postBody = {
             data: data
         };
         let _urlParams = {};
-        if (typeof pkNamespace !== 'undefined' && pkNamespace !== null)
-            _urlParams.pkNamespace = pkNamespace;
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
+        return result.pipe(map((instances) => instances.map((instance) => new InfPersistentItem(instance))));
     }
     /**
-     * Deletes instances of DatDigital.
+     * Get only miminal properties of persistent item.
      *
-     * @param {object} data Request data.
+     * @param {number} pkProject Pk of the project.
      *
-     *  - `pks` – `{number}` - Array of Primary Key of DatDigitals
+     * @param {number} pkEntity Pk of the entity.
      *
      * @returns {object} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -6238,79 +5444,15 @@ let DatDigitalApi = class DatDigitalApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatDigital` object.)
+     * This usually means the response is a `InfPersistentItem` object.)
      * </em>
      */
-    bulkDelete(pks, customHeaders) {
-        let _method = "PUT";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatDigitals/delete-delete";
-        let _routeParams = {};
-        let _postBody = {
-            pks: pks
-        };
-        let _urlParams = {};
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Finds the version of given digital. If no version specified, latest is returned.
-     *
-     * @param {number} pkEntity Primary Key of the digital object (pk_entity)
-     *
-     * @param {number} entityVersion Primary Key of the digital object (entity_version)
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatDigital` object.)
-     * </em>
-     */
-    getVersion(pkEntity, entityVersion = {}, customHeaders) {
+    ownProperties(pkProject, pkEntity, customHeaders) {
         let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatDigitals/get-version";
+            "/InfPersistentItems/own-properties";
         let _routeParams = {};
         let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
-            _urlParams.pkEntity = pkEntity;
-        if (typeof entityVersion !== 'undefined' && entityVersion !== null)
-            _urlParams.entityVersion = entityVersion;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Get page of table
-     *
-     * @param {number} pkProject Pk of the project.
-     *
-     * @param {number} pkEntity Pk of the table digital.
-     *
-     * @param {object} data Request data.
-     *
-     *  - `options` – `{object}` - options
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatDigital` object.)
-     * </em>
-     */
-    getTablePage(pkProject, pkEntity, options = {}, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatDigitals/getTablePage";
-        let _routeParams = {};
-        let _postBody = {
-            options: options
-        };
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
@@ -6320,33 +5462,119 @@ let DatDigitalApi = class DatDigitalApi extends BaseLoopBackApi {
         return result;
     }
     /**
+     * Get a minimal nested object of all types in the project.
+     *
+     * @param {number} pkProject Pk of the project.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfPersistentItem` object.)
+     * </em>
+     */
+    typesOfProject(pkProject, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfPersistentItems/types-of-project";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)
+     *
+     * @param {number} pk_project Primary Key of Project
+     *
+     * @param {number} pk_typed_classes Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfPersistentItem` object.)
+     * </em>
+     */
+    typesOfClassesAndProject(pk_project, pk_typed_classes, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfPersistentItems/types-of-classes-and-project";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
+        if (typeof pk_typed_classes !== 'undefined' && pk_typed_classes !== null)
+            _urlParams.pk_typed_classes = pk_typed_classes;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Find one type by pk_entity with appellations and text properties.
+     *
+     * @param {number} pk_project Primary Key of Project
+     *
+     * @param {number} pk_entity Primary Key of the type. Provide this if you want to query one specific type.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfPersistentItem` object.)
+     * </em>
+     */
+    typeNested(pk_project, pk_entity, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfPersistentItems/type-nested";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
+        if (typeof pk_entity !== 'undefined' && pk_entity !== null)
+            _urlParams.pk_entity = pk_entity;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
      * The name of the model represented by this $resource,
-     * i.e. `DatDigital`.
+     * i.e. `InfPersistentItem`.
      */
     getModelName() {
-        return "DatDigital";
+        return "InfPersistentItem";
     }
 };
-DatDigitalApi.ctorParameters = () => [
+InfPersistentItemApi.ctorParameters = () => [
     { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
     { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
     { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
     { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
     { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
 ];
-DatDigitalApi = __decorate([
+InfPersistentItemApi = __decorate([
     Injectable(),
     __param(0, Inject(HttpClient)),
     __param(1, Inject(SocketConnection)),
     __param(2, Inject(SDKModels)),
     __param(3, Inject(LoopBackAuth)),
     __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], DatDigitalApi);
+], InfPersistentItemApi);
 
 /**
- * Api services for the `SysAppContext` model.
+ * Api services for the `InfPlace` model.
  */
-let SysAppContextApi = class SysAppContextApi extends BaseLoopBackApi {
+let InfPlaceApi = class InfPlaceApi extends BaseLoopBackApi {
     constructor(http, connection, models, auth, errorHandler) {
         super(http, connection, models, auth, errorHandler);
         this.http = http;
@@ -6356,11 +5584,131 @@ let SysAppContextApi = class SysAppContextApi extends BaseLoopBackApi {
         this.errorHandler = errorHandler;
     }
     /**
-     * Get the App Configuration for classes.
+     * Find or create a InfPlace and update the project relation if needed.
      *
-     * @param {number} pk_app_context pk_entity of app_context
+     * @param {number} projectId Id of the project
      *
-     * @param {number} pk_project pk_project of project
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfPlace}` - data
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfPlace` object.)
+     * </em>
+     */
+    findOrCreatePlace(projectId, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfPlaces/findOrCreate";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof projectId !== 'undefined' && projectId !== null)
+            _urlParams.projectId = projectId;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfPlace(instance))));
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfPlace`.
+     */
+    getModelName() {
+        return "InfPlace";
+    }
+};
+InfPlaceApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfPlaceApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfPlaceApi);
+
+/**
+ * Api services for the `InfStatement` model.
+ */
+let InfStatementApi = class InfStatementApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get a flat object of entity previews, that are target of a list.
+     *
+     * @param {number} pkProject Pk of the project.
+     *
+     * @param {number} pkSourceEntity Pk of the source entity to which the entity previews, that are target of a list are related.
+     *
+     * @param {number} pkProperty Pk of the property leading from source entity to the entity previews, that are target of a list.
+     *
+     * @param {number} pkTargetClass Fk class of the target entity previews, that are target of a list.
+     *
+     * @param {boolean} isOutgoing If true, the source entity is domain, else range.
+     *
+     * @param {number} limit number of returned entity previews, that are target of a list.
+     *
+     * @param {number} offset offset of the segment of returned entity previews, that are target of a list.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfStatement` object.)
+     * </em>
+     */
+    paginatedListTargetingEntityPreviews(pkProject, pkSourceEntity, pkProperty, pkTargetClass, isOutgoing, limit, offset, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfStatements/paginated-list-targeting-entity-previews";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null)
+            _urlParams.pkSourceEntity = pkSourceEntity;
+        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
+            _urlParams.pkProperty = pkProperty;
+        if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null)
+            _urlParams.pkTargetClass = pkTargetClass;
+        if (typeof isOutgoing !== 'undefined' && isOutgoing !== null)
+            _urlParams.isOutgoing = isOutgoing;
+        if (typeof limit !== 'undefined' && limit !== null)
+            _urlParams.limit = limit;
+        if (typeof offset !== 'undefined' && offset !== null)
+            _urlParams.offset = offset;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Find or create information statement.
+     *
+     * @param {number} pk_project Id of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfStatement}` - data
      *
      * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -6368,46 +5716,687 @@ let SysAppContextApi = class SysAppContextApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `SysAppContext` object.)
+     * This usually means the response is a `InfStatement` object.)
      * </em>
      */
-    appContext(pk_app_context = {}, pk_project = {}, customHeaders) {
+    findOrCreateInfStatements(pk_project, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfStatements/find-or-create-many";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfStatement(instance))));
+    }
+    /**
+     * Get statements (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.
+     *
+     * @param {number} entityPk Key of the persistent item (fk_object_info)
+     *
+     * @param {number} propertyPk Key of the property (fk_property)
+     *
+     * @param {number} pkProject Id of the the current project
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfStatement` object.)
+     * </em>
+     */
+    alternativesNotInProjectByEntityPk(entityPk, propertyPk, pkProject, customHeaders) {
         let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/SysAppContexts/app-context";
+            "/InfStatements/alternatives-not-in-project-by-entity-pk";
         let _routeParams = {};
         let _postBody = {};
         let _urlParams = {};
-        if (typeof pk_app_context !== 'undefined' && pk_app_context !== null)
-            _urlParams.pk_app_context = pk_app_context;
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
+        if (typeof entityPk !== 'undefined' && entityPk !== null)
+            _urlParams.entityPk = entityPk;
+        if (typeof propertyPk !== 'undefined' && propertyPk !== null)
+            _urlParams.propertyPk = propertyPk;
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get statements (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.
+     *
+     * @param {number} teEntPk Key of the temporal entity (fk_subject_info)
+     *
+     * @param {number} propertyPk Key of the property (fk_property)
+     *
+     * @param {number} pkProject Id of the the current project
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfStatement` object.)
+     * </em>
+     */
+    alternativesNotInProjectByTeEntPk(teEntPk, propertyPk, pkProject, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfStatements/alternatives-not-in-project-by-te-ent-pk";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof teEntPk !== 'undefined' && teEntPk !== null)
+            _urlParams.teEntPk = teEntPk;
+        if (typeof propertyPk !== 'undefined' && propertyPk !== null)
+            _urlParams.propertyPk = propertyPk;
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get an nested object of statement with everything needed to display the links made from an entity towards sources and digitals.
+     *
+     * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
+     *
+     * @param {number} pkProject Primary Key of the Project.
+     *
+     * @param {number} pkEntity Primary Key of the entity for which the sources links are needed.
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfStatement` object.)
+     * </em>
+     */
+    sourcesAndDigitalsOfEntity(ofProject, pkProject = {}, pkEntity = {}, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfStatements/sources-and-digitals-of-entity";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof ofProject !== 'undefined' && ofProject !== null)
+            _urlParams.ofProject = ofProject;
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
+            _urlParams.pkEntity = pkEntity;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Find statements by params.
+     *
+     * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
+     *
+     * @param {number} pkProject Primary Key of the Project. If provided and ofProject=false, makes a left join with project
+     *
+     * @param {number} pkEntity Primary Key of the statement (pk_entity)
+     *
+     * @param {number} pkInfoRange Foreign Key of the statement pointing to the range entity (fk_object_info)
+     *
+     * @param {number} pkInfoDomain Foreign Key of the statement pointing to the domain entity (fk_subject_info)
+     *
+     * @param {number} pkProperty Foreign Key of the statement pointing to the property (fk_property)
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfStatement` object.)
+     * </em>
+     */
+    queryByParams(ofProject, pkProject = {}, pkEntity = {}, pkInfoRange = {}, pkInfoDomain = {}, pkProperty = {}, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfStatements/find-by-params";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof ofProject !== 'undefined' && ofProject !== null)
+            _urlParams.ofProject = ofProject;
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
+            _urlParams.pkEntity = pkEntity;
+        if (typeof pkInfoRange !== 'undefined' && pkInfoRange !== null)
+            _urlParams.pkInfoRange = pkInfoRange;
+        if (typeof pkInfoDomain !== 'undefined' && pkInfoDomain !== null)
+            _urlParams.pkInfoDomain = pkInfoDomain;
+        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
+            _urlParams.pkProperty = pkProperty;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `SysAppContext`.
+     * i.e. `InfStatement`.
      */
     getModelName() {
-        return "SysAppContext";
+        return "InfStatement";
     }
 };
-SysAppContextApi.ctorParameters = () => [
+InfStatementApi.ctorParameters = () => [
     { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
     { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
     { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
     { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
     { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
 ];
-SysAppContextApi = __decorate([
+InfStatementApi = __decorate([
     Injectable(),
     __param(0, Inject(HttpClient)),
     __param(1, Inject(SocketConnection)),
     __param(2, Inject(SDKModels)),
     __param(3, Inject(LoopBackAuth)),
     __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], SysAppContextApi);
+], InfStatementApi);
+
+/**
+ * Api services for the `InfTemporalEntity` model.
+ */
+let InfTemporalEntityApi = class InfTemporalEntityApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Find or create many information temporal entities.
+     *
+     * @param {number} pk_project Pk of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfTemporalEntity}` - data
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTemporalEntity` object.)
+     * </em>
+     */
+    findOrCreateInfTemporalEntities(pk_project, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTemporalEntities/find-or-create-many";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfTemporalEntity(instance))));
+    }
+    /**
+     * Get a flat object of temporal entities.
+     *
+     * @param {number} pkProject Pk of the project.
+     *
+     * @param {number} pkSourceEntity Pk of the source entity to which the temporal entities are related.
+     *
+     * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
+     *
+     * @param {number} pkTargetClass Fk class of the target temporal entities.
+     *
+     * @param {boolean} isOutgoing If true, the source entity is domain, else range.
+     *
+     * @param {number} limit number of returned temporal entities.
+     *
+     * @param {number} offset offset of the segment of returned temporal entities.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTemporalEntity` object.)
+     * </em>
+     */
+    alternativeTemporalEntityList(pkProject, pkSourceEntity, pkProperty, pkTargetClass, isOutgoing, limit, offset, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTemporalEntities/paginated-list-alternatives";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null)
+            _urlParams.pkSourceEntity = pkSourceEntity;
+        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
+            _urlParams.pkProperty = pkProperty;
+        if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null)
+            _urlParams.pkTargetClass = pkTargetClass;
+        if (typeof isOutgoing !== 'undefined' && isOutgoing !== null)
+            _urlParams.isOutgoing = isOutgoing;
+        if (typeof limit !== 'undefined' && limit !== null)
+            _urlParams.limit = limit;
+        if (typeof offset !== 'undefined' && offset !== null)
+            _urlParams.offset = offset;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get a flat object of temporal entities.
+     *
+     * @param {number} pkProject Pk of the project.
+     *
+     * @param {number} pkSourceEntity Pk of the source entity to which the temporal entities are related.
+     *
+     * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
+     *
+     * @param {number} pkTargetClass Fk class of the target temporal entities.
+     *
+     * @param {boolean} isOutgoing If true, the source entity is domain, else range.
+     *
+     * @param {number} limit number of returned temporal entities.
+     *
+     * @param {number} offset offset of the segment of returned temporal entities.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTemporalEntity` object.)
+     * </em>
+     */
+    temporalEntityList(pkProject, pkSourceEntity, pkProperty, pkTargetClass, isOutgoing, limit, offset, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTemporalEntities/paginated-list";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null)
+            _urlParams.pkSourceEntity = pkSourceEntity;
+        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
+            _urlParams.pkProperty = pkProperty;
+        if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null)
+            _urlParams.pkTargetClass = pkTargetClass;
+        if (typeof isOutgoing !== 'undefined' && isOutgoing !== null)
+            _urlParams.isOutgoing = isOutgoing;
+        if (typeof limit !== 'undefined' && limit !== null)
+            _urlParams.limit = limit;
+        if (typeof offset !== 'undefined' && offset !== null)
+            _urlParams.offset = offset;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get e schema object of own properties of the temporal entity in project version.
+     *
+     * @param {number} pkProject Pk project
+     *
+     * @param {number} pkEntity Primary Key of the temporal entity (pk_entity)
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTemporalEntity` object.)
+     * </em>
+     */
+    ownProperties(pkProject, pkEntity, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTemporalEntities/own-properties";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
+            _urlParams.pkEntity = pkEntity;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Find or create a temporal entity version.
+     *
+     * @param {number} pkProject Id of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfTemporalEntity}` - data
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTemporalEntity` object.)
+     * </em>
+     */
+    findOrCreateInfTemporalEntity(pkProject, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTemporalEntities/findOrCreate";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfTemporalEntity(instance))));
+    }
+    /**
+     * Relate a nested object of a InfTemporalEntity to the project.
+     *
+     * @param {number} pkProject Id of the project
+     *
+     * @param {boolean} isInProject Include or exclude from project.
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfTemporalEntity}` - data
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTemporalEntity` object.)
+     * </em>
+     */
+    changeTeEntProjectRelation(pkProject, isInProject, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTemporalEntities/change-project-relation";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof isInProject !== 'undefined' && isInProject !== null)
+            _urlParams.isInProject = isInProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfTemporalEntity`.
+     */
+    getModelName() {
+        return "InfTemporalEntity";
+    }
+};
+InfTemporalEntityApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfTemporalEntityApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfTemporalEntityApi);
+
+/**
+ * Api services for the `InfTextProperty` model.
+ */
+let InfTextPropertyApi = class InfTextPropertyApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Find or create information text properties.
+     *
+     * @param {number} pk_project Id of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfTextProperty}` - data
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTextProperty` object.)
+     * </em>
+     */
+    findOrCreateInfTextProperties(pk_project, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTextProperties/find-or-create-many";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfTextProperty(instance))));
+    }
+    /**
+     * Find or create a InfTextProperty and update the project relation if needed.
+     *
+     * @param {number} pkProject Pk of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{InfTextProperty}` - data
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTextProperty` object.)
+     * </em>
+     */
+    findOrCreateInfTextProperty(pkProject, data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTextProperties/findOrCreate";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfTextProperty(instance))));
+    }
+    /**
+     * Find all InfTextProperties that are not yet added to the given project.
+     *
+     * @param {number} pkProject Pk of the project
+     *
+     * @param {number} pkEntity fk of the concerned entity
+     *
+     * @param {number} pkClassField fk of the class field
+     *
+     * @param {object} data Request data.
+     *
+     * This method does not accept any data. Supply an empty object.
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `InfTextProperty` object.)
+     * </em>
+     */
+    findAlternativeTextProperties(pkProject, pkEntity, pkClassField, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/InfTextProperties/findAlternativeTextProperties";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
+            _urlParams.pkEntity = pkEntity;
+        if (typeof pkClassField !== 'undefined' && pkClassField !== null)
+            _urlParams.pkClassField = pkClassField;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new InfTextProperty(instance))));
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfTextProperty`.
+     */
+    getModelName() {
+        return "InfTextProperty";
+    }
+};
+InfTextPropertyApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfTextPropertyApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfTextPropertyApi);
+
+/**
+ * Api services for the `InfTimePrimitive` model.
+ */
+let InfTimePrimitiveApi = class InfTimePrimitiveApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `InfTimePrimitive`.
+     */
+    getModelName() {
+        return "InfTimePrimitive";
+    }
+};
+InfTimePrimitiveApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+InfTimePrimitiveApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], InfTimePrimitiveApi);
+
+/**
+* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@johncasarrubias>
+* @module LoggerService
+* @license MIT
+* @description
+* Console Log wrapper that can be disabled in production mode
+**/
+let LoggerService = class LoggerService {
+    log(...args) {
+        if (LoopBackConfig.debuggable())
+            console.log.apply(console, args);
+    }
+    info(...args) {
+        if (LoopBackConfig.debuggable())
+            console.info.apply(console, args);
+    }
+    error(...args) {
+        if (LoopBackConfig.debuggable())
+            console.error.apply(console, args);
+    }
+    count(arg) {
+        if (LoopBackConfig.debuggable())
+            console.count(arg);
+    }
+    group(arg) {
+        if (LoopBackConfig.debuggable())
+            console.count(arg);
+    }
+    groupEnd() {
+        if (LoopBackConfig.debuggable())
+            console.groupEnd();
+    }
+    profile(arg) {
+        if (LoopBackConfig.debuggable())
+            console.count(arg);
+    }
+    profileEnd() {
+        if (LoopBackConfig.debuggable())
+            console.profileEnd();
+    }
+    time(arg) {
+        if (LoopBackConfig.debuggable())
+            console.time(arg);
+    }
+    timeEnd(arg) {
+        if (LoopBackConfig.debuggable())
+            console.timeEnd(arg);
+    }
+};
+LoggerService = __decorate([
+    Injectable()
+], LoggerService);
 
 /**
  * Api services for the `ProClassFieldConfig` model.
@@ -6748,9 +6737,9 @@ ProDfhProfileProjRelApi = __decorate([
 ], ProDfhProfileProjRelApi);
 
 /**
- * Api services for the `InfAppellation` model.
+ * Api services for the `ProInfoProjRel` model.
  */
-let InfAppellationApi = class InfAppellationApi extends BaseLoopBackApi {
+let ProInfoProjRelApi = class ProInfoProjRelApi extends BaseLoopBackApi {
     constructor(http, connection, models, auth, errorHandler) {
         super(http, connection, models, auth, errorHandler);
         this.http = http;
@@ -6760,211 +6749,43 @@ let InfAppellationApi = class InfAppellationApi extends BaseLoopBackApi {
         this.errorHandler = errorHandler;
     }
     /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfAppellation`.
-     */
-    getModelName() {
-        return "InfAppellation";
-    }
-};
-InfAppellationApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfAppellationApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfAppellationApi);
-
-/**
- * Api services for the `InfLangString` model.
- */
-let InfLangStringApi = class InfLangStringApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfLangString`.
-     */
-    getModelName() {
-        return "InfLangString";
-    }
-};
-InfLangStringApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfLangStringApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfLangStringApi);
-
-/**
- * Api services for the `InfDimension` model.
- */
-let InfDimensionApi = class InfDimensionApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfDimension`.
-     */
-    getModelName() {
-        return "InfDimension";
-    }
-};
-InfDimensionApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfDimensionApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfDimensionApi);
-
-/**
- * Api services for the `InfTemporalEntity` model.
- */
-let InfTemporalEntityApi = class InfTemporalEntityApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Find or create many information temporal entities.
-     *
-     * @param {number} pk_project Pk of the project
+     * Patch an existing model instance or insert a new one into the data source.
      *
      * @param {object} data Request data.
      *
-     *  - `data` – `{InfTemporalEntity}` - data
+     *  - `data` – `{object}` - Model instance data
      *
-     * @returns {object[]} An empty reference that will be
+     * @returns {object} An empty reference that will be
      *   populated with the actual data once the response is returned
      *   from the server.
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTemporalEntity` object.)
+     * This usually means the response is a `ProInfoProjRel` object.)
      * </em>
      */
-    findOrCreateInfTemporalEntities(pk_project, data, customHeaders) {
-        let _method = "POST";
+    patchOrCreate(data = {}, customHeaders) {
+        let _method = "PATCH";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTemporalEntities/find-or-create-many";
+            "/ProInfoProjRels";
         let _routeParams = {};
         let _postBody = {
             data: data
         };
         let _urlParams = {};
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfTemporalEntity(instance))));
-    }
-    /**
-     * Get a flat object of temporal entities.
-     *
-     * @param {number} pkProject Pk of the project.
-     *
-     * @param {number} pkSourceEntity Pk of the source entity to which the temporal entities are related.
-     *
-     * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
-     *
-     * @param {number} pkTargetClass Fk class of the target temporal entities.
-     *
-     * @param {boolean} isOutgoing If true, the source entity is domain, else range.
-     *
-     * @param {number} limit number of returned temporal entities.
-     *
-     * @param {number} offset offset of the segment of returned temporal entities.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTemporalEntity` object.)
-     * </em>
-     */
-    alternativeTemporalEntityList(pkProject, pkSourceEntity, pkProperty, pkTargetClass, isOutgoing, limit, offset, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTemporalEntities/paginated-list-alternatives";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null)
-            _urlParams.pkSourceEntity = pkSourceEntity;
-        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
-            _urlParams.pkProperty = pkProperty;
-        if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null)
-            _urlParams.pkTargetClass = pkTargetClass;
-        if (typeof isOutgoing !== 'undefined' && isOutgoing !== null)
-            _urlParams.isOutgoing = isOutgoing;
-        if (typeof limit !== 'undefined' && limit !== null)
-            _urlParams.limit = limit;
-        if (typeof offset !== 'undefined' && offset !== null)
-            _urlParams.offset = offset;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
-     * Get a flat object of temporal entities.
+     * Marks the statement as favorite for the given fk_project.
      *
-     * @param {number} pkProject Pk of the project.
+     * @param {number} pkProject fk_project
      *
-     * @param {number} pkSourceEntity Pk of the source entity to which the temporal entities are related.
+     * @param {number} pkStatement fk_entity
      *
-     * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
+     * @param {object} data Request data.
      *
-     * @param {number} pkTargetClass Fk class of the target temporal entities.
-     *
-     * @param {boolean} isOutgoing If true, the source entity is domain, else range.
-     *
-     * @param {number} limit number of returned temporal entities.
-     *
-     * @param {number} offset offset of the segment of returned temporal entities.
+     *  - `isOutgoing` – `{boolean}` - True, if the statement is outgoing, else false
      *
      * @returns {object} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -6972,39 +6793,35 @@ let InfTemporalEntityApi = class InfTemporalEntityApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTemporalEntity` object.)
+     * This usually means the response is a `ProInfoProjRel` object.)
      * </em>
      */
-    temporalEntityList(pkProject, pkSourceEntity, pkProperty, pkTargetClass, isOutgoing, limit, offset, customHeaders) {
-        let _method = "GET";
+    markStatementAsFavorite(pkProject, pkStatement, isOutgoing, customHeaders) {
+        let _method = "PUT";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTemporalEntities/paginated-list";
+            "/ProInfoProjRels/mark-statement-as-favorite";
         let _routeParams = {};
-        let _postBody = {};
+        let _postBody = {
+            isOutgoing: isOutgoing
+        };
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
-        if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null)
-            _urlParams.pkSourceEntity = pkSourceEntity;
-        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
-            _urlParams.pkProperty = pkProperty;
-        if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null)
-            _urlParams.pkTargetClass = pkTargetClass;
-        if (typeof isOutgoing !== 'undefined' && isOutgoing !== null)
-            _urlParams.isOutgoing = isOutgoing;
-        if (typeof limit !== 'undefined' && limit !== null)
-            _urlParams.limit = limit;
-        if (typeof offset !== 'undefined' && offset !== null)
-            _urlParams.offset = offset;
+        if (typeof pkStatement !== 'undefined' && pkStatement !== null)
+            _urlParams.pkStatement = pkStatement;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
-     * Get e schema object of own properties of the temporal entity in project version.
+     * Updates the ProInfoProjRel found by fk_project and fk_entity.
      *
-     * @param {number} pkProject Pk project
+     * @param {number} pkProject fk_project
      *
-     * @param {number} pkEntity Primary Key of the temporal entity (pk_entity)
+     * @param {number} pkEntity fk_entity
+     *
+     * @param {object} data Request data.
+     *
+     *  - `eprAttributes` – `{ProInfoProjRel}` - Instance of ProInfoProjRel (fk_project and fk_entity will be ignored)
      *
      * @returns {object} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -7012,15 +6829,17 @@ let InfTemporalEntityApi = class InfTemporalEntityApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTemporalEntity` object.)
+     * This usually means the response is a `ProInfoProjRel` object.)
      * </em>
      */
-    ownProperties(pkProject, pkEntity, customHeaders) {
-        let _method = "GET";
+    updateEprAttributes(pkProject, pkEntity, eprAttributes, customHeaders) {
+        let _method = "PUT";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTemporalEntities/own-properties";
+            "/ProInfoProjRels/updateEprAttributes";
         let _routeParams = {};
-        let _postBody = {};
+        let _postBody = {
+            eprAttributes: eprAttributes
+        };
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
@@ -7030,13 +6849,13 @@ let InfTemporalEntityApi = class InfTemporalEntityApi extends BaseLoopBackApi {
         return result;
     }
     /**
-     * Find or create a temporal entity version.
+     * Updates the ProInfoProjRel of all found by fk_project and fk_entity.
      *
-     * @param {number} pkProject Id of the project
+     * @param {number} pkProject fk_project
      *
      * @param {object} data Request data.
      *
-     *  - `data` – `{InfTemporalEntity}` - data
+     *  - `items` – `{ProInfoProjRel}` - Array of ProInfoProjRel (fk_project must be equal to pkProject)
      *
      * @returns {object} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -7044,87 +6863,51 @@ let InfTemporalEntityApi = class InfTemporalEntityApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTemporalEntity` object.)
+     * This usually means the response is a `ProInfoProjRel` object.)
      * </em>
      */
-    findOrCreateInfTemporalEntity(pkProject, data, customHeaders) {
-        let _method = "POST";
+    bulkUpdateEprAttributes(pkProject, items, customHeaders) {
+        let _method = "PUT";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTemporalEntities/findOrCreate";
+            "/ProInfoProjRels/bulk-update-attributes";
         let _routeParams = {};
         let _postBody = {
-            data: data
+            items: items
         };
         let _urlParams = {};
         if (typeof pkProject !== 'undefined' && pkProject !== null)
             _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfTemporalEntity(instance))));
-    }
-    /**
-     * Relate a nested object of a InfTemporalEntity to the project.
-     *
-     * @param {number} pkProject Id of the project
-     *
-     * @param {boolean} isInProject Include or exclude from project.
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{InfTemporalEntity}` - data
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTemporalEntity` object.)
-     * </em>
-     */
-    changeTeEntProjectRelation(pkProject, isInProject, data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTemporalEntities/change-project-relation";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof isInProject !== 'undefined' && isInProject !== null)
-            _urlParams.isInProject = isInProject;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `InfTemporalEntity`.
+     * i.e. `ProInfoProjRel`.
      */
     getModelName() {
-        return "InfTemporalEntity";
+        return "ProInfoProjRel";
     }
 };
-InfTemporalEntityApi.ctorParameters = () => [
+ProInfoProjRelApi.ctorParameters = () => [
     { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
     { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
     { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
     { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
     { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
 ];
-InfTemporalEntityApi = __decorate([
+ProInfoProjRelApi = __decorate([
     Injectable(),
     __param(0, Inject(HttpClient)),
     __param(1, Inject(SocketConnection)),
     __param(2, Inject(SDKModels)),
     __param(3, Inject(LoopBackAuth)),
     __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfTemporalEntityApi);
+], ProInfoProjRelApi);
 
 /**
- * Api services for the `InfStatement` model.
+ * Api services for the `ProProject` model.
  */
-let InfStatementApi = class InfStatementApi extends BaseLoopBackApi {
+let ProProjectApi = class ProProjectApi extends BaseLoopBackApi {
     constructor(http, connection, models, auth, errorHandler) {
         super(http, connection, models, auth, errorHandler);
         this.http = http;
@@ -7134,63 +6917,9 @@ let InfStatementApi = class InfStatementApi extends BaseLoopBackApi {
         this.errorHandler = errorHandler;
     }
     /**
-     * Get a flat object of entity previews, that are target of a list.
+     * Get the projects of account.
      *
-     * @param {number} pkProject Pk of the project.
-     *
-     * @param {number} pkSourceEntity Pk of the source entity to which the entity previews, that are target of a list are related.
-     *
-     * @param {number} pkProperty Pk of the property leading from source entity to the entity previews, that are target of a list.
-     *
-     * @param {number} pkTargetClass Fk class of the target entity previews, that are target of a list.
-     *
-     * @param {boolean} isOutgoing If true, the source entity is domain, else range.
-     *
-     * @param {number} limit number of returned entity previews, that are target of a list.
-     *
-     * @param {number} offset offset of the segment of returned entity previews, that are target of a list.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfStatement` object.)
-     * </em>
-     */
-    paginatedListTargetingEntityPreviews(pkProject, pkSourceEntity, pkProperty, pkTargetClass, isOutgoing, limit, offset, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfStatements/paginated-list-targeting-entity-previews";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null)
-            _urlParams.pkSourceEntity = pkSourceEntity;
-        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
-            _urlParams.pkProperty = pkProperty;
-        if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null)
-            _urlParams.pkTargetClass = pkTargetClass;
-        if (typeof isOutgoing !== 'undefined' && isOutgoing !== null)
-            _urlParams.isOutgoing = isOutgoing;
-        if (typeof limit !== 'undefined' && limit !== null)
-            _urlParams.limit = limit;
-        if (typeof offset !== 'undefined' && offset !== null)
-            _urlParams.offset = offset;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Find or create information statement.
-     *
-     * @param {number} pk_project Id of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{InfStatement}` - data
+     * @param {number} accountId Id of the account
      *
      * @returns {object[]} An empty reference that will be
      *   populated with the actual data once the response is returned
@@ -7198,691 +6927,31 @@ let InfStatementApi = class InfStatementApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfStatement` object.)
+     * This usually means the response is a `ProProject` object.)
      * </em>
      */
-    findOrCreateInfStatements(pk_project, data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfStatements/find-or-create-many";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfStatement(instance))));
-    }
-    /**
-     * Get statements (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.
-     *
-     * @param {number} entityPk Key of the persistent item (fk_object_info)
-     *
-     * @param {number} propertyPk Key of the property (fk_property)
-     *
-     * @param {number} pkProject Id of the the current project
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfStatement` object.)
-     * </em>
-     */
-    alternativesNotInProjectByEntityPk(entityPk, propertyPk, pkProject, customHeaders) {
+    ofAccount(accountId, customHeaders) {
         let _method = "GET";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfStatements/alternatives-not-in-project-by-entity-pk";
+            "/ProProjects/of-account";
         let _routeParams = {};
         let _postBody = {};
         let _urlParams = {};
-        if (typeof entityPk !== 'undefined' && entityPk !== null)
-            _urlParams.entityPk = entityPk;
-        if (typeof propertyPk !== 'undefined' && propertyPk !== null)
-            _urlParams.propertyPk = propertyPk;
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
+        if (typeof accountId !== 'undefined' && accountId !== null)
+            _urlParams.accountId = accountId;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
         return result;
     }
     /**
-     * Get statements (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.
+     * Create a new project with a label and a description.
      *
-     * @param {number} teEntPk Key of the temporal entity (fk_subject_info)
+     * @param {number} accountId Id of account to associate the persistent item with.
      *
-     * @param {number} propertyPk Key of the property (fk_property)
+     * @param {string} pkLanguage Default language of the project, language of the label and the text property.
      *
-     * @param {number} pkProject Id of the the current project
+     * @param {string} label Label of the project.
      *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfStatement` object.)
-     * </em>
-     */
-    alternativesNotInProjectByTeEntPk(teEntPk, propertyPk, pkProject, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfStatements/alternatives-not-in-project-by-te-ent-pk";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof teEntPk !== 'undefined' && teEntPk !== null)
-            _urlParams.teEntPk = teEntPk;
-        if (typeof propertyPk !== 'undefined' && propertyPk !== null)
-            _urlParams.propertyPk = propertyPk;
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Get an nested object of statement with everything needed to display the links made from an entity towards sources and digitals.
-     *
-     * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
-     *
-     * @param {number} pkProject Primary Key of the Project.
-     *
-     * @param {number} pkEntity Primary Key of the entity for which the sources links are needed.
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfStatement` object.)
-     * </em>
-     */
-    sourcesAndDigitalsOfEntity(ofProject, pkProject = {}, pkEntity = {}, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfStatements/sources-and-digitals-of-entity";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof ofProject !== 'undefined' && ofProject !== null)
-            _urlParams.ofProject = ofProject;
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
-            _urlParams.pkEntity = pkEntity;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Find statements by params.
-     *
-     * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
-     *
-     * @param {number} pkProject Primary Key of the Project. If provided and ofProject=false, makes a left join with project
-     *
-     * @param {number} pkEntity Primary Key of the statement (pk_entity)
-     *
-     * @param {number} pkInfoRange Foreign Key of the statement pointing to the range entity (fk_object_info)
-     *
-     * @param {number} pkInfoDomain Foreign Key of the statement pointing to the domain entity (fk_subject_info)
-     *
-     * @param {number} pkProperty Foreign Key of the statement pointing to the property (fk_property)
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfStatement` object.)
-     * </em>
-     */
-    queryByParams(ofProject, pkProject = {}, pkEntity = {}, pkInfoRange = {}, pkInfoDomain = {}, pkProperty = {}, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfStatements/find-by-params";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof ofProject !== 'undefined' && ofProject !== null)
-            _urlParams.ofProject = ofProject;
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
-            _urlParams.pkEntity = pkEntity;
-        if (typeof pkInfoRange !== 'undefined' && pkInfoRange !== null)
-            _urlParams.pkInfoRange = pkInfoRange;
-        if (typeof pkInfoDomain !== 'undefined' && pkInfoDomain !== null)
-            _urlParams.pkInfoDomain = pkInfoDomain;
-        if (typeof pkProperty !== 'undefined' && pkProperty !== null)
-            _urlParams.pkProperty = pkProperty;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfStatement`.
-     */
-    getModelName() {
-        return "InfStatement";
-    }
-};
-InfStatementApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfStatementApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfStatementApi);
-
-/**
- * Api services for the `InfLanguage` model.
- */
-let InfLanguageApi = class InfLanguageApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Perform a ranked search on languages by search string.
-     *
-     * @param {string} queryString
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfLanguage` object.)
-     * </em>
-     */
-    queryByString(queryString = {}, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfLanguages/query-by-string";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof queryString !== 'undefined' && queryString !== null)
-            _urlParams.queryString = queryString;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfLanguage`.
-     */
-    getModelName() {
-        return "InfLanguage";
-    }
-};
-InfLanguageApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfLanguageApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfLanguageApi);
-
-/**
- * Api services for the `InfPersistentItem` model.
- */
-let InfPersistentItemApi = class InfPersistentItemApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Find or create many information persistent items.
-     *
-     * @param {number} pk_project Pk of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{InfPersistentItem}` - data
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfPersistentItem` object.)
-     * </em>
-     */
-    findOrCreateInfPersistentItems(pk_project, data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfPersistentItems/find-or-create-many";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfPersistentItem(instance))));
-    }
-    /**
-     * Get only miminal properties of persistent item.
-     *
-     * @param {number} pkProject Pk of the project.
-     *
-     * @param {number} pkEntity Pk of the entity.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfPersistentItem` object.)
-     * </em>
-     */
-    ownProperties(pkProject, pkEntity, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfPersistentItems/own-properties";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
-            _urlParams.pkEntity = pkEntity;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Get a minimal nested object of all types in the project.
-     *
-     * @param {number} pkProject Pk of the project.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfPersistentItem` object.)
-     * </em>
-     */
-    typesOfProject(pkProject, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfPersistentItems/types-of-project";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)
-     *
-     * @param {number} pk_project Primary Key of Project
-     *
-     * @param {number} pk_typed_classes Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfPersistentItem` object.)
-     * </em>
-     */
-    typesOfClassesAndProject(pk_project, pk_typed_classes, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfPersistentItems/types-of-classes-and-project";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
-        if (typeof pk_typed_classes !== 'undefined' && pk_typed_classes !== null)
-            _urlParams.pk_typed_classes = pk_typed_classes;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * Find one type by pk_entity with appellations and text properties.
-     *
-     * @param {number} pk_project Primary Key of Project
-     *
-     * @param {number} pk_entity Primary Key of the type. Provide this if you want to query one specific type.
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfPersistentItem` object.)
-     * </em>
-     */
-    typeNested(pk_project, pk_entity, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfPersistentItems/type-nested";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
-        if (typeof pk_entity !== 'undefined' && pk_entity !== null)
-            _urlParams.pk_entity = pk_entity;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfPersistentItem`.
-     */
-    getModelName() {
-        return "InfPersistentItem";
-    }
-};
-InfPersistentItemApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfPersistentItemApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfPersistentItemApi);
-
-/**
- * Api services for the `InfTimePrimitive` model.
- */
-let InfTimePrimitiveApi = class InfTimePrimitiveApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfTimePrimitive`.
-     */
-    getModelName() {
-        return "InfTimePrimitive";
-    }
-};
-InfTimePrimitiveApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfTimePrimitiveApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfTimePrimitiveApi);
-
-/**
- * Api services for the `InfPlace` model.
- */
-let InfPlaceApi = class InfPlaceApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Find or create a InfPlace and update the project relation if needed.
-     *
-     * @param {number} projectId Id of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{InfPlace}` - data
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfPlace` object.)
-     * </em>
-     */
-    findOrCreatePlace(projectId, data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfPlaces/findOrCreate";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        if (typeof projectId !== 'undefined' && projectId !== null)
-            _urlParams.projectId = projectId;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfPlace(instance))));
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `InfPlace`.
-     */
-    getModelName() {
-        return "InfPlace";
-    }
-};
-InfPlaceApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-InfPlaceApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfPlaceApi);
-
-/**
- * Api services for the `DatNamespace` model.
- */
-let DatNamespaceApi = class DatNamespaceApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Finds namespaces of a project.
-     *
-     * @param {number} pkProject Key of the Project for which the namespaces should be found.
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `DatNamespace` object.)
-     * </em>
-     */
-    byProject(pkProject, customHeaders) {
-        let _method = "GET";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/DatNamespaces/find-by-project";
-        let _routeParams = {};
-        let _postBody = {};
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result;
-    }
-    /**
-     * The name of the model represented by this $resource,
-     * i.e. `DatNamespace`.
-     */
-    getModelName() {
-        return "DatNamespace";
-    }
-};
-DatNamespaceApi.ctorParameters = () => [
-    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
-    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
-    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
-    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
-    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
-];
-DatNamespaceApi = __decorate([
-    Injectable(),
-    __param(0, Inject(HttpClient)),
-    __param(1, Inject(SocketConnection)),
-    __param(2, Inject(SDKModels)),
-    __param(3, Inject(LoopBackAuth)),
-    __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], DatNamespaceApi);
-
-/**
- * Api services for the `InfTextProperty` model.
- */
-let InfTextPropertyApi = class InfTextPropertyApi extends BaseLoopBackApi {
-    constructor(http, connection, models, auth, errorHandler) {
-        super(http, connection, models, auth, errorHandler);
-        this.http = http;
-        this.connection = connection;
-        this.models = models;
-        this.auth = auth;
-        this.errorHandler = errorHandler;
-    }
-    /**
-     * Find or create information text properties.
-     *
-     * @param {number} pk_project Id of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{InfTextProperty}` - data
-     *
-     * @returns {object[]} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTextProperty` object.)
-     * </em>
-     */
-    findOrCreateInfTextProperties(pk_project, data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTextProperties/find-or-create-many";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        if (typeof pk_project !== 'undefined' && pk_project !== null)
-            _urlParams.pk_project = pk_project;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfTextProperty(instance))));
-    }
-    /**
-     * Find or create a InfTextProperty and update the project relation if needed.
-     *
-     * @param {number} pkProject Pk of the project
-     *
-     * @param {object} data Request data.
-     *
-     *  - `data` – `{InfTextProperty}` - data
-     *
-     * @returns {object} An empty reference that will be
-     *   populated with the actual data once the response is returned
-     *   from the server.
-     *
-     * <em>
-     * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTextProperty` object.)
-     * </em>
-     */
-    findOrCreateInfTextProperty(pkProject, data, customHeaders) {
-        let _method = "POST";
-        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTextProperties/findOrCreate";
-        let _routeParams = {};
-        let _postBody = {
-            data: data
-        };
-        let _urlParams = {};
-        if (typeof pkProject !== 'undefined' && pkProject !== null)
-            _urlParams.pkProject = pkProject;
-        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfTextProperty(instance))));
-    }
-    /**
-     * Find all InfTextProperties that are not yet added to the given project.
-     *
-     * @param {number} pkProject Pk of the project
-     *
-     * @param {number} pkEntity fk of the concerned entity
-     *
-     * @param {number} pkClassField fk of the class field
+     * @param {string} textProperty Description of the project.
      *
      * @param {object} data Request data.
      *
@@ -7894,13 +6963,438 @@ let InfTextPropertyApi = class InfTextPropertyApi extends BaseLoopBackApi {
      *
      * <em>
      * (The remote method definition does not provide any description.
-     * This usually means the response is a `InfTextProperty` object.)
+     * This usually means the response is a `ProProject` object.)
      * </em>
      */
-    findAlternativeTextProperties(pkProject, pkEntity, pkClassField, customHeaders) {
+    createWithLabelAndDescription(accountId, pkLanguage, label, textProperty = {}, customHeaders) {
         let _method = "POST";
         let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-            "/InfTextProperties/findAlternativeTextProperties";
+            "/ProProjects/create-with-label-and-description";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof accountId !== 'undefined' && accountId !== null)
+            _urlParams.accountId = accountId;
+        if (typeof pkLanguage !== 'undefined' && pkLanguage !== null)
+            _urlParams.pkLanguage = pkLanguage;
+        if (typeof label !== 'undefined' && label !== null)
+            _urlParams.label = label;
+        if (typeof textProperty !== 'undefined' && textProperty !== null)
+            _urlParams.textProperty = textProperty;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get basic information about the project (language, name)
+     *
+     * @param {number} pkProject Pk of project
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `ProProject` object.)
+     * </em>
+     */
+    getBasics(pkProject, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/ProProjects/get-basics";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `ProProject`.
+     */
+    getModelName() {
+        return "ProProject";
+    }
+};
+ProProjectApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+ProProjectApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], ProProjectApi);
+
+/**
+ * Api services for the `ProTextProperty` model.
+ */
+let ProTextPropertyApi = class ProTextPropertyApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get the text-properties of the project.
+     *
+     * @param {number} pkProject Pk of the project
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `ProTextProperty` object.)
+     * </em>
+     */
+    ofProject(pkProject, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/ProTextProperties/of-project";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Inserts or updates items in the array of ProTextProperty. If pk_entity is given and existing, an update is done, else an insert
+     *
+     * @param {number} pkProject Pk of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `items` – `{ProTextProperty}` - Array of ProTextPropertys
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `ProTextProperty` object.)
+     * </em>
+     */
+    bulkUpsert(pkProject, items, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/ProTextProperties/bulk-upsert";
+        let _routeParams = {};
+        let _postBody = {
+            items: items
+        };
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Dletes items in the array of ProTextProperty. Checks for each item if fk_project matches given pkProject
+     *
+     * @param {number} pkProject Pk of the project
+     *
+     * @param {object} data Request data.
+     *
+     *  - `items` – `{ProTextProperty}` - Array of ProTextPropertys
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `ProTextProperty` object.)
+     * </em>
+     */
+    bulkDelete(pkProject, items, customHeaders) {
+        let _method = "PUT";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/ProTextProperties/bulk-delete";
+        let _routeParams = {};
+        let _postBody = {
+            items: items
+        };
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `ProTextProperty`.
+     */
+    getModelName() {
+        return "ProTextProperty";
+    }
+};
+ProTextPropertyApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+ProTextPropertyApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], ProTextPropertyApi);
+
+/**
+ * Api services for the `PubAccount` model.
+ */
+let PubAccountApi = class PubAccountApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get Roles of the Account
+     *
+     * @param {number} id
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `PubAccount` object.)
+     * </em>
+     */
+    getRoles(id, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/PubAccounts/:id/get-roles";
+        let _routeParams = {
+            id: id
+        };
+        let _postBody = {};
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get a list of all projects associated with this account.
+     *
+     * @param {number} id
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `PubAccount` object.)
+     * </em>
+     */
+    listProjects(id, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/PubAccounts/:id/list-projects";
+        let _routeParams = {
+            id: id
+        };
+        let _postBody = {};
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get all accounts with their project pks and their roles
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `PubAccount` object.)
+     * </em>
+     */
+    withRolesAndProjects(customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/PubAccounts/with-roles-and-projects";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Login a user with username/email and password.
+     *
+     * @param {string} include Related objects to include in the response. See the description of return value for more details.
+     *
+     * @param {object} data Request data.
+     *
+     * This method expects a subset of model properties as request parameters.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * The response body contains properties of the AccessToken created on login.
+     * Depending on the value of `include` parameter, the body may contain additional properties:
+     *
+     *   - `user` - `U+007BPubAccountU+007D` - Data of the currently logged in user. (`include=user`)
+     *
+     *
+     */
+    login(credentials, include = {}, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/PubAccounts/login";
+        let _routeParams = {};
+        let _postBody = {
+            credentials: credentials
+        };
+        let _urlParams = {};
+        if (typeof include !== 'undefined' && include !== null)
+            _urlParams.include = include;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Logout a user with access token.
+     *
+     * @param {object} data Request data.
+     *
+     * This method does not accept any data. Supply an empty object.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * This method returns no data.
+     */
+    logout(customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/PubAccounts/logout";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `PubAccount`.
+     */
+    getModelName() {
+        return "PubAccount";
+    }
+};
+PubAccountApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+PubAccountApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], PubAccountApi);
+
+/**
+ * Api services for the `PubAccountProjectRel` model.
+ */
+let PubAccountProjectRelApi = class PubAccountProjectRelApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `PubAccountProjectRel`.
+     */
+    getModelName() {
+        return "PubAccountProjectRel";
+    }
+};
+PubAccountProjectRelApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+PubAccountProjectRelApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], PubAccountProjectRelApi);
+
+/**
+ * Api services for the `SchemaObject` model.
+ */
+let SchemaObjectApi = class SchemaObjectApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Remove entity with outgoing statements and namings from project.
+     *
+     * @param {number} pkProject Primary key of the project
+     *
+     * @param {number} pkEntity Primary key of the entity
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `SchemaObject` object.)
+     * </em>
+     */
+    removeEntityFromProject(pkProject, pkEntity, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/SchemaObjects/remove-entity-from-project";
         let _routeParams = {};
         let _postBody = {};
         let _urlParams = {};
@@ -7908,34 +7402,361 @@ let InfTextPropertyApi = class InfTextPropertyApi extends BaseLoopBackApi {
             _urlParams.pkProject = pkProject;
         if (typeof pkEntity !== 'undefined' && pkEntity !== null)
             _urlParams.pkEntity = pkEntity;
-        if (typeof pkClassField !== 'undefined' && pkClassField !== null)
-            _urlParams.pkClassField = pkClassField;
         let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-        return result.pipe(map((instances) => instances.map((instance) => new InfTextProperty(instance))));
+        return result;
+    }
+    /**
+     * Add entity with outgoing statements and namings to project.
+     *
+     * @param {number} pkProject Primary key of the project
+     *
+     * @param {number} pkEntity Primary key of the entity
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `SchemaObject` object.)
+     * </em>
+     */
+    addEntityToProject(pkProject, pkEntity, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/SchemaObjects/add-entity-to-project";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkEntity !== 'undefined' && pkEntity !== null)
+            _urlParams.pkEntity = pkEntity;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * Get a object containing apllations and definition of a type (project variant).
+     *
+     * @param {number} pkProject Pk of the project.
+     *
+     * @param {number} pkType Pk of the type.
+     *
+     * @returns {object} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `SchemaObject` object.)
+     * </em>
+     */
+    typeOfProject(pkProject, pkType, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/SchemaObjects/type-of-project";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pkProject !== 'undefined' && pkProject !== null)
+            _urlParams.pkProject = pkProject;
+        if (typeof pkType !== 'undefined' && pkType !== null)
+            _urlParams.pkType = pkType;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
     }
     /**
      * The name of the model represented by this $resource,
-     * i.e. `InfTextProperty`.
+     * i.e. `SchemaObject`.
      */
     getModelName() {
-        return "InfTextProperty";
+        return "SchemaObject";
     }
 };
-InfTextPropertyApi.ctorParameters = () => [
+SchemaObjectApi.ctorParameters = () => [
     { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
     { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
     { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
     { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
     { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
 ];
-InfTextPropertyApi = __decorate([
+SchemaObjectApi = __decorate([
     Injectable(),
     __param(0, Inject(HttpClient)),
     __param(1, Inject(SocketConnection)),
     __param(2, Inject(SDKModels)),
     __param(3, Inject(LoopBackAuth)),
     __param(4, Optional()), __param(4, Inject(ErrorHandler))
-], InfTextPropertyApi);
+], SchemaObjectApi);
+
+/**
+ * Api services for the `SysAppContext` model.
+ */
+let SysAppContextApi = class SysAppContextApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get the App Configuration for classes.
+     *
+     * @param {number} pk_app_context pk_entity of app_context
+     *
+     * @param {number} pk_project pk_project of project
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `SysAppContext` object.)
+     * </em>
+     */
+    appContext(pk_app_context = {}, pk_project = {}, customHeaders) {
+        let _method = "GET";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/SysAppContexts/app-context";
+        let _routeParams = {};
+        let _postBody = {};
+        let _urlParams = {};
+        if (typeof pk_app_context !== 'undefined' && pk_app_context !== null)
+            _urlParams.pk_app_context = pk_app_context;
+        if (typeof pk_project !== 'undefined' && pk_project !== null)
+            _urlParams.pk_project = pk_project;
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysAppContext`.
+     */
+    getModelName() {
+        return "SysAppContext";
+    }
+};
+SysAppContextApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+SysAppContextApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], SysAppContextApi);
+
+/**
+ * Api services for the `SysClassField` model.
+ */
+let SysClassFieldApi = class SysClassFieldApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * <em>
+           * (The remote method definition does not provide any description.)
+           * </em>
+     *
+     * @param {object} data Request data.
+     *
+     * This method expects a subset of model properties as request parameters.
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `SysClassField` object.)
+     * </em>
+     */
+    findComplex(filter = {}, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/SysClassFields/findComplex";
+        let _routeParams = {};
+        let _postBody = {
+            filter: filter
+        };
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result.pipe(map((instances) => instances.map((instance) => new SysClassField(instance))));
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysClassField`.
+     */
+    getModelName() {
+        return "SysClassField";
+    }
+};
+SysClassFieldApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+SysClassFieldApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], SysClassFieldApi);
+
+// import { DfhProperty } from '../../models/DfhProperty';
+/**
+ * Api services for the `SysClassFieldPropertyRel` model.
+ */
+let SysClassFieldPropertyRelApi = class SysClassFieldPropertyRelApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysClassFieldPropertyRel`.
+     */
+    getModelName() {
+        return "SysClassFieldPropertyRel";
+    }
+};
+SysClassFieldPropertyRelApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+SysClassFieldPropertyRelApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], SysClassFieldPropertyRelApi);
+
+/**
+ * Api services for the `SysClassHasTypeProperty` model.
+ */
+let SysClassHasTypePropertyApi = class SysClassHasTypePropertyApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysClassHasTypeProperty`.
+     */
+    getModelName() {
+        return "SysClassHasTypeProperty";
+    }
+};
+SysClassHasTypePropertyApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+SysClassHasTypePropertyApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], SysClassHasTypePropertyApi);
+
+/**
+ * Api services for the `SysSystemRelevantClass` model.
+ */
+let SysSystemRelevantClassApi = class SysSystemRelevantClassApi extends BaseLoopBackApi {
+    constructor(http, connection, models, auth, errorHandler) {
+        super(http, connection, models, auth, errorHandler);
+        this.http = http;
+        this.connection = connection;
+        this.models = models;
+        this.auth = auth;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Replace or create all items in the array.
+     *
+     * @param {object} data Request data.
+     *
+     *  - `data` – `{SysSystemRelevantClass}` - Array of SysSystemRelevantClass
+     *
+     * @returns {object[]} An empty reference that will be
+     *   populated with the actual data once the response is returned
+     *   from the server.
+     *
+     * <em>
+     * (The remote method definition does not provide any description.
+     * This usually means the response is a `SysSystemRelevantClass` object.)
+     * </em>
+     */
+    bulkReplaceOrCreate(data, customHeaders) {
+        let _method = "POST";
+        let _url = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+            "/SysSystemRelevantClasses/bulk-replace-or-create";
+        let _routeParams = {};
+        let _postBody = {
+            data: data
+        };
+        let _urlParams = {};
+        let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+        return result;
+    }
+    /**
+     * The name of the model represented by this $resource,
+     * i.e. `SysSystemRelevantClass`.
+     */
+    getModelName() {
+        return "SysSystemRelevantClass";
+    }
+};
+SysSystemRelevantClassApi.ctorParameters = () => [
+    { type: HttpClient, decorators: [{ type: Inject, args: [HttpClient,] }] },
+    { type: SocketConnection, decorators: [{ type: Inject, args: [SocketConnection,] }] },
+    { type: SDKModels, decorators: [{ type: Inject, args: [SDKModels,] }] },
+    { type: LoopBackAuth, decorators: [{ type: Inject, args: [LoopBackAuth,] }] },
+    { type: ErrorHandler, decorators: [{ type: Optional }, { type: Inject, args: [ErrorHandler,] }] }
+];
+SysSystemRelevantClassApi = __decorate([
+    Injectable(),
+    __param(0, Inject(HttpClient)),
+    __param(1, Inject(SocketConnection)),
+    __param(2, Inject(SDKModels)),
+    __param(3, Inject(LoopBackAuth)),
+    __param(4, Optional()), __param(4, Inject(ErrorHandler))
+], SysSystemRelevantClassApi);
 
 /**
  * Api services for the `SysSystemType` model.
@@ -7974,14 +7795,193 @@ SysSystemTypeApi = __decorate([
 ], SysSystemTypeApi);
 
 /* tslint:disable */
-
-/* tslint:disable */
-
-/* tslint:disable */
-
-var SDKBrowserModule_1;
 /**
-* @module SDKBrowserModule
+* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
+* @module SocketBrowser
+* @license MIT
+* @description
+* This module handle socket connections for web browsers, it will be DI Swapped
+* depending on the platform environment.
+* This module will be generated when the -d ng2web flag is set
+**/
+class SocketBrowser {
+    /**
+     * @method connect
+     * @param {string} url URL path to connect with the server.
+     * @param {any} options Any socket.io v1 =< valid options
+     * @return {any} Not currently a socket.io-client for web Typings implemented.
+     * @description
+     * This method will return a valid socket connection.
+     **/
+    connect(url, options) {
+        return io(url, options);
+    }
+}
+
+/**
+* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
+* @module CookieBrowser
+* @license MIT
+* @description
+* This module handle cookies, it will be provided using DI Swapping according the
+* SDK Socket Driver Available currently supporting Angular 2 for web and NativeScript 2.
+**/
+let CookieBrowser = class CookieBrowser {
+    /**
+    * @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
+    * @module CookieBrowser
+    * @license MIT
+    * @description
+    * This module handle cookies, it will be provided using DI Swapping according the
+    * SDK Socket Driver Available currently supporting Angular 2 for web and NativeScript 2.
+    **/
+    constructor() {
+        /**
+         * @type {CookieInterface}
+         **/
+        this.cookies = {};
+    }
+    /**
+     * @method get
+     * @param {string} key Cookie key name
+     * @return {any}
+     * @description
+     * The getter will return any type of data persisted in cookies.
+     **/
+    get(key) {
+        if (!this.cookies[key]) {
+            let cookie = window.document
+                .cookie.split('; ')
+                .filter((item) => item.split('=')[0] === key).pop();
+            if (!cookie) {
+                return null;
+            }
+            this.cookies[key] = this.parse(cookie.split('=').slice(1).join('='));
+        }
+        return this.cookies[key];
+    }
+    /**
+     * @method set
+     * @param {string} key Cookie key name
+     * @param {any} value Any value
+     * @param {Date=} expires The date of expiration (Optional)
+     * @return {void}
+     * @description
+     * The setter will return any type of data persisted in cookies.
+     **/
+    set(key, value, expires) {
+        this.cookies[key] = value;
+        let cookie = `${key}=${encodeURI(value)}; path=/${expires ? `; expires=${expires.toUTCString()}` : ''}`;
+        window.document.cookie = cookie;
+    }
+    /**
+     * @method remove
+     * @param {string} key Cookie key name
+     * @return {void}
+     * @description
+     * This method will remove a cookie from the client.
+     **/
+    remove(key) {
+        document.cookie = key + '=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        delete this.cookies[key];
+    }
+    /**
+     * @method parse
+     * @param {any} value Input data expected to be JSON
+     * @return {void}
+     * @description
+     * This method will parse the string as JSON if possible, otherwise will
+     * return the value itself.
+     **/
+    parse(value) {
+        try {
+            return JSON.parse(decodeURI(value));
+        }
+        catch (e) {
+            return value;
+        }
+    }
+};
+CookieBrowser = __decorate([
+    Injectable()
+], CookieBrowser);
+
+/**
+* @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
+* @module StorageBrowser
+* @license MIT
+* @description
+* This module handle localStorage, it will be provided using DI Swapping according the
+* SDK Socket Driver Available currently supporting Angular 2 for web and NativeScript 2.
+**/
+let StorageBrowser = class StorageBrowser {
+    /**
+     * @method get
+     * @param {string} key Storage key name
+     * @return {any}
+     * @description
+     * The getter will return any type of data persisted in localStorage.
+     **/
+    get(key) {
+        let data = localStorage.getItem(key);
+        return this.parse(data);
+    }
+    /**
+     * @method set
+     * @param {string} key Storage key name
+     * @param {any} value Any value
+     * @return {void}
+     * @description
+     * The setter will return any type of data persisted in localStorage.
+     **/
+    set(key, value, expires) {
+        localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+    }
+    /**
+     * @method remove
+     * @param {string} key Storage key name
+     * @return {void}
+     * @description
+     * This method will remove a localStorage item from the client.
+     **/
+    remove(key) {
+        if (localStorage[key]) {
+            localStorage.removeItem(key);
+        }
+        else {
+            console.log('Trying to remove unexisting key: ', key);
+        }
+    }
+    /**
+     * @method parse
+     * @param {any} value Input data expected to be JSON
+     * @return {void}
+     * @description
+     * This method will parse the string as JSON if possible, otherwise will
+     * return the value itself.
+     **/
+    parse(value) {
+        try {
+            return JSON.parse(value);
+        }
+        catch (e) {
+            return value;
+        }
+    }
+};
+StorageBrowser = __decorate([
+    Injectable()
+], StorageBrowser);
+
+/* tslint:disable */
+
+/* tslint:disable */
+
+/* tslint:disable */
+
+var SdkLb3Module_1;
+/**
+* @module SdkLb3Module
 * @description
 * This module should be imported when building a Web Application in the following scenarios:
 *
@@ -7989,13 +7989,13 @@ var SDKBrowserModule_1;
 *  2.- Angular universal application (Browser Portion)
 *  3.- Progressive applications (Angular Mobile, Ionic, WebViews, etc)
 **/
-let SDKBrowserModule = SDKBrowserModule_1 = class SDKBrowserModule {
+let SdkLb3Module = SdkLb3Module_1 = class SdkLb3Module {
     static forRoot(internalStorageProvider = {
         provide: InternalStorage,
         useClass: CookieBrowser
     }) {
         return {
-            ngModule: SDKBrowserModule_1,
+            ngModule: SdkLb3Module_1,
             providers: [
                 LoopBackAuth,
                 LoggerService,
@@ -8041,7 +8041,7 @@ let SDKBrowserModule = SDKBrowserModule_1 = class SDKBrowserModule {
         };
     }
 };
-SDKBrowserModule = SDKBrowserModule_1 = __decorate([
+SdkLb3Module = SdkLb3Module_1 = __decorate([
     NgModule({
         imports: [CommonModule, HttpClientModule],
         declarations: [],
@@ -8051,11 +8051,11 @@ SDKBrowserModule = SDKBrowserModule_1 = __decorate([
             SocketConnection
         ]
     })
-], SDKBrowserModule);
+], SdkLb3Module);
 
 /**
  * Generated bundle index. Do not edit.
  */
 
-export { AccessToken, BaseLoopBackApi, BaseStorage, CookieBrowser, DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, DatTextProperty, DatTextPropertyApi, DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi, Email, EmailApi, ErrorHandler, FireLoopRef, InfAppellation, InfAppellationApi, InfDimension, InfDimensionApi, InfLangString, InfLangStringApi, InfLanguage, InfLanguageApi, InfPersistentItem, InfPersistentItemApi, InfPlace, InfPlaceApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, InfTimePrimitive, InfTimePrimitiveApi, InternalStorage, LoggerService, LoopBackAuth, LoopBackConfig, ProClassFieldConfig, ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi, ProInfoProjRel, ProInfoProjRelApi, ProProject, ProProjectApi, ProTextProperty, ProTextPropertyApi, PubAccount, PubAccountApi, PubAccountProjectRel, PubAccountProjectRelApi, RealTime, SDKBrowserModule, SDKModels, SDKStorage, SDKToken, SchemaObject, SchemaObjectApi, StorageBrowser, SysAppContext, SysAppContextApi, SysClassField, SysClassFieldApi, SysClassFieldPropertyRel, SysClassFieldPropertyRelApi, SysClassHasTypeProperty, SysClassHasTypePropertyApi, SysSystemRelevantClass, SysSystemRelevantClassApi, SysSystemType, SysSystemTypeApi, SocketConnection as ɵa, SocketDriver as ɵb, SocketBrowser as ɵc };
+export { AccessToken, BaseLoopBackApi, BaseStorage, CookieBrowser, DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, DatTextProperty, DatTextPropertyApi, DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi, Email, EmailApi, ErrorHandler, FireLoopRef, InfAppellation, InfAppellationApi, InfDimension, InfDimensionApi, InfLangString, InfLangStringApi, InfLanguage, InfLanguageApi, InfPersistentItem, InfPersistentItemApi, InfPlace, InfPlaceApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, InfTimePrimitive, InfTimePrimitiveApi, InternalStorage, LoggerService, LoopBackAuth, LoopBackConfig, ProClassFieldConfig, ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi, ProInfoProjRel, ProInfoProjRelApi, ProProject, ProProjectApi, ProTextProperty, ProTextPropertyApi, PubAccount, PubAccountApi, PubAccountProjectRel, PubAccountProjectRelApi, RealTime, SDKModels, SDKStorage, SDKToken, SchemaObject, SchemaObjectApi, SdkLb3Module, StorageBrowser, SysAppContext, SysAppContextApi, SysClassField, SysClassFieldApi, SysClassFieldPropertyRel, SysClassFieldPropertyRelApi, SysClassHasTypeProperty, SysClassHasTypePropertyApi, SysSystemRelevantClass, SysSystemRelevantClassApi, SysSystemType, SysSystemTypeApi, SocketConnection as ɵa, SocketDriver as ɵb, SocketBrowser as ɵc };
 //# sourceMappingURL=kleiolab-lib-sdk-lb3.js.map

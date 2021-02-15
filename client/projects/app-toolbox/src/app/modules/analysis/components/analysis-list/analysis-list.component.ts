@@ -1,11 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
-import { AnalysisTabData, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { AnalysisService } from "@kleiolab/lib-sdk-lb4";
-import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
+import { SysConfig } from '@kleiolab/lib-config';
+import { AnalysisTabData, SchemaObjectService } from '@kleiolab/lib-redux';
+import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 

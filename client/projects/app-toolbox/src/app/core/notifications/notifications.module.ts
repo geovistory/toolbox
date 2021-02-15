@@ -1,16 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ToastyModule } from '@cime/ngx-toasty';
 import { NotificationsComponent } from './components/notifications.component';
-import { NotificationsAPIActions } from './components/api/notifications.actions';
-import { NotificationsAPIEpics } from './components/api/notifications.epics';
-import { ToastyModule } from '@cime/ngx-toasty'
 
 @NgModule({
   imports: [
     CommonModule,
     ToastyModule.forRoot()
   ],
-  providers: [NotificationsAPIActions, NotificationsAPIEpics],
+  providers: [],
   declarations: [NotificationsComponent],
   exports: [NotificationsComponent]
 })

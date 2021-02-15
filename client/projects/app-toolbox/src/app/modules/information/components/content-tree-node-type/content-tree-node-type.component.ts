@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ContentTreeNode } from '../content-tree/content-tree.component';
 import { Observable } from 'rxjs';
-import { latestVersion, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { latestVersion } from "@kleiolab/lib-utils";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { filter, map, shareReplay } from 'rxjs/operators';
 
 @Component({

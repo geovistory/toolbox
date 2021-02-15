@@ -11,7 +11,9 @@ export interface AccountActionMeta {
 export type AccountAction = FluxStandardAction<IAccount, AccountActionMeta>;
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AccountActions {
   static LOGIN = 'Account::LOGIN';
   static LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';

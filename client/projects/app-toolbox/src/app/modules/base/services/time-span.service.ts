@@ -3,13 +3,15 @@ import { equals } from 'ramda';
 import { MatDialog } from '@angular/material';
 import { combineLatest, of } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/ctrl-time-primitive.component';
-import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { TimeSpanItem } from '../components/properties-tree/properties-tree.models';
-import { InformationPipesService } from '../../../core/redux-queries/services/information-pipes.service';
+import { InfActions } from "@kleiolab/lib-redux";
+import { InfTimePrimitiveWithCalendar } from "@kleiolab/lib-utils";
+import { CtrlTimeSpanDialogComponent } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { CtrlTimeSpanDialogResult } from "@kleiolab/lib-queries";
+import { CtrlTimeSpanDialogData } from "@kleiolab/lib-queries";
+import { TimeSpanItem } from "@kleiolab/lib-queries";
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { DfhConfig } from "@kleiolab/lib-config";
 
 @Injectable({

@@ -3,17 +3,17 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { FieldProperty } from '../properties-tree/properties-tree.models';
+import { FieldProperty } from "@kleiolab/lib-queries";
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
-import { SchemaSelectorsService } from 'projects/app-toolbox/src/app/core/redux-queries/services/schema-selectors.service';
+import { SchemaSelectorsService } from "@kleiolab/lib-queries";
 
 export interface CtrlEntityModel {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side

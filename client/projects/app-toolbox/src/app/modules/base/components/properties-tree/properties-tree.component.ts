@@ -1,13 +1,11 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnDestroy, OnInit, HostBinding } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { Field } from './properties-tree.models';
 import { PropertiesTreeService } from './properties-tree.service';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
 
 @Component({
   selector: 'gv-properties-tree',

@@ -2,29 +2,29 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { ActiveAccountService } from "projects/app-toolbox/src/app/core/active-account";
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { DatDigital } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
+import { InfActions } from "@kleiolab/lib-redux";
+import { ByPk } from "@kleiolab/lib-redux";
+import { SchemaObjectService } from "@kleiolab/lib-redux";
 import { RepoService } from 'projects/app-toolbox/src/app/core/repo/repo.service';
 import { ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/app/modules/data/components/importer/importer.component';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { DatSelector } from 'projects/app-toolbox/src/app/core/dat/dat.service';
+import { DatSelector } from "@kleiolab/lib-queries";
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { ContentTreeService } from "@kleiolab/lib-sdk-lb4";
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 /**
  * Food data with nested structure.

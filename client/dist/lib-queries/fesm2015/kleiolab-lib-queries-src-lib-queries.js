@@ -1,17 +1,53 @@
 import { CommonModule } from '@angular/common';
-import { Injectable, ɵɵdefineInjectable, ɵɵinject, NgModule } from '@angular/core';
-import { __decorate, __metadata } from 'tslib';
-import { NgRedux } from '@angular-redux/store';
-import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
-import { toString, equals, values as values$1, indexBy, uniq, flatten, omit, groupBy, pick } from 'ramda';
-import { pipe, of, BehaviorSubject, empty, Observable, combineLatest, merge, iif } from 'rxjs';
-import { shareReplay, switchMap, filter, first, map, distinctUntilChanged, startWith, tap } from 'rxjs/operators';
+import { NgModule, Optional, SkipSelf, Injectable, ɵɵdefineInjectable, ɵɵinject } from '@angular/core';
+import { ReduxModule, datRoot, DatActions, datDefinitions, dfhRoot, DfhActions, dfhDefinitions, infRoot, paginatedBy, paginateName, paginateKey, getFromTo, indexStatementBySubject, indexStatementBySubjectProperty, indexStatementByObject, indexStatementByObjectProperty, infDefinitions, PR_ENTITY_MODEL_MAP, proRoot, ProActions, proDefinitions, sysRoot, SysActions, sysDefinitions, tabRoot, TabActions, tabDefinitions, warRoot, WarActions, warDefinitions, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey, dfhLabelByFksKey } from '@kleiolab/lib-redux';
+import { shareReplay, map, switchMap, filter, first, distinctUntilChanged, startWith, tap } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
-import { infRoot, paginatedBy, paginateName, paginateKey, getFromTo, indexStatementBySubject, indexStatementBySubjectProperty, indexStatementByObject, indexStatementByObjectProperty, infDefinitions, PR_ENTITY_MODEL_MAP, datRoot, DatActions, datDefinitions, tabRoot, TabActions, tabDefinitions, proRoot, ProActions, proDefinitions, dfhRoot, DfhActions, dfhDefinitions, sysRoot, SysActions, sysDefinitions, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey, dfhLabelByFksKey, ReduxStoreModule, warRoot, WarActions, warDefinitions } from '@kleiolab/lib-redux';
-import { combineLatestOrEmpty, latestVersion, TimeSpanUtil, limitTo, switchMapOr, TimePrimitive, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
+import { NgRedux } from '@angular-redux/store';
+import { latestVersion, combineLatestOrEmpty, TimeSpanUtil, limitTo, switchMapOr, TimePrimitive, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
+import { BehaviorSubject, empty, pipe, of, Observable, combineLatest, merge, iif } from 'rxjs';
 import { values } from 'd3';
+import { toString, equals, values as values$1, indexBy, uniq, flatten, omit, groupBy, pick } from 'ramda';
+import { __decorate, __metadata } from 'tslib';
+import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: module/redux-queries.module.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ReduxQueriesModule {
+    /**
+     * @param {?} parentModule
+     * @param {?} reduxModule
+     */
+    constructor(parentModule, reduxModule) {
+        /** @type {?} */
+        const errors = [];
+        if (parentModule)
+            errors.push('ReduxQueriesModule is already loaded. Import in your base AppModule only.');
+        if (!reduxModule)
+            errors.push('You need to import the ReduxModule in your AppModule!');
+        if (errors.length)
+            throw new Error(errors.join('\n'));
+    }
+}
+ReduxQueriesModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [],
+                imports: [
+                    CommonModule,
+                ],
+                providers: []
+            },] }
+];
+/** @nocollapse */
+ReduxQueriesModule.ctorParameters = () => [
+    { type: ReduxQueriesModule, decorators: [{ type: Optional }, { type: SkipSelf }] },
+    { type: ReduxModule, decorators: [{ type: Optional }] }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -97,10 +133,492 @@ function spyTag(target, propertyKey, descriptor) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: selectors/inf.service.ts
+ * Generated from: selectors/dat.service.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+    }
+    /**
+     * @template M
+     * @param {?} indexKey
+     * @return {?}
+     */
+    selector(indexKey) {
+        /** @type {?} */
+        const all$ = this.ngRedux.select([datRoot, this.model, indexKey])
+        // .pipe(
+        //   distinctUntilChanged<M>(equals)
+        // )
+        ;
+        // .pipe(
+        //   distinctUntilChanged<M>(equals)
+        // )
+        /** @type {?} */
+        const key = (/**
+         * @param {?} x
+         * @return {?}
+         */
+        (x) => this.ngRedux.select([datRoot, this.model, indexKey, x]))
+        // .pipe(
+        //   distinctUntilChanged<M>(equals)
+        // )
+        ;
+        // .pipe(
+        //   distinctUntilChanged<M>(equals)
+        // )
+        return { all$, key };
+    }
+}
+if (false) {
+    /** @type {?} */
+    Selector.prototype.ngRedux;
+    /** @type {?} */
+    Selector.prototype.configs;
+    /** @type {?} */
+    Selector.prototype.model;
+}
+class DatDigitalSelections extends Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity__entity_version$ = this.selector('by_pk_entity__entity_version');
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+        this.by_pk_text$ = this.selector('by_pk_text');
+    }
+    /**
+     * @param {?} pkDigital
+     * @return {?}
+     */
+    latestVersion(pkDigital) {
+        return this.by_pk_entity$.key(pkDigital).pipe(map((/**
+         * @param {?} versions
+         * @return {?}
+         */
+        versions => latestVersion(versions))));
+    }
+}
+if (false) {
+    /** @type {?} */
+    DatDigitalSelections.prototype.by_pk_entity__entity_version$;
+    /** @type {?} */
+    DatDigitalSelections.prototype.by_pk_entity$;
+    /** @type {?} */
+    DatDigitalSelections.prototype.by_pk_text$;
+    /** @type {?} */
+    DatDigitalSelections.prototype.ngRedux;
+    /** @type {?} */
+    DatDigitalSelections.prototype.configs;
+    /** @type {?} */
+    DatDigitalSelections.prototype.model;
+}
+class DatNamespaceSelections extends Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+        this.by_fk_project$ = this.selector('by_fk_project');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DatNamespaceSelections.prototype.by_pk_entity$;
+    /** @type {?} */
+    DatNamespaceSelections.prototype.by_fk_project$;
+    /** @type {?} */
+    DatNamespaceSelections.prototype.ngRedux;
+    /** @type {?} */
+    DatNamespaceSelections.prototype.configs;
+    /** @type {?} */
+    DatNamespaceSelections.prototype.model;
+}
+class DatChunkSelections extends Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+        this.by_fk_text$ = this.selector('by_fk_text');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DatChunkSelections.prototype.by_pk_entity$;
+    /** @type {?} */
+    DatChunkSelections.prototype.by_fk_text$;
+    /** @type {?} */
+    DatChunkSelections.prototype.ngRedux;
+    /** @type {?} */
+    DatChunkSelections.prototype.configs;
+    /** @type {?} */
+    DatChunkSelections.prototype.model;
+}
+class DatClassColumnMappingSelections extends Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+        this.by_fk_column$ = this.selector('by_fk_column');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DatClassColumnMappingSelections.prototype.by_pk_entity$;
+    /** @type {?} */
+    DatClassColumnMappingSelections.prototype.by_fk_column$;
+    /** @type {?} */
+    DatClassColumnMappingSelections.prototype.ngRedux;
+    /** @type {?} */
+    DatClassColumnMappingSelections.prototype.configs;
+    /** @type {?} */
+    DatClassColumnMappingSelections.prototype.model;
+}
+class DatColumnSelections extends Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+        this.by_fk_digital$ = this.selector('by_fk_digital');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DatColumnSelections.prototype.by_pk_entity$;
+    /** @type {?} */
+    DatColumnSelections.prototype.by_fk_digital$;
+    /** @type {?} */
+    DatColumnSelections.prototype.ngRedux;
+    /** @type {?} */
+    DatColumnSelections.prototype.configs;
+    /** @type {?} */
+    DatColumnSelections.prototype.model;
+}
+class DatTextPropertySelections extends Selector {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+        this.by_fk_entity__fk_system_type$ = this.selector('by_fk_entity__fk_system_type');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DatTextPropertySelections.prototype.by_pk_entity$;
+    /** @type {?} */
+    DatTextPropertySelections.prototype.by_fk_entity__fk_system_type$;
+    /** @type {?} */
+    DatTextPropertySelections.prototype.ngRedux;
+    /** @type {?} */
+    DatTextPropertySelections.prototype.configs;
+    /** @type {?} */
+    DatTextPropertySelections.prototype.model;
+}
+class DatSelector extends DatActions {
+    /**
+     * @param {?} ngRedux
+     */
+    constructor(ngRedux) {
+        super(ngRedux);
+        this.ngRedux = ngRedux;
+        this.digital$ = new DatDigitalSelections(this.ngRedux, datDefinitions, 'digital');
+        this.namespace$ = new DatNamespaceSelections(this.ngRedux, datDefinitions, 'namespace');
+        this.chunk$ = new DatChunkSelections(this.ngRedux, datDefinitions, 'chunk');
+        this.column$ = new DatColumnSelections(this.ngRedux, datDefinitions, 'column');
+        this.class_column_mapping$ = new DatClassColumnMappingSelections(this.ngRedux, datDefinitions, 'class_column_mapping');
+        this.text_property$ = new DatTextPropertySelections(this.ngRedux, datDefinitions, 'text_property');
+    }
+}
+DatSelector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+DatSelector.ctorParameters = () => [
+    { type: NgRedux }
+];
+/** @nocollapse */ DatSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function DatSelector_Factory() { return new DatSelector(ɵɵinject(NgRedux)); }, token: DatSelector, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    DatSelector.prototype.digital$;
+    /** @type {?} */
+    DatSelector.prototype.namespace$;
+    /** @type {?} */
+    DatSelector.prototype.chunk$;
+    /** @type {?} */
+    DatSelector.prototype.column$;
+    /** @type {?} */
+    DatSelector.prototype.class_column_mapping$;
+    /** @type {?} */
+    DatSelector.prototype.text_property$;
+    /** @type {?} */
+    DatSelector.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: services/should-pause.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ShouldPauseService {
+    constructor() {
+        this.shouldPause$ = new BehaviorSubject(false);
+    }
+}
+ShouldPauseService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+ShouldPauseService.ctorParameters = () => [];
+/** @nocollapse */ ShouldPauseService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ShouldPauseService_Factory() { return new ShouldPauseService(); }, token: ShouldPauseService, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ShouldPauseService.prototype.shouldPause$;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: selectors/dfh.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template Slice
+ */
+class Selector$1 {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     * @param {?} shouldPause$
+     */
+    constructor(ngRedux, configs, model, shouldPause$) {
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.shouldPause$ = shouldPause$;
+        this.slice$ = this.ngRedux.select([dfhRoot, this.model]);
+    }
+    /**
+     * @template M
+     * @param {?} indexKey
+     * @return {?}
+     */
+    selector(indexKey) {
+        /** @type {?} */
+        const allNoPause$ = this.ngRedux.select([dfhRoot, this.model, indexKey]);
+        /** @type {?} */
+        const all$ = this.shouldPause$.pipe(switchMap((/**
+         * @param {?} shouldPause
+         * @return {?}
+         */
+        shouldPause => shouldPause ?
+            empty() :
+            allNoPause$)));
+        /** @type {?} */
+        const keyNoPause = (/**
+         * @param {?} x
+         * @return {?}
+         */
+        (x) => this.ngRedux.select([dfhRoot, this.model, indexKey, x]));
+        /** @type {?} */
+        const key = (/**
+         * @param {?} x
+         * @return {?}
+         */
+        (x) => this.shouldPause$.pipe(switchMap((/**
+         * @param {?} shouldPause
+         * @return {?}
+         */
+        shouldPause => shouldPause ?
+            empty() :
+            this.ngRedux.select([dfhRoot, this.model, indexKey, x])))));
+        return { all$, key, noPause: { all$: allNoPause$, key: keyNoPause } };
+    }
+}
+if (false) {
+    /** @type {?} */
+    Selector$1.prototype.slice$;
+    /** @type {?} */
+    Selector$1.prototype.ngRedux;
+    /** @type {?} */
+    Selector$1.prototype.configs;
+    /** @type {?} */
+    Selector$1.prototype.model;
+    /** @type {?} */
+    Selector$1.prototype.shouldPause$;
+}
+// Profile Selectors
+class DfhProfileSelections extends Selector$1 {
+    constructor() {
+        super(...arguments);
+        this.by_pk_profile$ = this.selector('by_pk_profile');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DfhProfileSelections.prototype.by_pk_profile$;
+}
+// Class Selectors
+class DfhClassSelections extends Selector$1 {
+    constructor() {
+        super(...arguments);
+        this.by_pk_class$ = this.selector('by_pk_class');
+        this.by_basic_type$ = this.selector('by_basic_type');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DfhClassSelections.prototype.by_pk_class$;
+    /** @type {?} */
+    DfhClassSelections.prototype.by_basic_type$;
+}
+// Property Selectors
+class DfhPropertySelections extends Selector$1 {
+    constructor() {
+        super(...arguments);
+        this.pk_property__has_domain__has_range$ = this.selector('pk_property__has_domain__has_range');
+        this.by_pk_property$ = this.selector('by_pk_property');
+        this.by_has_domain__pk_property$ = this.selector('by_has_domain__pk_property');
+        this.by_has_range__pk_property$ = this.selector('by_has_range__pk_property');
+        this.by_has_domain$ = this.selector('by_has_domain');
+        this.by_has_range$ = this.selector('by_has_range');
+        this.by_is_has_type_subproperty$ = this.selector('by_is_has_type_subproperty');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DfhPropertySelections.prototype.pk_property__has_domain__has_range$;
+    /** @type {?} */
+    DfhPropertySelections.prototype.by_pk_property$;
+    /** @type {?} */
+    DfhPropertySelections.prototype.by_has_domain__pk_property$;
+    /** @type {?} */
+    DfhPropertySelections.prototype.by_has_range__pk_property$;
+    /** @type {?} */
+    DfhPropertySelections.prototype.by_has_domain$;
+    /** @type {?} */
+    DfhPropertySelections.prototype.by_has_range$;
+    /** @type {?} */
+    DfhPropertySelections.prototype.by_is_has_type_subproperty$;
+}
+// Label Selectors
+class DfhLabelSelections extends Selector$1 {
+    constructor() {
+        super(...arguments);
+        this.by_fks$ = this.selector('by_fks');
+        this.by_fk_class__type$ = this.selector('by_fk_class__type');
+        this.by_fk_property__type$ = this.selector('by_fk_property__type');
+        this.by_fk_profile__type$ = this.selector('by_fk_profile__type');
+    }
+}
+if (false) {
+    /** @type {?} */
+    DfhLabelSelections.prototype.by_fks$;
+    /** @type {?} */
+    DfhLabelSelections.prototype.by_fk_class__type$;
+    /** @type {?} */
+    DfhLabelSelections.prototype.by_fk_property__type$;
+    /** @type {?} */
+    DfhLabelSelections.prototype.by_fk_profile__type$;
+}
+class DfhSelector extends DfhActions {
+    /**
+     * @param {?} ngRedux
+     * @param {?} pause
+     */
+    constructor(ngRedux, pause) {
+        super(ngRedux);
+        this.ngRedux = ngRedux;
+        this.pause = pause;
+        this.profile$ = new DfhProfileSelections(this.ngRedux, dfhDefinitions, 'profile', this.pause.shouldPause$);
+        this.class$ = new DfhClassSelections(this.ngRedux, dfhDefinitions, 'klass', this.pause.shouldPause$);
+        this.property$ = new DfhPropertySelections(this.ngRedux, dfhDefinitions, 'property', this.pause.shouldPause$);
+        this.label$ = new DfhLabelSelections(this.ngRedux, dfhDefinitions, 'label', this.pause.shouldPause$);
+    }
+}
+DfhSelector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+DfhSelector.ctorParameters = () => [
+    { type: NgRedux },
+    { type: ShouldPauseService }
+];
+/** @nocollapse */ DfhSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function DfhSelector_Factory() { return new DfhSelector(ɵɵinject(NgRedux), ɵɵinject(ShouldPauseService)); }, token: DfhSelector, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    DfhSelector.prototype.profile$;
+    /** @type {?} */
+    DfhSelector.prototype.class$;
+    /** @type {?} */
+    DfhSelector.prototype.property$;
+    /** @type {?} */
+    DfhSelector.prototype.label$;
+    /** @type {?} */
+    DfhSelector.prototype.ngRedux;
+    /** @type {?} */
+    DfhSelector.prototype.pause;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: selectors/inf.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -359,15 +877,15 @@ class Selector {
 }
 if (false) {
     /** @type {?} */
-    Selector.prototype.ngRedux;
+    Selector$2.prototype.ngRedux;
     /** @type {?} */
-    Selector.prototype.pkProject$;
+    Selector$2.prototype.pkProject$;
     /** @type {?} */
-    Selector.prototype.configs;
+    Selector$2.prototype.configs;
     /** @type {?} */
-    Selector.prototype.model;
+    Selector$2.prototype.model;
 }
-class InfPersistentItemSelections extends Selector {
+class InfPersistentItemSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -451,7 +969,7 @@ if (false) {
     /** @type {?} */
     InfPersistentItemSelections.prototype.model;
 }
-class InfTemporalEntitySelections extends Selector {
+class InfTemporalEntitySelections extends Selector$2 {
     // public by_fk_class$ = this.selector<ByPk<InfTemporalEntity>>('by_fk_class')
     /**
      * @param {?} ngRedux
@@ -499,7 +1017,7 @@ if (false) {
     /** @type {?} */
     InfTemporalEntitySelections.prototype.model;
 }
-class InfStatementSelections extends Selector {
+class InfStatementSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -668,7 +1186,7 @@ if (false) {
     /** @type {?} */
     InfStatementSelections.prototype.model;
 }
-class InfTextPropertySelections extends Selector {
+class InfTextPropertySelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -761,7 +1279,7 @@ if (false) {
     /** @type {?} */
     InfTextPropertySelections.prototype.model;
 }
-class InfAppellationSelections extends Selector {
+class InfAppellationSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -789,7 +1307,7 @@ if (false) {
     /** @type {?} */
     InfAppellationSelections.prototype.model;
 }
-class InfLangStringSelections extends Selector {
+class InfLangStringSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -817,7 +1335,7 @@ if (false) {
     /** @type {?} */
     InfLangStringSelections.prototype.model;
 }
-class InfPlaceSelections extends Selector {
+class InfPlaceSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -845,7 +1363,7 @@ if (false) {
     /** @type {?} */
     InfPlaceSelections.prototype.model;
 }
-class InfTimePrimitiveSelections extends Selector {
+class InfTimePrimitiveSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -873,7 +1391,7 @@ if (false) {
     /** @type {?} */
     InfTimePrimitiveSelections.prototype.model;
 }
-class InfLanguageSelections extends Selector {
+class InfLanguageSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -901,7 +1419,7 @@ if (false) {
     /** @type {?} */
     InfLanguageSelections.prototype.model;
 }
-class InfDimensionSelections extends Selector {
+class InfDimensionSelections extends Selector$2 {
     /**
      * @param {?} ngRedux
      * @param {?} pkProject$
@@ -984,374 +1502,6 @@ if (false) {
     InfSelector.prototype.ngRedux;
     /** @type {?} */
     InfSelector.prototype.pkProject$;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: selectors/dat.service.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-    }
-    /**
-     * @template M
-     * @param {?} indexKey
-     * @return {?}
-     */
-    selector(indexKey) {
-        /** @type {?} */
-        const all$ = this.ngRedux.select([datRoot, this.model, indexKey])
-        // .pipe(
-        //   distinctUntilChanged<M>(equals)
-        // )
-        ;
-        // .pipe(
-        //   distinctUntilChanged<M>(equals)
-        // )
-        /** @type {?} */
-        const key = (/**
-         * @param {?} x
-         * @return {?}
-         */
-        (x) => this.ngRedux.select([datRoot, this.model, indexKey, x]))
-        // .pipe(
-        //   distinctUntilChanged<M>(equals)
-        // )
-        ;
-        // .pipe(
-        //   distinctUntilChanged<M>(equals)
-        // )
-        return { all$, key };
-    }
-}
-if (false) {
-    /** @type {?} */
-    Selector$1.prototype.ngRedux;
-    /** @type {?} */
-    Selector$1.prototype.configs;
-    /** @type {?} */
-    Selector$1.prototype.model;
-}
-class DatDigitalSelections extends Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity__entity_version$ = this.selector('by_pk_entity__entity_version');
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-        this.by_pk_text$ = this.selector('by_pk_text');
-    }
-    /**
-     * @param {?} pkDigital
-     * @return {?}
-     */
-    latestVersion(pkDigital) {
-        return this.by_pk_entity$.key(pkDigital).pipe(map((/**
-         * @param {?} versions
-         * @return {?}
-         */
-        versions => latestVersion(versions))));
-    }
-}
-if (false) {
-    /** @type {?} */
-    DatDigitalSelections.prototype.by_pk_entity__entity_version$;
-    /** @type {?} */
-    DatDigitalSelections.prototype.by_pk_entity$;
-    /** @type {?} */
-    DatDigitalSelections.prototype.by_pk_text$;
-    /** @type {?} */
-    DatDigitalSelections.prototype.ngRedux;
-    /** @type {?} */
-    DatDigitalSelections.prototype.configs;
-    /** @type {?} */
-    DatDigitalSelections.prototype.model;
-}
-class DatNamespaceSelections extends Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-        this.by_fk_project$ = this.selector('by_fk_project');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DatNamespaceSelections.prototype.by_pk_entity$;
-    /** @type {?} */
-    DatNamespaceSelections.prototype.by_fk_project$;
-    /** @type {?} */
-    DatNamespaceSelections.prototype.ngRedux;
-    /** @type {?} */
-    DatNamespaceSelections.prototype.configs;
-    /** @type {?} */
-    DatNamespaceSelections.prototype.model;
-}
-class DatChunkSelections extends Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-        this.by_fk_text$ = this.selector('by_fk_text');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DatChunkSelections.prototype.by_pk_entity$;
-    /** @type {?} */
-    DatChunkSelections.prototype.by_fk_text$;
-    /** @type {?} */
-    DatChunkSelections.prototype.ngRedux;
-    /** @type {?} */
-    DatChunkSelections.prototype.configs;
-    /** @type {?} */
-    DatChunkSelections.prototype.model;
-}
-class DatClassColumnMappingSelections extends Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-        this.by_fk_column$ = this.selector('by_fk_column');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DatClassColumnMappingSelections.prototype.by_pk_entity$;
-    /** @type {?} */
-    DatClassColumnMappingSelections.prototype.by_fk_column$;
-    /** @type {?} */
-    DatClassColumnMappingSelections.prototype.ngRedux;
-    /** @type {?} */
-    DatClassColumnMappingSelections.prototype.configs;
-    /** @type {?} */
-    DatClassColumnMappingSelections.prototype.model;
-}
-class DatColumnSelections extends Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-        this.by_fk_digital$ = this.selector('by_fk_digital');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DatColumnSelections.prototype.by_pk_entity$;
-    /** @type {?} */
-    DatColumnSelections.prototype.by_fk_digital$;
-    /** @type {?} */
-    DatColumnSelections.prototype.ngRedux;
-    /** @type {?} */
-    DatColumnSelections.prototype.configs;
-    /** @type {?} */
-    DatColumnSelections.prototype.model;
-}
-class DatTextPropertySelections extends Selector$1 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-        this.by_fk_entity__fk_system_type$ = this.selector('by_fk_entity__fk_system_type');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DatTextPropertySelections.prototype.by_pk_entity$;
-    /** @type {?} */
-    DatTextPropertySelections.prototype.by_fk_entity__fk_system_type$;
-    /** @type {?} */
-    DatTextPropertySelections.prototype.ngRedux;
-    /** @type {?} */
-    DatTextPropertySelections.prototype.configs;
-    /** @type {?} */
-    DatTextPropertySelections.prototype.model;
-}
-class DatSelector extends DatActions {
-    /**
-     * @param {?} ngRedux
-     */
-    constructor(ngRedux) {
-        super(ngRedux);
-        this.ngRedux = ngRedux;
-        this.digital$ = new DatDigitalSelections(this.ngRedux, datDefinitions, 'digital');
-        this.namespace$ = new DatNamespaceSelections(this.ngRedux, datDefinitions, 'namespace');
-        this.chunk$ = new DatChunkSelections(this.ngRedux, datDefinitions, 'chunk');
-        this.column$ = new DatColumnSelections(this.ngRedux, datDefinitions, 'column');
-        this.class_column_mapping$ = new DatClassColumnMappingSelections(this.ngRedux, datDefinitions, 'class_column_mapping');
-        this.text_property$ = new DatTextPropertySelections(this.ngRedux, datDefinitions, 'text_property');
-    }
-}
-DatSelector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-DatSelector.ctorParameters = () => [
-    { type: NgRedux }
-];
-/** @nocollapse */ DatSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function DatSelector_Factory() { return new DatSelector(ɵɵinject(NgRedux)); }, token: DatSelector, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    DatSelector.prototype.digital$;
-    /** @type {?} */
-    DatSelector.prototype.namespace$;
-    /** @type {?} */
-    DatSelector.prototype.chunk$;
-    /** @type {?} */
-    DatSelector.prototype.column$;
-    /** @type {?} */
-    DatSelector.prototype.class_column_mapping$;
-    /** @type {?} */
-    DatSelector.prototype.text_property$;
-    /** @type {?} */
-    DatSelector.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: selectors/tab.service.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class Selector$2 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-    }
-    /**
-     * @template M
-     * @param {?} indexKey
-     * @return {?}
-     */
-    selector(indexKey) {
-        /** @type {?} */
-        const all$ = this.ngRedux.select([tabRoot, this.model, indexKey]);
-        /** @type {?} */
-        const key = (/**
-         * @param {?} x
-         * @return {?}
-         */
-        (x) => this.ngRedux.select([tabRoot, this.model, indexKey, x]));
-        return { all$, key };
-    }
-}
-if (false) {
-    /** @type {?} */
-    Selector$2.prototype.ngRedux;
-    /** @type {?} */
-    Selector$2.prototype.configs;
-    /** @type {?} */
-    Selector$2.prototype.model;
-}
-class TabCellSelections extends Selector$2 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_cell$ = this.selector('by_pk_cell');
-        this.by_fk_column_fk_row$ = this.selector('by_fk_column_fk_row');
-    }
-}
-if (false) {
-    /** @type {?} */
-    TabCellSelections.prototype.by_pk_cell$;
-    /** @type {?} */
-    TabCellSelections.prototype.by_fk_column_fk_row$;
-    /** @type {?} */
-    TabCellSelections.prototype.ngRedux;
-    /** @type {?} */
-    TabCellSelections.prototype.configs;
-    /** @type {?} */
-    TabCellSelections.prototype.model;
-}
-class TabSelector extends TabActions {
-    /**
-     * @param {?} ngRedux
-     */
-    constructor(ngRedux) {
-        super(ngRedux);
-        this.ngRedux = ngRedux;
-        this.cell$ = new TabCellSelections(this.ngRedux, tabDefinitions, 'cell');
-    }
-}
-TabSelector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-TabSelector.ctorParameters = () => [
-    { type: NgRedux }
-];
-/** @nocollapse */ TabSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function TabSelector_Factory() { return new TabSelector(ɵɵinject(NgRedux)); }, token: TabSelector, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    TabSelector.prototype.cell$;
-    /** @type {?} */
-    TabSelector.prototype.ngRedux;
 }
 
 /**
@@ -1639,222 +1789,13 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: services/should-pause.service.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ShouldPauseService {
-    constructor() {
-        this.shouldPause$ = new BehaviorSubject(false);
-    }
-}
-ShouldPauseService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-ShouldPauseService.ctorParameters = () => [];
-/** @nocollapse */ ShouldPauseService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ShouldPauseService_Factory() { return new ShouldPauseService(); }, token: ShouldPauseService, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    ShouldPauseService.prototype.shouldPause$;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: selectors/dfh.service.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template Slice
- */
-class Selector$4 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     * @param {?} shouldPause$
-     */
-    constructor(ngRedux, configs, model, shouldPause$) {
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.shouldPause$ = shouldPause$;
-        this.slice$ = this.ngRedux.select([dfhRoot, this.model]);
-    }
-    /**
-     * @template M
-     * @param {?} indexKey
-     * @return {?}
-     */
-    selector(indexKey) {
-        /** @type {?} */
-        const allNoPause$ = this.ngRedux.select([dfhRoot, this.model, indexKey]);
-        /** @type {?} */
-        const all$ = this.shouldPause$.pipe(switchMap((/**
-         * @param {?} shouldPause
-         * @return {?}
-         */
-        shouldPause => shouldPause ?
-            empty() :
-            allNoPause$)));
-        /** @type {?} */
-        const keyNoPause = (/**
-         * @param {?} x
-         * @return {?}
-         */
-        (x) => this.ngRedux.select([dfhRoot, this.model, indexKey, x]));
-        /** @type {?} */
-        const key = (/**
-         * @param {?} x
-         * @return {?}
-         */
-        (x) => this.shouldPause$.pipe(switchMap((/**
-         * @param {?} shouldPause
-         * @return {?}
-         */
-        shouldPause => shouldPause ?
-            empty() :
-            this.ngRedux.select([dfhRoot, this.model, indexKey, x])))));
-        return { all$, key, noPause: { all$: allNoPause$, key: keyNoPause } };
-    }
-}
-if (false) {
-    /** @type {?} */
-    Selector$4.prototype.slice$;
-    /** @type {?} */
-    Selector$4.prototype.ngRedux;
-    /** @type {?} */
-    Selector$4.prototype.configs;
-    /** @type {?} */
-    Selector$4.prototype.model;
-    /** @type {?} */
-    Selector$4.prototype.shouldPause$;
-}
-// Profile Selectors
-class DfhProfileSelections extends Selector$4 {
-    constructor() {
-        super(...arguments);
-        this.by_pk_profile$ = this.selector('by_pk_profile');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DfhProfileSelections.prototype.by_pk_profile$;
-}
-// Class Selectors
-class DfhClassSelections extends Selector$4 {
-    constructor() {
-        super(...arguments);
-        this.by_pk_class$ = this.selector('by_pk_class');
-        this.by_basic_type$ = this.selector('by_basic_type');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DfhClassSelections.prototype.by_pk_class$;
-    /** @type {?} */
-    DfhClassSelections.prototype.by_basic_type$;
-}
-// Property Selectors
-class DfhPropertySelections extends Selector$4 {
-    constructor() {
-        super(...arguments);
-        this.pk_property__has_domain__has_range$ = this.selector('pk_property__has_domain__has_range');
-        this.by_pk_property$ = this.selector('by_pk_property');
-        this.by_has_domain__pk_property$ = this.selector('by_has_domain__pk_property');
-        this.by_has_range__pk_property$ = this.selector('by_has_range__pk_property');
-        this.by_has_domain$ = this.selector('by_has_domain');
-        this.by_has_range$ = this.selector('by_has_range');
-        this.by_is_has_type_subproperty$ = this.selector('by_is_has_type_subproperty');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DfhPropertySelections.prototype.pk_property__has_domain__has_range$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_pk_property$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_has_domain__pk_property$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_has_range__pk_property$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_has_domain$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_has_range$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_is_has_type_subproperty$;
-}
-// Label Selectors
-class DfhLabelSelections extends Selector$4 {
-    constructor() {
-        super(...arguments);
-        this.by_fks$ = this.selector('by_fks');
-        this.by_fk_class__type$ = this.selector('by_fk_class__type');
-        this.by_fk_property__type$ = this.selector('by_fk_property__type');
-        this.by_fk_profile__type$ = this.selector('by_fk_profile__type');
-    }
-}
-if (false) {
-    /** @type {?} */
-    DfhLabelSelections.prototype.by_fks$;
-    /** @type {?} */
-    DfhLabelSelections.prototype.by_fk_class__type$;
-    /** @type {?} */
-    DfhLabelSelections.prototype.by_fk_property__type$;
-    /** @type {?} */
-    DfhLabelSelections.prototype.by_fk_profile__type$;
-}
-class DfhSelector extends DfhActions {
-    /**
-     * @param {?} ngRedux
-     * @param {?} pause
-     */
-    constructor(ngRedux, pause) {
-        super(ngRedux);
-        this.ngRedux = ngRedux;
-        this.pause = pause;
-        this.profile$ = new DfhProfileSelections(this.ngRedux, dfhDefinitions, 'profile', this.pause.shouldPause$);
-        this.class$ = new DfhClassSelections(this.ngRedux, dfhDefinitions, 'klass', this.pause.shouldPause$);
-        this.property$ = new DfhPropertySelections(this.ngRedux, dfhDefinitions, 'property', this.pause.shouldPause$);
-        this.label$ = new DfhLabelSelections(this.ngRedux, dfhDefinitions, 'label', this.pause.shouldPause$);
-    }
-}
-DfhSelector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-DfhSelector.ctorParameters = () => [
-    { type: NgRedux },
-    { type: ShouldPauseService }
-];
-/** @nocollapse */ DfhSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function DfhSelector_Factory() { return new DfhSelector(ɵɵinject(NgRedux), ɵɵinject(ShouldPauseService)); }, token: DfhSelector, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    DfhSelector.prototype.profile$;
-    /** @type {?} */
-    DfhSelector.prototype.class$;
-    /** @type {?} */
-    DfhSelector.prototype.property$;
-    /** @type {?} */
-    DfhSelector.prototype.label$;
-    /** @type {?} */
-    DfhSelector.prototype.ngRedux;
-    /** @type {?} */
-    DfhSelector.prototype.pause;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: selectors/sys.service.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template Slice
  */
-class Selector$5 {
+class Selector$4 {
     /**
      * @param {?} ngRedux
      * @param {?} configs
@@ -1885,16 +1826,16 @@ class Selector$5 {
 }
 if (false) {
     /** @type {?} */
-    Selector$5.prototype.slice$;
+    Selector$4.prototype.slice$;
     /** @type {?} */
-    Selector$5.prototype.ngRedux;
+    Selector$4.prototype.ngRedux;
     /** @type {?} */
-    Selector$5.prototype.configs;
+    Selector$4.prototype.configs;
     /** @type {?} */
-    Selector$5.prototype.model;
+    Selector$4.prototype.model;
 }
 // SystemRelevantClass Selectors
-class SysSystemRelevantClassSelections extends Selector$5 {
+class SysSystemRelevantClassSelections extends Selector$4 {
     /**
      * @param {?} ngRedux
      * @param {?} configs
@@ -1937,7 +1878,7 @@ if (false) {
 //   ) { super(ngRedux, configs, model) }
 // }
 // Config Selectors
-class SysConfigSelections extends Selector$5 {
+class SysConfigSelections extends Selector$4 {
     /**
      * @param {?} ngRedux
      * @param {?} configs
@@ -1980,6 +1921,202 @@ if (false) {
     SysSelector.prototype.system_relevant_class$;
     /** @type {?} */
     SysSelector.prototype.config$;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: selectors/tab.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class Selector$5 {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+    }
+    /**
+     * @template M
+     * @param {?} indexKey
+     * @return {?}
+     */
+    selector(indexKey) {
+        /** @type {?} */
+        const all$ = this.ngRedux.select([tabRoot, this.model, indexKey]);
+        /** @type {?} */
+        const key = (/**
+         * @param {?} x
+         * @return {?}
+         */
+        (x) => this.ngRedux.select([tabRoot, this.model, indexKey, x]));
+        return { all$, key };
+    }
+}
+if (false) {
+    /** @type {?} */
+    Selector$5.prototype.ngRedux;
+    /** @type {?} */
+    Selector$5.prototype.configs;
+    /** @type {?} */
+    Selector$5.prototype.model;
+}
+class TabCellSelections extends Selector$5 {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_cell$ = this.selector('by_pk_cell');
+        this.by_fk_column_fk_row$ = this.selector('by_fk_column_fk_row');
+    }
+}
+if (false) {
+    /** @type {?} */
+    TabCellSelections.prototype.by_pk_cell$;
+    /** @type {?} */
+    TabCellSelections.prototype.by_fk_column_fk_row$;
+    /** @type {?} */
+    TabCellSelections.prototype.ngRedux;
+    /** @type {?} */
+    TabCellSelections.prototype.configs;
+    /** @type {?} */
+    TabCellSelections.prototype.model;
+}
+class TabSelector extends TabActions {
+    /**
+     * @param {?} ngRedux
+     */
+    constructor(ngRedux) {
+        super(ngRedux);
+        this.ngRedux = ngRedux;
+        this.cell$ = new TabCellSelections(this.ngRedux, tabDefinitions, 'cell');
+    }
+}
+TabSelector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+TabSelector.ctorParameters = () => [
+    { type: NgRedux }
+];
+/** @nocollapse */ TabSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function TabSelector_Factory() { return new TabSelector(ɵɵinject(NgRedux)); }, token: TabSelector, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    TabSelector.prototype.cell$;
+    /** @type {?} */
+    TabSelector.prototype.ngRedux;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: selectors/war.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class Selector$6 {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+    }
+    /**
+     * @template M
+     * @param {?} indexKey
+     * @return {?}
+     */
+    selector(indexKey) {
+        /** @type {?} */
+        const all$ = this.ngRedux.select([warRoot, this.model, indexKey]);
+        /** @type {?} */
+        const key = (/**
+         * @param {?} x
+         * @return {?}
+         */
+        (x) => {
+            /** @type {?} */
+            const k = typeof x === 'string' ? x : x.map((/**
+             * @param {?} part
+             * @return {?}
+             */
+            (part) => toString(part))).join('_');
+            ;
+            return this.ngRedux.select([warRoot, this.model, indexKey, k]);
+        });
+        return { all$, key };
+    }
+}
+if (false) {
+    /** @type {?} */
+    Selector$6.prototype.ngRedux;
+    /** @type {?} */
+    Selector$6.prototype.configs;
+    /** @type {?} */
+    Selector$6.prototype.model;
+}
+class WarEntityPreviewSelector extends Selector$6 {
+    /**
+     * @param {?} ngRedux
+     * @param {?} configs
+     * @param {?} model
+     */
+    constructor(ngRedux, configs, model) {
+        super(ngRedux, configs, model);
+        this.ngRedux = ngRedux;
+        this.configs = configs;
+        this.model = model;
+        this.by_pk_entity$ = this.selector('by_pk_entity');
+    }
+}
+if (false) {
+    /** @type {?} */
+    WarEntityPreviewSelector.prototype.by_pk_entity$;
+    /** @type {?} */
+    WarEntityPreviewSelector.prototype.ngRedux;
+    /** @type {?} */
+    WarEntityPreviewSelector.prototype.configs;
+    /** @type {?} */
+    WarEntityPreviewSelector.prototype.model;
+}
+class WarSelector extends WarActions {
+    /**
+     * @param {?} ngRedux
+     */
+    constructor(ngRedux) {
+        super(ngRedux);
+        this.ngRedux = ngRedux;
+        this.entity_preview$ = new WarEntityPreviewSelector(this.ngRedux, warDefinitions, 'entity_preview');
+    }
+}
+WarSelector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+WarSelector.ctorParameters = () => [
+    { type: NgRedux }
+];
+/** @nocollapse */ WarSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function WarSelector_Factory() { return new WarSelector(ɵɵinject(NgRedux)); }, token: WarSelector, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    WarSelector.prototype.entity_preview$;
+    /** @type {?} */
+    WarSelector.prototype.ngRedux;
 }
 
 /**
@@ -6804,131 +6941,6 @@ if (false) {
  */
 function propertyOptionFieldKey(fkProperty, isOutgoing) {
     return '_' + fkProperty + '_' + (isOutgoing ? 'outgoing' : 'ingoing');
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: module/redux-queries.module.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ReduxQueriesModule {
-}
-ReduxQueriesModule.decorators = [
-    { type: NgModule, args: [{
-                declarations: [],
-                imports: [
-                    CommonModule,
-                    ReduxStoreModule,
-                ],
-                providers: [
-                    SchemaSelectorsService,
-                    ActiveProjectPipesService,
-                    ConfigurationPipesService,
-                    InformationBasicPipesService,
-                    InformationPipesService
-                ]
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * Generated from: selectors/war.service.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class Selector$6 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-    }
-    /**
-     * @template M
-     * @param {?} indexKey
-     * @return {?}
-     */
-    selector(indexKey) {
-        /** @type {?} */
-        const all$ = this.ngRedux.select([warRoot, this.model, indexKey]);
-        /** @type {?} */
-        const key = (/**
-         * @param {?} x
-         * @return {?}
-         */
-        (x) => {
-            /** @type {?} */
-            const k = typeof x === 'string' ? x : x.map((/**
-             * @param {?} part
-             * @return {?}
-             */
-            (part) => toString(part))).join('_');
-            ;
-            return this.ngRedux.select([warRoot, this.model, indexKey, k]);
-        });
-        return { all$, key };
-    }
-}
-if (false) {
-    /** @type {?} */
-    Selector$6.prototype.ngRedux;
-    /** @type {?} */
-    Selector$6.prototype.configs;
-    /** @type {?} */
-    Selector$6.prototype.model;
-}
-class WarEntityPreviewSelector extends Selector$6 {
-    /**
-     * @param {?} ngRedux
-     * @param {?} configs
-     * @param {?} model
-     */
-    constructor(ngRedux, configs, model) {
-        super(ngRedux, configs, model);
-        this.ngRedux = ngRedux;
-        this.configs = configs;
-        this.model = model;
-        this.by_pk_entity$ = this.selector('by_pk_entity');
-    }
-}
-if (false) {
-    /** @type {?} */
-    WarEntityPreviewSelector.prototype.by_pk_entity$;
-    /** @type {?} */
-    WarEntityPreviewSelector.prototype.ngRedux;
-    /** @type {?} */
-    WarEntityPreviewSelector.prototype.configs;
-    /** @type {?} */
-    WarEntityPreviewSelector.prototype.model;
-}
-class WarSelector extends WarActions {
-    /**
-     * @param {?} ngRedux
-     */
-    constructor(ngRedux) {
-        super(ngRedux);
-        this.ngRedux = ngRedux;
-        this.entity_preview$ = new WarEntityPreviewSelector(this.ngRedux, warDefinitions, 'entity_preview');
-    }
-}
-WarSelector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-WarSelector.ctorParameters = () => [
-    { type: NgRedux }
-];
-/** @nocollapse */ WarSelector.ngInjectableDef = ɵɵdefineInjectable({ factory: function WarSelector_Factory() { return new WarSelector(ɵɵinject(NgRedux)); }, token: WarSelector, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    WarSelector.prototype.entity_preview$;
-    /** @type {?} */
-    WarSelector.prototype.ngRedux;
 }
 
 /**

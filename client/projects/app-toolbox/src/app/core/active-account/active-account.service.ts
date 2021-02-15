@@ -1,20 +1,16 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { AccountActions, IAppState } from '@kleiolab/lib-redux';
 import { LoopBackConfig, PubAccountApi, SDKToken } from '@kleiolab/lib-sdk-lb3';
+import { AccountService, LoginRequest, LoginResponse, PubAccount } from '@kleiolab/lib-sdk-lb4';
 import { AccountRole } from 'projects/app-toolbox/src/app/modules/account/account.model';
-import { AccountActions } from 'projects/app-toolbox/src/app/modules/account/api/account.actions';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
-import { IAppState } from '../redux-store/model';
-import { PubAccount } from "@kleiolab/lib-sdk-lb4";
 
 
 
-import { LoginResponse } from "@kleiolab/lib-sdk-lb4";
-import { LoginRequest } from "@kleiolab/lib-sdk-lb4";
-import { AccountService } from "@kleiolab/lib-sdk-lb4";
 
 
 

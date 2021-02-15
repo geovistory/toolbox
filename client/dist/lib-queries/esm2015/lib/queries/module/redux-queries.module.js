@@ -4,29 +4,36 @@
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { ActiveProjectPipesService } from '../services/active-project-pipes.service';
-import { ConfigurationPipesService } from '../services/configuration-pipes.service';
-import { InformationBasicPipesService } from '../services/information-basic-pipes.service';
-import { InformationPipesService } from '../services/information-pipes.service';
-import { SchemaSelectorsService } from '../services/schema-selectors.service';
-import { ReduxStoreModule } from '@kleiolab/lib-redux';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { ReduxModule } from '@kleiolab/lib-redux';
 export class ReduxQueriesModule {
+    /**
+     * @param {?} parentModule
+     * @param {?} reduxModule
+     */
+    constructor(parentModule, reduxModule) {
+        /** @type {?} */
+        const errors = [];
+        if (parentModule)
+            errors.push('ReduxQueriesModule is already loaded. Import in your base AppModule only.');
+        if (!reduxModule)
+            errors.push('You need to import the ReduxModule in your AppModule!');
+        if (errors.length)
+            throw new Error(errors.join('\n'));
+    }
 }
 ReduxQueriesModule.decorators = [
     { type: NgModule, args: [{
                 declarations: [],
                 imports: [
                     CommonModule,
-                    ReduxStoreModule,
                 ],
-                providers: [
-                    SchemaSelectorsService,
-                    ActiveProjectPipesService,
-                    ConfigurationPipesService,
-                    InformationBasicPipesService,
-                    InformationPipesService
-                ]
+                providers: []
             },] }
 ];
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVkdXgtcXVlcmllcy5tb2R1bGUuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXF1ZXJpZXMvIiwic291cmNlcyI6WyJsaWIvcXVlcmllcy9tb2R1bGUvcmVkdXgtcXVlcmllcy5tb2R1bGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFBQSxPQUFPLEVBQUUsWUFBWSxFQUFFLE1BQU0saUJBQWlCLENBQUM7QUFDL0MsT0FBTyxFQUFFLFFBQVEsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUN6QyxPQUFPLEVBQUUseUJBQXlCLEVBQUUsTUFBTSwwQ0FBMEMsQ0FBQztBQUNyRixPQUFPLEVBQUUseUJBQXlCLEVBQUUsTUFBTSx5Q0FBeUMsQ0FBQztBQUNwRixPQUFPLEVBQUUsNEJBQTRCLEVBQUUsTUFBTSw2Q0FBNkMsQ0FBQztBQUMzRixPQUFPLEVBQUUsdUJBQXVCLEVBQUUsTUFBTSx1Q0FBdUMsQ0FBQztBQUNoRixPQUFPLEVBQUUsc0JBQXNCLEVBQUUsTUFBTSxzQ0FBc0MsQ0FBQztBQUM5RSxPQUFPLEVBQUUsZ0JBQWdCLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQW1CdkQsTUFBTSxPQUFPLGtCQUFrQjs7O1lBZDlCLFFBQVEsU0FBQztnQkFDUixZQUFZLEVBQUUsRUFBRTtnQkFDaEIsT0FBTyxFQUFFO29CQUNQLFlBQVk7b0JBQ1osZ0JBQWdCO2lCQUNqQjtnQkFDRCxTQUFTLEVBQUU7b0JBQ1Qsc0JBQXNCO29CQUN0Qix5QkFBeUI7b0JBQ3pCLHlCQUF5QjtvQkFDekIsNEJBQTRCO29CQUM1Qix1QkFBdUI7aUJBQ3hCO2FBQ0YiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBDb21tb25Nb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb21tb24nO1xuaW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IEFjdGl2ZVByb2plY3RQaXBlc1NlcnZpY2UgfSBmcm9tICcuLi9zZXJ2aWNlcy9hY3RpdmUtcHJvamVjdC1waXBlcy5zZXJ2aWNlJztcbmltcG9ydCB7IENvbmZpZ3VyYXRpb25QaXBlc1NlcnZpY2UgfSBmcm9tICcuLi9zZXJ2aWNlcy9jb25maWd1cmF0aW9uLXBpcGVzLnNlcnZpY2UnO1xuaW1wb3J0IHsgSW5mb3JtYXRpb25CYXNpY1BpcGVzU2VydmljZSB9IGZyb20gJy4uL3NlcnZpY2VzL2luZm9ybWF0aW9uLWJhc2ljLXBpcGVzLnNlcnZpY2UnO1xuaW1wb3J0IHsgSW5mb3JtYXRpb25QaXBlc1NlcnZpY2UgfSBmcm9tICcuLi9zZXJ2aWNlcy9pbmZvcm1hdGlvbi1waXBlcy5zZXJ2aWNlJztcbmltcG9ydCB7IFNjaGVtYVNlbGVjdG9yc1NlcnZpY2UgfSBmcm9tICcuLi9zZXJ2aWNlcy9zY2hlbWEtc2VsZWN0b3JzLnNlcnZpY2UnO1xuaW1wb3J0IHsgUmVkdXhTdG9yZU1vZHVsZSB9IGZyb20gJ0BrbGVpb2xhYi9saWItcmVkdXgnO1xuaW1wb3J0IHsgU29ja2V0c01vZHVsZSB9IGZyb20gJ0BrbGVpb2xhYi9saWItc29ja2V0cyc7XG5cblxuXG5ATmdNb2R1bGUoe1xuICBkZWNsYXJhdGlvbnM6IFtdLFxuICBpbXBvcnRzOiBbXG4gICAgQ29tbW9uTW9kdWxlLFxuICAgIFJlZHV4U3RvcmVNb2R1bGUsXG4gIF0sXG4gIHByb3ZpZGVyczogW1xuICAgIFNjaGVtYVNlbGVjdG9yc1NlcnZpY2UsXG4gICAgQWN0aXZlUHJvamVjdFBpcGVzU2VydmljZSxcbiAgICBDb25maWd1cmF0aW9uUGlwZXNTZXJ2aWNlLFxuICAgIEluZm9ybWF0aW9uQmFzaWNQaXBlc1NlcnZpY2UsXG4gICAgSW5mb3JtYXRpb25QaXBlc1NlcnZpY2VcbiAgXVxufSlcbmV4cG9ydCBjbGFzcyBSZWR1eFF1ZXJpZXNNb2R1bGUgeyB9XG4iXX0=
+/** @nocollapse */
+ReduxQueriesModule.ctorParameters = () => [
+    { type: ReduxQueriesModule, decorators: [{ type: Optional }, { type: SkipSelf }] },
+    { type: ReduxModule, decorators: [{ type: Optional }] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVkdXgtcXVlcmllcy5tb2R1bGUuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXF1ZXJpZXMvIiwic291cmNlcyI6WyJsaWIvcXVlcmllcy9tb2R1bGUvcmVkdXgtcXVlcmllcy5tb2R1bGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFBQSxPQUFPLEVBQUUsWUFBWSxFQUFFLE1BQU0saUJBQWlCLENBQUM7QUFDL0MsT0FBTyxFQUFFLFFBQVEsRUFBRSxRQUFRLEVBQUUsUUFBUSxFQUFFLE1BQU0sZUFBZSxDQUFDO0FBQzdELE9BQU8sRUFBRSxXQUFXLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQWFsRCxNQUFNLE9BQU8sa0JBQWtCOzs7OztJQUM3QixZQUMwQixZQUFnQyxFQUM1QyxXQUF3Qjs7Y0FFOUIsTUFBTSxHQUFhLEVBQUU7UUFDM0IsSUFBSSxZQUFZO1lBQUUsTUFBTSxDQUFDLElBQUksQ0FBQywyRUFBMkUsQ0FBQyxDQUFDO1FBQzNHLElBQUksQ0FBQyxXQUFXO1lBQUUsTUFBTSxDQUFDLElBQUksQ0FBQyx1REFBdUQsQ0FBQyxDQUFDO1FBQ3ZGLElBQUksTUFBTSxDQUFDLE1BQU07WUFBRSxNQUFNLElBQUksS0FBSyxDQUFDLE1BQU0sQ0FBQyxJQUFJLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQztJQUN4RCxDQUFDOzs7WUFsQkYsUUFBUSxTQUFDO2dCQUNSLFlBQVksRUFBRSxFQUFFO2dCQUNoQixPQUFPLEVBQUU7b0JBQ1AsWUFBWTtpQkFDYjtnQkFDRCxTQUFTLEVBQUUsRUFFVjthQUNGOzs7O1lBR3lDLGtCQUFrQix1QkFBdkQsUUFBUSxZQUFJLFFBQVE7WUFmaEIsV0FBVyx1QkFnQmYsUUFBUSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbW1vbk1vZHVsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbic7XG5pbXBvcnQgeyBOZ01vZHVsZSwgT3B0aW9uYWwsIFNraXBTZWxmIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQgeyBSZWR1eE1vZHVsZSB9IGZyb20gJ0BrbGVpb2xhYi9saWItcmVkdXgnO1xuXG5cblxuQE5nTW9kdWxlKHtcbiAgZGVjbGFyYXRpb25zOiBbXSxcbiAgaW1wb3J0czogW1xuICAgIENvbW1vbk1vZHVsZSxcbiAgXSxcbiAgcHJvdmlkZXJzOiBbXG5cbiAgXVxufSlcbmV4cG9ydCBjbGFzcyBSZWR1eFF1ZXJpZXNNb2R1bGUge1xuICBjb25zdHJ1Y3RvcihcbiAgICBAT3B0aW9uYWwoKSBAU2tpcFNlbGYoKSBwYXJlbnRNb2R1bGU6IFJlZHV4UXVlcmllc01vZHVsZSxcbiAgICBAT3B0aW9uYWwoKSByZWR1eE1vZHVsZTogUmVkdXhNb2R1bGUsXG4gICkge1xuICAgIGNvbnN0IGVycm9yczogc3RyaW5nW10gPSBbXVxuICAgIGlmIChwYXJlbnRNb2R1bGUpIGVycm9ycy5wdXNoKCdSZWR1eFF1ZXJpZXNNb2R1bGUgaXMgYWxyZWFkeSBsb2FkZWQuIEltcG9ydCBpbiB5b3VyIGJhc2UgQXBwTW9kdWxlIG9ubHkuJyk7XG4gICAgaWYgKCFyZWR1eE1vZHVsZSkgZXJyb3JzLnB1c2goJ1lvdSBuZWVkIHRvIGltcG9ydCB0aGUgUmVkdXhNb2R1bGUgaW4geW91ciBBcHBNb2R1bGUhJyk7XG4gICAgaWYgKGVycm9ycy5sZW5ndGgpIHRocm93IG5ldyBFcnJvcihlcnJvcnMuam9pbignXFxuJykpO1xuICB9XG59XG4iXX0=

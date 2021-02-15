@@ -1,9 +1,9 @@
-import { DevToolsExtension, NgRedux, ObservableStore } from '@angular-redux/store';
-import { Component, Input, OnInit, AfterViewInit, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { ActiveProjectActions, ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project';
-import { INIT_SANDBOX_STATE, sandboxStateReducer } from 'projects/app-toolbox/src/app/core/redux-store/root-reducer';
+import { NgRedux, ObservableStore } from '@angular-redux/store';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { INIT_SANDBOX_STATE, sandboxStateReducer } from '@kleiolab/lib-redux';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Subject, timer, Observable, combineLatest } from 'rxjs';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { combineLatest, Observable, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 
 
@@ -20,10 +20,10 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  /**
-   * Inputs for root slices of the store
-   */
-  @Input() activeProject: any;
+  // /**
+  //  * Inputs for root slices of the store
+  //  */
+  // @Input() activeProject: any;
 
   /**
    * If a number is set, load the project including crm from api
@@ -49,15 +49,15 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    /**
-     * Init root slices of the store using the rootReducer of StoreModule
-     */
-    if (this.activeProject) {
-      this.ngRedux.dispatch({
-        type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
-        payload: this.activeProject
-      })
-    }
+    // /**
+    //  * Init root slices of the store using the rootReducer of StoreModule
+    //  */
+    // if (this.activeProject) {
+    //   this.ngRedux.dispatch({
+    //     type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
+    //     payload: this.activeProject
+    //   })
+    // }
 
 
     /**

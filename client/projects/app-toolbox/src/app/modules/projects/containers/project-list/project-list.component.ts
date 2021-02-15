@@ -2,20 +2,13 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ProjectPreview } from 'projects/app-toolbox/src/app/core';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
-import { PubAccountApi } from '@kleiolab/lib-sdk-lb3';
-import { PubAccount } from '@kleiolab/lib-sdk-lb3';
-import { ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ProProject } from '@kleiolab/lib-sdk-lb3';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { ProActions } from 'projects/app-toolbox/src/app/core/pro/pro.actions';
-import { ProSelector } from 'projects/app-toolbox/src/app/core/pro/pro.service';
+import { ProSelector } from '@kleiolab/lib-queries';
+import { IAppState, ProActions, ProjectPreview } from '@kleiolab/lib-redux';
+import { LoopBackAuth, LoopBackConfig, ProProject, ProTextProperty, PubAccount, PubAccountApi } from '@kleiolab/lib-sdk-lb3';
+import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import * as Config from '../../../../../../../../../server/lb3app/common/config/Config';
 import { ProjectsActions } from '../../api/projects.actions';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
 
 
 @Component({
@@ -175,7 +168,7 @@ export class ProjectListComponent implements OnInit {
     this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
       (accounts: Array<PubAccount>) => {
 
-        this.projects = accounts[0].projects.map((p: ProProject) => U.proProjectToProjectPreview(p));
+        this.projects = accounts[0].projects.map((p: ProProject) => Utils.proProjectToProjectPreview(p));
 
         this.ngRedux.dispatch(this.actions.loadProjectsSucceeded(this.projects))
 

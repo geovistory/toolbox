@@ -3,14 +3,14 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatTableDataSource } from '@angular/material';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, mergeMap, takeUntil, filter } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { ProActions } from 'projects/app-toolbox/src/app/core/pro/pro.actions';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { ProActions } from "@kleiolab/lib-redux";
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { values } from 'd3';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
+import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
+import { InfActions } from "@kleiolab/lib-redux";
 
 interface Row {
 

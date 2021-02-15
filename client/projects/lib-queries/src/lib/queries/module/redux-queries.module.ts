@@ -1,12 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { ActiveProjectPipesService } from '../services/active-project-pipes.service';
-import { ConfigurationPipesService } from '../services/configuration-pipes.service';
-import { InformationBasicPipesService } from '../services/information-basic-pipes.service';
-import { InformationPipesService } from '../services/information-pipes.service';
-import { SchemaSelectorsService } from '../services/schema-selectors.service';
-import { ReduxStoreModule } from '@kleiolab/lib-redux';
-import { SocketsModule } from '@kleiolab/lib-sockets';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { ReduxModule } from '@kleiolab/lib-redux';
 
 
 
@@ -14,14 +8,19 @@ import { SocketsModule } from '@kleiolab/lib-sockets';
   declarations: [],
   imports: [
     CommonModule,
-    ReduxStoreModule,
   ],
   providers: [
-    SchemaSelectorsService,
-    ActiveProjectPipesService,
-    ConfigurationPipesService,
-    InformationBasicPipesService,
-    InformationPipesService
+
   ]
 })
-export class ReduxQueriesModule { }
+export class ReduxQueriesModule {
+  constructor(
+    @Optional() @SkipSelf() parentModule: ReduxQueriesModule,
+    @Optional() reduxModule: ReduxModule,
+  ) {
+    const errors: string[] = []
+    if (parentModule) errors.push('ReduxQueriesModule is already loaded. Import in your base AppModule only.');
+    if (!reduxModule) errors.push('You need to import the ReduxModule in your AppModule!');
+    if (errors.length) throw new Error(errors.join('\n'));
+  }
+}

@@ -1,15 +1,11 @@
-import { Injectable } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { paginatedBy, paginateKey, paginateName } from 'projects/app-toolbox/src/app/core/redux-store/reducer-factory';
-import { equals, keys } from 'ramda';
-import { combineLatest, Observable, Subject, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay, takeUntil, first } from 'rxjs/operators';
-import { Subfield } from '../components/properties-tree/properties-tree.models';
-import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
 import { NgRedux } from '@angular-redux/store';
-import { InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
-import { PaginatedStatementList } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { Injectable } from '@angular/core';
+import { Subfield } from '@kleiolab/lib-queries';
+import { ActionResultObservable, IAppState, PaginateByParam, paginatedBy, PaginatedStatementList, paginateKey, paginateName, SucceedActionMeta } from '@kleiolab/lib-redux';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { equals, keys } from 'ramda';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { createPaginateBy } from '../base.helpers';
 
 
@@ -124,7 +120,6 @@ class StatementPageLoader {
   providedIn: 'root'
 })
 export class PaginationService {
-  private infRepo = new InfSelector(this.ngRedux, of('repo'))
 
   temporalEntity = new StatementPageLoader(
     this.p,

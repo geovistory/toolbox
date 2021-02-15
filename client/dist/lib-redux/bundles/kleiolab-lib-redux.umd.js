@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular-redux/store'), require('@angular/core'), require('@cime/ngx-slim-loading-bar'), require('@cime/ngx-toasty'), require('@kleiolab/lib-sdk-lb3'), require('@kleiolab/lib-sdk-lb4'), require('ramda'), require('redux-dynamic-middlewares'), require('redux-observable-es6-compat'), require('rxjs'), require('rxjs/operators'), require('@kleiolab/lib-config'), require('@kleiolab/lib-utils'), require('@angular-redux/form'), require('@angular-redux/router'), require('redux'), require('@angular/cdk/drag-drop')) :
-    typeof define === 'function' && define.amd ? define('@kleiolab/lib-redux', ['exports', '@angular-redux/store', '@angular/core', '@cime/ngx-slim-loading-bar', '@cime/ngx-toasty', '@kleiolab/lib-sdk-lb3', '@kleiolab/lib-sdk-lb4', 'ramda', 'redux-dynamic-middlewares', 'redux-observable-es6-compat', 'rxjs', 'rxjs/operators', '@kleiolab/lib-config', '@kleiolab/lib-utils', '@angular-redux/form', '@angular-redux/router', 'redux', '@angular/cdk/drag-drop'], factory) :
-    (global = global || self, factory((global.kleiolab = global.kleiolab || {}, global.kleiolab['lib-redux'] = {}), global.store, global.ng.core, global.ngxSlimLoadingBar, global.ngxToasty, global.libSdkLb3, global.libSdkLb4, global.ramda, global.dynamicMiddlewares, global.reduxObservableEs6Compat, global.rxjs, global.rxjs.operators, global.libConfig, global.libUtils, global.form, global.router, global.redux, global.ng.cdk['drag-drop']));
-}(this, (function (exports, store, core, ngxSlimLoadingBar, ngxToasty, libSdkLb3, libSdkLb4, ramda, dynamicMiddlewares, reduxObservableEs6Compat, rxjs, operators, libConfig, libUtils, form, router, redux, dragDrop) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular-redux/store'), require('@angular/core'), require('@cime/ngx-slim-loading-bar'), require('@cime/ngx-toasty'), require('@kleiolab/lib-sdk-lb3'), require('@kleiolab/lib-sdk-lb4'), require('ramda'), require('redux-dynamic-middlewares'), require('redux-observable-es6-compat'), require('rxjs'), require('rxjs/operators'), require('@kleiolab/lib-config'), require('@kleiolab/lib-utils'), require('@cime/ngx-slim-loading-bar/src/slim-loading-bar.service'), require('@cime/ngx-toasty/src/toasty.service'), require('@angular-redux/form'), require('@angular-redux/router'), require('redux'), require('@angular/cdk/drag-drop')) :
+    typeof define === 'function' && define.amd ? define('@kleiolab/lib-redux', ['exports', '@angular-redux/store', '@angular/core', '@cime/ngx-slim-loading-bar', '@cime/ngx-toasty', '@kleiolab/lib-sdk-lb3', '@kleiolab/lib-sdk-lb4', 'ramda', 'redux-dynamic-middlewares', 'redux-observable-es6-compat', 'rxjs', 'rxjs/operators', '@kleiolab/lib-config', '@kleiolab/lib-utils', '@cime/ngx-slim-loading-bar/src/slim-loading-bar.service', '@cime/ngx-toasty/src/toasty.service', '@angular-redux/form', '@angular-redux/router', 'redux', '@angular/cdk/drag-drop'], factory) :
+    (global = global || self, factory((global.kleiolab = global.kleiolab || {}, global.kleiolab['lib-redux'] = {}), global.store, global.ng.core, global.ngxSlimLoadingBar, global.ngxToasty, global.libSdkLb3, global.libSdkLb4, global.ramda, global.dynamicMiddlewares, global.reduxObservableEs6Compat, global.rxjs, global.rxjs.operators, global.libConfig, global.libUtils, global.slimLoadingBar_service, global.toasty_service, global.form, global.router, global.redux, global.ng.cdk['drag-drop']));
+}(this, (function (exports, store, core, ngxSlimLoadingBar, ngxToasty, libSdkLb3, libSdkLb4, ramda, dynamicMiddlewares, reduxObservableEs6Compat, rxjs, operators, libConfig, libUtils, slimLoadingBar_service, toasty_service, form, router, redux, dragDrop) { 'use strict';
 
     dynamicMiddlewares = dynamicMiddlewares && dynamicMiddlewares.hasOwnProperty('default') ? dynamicMiddlewares['default'] : dynamicMiddlewares;
 
@@ -205,6 +205,167 @@
 
     /**
      * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/actions/account.actions.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function AccountActionMeta() { }
+    if (false) {
+        /** @type {?|undefined} */
+        AccountActionMeta.prototype.accountId;
+        /** @type {?|undefined} */
+        AccountActionMeta.prototype.accountRoles;
+        /** @type {?|undefined} */
+        AccountActionMeta.prototype.account;
+    }
+    ;
+    var AccountActions = /** @class */ (function () {
+        function AccountActions() {
+        }
+        /**
+         * @return {?}
+         */
+        AccountActions.prototype.login = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                type: AccountActions.LOGIN,
+                payload: null,
+                meta: null
+            };
+        };
+        /**
+         * @param {?} account
+         * @return {?}
+         */
+        AccountActions.prototype.loginSucceeded = /**
+         * @param {?} account
+         * @return {?}
+         */
+        function (account) {
+            return {
+                type: AccountActions.LOGIN_SUCCEEDED,
+                payload: null,
+                meta: { account: account }
+            };
+        };
+        /**
+         * @param {?} error
+         * @return {?}
+         */
+        AccountActions.prototype.loginFailed = /**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) {
+            return {
+                type: AccountActions.LOGIN_FAILED,
+                payload: null,
+                meta: null,
+                error: error
+            };
+        };
+        /**
+         * @param {?} account
+         * @return {?}
+         */
+        AccountActions.prototype.accountUpdated = /**
+         * @param {?} account
+         * @return {?}
+         */
+        function (account) {
+            return {
+                type: AccountActions.ACCOUNT_UPDATED,
+                payload: null,
+                meta: { account: account }
+            };
+        };
+        // Roles of the account, used to check permissions
+        // Roles of the account, used to check permissions
+        /**
+         * @param {?} accountId
+         * @return {?}
+         */
+        AccountActions.prototype.loadRoles = 
+        // Roles of the account, used to check permissions
+        /**
+         * @param {?} accountId
+         * @return {?}
+         */
+        function (accountId) {
+            return {
+                type: AccountActions.LOAD_ROLES,
+                payload: null,
+                meta: { accountId: accountId }
+            };
+        };
+        /**
+         * @param {?} accountRoles
+         * @return {?}
+         */
+        AccountActions.prototype.loadRolesSucceeded = /**
+         * @param {?} accountRoles
+         * @return {?}
+         */
+        function (accountRoles) {
+            return {
+                type: AccountActions.LOAD_ROLES_SUCCEEDED,
+                payload: null,
+                meta: { accountRoles: accountRoles }
+            };
+        };
+        /**
+         * @param {?} accountRoles
+         * @return {?}
+         */
+        AccountActions.prototype.loadRolesFailed = /**
+         * @param {?} accountRoles
+         * @return {?}
+         */
+        function (accountRoles) {
+            return {
+                type: AccountActions.LOAD_ROLES_FAILED,
+                payload: null,
+                meta: null
+            };
+        };
+        AccountActions.LOGIN = 'Account::LOGIN';
+        AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
+        AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
+        AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
+        AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
+        AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
+        AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
+        AccountActions.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */ AccountActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function AccountActions_Factory() { return new AccountActions(); }, token: AccountActions, providedIn: "root" });
+        return AccountActions;
+    }());
+    if (false) {
+        /** @type {?} */
+        AccountActions.LOGIN;
+        /** @type {?} */
+        AccountActions.LOGIN_SUCCEEDED;
+        /** @type {?} */
+        AccountActions.LOGIN_FAILED;
+        /** @type {?} */
+        AccountActions.LOAD_ROLES;
+        /** @type {?} */
+        AccountActions.LOAD_ROLES_SUCCEEDED;
+        /** @type {?} */
+        AccountActions.LOAD_ROLES_FAILED;
+        /** @type {?} */
+        AccountActions.ACCOUNT_UPDATED;
+    }
+
+    /**
+     * @fileoverview added by tsickle
      * Generated from: lib/redux-store/state-gui/actions/loading-bar.actions.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -256,8 +417,11 @@
         LoadingBarActions.STOP = 'LOADING_BAR_STOP';
         LoadingBarActions.COPMLETE = 'LOADING_BAR_COPMLETE';
         LoadingBarActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
+        /** @nocollapse */ LoadingBarActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function LoadingBarActions_Factory() { return new LoadingBarActions(); }, token: LoadingBarActions, providedIn: "root" });
         __decorate([
             store.dispatch(),
             __metadata("design:type", Object)
@@ -289,105 +453,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var LoadingBarEpics = /** @class */ (function () {
-        function LoadingBarEpics(service, actions) {
-            this.service = service;
-            this.actions = actions;
-        }
-        /**
-         * @return {?}
-         */
-        LoadingBarEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        LoadingBarEpics.prototype.createCompleteLoadingBarEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.COPMLETE), operators.switchMap((/**
-             * @return {?}
-             */
-            function () {
-                return rxjs.Observable.create((/**
-                 * @param {?} observer
-                 * @return {?}
-                 */
-                function (observer) {
-                    _this.service.complete();
-                    // observer.next(this.actions.stopLoading())
-                }));
-            }))); });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        LoadingBarEpics.prototype.createStartLoadingBarEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.START), operators.switchMap((/**
-             * @return {?}
-             */
-            function () {
-                return rxjs.Observable.create((/**
-                 * @param {?} observer
-                 * @return {?}
-                 */
-                function (observer) {
-                    _this.service.start();
-                }));
-            }))); });
-        };
-        LoadingBarEpics.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        LoadingBarEpics.ctorParameters = function () { return [
-            { type: ngxSlimLoadingBar.SlimLoadingBarService },
-            { type: LoadingBarActions }
-        ]; };
-        return LoadingBarEpics;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        LoadingBarEpics.prototype.service;
-        /**
-         * @type {?}
-         * @private
-         */
-        LoadingBarEpics.prototype.actions;
-    }
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: lib/redux-store/state-gui/actions/notifications.actions.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -414,8 +479,11 @@
         }
         NotificationsAPIActions.ADD_TOAST = 'Notifications::ADD_TOAST';
         NotificationsAPIActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
+        /** @nocollapse */ NotificationsAPIActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotificationsAPIActions_Factory() { return new NotificationsAPIActions(); }, token: NotificationsAPIActions, providedIn: "root" });
         return NotificationsAPIActions;
     }());
     if (false) {
@@ -427,31 +495,30 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
+     * Generated from: lib/redux-store/state-gui/epics/account.epics.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var NotificationsAPIEpics = /** @class */ (function () {
-        function NotificationsAPIEpics(toastyService, toastyConfig) {
-            this.toastyService = toastyService;
-            this.toastyConfig = toastyConfig;
-            // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-            // Possible values: default, bootstrap, material
-            this.toastyConfig.theme = 'bootstrap';
+    var AccountEpics = /** @class */ (function () {
+        function AccountEpics(actions, loadingBarActions, accountApi, notificationActions) {
+            this.actions = actions;
+            this.loadingBarActions = loadingBarActions;
+            this.accountApi = accountApi;
+            this.notificationActions = notificationActions;
         }
         /**
          * @return {?}
          */
-        NotificationsAPIEpics.prototype.createEpics = /**
+        AccountEpics.prototype.createEpics = /**
          * @return {?}
          */
         function () {
-            return reduxObservableEs6Compat.combineEpics(this.createAddToastEpic());
+            return reduxObservableEs6Compat.combineEpics(this.loadRoles());
         };
         /**
          * @private
          * @return {?}
          */
-        NotificationsAPIEpics.prototype.createAddToastEpic = /**
+        AccountEpics.prototype.loadRoles = /**
          * @private
          * @return {?}
          */
@@ -462,61 +529,72 @@
              * @param {?} store
              * @return {?}
              */
-            function (action$, store) {
-                return action$.pipe(
-                /**
-                 * Filter the actions that triggers this epic
-                 */
-                operators.filter((/**
-                 * @param {?} a
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(AccountActions.LOAD_ROLES), operators.mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new rxjs.Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            function (globalStore) {
+                globalStore.next(_this.loadingBarActions.startLoading());
+                _this.accountApi.getRoles(action.meta.accountId)
+                    .subscribe((/**
+                 * @param {?} data
                  * @return {?}
                  */
-                function (a) {
-                    return a;
-                })), reduxObservableEs6Compat.ofType(NotificationsAPIActions.ADD_TOAST), operators.switchMap((/**
-                 * @param {?} action
+                function (data) {
+                    globalStore.next(_this.loadingBarActions.completeLoading());
+                    globalStore.next(_this.actions.loadRolesSucceeded(data));
+                }), (/**
+                 * @param {?} error
                  * @return {?}
                  */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} observer
-                 * @return {?}
-                 */
-                function (observer) {
-                    /**
-                     * Add Toast
-                     * @type {?}
-                     */
-                    var a = (/** @type {?} */ (action));
-                    if (!a.payload.options.title && !a.payload.options.msg) {
-                        if (a.payload.type === 'error') {
-                            a.payload.options.title = 'Oops, something went wrong!';
-                        }
-                    }
-                    _this.toastyService[a.payload.type](a.payload.options);
-                })); })));
-            });
+                function (error) {
+                    globalStore.next(_this.notificationActions.addToast({
+                        type: 'error',
+                        options: { title: error }
+                    }));
+                }));
+            })); }))); });
         };
-        NotificationsAPIEpics.decorators = [
-            { type: core.Injectable }
+        AccountEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
-        NotificationsAPIEpics.ctorParameters = function () { return [
-            { type: ngxToasty.ToastyService },
-            { type: ngxToasty.ToastyConfig }
+        AccountEpics.ctorParameters = function () { return [
+            { type: AccountActions },
+            { type: LoadingBarActions },
+            { type: libSdkLb3.PubAccountApi },
+            { type: NotificationsAPIActions }
         ]; };
-        return NotificationsAPIEpics;
+        /** @nocollapse */ AccountEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function AccountEpics_Factory() { return new AccountEpics(core.ɵɵinject(AccountActions), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(libSdkLb3.PubAccountApi), core.ɵɵinject(NotificationsAPIActions)); }, token: AccountEpics, providedIn: "root" });
+        return AccountEpics;
     }());
     if (false) {
         /**
          * @type {?}
          * @private
          */
-        NotificationsAPIEpics.prototype.toastyService;
+        AccountEpics.prototype.actions;
         /**
          * @type {?}
          * @private
          */
-        NotificationsAPIEpics.prototype.toastyConfig;
+        AccountEpics.prototype.loadingBarActions;
+        /**
+         * @type {?}
+         * @private
+         */
+        AccountEpics.prototype.accountApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        AccountEpics.prototype.notificationActions;
     }
 
     /**
@@ -1321,8 +1399,11 @@
          */
         ActiveProjectActions.DESTROY = 'ActiveProject::DESTROY';
         ActiveProjectActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
+        /** @nocollapse */ ActiveProjectActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActiveProjectActions_Factory() { return new ActiveProjectActions(); }, token: ActiveProjectActions, providedIn: "root" });
         return ActiveProjectActions;
     }());
     if (false) {
@@ -2175,12 +2256,15 @@
             this.text_property = new SchemaActionsFactory(this.ngRedux).createCrudActions(datRoot, 'text_property');
         }
         DatActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         DatActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ DatActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function DatActions_Factory() { return new DatActions(core.ɵɵinject(store.NgRedux)); }, token: DatActions, providedIn: "root" });
         return DatActions;
     }());
     if (false) {
@@ -2582,12 +2666,15 @@
             this.label = new DfhLabelActionFactory(this.ngRedux).createActions();
         }
         DfhActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         DfhActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ DfhActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function DfhActions_Factory() { return new DfhActions(core.ɵɵinject(store.NgRedux)); }, token: DfhActions, providedIn: "root" });
         return DfhActions;
     }());
     if (false) {
@@ -3725,12 +3812,15 @@
             this.text_property = new InfTextPropertyActionFactory(this.ngRedux).createActions();
         }
         InfActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         InfActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ InfActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InfActions_Factory() { return new InfActions(core.ɵɵinject(store.NgRedux)); }, token: InfActions, providedIn: "root" });
         return InfActions;
     }());
     if (false) {
@@ -4379,12 +4469,15 @@
             this.analysis = new ProAnalysisActionFactory(this.ngRedux).createActions();
         }
         ProActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         ProActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ ProActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProActions_Factory() { return new ProActions(core.ɵɵinject(store.NgRedux)); }, token: ProActions, providedIn: "root" });
         return ProActions;
     }());
     if (false) {
@@ -4488,12 +4581,15 @@
             this.config = new SchemaActionsFactory(this.ngRedux).createCrudActions(sysRoot, 'config');
         }
         SysActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         SysActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ SysActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SysActions_Factory() { return new SysActions(core.ɵɵinject(store.NgRedux)); }, token: SysActions, providedIn: "root" });
         return SysActions;
     }());
     if (false) {
@@ -4511,14 +4607,26 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
+     * @param {?} textProperties
+     * @param {?} fkSystemType
+     * @return {?}
+     */
+    function firstProTextPropStringOfType(textProperties, fkSystemType) {
+        return (textProperties.find((/**
+         * @param {?} t
+         * @return {?}
+         */
+        function (t) { return t.fk_system_type === fkSystemType; })) || { string: '' }).string;
+    }
+    /**
      * Transform ProProject to ProjectPreview
      * @param {?} project
      * @return {?}
      */
     function proProjectToProjectPreview(project) {
         return {
-            label: this.firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-            description: this.firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+            label: firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+            description: firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
             default_language: project.default_language,
             pk_project: project.pk_entity
         };
@@ -4915,7 +5023,9 @@
             });
         };
         ActiveProjectEpics.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         ActiveProjectEpics.ctorParameters = function () { return [
@@ -4930,6 +5040,7 @@
             { type: LoadingBarActions },
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ ActiveProjectEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(core.ɵɵinject(SysActions), core.ɵɵinject(DatActions), core.ɵɵinject(DfhActions), core.ɵɵinject(ProActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(ActiveProjectActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(store.NgRedux)); }, token: ActiveProjectEpics, providedIn: "root" });
         return ActiveProjectEpics;
     }());
     if (false) {
@@ -4987,188 +5098,27 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/actions/account.actions.ts
+     * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @record
-     */
-    function AccountActionMeta() { }
-    if (false) {
-        /** @type {?|undefined} */
-        AccountActionMeta.prototype.accountId;
-        /** @type {?|undefined} */
-        AccountActionMeta.prototype.accountRoles;
-        /** @type {?|undefined} */
-        AccountActionMeta.prototype.account;
-    }
-    ;
-    var AccountActions = /** @class */ (function () {
-        function AccountActions() {
+    var LoadingBarEpics = /** @class */ (function () {
+        function LoadingBarEpics(service) {
+            this.service = service;
         }
         /**
          * @return {?}
          */
-        AccountActions.prototype.login = /**
+        LoadingBarEpics.prototype.createEpics = /**
          * @return {?}
          */
         function () {
-            return {
-                type: AccountActions.LOGIN,
-                payload: null,
-                meta: null
-            };
-        };
-        /**
-         * @param {?} account
-         * @return {?}
-         */
-        AccountActions.prototype.loginSucceeded = /**
-         * @param {?} account
-         * @return {?}
-         */
-        function (account) {
-            return {
-                type: AccountActions.LOGIN_SUCCEEDED,
-                payload: null,
-                meta: { account: account }
-            };
-        };
-        /**
-         * @param {?} error
-         * @return {?}
-         */
-        AccountActions.prototype.loginFailed = /**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) {
-            return {
-                type: AccountActions.LOGIN_FAILED,
-                payload: null,
-                meta: null,
-                error: error
-            };
-        };
-        /**
-         * @param {?} account
-         * @return {?}
-         */
-        AccountActions.prototype.accountUpdated = /**
-         * @param {?} account
-         * @return {?}
-         */
-        function (account) {
-            return {
-                type: AccountActions.ACCOUNT_UPDATED,
-                payload: null,
-                meta: { account: account }
-            };
-        };
-        // Roles of the account, used to check permissions
-        // Roles of the account, used to check permissions
-        /**
-         * @param {?} accountId
-         * @return {?}
-         */
-        AccountActions.prototype.loadRoles = 
-        // Roles of the account, used to check permissions
-        /**
-         * @param {?} accountId
-         * @return {?}
-         */
-        function (accountId) {
-            return {
-                type: AccountActions.LOAD_ROLES,
-                payload: null,
-                meta: { accountId: accountId }
-            };
-        };
-        /**
-         * @param {?} accountRoles
-         * @return {?}
-         */
-        AccountActions.prototype.loadRolesSucceeded = /**
-         * @param {?} accountRoles
-         * @return {?}
-         */
-        function (accountRoles) {
-            return {
-                type: AccountActions.LOAD_ROLES_SUCCEEDED,
-                payload: null,
-                meta: { accountRoles: accountRoles }
-            };
-        };
-        /**
-         * @param {?} accountRoles
-         * @return {?}
-         */
-        AccountActions.prototype.loadRolesFailed = /**
-         * @param {?} accountRoles
-         * @return {?}
-         */
-        function (accountRoles) {
-            return {
-                type: AccountActions.LOAD_ROLES_FAILED,
-                payload: null,
-                meta: null
-            };
-        };
-        AccountActions.LOGIN = 'Account::LOGIN';
-        AccountActions.LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
-        AccountActions.LOGIN_FAILED = 'Account::LOGIN_FAILED';
-        AccountActions.LOAD_ROLES = 'Account::LOAD_ROLES';
-        AccountActions.LOAD_ROLES_SUCCEEDED = 'Account::LOAD_ROLES_SUCCEEDED';
-        AccountActions.LOAD_ROLES_FAILED = 'Account::LOAD_ROLES_FAILED';
-        AccountActions.ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
-        AccountActions.decorators = [
-            { type: core.Injectable }
-        ];
-        return AccountActions;
-    }());
-    if (false) {
-        /** @type {?} */
-        AccountActions.LOGIN;
-        /** @type {?} */
-        AccountActions.LOGIN_SUCCEEDED;
-        /** @type {?} */
-        AccountActions.LOGIN_FAILED;
-        /** @type {?} */
-        AccountActions.LOAD_ROLES;
-        /** @type {?} */
-        AccountActions.LOAD_ROLES_SUCCEEDED;
-        /** @type {?} */
-        AccountActions.LOAD_ROLES_FAILED;
-        /** @type {?} */
-        AccountActions.ACCOUNT_UPDATED;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/epics/account.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var AccountEpics = /** @class */ (function () {
-        function AccountEpics(actions, loadingBarActions, accountApi, notificationActions) {
-            this.actions = actions;
-            this.loadingBarActions = loadingBarActions;
-            this.accountApi = accountApi;
-            this.notificationActions = notificationActions;
-        }
-        /**
-         * @return {?}
-         */
-        AccountEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics(this.loadRoles());
+            return reduxObservableEs6Compat.combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
         };
         /**
          * @private
          * @return {?}
          */
-        AccountEpics.prototype.loadRoles = /**
+        LoadingBarEpics.prototype.createCompleteLoadingBarEpic = /**
          * @private
          * @return {?}
          */
@@ -5179,485 +5129,216 @@
              * @param {?} store
              * @return {?}
              */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(AccountActions.LOAD_ROLES), operators.mergeMap((/**
-             * @param {?} action
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.COPMLETE), operators.switchMap((/**
              * @return {?}
              */
-            function (action) { return new rxjs.Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            function (globalStore) {
-                globalStore.next(_this.loadingBarActions.startLoading());
-                _this.accountApi.getRoles(action.meta.accountId)
-                    .subscribe((/**
-                 * @param {?} data
+            function () {
+                return rxjs.Observable.create((/**
+                 * @param {?} observer
                  * @return {?}
                  */
-                function (data) {
-                    globalStore.next(_this.loadingBarActions.completeLoading());
-                    globalStore.next(_this.actions.loadRolesSucceeded(data));
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    globalStore.next(_this.notificationActions.addToast({
-                        type: 'error',
-                        options: { title: error }
-                    }));
+                function (observer) {
+                    _this.service.complete();
+                    // observer.next(this.actions.stopLoading())
                 }));
-            })); }))); });
+            }))); });
         };
-        AccountEpics.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        AccountEpics.ctorParameters = function () { return [
-            { type: AccountActions },
-            { type: LoadingBarActions },
-            { type: libSdkLb3.PubAccountApi },
-            { type: NotificationsAPIActions }
-        ]; };
-        return AccountEpics;
-    }());
-    if (false) {
         /**
-         * @type {?}
          * @private
+         * @return {?}
          */
-        AccountEpics.prototype.actions;
-        /**
-         * @type {?}
+        LoadingBarEpics.prototype.createStartLoadingBarEpic = /**
          * @private
-         */
-        AccountEpics.prototype.loadingBarActions;
-        /**
-         * @type {?}
-         * @private
-         */
-        AccountEpics.prototype.accountApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        AccountEpics.prototype.notificationActions;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/_helpers/schema-epics-factory.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template Payload, Model
-     */
-    var   /**
-     * @template Payload, Model
-     */
-    SchemaEpicsFactory = /** @class */ (function () {
-        function SchemaEpicsFactory(actionPrefix, modelName, actions, notifications) {
-            this.actionPrefix = actionPrefix;
-            this.modelName = modelName;
-            this.actions = actions;
-            this.notifications = notifications;
-        }
-        /**
-         * @template T
-         * @param {?} apiFn
-         * @param {?} actionSuffix
-         * @param {?=} onSuccessHook
-         * @return {?}
-         */
-        SchemaEpicsFactory.prototype.createLoadEpic = /**
-         * @template T
-         * @param {?} apiFn
-         * @param {?} actionSuffix
-         * @param {?=} onSuccessHook
-         * @return {?}
-         */
-        function (apiFn, actionSuffix, onSuccessHook) {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(_this.type('LOAD', actionSuffix)), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalActions
-                 * @return {?}
-                 */
-                function (globalActions) {
-                    /** @type {?} */
-                    var pendingKey = action.meta.addPending;
-                    /** @type {?} */
-                    var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                    apiFn(meta).subscribe((/**
-                     * @param {?} data
-                     * @return {?}
-                     */
-                    function (data) {
-                        if (onSuccessHook) {
-                            onSuccessHook(data, action.meta.pk, meta);
-                            _this.actions.succeeded(data, pendingKey, action.meta.pk);
-                        }
-                        else {
-                            _this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
-                        }
-                    }), (/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        _this.onError(globalActions, error, pendingKey, action.meta.pk);
-                    }));
-                })); })));
-            });
-        };
-        /**
-         * @template T
-         * @param {?} apiFn
-         * @param {?=} onSuccessHook
-         * @return {?}
-         */
-        SchemaEpicsFactory.prototype.createUpsertEpic = /**
-         * @template T
-         * @param {?} apiFn
-         * @param {?=} onSuccessHook
-         * @return {?}
-         */
-        function (apiFn, onSuccessHook) {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(_this.actionPrefix + '.' + _this.modelName + '::UPSERT'), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalActions
-                 * @return {?}
-                 */
-                function (globalActions) {
-                    /** @type {?} */
-                    var pendingKey = action.meta.addPending;
-                    /** @type {?} */
-                    var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
-                    apiFn(meta).subscribe((/**
-                     * @param {?} data
-                     * @return {?}
-                     */
-                    function (data) {
-                        if (onSuccessHook) {
-                            onSuccessHook(data, action.meta.pk);
-                            _this.actions.succeeded(data, pendingKey, action.meta.pk);
-                        }
-                        else {
-                            _this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
-                        }
-                    }), (/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        _this.onError(globalActions, error, pendingKey, action.meta.pk);
-                    }));
-                })); })));
-            });
-        };
-        /**
-         * @param {?} apiFn
-         * @return {?}
-         */
-        SchemaEpicsFactory.prototype.createDeleteEpic = /**
-         * @param {?} apiFn
-         * @return {?}
-         */
-        function (apiFn) {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(_this.actionPrefix + '.' + _this.modelName + '::DELETE'), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalActions
-                 * @return {?}
-                 */
-                function (globalActions) {
-                    /** @type {?} */
-                    var pendingKey = action.meta.addPending;
-                    apiFn(action.meta).subscribe((/**
-                     * @param {?} data
-                     * @return {?}
-                     */
-                    function (data) {
-                        _this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
-                    }), (/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        _this.onError(globalActions, error, pendingKey, action.meta.pk);
-                    }));
-                })); })));
-            });
-        };
-        /**
-         * Create the string used as action.type
-         */
-        /**
-         * Create the string used as action.type
-         * @param {?} operation
-         * @param {?} actionSuffix
-         * @return {?}
-         */
-        SchemaEpicsFactory.prototype.type = /**
-         * Create the string used as action.type
-         * @param {?} operation
-         * @param {?} actionSuffix
-         * @return {?}
-         */
-        function (operation, actionSuffix) {
-            return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
-        };
-        /**
-        * Create the onError logic for standard actions
-        * @param globalActions pass in the subscriber to the action$ stream
-        */
-        /**
-         * Create the onError logic for standard actions
-         * @param {?} globalActions pass in the subscriber to the action$ stream
-         * @param {?} error
-         * @param {?} pendingKey
-         * @param {?} pkProject
-         * @return {?}
-         */
-        SchemaEpicsFactory.prototype.onError = /**
-         * Create the onError logic for standard actions
-         * @param {?} globalActions pass in the subscriber to the action$ stream
-         * @param {?} error
-         * @param {?} pendingKey
-         * @param {?} pkProject
-         * @return {?}
-         */
-        function (globalActions, error, pendingKey, pkProject) {
-            globalActions.next(this.notifications.addToast({
-                type: 'error',
-                options: { title: error.message }
-            }));
-            this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
-        };
-        return SchemaEpicsFactory;
-    }());
-    if (false) {
-        /** @type {?} */
-        SchemaEpicsFactory.prototype.actionPrefix;
-        /** @type {?} */
-        SchemaEpicsFactory.prototype.modelName;
-        /** @type {?} */
-        SchemaEpicsFactory.prototype.actions;
-        /** @type {?} */
-        SchemaEpicsFactory.prototype.notifications;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/sys.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var SysEpics = /** @class */ (function () {
-        function SysEpics(actions, notification, sysRelevantClassApi, sysConfigApi) {
-            this.actions = actions;
-            this.notification = notification;
-            this.sysRelevantClassApi = sysRelevantClassApi;
-            this.sysConfigApi = sysConfigApi;
-        }
-        /**
-         * @return {?}
-         */
-        SysEpics.prototype.createEpics = /**
          * @return {?}
          */
         function () {
             var _this = this;
-            /** @type {?} */
-            var systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
-            // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
-            //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
-            /** @type {?} */
-            var configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
-            return reduxObservableEs6Compat.combineEpics(
-            // SystemRelevantClass Epics
-            systemRelevantClassEpicsFactory.createLoadEpic((/**
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.START), operators.switchMap((/**
+             * @return {?}
+             */
+            function () {
+                return rxjs.Observable.create((/**
+                 * @param {?} observer
+                 * @return {?}
+                 */
+                function (observer) {
+                    _this.service.start();
+                }));
+            }))); });
+        };
+        LoadingBarEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        LoadingBarEpics.ctorParameters = function () { return [
+            { type: ngxSlimLoadingBar.SlimLoadingBarService }
+        ]; };
+        /** @nocollapse */ LoadingBarEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function LoadingBarEpics_Factory() { return new LoadingBarEpics(core.ɵɵinject(slimLoadingBar_service.SlimLoadingBarService)); }, token: LoadingBarEpics, providedIn: "root" });
+        return LoadingBarEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        LoadingBarEpics.prototype.service;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var NotificationsAPIEpics = /** @class */ (function () {
+        function NotificationsAPIEpics(toastyService, toastyConfig) {
+            this.toastyService = toastyService;
+            this.toastyConfig = toastyConfig;
+            // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
+            // Possible values: default, bootstrap, material
+            this.toastyConfig.theme = 'bootstrap';
+        }
+        /**
+         * @return {?}
+         */
+        NotificationsAPIEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            return reduxObservableEs6Compat.combineEpics(this.createAddToastEpic());
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        NotificationsAPIEpics.prototype.createAddToastEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(
+                /**
+                 * Filter the actions that triggers this epic
+                 */
+                operators.filter((/**
+                 * @param {?} a
+                 * @return {?}
+                 */
+                function (a) {
+                    return a;
+                })), reduxObservableEs6Compat.ofType(NotificationsAPIActions.ADD_TOAST), operators.switchMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} observer
+                 * @return {?}
+                 */
+                function (observer) {
+                    /**
+                     * Add Toast
+                     * @type {?}
+                     */
+                    var a = (/** @type {?} */ (action));
+                    if (!a.payload.options.title && !a.payload.options.msg) {
+                        if (a.payload.type === 'error') {
+                            a.payload.options.title = 'Oops, something went wrong!';
+                        }
+                    }
+                    _this.toastyService[a.payload.type](a.payload.options);
+                })); })));
+            });
+        };
+        NotificationsAPIEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        NotificationsAPIEpics.ctorParameters = function () { return [
+            { type: ngxToasty.ToastyService },
+            { type: ngxToasty.ToastyConfig }
+        ]; };
+        /** @nocollapse */ NotificationsAPIEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotificationsAPIEpics_Factory() { return new NotificationsAPIEpics(core.ɵɵinject(toasty_service.ToastyService), core.ɵɵinject(toasty_service.ToastyConfig)); }, token: NotificationsAPIEpics, providedIn: "root" });
+        return NotificationsAPIEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        NotificationsAPIEpics.prototype.toastyService;
+        /**
+         * @type {?}
+         * @private
+         */
+        NotificationsAPIEpics.prototype.toastyConfig;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ActionResolverEpics = /** @class */ (function () {
+        // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+        function ActionResolverEpics() {
+            var _this = this;
+            this.createEpics = (/**
+             * @return {?}
+             */
+            function () { return reduxObservableEs6Compat.combineEpics(_this.createResolveEpic()); });
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        ActionResolverEpics.prototype.createResolveEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(operators.filter((/**
              * @param {?} action
              * @return {?}
              */
-            function (action) { return _this.sysRelevantClassApi.find(); }), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
-             * @param {?} meta
+            function (action) { return !!action && !!action.meta && !!action.meta.removePending; })), operators.switchMap((/**
+             * @param {?} action
              * @return {?}
              */
-            function (meta) { return _this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items); })), 
-            // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
-            configEpicsFactory.createLoadEpic((/**
-             * @return {?}
-             */
-            function () { return _this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(operators.map((/**
-             * @param {?} x
-             * @return {?}
-             */
-            function (x) { return [x]; }))); }), ''));
+            function (action) { return (rxjs.of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } })); }))); });
         };
-        SysEpics.decorators = [
-            { type: core.Injectable }
+        ActionResolverEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
-        SysEpics.ctorParameters = function () { return [
-            { type: SysActions },
-            { type: NotificationsAPIActions },
-            { type: libSdkLb3.SysSystemRelevantClassApi },
-            { type: libSdkLb4.SystemConfigurationService }
-        ]; };
-        return SysEpics;
+        ActionResolverEpics.ctorParameters = function () { return []; };
+        /** @nocollapse */ ActionResolverEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+        return ActionResolverEpics;
     }());
     if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        SysEpics.prototype.actions;
-        /**
-         * @type {?}
-         * @private
-         */
-        SysEpics.prototype.notification;
-        /**
-         * @type {?}
-         * @private
-         */
-        SysEpics.prototype.sysRelevantClassApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        SysEpics.prototype.sysConfigApi;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/dfh.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var DfhEpics = /** @class */ (function () {
-        function DfhEpics(actions, notification, profileApi, classApi, propertyApi, labelApi) {
-            this.actions = actions;
-            this.notification = notification;
-            this.profileApi = profileApi;
-            this.classApi = classApi;
-            this.propertyApi = propertyApi;
-            this.labelApi = labelApi;
-        }
-        /**
-         * @return {?}
-         */
-        DfhEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            /** @type {?} */
-            var dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
-            /** @type {?} */
-            var dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
-            /** @type {?} */
-            var dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
-            /** @type {?} */
-            var dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
-            return reduxObservableEs6Compat.combineEpics(
-            // Profile Loaders
-            dfhProfileEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.profileApi.ofProject(meta.pk); }), DfhProfileActionFactory.OF_PROJECT), 
-            // Property Loaders
-            dfhPropertyEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.propertyApi.dfhPropertyControllerOfProject(meta.pk); }), DfhPropertyActionFactory.OF_PROJECT), 
-            // Class Loaders
-            dfhClassEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.classApi.dfhClassControllerOfProject(meta.pk); }), DfhClassActionFactory.OF_PROJECT), 
-            // Label Loaders
-            dfhLabelEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.labelApi.ofProject(meta.pk); }), DfhLabelActionFactory.OF_PROJECT));
-        };
-        DfhEpics.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        DfhEpics.ctorParameters = function () { return [
-            { type: DfhActions },
-            { type: NotificationsAPIActions },
-            { type: libSdkLb3.DfhProfileApi },
-            { type: libSdkLb4.DfhClassControllerService },
-            { type: libSdkLb4.DfhPropertyControllerService },
-            { type: libSdkLb3.DfhLabelApi }
-        ]; };
-        return DfhEpics;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        DfhEpics.prototype.actions;
-        /**
-         * @type {?}
-         * @private
-         */
-        DfhEpics.prototype.notification;
-        /**
-         * @type {?}
-         * @private
-         */
-        DfhEpics.prototype.profileApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        DfhEpics.prototype.classApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        DfhEpics.prototype.propertyApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        DfhEpics.prototype.labelApi;
+        /** @type {?} */
+        ActionResolverEpics.prototype.createEpics;
     }
 
     /**
@@ -5703,12 +5384,15 @@
             this.cell = new SchemaActionsFactory(this.ngRedux).createCrudActions(tabRoot, 'cell');
         }
         TabActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         TabActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ TabActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function TabActions_Factory() { return new TabActions(core.ɵɵinject(store.NgRedux)); }, token: TabActions, providedIn: "root" });
         return TabActions;
     }());
     if (false) {
@@ -5751,12 +5435,15 @@
             this.entity_preview = new SchemaActionsFactory(this.ngRedux).createCrudActions(warRoot, 'entity_preview');
         }
         WarActions.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         WarActions.ctorParameters = function () { return [
             { type: store.NgRedux }
         ]; };
+        /** @nocollapse */ WarActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function WarActions_Factory() { return new WarActions(core.ɵɵinject(store.NgRedux)); }, token: WarActions, providedIn: "root" });
         return WarActions;
     }());
     if (false) {
@@ -5986,7 +5673,9 @@
             }
         };
         SchemaObjectService.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         SchemaObjectService.ctorParameters = function () { return [
@@ -6000,6 +5689,7 @@
             { type: SysActions },
             { type: NotificationsAPIActions }
         ]; };
+        /** @nocollapse */ SchemaObjectService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaObjectService_Factory() { return new SchemaObjectService(core.ɵɵinject(libSdkLb3.SchemaObjectApi), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(WarActions), core.ɵɵinject(TabActions), core.ɵɵinject(DfhActions), core.ɵɵinject(SysActions), core.ɵɵinject(NotificationsAPIActions)); }, token: SchemaObjectService, providedIn: "root" });
         return SchemaObjectService;
     }());
     if (false) {
@@ -6488,6 +6178,475 @@
             }
         }));
     });
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-schema/_helpers/schema-epics-factory.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template Payload, Model
+     */
+    var   /**
+     * @template Payload, Model
+     */
+    SchemaEpicsFactory = /** @class */ (function () {
+        function SchemaEpicsFactory(actionPrefix, modelName, actions, notifications) {
+            this.actionPrefix = actionPrefix;
+            this.modelName = modelName;
+            this.actions = actions;
+            this.notifications = notifications;
+        }
+        /**
+         * @template T
+         * @param {?} apiFn
+         * @param {?} actionSuffix
+         * @param {?=} onSuccessHook
+         * @return {?}
+         */
+        SchemaEpicsFactory.prototype.createLoadEpic = /**
+         * @template T
+         * @param {?} apiFn
+         * @param {?} actionSuffix
+         * @param {?=} onSuccessHook
+         * @return {?}
+         */
+        function (apiFn, actionSuffix, onSuccessHook) {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(_this.type('LOAD', actionSuffix)), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalActions
+                 * @return {?}
+                 */
+                function (globalActions) {
+                    /** @type {?} */
+                    var pendingKey = action.meta.addPending;
+                    /** @type {?} */
+                    var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                    apiFn(meta).subscribe((/**
+                     * @param {?} data
+                     * @return {?}
+                     */
+                    function (data) {
+                        if (onSuccessHook) {
+                            onSuccessHook(data, action.meta.pk, meta);
+                            _this.actions.succeeded(data, pendingKey, action.meta.pk);
+                        }
+                        else {
+                            _this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
+                        }
+                    }), (/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        _this.onError(globalActions, error, pendingKey, action.meta.pk);
+                    }));
+                })); })));
+            });
+        };
+        /**
+         * @template T
+         * @param {?} apiFn
+         * @param {?=} onSuccessHook
+         * @return {?}
+         */
+        SchemaEpicsFactory.prototype.createUpsertEpic = /**
+         * @template T
+         * @param {?} apiFn
+         * @param {?=} onSuccessHook
+         * @return {?}
+         */
+        function (apiFn, onSuccessHook) {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(_this.actionPrefix + '.' + _this.modelName + '::UPSERT'), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalActions
+                 * @return {?}
+                 */
+                function (globalActions) {
+                    /** @type {?} */
+                    var pendingKey = action.meta.addPending;
+                    /** @type {?} */
+                    var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
+                    apiFn(meta).subscribe((/**
+                     * @param {?} data
+                     * @return {?}
+                     */
+                    function (data) {
+                        if (onSuccessHook) {
+                            onSuccessHook(data, action.meta.pk);
+                            _this.actions.succeeded(data, pendingKey, action.meta.pk);
+                        }
+                        else {
+                            _this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+                        }
+                    }), (/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        _this.onError(globalActions, error, pendingKey, action.meta.pk);
+                    }));
+                })); })));
+            });
+        };
+        /**
+         * @param {?} apiFn
+         * @return {?}
+         */
+        SchemaEpicsFactory.prototype.createDeleteEpic = /**
+         * @param {?} apiFn
+         * @return {?}
+         */
+        function (apiFn) {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(_this.actionPrefix + '.' + _this.modelName + '::DELETE'), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalActions
+                 * @return {?}
+                 */
+                function (globalActions) {
+                    /** @type {?} */
+                    var pendingKey = action.meta.addPending;
+                    apiFn(action.meta).subscribe((/**
+                     * @param {?} data
+                     * @return {?}
+                     */
+                    function (data) {
+                        _this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
+                    }), (/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        _this.onError(globalActions, error, pendingKey, action.meta.pk);
+                    }));
+                })); })));
+            });
+        };
+        /**
+         * Create the string used as action.type
+         */
+        /**
+         * Create the string used as action.type
+         * @param {?} operation
+         * @param {?} actionSuffix
+         * @return {?}
+         */
+        SchemaEpicsFactory.prototype.type = /**
+         * Create the string used as action.type
+         * @param {?} operation
+         * @param {?} actionSuffix
+         * @return {?}
+         */
+        function (operation, actionSuffix) {
+            return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '');
+        };
+        /**
+        * Create the onError logic for standard actions
+        * @param globalActions pass in the subscriber to the action$ stream
+        */
+        /**
+         * Create the onError logic for standard actions
+         * @param {?} globalActions pass in the subscriber to the action$ stream
+         * @param {?} error
+         * @param {?} pendingKey
+         * @param {?} pkProject
+         * @return {?}
+         */
+        SchemaEpicsFactory.prototype.onError = /**
+         * Create the onError logic for standard actions
+         * @param {?} globalActions pass in the subscriber to the action$ stream
+         * @param {?} error
+         * @param {?} pendingKey
+         * @param {?} pkProject
+         * @return {?}
+         */
+        function (globalActions, error, pendingKey, pkProject) {
+            globalActions.next(this.notifications.addToast({
+                type: 'error',
+                options: { title: error.message }
+            }));
+            this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
+        };
+        return SchemaEpicsFactory;
+    }());
+    if (false) {
+        /** @type {?} */
+        SchemaEpicsFactory.prototype.actionPrefix;
+        /** @type {?} */
+        SchemaEpicsFactory.prototype.modelName;
+        /** @type {?} */
+        SchemaEpicsFactory.prototype.actions;
+        /** @type {?} */
+        SchemaEpicsFactory.prototype.notifications;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-schema/epics/dat.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var DatEpics = /** @class */ (function () {
+        function DatEpics(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
+            this.notification = notification;
+            this.datActions = datActions;
+            this.infActions = infActions;
+            this.proActions = proActions;
+            this.digitalApi = digitalApi;
+            this.chunkApi = chunkApi;
+            this.columnApi = columnApi;
+            this.namespaceApi = namespaceApi;
+            this.schemaObjectService = schemaObjectService;
+        }
+        /**
+         * @return {?}
+         */
+        DatEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            /** @type {?} */
+            var digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
+            /** @type {?} */
+            var chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
+            /** @type {?} */
+            var namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
+            /** @type {?} */
+            var columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
+            return reduxObservableEs6Compat.combineEpics(
+            // Digital
+            digitalEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null); }), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.digitalApi.bulkUpsert(meta.pk, meta.items); })), digitalEpicsFactory.createDeleteEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.digitalApi.bulkDelete(meta.items.map((/**
+             * @param {?} item
+             * @return {?}
+             */
+            function (item) { return item.pk_entity; }))); })), 
+            // Chunk
+            chunkEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.chunkApi.ofDigital(meta.pk, meta.pkDigital); }), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
+             * @param {?} results
+             * @param {?} pk
+             * @return {?}
+             */
+            function (results, pk) {
+                /** @type {?} */
+                var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
+                flattener.chunk.flatten(results);
+                storeFlattened(flattener.getFlattened(), pk);
+            })), 
+            // Namespace
+            namespaceEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.namespaceApi.byProject(meta.pk); }), ''), columnEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.columnApi.ofDigital(meta.pk, meta.pkDigital); }), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
+             * @param {?} results
+             * @param {?} pk
+             * @return {?}
+             */
+            function (results, pk) {
+                /** @type {?} */
+                var schemaObject = (/** @type {?} */ ((/** @type {?} */ (results))));
+                _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
+            })));
+        };
+        DatEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        DatEpics.ctorParameters = function () { return [
+            { type: NotificationsAPIActions },
+            { type: DatActions },
+            { type: InfActions },
+            { type: ProActions },
+            { type: libSdkLb3.DatDigitalApi },
+            { type: libSdkLb3.DatChunkApi },
+            { type: libSdkLb3.DatColumnApi },
+            { type: libSdkLb3.DatNamespaceApi },
+            { type: SchemaObjectService }
+        ]; };
+        /** @nocollapse */ DatEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function DatEpics_Factory() { return new DatEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(DatActions), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(libSdkLb3.DatDigitalApi), core.ɵɵinject(libSdkLb3.DatChunkApi), core.ɵɵinject(libSdkLb3.DatColumnApi), core.ɵɵinject(libSdkLb3.DatNamespaceApi), core.ɵɵinject(SchemaObjectService)); }, token: DatEpics, providedIn: "root" });
+        return DatEpics;
+    }());
+    if (false) {
+        /** @type {?} */
+        DatEpics.prototype.notification;
+        /** @type {?} */
+        DatEpics.prototype.datActions;
+        /** @type {?} */
+        DatEpics.prototype.infActions;
+        /** @type {?} */
+        DatEpics.prototype.proActions;
+        /** @type {?} */
+        DatEpics.prototype.digitalApi;
+        /** @type {?} */
+        DatEpics.prototype.chunkApi;
+        /** @type {?} */
+        DatEpics.prototype.columnApi;
+        /** @type {?} */
+        DatEpics.prototype.namespaceApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        DatEpics.prototype.schemaObjectService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-schema/epics/dfh.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var DfhEpics = /** @class */ (function () {
+        function DfhEpics(actions, notification, profileApi, classApi, propertyApi, labelApi) {
+            this.actions = actions;
+            this.notification = notification;
+            this.profileApi = profileApi;
+            this.classApi = classApi;
+            this.propertyApi = propertyApi;
+            this.labelApi = labelApi;
+        }
+        /**
+         * @return {?}
+         */
+        DfhEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            /** @type {?} */
+            var dfhProfileEpicsFactory = new SchemaEpicsFactory('dfh', 'profile', this.actions.profile, this.notification);
+            /** @type {?} */
+            var dfhClassEpicsFactory = new SchemaEpicsFactory('dfh', 'klass', this.actions.klass, this.notification);
+            /** @type {?} */
+            var dfhLabelEpicsFactory = new SchemaEpicsFactory('dfh', 'label', this.actions.label, this.notification);
+            /** @type {?} */
+            var dfhPropertyEpicsFactory = new SchemaEpicsFactory('dfh', 'property', this.actions.property, this.notification);
+            return reduxObservableEs6Compat.combineEpics(
+            // Profile Loaders
+            dfhProfileEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.profileApi.ofProject(meta.pk); }), DfhProfileActionFactory.OF_PROJECT), 
+            // Property Loaders
+            dfhPropertyEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.propertyApi.dfhPropertyControllerOfProject(meta.pk); }), DfhPropertyActionFactory.OF_PROJECT), 
+            // Class Loaders
+            dfhClassEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.classApi.dfhClassControllerOfProject(meta.pk); }), DfhClassActionFactory.OF_PROJECT), 
+            // Label Loaders
+            dfhLabelEpicsFactory.createLoadEpic((/**
+             * @param {?} meta
+             * @return {?}
+             */
+            function (meta) { return _this.labelApi.ofProject(meta.pk); }), DfhLabelActionFactory.OF_PROJECT));
+        };
+        DfhEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        DfhEpics.ctorParameters = function () { return [
+            { type: DfhActions },
+            { type: NotificationsAPIActions },
+            { type: libSdkLb3.DfhProfileApi },
+            { type: libSdkLb4.DfhClassControllerService },
+            { type: libSdkLb4.DfhPropertyControllerService },
+            { type: libSdkLb3.DfhLabelApi }
+        ]; };
+        /** @nocollapse */ DfhEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function DfhEpics_Factory() { return new DfhEpics(core.ɵɵinject(DfhActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(libSdkLb3.DfhProfileApi), core.ɵɵinject(libSdkLb4.DfhClassControllerService), core.ɵɵinject(libSdkLb4.DfhPropertyControllerService), core.ɵɵinject(libSdkLb3.DfhLabelApi)); }, token: DfhEpics, providedIn: "root" });
+        return DfhEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        DfhEpics.prototype.actions;
+        /**
+         * @type {?}
+         * @private
+         */
+        DfhEpics.prototype.notification;
+        /**
+         * @type {?}
+         * @private
+         */
+        DfhEpics.prototype.profileApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        DfhEpics.prototype.classApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        DfhEpics.prototype.propertyApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        DfhEpics.prototype.labelApi;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -7130,7 +7289,9 @@
             }));
         };
         InfEpics.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         InfEpics.ctorParameters = function () { return [
@@ -7145,6 +7306,7 @@
             { type: libSdkLb3.ProInfoProjRelApi },
             { type: SchemaObjectService }
         ]; };
+        /** @nocollapse */ InfEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InfEpics_Factory() { return new InfEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(libSdkLb3.InfPersistentItemApi), core.ɵɵinject(libSdkLb3.InfTemporalEntityApi), core.ɵɵinject(libSdkLb3.InfStatementApi), core.ɵɵinject(libSdkLb3.InfTextPropertyApi), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(libSdkLb3.ProInfoProjRelApi), core.ɵɵinject(SchemaObjectService)); }, token: InfEpics, providedIn: "root" });
         return InfEpics;
     }());
     if (false) {
@@ -7171,135 +7333,6 @@
          * @private
          */
         InfEpics.prototype.schemaObjectService;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/dat.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var DatEpics = /** @class */ (function () {
-        function DatEpics(notification, datActions, infActions, proActions, digitalApi, chunkApi, columnApi, namespaceApi, schemaObjectService) {
-            this.notification = notification;
-            this.datActions = datActions;
-            this.infActions = infActions;
-            this.proActions = proActions;
-            this.digitalApi = digitalApi;
-            this.chunkApi = chunkApi;
-            this.columnApi = columnApi;
-            this.namespaceApi = namespaceApi;
-            this.schemaObjectService = schemaObjectService;
-        }
-        /**
-         * @return {?}
-         */
-        DatEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            /** @type {?} */
-            var digitalEpicsFactory = new SchemaEpicsFactory(datRoot, 'digital', this.datActions.digital, this.notification);
-            /** @type {?} */
-            var chunkEpicsFactory = new SchemaEpicsFactory(datRoot, 'chunk', this.datActions.chunk, this.notification);
-            /** @type {?} */
-            var namespaceEpicsFactory = new SchemaEpicsFactory(datRoot, 'namespace', this.datActions.namespace, this.notification);
-            /** @type {?} */
-            var columnEpicsFactory = new SchemaEpicsFactory(datRoot, 'column', this.datActions.column, this.notification);
-            return reduxObservableEs6Compat.combineEpics(
-            // Digital
-            digitalEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null); }), DigitalActionsFactory.LOAD_VERSION), digitalEpicsFactory.createUpsertEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.digitalApi.bulkUpsert(meta.pk, meta.items); })), digitalEpicsFactory.createDeleteEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.digitalApi.bulkDelete(meta.items.map((/**
-             * @param {?} item
-             * @return {?}
-             */
-            function (item) { return item.pk_entity; }))); })), 
-            // Chunk
-            chunkEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.chunkApi.ofDigital(meta.pk, meta.pkDigital); }), ChunkActionsFactory.CHUNKS_OF_DIGITAL, (/**
-             * @param {?} results
-             * @param {?} pk
-             * @return {?}
-             */
-            function (results, pk) {
-                /** @type {?} */
-                var flattener = new Flattener(_this.infActions, _this.datActions, _this.proActions);
-                flattener.chunk.flatten(results);
-                storeFlattened(flattener.getFlattened(), pk);
-            })), 
-            // Namespace
-            namespaceEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.namespaceApi.byProject(meta.pk); }), ''), columnEpicsFactory.createLoadEpic((/**
-             * @param {?} meta
-             * @return {?}
-             */
-            function (meta) { return _this.columnApi.ofDigital(meta.pk, meta.pkDigital); }), ColumnActionsFactory.COLUMNS_OF_TABLE, (/**
-             * @param {?} results
-             * @param {?} pk
-             * @return {?}
-             */
-            function (results, pk) {
-                /** @type {?} */
-                var schemaObject = (/** @type {?} */ ((/** @type {?} */ (results))));
-                _this.schemaObjectService.storeSchemaObject(schemaObject, pk);
-            })));
-        };
-        DatEpics.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        DatEpics.ctorParameters = function () { return [
-            { type: NotificationsAPIActions },
-            { type: DatActions },
-            { type: InfActions },
-            { type: ProActions },
-            { type: libSdkLb3.DatDigitalApi },
-            { type: libSdkLb3.DatChunkApi },
-            { type: libSdkLb3.DatColumnApi },
-            { type: libSdkLb3.DatNamespaceApi },
-            { type: SchemaObjectService }
-        ]; };
-        return DatEpics;
-    }());
-    if (false) {
-        /** @type {?} */
-        DatEpics.prototype.notification;
-        /** @type {?} */
-        DatEpics.prototype.datActions;
-        /** @type {?} */
-        DatEpics.prototype.infActions;
-        /** @type {?} */
-        DatEpics.prototype.proActions;
-        /** @type {?} */
-        DatEpics.prototype.digitalApi;
-        /** @type {?} */
-        DatEpics.prototype.chunkApi;
-        /** @type {?} */
-        DatEpics.prototype.columnApi;
-        /** @type {?} */
-        DatEpics.prototype.namespaceApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        DatEpics.prototype.schemaObjectService;
     }
 
     /**
@@ -7573,7 +7606,9 @@
             function (item) { return item.pk_entity; }))); })));
         };
         ProEpics.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         ProEpics.ctorParameters = function () { return [
@@ -7590,6 +7625,7 @@
             { type: libSdkLb4.AnalysisService },
             { type: SchemaObjectService }
         ]; };
+        /** @nocollapse */ ProEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProEpics_Factory() { return new ProEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(libSdkLb3.ProInfoProjRelApi), core.ɵɵinject(libSdkLb3.ProDfhClassProjRelApi), core.ɵɵinject(libSdkLb3.ProDfhProfileProjRelApi), core.ɵɵinject(libSdkLb3.ProClassFieldConfigApi), core.ɵɵinject(libSdkLb3.ProTextPropertyApi), core.ɵɵinject(libSdkLb4.AnalysisService), core.ɵɵinject(SchemaObjectService)); }, token: ProEpics, providedIn: "root" });
         return ProEpics;
     }());
     if (false) {
@@ -7624,55 +7660,87 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
+     * Generated from: lib/redux-store/state-schema/epics/sys.epics.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ActionResolverEpics = /** @class */ (function () {
-        // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
-        function ActionResolverEpics() {
-            var _this = this;
-            this.createEpics = (/**
-             * @return {?}
-             */
-            function () { return reduxObservableEs6Compat.combineEpics(_this.createResolveEpic()); });
+    var SysEpics = /** @class */ (function () {
+        function SysEpics(actions, notification, sysRelevantClassApi, sysConfigApi) {
+            this.actions = actions;
+            this.notification = notification;
+            this.sysRelevantClassApi = sysRelevantClassApi;
+            this.sysConfigApi = sysConfigApi;
         }
         /**
-         * @private
          * @return {?}
          */
-        ActionResolverEpics.prototype.createResolveEpic = /**
-         * @private
+        SysEpics.prototype.createEpics = /**
          * @return {?}
          */
         function () {
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(operators.filter((/**
+            var _this = this;
+            /** @type {?} */
+            var systemRelevantClassEpicsFactory = new SchemaEpicsFactory(sysRoot, 'system_relevant_class', this.actions.system_relevant_class, this.notification);
+            // const analysisTypeEpicsFactory = new StandardEpicsFactory<SysRelevantClassSlice, SysAnalysisType>
+            //   (sysRoot, 'analysis_type', this.actions.analysis_type, this.notification);
+            /** @type {?} */
+            var configEpicsFactory = new SchemaEpicsFactory(sysRoot, 'config', this.actions.config, this.notification);
+            return reduxObservableEs6Compat.combineEpics(
+            // SystemRelevantClass Epics
+            systemRelevantClassEpicsFactory.createLoadEpic((/**
              * @param {?} action
              * @return {?}
              */
-            function (action) { return !!action && !!action.meta && !!action.meta.removePending; })), operators.switchMap((/**
-             * @param {?} action
+            function (action) { return _this.sysRelevantClassApi.find(); }), ''), systemRelevantClassEpicsFactory.createUpsertEpic((/**
+             * @param {?} meta
              * @return {?}
              */
-            function (action) { return (rxjs.of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } })); }))); });
+            function (meta) { return _this.sysRelevantClassApi.bulkReplaceOrCreate(meta.items); })), 
+            // analysisTypeEpicsFactory.createLoadEpic(() => this.sysAnalysisTypeApi.find(), ''),
+            configEpicsFactory.createLoadEpic((/**
+             * @return {?}
+             */
+            function () { return _this.sysConfigApi.sysConfigControllerGetSystemConfig().pipe(operators.map((/**
+             * @param {?} x
+             * @return {?}
+             */
+            function (x) { return [x]; }))); }), ''));
         };
-        ActionResolverEpics.decorators = [
+        SysEpics.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root'
                     },] }
         ];
         /** @nocollapse */
-        ActionResolverEpics.ctorParameters = function () { return []; };
-        /** @nocollapse */ ActionResolverEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
-        return ActionResolverEpics;
+        SysEpics.ctorParameters = function () { return [
+            { type: SysActions },
+            { type: NotificationsAPIActions },
+            { type: libSdkLb3.SysSystemRelevantClassApi },
+            { type: libSdkLb4.SystemConfigurationService }
+        ]; };
+        /** @nocollapse */ SysEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SysEpics_Factory() { return new SysEpics(core.ɵɵinject(SysActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(libSdkLb3.SysSystemRelevantClassApi), core.ɵɵinject(libSdkLb4.SystemConfigurationService)); }, token: SysEpics, providedIn: "root" });
+        return SysEpics;
     }());
     if (false) {
-        /** @type {?} */
-        ActionResolverEpics.prototype.createEpics;
+        /**
+         * @type {?}
+         * @private
+         */
+        SysEpics.prototype.actions;
+        /**
+         * @type {?}
+         * @private
+         */
+        SysEpics.prototype.notification;
+        /**
+         * @type {?}
+         * @private
+         */
+        SysEpics.prototype.sysRelevantClassApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        SysEpics.prototype.sysConfigApi;
     }
 
     /**
@@ -7738,7 +7806,9 @@
             this.rootEpicStream$.next(epic);
         };
         RootEpics.decorators = [
-            { type: core.Injectable }
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
         ];
         /** @nocollapse */
         RootEpics.ctorParameters = function () { return [
@@ -7753,6 +7823,7 @@
             { type: ProEpics },
             { type: ActionResolverEpics }
         ]; };
+        /** @nocollapse */ RootEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function RootEpics_Factory() { return new RootEpics(core.ɵɵinject(LoadingBarEpics), core.ɵɵinject(NotificationsAPIEpics), core.ɵɵinject(ActiveProjectEpics), core.ɵɵinject(AccountEpics), core.ɵɵinject(SysEpics), core.ɵɵinject(DfhEpics), core.ɵɵinject(InfEpics), core.ɵɵinject(DatEpics), core.ɵɵinject(ProEpics), core.ɵɵinject(ActionResolverEpics)); }, token: RootEpics, providedIn: "root" });
         return RootEpics;
     }());
     if (false) {
@@ -9512,56 +9583,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/tab.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TabEpics = /** @class */ (function () {
-        function TabEpics() {
-        }
-        /**
-         * @return {?}
-         */
-        TabEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics();
-        };
-        TabEpics.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        TabEpics.ctorParameters = function () { return []; };
-        return TabEpics;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/war.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var WarEpics = /** @class */ (function () {
-        function WarEpics() {
-        }
-        /**
-         * @return {?}
-         */
-        WarEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics();
-        };
-        WarEpics.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        WarEpics.ctorParameters = function () { return []; };
-        return WarEpics;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: lib/redux-store/module/redux-store.module.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -9597,12 +9618,29 @@
     }); });
     /** @type {?} */
     var APP_INITIAL_STATE = new core.InjectionToken('app.INITIAL_STATE');
-    var ɵ0$8 = {};
-    var ReduxStoreModule = /** @class */ (function () {
-        function ReduxStoreModule(ngRedux, devTools, 
-        // ngReduxRouter: NgReduxRouter,
-        rootEpics, initialState) {
+    /**
+     * @return {?}
+     */
+    function apiConfigFactory() {
+        /** @type {?} */
+        var params = {
+        // set configuration parameters here.
+        };
+        return new libSdkLb4.Configuration(params);
+    }
+    var ReduxModule = /** @class */ (function () {
+        function ReduxModule(ngRedux, devTools, rootEpics, initialState, parentModule, sdkLb3, sdkLb4) {
             this.ngRedux = ngRedux;
+            /** @type {?} */
+            var errors = [];
+            if (parentModule)
+                errors.push('ReduxModule is already loaded. Import in your base AppModule only.');
+            if (!sdkLb3)
+                errors.push('You need to import the SdkLb3Module in your AppModule!');
+            if (!sdkLb4)
+                errors.push('You need to import the SdkLb4Module in your AppModule!');
+            if (errors.length)
+                throw new Error(errors.join('\n'));
             /** @type {?} */
             var epicMiddleware = reduxObservableEs6Compat.createEpicMiddleware();
             // Tell Redux about our reducers and epics. If the Redux DevTools
@@ -9630,59 +9668,71 @@
             // Enable syncing of Angular form state with our Redux store.
             // provideReduxForms(ngRedux);
         }
-        ReduxStoreModule.decorators = [
+        /**
+         * @return {?}
+         */
+        ReduxModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: ReduxModule,
+                providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]
+            };
+        };
+        ReduxModule.decorators = [
             { type: core.NgModule, args: [{
                         imports: [
                             store.NgReduxModule,
                             // for gui-state epics
                             ngxSlimLoadingBar.SlimLoadingBarModule,
                             ngxToasty.ToastyModule.forRoot(),
-                            // for schema-state epics
-                            libSdkLb3.SDKBrowserModule.forRoot(),
-                            libSdkLb4.ApiModule,
                         ],
                         providers: [
-                            AccountActions,
-                            ActiveProjectActions,
-                            LoadingBarActions,
-                            NotificationsAPIActions,
-                            AccountEpics,
-                            ActiveProjectEpics,
-                            LoadingBarEpics,
-                            NotificationsAPIEpics,
-                            DatActions,
-                            DfhActions,
-                            InfActions,
-                            ProActions,
-                            SysActions,
-                            TabActions,
-                            WarActions,
-                            DatEpics,
-                            DfhEpics,
-                            InfEpics,
-                            ProEpics,
-                            SysEpics,
-                            TabEpics,
-                            WarEpics,
-                            RootEpics,
-                            // SchemaActionsFactory,
-                            SchemaObjectService,
-                            { provide: APP_INITIAL_STATE, useValue: ɵ0$8 }
+                        // AccountActions,
+                        // ActiveProjectActions,
+                        // LoadingBarActions,
+                        // NotificationsAPIActions,
+                        // AccountEpics,
+                        // ActiveProjectEpics,
+                        // LoadingBarEpics,
+                        // NotificationsAPIEpics,
+                        // DatActions,
+                        // DfhActions,
+                        // InfActions,
+                        // ProActions,
+                        // SysActions,
+                        // TabActions,
+                        // WarActions,
+                        // DatEpics,
+                        // DfhEpics,
+                        // InfEpics,
+                        // ProEpics,
+                        // SysEpics,
+                        // TabEpics,
+                        // WarEpics,
+                        // RootEpics,
+                        // // SchemaActionsFactory,
+                        // SchemaObjectService,
+                        // { provide: APP_INITIAL_STATE, useValue: {} }
                         ]
                     },] }
         ];
         /** @nocollapse */
-        ReduxStoreModule.ctorParameters = function () { return [
+        ReduxModule.ctorParameters = function () { return [
             { type: store.NgRedux },
             { type: store.DevToolsExtension },
             { type: RootEpics },
-            { type: undefined, decorators: [{ type: core.Inject, args: [APP_INITIAL_STATE,] }] }
+            { type: undefined, decorators: [{ type: core.Inject, args: [APP_INITIAL_STATE,] }] },
+            { type: ReduxModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] },
+            { type: libSdkLb3.SdkLb3Module, decorators: [{ type: core.Optional }] },
+            { type: libSdkLb4.SdkLb4Module, decorators: [{ type: core.Optional }] }
         ]; };
-        return ReduxStoreModule;
+        return ReduxModule;
     }());
     if (false) {
         /** @type {?} */
-        ReduxStoreModule.prototype.ngRedux;
+        ReduxModule.prototype.ngRedux;
     }
 
     /**
@@ -9812,104 +9862,28 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/models/projects.model.ts
+     * Generated from: lib/redux-store/state-gui/models/account.model.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
      * @record
      */
-    function IProject() { }
+    function AccountRole() { }
     if (false) {
         /** @type {?} */
-        IProject.prototype.record;
+        AccountRole.prototype.id;
+        /** @type {?} */
+        AccountRole.prototype.name;
     }
     /**
      * @record
      */
-    function IProjectList() { }
+    function IAccount() { }
     if (false) {
         /** @type {?} */
-        IProjectList.prototype.records;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/models/notifications.models.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function NotificationsI() { }
-    if (false) {
-        /** @type {?} */
-        NotificationsI.prototype.type;
-        /** @type {?} */
-        NotificationsI.prototype.options;
-    }
-    // Class of this slice of store
-    var   
-    // Class of this slice of store
-    Notifications = /** @class */ (function () {
-        function Notifications(data) {
-            Object.assign(this, data);
-        }
-        return Notifications;
-    }());
-    if (false) {
-        /** @type {?} */
-        Notifications.prototype.type;
-        /** @type {?} */
-        Notifications.prototype.options;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/models/loading-bar.models.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function LoadingBar() { }
-    if (false) {
+        IAccount.prototype.account;
         /** @type {?|undefined} */
-        LoadingBar.prototype.loading;
-        /** @type {?|undefined} */
-        LoadingBar.prototype.progress;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/models/list.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    // Class of this slice of store
-    var   
-    // Class of this slice of store
-    List = /** @class */ (function () {
-        function List(data) {
-            Object.assign(this, data);
-            if (true) {
-            }
-            else {
-            }
-        }
-        return List;
-    }());
-    if (false) {
-        /** @type {?} */
-        List.prototype.searchString;
-        /** @type {?} */
-        List.prototype.pkAllowedClasses;
-        /** @type {?} */
-        List.prototype.collectionSize;
-        /** @type {?} */
-        List.prototype.items;
-        /** @type {?} */
-        List.prototype.loading;
-        /** @type {?} */
-        List.prototype.error;
+        IAccount.prototype.roles;
     }
 
     /**
@@ -10213,32 +10187,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/models/account.model.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function AccountRole() { }
-    if (false) {
-        /** @type {?} */
-        AccountRole.prototype.id;
-        /** @type {?} */
-        AccountRole.prototype.name;
-    }
-    /**
-     * @record
-     */
-    function IAccount() { }
-    if (false) {
-        /** @type {?} */
-        IAccount.prototype.account;
-        /** @type {?|undefined} */
-        IAccount.prototype.roles;
-    }
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: lib/redux-store/state-gui/models/active-project/entity-detail.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -10368,6 +10316,108 @@
         Types.prototype.error;
         /** @type {?} */
         Types.prototype.tabTitle;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/models/list.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // Class of this slice of store
+    var   
+    // Class of this slice of store
+    List = /** @class */ (function () {
+        function List(data) {
+            Object.assign(this, data);
+            if (true) {
+            }
+            else {
+            }
+        }
+        return List;
+    }());
+    if (false) {
+        /** @type {?} */
+        List.prototype.searchString;
+        /** @type {?} */
+        List.prototype.pkAllowedClasses;
+        /** @type {?} */
+        List.prototype.collectionSize;
+        /** @type {?} */
+        List.prototype.items;
+        /** @type {?} */
+        List.prototype.loading;
+        /** @type {?} */
+        List.prototype.error;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/models/loading-bar.models.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function LoadingBar() { }
+    if (false) {
+        /** @type {?|undefined} */
+        LoadingBar.prototype.loading;
+        /** @type {?|undefined} */
+        LoadingBar.prototype.progress;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/models/notifications.models.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function NotificationsI() { }
+    if (false) {
+        /** @type {?} */
+        NotificationsI.prototype.type;
+        /** @type {?} */
+        NotificationsI.prototype.options;
+    }
+    // Class of this slice of store
+    var   
+    // Class of this slice of store
+    Notifications = /** @class */ (function () {
+        function Notifications(data) {
+            Object.assign(this, data);
+        }
+        return Notifications;
+    }());
+    if (false) {
+        /** @type {?} */
+        Notifications.prototype.type;
+        /** @type {?} */
+        Notifications.prototype.options;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/models/projects.model.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function IProject() { }
+    if (false) {
+        /** @type {?} */
+        IProject.prototype.record;
+    }
+    /**
+     * @record
+     */
+    function IProjectList() { }
+    if (false) {
+        /** @type {?} */
+        IProjectList.prototype.records;
     }
 
     /**
@@ -10915,6 +10965,8 @@
         War.prototype.entity_preview;
     }
 
+    exports.AccountActions = AccountActions;
+    exports.ActiveProjectActions = ActiveProjectActions;
     exports.ChunkActionsFactory = ChunkActionsFactory;
     exports.ChunkSlice = ChunkSlice;
     exports.ClassColumnMappingSlice = ClassColumnMappingSlice;
@@ -10954,8 +11006,10 @@
     exports.InfTimePrimitiveSlice = InfTimePrimitiveSlice;
     exports.Information = Information;
     exports.List = List;
+    exports.LoadingBarActions = LoadingBarActions;
     exports.NamespaceSlice = NamespaceSlice;
     exports.Notifications = Notifications;
+    exports.NotificationsAPIActions = NotificationsAPIActions;
     exports.PR_ENTITY_MODEL_MAP = PR_ENTITY_MODEL_MAP;
     exports.ProActions = ProActions;
     exports.ProAnalysisActionFactory = ProAnalysisActionFactory;
@@ -10966,8 +11020,9 @@
     exports.ProProjectActionFactory = ProProjectActionFactory;
     exports.ProTextPropertyActionFactory = ProTextPropertyActionFactory;
     exports.ProjectSettingsData = ProjectSettingsData;
+    exports.ProjectsActions = ProjectsActions;
     exports.ReducerFactory = ReducerFactory;
-    exports.ReduxStoreModule = ReduxStoreModule;
+    exports.ReduxModule = ReduxModule;
     exports.RootEpics = RootEpics;
     exports.SET_APP_STATE = SET_APP_STATE;
     exports.SchemaActionsFactory = SchemaActionsFactory;
@@ -11005,6 +11060,7 @@
     exports.indexStatementBySubjectProperty = indexStatementBySubjectProperty;
     exports.infDefinitions = infDefinitions;
     exports.infRoot = infRoot;
+    exports.ofSubstore = ofSubstore;
     exports.pag = pag;
     exports.paginateKey = paginateKey;
     exports.paginateName = paginateName;
@@ -11027,28 +11083,22 @@
     exports.warDefinitions = warDefinitions;
     exports.warRoot = warRoot;
     exports.ɵa = APP_INITIAL_STATE;
-    exports.ɵb = AccountActions;
-    exports.ɵc = ActiveProjectActions;
-    exports.ɵd = LoadingBarActions;
-    exports.ɵe = NotificationsAPIActions;
-    exports.ɵf = AccountEpics;
-    exports.ɵg = ActiveProjectEpics;
-    exports.ɵh = LoadingBarEpics;
-    exports.ɵi = NotificationsAPIEpics;
-    exports.ɵj = DatEpics;
-    exports.ɵk = DfhEpics;
-    exports.ɵl = InfEpics;
-    exports.ɵm = ProEpics;
-    exports.ɵn = SysEpics;
-    exports.ɵo = TabEpics;
-    exports.ɵp = WarEpics;
-    exports.ɵq = ActionResolverEpics;
-    exports.ɵr = accountRootReducer;
-    exports.ɵs = loadingBarReducer;
-    exports.ɵt = activeProjectReducer;
-    exports.ɵu = informationReducer;
-    exports.ɵv = sourceListReducer;
-    exports.ɵw = createProjectsReducer;
+    exports.ɵb = LoadingBarEpics;
+    exports.ɵc = NotificationsAPIEpics;
+    exports.ɵd = ActiveProjectEpics;
+    exports.ɵe = AccountEpics;
+    exports.ɵf = SysEpics;
+    exports.ɵg = DfhEpics;
+    exports.ɵh = InfEpics;
+    exports.ɵi = DatEpics;
+    exports.ɵj = ProEpics;
+    exports.ɵk = ActionResolverEpics;
+    exports.ɵl = accountRootReducer;
+    exports.ɵm = loadingBarReducer;
+    exports.ɵn = activeProjectReducer;
+    exports.ɵo = informationReducer;
+    exports.ɵp = sourceListReducer;
+    exports.ɵq = createProjectsReducer;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

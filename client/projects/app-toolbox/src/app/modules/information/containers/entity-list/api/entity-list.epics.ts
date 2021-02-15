@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from "projects/app-toolbox/src/app/core/loading-bar/api/loading-bar.actions";
+import { LoadingBarActions } from "@kleiolab/lib-redux";
 import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
 import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { NotificationsAPIActions } from 'projects/app-toolbox/src/app/core/notifications/components/api/notifications.actions';
+import { NotificationsAPIActions } from "@kleiolab/lib-redux";
 import { startsWith } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';

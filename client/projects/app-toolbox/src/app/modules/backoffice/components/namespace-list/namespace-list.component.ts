@@ -1,14 +1,14 @@
 import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
+import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
+import { RootEpics } from "@kleiolab/lib-redux";
 import { NamespaceList } from './api/namespace-list.models';
 import { NamespaceListAPIEpics } from './api/namespace-list.epics';
 import { NamespaceListAPIActions } from './api/namespace-list.actions';
 import { namespaceListReducer } from './api/namespace-list.reducer';
 import { DatNamespace } from '@kleiolab/lib-sdk-lb3';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+import { IAppState } from "@kleiolab/lib-redux";
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

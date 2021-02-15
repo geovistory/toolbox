@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 
 // Flux-standard-action gives us stronger typing of our actions.
@@ -16,7 +16,9 @@ export type LoadingBarAction = FluxStandardAction<Payload, undefined>;
 * In order to show a loading bar in GUI, use the LoadingBarComponent
 * exported by this module.
 */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LoadingBarActions {
   static readonly START = 'LOADING_BAR_START';
   static readonly STOP = 'LOADING_BAR_STOP';

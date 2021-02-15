@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MapAndTimeContFormArrayFactory } from '../map-and-time-cont-form/map-and-time-cont-form.component';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
 import { Observable, of } from 'rxjs';
-import { ClassAndTypeSelectModel } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
 import { first } from 'rxjs/operators';
 import { FilterDefinition } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { TableFormService } from '../../table/table-form/table-form.service';

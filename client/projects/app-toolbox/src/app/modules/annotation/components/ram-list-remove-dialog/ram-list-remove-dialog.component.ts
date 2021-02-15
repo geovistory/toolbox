@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
-import { Field, Subfield } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
+import { Subfield } from "@kleiolab/lib-queries";
+import { Field } from "@kleiolab/lib-queries";
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DfhConfig } from "@kleiolab/lib-config";

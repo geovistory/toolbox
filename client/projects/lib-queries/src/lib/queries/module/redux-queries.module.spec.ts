@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { moduleImports } from '../../../__tests__/helpers/module-imports';
 import { ReduxQueriesModule } from './redux-queries.module';
 
 
@@ -7,9 +8,7 @@ describe('ReduxQueriesModule', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ReduxQueriesModule
-      ]
+      imports: moduleImports
     })
     module = TestBed.get(ReduxQueriesModule);
   });

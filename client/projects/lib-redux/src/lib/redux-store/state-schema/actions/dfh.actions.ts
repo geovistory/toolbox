@@ -5,11 +5,11 @@ import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
 import { DfhClass, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 import { filter } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { DfhClassSlice } from '../models/dfh.models';
 import { dfhRoot } from '../reducer-configs/dfh.config';
+import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 
 
 export class DfhProfileActionFactory extends SchemaActionsFactory<Payload, DfhProfile> {
@@ -154,7 +154,9 @@ export class DfhLabelActionFactory extends SchemaActionsFactory<Payload, DfhLabe
 
 type Payload = DfhClassSlice;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhActions {
 
 

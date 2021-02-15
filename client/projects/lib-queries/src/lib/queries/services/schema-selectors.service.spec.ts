@@ -1,12 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { ByPk, IAppState, SchemaObjectService } from '@kleiolab/lib-redux';
-import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
 import { GvSchemaObject, ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
 import { ProClassFieldConfigMock } from '../../../__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
-import { ReduxQueriesModule } from '../module/redux-queries.module';
+import { moduleImports } from '../../../__tests__/helpers/module-imports';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
 
@@ -22,10 +21,7 @@ describe('SchemaSelectorsService', () => {
   }
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SDKBrowserModule.forRoot(),
-        ReduxQueriesModule
-      ]
+      imports: moduleImports
     })
     service = TestBed.get(SchemaSelectorsService);
     schemaObjService = TestBed.get(SchemaObjectService);

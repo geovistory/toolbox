@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
 import { IAppState } from '../../root/models/model';
 import { TabCellSlice } from '../models/tab.models';
-import { SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 import { tabRoot } from '../reducer-configs/tab.config';
+import { SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TabActions {
 
   cell = new SchemaActionsFactory<TabCellSlice, TabCell>(this.ngRedux).createCrudActions(tabRoot, 'cell')

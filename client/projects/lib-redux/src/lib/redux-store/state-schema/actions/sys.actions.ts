@@ -14,7 +14,9 @@ interface MetaData {
 };
 export type SysAction = FluxStandardAction<Payload, MetaData>;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SysActions {
 
   system_relevant_class = new SchemaActionsFactory<Payload, SysSystemRelevantClass>

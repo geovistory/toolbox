@@ -12,7 +12,9 @@ import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SysEpics {
   constructor(
     private actions: SysActions,

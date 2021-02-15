@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
-import { ReduxQueriesModule } from 'projects/app-toolbox/src/app/core/redux-queries/redux-queries.module';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { ControlMessagesModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { EntityPreviewModule } from 'projects/app-toolbox/src/app/shared/components/entity-preview/entity-preview.module';
@@ -110,7 +109,7 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
-  ReduxQueriesModule
+  // ReduxQueriesModule
 ]
 
 @NgModule({

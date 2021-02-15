@@ -1,4 +1,4 @@
-import { EntityDetail } from 'projects/app-toolbox/src/app/core';
+import { EntityDetail } from "@kleiolab/lib-redux";
 import { Action } from 'redux';
 import { EntityDetailAPIAction, EntityDetailAPIActions } from './entity-detail.actions';
 

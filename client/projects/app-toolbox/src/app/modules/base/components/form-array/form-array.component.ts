@@ -1,16 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormArray } from '@angular/forms';
+import { Subfield } from '@kleiolab/lib-queries';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
-import { FormArrayData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig, LocalFormChildFactory, FormChildData } from '../form-create-entity/form-create-entity.component';
-import { Field, Subfield } from '../properties-tree/properties-tree.models';
-import { ListType } from 'projects/app-toolbox/src/app/core';
-import { FormArray } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { CtrlEntityComponent } from '../ctrl-entity/ctrl-entity.component';
-import { ChildComponents } from '../form-control/form-control.component';
-import { FgTextPropertyComponent } from '../fg-text-property/fg-text-property.component';
-import { FgPlaceComponent } from '../fg-place/fg-place.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
+import { FgPlaceComponent } from '../fg-place/fg-place.component';
+import { FgTextPropertyComponent } from '../fg-text-property/fg-text-property.component';
+import { ChildComponents } from '../form-control/form-control.component';
+import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormChildFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
 
 @Component({
   selector: 'gv-form-array',

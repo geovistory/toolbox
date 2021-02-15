@@ -14,9 +14,11 @@ import { infRoot } from '../reducer-configs/inf.config';
 import { SchemaObjectService } from '../services/schema-object.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
 import { InfEpicsFactory } from '../_helpers/inf-epic-factory';
-import { FluxActionObservable, PaginateByParam, ModifyActionMeta } from '../_helpers/schema-actions-factory';
+import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../_helpers/schema-actions-factory';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfEpics {
   constructor(
     public notification: NotificationsAPIActions,

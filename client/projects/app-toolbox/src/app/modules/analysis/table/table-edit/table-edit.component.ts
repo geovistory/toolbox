@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { AnalysisTableResponse } from "@kleiolab/lib-sdk-lb4";
 import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
 import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";

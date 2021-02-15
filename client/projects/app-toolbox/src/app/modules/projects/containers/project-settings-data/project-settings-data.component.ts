@@ -5,26 +5,24 @@ import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
+import { ProConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { EntityType, IAppState, ProjectSettingsData, RootEpics } from '@kleiolab/lib-redux';
+import { ProDfhClassProjRel, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from 'projects/app-toolbox/src/app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
+import { DetailContentComponent } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { HighlightPipe } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.pipe';
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import * as Config from '../../../../../../../../../server/lb3app/common/config/Config';
-import { ProDfhClassProjRel } from '@kleiolab/lib-sdk-lb3';
-import { DetailContentComponent } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.component';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
-import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
+
 interface Profile {
   label: string,
   fkProfile: number,
@@ -213,7 +211,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                   } = dfhClass;
 
 
-                  const systemRelevantClass = U.firstItemInObject(sysClass);
+                  const systemRelevantClass = Utils.firstItemInObject(sysClass);
                   const {
                     excluded_from_entities,
                     required_by_basics,
@@ -301,7 +299,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
         ];
       }
 
-      if (pkProject === Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
+      if (pkProject === ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
         this.displayedColumns = [
           ...this.displayedColumns,
           'edit_required_by_basics',

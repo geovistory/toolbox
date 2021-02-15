@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
 import { ValidationService } from "projects/app-toolbox/src/app/core/validation/validation.service";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';

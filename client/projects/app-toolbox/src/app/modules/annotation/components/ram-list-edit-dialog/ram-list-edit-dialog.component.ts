@@ -1,7 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { Field, FieldBase, Subfield } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
+import { Subfield } from "@kleiolab/lib-queries";
+import { FieldBase } from "@kleiolab/lib-queries";
+import { Field } from "@kleiolab/lib-queries";
 import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
 import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject } from 'rxjs';

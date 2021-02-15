@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ListType, Panel, ProjectDetail, ProjectPreview, PanelTab, TypePeIt } from '../models/active-project.models';
+import { ListType, Panel, PanelTab, ProjectDetail, ProjectPreview, TypePeIt } from '../models/active-project.models';
 
 export interface ActiveProjectMeta {
 
@@ -49,7 +49,9 @@ type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, ActiveProjectMeta>;
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ActiveProjectActions {
 
   /* tslint:disable:member-ordering */

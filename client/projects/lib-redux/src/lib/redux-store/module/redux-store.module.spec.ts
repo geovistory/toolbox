@@ -1,17 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { ReduxStoreModule } from './redux-store.module';
+import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
+import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { ReduxModule } from './redux-store.module';
 
 
-describe('ReduxStoreModule', () => {
-  let module: ReduxStoreModule;
+describe('ReduxModule', () => {
+  let module: ReduxModule;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReduxStoreModule
+        ReduxModule,
+        SdkLb3Module.forRoot(), // lib-sdk-lb3
+        SdkLb4Module
       ]
     })
-    module = TestBed.get(ReduxStoreModule);
+    module = TestBed.get(ReduxModule);
   });
 
   it('should be created', () => {

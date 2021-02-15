@@ -1,17 +1,18 @@
-import { NgReduxFormModule } from '@angular-redux/form';
 import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ReduxQueriesModule } from '@kleiolab/lib-queries';
+import { ReduxModule } from '@kleiolab/lib-redux';
 import { InitStateComponent } from './init-state.component';
-import { ActiveProjectModule } from 'projects/app-toolbox/src/app/core/active-project';
 
 @NgModule({
   imports: [
     CommonModule,
     NgReduxModule,
     RouterModule,
-    ActiveProjectModule
+    ReduxModule,
+    ReduxQueriesModule
   ],
   declarations: [
     InitStateComponent

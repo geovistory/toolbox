@@ -1,18 +1,17 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { SchemaObject } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { SchemaObject } from '@kleiolab/lib-redux';
+import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
+import { U } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { filter, first, map } from 'rxjs/operators';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
+import { FieldProperty } from "@kleiolab/lib-queries";
 import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
-import { FieldProperty } from '../../properties-tree/properties-tree.models';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
 

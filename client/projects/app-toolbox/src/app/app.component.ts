@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { SysStatusSocket } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
+import { SysStatusSocket } from "@kleiolab/lib-sockets";
 
 @Component({
   selector: 'gv-root',

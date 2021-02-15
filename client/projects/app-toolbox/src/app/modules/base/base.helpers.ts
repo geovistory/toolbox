@@ -1,5 +1,6 @@
-import { SubfieldType, Subfield } from './components/properties-tree/properties-tree.models';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
+import { Subfield } from "@kleiolab/lib-queries";
+import { SubfieldType } from "@kleiolab/lib-queries";
+import { PaginateByParam } from "@kleiolab/lib-redux";
 
 /**
  * returns true if the subfield type is representing a value object type

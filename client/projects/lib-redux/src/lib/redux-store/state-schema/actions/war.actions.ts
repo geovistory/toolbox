@@ -7,7 +7,9 @@ import { WarEntityPreviewSlice } from '../models/war.models';
 import { warRoot } from '../reducer-configs/war.config';
 import { SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WarActions {
   entity_preview = new SchemaActionsFactory<WarEntityPreviewSlice, WarEntityPreview>(this.ngRedux).createCrudActions(warRoot, 'entity_preview')
 

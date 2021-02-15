@@ -5,14 +5,16 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { AccountActions, AccountAction } from '../actions/account.actions';
-import { AccountRole } from '../models/account.model';
+import { AccountAction, AccountActions } from '../actions/account.actions';
 import { LoadingBarActions } from '../actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../actions/notifications.actions';
+import { AccountRole } from '../models/account.model';
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AccountEpics {
   constructor(
     private actions: AccountActions,

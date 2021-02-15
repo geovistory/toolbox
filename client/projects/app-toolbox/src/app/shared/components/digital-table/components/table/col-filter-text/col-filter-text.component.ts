@@ -3,7 +3,7 @@ import { DatColumn, TColFilterOpText, TColFilter } from '../../../../../../../..
 import { MatSelectChange } from '@angular/material';
 import { Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntil, debounceTime, filter } from 'rxjs/operators';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
+import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
 
 @Component({
   selector: 'gv-col-filter-text',

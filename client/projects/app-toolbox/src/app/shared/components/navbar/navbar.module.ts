@@ -1,12 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NavbarComponent } from './navbar.component';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AccountActions } from '../../../modules/account/api/account.actions';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material';
+import { AccountActions } from '@kleiolab/lib-redux';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
+import { NavbarComponent } from './navbar.component';
 
 
 @NgModule({

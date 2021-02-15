@@ -1,23 +1,19 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { IconType, PeItTabData, PanelTab } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { EntityDetail, SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models';
+import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { MentioningListOf } from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
-import { InformationBasicPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-basic-pipes.service';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { slideInOut } from '../../shared/animations';
 import { EntityDetailAPIActions } from './api/entity-detail.actions';
 import { entityDetailReducer } from './api/entity-detail.reducer';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
 
 
 

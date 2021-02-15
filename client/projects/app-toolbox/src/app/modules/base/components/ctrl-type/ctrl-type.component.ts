@@ -3,14 +3,10 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, View
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { sortAbc } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
+import { ActiveProjectPipesService, ClassAndTypeNode, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { InformationBasicPipesService } from '../../../../core/redux-queries/services/information-basic-pipes.service';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
-import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';
 
 type CtrlModel = number // pk_entity of type (persistent item)
 

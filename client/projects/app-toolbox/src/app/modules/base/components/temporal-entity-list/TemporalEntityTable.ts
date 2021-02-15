@@ -2,7 +2,13 @@ import { indexBy, mapObjIndexed } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatTableDataSource } from '@angular/material';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { Field, TemporalEntityItem, TemporalEntityTableI, Subfield } from '../properties-tree/properties-tree.models';
+import { Subfield } from "@kleiolab/lib-queries";
+
+
+
+import { TemporalEntityTableI } from "@kleiolab/lib-queries";
+import { TemporalEntityItem } from "@kleiolab/lib-queries";
+import { Field } from "@kleiolab/lib-queries";
 
 
 

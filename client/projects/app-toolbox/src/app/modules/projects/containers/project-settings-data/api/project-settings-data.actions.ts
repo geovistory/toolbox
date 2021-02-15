@@ -1,9 +1,9 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DfhClass } from "@kleiolab/lib-sdk-lb4";
-import { FluxStandardAction } from 'flux-standard-action';
+import { ProjectSettingsData } from '@kleiolab/lib-redux';
 import { ProDfhClassProjRel } from '@kleiolab/lib-sdk-lb3';
-import { ProjectSettingsData } from './project-settings-data.models';
+import { DfhClass } from '@kleiolab/lib-sdk-lb4';
+import { FluxStandardAction } from 'flux-standard-action';
 
 type Payload = ProjectSettingsData;
 interface MetaData {

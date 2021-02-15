@@ -7,7 +7,7 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { IAppState } from '../../root/models/model';
 import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models/dat.models';
 import { datRoot } from '../reducer-configs/dat.config';
-import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta, LoadVersionAction } from '../_helpers/schema-actions-factory';
+import { ActionResultObservable, LoadActionMeta, LoadVersionAction, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 
 
 export class DigitalActionsFactory extends SchemaActionsFactory<DigitalSlice, DatDigital> {
@@ -116,7 +116,9 @@ export class ColumnActionsFactory extends SchemaActionsFactory<ColumnSlice, DatC
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DatActions {
 
   digital = new DigitalActionsFactory(this.ngRedux).createActions();

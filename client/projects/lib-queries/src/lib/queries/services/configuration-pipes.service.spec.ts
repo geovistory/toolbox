@@ -1,10 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaObjectService } from '@kleiolab/lib-redux';
-import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { BehaviorSubject } from 'rxjs';
-import { first, toArray } from 'rxjs/operators';
+import { ProDfhProfileProjRelMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/ProDfhProfileProjRelMock';
+import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel } from 'projects/lib-queries/src/__tests__/helpers/data/transformers';
+import { first, take, toArray } from 'rxjs/operators';
 import { DfhApiClassMock } from '../../../__tests__/helpers/data/auto-gen/DfhApiClassMock';
 import { DfhApiPropertyMock } from '../../../__tests__/helpers/data/auto-gen/DfhApiPropertyMock';
 import { PK_DEFAULT_CONFIG_PROJECT } from '../../../__tests__/helpers/data/auto-gen/local-model.helpers';
@@ -14,12 +14,11 @@ import { basicClassesAndProperties } from '../../../__tests__/helpers/data/posit
 import { fieldsOfManifestationSingleton } from '../../../__tests__/helpers/data/positive-schema-objects/fields-of-manifestation-singleton';
 import { project1 } from '../../../__tests__/helpers/data/positive-schema-objects/project-1';
 import { sysConfig } from '../../../__tests__/helpers/data/positive-schema-objects/sys-config';
+import { moduleImports } from '../../../__tests__/helpers/module-imports';
 import { setAppState } from '../../../__tests__/helpers/set-app-state';
 import { Field } from '../models/Field';
 import { SubfieldType } from '../models/SubfieldType';
-import { ReduxQueriesModule } from '../module/redux-queries.module';
 import { ConfigurationPipesService } from './configuration-pipes.service';
-import { SocketsModule } from '@kleiolab/lib-sockets';
 
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
@@ -28,30 +27,69 @@ describe('ConfigurationPipeService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SDKBrowserModule.forRoot(),
-        SocketsModule.forRoot({ baseUrl: '' }),
-        ReduxQueriesModule
-      ]
+      imports: moduleImports
     });
     service = TestBed.get(ConfigurationPipesService);
     schemaObjServcie = TestBed.get(SchemaObjectService);
     ngRedux = TestBed.get(NgRedux);
-
-
   });
+  // afterEach(() => {
+  //   setAppState(ngRedux, {})
+  // });
   describe('Service', () => {
     it('should be created', () => {
       expect(service).toBeTruthy();
     });
   })
 
+  describe('.pipeProfilesEnabledByProject()', () => {
+    it('should return two custom profiles + basic profile (id:5)', async (done) => {
+
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      // seeding data
+      const gvSchemaObj: GvSchemaObject = {
+        pro: {
+          dfh_profile_proj_rel: [
+            ProDfhProfileProjRelMock.PROJ_1_PROFILE_12,
+            ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+          ]
+        }
+      }
+      schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
+
+      // await new Promise((res) => setTimeout(() => res(), 500))
+
+      // using pipe
+      const q$ = service.pipeProfilesEnabledByProject()
+
+      // testing pipe
+      const expectedSequence = [12, 4, 5]
+
+      q$.pipe(take(1), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0]).toContain(12)
+            expect(actualSequence[0]).toContain(4)
+            expect(actualSequence[0]).toContain(5)
+          },
+          null,
+          done);
+
+
+
+
+    });
+
+
+
+
+  })
   describe('.pipeClassFieldConfigs()', () => {
     it('should return class config for class C365_NAMING', (done) => {
       setAppState(ngRedux, IAppStateMock.stateDefaultConfigProject)
       // seeding data
       const gvSchemaObj: GvSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] } }
-      schemaObjServcie.storeGv(new BehaviorSubject(gvSchemaObj), PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
 
 
       // using pipe
@@ -77,9 +115,9 @@ describe('ConfigurationPipeService', () => {
 
   describe('.pipeFieldLabel()', () => {
     it('should return label for EN_1111_IS_APPE_OF', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
       const q$ = service.pipeFieldLabel(
@@ -101,9 +139,9 @@ describe('ConfigurationPipeService', () => {
 
     });
     it('should return label for 1762_HAS_DEFINITION', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
       const q$ = service.pipeFieldLabel(
@@ -128,9 +166,9 @@ describe('ConfigurationPipeService', () => {
 
   describe('.pipeSubfieldTypeOfClass()', () => {
     it('should return subfieldtype for EN_784_SHORT_TITLE', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(sysConfig), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
       const q$ = service.pipeSubfieldTypeOfClass(
@@ -152,9 +190,9 @@ describe('ConfigurationPipeService', () => {
 
     });
     it('should return subfieldtype for EN_785_TEXT', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(sysConfig), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
       const q$ = service.pipeSubfieldTypeOfClass(
@@ -180,11 +218,11 @@ describe('ConfigurationPipeService', () => {
   describe('.pipeFields()', () => {
 
     it('should return correct fields of manifestation singleton', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(fieldsOfManifestationSingleton), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(sysConfig), PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(fieldsOfManifestationSingleton, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(sysConfig, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
       const q$ = service.pipeFields(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
@@ -224,11 +262,11 @@ describe('ConfigurationPipeService', () => {
 
     // });
     it('should return correct fields of manifestation singleton', (done) => {
-      setAppState(ngRedux, IAppStateMock.state1)
-      schemaObjServcie.storeGv(new BehaviorSubject(basicClassesAndProperties), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(fieldsOfManifestationSingleton), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjServcie.storeGv(new BehaviorSubject(sysConfig), PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(fieldsOfManifestationSingleton, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(sysConfig, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
       const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
@@ -254,6 +292,51 @@ describe('ConfigurationPipeService', () => {
           done);
 
     });
+  })
+
+  describe('.pipeTypeClassesEnabledByProjectProfiles()', () => {
+    it('should return one type class', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      // seeding data
+      const gvSchemaObj: GvSchemaObject = {
+        dfh: {
+          klass: [
+            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE),
+            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_365_NAMING)
+          ],
+          label: [
+            transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_364_GEO_PLACE_TYPE),
+            transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_365_NAMING)
+          ]
+        },
+        pro: {
+          dfh_profile_proj_rel: [
+            ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+          ]
+        }
+      }
+      schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
+
+
+      // using pipe
+      const q$ = service.pipeTypeClassesEnabledByProjectProfiles()
+
+      // testing pipe
+      const expectedSequence = [12, 4, 5]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0]).toEqual([transformDfhApiClassToDfhClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE)])
+          },
+          null,
+          done);
+
+    });
+
+
+
+
   })
 
 });

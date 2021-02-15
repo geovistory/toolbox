@@ -10,7 +10,11 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
-import { LoopBackConfig, SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
+import { ReduxQueriesModule } from '@kleiolab/lib-queries';
+import { ReduxModule } from '@kleiolab/lib-redux';
+import { LoopBackConfig, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
+import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { SocketsConfig, SocketsModule } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
@@ -20,30 +24,19 @@ import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
-import { ActiveAccountService } from "projects/app-toolbox/src/app/core/active-account";
+import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { AuthGuard } from 'projects/app-toolbox/src/app/core/auth/auth-guard.service';
-import { lb4SdkConfigurationProvider } from 'projects/app-toolbox/src/app/core/auth/auth.module';
 import { GvAuthService } from 'projects/app-toolbox/src/app/core/auth/auth.service';
 import { SystemAdminGuard } from 'projects/app-toolbox/src/app/core/auth/system-admin-guard.service';
 import { BasicModule } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { CookiesModule } from 'projects/app-toolbox/src/app/core/cookies/cookies.module';
-import { DatModule } from 'projects/app-toolbox/src/app/core/dat/dat.module';
-import { InfModule } from 'projects/app-toolbox/src/app/core/inf/inf.module';
-import { LoadingBarModule } from 'projects/app-toolbox/src/app/core/loading-bar/loading-bar.module';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
-import { NotificationsModule } from 'projects/app-toolbox/src/app/core/notifications/notifications.module';
-import { ProModule } from 'projects/app-toolbox/src/app/core/pro/pro.module';
-import { ReduxQueriesModule } from 'projects/app-toolbox/src/app/core/redux-queries/redux-queries.module';
-import { ReduxStoreModule } from 'projects/app-toolbox/src/app/core/redux-store/redux-store.module';
 import { RepoModule } from 'projects/app-toolbox/src/app/core/repo/repo.module';
-import { ApiModule } from "@kleiolab/lib-sdk-lb4";
-import { SocketsModule, SocketsConfig } from 'projects/app-toolbox/src/app/core/sockets/sockets.module';
-import { SysModule } from 'projects/app-toolbox/src/app/core/sys/sys.module';
-import { TabModule } from 'projects/app-toolbox/src/app/core/tab/tab.module';
-import { WarModule } from 'projects/app-toolbox/src/app/core/war/war.module';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
+import { NotificationsModule } from './core/notifications/notifications.module';
 import { ValidationDirectivesModule } from './core/validation/validation.directives';
 import { AccountModule } from './modules/account/account.module';
 import { BackofficeModule } from './modules/backoffice/backoffice.module';
@@ -71,36 +64,47 @@ registerLocaleData(localeDeCh);
     AppComponent,
   ],
   imports: [
-    BasicModule,
-    ReduxStoreModule,
-    ReduxQueriesModule,
-    NotificationsModule,
-    LoadingBarModule,
-    SysModule,
-    InfModule,
-    DatModule,
-    ProModule,
-    WarModule,
-    TabModule,
-    RepoModule,
-    NgReduxRouterModule,
-    NgReduxModule,
-    SDKBrowserModule.forRoot(),
-    NgbModule.forRoot(),
-    ElasticInputModule.forRoot(),
-    SlimLoadingBarModule.forRoot(),
-    AngularCesiumModule.forRoot(),
-    DndModule.forRoot(),
-    TreeviewModule.forRoot(),
-    SocketIoModule.forRoot(socketIoConfig),
-    AngularSplitModule.forRoot(),
-    MccColorPickerModule.forRoot({}),
+    // angular modules
+    CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    HttpClientModule,
+    MaterialModule,
+
+
+    // OLD?
+    AngularCesiumModule.forRoot(),
+
+    // other thid party modules
+    NgReduxRouterModule,
+    NgReduxModule,
+    NgbModule.forRoot(),
+    ElasticInputModule.forRoot(),
+    SlimLoadingBarModule.forRoot(),
+    DndModule.forRoot(),
+    TreeviewModule.forRoot(),
+    AngularSplitModule.forRoot(),
+    MccColorPickerModule.forRoot({}),
+    CookiesModule.forRoot(),
+
+
+    // ??
+    SocketsModule.forRoot(socketsConfig),
+    SocketIoModule.forRoot(socketIoConfig),
+
+    // @kleiolab/lib-* modules
+    SdkLb3Module.forRoot(),
+    SdkLb4Module,
+    ReduxModule.forRoot(),
+    ReduxQueriesModule,
+    NotificationsModule,
+
+    // own modules (@kleiolab/app-toolbox)
+    BasicModule,
+    RepoModule,
     ProjectsModule,
     BackofficeModule,
     PassiveLinkModule,
@@ -110,11 +114,7 @@ registerLocaleData(localeDeCh);
     AccountModule,
     ValidationDirectivesModule,
     UserFeedbackModule,
-    HttpClientModule,
-    MaterialModule,
-    ApiModule,
-    CookiesModule.forRoot(),
-    SocketsModule.forRoot(socketsConfig)
+
   ],
   providers: [
     ActiveAccountService,

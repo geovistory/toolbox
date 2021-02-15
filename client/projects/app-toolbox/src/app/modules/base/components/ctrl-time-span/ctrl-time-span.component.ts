@@ -1,12 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { Subject } from 'rxjs';
-import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { takeUntil } from 'rxjs/operators';
+import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '@kleiolab/lib-queries';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { CtrlTimeSpanDialogComponent } from './ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 
 export type CtrlTimeSpanModel = CtrlTimeSpanDialogResult
 

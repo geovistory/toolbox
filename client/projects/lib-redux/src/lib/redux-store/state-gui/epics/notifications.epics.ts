@@ -4,9 +4,11 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
-import { NotificationsAPIActions, NotificationsAPIAction } from '../../state-gui/actions/notifications.actions';
+import { NotificationsAPIAction, NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class NotificationsAPIEpics {
   constructor(
     private toastyService: ToastyService,

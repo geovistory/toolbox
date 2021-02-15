@@ -3,42 +3,17 @@
 // extensions that sync form and route location state between
 // our store and Angular.
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
-import { Inject, InjectionToken, NgModule } from '@angular/core';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ToastyModule } from '@cime/ngx-toasty';
-import { SDKBrowserModule } from '@kleiolab/lib-sdk-lb3';
-import { ApiModule } from '@kleiolab/lib-sdk-lb4';
+import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
+import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { equals } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { createEpicMiddleware } from 'redux-observable-es6-compat';
 import { IAppState } from '../root/models/model';
 import { RootEpics } from '../root/root-epics';
 import { rootReducer } from '../root/root-reducer';
-import { AccountActions } from '../state-gui/actions/account.actions';
-import { ActiveProjectActions } from '../state-gui/actions/active-project.action';
-import { LoadingBarActions } from '../state-gui/actions/loading-bar.actions';
-import { NotificationsAPIActions } from '../state-gui/actions/notifications.actions';
-import { AccountEpics } from '../state-gui/epics/account.epics';
-import { ActiveProjectEpics } from '../state-gui/epics/active-project.epics';
-import { LoadingBarEpics } from '../state-gui/epics/loading-bar.epics';
-import { NotificationsAPIEpics } from '../state-gui/epics/notifications.epics';
-import { DatActions } from '../state-schema/actions/dat.actions';
-import { DfhActions } from '../state-schema/actions/dfh.actions';
-import { InfActions } from '../state-schema/actions/inf.actions';
-import { ProActions } from '../state-schema/actions/pro.actions';
-import { SysActions } from '../state-schema/actions/sys.actions';
-import { TabActions } from '../state-schema/actions/tab.actions';
-import { WarActions } from '../state-schema/actions/war.actions';
-import { DatEpics } from '../state-schema/epics/dat.epics';
-import { DfhEpics } from '../state-schema/epics/dfh.epics';
-import { InfEpics } from '../state-schema/epics/inf.epics';
-import { ProEpics } from '../state-schema/epics/pro.epics';
-import { SysEpics } from '../state-schema/epics/sys.epics';
-import { TabEpics } from '../state-schema/epics/tab.epics';
-import { WarEpics } from '../state-schema/epics/war.epics';
-import { SchemaObjectService } from '../state-schema/services/schema-object.service';
-
-
 
 
 /**
@@ -63,6 +38,13 @@ export const ofSubstore = (path: string[]) => (action): boolean => {
 
 export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STATE');
 
+export function apiConfigFactory(): Configuration {
+  const params: ConfigurationParameters = {
+    // set configuration parameters here.
+  }
+  return new Configuration(params);
+}
+
 @NgModule({
   imports: [
     NgReduxModule,
@@ -71,54 +53,64 @@ export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STAT
     SlimLoadingBarModule,
     ToastyModule.forRoot(),
 
-    // for schema-state epics
-    SDKBrowserModule.forRoot(), // lib-sdk-lb3
-    ApiModule, // lib-sdk-lb4
-
   ],
   providers: [
 
-    AccountActions,
-    ActiveProjectActions,
-    LoadingBarActions,
-    NotificationsAPIActions,
+    // AccountActions,
+    // ActiveProjectActions,
+    // LoadingBarActions,
+    // NotificationsAPIActions,
 
-    AccountEpics,
-    ActiveProjectEpics,
-    LoadingBarEpics,
-    NotificationsAPIEpics,
+    // AccountEpics,
+    // ActiveProjectEpics,
+    // LoadingBarEpics,
+    // NotificationsAPIEpics,
 
+    // DatActions,
+    // DfhActions,
+    // InfActions,
+    // ProActions,
+    // SysActions,
+    // TabActions,
+    // WarActions,
 
-    DatActions,
-    DfhActions,
-    InfActions,
-    ProActions,
-    SysActions,
-    TabActions,
-    WarActions,
+    // DatEpics,
+    // DfhEpics,
+    // InfEpics,
+    // ProEpics,
+    // SysEpics,
+    // TabEpics,
+    // WarEpics,
 
-    DatEpics,
-    DfhEpics,
-    InfEpics,
-    ProEpics,
-    SysEpics,
-    TabEpics,
-    WarEpics,
-
-    RootEpics,
-    // SchemaActionsFactory,
-    SchemaObjectService,
-    { provide: APP_INITIAL_STATE, useValue: {} }
+    // RootEpics,
+    // // SchemaActionsFactory,
+    // SchemaObjectService,
+    // { provide: APP_INITIAL_STATE, useValue: {} }
   ]
 })
-export class ReduxStoreModule {
+export class ReduxModule {
+  public static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: ReduxModule,
+      providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]
+    };
+  }
+
   constructor(
     public ngRedux: NgRedux<IAppState>,
     devTools: DevToolsExtension,
-    // ngReduxRouter: NgReduxRouter,
     rootEpics: RootEpics,
-    @Inject(APP_INITIAL_STATE) initialState: IAppState
+    @Inject(APP_INITIAL_STATE) initialState: IAppState,
+    @Optional() @SkipSelf() parentModule: ReduxModule,
+    @Optional() sdkLb3: SdkLb3Module,
+    @Optional() sdkLb4: SdkLb4Module
   ) {
+    const errors: string[] = []
+    if (parentModule) errors.push('ReduxModule is already loaded. Import in your base AppModule only.');
+    if (!sdkLb3) errors.push('You need to import the SdkLb3Module in your AppModule!');
+    if (!sdkLb4) errors.push('You need to import the SdkLb4Module in your AppModule!');
+    if (errors.length) throw new Error(errors.join('\n'));
+
 
     const epicMiddleware = createEpicMiddleware();
 

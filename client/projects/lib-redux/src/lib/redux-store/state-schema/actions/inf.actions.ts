@@ -398,7 +398,9 @@ export class InfTextPropertyActionFactory extends InfActionFactory<Payload, InfT
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfActions {
 
   persistent_item = new InfPersistentItemActionFactory(this.ngRedux).createActions();

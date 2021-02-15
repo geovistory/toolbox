@@ -1,21 +1,20 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ProjectCrm, SubstoreComponent, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { RootEpics } from 'projects/app-toolbox/src/app/core/redux-store/root-epics';
-import { SysSelector } from 'projects/app-toolbox/src/app/core/sys/sys.service';
-import { ClassAndTypePk } from 'projects/app-toolbox/src/app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { SysConfig } from '@kleiolab/lib-config';
+import { ClassAndTypePk, SysSelector } from '@kleiolab/lib-queries';
+import { IAppState, ProjectCrm, RootEpics } from '@kleiolab/lib-redux';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { U } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { Information } from 'projects/app-toolbox/src/app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 
 
 @WithSubStore({

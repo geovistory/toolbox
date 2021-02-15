@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project';
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity.component';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
-import { SchemaSelectorsService } from 'projects/app-toolbox/src/app/core/redux-queries/services/schema-selectors.service';
+import { InfActions } from "@kleiolab/lib-redux";
+import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
+import { SchemaSelectorsService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-entity-matcher',

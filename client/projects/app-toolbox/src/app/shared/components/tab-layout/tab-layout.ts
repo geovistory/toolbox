@@ -1,12 +1,11 @@
 import { dispatch, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef } from '@angular/core';
-import { PanelTab } from 'projects/app-toolbox/src/app/core';
+import { PanelTab, TabLayoutMode } from '@kleiolab/lib-redux';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TabLayoutAcitons } from './tab-layout.actions';
 import { tabBaseReducer } from './tab-layout.reducer';
-import { TabLayoutMode } from './tab-layout.models';
 
 
 type Payload = PanelTab<any>;

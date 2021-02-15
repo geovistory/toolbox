@@ -1,14 +1,13 @@
 // TODO DELETE UNUSED
 import { FormArray, FormGroup } from '@angular/forms';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { TimeSpanItem } from '@kleiolab/lib-queries';
+import { ByPk, ProjectPreview } from '@kleiolab/lib-redux';
 import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { CalendarType, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
-import { ProjectPreview } from 'projects/app-toolbox/src/app/core/active-project/active-project.models';
-import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
 import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
 import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
-import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
-import { DfhConfig } from "@kleiolab/lib-config";
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
@@ -24,7 +23,7 @@ export interface LabelGeneratorSettings {
  * Utilities class for static functions
  */
 
-export class U {
+export class Utils {
 
   static obj2Arr<T>(obj: { [key: string]: T }): T[] {
     const arr = [];
@@ -67,10 +66,10 @@ export class U {
   }
 
   static firstItemInIndexedGroup<T>(item: ByPk<ByPk<T>>, key: string | number): T {
-    return item && item[key] && Object.keys(item[key]).length ? U.obj2Arr(item[key])[0] : undefined;
+    return item && item[key] && Object.keys(item[key]).length ? Utils.obj2Arr(item[key])[0] : undefined;
   }
   static firstItemInObject<T>(item: ByPk<T>): T {
-    return item && Object.keys(item).length ? U.obj2Arr(item)[0] : undefined;
+    return item && Object.keys(item).length ? Utils.obj2Arr(item)[0] : undefined;
   }
 
 
@@ -101,13 +100,13 @@ export class U {
 
     if (
       infTp && infTp.duration && infTp.julian_day &&
-      U.getCalendarFromStatement(r)
+      Utils.getCalendarFromStatement(r)
     ) {
       // add duration
       obj.duration = infTp.duration
 
       // add calendar
-      obj.calendar = U.getCalendarFromStatement(r)
+      obj.calendar = Utils.getCalendarFromStatement(r)
 
       // add julian day
       obj.julianDay = infTp.julian_day;
@@ -149,8 +148,8 @@ export class U {
    */
   static proProjectToProjectPreview(project: ProProject): ProjectPreview {
     return {
-      label: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-      description: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+      label: Utils.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+      description: Utils.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
       default_language: project.default_language,
       pk_project: project.pk_entity
     }
@@ -164,9 +163,9 @@ export class U {
   * Erzeugt eine UUID nach RFC 4122
   */
   static uuid(): string {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
-      let random = Math.random() * 16 | 0; // Nachkommastellen abschneiden
-      let value = char === "x" ? random : (random % 4 + 8); // Bei x Random 0-15 (0-F), bei y Random 0-3 + 8 = 8-11 (8-b) gemäss RFC 4122
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+      const random = Math.random() * 16 | 0; // Nachkommastellen abschneiden
+      const value = char === 'x' ? random : (random % 4 + 8); // Bei x Random 0-15 (0-F), bei y Random 0-3 + 8 = 8-11 (8-b) gemäss RFC 4122
       return value.toString(16); // Hexadezimales Zeichen zurückgeben
     });
   }
@@ -188,7 +187,7 @@ export class U {
         // in this case it is a formArray
         f.controls.forEach((c: FormArray) => {
           c.markAsTouched()
-          if (c.controls) U.recursiveMarkAsTouched(c)
+          if (c.controls) Utils.recursiveMarkAsTouched(c)
         })
       }
       else {
@@ -196,7 +195,7 @@ export class U {
         if (f.controls['childControl']) {
           const c = f.controls['childControl'] as FormArray;
           c.markAsTouched()
-          if (c.controls) U.recursiveMarkAsTouched(c)
+          if (c.controls) Utils.recursiveMarkAsTouched(c)
 
         }
       }
@@ -240,4 +239,44 @@ export class U {
 
     return string;
   }
+
+
+
+
+  /**
+   * Converts InfStatement to TimePrimitive
+   * @param r the InfStatement to convert
+   */
+  infStatement2TimePrimitive(r: InfStatement): TimePrimitive {
+
+    // from InfTimePrimitve to TimePrimitive
+    const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
+    let timePrimitive: TimePrimitive = null;
+    const obj: any = {}
+
+    if (
+      infTp && infTp.duration && infTp.julian_day &&
+      Utils.getCalendarFromStatement(r)
+    ) {
+      // add duration
+      obj.duration = infTp.duration
+
+      // add calendar
+      obj.calendar = Utils.getCalendarFromStatement(r)
+
+      // add julian day
+      obj.julianDay = infTp.julian_day;
+
+      timePrimitive = new TimePrimitive({ ...obj })
+    }
+
+    if (timePrimitive === null) {
+      return new TimePrimitive({
+        calendar: 'julian'
+      })
+    } else {
+      return timePrimitive;
+    }
+  }
+
 }

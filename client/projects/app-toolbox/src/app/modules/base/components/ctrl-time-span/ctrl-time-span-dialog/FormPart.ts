@@ -2,15 +2,15 @@
 import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Subfield } from '../../properties-tree/properties-tree.models';
+import { Subfield } from "@kleiolab/lib-queries";
 import { InfLangString } from '@kleiolab/lib-sdk-lb3';
 import { InfPlace } from '@kleiolab/lib-sdk-lb3';
 import { InfAppellation } from '@kleiolab/lib-sdk-lb3';
 import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
+import { U } from "@kleiolab/lib-utils";
 import { shareReplay, map } from 'rxjs/operators';
-import { CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog.component';
+import { CtrlTimeSpanDialogResult } from "@kleiolab/lib-queries";
 import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
 
 export interface MergeDef {

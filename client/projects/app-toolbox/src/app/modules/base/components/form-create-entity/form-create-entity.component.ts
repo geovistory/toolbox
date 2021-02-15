@@ -1,34 +1,29 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, FieldProperty, SchemaSelectorsService, Subfield, SubfieldType, TableName } from '@kleiolab/lib-queries';
+import { InfActions, SchemaObjectService } from '@kleiolab/lib-redux';
 import { InfDimension, InfLangString, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { ActiveProjectPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/active-project-pipes.service';
-import { ConfigurationPipesService, TableName } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { SchemaSelectorsService } from 'projects/app-toolbox/src/app/core/redux-queries/services/schema-selectors.service';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
-import { ValidationService } from "projects/app-toolbox/src/app/core/validation/validation.service";
+import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
+import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
+import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
-import { FormArrayConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig";
-import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { DfhConfig } from "@kleiolab/lib-config";
+import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
+import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { equals, flatten, groupBy, indexBy, keys, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
-import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextPropertyInjectData } from '../fg-text-property/fg-text-property.component';
-import { Field, FieldProperty, Subfield, SubfieldType } from '../properties-tree/properties-tree.models';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
@@ -718,7 +713,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private appellationsHook(x: any, id: number) {
     const statements: InfStatement[] = x.filter((i) => !!i);
     this.searchStringParts[id] = statements
-      .map((item) => (U.stringFromQuillDoc(item.object_appellation.quill_doc)))
+      .map((item) => (Utils.stringFromQuillDoc(item.object_appellation.quill_doc)))
       .join(' ');
     return statements;
   }
@@ -726,7 +721,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private textPropHook(x: any, id: number) {
     const textProps: InfTextProperty[] = x.filter((i) => !!i);
     this.searchStringParts[id] = textProps
-      .map((item) => (U.stringFromQuillDoc(item.quill_doc)))
+      .map((item) => (Utils.stringFromQuillDoc(item.quill_doc)))
       .join(' ');
     return textProps;
   }

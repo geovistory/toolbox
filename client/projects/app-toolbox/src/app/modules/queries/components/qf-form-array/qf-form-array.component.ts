@@ -1,13 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig";
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { InformationBasicPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-basic-pipes.service';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { InformationBasicPipesService } from "@kleiolab/lib-queries";
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
-import { PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
+import { PropertySelectModel } from "@kleiolab/lib-queries";
+import { PropertyOption } from "@kleiolab/lib-queries";
 import { QfArraySubgroupInitVal, QfFormArrayData, QfFormArrayFactory, QfFormControlData, QfFormControlFactory, QfFormNodeConfig } from '../query-filter/query-filter.component';
 import { QueryFilterService } from '../query-filter/query-filter.service';
 

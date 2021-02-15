@@ -1,9 +1,9 @@
-import { ProjectDetailMock } from './ProjectDetailMock';
-import { SysConfigValueMock } from './auto-gen/SysConfigValueMock';
 import { IAppState } from '@kleiolab/lib-redux';
+import { SysConfigValueMock } from './auto-gen/SysConfigValueMock';
+import { ProjectDetailMock } from './ProjectDetailMock';
 
 export namespace IAppStateMock {
-  export const state1: IAppState = {
+  export const stateProject1: IAppState = {
     activeProject: ProjectDetailMock.project1,
   }
   export const stateDefaultConfigProject: IAppState = {

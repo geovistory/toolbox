@@ -1,6 +1,6 @@
+import { ProjectSettingsData } from '@kleiolab/lib-redux';
 import { Action } from 'redux';
 import { ProjectSettingsDataAPIAction, ProjectSettingsDataAPIActions } from './project-settings-data.actions';
-import { ProjectSettingsData } from './project-settings-data.models';
 
 const INITIAL_STATE = new ProjectSettingsData();
 

@@ -1,11 +1,11 @@
 /// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { TimeSpan } from 'projects/app-toolbox/src/app/core/state/models';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { CzmlLabel } from '../../../../../../../server/src/lb3/common/interfaces/czml-types';
 import { TemporalDistribution } from './statistic-helpers';
 export interface GeoPresence {
-  time_span: TimeSpan,
+  time_span: TimeSpanUtil,
   was_at: {
     lat: number,
     long: number
@@ -21,7 +21,7 @@ export interface QueryPoint {
   presences: GeoPresence[],
   label: string,
   labels?: {
-    time_span: TimeSpan,
+    time_span: TimeSpanUtil,
     label: string
   }[],
   // these are the entity_previews given by the default entity_preview column

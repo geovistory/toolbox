@@ -1,28 +1,23 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { sortAbc, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/state/models/substore-component';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
+import { MatDialog } from '@angular/material';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService, TemporalEntityItem } from '@kleiolab/lib-queries';
+import { IAppState, InfActions, SchemaObjectService } from '@kleiolab/lib-redux';
+import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
+import { SysConfig } from "@kleiolab/lib-config";
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { createPaginateBy } from 'projects/app-toolbox/src/app/modules/base/base.helpers';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { InformationBasicPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-basic-pipes.service';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
+import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { values } from 'ramda';
-import { BehaviorSubject, Observable, of, Subject, combineLatest } from 'rxjs';
-import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
-import { Field, TemporalEntityItem } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
-import { createPaginateBy } from 'projects/app-toolbox/src/app/modules/base/base.helpers';
-import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
-import { DfhConfig } from "@kleiolab/lib-config";
-import { IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 
 interface TypeItem {
   pkEntity: number

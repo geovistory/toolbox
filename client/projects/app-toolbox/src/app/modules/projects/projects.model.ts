@@ -1,4 +1,4 @@
-import { ProjectPreview } from "projects/app-toolbox/src/app/core";
+import { ProjectPreview } from "@kleiolab/lib-redux";
 
 export interface IProject {
     record: ProjectPreview

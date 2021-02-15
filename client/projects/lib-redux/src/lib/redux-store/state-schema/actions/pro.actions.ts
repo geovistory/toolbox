@@ -9,7 +9,7 @@ import { filter } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { ProAnalysisSlice, ProInfoProjRelSlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
-import { ActionResultObservable, LoadActionMeta, SchemaActionsFactory, SucceedActionMeta, LoadByPkAndVersionActionMeta } from '../_helpers/schema-actions-factory';
+import { ActionResultObservable, LoadActionMeta, LoadByPkAndVersionActionMeta, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 
 
 type Payload = ProInfoProjRelSlice;
@@ -292,7 +292,9 @@ export class ProAnalysisActionFactory extends SchemaActionsFactory<ProAnalysisSl
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProActions {
   project = new ProProjectActionFactory(this.ngRedux).createActions()
   info_proj_rel = new ProInfoProjRelActionFactory(this.ngRedux).createActions()

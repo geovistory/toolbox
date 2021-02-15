@@ -1,13 +1,10 @@
-import { Injectable } from '@angular/core';
-import {
-  CanActivate, Router, ActivatedRouteSnapshot,
-  RouterStateSnapshot
-} from '@angular/router';
-import { ActiveAccountService } from '../active-account/active-account.service';
-import { Observable, of } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from '../redux-store/model';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { IAppState } from "@kleiolab/lib-redux";
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ActiveAccountService } from '../active-account/active-account.service';
 
 
 

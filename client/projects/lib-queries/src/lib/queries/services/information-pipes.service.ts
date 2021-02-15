@@ -47,7 +47,9 @@ import { SchemaSelectorsService } from './schema-selectors.service';
 
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 /**
  * This Service provides a collecion of pipes that aggregate or transform information.
  * For Example
@@ -502,7 +504,6 @@ export class InformationPipesService {
             return this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
           default:
             return this.pipeItemEntityPreview(r, propIsOutgoing);
-            break;
         }
 
 

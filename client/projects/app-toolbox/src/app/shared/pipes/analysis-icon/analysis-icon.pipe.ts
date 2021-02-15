@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
+import { SysConfig } from "@kleiolab/lib-config";
 
 @Pipe({
   name: 'analysisIcon'

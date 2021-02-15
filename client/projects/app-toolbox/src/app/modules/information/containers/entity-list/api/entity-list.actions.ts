@@ -1,9 +1,9 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { EntityDetail } from 'projects/app-toolbox/src/app/core';
+import { EntityDetail } from "@kleiolab/lib-redux";
 import { FluxStandardAction } from 'flux-standard-action';
 import { Information } from './entity-list.models';
-import { ClassAndTypePk } from 'projects/app-toolbox/src/app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { ClassAndTypePk } from "@kleiolab/lib-queries";
 
 type Payload = Information;
 interface MetaData {

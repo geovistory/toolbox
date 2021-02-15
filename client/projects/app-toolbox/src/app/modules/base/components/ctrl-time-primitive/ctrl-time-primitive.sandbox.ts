@@ -1,7 +1,8 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { CtrlTimePrimitiveComponent, InfTimePrimitiveWithCalendar } from './ctrl-time-primitive.component';
+import { CtrlTimePrimitiveComponent } from './ctrl-time-primitive.component';
+import { InfTimePrimitiveWithCalendar } from "@kleiolab/lib-utils";
 import { BaseModule } from '../../base.module';
 
 

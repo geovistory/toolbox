@@ -8,11 +8,11 @@ import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { cache, spyTag } from '../decorators/method-decorators';
-import { Field, } from '../models/Field'
-import { FieldPlaceOfDisplay } from '../models/FieldPosition'
-import { SpecialFieldType } from '../models/SpecialFieldType'
-import { Subfield } from '../models/Subfield'
-import { SubfieldType } from '../models/SubfieldType'
+import { Field } from '../models/Field';
+import { FieldPlaceOfDisplay } from '../models/FieldPosition';
+import { SpecialFieldType } from '../models/SpecialFieldType';
+import { Subfield } from '../models/Subfield';
+import { SubfieldType } from '../models/SubfieldType';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
@@ -57,7 +57,8 @@ export class ConfigurationPipesService {
   * of all profiles that are enabled by the given project.
   * The array will always include PK_PROFILE_GEOVISTORY_BASIC
   */
-  @spyTag @cache({ refCount: false }) public pipeProfilesEnabledByProject(): Observable<number[]> {
+  @spyTag @cache({ refCount: false })
+  public pipeProfilesEnabledByProject(): Observable<number[]> {
     return this.a.pkProject$.pipe(
       switchMap(pkProject => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
         .key(pkProject + '_true').pipe(

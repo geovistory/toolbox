@@ -1,4 +1,4 @@
-import { SysConfig } from 'projects/app-toolbox/src/app/core';
+import { SysConfig } from "@kleiolab/lib-config";
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { TimePrimitive } from "@kleiolab/lib-utils";

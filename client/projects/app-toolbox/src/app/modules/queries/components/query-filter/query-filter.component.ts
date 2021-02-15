@@ -1,6 +1,6 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional, AfterViewInit } from '@angular/core';
 import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor, Validators } from '@angular/forms';
-import { U } from "projects/app-toolbox/src/app/core/util/util";
+import { U } from "@kleiolab/lib-utils";
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-group-factory';
@@ -10,16 +10,19 @@ import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factor
 import { FormArrayConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig";
 import { FormGroupConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormGroupConfig";
 import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { values } from 'd3';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil, filter, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
-import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
+import { classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
+import { propertiesRequiredValidator } from '../property-select/property-select.component';
+import { PropertySelectModel } from "@kleiolab/lib-queries";
+import { PropertyOption } from "@kleiolab/lib-queries";
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
 import { QueryFilterService } from './query-filter.service';
-import { InformationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/information-pipes.service';
+import { InformationPipesService } from "@kleiolab/lib-queries";
 import { equals } from 'ramda';
 import { QueryFilterData } from "@kleiolab/lib-sdk-lb4";
 import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
@@ -47,7 +50,7 @@ export interface ArrPropertiesData extends PropertySelectModel {
   ingoingProperties?: number[]
 
   searchTerm?: string;
-};
+}
 
 export interface FilterDefNode {
   data: ArrSubgroupData | ArrClassesData | ArrPropertiesData | ArrConditionData

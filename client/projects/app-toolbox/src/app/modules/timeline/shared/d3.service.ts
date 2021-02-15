@@ -1,5 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
+import { ChartLinePoint } from '@kleiolab/lib-sdk-lb4';
+import { U } from '@kleiolab/lib-utils';
 import * as d3 from 'd3';
 import { Observable } from 'rxjs';
 import { ChartLineDefinition, CursorValues } from '../components/chart-line-visual/chart-line-visual.component';
@@ -7,8 +9,6 @@ import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { RangeChangeEvent, Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
 import { YAxisDefinition } from '../models/y-axis-definition';
-import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
-import { U } from 'projects/app-toolbox/src/app/core/util/util';
 
 
 
@@ -252,7 +252,7 @@ export class D3Service {
     l = r - timeline.options.bracketWidth;
     h = timeline.options.barHeight - halfStroke; //  y bottom
 
-    let openPath = [];
+    const openPath = [];
     openPath.push('M' + l + ' ' + t); // start left top
     openPath.push('L' + r + ' ' + t); // go right
     openPath.push('L' + r + ' ' + h); // go down

@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, combineLatest, of, pipe, Subject } from 'rxjs';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
-import { Field } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.models';
+import { Field } from "@kleiolab/lib-queries";
 import { MatDialog } from '@angular/material';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
 

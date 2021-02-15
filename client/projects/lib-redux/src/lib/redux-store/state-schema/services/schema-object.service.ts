@@ -12,7 +12,9 @@ import { SysActions } from '../actions/sys.actions';
 import { TabActions } from '../actions/tab.actions';
 import { WarActions } from '../actions/war.actions';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 /**
  * Class to put schema objects into store
  */

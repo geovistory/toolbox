@@ -1,9 +1,9 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { combineLatestOrEmpty } from 'projects/app-toolbox/src/app/core/util/combineLatestOrEmpty';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { Observable } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 
 @Component({
   selector: 'gv-settings-list',

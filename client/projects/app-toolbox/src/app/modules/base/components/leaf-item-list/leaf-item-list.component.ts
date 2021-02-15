@@ -1,29 +1,24 @@
 
-import { map, shareReplay, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Component, Input, OnInit } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Observable, Subject, BehaviorSubject, combineLatest, merge } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { EntityPreviewItem, Item, ItemList, Subfield, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
-import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
-import { PaginationService } from '../../services/pagination.service';
-import { createPaginateBy } from "../../base.helpers";
-import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
-import { temporalEntityListDefaultLimit } from "../../base.helpers";
+import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog, PageEvent } from '@angular/material';
+import { BasicStatementItem, EntityPreviewItem, InformationPipesService, Item, ItemList, Subfield } from '@kleiolab/lib-queries';
+import { InfActions, PaginateByParam } from '@kleiolab/lib-redux';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
-import { PageEvent, MatDialog } from '@angular/material';
-import { ConfirmDialogData, ConfirmDialogComponent } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
+import { PaginationService } from '../../services/pagination.service';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 @Component({
   selector: 'gv-leaf-item-list',
   templateUrl: './leaf-item-list.component.html',
   styleUrls: ['./leaf-item-list.component.scss']
 })
-export class LeafItemListComponent implements OnInit, PropertyListComponentInterface {
+export class LeafItemListComponent implements OnInit {
 
   destroy$ = new Subject<boolean>();
 

@@ -1,33 +1,24 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { PaginateByParam } from 'projects/app-toolbox/src/app/core/redux-store/schema-actions-factory';
-import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material';
+import { ConfigurationPipesService, InformationPipesService, InfSelector, Subfield, TemporalEntityItem } from '@kleiolab/lib-queries';
+import { ByPk, IAppState, InfActions, PaginateByParam, SchemaObjectService } from '@kleiolab/lib-redux';
+import { InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { equals } from 'ramda';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { InfActions } from 'projects/app-toolbox/src/app/core/inf/inf.actions';
-import { InfSelector } from 'projects/app-toolbox/src/app/core/inf/inf.service';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { InformationPipesService } from '../../../../core/redux-queries/services/information-pipes.service';
+import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
-import { AddListComponentInterface, Subfield, TemporalEntityItem } from '../properties-tree/properties-tree.models';
-import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
-import { temporalEntityListDefaultLimit } from "../../base.helpers";
-import { createPaginateBy } from "../../base.helpers";
 import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
-import { ByPk, IAppState } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { SchemaObjectService } from 'projects/app-toolbox/src/app/core/redux-store/schema-object.service';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',
   templateUrl: './temporal-entity-add-list.component.html',
   styleUrls: ['./temporal-entity-add-list.component.scss']
 })
-export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddListComponentInterface {
+export class TemporalEntityAddListComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 

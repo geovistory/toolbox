@@ -8,7 +8,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
 import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
 import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
+import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { QueryFilterComponent, QueryFilterInjectData } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { values } from 'ramda';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';

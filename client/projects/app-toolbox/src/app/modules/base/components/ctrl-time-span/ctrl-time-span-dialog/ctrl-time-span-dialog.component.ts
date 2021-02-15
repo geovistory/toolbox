@@ -1,33 +1,19 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ExTimeHelpMode, ExTimeModalMode, SysConfig } from 'projects/app-toolbox/src/app/core';
-import { ValidationService } from "projects/app-toolbox/src/app/core/validation/validation.service";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project";
-import { ByPk } from 'projects/app-toolbox/src/app/core/redux-store/model';
-import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '@kleiolab/lib-queries';
+import { ByPk } from '@kleiolab/lib-redux';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
+import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, first, mergeMap, takeUntil, map } from 'rxjs/operators';
-import { ConfigurationPipesService } from 'projects/app-toolbox/src/app/core/redux-queries/services/configuration-pipes.service';
-import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
-
-import { Field } from '../../properties-tree/properties-tree.models';
+import { debounceTime, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { Field } from "@kleiolab/lib-queries";
 import { FormPart, MergeDef } from './FormPart';
-// TODO DELETE
-export interface CtrlTimeSpanDialogResult {
-  // key is the dfh_pk_property, expressing what the time primitive means for the time span
-  72?: InfTimePrimitiveWithCalendar; // p82 | At some time within | outer bounds | not before – not after
-  152?: InfTimePrimitiveWithCalendar; // p82a | begin of the begin | left outer bound | not before
-  153?: InfTimePrimitiveWithCalendar; // p82b | end of the end | right outer bound | not after
-  71?: InfTimePrimitiveWithCalendar; // p81 | Ongoing throughout | inner bounds | surely from – surely to
-  150?: InfTimePrimitiveWithCalendar; // p81a | end of the begin | left inner bound | surely from
-  151?: InfTimePrimitiveWithCalendar; // p81b | begin of the end | right inner bound | surely to
-}
-// TODO DELETE
-export interface CtrlTimeSpanDialogData {
-  timePrimitives: CtrlTimeSpanDialogResult
-  beforeCloseCallback?: (timePrimitives: CtrlTimeSpanDialogResult) => Observable<boolean>
-}
+
+export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
+export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
+
 interface TimeSpanFormDef {
   formParts: FormPart[]
 }
@@ -349,7 +335,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
   }
 
   getErrorMessage(formControl: FormControl) {
-    for (let propertyName in formControl.errors) {
+    for (const propertyName in formControl.errors) {
       if (formControl.errors.hasOwnProperty(propertyName) && formControl.touched) {
         return ValidationService.getValidatorErrorMessage(propertyName, formControl.errors[propertyName]);
       }
