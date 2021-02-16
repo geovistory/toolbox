@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProProject } from '@kleiolab/lib-sdk-lb4';
-import { PK_DEFAULT_CONFIG_PROJECT, OmitEntity } from './local-model.helpers';
-import { InfLanguageMock } from './InfLanguageMock';
+import {ProProject} from '@kleiolab/lib-sdk-lb4';
+import {PK_DEFAULT_CONFIG_PROJECT, OmitEntity} from './local-model.helpers';
+import {InfLanguageMock} from './InfLanguageMock';
 
 /**
  * pk_entity prefix: 300

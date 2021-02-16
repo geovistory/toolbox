@@ -44,7 +44,6 @@ describe('ConfigurationPipeService', () => {
 
   describe('.pipeProfilesEnabledByProject()', () => {
     it('should return two custom profiles + basic profile (id:5)', async (done) => {
-
       setAppState(ngRedux, IAppStateMock.stateProject1)
       // seeding data
       const gvSchemaObj: GvSchemaObject = {
@@ -57,8 +56,7 @@ describe('ConfigurationPipeService', () => {
       }
       schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
 
-      // await new Promise((res) => setTimeout(() => res(), 500))
-
+      console.log(JSON.stringify(ngRedux.getState().pro.dfh_profile_proj_rel.by_fk_project__enabled))
       // using pipe
       const q$ = service.pipeProfilesEnabledByProject()
 
@@ -74,12 +72,7 @@ describe('ConfigurationPipeService', () => {
           },
           null,
           done);
-
-
-
-
     });
-
 
 
 
@@ -339,4 +332,38 @@ describe('ConfigurationPipeService', () => {
 
   })
 
+  describe('.pipeClassLabel()', () => {
+    it('should return class label of Geographical Place', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      // seeding data
+      const gvSchemaObj: GvSchemaObject = {
+        dfh: {
+          klass: [
+            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_363_GEO_PLACE),
+          ],
+          label: [
+            transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_363_GEO_PLACE),
+          ]
+        }
+      }
+      schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
+
+
+      // using pipe
+      const q$ = service.pipeClassLabel(DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence = ['Geographical Place']
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence).toEqual(expectedSequence)
+          },
+          null,
+          done);
+
+    });
+
+  })
 });

@@ -16,7 +16,7 @@ export class ProDfhProfileProjRelMock {
   })
 
   static readonly PROJ_1_PROFILE_12: OmitEntity<ProDfhProfileProjRel> = ({
-    pk_entity: 1001,
+    pk_entity: 1002,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_profile: 12,
     enabled: true

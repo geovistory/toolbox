@@ -2212,7 +2212,8 @@ class ActiveProjectPipesService {
         this.s = s;
         this.entityPreviewSocket = entityPreviewSocket;
         this.requestedEntityPreviews = {};
-        this.pkProject$ = ngRedux.select(['activeProject', 'pk_project']).pipe(filter((/**
+        this.pkProject$ = ngRedux.select(['activeProject', 'pk_project'])
+            .pipe(filter((/**
          * @param {?} p
          * @return {?}
          */
@@ -2404,6 +2405,7 @@ class ConfigurationPipesService {
      * The array will always include PK_PROFILE_GEOVISTORY_BASIC
      * @return {?}
      */
+    // @spyTag
     pipeProfilesEnabledByProject() {
         return this.a.pkProject$.pipe(switchMap((/**
          * @param {?} pkProject
@@ -2558,6 +2560,7 @@ class ConfigurationPipesService {
      * @param {?} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeSpecificFieldOfClass(pkClass) {
         return this.pipeFields(pkClass).pipe(map((/**
          * @param {?} fields
@@ -2584,6 +2587,7 @@ class ConfigurationPipesService {
      * @param {?} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeBasicFieldsOfClass(pkClass) {
         return this.pipeFields(pkClass).pipe(map((/**
          * @param {?} fields
@@ -2612,6 +2616,7 @@ class ConfigurationPipesService {
      * @param {?} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeFieldsForTeEnForm(pkClass) {
         return this.pipeFields(pkClass).pipe(
         // filter fields that are displayd in specific fields
@@ -2661,6 +2666,7 @@ class ConfigurationPipesService {
      * @param {?} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeBasicAndSpecificFields(pkClass) {
         return combineLatest(this.pipeBasicFieldsOfClass(pkClass), this.pipeSpecificFieldOfClass(pkClass))
             .pipe(map((/**
@@ -2676,6 +2682,7 @@ class ConfigurationPipesService {
      * @param {?} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeSpecificAndBasicFields(pkClass) {
         return combineLatest(this.pipeSpecificFieldOfClass(pkClass), this.pipeBasicFieldsOfClass(pkClass))
             .pipe(map((/**
@@ -2768,6 +2775,7 @@ class ConfigurationPipesService {
      * @param {?} targetMaxQuantity
      * @return {?}
      */
+    // @spyTag
     pipeSubfieldTypeOfClass(config, pkClass, targetMaxQuantity) {
         return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter((/**
          * @param {?} i
@@ -2789,6 +2797,7 @@ class ConfigurationPipesService {
      * @param {?} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeFieldConfigs(pkClass) {
         return this.a.pkProject$.pipe(switchMap((/**
          * @param {?} fkProject
@@ -2832,6 +2841,7 @@ class ConfigurationPipesService {
      * @param {?=} pkClass
      * @return {?}
      */
+    // @spyTag
     pipeClassLabel(pkClass) {
         return combineLatest(this.a.pkProject$, this.a.pipeActiveDefaultLanguage()).pipe(switchMap((/**
          * @param {?} __0
@@ -2864,6 +2874,7 @@ class ConfigurationPipesService {
      * @param {?} d
      * @return {?}
      */
+    // @spyTag
     pipeLabels(d) {
         /** @type {?} */
         let fk_system_type;
@@ -2988,6 +2999,7 @@ class ConfigurationPipesService {
      * @param {?} d
      * @return {?}
      */
+    // @spyTag
     pipeProTextProperty(d) {
         /** @type {?} */
         const key = textPropertyByFksKey(d);
@@ -2998,6 +3010,7 @@ class ConfigurationPipesService {
      * @param {?} d
      * @return {?}
      */
+    // @spyTag
     pipeDfhLabel(d) {
         /** @type {?} */
         const key = dfhLabelByFksKey(d);
@@ -3010,6 +3023,7 @@ class ConfigurationPipesService {
      * @param {?} fkPropertyRange
      * @return {?}
      */
+    // @spyTag
     pipeFieldLabel(fkProperty, fkPropertyDomain, fkPropertyRange) {
         /** @type {?} */
         const isOutgoing = !!fkPropertyDomain;
@@ -3062,6 +3076,7 @@ class ConfigurationPipesService {
      * @param {?} targetClassPk
      * @return {?}
      */
+    // @spyTag
     pipeTableNameOfClass(targetClassPk) {
         return combineLatest(this.s.sys$.config$.main$, this.s.dfh$.class$.by_pk_class$.key(targetClassPk)).pipe(filter((/**
          * @param {?} i
@@ -3114,6 +3129,7 @@ class ConfigurationPipesService {
      * This is usefull to create select dropdowns of classes users will know
      * @return {?}
      */
+    // @spyTag
     pipeClassesInEntitiesOrSources() {
         return combineLatest(this.pipeClassesEnabledInEntities(), this.pipeClassesRequiredBySources()).pipe(map((/**
          * @param {?} __0
@@ -3125,6 +3141,7 @@ class ConfigurationPipesService {
          */
         (x) => x.toString()), uniq([...a, ...b])))), startWith({}));
     }
+    // @spyTag
     /**
      * @return {?}
      */
@@ -3146,6 +3163,7 @@ class ConfigurationPipesService {
      * of thte given project
      * @return {?}
      */
+    // @spyTag
     pipeClassesEnabledByProjectProfiles() {
         return this.a.pkProject$.pipe(switchMap((/**
          * @param {?} pkProject
@@ -3183,6 +3201,7 @@ class ConfigurationPipesService {
      * of thte given project
      * @return {?}
      */
+    // @spyTag
     pipeTypeClassesEnabledByProjectProfiles() {
         return combineLatest([
             this.s.dfh$.class$.by_basic_type$.key(30),
@@ -3222,6 +3241,7 @@ class ConfigurationPipesService {
      * of all classes that are enabled by active project (using class_proj_rel)
      * @return {?}
      */
+    // @spyTag
     pipeClassesEnabledInEntities() {
         return this.a.pkProject$.pipe(switchMap((/**
          * @param {?} pkProject
@@ -3243,6 +3263,7 @@ class ConfigurationPipesService {
      * used by the given project
      * @return {?}
      */
+    // @spyTag
     pipeSelectedTeEnClassesInProject() {
         return combineLatest(this.pipeTeEnClassesEnabledInEntities(), this.pipeTeEnClassesRequiredBySources()).pipe(map((/**
          * @param {?} __0
@@ -3258,6 +3279,7 @@ class ConfigurationPipesService {
      * Gets array of pk_class with teEn classes enabled in entities
      * @return {?}
      */
+    // @spyTag
     pipeTeEnClassesEnabledInEntities() {
         return this.a.pkProject$.pipe(switchMap((/**
          * @param {?} pkProject
@@ -3303,6 +3325,7 @@ class ConfigurationPipesService {
      * Gets array of pk_class with teEn classes required by sources
      * @return {?}
      */
+    // @spyTag
     pipeTeEnClassesRequiredBySources() {
         return this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
             .pipe(switchMap((/**
@@ -3330,6 +3353,7 @@ class ConfigurationPipesService {
      * @param {?=} enabledIn
      * @return {?}
      */
+    // @spyTag
     pipeTypeAndTypedClasses(enabledIn) {
         /** @type {?} */
         let pks$;
@@ -3364,6 +3388,7 @@ class ConfigurationPipesService {
          */
         pks => this.pipeTypeAndTypedClassesOfTypedClasses(pks))));
     }
+    // @spyTag
     /**
      * @param {?} pkTypedClasses
      * @return {?}
@@ -3390,6 +3415,7 @@ class ConfigurationPipesService {
             })));
         })));
     }
+    // @spyTag
     /**
      * @param {?} pkTypedClass
      * @return {?}
@@ -3409,6 +3435,7 @@ class ConfigurationPipesService {
             return byDomain[pkTypedClass] ? byDomain[pkTypedClass].has_range : undefined;
         })));
     }
+    // @spyTag
     /**
      * @param {?} pkTypeClasses
      * @return {?}
@@ -3432,6 +3459,7 @@ class ConfigurationPipesService {
             pk => byDomain[pk] ? byDomain[pk].has_domain : undefined));
         })));
     }
+    // @spyTag
     /**
      * @param {?} pkTypedClass
      * @return {?}
@@ -3451,6 +3479,7 @@ class ConfigurationPipesService {
             return typeProp ? typeProp.pk_property : undefined;
         })));
     }
+    // @spyTag
     /**
      * @param {?} pkProperties
      * @param {?} isOutgoing
@@ -3504,7 +3533,7 @@ ConfigurationPipesService.ctorParameters = () => [
 ];
 /** @nocollapse */ ConfigurationPipesService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConfigurationPipesService_Factory() { return new ConfigurationPipesService(ɵɵinject(ActiveProjectPipesService), ɵɵinject(SchemaSelectorsService)); }, token: ConfigurationPipesService, providedIn: "root" });
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Observable)
@@ -3516,31 +3545,31 @@ __decorate([
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeFields", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeSpecificFieldOfClass", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeBasicFieldsOfClass", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeFieldsForTeEnForm", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeBasicAndSpecificFields", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
@@ -3552,133 +3581,133 @@ __decorate([
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipePropertiesToSubfields", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeSubfieldTypeOfClass", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeFieldConfigs", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeClassLabel", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeLabels", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeProTextProperty", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeDfhLabel", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeFieldLabel", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTableNameOfClass", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeClassesInEntitiesOrSources", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ConfigurationPipesService.prototype, "pipeClassesRequiredBySources", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeClassesEnabledByProjectProfiles", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTypeClassesEnabledByProjectProfiles", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ConfigurationPipesService.prototype, "pipeClassesEnabledInEntities", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeSelectedTeEnClassesInProject", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ConfigurationPipesService.prototype, "pipeTeEnClassesEnabledInEntities", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ConfigurationPipesService.prototype, "pipeTeEnClassesRequiredBySources", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTypeAndTypedClasses", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Array]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTypeAndTypedClassesOfTypedClasses", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTypeClassOfTypedClass", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Array]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTypedClassesOfTypeClasses", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Observable)
 ], ConfigurationPipesService.prototype, "pipeTypePropertyOfTypedClass", null);
 __decorate([
-    spyTag, cache({ refCount: false }),
+    cache({ refCount: false }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Array, Boolean]),
     __metadata("design:returntype", Observable)
@@ -4659,6 +4688,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeListLength(l, pkEntity) {
         switch (l.listType) {
             case 'appellation':
@@ -4695,6 +4725,7 @@ class InformationPipesService {
                 return new BehaviorSubject(0);
         }
     }
+    // @spyTag
     /**
      * @param {?} l
      * @param {?} pkEntity
@@ -4730,6 +4761,7 @@ class InformationPipesService {
         else
             console.warn('unsupported listType');
     }
+    // @spyTag
     /**
      * @param {?} listDefinition
      * @param {?} pkEntity
@@ -4749,6 +4781,7 @@ class InformationPipesService {
      * @param {?=} limit
      * @return {?}
      */
+    // @spyTag
     pipeListAppellation(listDefinition, pkEntity, limit) {
         return this.b.pipeStatementsOfList(listDefinition, pkEntity)
             .pipe(switchMap((/**
@@ -4781,6 +4814,7 @@ class InformationPipesService {
      * @param {?=} limit
      * @return {?}
      */
+    // @spyTag
     pipeListEntityPreview(listDefinition, pkEntity, limit) {
         return this.b.pipeStatementsOfList(listDefinition, pkEntity)
             .pipe(tag(`before-${pkEntity}-${listDefinition.property.pkProperty}-${listDefinition.targetClass}`), switchMap((/**
@@ -4811,6 +4845,7 @@ class InformationPipesService {
             (a, b) => a.ordNum > b.ordNum ? 1 : -1))), limitTo(limit)), startWith([]));
         })), tag(`after-${pkEntity}-${listDefinition.property.pkProperty}-${listDefinition.targetClass}`));
     }
+    // @spyTag
     /**
      * @template T
      * @param {?} listDefinition
@@ -4850,6 +4885,7 @@ class InformationPipesService {
      * @param {?=} limit
      * @return {?}
      */
+    // @spyTag
     pipeListPlace(listDefinition, pkEntity, limit) {
         return this.b.pipeStatementsOfList(listDefinition, pkEntity)
             .pipe(switchMap((/**
@@ -4882,6 +4918,7 @@ class InformationPipesService {
      * @param {?=} limit
      * @return {?}
      */
+    // @spyTag
     pipeListDimension(listDefinition, pkEntity, limit) {
         return this.b.pipeStatementsOfList(listDefinition, pkEntity)
             .pipe(switchMap((/**
@@ -4914,6 +4951,7 @@ class InformationPipesService {
      * @param {?=} limit
      * @return {?}
      */
+    // @spyTag
     pipeListLangString(listDefinition, pkEntity, limit) {
         return this.b.pipeStatementsOfList(listDefinition, pkEntity)
             .pipe(switchMap((/**
@@ -5005,6 +5043,7 @@ class InformationPipesService {
      * @param {?=} alternative
      * @return {?}
      */
+    // @spyTag
     pipeTemporalEntityTableRows(paginateBy, limit, offset, pkProject, listDefinition, fieldDefinitions, alternative = false) {
         // const propertyItemType = this.propertyItemType(fieldDefinitions)
         // const propertyItemType = this.propertyItemType(fieldDefinitions)
@@ -5087,6 +5126,7 @@ class InformationPipesService {
         })))))))));
         return rows$;
     }
+    // @spyTag
     /**
      * @param {?} pkEntity
      * @param {?} fieldDefinitions
@@ -5270,6 +5310,7 @@ class InformationPipesService {
             return row;
         })));
     }
+    // @spyTag
     /**
      * @private
      * @param {?} r
@@ -5302,10 +5343,10 @@ class InformationPipesService {
                     return this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
                 default:
                     return this.pipeItemEntityPreview(r, propIsOutgoing);
-                    break;
             }
         })));
     }
+    // @spyTag
     /**
      * @param {?} listDef
      * @param {?} fkEntity
@@ -5386,6 +5427,7 @@ class InformationPipesService {
         else
             return of(null);
     }
+    // @spyTag
     /**
      * @param {?} pkEntity
      * @return {?}
@@ -5421,6 +5463,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeItemTimeSpan(pkEntity) {
         return this.p.pkProject$.pipe(switchMap((/**
          * @param {?} pkProject
@@ -5504,6 +5547,7 @@ class InformationPipesService {
             })));
         })));
     }
+    // @spyTag
     /**
      * @param {?} statement
      * @return {?}
@@ -5531,6 +5575,7 @@ class InformationPipesService {
             return node;
         })));
     }
+    // @spyTag
     /**
      * @param {?} statement
      * @return {?}
@@ -5558,6 +5603,7 @@ class InformationPipesService {
             return node;
         })));
     }
+    // @spyTag
     /**
      * @param {?} statement
      * @return {?}
@@ -5585,6 +5631,7 @@ class InformationPipesService {
             return node;
         })));
     }
+    // @spyTag
     /**
      * @param {?} statement
      * @return {?}
@@ -5617,6 +5664,7 @@ class InformationPipesService {
             })));
         })));
     }
+    // @spyTag
     /**
      * @param {?} statement
      * @return {?}
@@ -5662,6 +5710,7 @@ class InformationPipesService {
             })));
         })));
     }
+    // @spyTag
     /**
      * @param {?} statement
      * @param {?} isOutgoing
@@ -5695,6 +5744,7 @@ class InformationPipesService {
      * @param {?} pkProject
      * @return {?}
      */
+    // @spyTag
     pipeItemTimePrimitive(statement, pkProject) {
         if (pkProject) {
             return combineLatest(this.s.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(filter((/**
@@ -5767,6 +5817,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListLength(l, pkEntity) {
         switch (l.listType) {
             case 'appellation':
@@ -5786,6 +5837,7 @@ class InformationPipesService {
                 break;
         }
     }
+    // @spyTag
     /**
      * @param {?} l
      * @param {?} pkEntity
@@ -5809,6 +5861,7 @@ class InformationPipesService {
         else
             console.warn('unsupported listType');
     }
+    // @spyTag
     /**
      * @param {?} listDefinition
      * @param {?} pkEntity
@@ -5826,6 +5879,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListEntityPreview(listDefinition, pkEntity) {
         return (listDefinition.isOutgoing ?
             this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity) :
@@ -5865,6 +5919,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListPlace(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -5897,6 +5952,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListDimension(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -5929,6 +5985,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListLangString(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -5961,6 +6018,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListAppellation(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -5993,6 +6051,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeAltListLanguage(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -6031,6 +6090,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeRepoListAppellation(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -6063,6 +6123,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeRepoListLanguage(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -6095,6 +6156,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeRepoListPlace(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -6127,6 +6189,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeRepoListDimension(listDefinition, pkEntity) {
         if (listDefinition.isOutgoing) {
             return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(switchMap((/**
@@ -6159,6 +6222,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeRepoListEntityPreview(listDefinition, pkEntity) {
         return (listDefinition.isOutgoing ?
             this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity) :
@@ -6189,6 +6253,7 @@ class InformationPipesService {
      * @param {?} pkEntity
      * @return {?}
      */
+    // @spyTag
     pipeRepoItemTimeSpan(pkEntity) {
         return this.p.pkProject$.pipe(switchMap((/**
          * @param {?} pkProject
@@ -6271,6 +6336,7 @@ class InformationPipesService {
      * @param {?} fkEntity
      * @return {?}
      */
+    // @spyTag
     pipeLabelOfEntity(fkEntity) {
         return this.b.pipeClassOfEntity(fkEntity).pipe(
         // get the definition of the first field
@@ -6311,6 +6377,7 @@ class InformationPipesService {
      * @param {?} fkEntity
      * @return {?}
      */
+    // @spyTag
     pipeClassLabelOfEntity(fkEntity) {
         return this.b.pipeClassOfEntity(fkEntity).pipe(switchMap((/**
          * @param {?} pkClass
@@ -6325,6 +6392,7 @@ class InformationPipesService {
      * @param {?} isOutgoing
      * @return {?}
      */
+    // @spyTag
     pipeTypeOfEntity(pkEntity, hasTypeProperty, isOutgoing) {
         if (isOutgoing) {
             return this.s.inf$.statement$.by_subject_and_property_indexed$({ fk_property: hasTypeProperty, fk_subject_info: pkEntity }).pipe(map((/**
@@ -6618,7 +6686,9 @@ class InformationPipesService {
     }
 }
 InformationPipesService.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
 ];
 /** @nocollapse */
 InformationPipesService.ctorParameters = () => [
@@ -6630,246 +6700,7 @@ InformationPipesService.ctorParameters = () => [
     { type: TimeSpanPipe },
     { type: NgRedux }
 ];
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListLength", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeList", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListBasicStatementItems", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListAppellation", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListEntityPreview", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListLanguage", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListPlace", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListDimension", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeListLangString", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, Number, Number, Number, Object, Array, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeTemporalEntityTableRows", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Array, Number, Boolean]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemTeEnRow", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement, Number, Boolean]),
-    __metadata("design:returntype", void 0)
-], InformationPipesService.prototype, "pipeItem", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeEntityProperties", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeTemporalEntityRemoveProperties", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemTimeSpan", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemAppellation", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemLanguage", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemPlace", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemDimension", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemLangString", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement, Boolean]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemEntityPreview", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InfStatement, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeItemTimePrimitive", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListLength", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltList", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListStatements", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListEntityPreview", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListPlace", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListDimension", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListLangString", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListAppellation", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeAltListLanguage", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeRepoListAppellation", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeRepoListLanguage", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeRepoListPlace", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeRepoListDimension", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeRepoListEntityPreview", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeRepoItemTimeSpan", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeLabelOfEntity", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeClassLabelOfEntity", null);
-__decorate([
-    spyTag,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, Boolean]),
-    __metadata("design:returntype", Observable)
-], InformationPipesService.prototype, "pipeTypeOfEntity", null);
+/** @nocollapse */ InformationPipesService.ngInjectableDef = ɵɵdefineInjectable({ factory: function InformationPipesService_Factory() { return new InformationPipesService(ɵɵinject(InformationBasicPipesService), ɵɵinject(ActiveProjectPipesService), ɵɵinject(SchemaSelectorsService), ɵɵinject(ConfigurationPipesService), ɵɵinject(TimePrimitivePipe), ɵɵinject(TimeSpanPipe), ɵɵinject(NgRedux)); }, token: InformationPipesService, providedIn: "root" });
 __decorate([
     spyTag,
     cache({ refCount: false }),

@@ -7,7 +7,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
-import { cache, spyTag } from '../decorators/method-decorators';
+import { cache } from '../decorators/method-decorators';
 import { Field } from '../models/Field';
 import { FieldPlaceOfDisplay } from '../models/FieldPosition';
 import { SpecialFieldType } from '../models/SpecialFieldType';
@@ -57,7 +57,8 @@ export class ConfigurationPipesService {
   * of all profiles that are enabled by the given project.
   * The array will always include PK_PROFILE_GEOVISTORY_BASIC
   */
-  @spyTag @cache({ refCount: false })
+  // @spyTag
+  @cache({ refCount: false })
   public pipeProfilesEnabledByProject(): Observable<number[]> {
     return this.a.pkProject$.pipe(
       switchMap(pkProject => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
@@ -67,7 +68,7 @@ export class ConfigurationPipesService {
             .map(rel => rel.fk_profile)
           ),
           map(enabled => [...enabled, DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]),
-        ))
+        )),
     )
   }
 
@@ -183,7 +184,8 @@ export class ConfigurationPipesService {
    * pipe all the specific fields of a class,
    * ordered by the position of the field within the specific fields
    */
-  @spyTag @cache({ refCount: false }) public pipeSpecificFieldOfClass(pkClass: number): Observable<Field[]> {
+  // @spyTag
+  @cache({ refCount: false }) public pipeSpecificFieldOfClass(pkClass: number): Observable<Field[]> {
 
     return this.pipeFields(pkClass).pipe(
       map(fields => fields
@@ -199,7 +201,8 @@ export class ConfigurationPipesService {
     * pipe all the basic fields of a class,
     * ordered by the position of the field within the basic fields
     */
-  @spyTag @cache({ refCount: false }) public pipeBasicFieldsOfClass(pkClass: number): Observable<Field[]> {
+  // @spyTag
+  @cache({ refCount: false }) public pipeBasicFieldsOfClass(pkClass: number): Observable<Field[]> {
     return this.pipeFields(pkClass).pipe(
       map(fields => fields
         // filter fields that are displayd in basic fields
@@ -219,7 +222,8 @@ export class ConfigurationPipesService {
      * - the when field
      * - if available: the type field
      */
-  @spyTag @cache({ refCount: false }) public pipeFieldsForTeEnForm(pkClass: number): Observable<Field[]> {
+  // @spyTag
+  @cache({ refCount: false }) public pipeFieldsForTeEnForm(pkClass: number): Observable<Field[]> {
     return this.pipeFields(pkClass).pipe(
       // filter fields that are displayd in specific fields
       map(allFields => {
@@ -250,7 +254,8 @@ export class ConfigurationPipesService {
    * - basic fields
    * - specific fields
    */
-  @spyTag @cache({ refCount: false }) pipeBasicAndSpecificFields(pkClass: number): Observable<Field[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeBasicAndSpecificFields(pkClass: number): Observable<Field[]> {
     return combineLatest(
       this.pipeBasicFieldsOfClass(pkClass),
       this.pipeSpecificFieldOfClass(pkClass)
@@ -265,7 +270,8 @@ export class ConfigurationPipesService {
   * - specific fields
   * - basic fields
   */
-  @spyTag @cache({ refCount: false }) pipeSpecificAndBasicFields(pkClass: number): Observable<Field[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeSpecificAndBasicFields(pkClass: number): Observable<Field[]> {
     return combineLatest(
       this.pipeSpecificFieldOfClass(pkClass),
       this.pipeBasicFieldsOfClass(pkClass),
@@ -363,7 +369,8 @@ export class ConfigurationPipesService {
    * (and thus Subfields) because the UI then does not allow to choose
    * the right target class.
    */
-  @spyTag @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
+  // @spyTag
+  @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
     return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
       map((klass) => getSubfieldType(config, klass, targetMaxQuantity))
@@ -379,7 +386,8 @@ export class ConfigurationPipesService {
    * - empty array
    *
    */
-  @spyTag @cache({ refCount: false }) pipeFieldConfigs(pkClass: number): Observable<ProClassFieldConfig[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeFieldConfigs(pkClass: number): Observable<ProClassFieldConfig[]> {
     return this.a.pkProject$.pipe(
       switchMap((fkProject) => {
 
@@ -413,7 +421,8 @@ export class ConfigurationPipesService {
   /**
    * Delivers class label for active project
    */
-  @spyTag @cache({ refCount: false }) pipeClassLabel(pkClass?: number): Observable<string> {
+  // @spyTag
+  @cache({ refCount: false }) pipeClassLabel(pkClass?: number): Observable<string> {
 
     return combineLatest(
       this.a.pkProject$,
@@ -441,7 +450,8 @@ export class ConfigurationPipesService {
    * - origin == 'of ontome in project lang'          (from data_for_history.label)
    * - origin == 'of ontome in english'               (from data_for_history.label)
    */
-  @spyTag @cache({ refCount: false }) pipeLabels(d: {
+  // @spyTag
+  @cache({ refCount: false }) pipeLabels(d: {
     fkProject: number,
     type: 'label' | 'definition' | 'scopeNote',
     language: InfLanguage,
@@ -552,7 +562,8 @@ export class ConfigurationPipesService {
   /**
    * Pipes ProTextProperty
    */
-  @spyTag @cache({ refCount: false }) pipeProTextProperty(d: {
+  // @spyTag
+  @cache({ refCount: false }) pipeProTextProperty(d: {
     fk_project: number,
     fk_system_type: number,
     fk_language: number,
@@ -568,7 +579,8 @@ export class ConfigurationPipesService {
   /**
    * Pipes DfhLabel
    */
-  @spyTag @cache({ refCount: false }) pipeDfhLabel(d: {
+  // @spyTag
+  @cache({ refCount: false }) pipeDfhLabel(d: {
     type: 'label' | 'definition' | 'scopeNote',
     language: string,
     fk_class?: number,
@@ -583,7 +595,8 @@ export class ConfigurationPipesService {
   /**
    * Delivers best fitting field label for active project
   */
-  @spyTag @cache({ refCount: false }) pipeFieldLabel(fkProperty: number, fkPropertyDomain: number, fkPropertyRange: number): Observable<string> {
+  // @spyTag
+  @cache({ refCount: false }) pipeFieldLabel(fkProperty: number, fkPropertyDomain: number, fkPropertyRange: number): Observable<string> {
     const isOutgoing = !!fkPropertyDomain;
     // const system_type = isOutgoing ? (singular ? 180 : 181) : (singular ? 182 : 183)
 
@@ -640,7 +653,8 @@ export class ConfigurationPipesService {
    * this is used by Forms to create new data in the shape of
    * the data model
    */
-  @spyTag @cache({ refCount: false }) pipeTableNameOfClass(targetClassPk: number): Observable<TableName> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTableNameOfClass(targetClassPk: number): Observable<TableName> {
     return combineLatest(
       this.s.sys$.config$.main$,
       this.s.dfh$.class$.by_pk_class$.key(targetClassPk)
@@ -682,7 +696,8 @@ export class ConfigurationPipesService {
    *
    * This is usefull to create select dropdowns of classes users will know
    */
-  @spyTag @cache({ refCount: false }) pipeClassesInEntitiesOrSources(): Observable<{ [key: string]: number }> {
+  // @spyTag
+  @cache({ refCount: false }) pipeClassesInEntitiesOrSources(): Observable<{ [key: string]: number }> {
     return combineLatest(
       this.pipeClassesEnabledInEntities(),
       this.pipeClassesRequiredBySources()
@@ -692,7 +707,8 @@ export class ConfigurationPipesService {
     )
   }
 
-  @spyTag @cache({ refCount: false }) pipeClassesRequiredBySources() {
+  // @spyTag
+  @cache({ refCount: false }) pipeClassesRequiredBySources() {
     return this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
       .pipe(map(c => values(c).map(k => k.fk_class)))
   }
@@ -702,7 +718,8 @@ export class ConfigurationPipesService {
    * of all classes that are enabled by at least one of the activated profiles
    * of thte given project
    */
-  @spyTag @cache({ refCount: false }) pipeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
     return this.a.pkProject$.pipe(switchMap(pkProject => combineLatest([
       this.s.dfh$.class$.by_pk_class$.all$,
       this.pipeProfilesEnabledByProject()
@@ -721,7 +738,8 @@ export class ConfigurationPipesService {
   * of all type classes that are enabled by at least one of the activated profiles
   * of thte given project
   */
-  @spyTag @cache({ refCount: false }) pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
     return combineLatest([
       this.s.dfh$.class$.by_basic_type$.key(30),
       this.pipeProfilesEnabledByProject()
@@ -747,7 +765,8 @@ export class ConfigurationPipesService {
    * returns observable number[] where the numbers are the pk_class
    * of all classes that are enabled by active project (using class_proj_rel)
    */
-  @spyTag @cache({ refCount: false }) pipeClassesEnabledInEntities() {
+  // @spyTag
+  @cache({ refCount: false }) pipeClassesEnabledInEntities() {
     return this.a.pkProject$.pipe(switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
       .pipe(
         map((rels) => values(rels).map(rel => rel.fk_class))
@@ -759,7 +778,8 @@ export class ConfigurationPipesService {
   * returns an object where the keys are the pks of the TeEn Classes
   * used by the given project
   */
-  @spyTag @cache({ refCount: false }) pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
+  // @spyTag
+  @cache({ refCount: false }) pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
     return combineLatest(
       this.pipeTeEnClassesEnabledInEntities(),
       this.pipeTeEnClassesRequiredBySources()
@@ -772,7 +792,8 @@ export class ConfigurationPipesService {
   /**
    * Gets array of pk_class with teEn classes enabled in entities
    */
-  @spyTag @cache({ refCount: false }) pipeTeEnClassesEnabledInEntities() {
+  // @spyTag
+  @cache({ refCount: false }) pipeTeEnClassesEnabledInEntities() {
     return this.a.pkProject$.pipe(switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
       .pipe(
         switchMap((cs) => combineLatest(
@@ -803,7 +824,8 @@ export class ConfigurationPipesService {
   /**
    * Gets array of pk_class with teEn classes required by sources
    */
-  @spyTag @cache({ refCount: false }) pipeTeEnClassesRequiredBySources() {
+  // @spyTag
+  @cache({ refCount: false }) pipeTeEnClassesRequiredBySources() {
     return this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
       .pipe(
         switchMap((cs) => combineLatest(
@@ -826,7 +848,8 @@ export class ConfigurationPipesService {
   /**
    *
    */
-  @spyTag @cache({ refCount: false }) pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<{ typedClass: number, typeClass: number }[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<{ typedClass: number, typeClass: number }[]> {
 
     let pks$: Observable<number[]>[];
 
@@ -850,7 +873,8 @@ export class ConfigurationPipesService {
     )
   }
 
-  @spyTag @cache({ refCount: false }) pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<{ typedClass: number, typeClass: number }[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<{ typedClass: number, typeClass: number }[]> {
 
     return this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       map((allHasTypeProps) => {
@@ -862,7 +886,8 @@ export class ConfigurationPipesService {
       }))
   }
 
-  @spyTag @cache({ refCount: false }) pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
     return this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       map((allHasTypeProps) => {
         const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
@@ -870,7 +895,8 @@ export class ConfigurationPipesService {
       }))
   }
 
-  @spyTag @cache({ refCount: false }) pipeTypedClassesOfTypeClasses(pkTypeClasses: number[]): Observable<number[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTypedClassesOfTypeClasses(pkTypeClasses: number[]): Observable<number[]> {
 
     return this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       map((allHasTypeProps) => {
@@ -880,7 +906,8 @@ export class ConfigurationPipesService {
   }
 
 
-  @spyTag @cache({ refCount: false }) pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
     return this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       map((allHasTypeProps) => {
         const typeProp = values(allHasTypeProps).find(p => p.has_domain === pkTypedClass)
@@ -888,7 +915,8 @@ export class ConfigurationPipesService {
       }))
   }
 
-  @spyTag @cache({ refCount: false }) pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]> {
+  // @spyTag
+  @cache({ refCount: false }) pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]> {
     return this.s.dfh$.property$.by_pk_property$.all$.pipe(
       map(x => {
         if (!pkProperties || !pkProperties.length) return [];

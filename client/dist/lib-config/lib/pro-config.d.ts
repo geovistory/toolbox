@@ -8,7 +8,7 @@ export declare class ProConfig {
     /**
      * Primary Key of Namespace "Geovistory Ongoing"
      */
-    static readonly PK_PROJECT_OF_TEMPLATE_PROJECT: 173;
-    static readonly PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT: 375669;
-    static readonly PK_PROJECT_OF_SANDBOX_PROJECT: 375232;
+    static readonly PK_PROJECT_OF_TEMPLATE_PROJECT = 173;
+    static readonly PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT = 375669;
+    static readonly PK_PROJECT_OF_SANDBOX_PROJECT = 375232;
 }

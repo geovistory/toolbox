@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { TabRow } from '@kleiolab/lib-sdk-lb4';
 import { DatDigitalMock } from './DatDigitalMock';
-import { OmitEntity } from './local-model.helpers';
+import {OmitEntity} from './local-model.helpers';
 
 /**
  * pk_entity prefix: 100

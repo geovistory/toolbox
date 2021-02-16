@@ -1,6 +1,4 @@
-import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
-
-import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import {SysConfigValue, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -37,6 +35,13 @@ export class SysConfigValueMock {
           langString: 'true' as SysConfigValueObjectType.AppellationEnum
         }
       },
+      689: {
+        valueObjectType: {
+          dimension: {
+            measurementUnitClass: 690
+          }
+        }
+      },
       784: {
         valueObjectType: {
           langString: 'true' as SysConfigValueObjectType.AppellationEnum
@@ -52,34 +57,34 @@ export class SysConfigValueMock {
       incomingProperties: {
         1111: {
           comment: 'has appellation for language',
-          displayInBasicFields: { position: 2 }
+          displayInBasicFields: {position: 2}
         },
       },
       outgoingProperties: {
         1761: {
           comment: 'has short title',
-          displayInBasicFields: { position: 1 }
+          displayInBasicFields: {position: 1}
         },
         1762: {
           comment: 'P18 has definition (is definition of)',
-          displayInBasicFields: { position: 4 }
+          displayInBasicFields: {position: 4}
         },
         1760: {
           comment: 'has web address (is web addess of) – P16',
-          displayInBasicFields: { position: 5 }
+          displayInBasicFields: {position: 5}
         },
         1763: {
           comment: 'P19 has comment (is comment about)',
-          displayInBasicFields: { position: 6 }
+          displayInBasicFields: {position: 6}
         },
         4: {
           comment: 'has time-span (When)',
-          displayInBasicFields: { position: 1000 }
+          displayInBasicFields: {position: 1000}
         }
       },
       hasTypeSubproperties: {
         comment: 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-        displayInBasicFields: { position: 3 }
+        displayInBasicFields: {position: 3}
       }
     }
   }

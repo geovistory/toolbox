@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const fromPathMock = __dirname + '/../src/__tests__/helpers/data/gvDB/';
 const toPathMock =
-  __dirname + '/../../client/projects/toolbox/src/__tests__/helpers/data/auto-gen';
+  __dirname + '/../../client/projects/lib-queries/src/__tests__/helpers/data/auto-gen';
 
 // if I am correct, these MOCK are usefull only for the backend
 // (not exhaustive, they are the ones that had errors in it in the client because an import was not in the SDK)
@@ -119,7 +119,7 @@ function changeImportModelToSdk(content) {
   if (index !== -1)
     content[index] = content[index].replace(
       content[index].substring(content[index].indexOf("'")),
-      "'app/core/sdk-lb4';",
+      "'@kleiolab/lib-sdk-lb4';",
     );
   return content;
 }

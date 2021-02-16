@@ -11,6 +11,7 @@ import { DfhActions } from '../../state-schema/actions/dfh.actions';
 import { InfActions } from '../../state-schema/actions/inf.actions';
 import { ProActions } from '../../state-schema/actions/pro.actions';
 import { SysActions } from '../../state-schema/actions/sys.actions';
+import { SchemaObjectService } from '../../state-schema/services/schema-object.service';
 export declare class ActiveProjectEpics {
     private sys;
     private dat;
@@ -22,7 +23,8 @@ export declare class ActiveProjectEpics {
     private notificationActions;
     private loadingBarActions;
     private ngRedux;
-    constructor(sys: SysActions, dat: DatActions, dfh: DfhActions, pro: ProActions, inf: InfActions, projectApi: ProProjectApi, actions: ActiveProjectActions, notificationActions: NotificationsAPIActions, loadingBarActions: LoadingBarActions, ngRedux: NgRedux<IAppState>);
+    private schemaObj;
+    constructor(sys: SysActions, dat: DatActions, dfh: DfhActions, pro: ProActions, inf: InfActions, projectApi: ProProjectApi, actions: ActiveProjectActions, notificationActions: NotificationsAPIActions, loadingBarActions: LoadingBarActions, ngRedux: NgRedux<IAppState>, schemaObj: SchemaObjectService);
     createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any>;
     /**
      * This epic listenes to an action that wants to load tha active project (by id)

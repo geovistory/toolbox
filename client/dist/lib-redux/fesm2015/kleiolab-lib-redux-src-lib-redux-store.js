@@ -2,12 +2,12 @@ import { dispatch, NgRedux, NgReduxModule, DevToolsExtension } from '@angular-re
 import { Injectable, ɵɵdefineInjectable, ɵɵinject, InjectionToken, NgModule, Inject, Optional, SkipSelf } from '@angular/core';
 import { SlimLoadingBarService, SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ToastyService, ToastyConfig, ToastyModule } from '@cime/ngx-toasty';
-import { PubAccountApi, ProProjectApi, SchemaObjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
+import { PubAccountApi, SchemaObjectApi, ProProjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SystemConfigurationService, Configuration, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { keys, omit, values, pathOr, equals, indexBy } from 'ramda';
+import { omit, keys, values, pathOr, equals, indexBy } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
-import { Observable, combineLatest, of, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, combineLatest, of, BehaviorSubject } from 'rxjs';
 import { mergeMap, filter, switchMap, mapTo, map } from 'rxjs/operators';
 import { __decorate, __metadata } from 'tslib';
 import { SysConfig } from '@kleiolab/lib-config';
@@ -4200,665 +4200,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-gui/epics/active-project.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} textProperties
- * @param {?} fkSystemType
- * @return {?}
- */
-function firstProTextPropStringOfType(textProperties, fkSystemType) {
-    return (textProperties.find((/**
-     * @param {?} t
-     * @return {?}
-     */
-    t => t.fk_system_type === fkSystemType)) || { string: '' }).string;
-}
-/**
- * Transform ProProject to ProjectPreview
- * @param {?} project
- * @return {?}
- */
-function proProjectToProjectPreview(project) {
-    return {
-        label: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-        description: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
-        default_language: project.default_language,
-        pk_project: project.pk_entity
-    };
-}
-class ActiveProjectEpics {
-    /**
-     * @param {?} sys
-     * @param {?} dat
-     * @param {?} dfh
-     * @param {?} pro
-     * @param {?} inf
-     * @param {?} projectApi
-     * @param {?} actions
-     * @param {?} notificationActions
-     * @param {?} loadingBarActions
-     * @param {?} ngRedux
-     */
-    constructor(sys, dat, dfh, pro, inf, projectApi, actions, notificationActions, loadingBarActions, ngRedux) {
-        this.sys = sys;
-        this.dat = dat;
-        this.dfh = dfh;
-        this.pro = pro;
-        this.inf = inf;
-        this.projectApi = projectApi;
-        this.actions = actions;
-        this.notificationActions = notificationActions;
-        this.loadingBarActions = loadingBarActions;
-        this.ngRedux = ngRedux;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics(this.createLoadProjectBasicsEpic(), this.createLoadProjectConfigEpic(), this.createLoadProjectUpdatedEpic(), this.createClosePanelEpic(), this.createActivateTabFocusPanelEpic(), this.createMoveTabFocusPanelEpic(), this.createClosePanelFocusPanelEpic(), this.createSplitPanelActivateTabEpic(), this.createAddTabCloseListEpic());
-    }
-    /**
-     * This epic listenes to an action that wants to load tha active project (by id)
-     * It loads the project info and
-     * - on loaded dispaches an action that reduces the project into the store
-     * - on fail dispaches an action that shows an error notification
-     * @private
-     * @return {?}
-     */
-    createLoadProjectBasicsEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(ActiveProjectActions.LOAD_PROJECT_BASICS), switchMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => new Observable((/**
-         * @param {?} globalStore
-         * @return {?}
-         */
-        (globalStore) => {
-            /**
-           * Emit the global action that activates the loading bar
-           */
-            globalStore.next(this.loadingBarActions.startLoading());
-            this.projectApi.getBasics(action.meta.pk_project)
-                .subscribe((/**
-             * @param {?} data
-             * @return {?}
-             */
-            (data) => {
-                globalStore.next(this.actions.loadProjectBasiscsSucceded(proProjectToProjectPreview(data[0])));
-            }), (/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                globalStore.next(this.notificationActions.addToast({
-                    type: 'error',
-                    options: { title: error.message }
-                }));
-            }));
-        }))))));
-    }
-    /**
-     * This epic listenes to an action that is dispached when loading projcect succeeded
-     *
-     * It dispaches an action that completes the loading bar
-     * @private
-     * @return {?}
-     */
-    createLoadProjectUpdatedEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED), mapTo(this.loadingBarActions.completeLoading())));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createLoadProjectConfigEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG), switchMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => new Observable((/**
-         * @param {?} globalStore
-         * @return {?}
-         */
-        (globalStore) => {
-            globalStore.next(this.loadingBarActions.startLoading());
-            combineLatest(this.dfh.profile.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.dfh.klass.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.dfh.property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.dfh.label.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.sys.system_relevant_class.load().resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.sys.config.load().resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.dat.namespace.load('', action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.pro.text_property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))), this.inf.persistent_item.typesOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            x => !!x))))
-                .pipe(filter((/**
-             * @param {?} res
-             * @return {?}
-             */
-            (res) => !res.includes(undefined))))
-                .subscribe((/**
-             * @param {?} res
-             * @return {?}
-             */
-            (res) => {
-                globalStore.next(this.actions.loadProjectConfigSucceeded());
-                globalStore.next(this.loadingBarActions.completeLoading());
-            }), (/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-            }));
-        }))))));
-    }
-    /**
-     * LAYOUT
-     * @private
-     * @return {?}
-     */
-    createClosePanelEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            (globalStore) => {
-                this.ngRedux.getState().activeProject.panels.forEach((/**
-                 * @param {?} panel
-                 * @param {?} panelIndex
-                 * @return {?}
-                 */
-                (panel, panelIndex) => {
-                    if (panel.tabs.length === 0)
-                        globalStore.next(this.actions.closePanel(panelIndex));
-                }));
-            })))));
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createSplitPanelActivateTabEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(ActiveProjectActions.SPLIT_PANEL), map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => {
-                /** @type {?} */
-                const p = this.ngRedux.getState().activeProject;
-                /** @type {?} */
-                const c = action.meta.currentPanelIndex;
-                /** @type {?} */
-                const panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
-                return this.actions.activateTab(panelIndex, 0);
-            })));
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createActivateTabFocusPanelEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(ActiveProjectActions.ACTIVATE_TAB), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            (globalStore) => {
-                if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.panelIndex) {
-                    globalStore.next(this.actions.focusPanel(action.meta.panelIndex));
-                }
-            })))));
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createMoveTabFocusPanelEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(ActiveProjectActions.MOVE_TAB), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            (globalStore) => {
-                if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.currentPanelIndex) {
-                    globalStore.next(this.actions.focusPanel(action.meta.currentPanelIndex));
-                }
-            })))));
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createClosePanelFocusPanelEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(ActiveProjectActions.CLOSE_PANEL), mergeMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            (globalStore) => {
-                if (this.ngRedux.getState().activeProject.focusedPanel > (this.ngRedux.getState().activeProject.panels.length - 1)) {
-                    globalStore.next(this.actions.focusPanel(0));
-                }
-            })))));
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createAddTabCloseListEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(ofType(ActiveProjectActions.ADD_TAB), mapTo(this.actions.setListType('')));
-        });
-    }
-}
-ActiveProjectEpics.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-ActiveProjectEpics.ctorParameters = () => [
-    { type: SysActions },
-    { type: DatActions },
-    { type: DfhActions },
-    { type: ProActions },
-    { type: InfActions },
-    { type: ProProjectApi },
-    { type: ActiveProjectActions },
-    { type: NotificationsAPIActions },
-    { type: LoadingBarActions },
-    { type: NgRedux }
-];
-/** @nocollapse */ ActiveProjectEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(ɵɵinject(SysActions), ɵɵinject(DatActions), ɵɵinject(DfhActions), ɵɵinject(ProActions), ɵɵinject(InfActions), ɵɵinject(ProProjectApi), ɵɵinject(ActiveProjectActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(LoadingBarActions), ɵɵinject(NgRedux)); }, token: ActiveProjectEpics, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.sys;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.dat;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.dfh;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.pro;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.inf;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.projectApi;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.actions;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.notificationActions;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.loadingBarActions;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveProjectEpics.prototype.ngRedux;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/epics/loading-bar.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class LoadingBarEpics {
-    /**
-     * @param {?} service
-     */
-    constructor(service) {
-        this.service = service;
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createCompleteLoadingBarEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
-         * @return {?}
-         */
-        () => {
-            return Observable.create((/**
-             * @param {?} observer
-             * @return {?}
-             */
-            observer => {
-                this.service.complete();
-                // observer.next(this.actions.stopLoading())
-            }));
-        }))));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createStartLoadingBarEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
-         * @return {?}
-         */
-        () => {
-            return Observable.create((/**
-             * @param {?} observer
-             * @return {?}
-             */
-            observer => {
-                this.service.start();
-            }));
-        }))));
-    }
-}
-LoadingBarEpics.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-LoadingBarEpics.ctorParameters = () => [
-    { type: SlimLoadingBarService }
-];
-/** @nocollapse */ LoadingBarEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function LoadingBarEpics_Factory() { return new LoadingBarEpics(ɵɵinject(SlimLoadingBarService$1)); }, token: LoadingBarEpics, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    LoadingBarEpics.prototype.service;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-gui/epics/notifications.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class NotificationsAPIEpics {
-    /**
-     * @param {?} toastyService
-     * @param {?} toastyConfig
-     */
-    constructor(toastyService, toastyConfig) {
-        this.toastyService = toastyService;
-        this.toastyConfig = toastyConfig;
-        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-        // Possible values: default, bootstrap, material
-        this.toastyConfig.theme = 'bootstrap';
-    }
-    /**
-     * @return {?}
-     */
-    createEpics() {
-        return combineEpics(this.createAddToastEpic());
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createAddToastEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => {
-            return action$.pipe(
-            /**
-             * Filter the actions that triggers this epic
-             */
-            filter((/**
-             * @param {?} a
-             * @return {?}
-             */
-            (a) => {
-                return a;
-            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            (action) => new Observable((/**
-             * @param {?} observer
-             * @return {?}
-             */
-            (observer) => {
-                /**
-                 * Add Toast
-                 * @type {?}
-                 */
-                const a = (/** @type {?} */ (action));
-                if (!a.payload.options.title && !a.payload.options.msg) {
-                    if (a.payload.type === 'error') {
-                        a.payload.options.title = 'Oops, something went wrong!';
-                    }
-                }
-                this.toastyService[a.payload.type](a.payload.options);
-            })))));
-        });
-    }
-}
-NotificationsAPIEpics.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-NotificationsAPIEpics.ctorParameters = () => [
-    { type: ToastyService },
-    { type: ToastyConfig }
-];
-/** @nocollapse */ NotificationsAPIEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotificationsAPIEpics_Factory() { return new NotificationsAPIEpics(ɵɵinject(ToastyService$1), ɵɵinject(ToastyConfig$1)); }, token: NotificationsAPIEpics, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    NotificationsAPIEpics.prototype.toastyService;
-    /**
-     * @type {?}
-     * @private
-     */
-    NotificationsAPIEpics.prototype.toastyConfig;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: state-schema/epics/action-resolver.epics.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ActionResolverEpics {
-    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
-    constructor() {
-        this.createEpics = (/**
-         * @return {?}
-         */
-        () => combineEpics(this.createResolveEpic()));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    createResolveEpic() {
-        return (/**
-         * @param {?} action$
-         * @param {?} store
-         * @return {?}
-         */
-        (action$, store) => action$.pipe(filter((/**
-         * @param {?} action
-         * @return {?}
-         */
-        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
-    }
-}
-ActionResolverEpics.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root'
-            },] }
-];
-/** @nocollapse */
-ActionResolverEpics.ctorParameters = () => [];
-/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    ActionResolverEpics.prototype.createEpics;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: state-schema/reducer-configs/tab.config.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -5184,6 +4525,677 @@ if (false) {
     SchemaObjectService.prototype.sysActions;
     /** @type {?} */
     SchemaObjectService.prototype.notifications;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/epics/active-project.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} textProperties
+ * @param {?} fkSystemType
+ * @return {?}
+ */
+function firstProTextPropStringOfType(textProperties, fkSystemType) {
+    return (textProperties.find((/**
+     * @param {?} t
+     * @return {?}
+     */
+    t => t.fk_system_type === fkSystemType)) || { string: '' }).string;
+}
+/**
+ * Transform ProProject to ProjectPreview
+ * @param {?} project
+ * @return {?}
+ */
+function proProjectToProjectPreview(project) {
+    return {
+        label: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+        description: firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+        default_language: project.default_language,
+        pk_project: project.pk_entity
+    };
+}
+class ActiveProjectEpics {
+    /**
+     * @param {?} sys
+     * @param {?} dat
+     * @param {?} dfh
+     * @param {?} pro
+     * @param {?} inf
+     * @param {?} projectApi
+     * @param {?} actions
+     * @param {?} notificationActions
+     * @param {?} loadingBarActions
+     * @param {?} ngRedux
+     * @param {?} schemaObj
+     */
+    constructor(sys, dat, dfh, pro, inf, projectApi, actions, notificationActions, loadingBarActions, ngRedux, schemaObj) {
+        this.sys = sys;
+        this.dat = dat;
+        this.dfh = dfh;
+        this.pro = pro;
+        this.inf = inf;
+        this.projectApi = projectApi;
+        this.actions = actions;
+        this.notificationActions = notificationActions;
+        this.loadingBarActions = loadingBarActions;
+        this.ngRedux = ngRedux;
+        this.schemaObj = schemaObj;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics(this.createLoadProjectBasicsEpic(), this.createLoadProjectConfigEpic(), this.createLoadProjectUpdatedEpic(), this.createClosePanelEpic(), this.createActivateTabFocusPanelEpic(), this.createMoveTabFocusPanelEpic(), this.createClosePanelFocusPanelEpic(), this.createSplitPanelActivateTabEpic(), this.createAddTabCloseListEpic());
+    }
+    /**
+     * This epic listenes to an action that wants to load tha active project (by id)
+     * It loads the project info and
+     * - on loaded dispaches an action that reduces the project into the store
+     * - on fail dispaches an action that shows an error notification
+     * @private
+     * @return {?}
+     */
+    createLoadProjectBasicsEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(ActiveProjectActions.LOAD_PROJECT_BASICS), switchMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => new Observable((/**
+         * @param {?} globalStore
+         * @return {?}
+         */
+        (globalStore) => {
+            /**
+           * Emit the global action that activates the loading bar
+           */
+            globalStore.next(this.loadingBarActions.startLoading());
+            this.projectApi.getBasics(action.meta.pk_project)
+                .subscribe((/**
+             * @param {?} data
+             * @return {?}
+             */
+            (data) => {
+                globalStore.next(this.actions.loadProjectBasiscsSucceded(proProjectToProjectPreview(data[0])));
+                this.schemaObj.storeSchemaObject({
+                    inf: { language: [data[0].default_language] },
+                    pro: { project: [omit(['default_language'], data[0])] }
+                }, action.meta.pk_project);
+            }), (/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => {
+                globalStore.next(this.notificationActions.addToast({
+                    type: 'error',
+                    options: { title: error.message }
+                }));
+            }));
+        }))))));
+    }
+    /**
+     * This epic listenes to an action that is dispached when loading projcect succeeded
+     *
+     * It dispaches an action that completes the loading bar
+     * @private
+     * @return {?}
+     */
+    createLoadProjectUpdatedEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED), mapTo(this.loadingBarActions.completeLoading())));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createLoadProjectConfigEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG), switchMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => new Observable((/**
+         * @param {?} globalStore
+         * @return {?}
+         */
+        (globalStore) => {
+            globalStore.next(this.loadingBarActions.startLoading());
+            combineLatest(this.dfh.profile.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.dfh.klass.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.dfh.property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.dfh.label.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.sys.system_relevant_class.load().resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.sys.config.load().resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.dat.namespace.load('', action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.pro.text_property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))), this.inf.persistent_item.typesOfProject(action.meta.pk_project).resolved$.pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x))))
+                .pipe(filter((/**
+             * @param {?} res
+             * @return {?}
+             */
+            (res) => !res.includes(undefined))))
+                .subscribe((/**
+             * @param {?} res
+             * @return {?}
+             */
+            (res) => {
+                globalStore.next(this.actions.loadProjectConfigSucceeded());
+                globalStore.next(this.loadingBarActions.completeLoading());
+            }), (/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => {
+                // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+            }));
+        }))))));
+    }
+    /**
+     * LAYOUT
+     * @private
+     * @return {?}
+     */
+    createClosePanelEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            (globalStore) => {
+                this.ngRedux.getState().activeProject.panels.forEach((/**
+                 * @param {?} panel
+                 * @param {?} panelIndex
+                 * @return {?}
+                 */
+                (panel, panelIndex) => {
+                    if (panel.tabs.length === 0)
+                        globalStore.next(this.actions.closePanel(panelIndex));
+                }));
+            })))));
+        });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createSplitPanelActivateTabEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(ActiveProjectActions.SPLIT_PANEL), map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => {
+                /** @type {?} */
+                const p = this.ngRedux.getState().activeProject;
+                /** @type {?} */
+                const c = action.meta.currentPanelIndex;
+                /** @type {?} */
+                const panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
+                return this.actions.activateTab(panelIndex, 0);
+            })));
+        });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createActivateTabFocusPanelEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(ActiveProjectActions.ACTIVATE_TAB), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            (globalStore) => {
+                if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.panelIndex) {
+                    globalStore.next(this.actions.focusPanel(action.meta.panelIndex));
+                }
+            })))));
+        });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createMoveTabFocusPanelEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(ActiveProjectActions.MOVE_TAB), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            (globalStore) => {
+                if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.currentPanelIndex) {
+                    globalStore.next(this.actions.focusPanel(action.meta.currentPanelIndex));
+                }
+            })))));
+        });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createClosePanelFocusPanelEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(ActiveProjectActions.CLOSE_PANEL), mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            (globalStore) => {
+                if (this.ngRedux.getState().activeProject.focusedPanel > (this.ngRedux.getState().activeProject.panels.length - 1)) {
+                    globalStore.next(this.actions.focusPanel(0));
+                }
+            })))));
+        });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createAddTabCloseListEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(ofType(ActiveProjectActions.ADD_TAB), mapTo(this.actions.setListType('')));
+        });
+    }
+}
+ActiveProjectEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+ActiveProjectEpics.ctorParameters = () => [
+    { type: SysActions },
+    { type: DatActions },
+    { type: DfhActions },
+    { type: ProActions },
+    { type: InfActions },
+    { type: ProProjectApi },
+    { type: ActiveProjectActions },
+    { type: NotificationsAPIActions },
+    { type: LoadingBarActions },
+    { type: NgRedux },
+    { type: SchemaObjectService }
+];
+/** @nocollapse */ ActiveProjectEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(ɵɵinject(SysActions), ɵɵinject(DatActions), ɵɵinject(DfhActions), ɵɵinject(ProActions), ɵɵinject(InfActions), ɵɵinject(ProProjectApi), ɵɵinject(ActiveProjectActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(LoadingBarActions), ɵɵinject(NgRedux), ɵɵinject(SchemaObjectService)); }, token: ActiveProjectEpics, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.sys;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.dat;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.dfh;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.pro;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.inf;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.projectApi;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.actions;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.notificationActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.loadingBarActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.ngRedux;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveProjectEpics.prototype.schemaObj;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/epics/loading-bar.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class LoadingBarEpics {
+    /**
+     * @param {?} service
+     */
+    constructor(service) {
+        this.service = service;
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createCompleteLoadingBarEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(LoadingBarActions.COPMLETE), switchMap((/**
+         * @return {?}
+         */
+        () => {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            observer => {
+                this.service.complete();
+                // observer.next(this.actions.stopLoading())
+            }));
+        }))));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createStartLoadingBarEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(ofType(LoadingBarActions.START), switchMap((/**
+         * @return {?}
+         */
+        () => {
+            return Observable.create((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            observer => {
+                this.service.start();
+            }));
+        }))));
+    }
+}
+LoadingBarEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+LoadingBarEpics.ctorParameters = () => [
+    { type: SlimLoadingBarService }
+];
+/** @nocollapse */ LoadingBarEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function LoadingBarEpics_Factory() { return new LoadingBarEpics(ɵɵinject(SlimLoadingBarService$1)); }, token: LoadingBarEpics, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    LoadingBarEpics.prototype.service;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-gui/epics/notifications.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class NotificationsAPIEpics {
+    /**
+     * @param {?} toastyService
+     * @param {?} toastyConfig
+     */
+    constructor(toastyService, toastyConfig) {
+        this.toastyService = toastyService;
+        this.toastyConfig = toastyConfig;
+        // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
+        // Possible values: default, bootstrap, material
+        this.toastyConfig.theme = 'bootstrap';
+    }
+    /**
+     * @return {?}
+     */
+    createEpics() {
+        return combineEpics(this.createAddToastEpic());
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createAddToastEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => {
+            return action$.pipe(
+            /**
+             * Filter the actions that triggers this epic
+             */
+            filter((/**
+             * @param {?} a
+             * @return {?}
+             */
+            (a) => {
+                return a;
+            })), ofType(NotificationsAPIActions.ADD_TOAST), switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            (action) => new Observable((/**
+             * @param {?} observer
+             * @return {?}
+             */
+            (observer) => {
+                /**
+                 * Add Toast
+                 * @type {?}
+                 */
+                const a = (/** @type {?} */ (action));
+                if (!a.payload.options.title && !a.payload.options.msg) {
+                    if (a.payload.type === 'error') {
+                        a.payload.options.title = 'Oops, something went wrong!';
+                    }
+                }
+                this.toastyService[a.payload.type](a.payload.options);
+            })))));
+        });
+    }
+}
+NotificationsAPIEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+NotificationsAPIEpics.ctorParameters = () => [
+    { type: ToastyService },
+    { type: ToastyConfig }
+];
+/** @nocollapse */ NotificationsAPIEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotificationsAPIEpics_Factory() { return new NotificationsAPIEpics(ɵɵinject(ToastyService$1), ɵɵinject(ToastyConfig$1)); }, token: NotificationsAPIEpics, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyService;
+    /**
+     * @type {?}
+     * @private
+     */
+    NotificationsAPIEpics.prototype.toastyConfig;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: state-schema/epics/action-resolver.epics.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ActionResolverEpics {
+    // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+    constructor() {
+        this.createEpics = (/**
+         * @return {?}
+         */
+        () => combineEpics(this.createResolveEpic()));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    createResolveEpic() {
+        return (/**
+         * @param {?} action$
+         * @param {?} store
+         * @return {?}
+         */
+        (action$, store) => action$.pipe(filter((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => !!action && !!action.meta && !!action.meta.removePending)), switchMap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        action => (of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } }))))));
+    }
+}
+ActionResolverEpics.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+ActionResolverEpics.ctorParameters = () => [];
+/** @nocollapse */ ActionResolverEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ActionResolverEpics.prototype.createEpics;
 }
 
 /**
@@ -8946,25 +8958,25 @@ if (false) {
  */
 function InfObject() { }
 if (false) {
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.persistent_item;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.temporal_entity;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.statement;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.place;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.language;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.appellation;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.time_primitive;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.text_property;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.lang_string;
-    /** @type {?} */
+    /** @type {?|undefined} */
     InfObject.prototype.dimension;
 }
 /**
@@ -8972,15 +8984,17 @@ if (false) {
  */
 function ProObject() { }
 if (false) {
-    /** @type {?} */
+    /** @type {?|undefined} */
     ProObject.prototype.info_proj_rel;
+    /** @type {?|undefined} */
+    ProObject.prototype.project;
 }
 /**
  * @record
  */
 function DatObject() { }
 if (false) {
-    /** @type {?} */
+    /** @type {?|undefined} */
     DatObject.prototype.digital;
 }
 /**
@@ -8988,7 +9002,7 @@ if (false) {
  */
 function WarObject() { }
 if (false) {
-    /** @type {?} */
+    /** @type {?|undefined} */
     WarObject.prototype.entity_preview;
 }
 /**

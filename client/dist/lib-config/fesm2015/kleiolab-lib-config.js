@@ -363,6 +363,15 @@ if (false) {
  */
 class ProConfig {
 }
+/**
+ * Primary Key of Namespace "Geovistory Ongoing"
+ */
+// This project is cloned when a new project is created
+ProConfig.PK_PROJECT_OF_TEMPLATE_PROJECT = 173;
+// This project contains default cofigs: class_configs, labels
+ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT = 375669;
+// This project is the sandbox project that is cloned when a new account is created
+ProConfig.PK_PROJECT_OF_SANDBOX_PROJECT = 375232;
 if (false) {
     /**
      * Primary Key of Namespace "Geovistory Ongoing"

@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfActions } from "@kleiolab/lib-redux";
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
+import { ActiveProjectPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { InfActions } from '@kleiolab/lib-redux';
 import { InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { InformationPipesService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-type-item',
@@ -20,6 +19,7 @@ export class TypeItemComponent implements OnInit {
   @Input() pkTypeClass: number
   @Input() pkTypedClass: number
   @Input() isOutgoing: boolean
+  @Input() loadOnInit = true
 
   isViewMode: boolean;
 
@@ -54,11 +54,14 @@ export class TypeItemComponent implements OnInit {
     if (!this.pkTypeClass) throw new Error('You must provide a pkTypeClass')
     if (!this.pkTypedClass) throw new Error('You must provide a pkTypedClass')
     if (this.isOutgoing == undefined) throw new Error('You must provide a isOutgoing')
+    if (this.loadOnInit == undefined) this.loadOnInit = true
 
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      if (this.isOutgoing) this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
-      else this.p.inf.statement.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
-    })
+    if (this.loadOnInit) {
+      this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+        if (this.isOutgoing) this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+        else this.p.inf.statement.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
+      })
+    }
 
     this.hasTypeStatement$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty, this.isOutgoing)
 

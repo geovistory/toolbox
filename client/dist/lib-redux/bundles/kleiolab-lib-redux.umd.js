@@ -4603,746 +4603,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/epics/active-project.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} textProperties
-     * @param {?} fkSystemType
-     * @return {?}
-     */
-    function firstProTextPropStringOfType(textProperties, fkSystemType) {
-        return (textProperties.find((/**
-         * @param {?} t
-         * @return {?}
-         */
-        function (t) { return t.fk_system_type === fkSystemType; })) || { string: '' }).string;
-    }
-    /**
-     * Transform ProProject to ProjectPreview
-     * @param {?} project
-     * @return {?}
-     */
-    function proProjectToProjectPreview(project) {
-        return {
-            label: firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-            description: firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
-            default_language: project.default_language,
-            pk_project: project.pk_entity
-        };
-    }
-    var ActiveProjectEpics = /** @class */ (function () {
-        function ActiveProjectEpics(sys, dat, dfh, pro, inf, projectApi, actions, notificationActions, loadingBarActions, ngRedux) {
-            this.sys = sys;
-            this.dat = dat;
-            this.dfh = dfh;
-            this.pro = pro;
-            this.inf = inf;
-            this.projectApi = projectApi;
-            this.actions = actions;
-            this.notificationActions = notificationActions;
-            this.loadingBarActions = loadingBarActions;
-            this.ngRedux = ngRedux;
-        }
-        /**
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics(this.createLoadProjectBasicsEpic(), this.createLoadProjectConfigEpic(), this.createLoadProjectUpdatedEpic(), this.createClosePanelEpic(), this.createActivateTabFocusPanelEpic(), this.createMoveTabFocusPanelEpic(), this.createClosePanelFocusPanelEpic(), this.createSplitPanelActivateTabEpic(), this.createAddTabCloseListEpic());
-        };
-        /**
-         * This epic listenes to an action that wants to load tha active project (by id)
-         * It loads the project info and
-         * - on loaded dispaches an action that reduces the project into the store
-         * - on fail dispaches an action that shows an error notification
-         */
-        /**
-         * This epic listenes to an action that wants to load tha active project (by id)
-         * It loads the project info and
-         * - on loaded dispaches an action that reduces the project into the store
-         * - on fail dispaches an action that shows an error notification
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createLoadProjectBasicsEpic = /**
-         * This epic listenes to an action that wants to load tha active project (by id)
-         * It loads the project info and
-         * - on loaded dispaches an action that reduces the project into the store
-         * - on fail dispaches an action that shows an error notification
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.LOAD_PROJECT_BASICS), operators.switchMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return new rxjs.Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            function (globalStore) {
-                /**
-               * Emit the global action that activates the loading bar
-               */
-                globalStore.next(_this.loadingBarActions.startLoading());
-                _this.projectApi.getBasics(action.meta.pk_project)
-                    .subscribe((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    globalStore.next(_this.actions.loadProjectBasiscsSucceded(proProjectToProjectPreview(data[0])));
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    globalStore.next(_this.notificationActions.addToast({
-                        type: 'error',
-                        options: { title: error.message }
-                    }));
-                }));
-            })); }))); });
-        };
-        /**
-        * This epic listenes to an action that is dispached when loading projcect succeeded
-        *
-        * It dispaches an action that completes the loading bar
-        */
-        /**
-         * This epic listenes to an action that is dispached when loading projcect succeeded
-         *
-         * It dispaches an action that completes the loading bar
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createLoadProjectUpdatedEpic = /**
-         * This epic listenes to an action that is dispached when loading projcect succeeded
-         *
-         * It dispaches an action that completes the loading bar
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED), operators.mapTo(_this.loadingBarActions.completeLoading())); });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createLoadProjectConfigEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG), operators.switchMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return new rxjs.Observable((/**
-             * @param {?} globalStore
-             * @return {?}
-             */
-            function (globalStore) {
-                globalStore.next(_this.loadingBarActions.startLoading());
-                rxjs.combineLatest(_this.dfh.profile.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.dfh.klass.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.dfh.property.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.dfh.label.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.sys.system_relevant_class.load().resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.sys.config.load().resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.dat.namespace.load('', action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.pro.text_property.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))), _this.inf.persistent_item.typesOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
-                 * @param {?} x
-                 * @return {?}
-                 */
-                function (x) { return !!x; }))))
-                    .pipe(operators.filter((/**
-                 * @param {?} res
-                 * @return {?}
-                 */
-                function (res) { return !res.includes(undefined); })))
-                    .subscribe((/**
-                 * @param {?} res
-                 * @return {?}
-                 */
-                function (res) {
-                    globalStore.next(_this.actions.loadProjectConfigSucceeded());
-                    globalStore.next(_this.loadingBarActions.completeLoading());
-                }), (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-                }));
-            })); }))); });
-        };
-        /**
-         * LAYOUT
-         */
-        /**
-         * LAYOUT
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createClosePanelEpic = /**
-         * LAYOUT
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalStore
-                 * @return {?}
-                 */
-                function (globalStore) {
-                    _this.ngRedux.getState().activeProject.panels.forEach((/**
-                     * @param {?} panel
-                     * @param {?} panelIndex
-                     * @return {?}
-                     */
-                    function (panel, panelIndex) {
-                        if (panel.tabs.length === 0)
-                            globalStore.next(_this.actions.closePanel(panelIndex));
-                    }));
-                })); })));
-            });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createSplitPanelActivateTabEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.SPLIT_PANEL), operators.map((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) {
-                    /** @type {?} */
-                    var p = _this.ngRedux.getState().activeProject;
-                    /** @type {?} */
-                    var c = action.meta.currentPanelIndex;
-                    /** @type {?} */
-                    var panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
-                    return _this.actions.activateTab(panelIndex, 0);
-                })));
-            });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createActivateTabFocusPanelEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.ACTIVATE_TAB), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalStore
-                 * @return {?}
-                 */
-                function (globalStore) {
-                    if (_this.ngRedux.getState().activeProject.focusedPanel !== action.meta.panelIndex) {
-                        globalStore.next(_this.actions.focusPanel(action.meta.panelIndex));
-                    }
-                })); })));
-            });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createMoveTabFocusPanelEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.MOVE_TAB), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalStore
-                 * @return {?}
-                 */
-                function (globalStore) {
-                    if (_this.ngRedux.getState().activeProject.focusedPanel !== action.meta.currentPanelIndex) {
-                        globalStore.next(_this.actions.focusPanel(action.meta.currentPanelIndex));
-                    }
-                })); })));
-            });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createClosePanelFocusPanelEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.CLOSE_PANEL), operators.mergeMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} globalStore
-                 * @return {?}
-                 */
-                function (globalStore) {
-                    if (_this.ngRedux.getState().activeProject.focusedPanel > (_this.ngRedux.getState().activeProject.panels.length - 1)) {
-                        globalStore.next(_this.actions.focusPanel(0));
-                    }
-                })); })));
-            });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ActiveProjectEpics.prototype.createAddTabCloseListEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.ADD_TAB), operators.mapTo(_this.actions.setListType('')));
-            });
-        };
-        ActiveProjectEpics.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root'
-                    },] }
-        ];
-        /** @nocollapse */
-        ActiveProjectEpics.ctorParameters = function () { return [
-            { type: SysActions },
-            { type: DatActions },
-            { type: DfhActions },
-            { type: ProActions },
-            { type: InfActions },
-            { type: libSdkLb3.ProProjectApi },
-            { type: ActiveProjectActions },
-            { type: NotificationsAPIActions },
-            { type: LoadingBarActions },
-            { type: store.NgRedux }
-        ]; };
-        /** @nocollapse */ ActiveProjectEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(core.ɵɵinject(SysActions), core.ɵɵinject(DatActions), core.ɵɵinject(DfhActions), core.ɵɵinject(ProActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(ActiveProjectActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(store.NgRedux)); }, token: ActiveProjectEpics, providedIn: "root" });
-        return ActiveProjectEpics;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.sys;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.dat;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.dfh;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.pro;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.inf;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.projectApi;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.actions;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.notificationActions;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.loadingBarActions;
-        /**
-         * @type {?}
-         * @private
-         */
-        ActiveProjectEpics.prototype.ngRedux;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var LoadingBarEpics = /** @class */ (function () {
-        function LoadingBarEpics(service) {
-            this.service = service;
-        }
-        /**
-         * @return {?}
-         */
-        LoadingBarEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        LoadingBarEpics.prototype.createCompleteLoadingBarEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.COPMLETE), operators.switchMap((/**
-             * @return {?}
-             */
-            function () {
-                return rxjs.Observable.create((/**
-                 * @param {?} observer
-                 * @return {?}
-                 */
-                function (observer) {
-                    _this.service.complete();
-                    // observer.next(this.actions.stopLoading())
-                }));
-            }))); });
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        LoadingBarEpics.prototype.createStartLoadingBarEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.START), operators.switchMap((/**
-             * @return {?}
-             */
-            function () {
-                return rxjs.Observable.create((/**
-                 * @param {?} observer
-                 * @return {?}
-                 */
-                function (observer) {
-                    _this.service.start();
-                }));
-            }))); });
-        };
-        LoadingBarEpics.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root'
-                    },] }
-        ];
-        /** @nocollapse */
-        LoadingBarEpics.ctorParameters = function () { return [
-            { type: ngxSlimLoadingBar.SlimLoadingBarService }
-        ]; };
-        /** @nocollapse */ LoadingBarEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function LoadingBarEpics_Factory() { return new LoadingBarEpics(core.ɵɵinject(slimLoadingBar_service.SlimLoadingBarService)); }, token: LoadingBarEpics, providedIn: "root" });
-        return LoadingBarEpics;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        LoadingBarEpics.prototype.service;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var NotificationsAPIEpics = /** @class */ (function () {
-        function NotificationsAPIEpics(toastyService, toastyConfig) {
-            this.toastyService = toastyService;
-            this.toastyConfig = toastyConfig;
-            // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-            // Possible values: default, bootstrap, material
-            this.toastyConfig.theme = 'bootstrap';
-        }
-        /**
-         * @return {?}
-         */
-        NotificationsAPIEpics.prototype.createEpics = /**
-         * @return {?}
-         */
-        function () {
-            return reduxObservableEs6Compat.combineEpics(this.createAddToastEpic());
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        NotificationsAPIEpics.prototype.createAddToastEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) {
-                return action$.pipe(
-                /**
-                 * Filter the actions that triggers this epic
-                 */
-                operators.filter((/**
-                 * @param {?} a
-                 * @return {?}
-                 */
-                function (a) {
-                    return a;
-                })), reduxObservableEs6Compat.ofType(NotificationsAPIActions.ADD_TOAST), operators.switchMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) { return new rxjs.Observable((/**
-                 * @param {?} observer
-                 * @return {?}
-                 */
-                function (observer) {
-                    /**
-                     * Add Toast
-                     * @type {?}
-                     */
-                    var a = (/** @type {?} */ (action));
-                    if (!a.payload.options.title && !a.payload.options.msg) {
-                        if (a.payload.type === 'error') {
-                            a.payload.options.title = 'Oops, something went wrong!';
-                        }
-                    }
-                    _this.toastyService[a.payload.type](a.payload.options);
-                })); })));
-            });
-        };
-        NotificationsAPIEpics.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root'
-                    },] }
-        ];
-        /** @nocollapse */
-        NotificationsAPIEpics.ctorParameters = function () { return [
-            { type: ngxToasty.ToastyService },
-            { type: ngxToasty.ToastyConfig }
-        ]; };
-        /** @nocollapse */ NotificationsAPIEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotificationsAPIEpics_Factory() { return new NotificationsAPIEpics(core.ɵɵinject(toasty_service.ToastyService), core.ɵɵinject(toasty_service.ToastyConfig)); }, token: NotificationsAPIEpics, providedIn: "root" });
-        return NotificationsAPIEpics;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        NotificationsAPIEpics.prototype.toastyService;
-        /**
-         * @type {?}
-         * @private
-         */
-        NotificationsAPIEpics.prototype.toastyConfig;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ActionResolverEpics = /** @class */ (function () {
-        // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
-        function ActionResolverEpics() {
-            var _this = this;
-            this.createEpics = (/**
-             * @return {?}
-             */
-            function () { return reduxObservableEs6Compat.combineEpics(_this.createResolveEpic()); });
-        }
-        /**
-         * @private
-         * @return {?}
-         */
-        ActionResolverEpics.prototype.createResolveEpic = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            return (/**
-             * @param {?} action$
-             * @param {?} store
-             * @return {?}
-             */
-            function (action$, store) { return action$.pipe(operators.filter((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return !!action && !!action.meta && !!action.meta.removePending; })), operators.switchMap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return (rxjs.of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } })); }))); });
-        };
-        ActionResolverEpics.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root'
-                    },] }
-        ];
-        /** @nocollapse */
-        ActionResolverEpics.ctorParameters = function () { return []; };
-        /** @nocollapse */ ActionResolverEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
-        return ActionResolverEpics;
-    }());
-    if (false) {
-        /** @type {?} */
-        ActionResolverEpics.prototype.createEpics;
-    }
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: lib/redux-store/state-schema/reducer-configs/tab.config.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -5711,6 +4971,757 @@
         SchemaObjectService.prototype.sysActions;
         /** @type {?} */
         SchemaObjectService.prototype.notifications;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/epics/active-project.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} textProperties
+     * @param {?} fkSystemType
+     * @return {?}
+     */
+    function firstProTextPropStringOfType(textProperties, fkSystemType) {
+        return (textProperties.find((/**
+         * @param {?} t
+         * @return {?}
+         */
+        function (t) { return t.fk_system_type === fkSystemType; })) || { string: '' }).string;
+    }
+    /**
+     * Transform ProProject to ProjectPreview
+     * @param {?} project
+     * @return {?}
+     */
+    function proProjectToProjectPreview(project) {
+        return {
+            label: firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+            description: firstProTextPropStringOfType(project.text_properties, libConfig.SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+            default_language: project.default_language,
+            pk_project: project.pk_entity
+        };
+    }
+    var ActiveProjectEpics = /** @class */ (function () {
+        function ActiveProjectEpics(sys, dat, dfh, pro, inf, projectApi, actions, notificationActions, loadingBarActions, ngRedux, schemaObj) {
+            this.sys = sys;
+            this.dat = dat;
+            this.dfh = dfh;
+            this.pro = pro;
+            this.inf = inf;
+            this.projectApi = projectApi;
+            this.actions = actions;
+            this.notificationActions = notificationActions;
+            this.loadingBarActions = loadingBarActions;
+            this.ngRedux = ngRedux;
+            this.schemaObj = schemaObj;
+        }
+        /**
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            return reduxObservableEs6Compat.combineEpics(this.createLoadProjectBasicsEpic(), this.createLoadProjectConfigEpic(), this.createLoadProjectUpdatedEpic(), this.createClosePanelEpic(), this.createActivateTabFocusPanelEpic(), this.createMoveTabFocusPanelEpic(), this.createClosePanelFocusPanelEpic(), this.createSplitPanelActivateTabEpic(), this.createAddTabCloseListEpic());
+        };
+        /**
+         * This epic listenes to an action that wants to load tha active project (by id)
+         * It loads the project info and
+         * - on loaded dispaches an action that reduces the project into the store
+         * - on fail dispaches an action that shows an error notification
+         */
+        /**
+         * This epic listenes to an action that wants to load tha active project (by id)
+         * It loads the project info and
+         * - on loaded dispaches an action that reduces the project into the store
+         * - on fail dispaches an action that shows an error notification
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createLoadProjectBasicsEpic = /**
+         * This epic listenes to an action that wants to load tha active project (by id)
+         * It loads the project info and
+         * - on loaded dispaches an action that reduces the project into the store
+         * - on fail dispaches an action that shows an error notification
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.LOAD_PROJECT_BASICS), operators.switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new rxjs.Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            function (globalStore) {
+                /**
+               * Emit the global action that activates the loading bar
+               */
+                globalStore.next(_this.loadingBarActions.startLoading());
+                _this.projectApi.getBasics(action.meta.pk_project)
+                    .subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    globalStore.next(_this.actions.loadProjectBasiscsSucceded(proProjectToProjectPreview(data[0])));
+                    _this.schemaObj.storeSchemaObject({
+                        inf: { language: [data[0].default_language] },
+                        pro: { project: [ramda.omit(['default_language'], data[0])] }
+                    }, action.meta.pk_project);
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    globalStore.next(_this.notificationActions.addToast({
+                        type: 'error',
+                        options: { title: error.message }
+                    }));
+                }));
+            })); }))); });
+        };
+        /**
+        * This epic listenes to an action that is dispached when loading projcect succeeded
+        *
+        * It dispaches an action that completes the loading bar
+        */
+        /**
+         * This epic listenes to an action that is dispached when loading projcect succeeded
+         *
+         * It dispaches an action that completes the loading bar
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createLoadProjectUpdatedEpic = /**
+         * This epic listenes to an action that is dispached when loading projcect succeeded
+         *
+         * It dispaches an action that completes the loading bar
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED), operators.mapTo(_this.loadingBarActions.completeLoading())); });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createLoadProjectConfigEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG), operators.switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new rxjs.Observable((/**
+             * @param {?} globalStore
+             * @return {?}
+             */
+            function (globalStore) {
+                globalStore.next(_this.loadingBarActions.startLoading());
+                rxjs.combineLatest(_this.dfh.profile.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.dfh.klass.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.dfh.property.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.dfh.label.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.sys.system_relevant_class.load().resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.sys.config.load().resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.dat.namespace.load('', action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.pro.text_property.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))), _this.inf.persistent_item.typesOfProject(action.meta.pk_project).resolved$.pipe(operators.filter((/**
+                 * @param {?} x
+                 * @return {?}
+                 */
+                function (x) { return !!x; }))))
+                    .pipe(operators.filter((/**
+                 * @param {?} res
+                 * @return {?}
+                 */
+                function (res) { return !res.includes(undefined); })))
+                    .subscribe((/**
+                 * @param {?} res
+                 * @return {?}
+                 */
+                function (res) {
+                    globalStore.next(_this.actions.loadProjectConfigSucceeded());
+                    globalStore.next(_this.loadingBarActions.completeLoading());
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+                }));
+            })); }))); });
+        };
+        /**
+         * LAYOUT
+         */
+        /**
+         * LAYOUT
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createClosePanelEpic = /**
+         * LAYOUT
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalStore
+                 * @return {?}
+                 */
+                function (globalStore) {
+                    _this.ngRedux.getState().activeProject.panels.forEach((/**
+                     * @param {?} panel
+                     * @param {?} panelIndex
+                     * @return {?}
+                     */
+                    function (panel, panelIndex) {
+                        if (panel.tabs.length === 0)
+                            globalStore.next(_this.actions.closePanel(panelIndex));
+                    }));
+                })); })));
+            });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createSplitPanelActivateTabEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.SPLIT_PANEL), operators.map((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) {
+                    /** @type {?} */
+                    var p = _this.ngRedux.getState().activeProject;
+                    /** @type {?} */
+                    var c = action.meta.currentPanelIndex;
+                    /** @type {?} */
+                    var panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
+                    return _this.actions.activateTab(panelIndex, 0);
+                })));
+            });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createActivateTabFocusPanelEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.ACTIVATE_TAB), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalStore
+                 * @return {?}
+                 */
+                function (globalStore) {
+                    if (_this.ngRedux.getState().activeProject.focusedPanel !== action.meta.panelIndex) {
+                        globalStore.next(_this.actions.focusPanel(action.meta.panelIndex));
+                    }
+                })); })));
+            });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createMoveTabFocusPanelEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.MOVE_TAB), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalStore
+                 * @return {?}
+                 */
+                function (globalStore) {
+                    if (_this.ngRedux.getState().activeProject.focusedPanel !== action.meta.currentPanelIndex) {
+                        globalStore.next(_this.actions.focusPanel(action.meta.currentPanelIndex));
+                    }
+                })); })));
+            });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createClosePanelFocusPanelEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.CLOSE_PANEL), operators.mergeMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} globalStore
+                 * @return {?}
+                 */
+                function (globalStore) {
+                    if (_this.ngRedux.getState().activeProject.focusedPanel > (_this.ngRedux.getState().activeProject.panels.length - 1)) {
+                        globalStore.next(_this.actions.focusPanel(0));
+                    }
+                })); })));
+            });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ActiveProjectEpics.prototype.createAddTabCloseListEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(reduxObservableEs6Compat.ofType(ActiveProjectActions.ADD_TAB), operators.mapTo(_this.actions.setListType('')));
+            });
+        };
+        ActiveProjectEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        ActiveProjectEpics.ctorParameters = function () { return [
+            { type: SysActions },
+            { type: DatActions },
+            { type: DfhActions },
+            { type: ProActions },
+            { type: InfActions },
+            { type: libSdkLb3.ProProjectApi },
+            { type: ActiveProjectActions },
+            { type: NotificationsAPIActions },
+            { type: LoadingBarActions },
+            { type: store.NgRedux },
+            { type: SchemaObjectService }
+        ]; };
+        /** @nocollapse */ ActiveProjectEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(core.ɵɵinject(SysActions), core.ɵɵinject(DatActions), core.ɵɵinject(DfhActions), core.ɵɵinject(ProActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(ActiveProjectActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(store.NgRedux), core.ɵɵinject(SchemaObjectService)); }, token: ActiveProjectEpics, providedIn: "root" });
+        return ActiveProjectEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.sys;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.dat;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.dfh;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.pro;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.inf;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.projectApi;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.actions;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.notificationActions;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.loadingBarActions;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.ngRedux;
+        /**
+         * @type {?}
+         * @private
+         */
+        ActiveProjectEpics.prototype.schemaObj;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/epics/loading-bar.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var LoadingBarEpics = /** @class */ (function () {
+        function LoadingBarEpics(service) {
+            this.service = service;
+        }
+        /**
+         * @return {?}
+         */
+        LoadingBarEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            return reduxObservableEs6Compat.combineEpics(this.createStartLoadingBarEpic(), this.createCompleteLoadingBarEpic());
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        LoadingBarEpics.prototype.createCompleteLoadingBarEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.COPMLETE), operators.switchMap((/**
+             * @return {?}
+             */
+            function () {
+                return rxjs.Observable.create((/**
+                 * @param {?} observer
+                 * @return {?}
+                 */
+                function (observer) {
+                    _this.service.complete();
+                    // observer.next(this.actions.stopLoading())
+                }));
+            }))); });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        LoadingBarEpics.prototype.createStartLoadingBarEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(LoadingBarActions.START), operators.switchMap((/**
+             * @return {?}
+             */
+            function () {
+                return rxjs.Observable.create((/**
+                 * @param {?} observer
+                 * @return {?}
+                 */
+                function (observer) {
+                    _this.service.start();
+                }));
+            }))); });
+        };
+        LoadingBarEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        LoadingBarEpics.ctorParameters = function () { return [
+            { type: ngxSlimLoadingBar.SlimLoadingBarService }
+        ]; };
+        /** @nocollapse */ LoadingBarEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function LoadingBarEpics_Factory() { return new LoadingBarEpics(core.ɵɵinject(slimLoadingBar_service.SlimLoadingBarService)); }, token: LoadingBarEpics, providedIn: "root" });
+        return LoadingBarEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        LoadingBarEpics.prototype.service;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-gui/epics/notifications.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var NotificationsAPIEpics = /** @class */ (function () {
+        function NotificationsAPIEpics(toastyService, toastyConfig) {
+            this.toastyService = toastyService;
+            this.toastyConfig = toastyConfig;
+            // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
+            // Possible values: default, bootstrap, material
+            this.toastyConfig.theme = 'bootstrap';
+        }
+        /**
+         * @return {?}
+         */
+        NotificationsAPIEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            return reduxObservableEs6Compat.combineEpics(this.createAddToastEpic());
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        NotificationsAPIEpics.prototype.createAddToastEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) {
+                return action$.pipe(
+                /**
+                 * Filter the actions that triggers this epic
+                 */
+                operators.filter((/**
+                 * @param {?} a
+                 * @return {?}
+                 */
+                function (a) {
+                    return a;
+                })), reduxObservableEs6Compat.ofType(NotificationsAPIActions.ADD_TOAST), operators.switchMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return new rxjs.Observable((/**
+                 * @param {?} observer
+                 * @return {?}
+                 */
+                function (observer) {
+                    /**
+                     * Add Toast
+                     * @type {?}
+                     */
+                    var a = (/** @type {?} */ (action));
+                    if (!a.payload.options.title && !a.payload.options.msg) {
+                        if (a.payload.type === 'error') {
+                            a.payload.options.title = 'Oops, something went wrong!';
+                        }
+                    }
+                    _this.toastyService[a.payload.type](a.payload.options);
+                })); })));
+            });
+        };
+        NotificationsAPIEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        NotificationsAPIEpics.ctorParameters = function () { return [
+            { type: ngxToasty.ToastyService },
+            { type: ngxToasty.ToastyConfig }
+        ]; };
+        /** @nocollapse */ NotificationsAPIEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotificationsAPIEpics_Factory() { return new NotificationsAPIEpics(core.ɵɵinject(toasty_service.ToastyService), core.ɵɵinject(toasty_service.ToastyConfig)); }, token: NotificationsAPIEpics, providedIn: "root" });
+        return NotificationsAPIEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        NotificationsAPIEpics.prototype.toastyService;
+        /**
+         * @type {?}
+         * @private
+         */
+        NotificationsAPIEpics.prototype.toastyConfig;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: lib/redux-store/state-schema/epics/action-resolver.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ActionResolverEpics = /** @class */ (function () {
+        // requestMap: { [uuid: string]: ActionResultObservable<any> } = {};
+        function ActionResolverEpics() {
+            var _this = this;
+            this.createEpics = (/**
+             * @return {?}
+             */
+            function () { return reduxObservableEs6Compat.combineEpics(_this.createResolveEpic()); });
+        }
+        /**
+         * @private
+         * @return {?}
+         */
+        ActionResolverEpics.prototype.createResolveEpic = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            return (/**
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(operators.filter((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return !!action && !!action.meta && !!action.meta.removePending; })), operators.switchMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return (rxjs.of({ type: 'CLEAN_UP_RESOLVED', meta: { uuid: action.meta.removePending } })); }))); });
+        };
+        ActionResolverEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        ActionResolverEpics.ctorParameters = function () { return []; };
+        /** @nocollapse */ ActionResolverEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActionResolverEpics_Factory() { return new ActionResolverEpics(); }, token: ActionResolverEpics, providedIn: "root" });
+        return ActionResolverEpics;
+    }());
+    if (false) {
+        /** @type {?} */
+        ActionResolverEpics.prototype.createEpics;
     }
 
     /**
@@ -9745,25 +9756,25 @@
      */
     function InfObject() { }
     if (false) {
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.persistent_item;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.temporal_entity;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.statement;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.place;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.language;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.appellation;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.time_primitive;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.text_property;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.lang_string;
-        /** @type {?} */
+        /** @type {?|undefined} */
         InfObject.prototype.dimension;
     }
     /**
@@ -9771,15 +9782,17 @@
      */
     function ProObject() { }
     if (false) {
-        /** @type {?} */
+        /** @type {?|undefined} */
         ProObject.prototype.info_proj_rel;
+        /** @type {?|undefined} */
+        ProObject.prototype.project;
     }
     /**
      * @record
      */
     function DatObject() { }
     if (false) {
-        /** @type {?} */
+        /** @type {?|undefined} */
         DatObject.prototype.digital;
     }
     /**
@@ -9787,7 +9800,7 @@
      */
     function WarObject() { }
     if (false) {
-        /** @type {?} */
+        /** @type {?|undefined} */
         WarObject.prototype.entity_preview;
     }
     /**

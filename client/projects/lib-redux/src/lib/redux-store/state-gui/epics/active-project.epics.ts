@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ProProject, ProProjectApi, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
+import { omit } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
@@ -16,6 +17,7 @@ import { DfhActions } from '../../state-schema/actions/dfh.actions';
 import { InfActions } from '../../state-schema/actions/inf.actions';
 import { ProActions } from '../../state-schema/actions/pro.actions';
 import { SysActions } from '../../state-schema/actions/sys.actions';
+import { SchemaObjectService } from '../../state-schema/services/schema-object.service';
 import { ProjectPreview } from '../models/active-project.models';
 
 function firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
@@ -49,6 +51,7 @@ export class ActiveProjectEpics {
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
     private ngRedux: NgRedux<IAppState>,
+    private schemaObj: SchemaObjectService
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
@@ -85,6 +88,10 @@ export class ActiveProjectEpics {
           .subscribe(
             (data: ProProject[]) => {
               globalStore.next(this.actions.loadProjectBasiscsSucceded(proProjectToProjectPreview(data[0])))
+              this.schemaObj.storeSchemaObject({
+                inf: { language: [data[0].default_language] },
+                pro: { project: [omit(['default_language'], data[0])] }
+              }, action.meta.pk_project)
             },
             error => {
               globalStore.next(this.notificationActions.addToast({

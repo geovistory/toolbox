@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { WarEntityPreview, TimePrimitiveWithCal,  } from '@kleiolab/lib-sdk-lb4';
 import { ProProjectMock } from './ProProjectMock'
 import { DfhApiClassMock } from './DfhApiClassMock'
 
@@ -39,7 +38,7 @@ export class WarEntityPreviewMock {
         entity_label: 'Johannes Oekolampad',
         entity_type: 'teEn',
         time_span: {
-            'p82': {
+            "p82": {
                 julianDay: 123123123,
                 calendar: 'gregorian' as TimePrimitiveWithCal.CalendarEnum,
                 duration: '1 year' as TimePrimitiveWithCal.DurationEnum
@@ -56,7 +55,7 @@ export class WarEntityPreviewMock {
         entity_label: 'Ulrich Zwingli',
         entity_type: 'teEn',
         time_span: {
-            'p82': {
+            "p82": {
                 julianDay: 123123123,
                 calendar: 'gregorian' as TimePrimitiveWithCal.CalendarEnum,
                 duration: '1 day' as TimePrimitiveWithCal.DurationEnum,

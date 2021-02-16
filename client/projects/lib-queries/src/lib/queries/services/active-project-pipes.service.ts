@@ -24,12 +24,13 @@ export class ActiveProjectPipesService {
     private entityPreviewSocket: EntityPreviewSocket,
 
   ) {
-    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(
-      filter(p => p !== undefined),
-      distinctUntilChanged((x, y) => {
-        return x === y
-      })
-    );
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project'])
+      .pipe(
+        filter(p => p !== undefined),
+        distinctUntilChanged((x, y) => {
+          return x === y
+        })
+      );
 
 
 
