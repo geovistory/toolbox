@@ -277,18 +277,20 @@ export class ImporterComponent implements OnInit, OnDestroy {
       } else result = this.table;
     }
 
+    const maxColumn = Math.max(...result.map(r => r.length));
+
     this.headers = [];
     if (this.columnsOption == 'First row') {
       this.table = result.slice(1);
       // looking at the content of the data
-      for (let i = 0; i < result[0].length; i++) {
+      for (let i = 0; i < maxColumn; i++) {
         // We suppose that the table has the same number of col for each rows
         const type = this.type == 'csv' ? getTypeOfColumn(this.table, i, this.comma) : getTypeOfColumn(this.table, i);
-        this.headers.push({ colLabel: result[0][i], comment: type, type: type });
+        this.headers.push({ colLabel: result[0][i] ? result[0][i] : 'Unknown column name', comment: type, type: type });
       }
     } else {
       this.table = result;
-      for (let i = 0; i < result[0].length; i++) {
+      for (let i = 0; i < maxColumn; i++) {
         // We suppose that the table has the same number of col for each rows
         const type = this.type == 'csv' ? getTypeOfColumn(this.table, i, this.comma) : getTypeOfColumn(this.table, i);
         this.headers.push({ colLabel: 'Unknown column name', comment: type, type: type });
