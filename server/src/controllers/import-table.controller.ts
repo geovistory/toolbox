@@ -65,25 +65,25 @@ export class ImportTableController {
     //check consistency - columns name
     for (let i = 0; i < table.headers.length; i++) {
       if (!table.headers[i].colLabel || table.headers[i].colLabel === '') {
-        return { error: "Inconsistency in column name <" + i + ">." };
+        return { error: 'The name of column ' + (i + 1) + ' is not correct.\nCorrect your file before importing it.' };
       }
     }
     //check consistency - columns number + data dormat
     for (let i = 0; i < table.rows.length; i++) {
       //columns number
       if (table.rows[i].length !== table.headers.length) {
-        return { error: "Inconsistency in columns number in row <" + (i + 1) + ">." };
+        return { error: "Issue on line " + (i + 1) + ": too much (or too few) column in this row.\nCorrect your file before importing it." };
       }
       //data format
       for (let j = 0; j < table.rows[i].length; j++) {
         //number
         if (table.headers[j].type === 'number') {
           if (isNaN(parseFloat(table.rows[i][j] + ''))) {
-            return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a number." };
+            return { error: 'The cell [' + (i + 1) + ', ' + (j + 1) + '] has not the right format: it should be a number.\nCorrect your file before importing it.' };
           }
         } else if (table.headers[j].type === 'string') {
           if (String(table.rows[i][j]) !== table.rows[i][j]) {
-            return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a string." };
+            return { error: 'The cell [' + (i + 1) + ', ' + (j + 1) + '] has not the right format: it should be a string.\nCorrect your file before importing it.' };
           }
         }
       }

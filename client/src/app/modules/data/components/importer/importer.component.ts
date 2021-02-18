@@ -459,7 +459,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
  */
 function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: string): 'number' | 'string' {
   // We suppose that the table has the same number of col for each rows
-  let isNumber = true;
+  let isNumber = false;
   for (let i = 0; i < table.length; i++) {
     let content = table[i][colNb];
     if (content === undefined) continue;
