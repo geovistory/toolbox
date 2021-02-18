@@ -186,26 +186,21 @@
       }
     },
     "playground": {
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/app-toolbox",
+      "sourceRoot": "projects/app-toolbox/src",
       "projectType": "application",
       "architect": {
-        "test": {
-          "scripts": [
-            "./node_modules/cesium/Build/Cesium/Cesium.js"
-          ]
-        },
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/playground",
-            "index": "src/index.html",
-            "main": "src/main.playground.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.playground.json",
+            "index": "projects/app-toolbox/src/index.html",
+            "main": "projects/app-toolbox/src/main.playground.ts",
+            "polyfills": "projects/app-toolbox/src/polyfills.ts",
+            "tsConfig": "projects/app-toolbox/src/tsconfig.playground.json",
             "assets": [
-              "src/assets",
-              "src/favicon.ico",
+              "projects/app-toolbox/src/assets",
+              "projects/app-toolbox/src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",

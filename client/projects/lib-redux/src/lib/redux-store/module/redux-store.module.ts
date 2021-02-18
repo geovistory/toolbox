@@ -100,17 +100,17 @@ export class ReduxModule {
     public ngRedux: NgRedux<IAppState>,
     devTools: DevToolsExtension,
     rootEpics: RootEpics,
-    @Inject(APP_INITIAL_STATE) initialState: IAppState,
-    @Optional() @SkipSelf() parentModule: ReduxModule,
-    @Optional() sdkLb3: SdkLb3Module,
-    @Optional() sdkLb4: SdkLb4Module
+    @Optional() @SkipSelf() parentModule?: ReduxModule,
+    @Optional() sdkLb3?: SdkLb3Module,
+    @Optional() sdkLb4?: SdkLb4Module,
+    @Optional() @Inject(APP_INITIAL_STATE) initialState?: IAppState
   ) {
     const errors: string[] = []
     if (parentModule) errors.push('ReduxModule is already loaded. Import in your base AppModule only.');
     if (!sdkLb3) errors.push('You need to import the SdkLb3Module in your AppModule!');
     if (!sdkLb4) errors.push('You need to import the SdkLb4Module in your AppModule!');
     if (errors.length) throw new Error(errors.join('\n'));
-
+    if (!initialState) initialState = {}
 
     const epicMiddleware = createEpicMiddleware();
 

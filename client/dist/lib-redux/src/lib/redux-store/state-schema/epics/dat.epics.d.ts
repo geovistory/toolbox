@@ -4,7 +4,7 @@ import { NotificationsAPIActions } from '../../state-gui/actions/notifications.a
 import { DatActions } from '../actions/dat.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
-import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaService } from '../services/schema.service';
 export declare class DatEpics {
     notification: NotificationsAPIActions;
     datActions: DatActions;
@@ -15,6 +15,6 @@ export declare class DatEpics {
     columnApi: DatColumnApi;
     namespaceApi: DatNamespaceApi;
     private schemaObjectService;
-    constructor(notification: NotificationsAPIActions, datActions: DatActions, infActions: InfActions, proActions: ProActions, digitalApi: DatDigitalApi, chunkApi: DatChunkApi, columnApi: DatColumnApi, namespaceApi: DatNamespaceApi, schemaObjectService: SchemaObjectService);
+    constructor(notification: NotificationsAPIActions, datActions: DatActions, infActions: InfActions, proActions: ProActions, digitalApi: DatDigitalApi, chunkApi: DatChunkApi, columnApi: DatColumnApi, namespaceApi: DatNamespaceApi, schemaObjectService: SchemaService);
     createEpics(): Epic;
 }

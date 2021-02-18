@@ -9,7 +9,7 @@ import { InfActions } from '../actions/inf.actions';
 import { MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
-import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaService } from '../services/schema.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
 import { LoadActionMeta, ModifyActionMeta } from '../_helpers/schema-actions-factory';
 import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
@@ -32,7 +32,7 @@ export class ProEpics {
     public classFieldConfApi: ProClassFieldConfigApi,
     public textPropertyApi: ProTextPropertyApi,
     public analysisApi: AnalysisService,
-    private schemaObjectService: SchemaObjectService
+    private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {

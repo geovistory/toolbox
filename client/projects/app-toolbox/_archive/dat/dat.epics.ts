@@ -1,16 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Flattener, InfActions, LoadActionMeta, ModifyActionMeta, NotificationsAPIActions, ProActions, SchemaEpicsFactory, SchemaObject, SchemaService, storeFlattened } from '@kleiolab/lib-redux';
 import { DatChunk, DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
-import { storeFlattened } from "@kleiolab/lib-redux";
-import { Flattener } from "@kleiolab/lib-redux";
-import { SchemaEpicsFactory } from "@kleiolab/lib-redux";
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { InfActions } from "@kleiolab/lib-redux";
-import { NotificationsAPIActions } from "@kleiolab/lib-redux";
-import { ProActions } from "@kleiolab/lib-redux";
-import { ModifyActionMeta } from "@kleiolab/lib-redux";
-import { LoadActionMeta } from "@kleiolab/lib-redux";
-import { SchemaObject } from "@kleiolab/lib-redux";
-import { SchemaObjectService } from "@kleiolab/lib-redux";
 import { ChunkActionsFactory, ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, LoadVersionAction } from './dat.actions';
 import { datRoot } from './dat.config';
 import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from './dat.models';
@@ -27,7 +18,7 @@ export class DatEpics {
     public chunkApi: DatChunkApi,
     public columnApi: DatColumnApi,
     public namespaceApi: DatNamespaceApi,
-    private schemaObjectService: SchemaObjectService
+    private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {

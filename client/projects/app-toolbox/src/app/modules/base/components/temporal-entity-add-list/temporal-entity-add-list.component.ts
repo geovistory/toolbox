@@ -3,7 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material';
 import { ConfigurationPipesService, InformationPipesService, InfSelector, Subfield, TemporalEntityItem } from '@kleiolab/lib-queries';
-import { ByPk, IAppState, InfActions, PaginateByParam, SchemaObjectService } from '@kleiolab/lib-redux';
+import { ByPk, IAppState, InfActions, PaginateByParam, SchemaService } from '@kleiolab/lib-redux';
 import { InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
@@ -57,7 +57,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy {
     public p: ActiveProjectService,
     public c: ConfigurationPipesService,
     public i: InformationPipesService,
-    private s: SchemaObjectService,
+    private s: SchemaService,
     public inf: InfActions,
     private ngRedux: NgRedux<IAppState>,
     private paginationService: PaginationService

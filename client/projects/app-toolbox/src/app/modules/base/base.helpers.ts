@@ -1,6 +1,5 @@
-import { Subfield } from "@kleiolab/lib-queries";
-import { SubfieldType } from "@kleiolab/lib-queries";
-import { PaginateByParam } from "@kleiolab/lib-redux";
+import { Subfield, SubfieldType } from '@kleiolab/lib-queries';
+import { PaginateByParam } from '@kleiolab/lib-redux';
 
 /**
  * returns true if the subfield type is representing a value object type
@@ -33,14 +32,12 @@ export function isLeafItemSubfield(subfieldType: SubfieldType): boolean {
 
 
 export function createPaginateBy(listDefinition: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
-  if (listDefinition.listType.temporalEntity || listDefinition.listType.entityPreview) {
-    return [
-      { fk_property: listDefinition.property.pkProperty },
-      { fk_target_class: listDefinition.targetClass },
-      { [listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
-      { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
-    ]
-  }
+  return [
+    { fk_property: listDefinition.property.pkProperty },
+    { fk_target_class: listDefinition.targetClass },
+    { [listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
+    { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
+  ]
 }
 
 

@@ -11,7 +11,7 @@ import { FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfS
 import { ProActions } from '../actions/pro.actions';
 import { InfPersistentItemSlice, InfStatementSlice, InfTemporalEntitySlice, InfTextPropertySlice } from '../models/inf.models';
 import { infRoot } from '../reducer-configs/inf.config';
-import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaService } from '../services/schema.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
 import { InfEpicsFactory } from '../_helpers/inf-epic-factory';
 import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../_helpers/schema-actions-factory';
@@ -30,7 +30,7 @@ export class InfEpics {
     public proActions: ProActions,
     public datActions: DatActions,
     public infoProjRelApi: ProInfoProjRelApi,
-    private schemaObjectService: SchemaObjectService
+    private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {

@@ -408,7 +408,6 @@ class InfDimensionSelections extends Selector {
   ) { super(ngRedux, pkProject$, configs, model) }
 }
 
-
 export class InfSelector {
 
   persistent_item$ = new InfPersistentItemSelections(this.ngRedux, this.pkProject$, infDefinitions, 'persistent_item');

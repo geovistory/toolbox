@@ -17,6 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
+import { GvLoadSubfieldPageReq } from '../model/models';
 import { GvPaginationAlternativeLeafItemsReq } from '../model/models';
 import { GvPaginationObject } from '../model/models';
 
@@ -139,6 +140,70 @@ export class PaginatedStatementsControllerService {
 
         return this.httpClient.post<GvPaginationObject>(`${this.configuration.basePath}/paginated-statements/alternative-leaf-items`,
             gvPaginationAlternativeLeafItemsReq,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param gvLoadSubfieldPageReq 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPaginationObject>;
+    public paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPaginationObject>>;
+    public paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPaginationObject>>;
+    public paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvPaginationObject>(`${this.configuration.basePath}/paginated-statements/load-subfield-page`,
+            gvLoadSubfieldPageReq,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,

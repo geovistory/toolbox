@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { AnalysisTabData, IAppState, NotificationsAPIActions, SchemaObjectService } from '@kleiolab/lib-redux';
+import { AnalysisTabData, IAppState, NotificationsAPIActions, SchemaService } from '@kleiolab/lib-redux';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -25,7 +25,7 @@ export class GvAnalysisService<I, O> {
     public analysisApi: LbAnalysisService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
-    private s: SchemaObjectService,
+    private s: SchemaService,
     private not: NotificationsAPIActions,
     private ngRedux: NgRedux<IAppState>
   ) { }

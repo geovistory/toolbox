@@ -9,21 +9,23 @@ import { DatEpics } from '../state-schema/epics/dat.epics';
 import { DfhEpics } from '../state-schema/epics/dfh.epics';
 import { InfEpics } from '../state-schema/epics/inf.epics';
 import { ProEpics } from '../state-schema/epics/pro.epics';
+import { SchemaEpics } from '../state-schema/epics/schema.epics';
 import { SysEpics } from '../state-schema/epics/sys.epics';
 export declare class RootEpics {
     private loadingBarEpics;
     private notificationEpics;
     private activeProjectEpics;
     private accountEpics;
-    private systemEpics;
+    private sysEpics;
     private dfhEpics;
     private infEpics;
     private datEpics;
     private proEpics;
+    private schemaObjectEpics;
     private actionResolver;
     private rootEpicStream$;
     private rootEpic;
-    constructor(loadingBarEpics: LoadingBarEpics, notificationEpics: NotificationsAPIEpics, activeProjectEpics: ActiveProjectEpics, accountEpics: AccountEpics, systemEpics: SysEpics, dfhEpics: DfhEpics, infEpics: InfEpics, datEpics: DatEpics, proEpics: ProEpics, actionResolver: ActionResolverEpics);
+    constructor(loadingBarEpics: LoadingBarEpics, notificationEpics: NotificationsAPIEpics, activeProjectEpics: ActiveProjectEpics, accountEpics: AccountEpics, sysEpics: SysEpics, dfhEpics: DfhEpics, infEpics: InfEpics, datEpics: DatEpics, proEpics: ProEpics, schemaObjectEpics: SchemaEpics, actionResolver: ActionResolverEpics);
     getRootEpic(): Epic<Action<any>, Action<any>, void, any>;
     /**
      * Adds an epic to the RootEpic middleware

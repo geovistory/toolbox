@@ -7,7 +7,7 @@ import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
 import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice } from '../models/dat.models';
 import { datRoot } from '../reducer-configs/dat.config';
-import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaService } from '../services/schema.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
 import { LoadActionMeta, LoadVersionAction, ModifyActionMeta } from '../_helpers/schema-actions-factory';
 import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
@@ -26,7 +26,7 @@ export class DatEpics {
     public chunkApi: DatChunkApi,
     public columnApi: DatColumnApi,
     public namespaceApi: DatNamespaceApi,
-    private schemaObjectService: SchemaObjectService
+    private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {

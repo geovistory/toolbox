@@ -4715,11 +4715,11 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: state-schema/services/schema-object.service.ts
+     * Generated from: state-schema/services/schema.service.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var SchemaObjectService = /** @class */ (function () {
-        function SchemaObjectService(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
+    var SchemaService = /** @class */ (function () {
+        function SchemaService(api, infActions, proActions, datActions, warActions, tabActions, dfhActions, sysActions, notifications) {
             this.api = api;
             this.infActions = infActions;
             this.proActions = proActions;
@@ -4747,7 +4747,7 @@
          * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
          * @return {?}
          */
-        SchemaObjectService.prototype.store = /**
+        SchemaService.prototype.store = /**
          * watches an Observable<SchemaObject>
          * on success stores the parts of the object at right place of store
          * on error emits error message
@@ -4797,7 +4797,7 @@
          * @param {?} pkProject primary key of project or 'ofRepo', if repo versions
          * @return {?}
          */
-        SchemaObjectService.prototype.storeGv = /**
+        SchemaService.prototype.storeGv = /**
          * watches an Observable<SchemaObject>
          * on success stores the parts of the object at right place of store
          * on error emits error message
@@ -4841,7 +4841,7 @@
          * @param {?} pkProject primary key of project or null, if repo versions
          * @return {?}
          */
-        SchemaObjectService.prototype.storeSchemaObject = /**
+        SchemaService.prototype.storeSchemaObject = /**
          *
          * @param {?} object
          * @param {?} pkProject primary key of project or null, if repo versions
@@ -4888,7 +4888,7 @@
          * @param {?} pkProject primary key of project or null, if repo versions
          * @return {?}
          */
-        SchemaObjectService.prototype.storeSchemaObjectGv = /**
+        SchemaService.prototype.storeSchemaObjectGv = /**
          *
          * @param {?} object
          * @param {?} pkProject primary key of project or null, if repo versions
@@ -4932,13 +4932,13 @@
                 console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
             }
         };
-        SchemaObjectService.decorators = [
+        SchemaService.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root'
                     },] }
         ];
         /** @nocollapse */
-        SchemaObjectService.ctorParameters = function () { return [
+        SchemaService.ctorParameters = function () { return [
             { type: libSdkLb3.SchemaObjectApi },
             { type: InfActions },
             { type: ProActions },
@@ -4949,28 +4949,28 @@
             { type: SysActions },
             { type: NotificationsAPIActions }
         ]; };
-        /** @nocollapse */ SchemaObjectService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaObjectService_Factory() { return new SchemaObjectService(core.ɵɵinject(libSdkLb3.SchemaObjectApi), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(WarActions), core.ɵɵinject(TabActions), core.ɵɵinject(DfhActions), core.ɵɵinject(SysActions), core.ɵɵinject(NotificationsAPIActions)); }, token: SchemaObjectService, providedIn: "root" });
-        return SchemaObjectService;
+        /** @nocollapse */ SchemaService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaService_Factory() { return new SchemaService(core.ɵɵinject(libSdkLb3.SchemaObjectApi), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(WarActions), core.ɵɵinject(TabActions), core.ɵɵinject(DfhActions), core.ɵɵinject(SysActions), core.ɵɵinject(NotificationsAPIActions)); }, token: SchemaService, providedIn: "root" });
+        return SchemaService;
     }());
     if (false) {
         /** @type {?} */
-        SchemaObjectService.prototype.api;
+        SchemaService.prototype.api;
         /** @type {?} */
-        SchemaObjectService.prototype.infActions;
+        SchemaService.prototype.infActions;
         /** @type {?} */
-        SchemaObjectService.prototype.proActions;
+        SchemaService.prototype.proActions;
         /** @type {?} */
-        SchemaObjectService.prototype.datActions;
+        SchemaService.prototype.datActions;
         /** @type {?} */
-        SchemaObjectService.prototype.warActions;
+        SchemaService.prototype.warActions;
         /** @type {?} */
-        SchemaObjectService.prototype.tabActions;
+        SchemaService.prototype.tabActions;
         /** @type {?} */
-        SchemaObjectService.prototype.dfhActions;
+        SchemaService.prototype.dfhActions;
         /** @type {?} */
-        SchemaObjectService.prototype.sysActions;
+        SchemaService.prototype.sysActions;
         /** @type {?} */
-        SchemaObjectService.prototype.notifications;
+        SchemaService.prototype.notifications;
     }
 
     /**
@@ -5416,9 +5416,9 @@
             { type: NotificationsAPIActions },
             { type: LoadingBarActions },
             { type: store.NgRedux },
-            { type: SchemaObjectService }
+            { type: SchemaService }
         ]; };
-        /** @nocollapse */ ActiveProjectEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(core.ɵɵinject(SysActions), core.ɵɵinject(DatActions), core.ɵɵinject(DfhActions), core.ɵɵinject(ProActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(ActiveProjectActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(store.NgRedux), core.ɵɵinject(SchemaObjectService)); }, token: ActiveProjectEpics, providedIn: "root" });
+        /** @nocollapse */ ActiveProjectEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ActiveProjectEpics_Factory() { return new ActiveProjectEpics(core.ɵɵinject(SysActions), core.ɵɵinject(DatActions), core.ɵɵinject(DfhActions), core.ɵɵinject(ProActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(ActiveProjectActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(store.NgRedux), core.ɵɵinject(SchemaService)); }, token: ActiveProjectEpics, providedIn: "root" });
         return ActiveProjectEpics;
     }());
     if (false) {
@@ -6524,9 +6524,9 @@
             { type: libSdkLb3.DatChunkApi },
             { type: libSdkLb3.DatColumnApi },
             { type: libSdkLb3.DatNamespaceApi },
-            { type: SchemaObjectService }
+            { type: SchemaService }
         ]; };
-        /** @nocollapse */ DatEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function DatEpics_Factory() { return new DatEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(DatActions), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(libSdkLb3.DatDigitalApi), core.ɵɵinject(libSdkLb3.DatChunkApi), core.ɵɵinject(libSdkLb3.DatColumnApi), core.ɵɵinject(libSdkLb3.DatNamespaceApi), core.ɵɵinject(SchemaObjectService)); }, token: DatEpics, providedIn: "root" });
+        /** @nocollapse */ DatEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function DatEpics_Factory() { return new DatEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(DatActions), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(libSdkLb3.DatDigitalApi), core.ɵɵinject(libSdkLb3.DatChunkApi), core.ɵɵinject(libSdkLb3.DatColumnApi), core.ɵɵinject(libSdkLb3.DatNamespaceApi), core.ɵɵinject(SchemaService)); }, token: DatEpics, providedIn: "root" });
         return DatEpics;
     }());
     if (false) {
@@ -7315,9 +7315,9 @@
             { type: ProActions },
             { type: DatActions },
             { type: libSdkLb3.ProInfoProjRelApi },
-            { type: SchemaObjectService }
+            { type: SchemaService }
         ]; };
-        /** @nocollapse */ InfEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InfEpics_Factory() { return new InfEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(libSdkLb3.InfPersistentItemApi), core.ɵɵinject(libSdkLb3.InfTemporalEntityApi), core.ɵɵinject(libSdkLb3.InfStatementApi), core.ɵɵinject(libSdkLb3.InfTextPropertyApi), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(libSdkLb3.ProInfoProjRelApi), core.ɵɵinject(SchemaObjectService)); }, token: InfEpics, providedIn: "root" });
+        /** @nocollapse */ InfEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InfEpics_Factory() { return new InfEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(libSdkLb3.InfPersistentItemApi), core.ɵɵinject(libSdkLb3.InfTemporalEntityApi), core.ɵɵinject(libSdkLb3.InfStatementApi), core.ɵɵinject(libSdkLb3.InfTextPropertyApi), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(libSdkLb3.ProInfoProjRelApi), core.ɵɵinject(SchemaService)); }, token: InfEpics, providedIn: "root" });
         return InfEpics;
     }());
     if (false) {
@@ -7634,9 +7634,9 @@
             { type: libSdkLb3.ProClassFieldConfigApi },
             { type: libSdkLb3.ProTextPropertyApi },
             { type: libSdkLb4.AnalysisService },
-            { type: SchemaObjectService }
+            { type: SchemaService }
         ]; };
-        /** @nocollapse */ ProEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProEpics_Factory() { return new ProEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(libSdkLb3.ProInfoProjRelApi), core.ɵɵinject(libSdkLb3.ProDfhClassProjRelApi), core.ɵɵinject(libSdkLb3.ProDfhProfileProjRelApi), core.ɵɵinject(libSdkLb3.ProClassFieldConfigApi), core.ɵɵinject(libSdkLb3.ProTextPropertyApi), core.ɵɵinject(libSdkLb4.AnalysisService), core.ɵɵinject(SchemaObjectService)); }, token: ProEpics, providedIn: "root" });
+        /** @nocollapse */ ProEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProEpics_Factory() { return new ProEpics(core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions), core.ɵɵinject(ProActions), core.ɵɵinject(DatActions), core.ɵɵinject(libSdkLb3.ProProjectApi), core.ɵɵinject(libSdkLb3.ProInfoProjRelApi), core.ɵɵinject(libSdkLb3.ProDfhClassProjRelApi), core.ɵɵinject(libSdkLb3.ProDfhProfileProjRelApi), core.ɵɵinject(libSdkLb3.ProClassFieldConfigApi), core.ɵɵinject(libSdkLb3.ProTextPropertyApi), core.ɵɵinject(libSdkLb4.AnalysisService), core.ɵɵinject(SchemaService)); }, token: ProEpics, providedIn: "root" });
         return ProEpics;
     }());
     if (false) {
@@ -7667,6 +7667,277 @@
          * @private
          */
         ProEpics.prototype.schemaObjectService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: state-schema/actions/schema.actions.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Class for actions that handle the loading of schema objects,
+     * negative schema objects ect.
+     */
+    var GvSchemaActions = /** @class */ (function () {
+        function GvSchemaActions(ngRedux) {
+            this.ngRedux = ngRedux;
+        }
+        /**
+         * Action for loading GvSchemaObject into the store
+         * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
+         *                we'll end up with two subscriptions and thus two api calls
+         */
+        /**
+         * Action for loading GvSchemaObject into the store
+         * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
+         *                we'll end up with two subscriptions and thus two api calls
+         * @return {?}
+         */
+        GvSchemaActions.prototype.loadGvSchemaObject = /**
+         * Action for loading GvSchemaObject into the store
+         * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
+         *                we'll end up with two subscriptions and thus two api calls
+         * @return {?}
+         */
+        function (apiCall$) {
+            /** @type {?} */
+            var addPending = libUtils.U.uuid();
+            /** @type {?} */
+            var action = {
+                type: GvSchemaActions.GV_SCHEMA_OBJECT_LOAD,
+                meta: { addPending: addPending },
+                payload: apiCall$,
+            };
+            this.ngRedux.dispatch(action);
+        };
+        /**
+       * Action for loading GvPaginationObject into the store
+       * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
+       *                we'll end up with two subscriptions and thus two api calls
+       */
+        /**
+         * Action for loading GvPaginationObject into the store
+         * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
+         *                we'll end up with two subscriptions and thus two api calls
+         * @param {?} meta
+         * @return {?}
+         */
+        GvSchemaActions.prototype.loadGvPaginationObject = /**
+         * Action for loading GvPaginationObject into the store
+         * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
+         *                we'll end up with two subscriptions and thus two api calls
+         * @param {?} meta
+         * @return {?}
+         */
+        function (apiCall$, meta) {
+            /** @type {?} */
+            var addPending = libUtils.U.uuid();
+            /** @type {?} */
+            var action = {
+                type: GvSchemaActions.GV_PAGINATION_OBJECT_LOAD,
+                meta: __assign({ addPending: addPending }, meta),
+                payload: apiCall$,
+            };
+            this.ngRedux.dispatch(action);
+        };
+        GvSchemaActions.GV_SCHEMA_OBJECT_LOAD = 'GV_SCHEMA_OBJECT::LOAD';
+        GvSchemaActions.GV_PAGINATION_OBJECT_LOAD = 'GV_PAGINATION_OBJECT::LOAD';
+        GvSchemaActions.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        GvSchemaActions.ctorParameters = function () { return [
+            { type: store.NgRedux }
+        ]; };
+        /** @nocollapse */ GvSchemaActions.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GvSchemaActions_Factory() { return new GvSchemaActions(core.ɵɵinject(store.NgRedux)); }, token: GvSchemaActions, providedIn: "root" });
+        return GvSchemaActions;
+    }());
+    if (false) {
+        /** @type {?} */
+        GvSchemaActions.GV_SCHEMA_OBJECT_LOAD;
+        /** @type {?} */
+        GvSchemaActions.GV_PAGINATION_OBJECT_LOAD;
+        /**
+         * @type {?}
+         * @private
+         */
+        GvSchemaActions.prototype.ngRedux;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: state-schema/_helpers/createPaginateByKey.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} meta
+     * @return {?}
+     */
+    function createPaginateByKey(meta) {
+        var _a, _b;
+        return [
+            { fk_property: meta.pkProperty },
+            { fk_target_class: meta.fkTargetClass },
+            (_a = {}, _a[meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info'] = meta.pkSourceEntity, _a),
+            (_b = {}, _b[meta.alternatives ? 'alternatives' : 'ofProject'] = meta.alternatives, _b)
+        ];
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: state-schema/epics/schema.epics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SchemaEpics = /** @class */ (function () {
+        function SchemaEpics(schemaObjectService, loadingBarActions, notificationActions, infActions) {
+            this.schemaObjectService = schemaObjectService;
+            this.loadingBarActions = loadingBarActions;
+            this.notificationActions = notificationActions;
+            this.infActions = infActions;
+        }
+        /**
+         * @return {?}
+         */
+        SchemaEpics.prototype.createEpics = /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return reduxObservableEs6Compat.combineEpics((
+            /**
+             * Epic for loading GvSchemaObjects
+             * - it subscribes to the given observable (payload), which usually triggers a REST API call
+             * - on success it stores the GvSchemaObject
+             * - else it toasts an error message
+             */
+            /**
+             * Epic for loading GvSchemaObjects
+             * - it subscribes to the given observable (payload), which usually triggers a REST API call
+             * - on success it stores the GvSchemaObject
+             * - else it toasts an error message
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(GvSchemaActions.GV_SCHEMA_OBJECT_LOAD), operators.mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new rxjs.Observable((/**
+             * @param {?} actionEmitter
+             * @return {?}
+             */
+            function (actionEmitter) {
+                actionEmitter.next(_this.loadingBarActions.startLoading());
+                action.payload.subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    _this.schemaObjectService.storeSchemaObjectGv(data, 0);
+                    actionEmitter.next(_this.loadingBarActions.completeLoading());
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    actionEmitter.next(_this.notificationActions.addToast({
+                        type: 'error',
+                        options: { title: error }
+                    }));
+                }));
+            })); }))); }), (
+            /**
+            * Epic for loading GvPaginationObjects
+            * - it subscribes to the given observable (payload), which usually triggers a REST API call
+            * - on success it stores the GvPaginationObject
+            * - else it toasts an error message
+            */
+            /**
+             * Epic for loading GvPaginationObjects
+             * - it subscribes to the given observable (payload), which usually triggers a REST API call
+             * - on success it stores the GvPaginationObject
+             * - else it toasts an error message
+             * @param {?} action$
+             * @param {?} store
+             * @return {?}
+             */
+            function (action$, store) { return action$.pipe(reduxObservableEs6Compat.ofType(GvSchemaActions.GV_PAGINATION_OBJECT_LOAD), operators.mergeMap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return new rxjs.Observable((/**
+             * @param {?} actionEmitter
+             * @return {?}
+             */
+            function (actionEmitter) {
+                actionEmitter.next(_this.loadingBarActions.startLoading());
+                /** @type {?} */
+                var pkProject = store.value.activeProject.pk_project;
+                /** @type {?} */
+                var meta = action.meta;
+                /** @type {?} */
+                var paginateBy = createPaginateByKey(meta);
+                // call action to set pagination loading on true
+                _this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+                action.payload.subscribe((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    // call action to store records
+                    _this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
+                    // call action to store pagination
+                    _this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+                    // call action to complete loading bar
+                    actionEmitter.next(_this.loadingBarActions.completeLoading());
+                }), (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    actionEmitter.next(_this.notificationActions.addToast({
+                        type: 'error',
+                        options: { title: error }
+                    }));
+                }));
+            })); }))); }));
+        };
+        SchemaEpics.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        SchemaEpics.ctorParameters = function () { return [
+            { type: SchemaService },
+            { type: LoadingBarActions },
+            { type: NotificationsAPIActions },
+            { type: InfActions }
+        ]; };
+        /** @nocollapse */ SchemaEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(core.ɵɵinject(SchemaService), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions)); }, token: SchemaEpics, providedIn: "root" });
+        return SchemaEpics;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        SchemaEpics.prototype.schemaObjectService;
+        /**
+         * @type {?}
+         * @private
+         */
+        SchemaEpics.prototype.loadingBarActions;
+        /**
+         * @type {?}
+         * @private
+         */
+        SchemaEpics.prototype.notificationActions;
+        /** @type {?} */
+        SchemaEpics.prototype.infActions;
     }
 
     /**
@@ -7760,19 +8031,20 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var RootEpics = /** @class */ (function () {
-        function RootEpics(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, systemEpics, dfhEpics, infEpics, datEpics, proEpics, actionResolver) {
+        function RootEpics(loadingBarEpics, notificationEpics, activeProjectEpics, accountEpics, sysEpics, dfhEpics, infEpics, datEpics, proEpics, schemaObjectEpics, actionResolver) {
             var _this = this;
             this.loadingBarEpics = loadingBarEpics;
             this.notificationEpics = notificationEpics;
             this.activeProjectEpics = activeProjectEpics;
             this.accountEpics = accountEpics;
-            this.systemEpics = systemEpics;
+            this.sysEpics = sysEpics;
             this.dfhEpics = dfhEpics;
             this.infEpics = infEpics;
             this.datEpics = datEpics;
             this.proEpics = proEpics;
+            this.schemaObjectEpics = schemaObjectEpics;
             this.actionResolver = actionResolver;
-            this.rootEpicStream$ = new rxjs.BehaviorSubject(reduxObservableEs6Compat.combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.systemEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), 
+            this.rootEpicStream$ = new rxjs.BehaviorSubject(reduxObservableEs6Compat.combineEpics(this.loadingBarEpics.createEpics(), this.notificationEpics.createEpics(), this.activeProjectEpics.createEpics(), this.accountEpics.createEpics(), this.sysEpics.createEpics(), this.dfhEpics.createEpics(), this.infEpics.createEpics(), this.datEpics.createEpics(), this.proEpics.createEpics(), this.schemaObjectEpics.createEpics(), 
             // important: this needs to be the last epic in
             this.actionResolver.createEpics()));
             this.rootEpic = (/**
@@ -7832,9 +8104,10 @@
             { type: InfEpics },
             { type: DatEpics },
             { type: ProEpics },
+            { type: SchemaEpics },
             { type: ActionResolverEpics }
         ]; };
-        /** @nocollapse */ RootEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function RootEpics_Factory() { return new RootEpics(core.ɵɵinject(LoadingBarEpics), core.ɵɵinject(NotificationsAPIEpics), core.ɵɵinject(ActiveProjectEpics), core.ɵɵinject(AccountEpics), core.ɵɵinject(SysEpics), core.ɵɵinject(DfhEpics), core.ɵɵinject(InfEpics), core.ɵɵinject(DatEpics), core.ɵɵinject(ProEpics), core.ɵɵinject(ActionResolverEpics)); }, token: RootEpics, providedIn: "root" });
+        /** @nocollapse */ RootEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function RootEpics_Factory() { return new RootEpics(core.ɵɵinject(LoadingBarEpics), core.ɵɵinject(NotificationsAPIEpics), core.ɵɵinject(ActiveProjectEpics), core.ɵɵinject(AccountEpics), core.ɵɵinject(SysEpics), core.ɵɵinject(DfhEpics), core.ɵɵinject(InfEpics), core.ɵɵinject(DatEpics), core.ɵɵinject(ProEpics), core.ɵɵinject(SchemaEpics), core.ɵɵinject(ActionResolverEpics)); }, token: RootEpics, providedIn: "root" });
         return RootEpics;
     }());
     if (false) {
@@ -7872,7 +8145,7 @@
          * @type {?}
          * @private
          */
-        RootEpics.prototype.systemEpics;
+        RootEpics.prototype.sysEpics;
         /**
          * @type {?}
          * @private
@@ -7893,6 +8166,11 @@
          * @private
          */
         RootEpics.prototype.proEpics;
+        /**
+         * @type {?}
+         * @private
+         */
+        RootEpics.prototype.schemaObjectEpics;
         /**
          * @type {?}
          * @private
@@ -9640,7 +9918,7 @@
         return new libSdkLb4.Configuration(params);
     }
     var ReduxModule = /** @class */ (function () {
-        function ReduxModule(ngRedux, devTools, rootEpics, initialState, parentModule, sdkLb3, sdkLb4) {
+        function ReduxModule(ngRedux, devTools, rootEpics, parentModule, sdkLb3, sdkLb4, initialState) {
             this.ngRedux = ngRedux;
             /** @type {?} */
             var errors = [];
@@ -9652,6 +9930,8 @@
                 errors.push('You need to import the SdkLb4Module in your AppModule!');
             if (errors.length)
                 throw new Error(errors.join('\n'));
+            if (!initialState)
+                initialState = {};
             /** @type {?} */
             var epicMiddleware = reduxObservableEs6Compat.createEpicMiddleware();
             // Tell Redux about our reducers and epics. If the Redux DevTools
@@ -9734,10 +10014,10 @@
             { type: store.NgRedux },
             { type: store.DevToolsExtension },
             { type: RootEpics },
-            { type: undefined, decorators: [{ type: core.Inject, args: [APP_INITIAL_STATE,] }] },
             { type: ReduxModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] },
             { type: libSdkLb3.SdkLb3Module, decorators: [{ type: core.Optional }] },
-            { type: libSdkLb4.SdkLb4Module, decorators: [{ type: core.Optional }] }
+            { type: libSdkLb4.SdkLb4Module, decorators: [{ type: core.Optional }] },
+            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [APP_INITIAL_STATE,] }] }
         ]; };
         return ReduxModule;
     }());
@@ -10978,6 +11258,7 @@
         War.prototype.entity_preview;
     }
 
+    exports.APP_INITIAL_STATE = APP_INITIAL_STATE;
     exports.AccountActions = AccountActions;
     exports.ActiveProjectActions = ActiveProjectActions;
     exports.ChunkActionsFactory = ChunkActionsFactory;
@@ -10999,6 +11280,7 @@
     exports.DigitalSlice = DigitalSlice;
     exports.EntityDetail = EntityDetail;
     exports.Flattener = Flattener;
+    exports.GvSchemaActions = GvSchemaActions;
     exports.INIT_SANDBOX_STATE = INIT_SANDBOX_STATE;
     exports.InfActionFactory = InfActionFactory;
     exports.InfActions = InfActions;
@@ -11040,7 +11322,7 @@
     exports.SET_APP_STATE = SET_APP_STATE;
     exports.SchemaActionsFactory = SchemaActionsFactory;
     exports.SchemaEpicsFactory = SchemaEpicsFactory;
-    exports.SchemaObjectService = SchemaObjectService;
+    exports.SchemaService = SchemaService;
     exports.SourceList = SourceList;
     exports.SysActions = SysActions;
     exports.TabActions = TabActions;
@@ -11049,11 +11331,13 @@
     exports.TextPropertySlice = TextPropertySlice;
     exports.Types = Types;
     exports.WarActions = WarActions;
+    exports.apiConfigFactory = apiConfigFactory;
     exports.by = by;
     exports.cleanupResolved = cleanupResolved;
     exports.createDatReducer = createDatReducer;
     exports.createDfhReducer = createDfhReducer;
     exports.createInfReducer = createInfReducer;
+    exports.createPaginateByKey = createPaginateByKey;
     exports.createProReducer = createProReducer;
     exports.createSysReducer = createSysReducer;
     exports.createTabReducer = createTabReducer;
@@ -11095,16 +11379,16 @@
     exports.textPropertyByFksWithoutLang = textPropertyByFksWithoutLang;
     exports.warDefinitions = warDefinitions;
     exports.warRoot = warRoot;
-    exports.ɵa = APP_INITIAL_STATE;
-    exports.ɵb = LoadingBarEpics;
-    exports.ɵc = NotificationsAPIEpics;
-    exports.ɵd = ActiveProjectEpics;
-    exports.ɵe = AccountEpics;
-    exports.ɵf = SysEpics;
-    exports.ɵg = DfhEpics;
-    exports.ɵh = InfEpics;
-    exports.ɵi = DatEpics;
-    exports.ɵj = ProEpics;
+    exports.ɵa = LoadingBarEpics;
+    exports.ɵb = NotificationsAPIEpics;
+    exports.ɵc = ActiveProjectEpics;
+    exports.ɵd = AccountEpics;
+    exports.ɵe = SysEpics;
+    exports.ɵf = DfhEpics;
+    exports.ɵg = InfEpics;
+    exports.ɵh = DatEpics;
+    exports.ɵi = ProEpics;
+    exports.ɵj = SchemaEpics;
     exports.ɵk = ActionResolverEpics;
     exports.ɵl = accountRootReducer;
     exports.ɵm = loadingBarReducer;

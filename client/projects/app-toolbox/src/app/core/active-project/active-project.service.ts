@@ -3,8 +3,8 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { IAppState, InfActions, SchemaObject, SchemaObjectService } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
+import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, SchemaObject, SchemaService, TypesByPk } from '@kleiolab/lib-redux';
 import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
@@ -14,18 +14,9 @@ import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { ShouldPauseService } from "@kleiolab/lib-queries";
-import { EntityDetail } from "@kleiolab/lib-redux";
-import { ActiveProjectActions } from "@kleiolab/lib-redux";
-import { TypesByPk } from "@kleiolab/lib-redux";
 
 
 
-import { RamSource } from "@kleiolab/lib-redux";
-import { ProjectDetail } from "@kleiolab/lib-redux";
-import { PanelTab } from "@kleiolab/lib-redux";
-import { Panel } from "@kleiolab/lib-redux";
-import { ListType } from "@kleiolab/lib-redux";
 
 
 
@@ -91,7 +82,7 @@ export class ActiveProjectService {
     public sys$: SysSelector,
     public inf: InfActions,
     public shouldPause: ShouldPauseService,
-    private s: SchemaObjectService,
+    private s: SchemaService,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);

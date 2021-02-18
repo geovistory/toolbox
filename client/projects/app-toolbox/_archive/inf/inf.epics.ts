@@ -1,19 +1,10 @@
 import { Injectable } from '@angular/core';
-import { storeFlattened } from "@kleiolab/lib-redux";
-import { Flattener } from "@kleiolab/lib-redux";
-import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
+import { DatActions, Flattener, FluxActionObservable, ModifyActionMeta, NotificationsAPIActions, PaginateByParam, ProActions, SchemaObject, SchemaService, storeFlattened } from '@kleiolab/lib-redux';
+import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
 import { Action } from 'redux';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { DatActions } from "@kleiolab/lib-redux";
-import { NotificationsAPIActions } from "@kleiolab/lib-redux";
-import { ProActions } from "@kleiolab/lib-redux";
-import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { PaginateByParam } from "@kleiolab/lib-redux";
-import { ModifyActionMeta } from "@kleiolab/lib-redux";
-import { FluxActionObservable } from "@kleiolab/lib-redux";
-import { SchemaObject } from "@kleiolab/lib-redux";
-import { SchemaObjectService } from "@kleiolab/lib-redux";
 import { InfEpicsFactory } from './inf-epic-factory';
 import { FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeStatements, LoadPaginatedStatementListMeta, PaginatedStatementList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from './inf.actions';
 import { infRoot } from './inf.config';
@@ -32,7 +23,7 @@ export class InfEpics {
     public proActions: ProActions,
     public datActions: DatActions,
     public infoProjRelApi: ProInfoProjRelApi,
-    private schemaObjectService: SchemaObjectService
+    private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {

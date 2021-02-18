@@ -1,7 +1,7 @@
 import {model, property} from '@loopback/repository';
 import {DimensionValueObjectType} from './sys-config-dimension-value-object-type';
+import {TrueEnum} from './TrueEnum';
 
-export enum TrueEnum {true = 'true'}
 @model({
   jsonSchema: {
     description: "If present, defines a specific list type for the class.",

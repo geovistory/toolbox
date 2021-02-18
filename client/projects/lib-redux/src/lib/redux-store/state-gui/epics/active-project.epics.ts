@@ -17,7 +17,7 @@ import { DfhActions } from '../../state-schema/actions/dfh.actions';
 import { InfActions } from '../../state-schema/actions/inf.actions';
 import { ProActions } from '../../state-schema/actions/pro.actions';
 import { SysActions } from '../../state-schema/actions/sys.actions';
-import { SchemaObjectService } from '../../state-schema/services/schema-object.service';
+import { SchemaService } from '../../state-schema/services/schema.service';
 import { ProjectPreview } from '../models/active-project.models';
 
 function firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
@@ -51,7 +51,7 @@ export class ActiveProjectEpics {
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
     private ngRedux: NgRedux<IAppState>,
-    private schemaObj: SchemaObjectService
+    private schemaObj: SchemaService
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {

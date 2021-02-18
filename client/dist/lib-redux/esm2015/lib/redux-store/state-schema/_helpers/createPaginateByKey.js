@@ -1,0 +1,18 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/_helpers/createPaginateByKey.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} meta
+ * @return {?}
+ */
+export function createPaginateByKey(meta) {
+    return [
+        { fk_property: meta.pkProperty },
+        { fk_target_class: meta.fkTargetClass },
+        { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
+        { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
+    ];
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3JlYXRlUGFnaW5hdGVCeUtleS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItcmVkdXgvIiwic291cmNlcyI6WyJsaWIvcmVkdXgtc3RvcmUvc3RhdGUtc2NoZW1hL19oZWxwZXJzL2NyZWF0ZVBhZ2luYXRlQnlLZXkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7O0FBQ0EsTUFBTSxVQUFVLG1CQUFtQixDQUFDLElBQW9DO0lBQ3RFLE9BQU87UUFDTCxFQUFFLFdBQVcsRUFBRSxJQUFJLENBQUMsVUFBVSxFQUFFO1FBQ2hDLEVBQUUsZUFBZSxFQUFFLElBQUksQ0FBQyxhQUFhLEVBQUU7UUFDdkMsRUFBRSxDQUFDLElBQUksQ0FBQyxVQUFVLENBQUMsQ0FBQyxDQUFDLGlCQUFpQixDQUFDLENBQUMsQ0FBQyxnQkFBZ0IsQ0FBQyxFQUFFLElBQUksQ0FBQyxjQUFjLEVBQUU7UUFDakYsRUFBRSxDQUFDLElBQUksQ0FBQyxZQUFZLENBQUMsQ0FBQyxDQUFDLGNBQWMsQ0FBQyxDQUFDLENBQUMsV0FBVyxDQUFDLEVBQUUsSUFBSSxDQUFDLFlBQVksRUFBRTtLQUMxRSxDQUFDO0FBQ0osQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IExvYWRQYWdpbmF0ZWRTdGF0ZW1lbnRMaXN0TWV0YSwgUGFnaW5hdGVCeVBhcmFtIH0gZnJvbSAnLi4vLi4vcHVibGljLWFwaSc7XG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlUGFnaW5hdGVCeUtleShtZXRhOiBMb2FkUGFnaW5hdGVkU3RhdGVtZW50TGlzdE1ldGEpOiBQYWdpbmF0ZUJ5UGFyYW1bXSB7XG4gIHJldHVybiBbXG4gICAgeyBma19wcm9wZXJ0eTogbWV0YS5wa1Byb3BlcnR5IH0sXG4gICAgeyBma190YXJnZXRfY2xhc3M6IG1ldGEuZmtUYXJnZXRDbGFzcyB9LFxuICAgIHsgW21ldGEuaXNPdXRnb2luZyA/ICdma19zdWJqZWN0X2luZm8nIDogJ2ZrX29iamVjdF9pbmZvJ106IG1ldGEucGtTb3VyY2VFbnRpdHkgfSxcbiAgICB7IFttZXRhLmFsdGVybmF0aXZlcyA/ICdhbHRlcm5hdGl2ZXMnIDogJ29mUHJvamVjdCddOiBtZXRhLmFsdGVybmF0aXZlcyB9XG4gIF07XG59XG4iXX0=

@@ -8002,6 +8002,73 @@ var PaginatedStatementsControllerService = /** @class */ (function () {
             reportProgress: reportProgress
         });
     };
+    /**
+     * @param {?=} gvLoadSubfieldPageReq
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @param {?=} options
+     * @return {?}
+     */
+    PaginatedStatementsControllerService.prototype.paginatedStatementsControllerLoadSubfieldPage = /**
+     * @param {?=} gvLoadSubfieldPageReq
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @param {?=} options
+     * @return {?}
+     */
+    function (gvLoadSubfieldPageReq, observe, reportProgress, options) {
+        if (observe === void 0) { observe = 'body'; }
+        if (reportProgress === void 0) { reportProgress = false; }
+        /** @type {?} */
+        var headers = this.defaultHeaders;
+        /** @type {?} */
+        var credential;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+        /** @type {?} */
+        var httpHeaderAcceptSelected = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            /** @type {?} */
+            var httpHeaderAccepts = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        var consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        /** @type {?} */
+        var responseType = 'json';
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+        return this.httpClient.post(this.configuration.basePath + "/paginated-statements/load-subfield-page", gvLoadSubfieldPageReq, {
+            responseType: (/** @type {?} */ (responseType)),
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    };
     PaginatedStatementsControllerService.decorators = [
         { type: Injectable, args: [{
                     providedIn: 'root'
@@ -15205,6 +15272,28 @@ var GetTablePageOptions;
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/model/gvLoadSubfieldPageReq.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function GvLoadSubfieldPageReq() { }
+if (false) {
+    /** @type {?|undefined} */
+    GvLoadSubfieldPageReq.prototype.pkProject;
+    /** @type {?|undefined} */
+    GvLoadSubfieldPageReq.prototype.filterObject;
+    /** @type {?|undefined} */
+    GvLoadSubfieldPageReq.prototype.subfieldType;
+    /** @type {?|undefined} */
+    GvLoadSubfieldPageReq.prototype.limit;
+    /** @type {?|undefined} */
+    GvLoadSubfieldPageReq.prototype.offset;
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/sdk-lb4/model/gvPaginationAlternativeLeafItemsReq.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -15307,6 +15396,46 @@ if (false) {
     /** @type {?|undefined} */
     GvSchemaObject.prototype.sys;
 }
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/model/gvSubfieldType.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// WARNING: interface has both a type and a value, skipping emit
+var GvSubfieldType;
+(function (GvSubfieldType) {
+    GvSubfieldType.AppellationEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.LanguageEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.PlaceEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.TimePrimitiveEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.LangStringEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.TemporalEntityEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.EntityPreviewEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.TypeItemEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.TimeSpanEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+    GvSubfieldType.TextPropertyEnum = {
+        True: (/** @type {?} */ ('true'))
+    };
+})(GvSubfieldType || (GvSubfieldType = {}));
 
 /**
  * @fileoverview added by tsickle
@@ -17893,5 +18022,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { APIS, AccountService, AnalysisService, AnalysisTableExportRequest, BASE_PATH, COLLECTION_FORMATS, ColDef, Configuration, ContentTreeService, DatChunkControllerService, DatChunkService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, GetTablePageOptions, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, QueryFilterData, QueryPathSegment, RamListService, SchemaObjectService, ApiModule as SdkLb4Module, SysClassFieldService, SysClassHasTypePropertyService, SysConfigValueObjectType, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TColFilterNum, TColFilterTxt, TableService, TimePrimitiveWithCal, WarEntityPreviewControllerService, WarStatementGeoJson, WarStatementTimePrimitiveVT };
+export { APIS, AccountService, AnalysisService, AnalysisTableExportRequest, BASE_PATH, COLLECTION_FORMATS, ColDef, Configuration, ContentTreeService, DatChunkControllerService, DatChunkService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, GetTablePageOptions, GvSubfieldType, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, QueryFilterData, QueryPathSegment, RamListService, SchemaObjectService, ApiModule as SdkLb4Module, SysClassFieldService, SysClassHasTypePropertyService, SysConfigValueObjectType, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TColFilterNum, TColFilterTxt, TableService, TimePrimitiveWithCal, WarEntityPreviewControllerService, WarStatementGeoJson, WarStatementTimePrimitiveVT };
 //# sourceMappingURL=kleiolab-lib-sdk-lb4.js.map

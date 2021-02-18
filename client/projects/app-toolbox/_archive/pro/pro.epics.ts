@@ -1,26 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb3';
-import { DatActions } from "@kleiolab/lib-redux";
-import { InfActions } from "@kleiolab/lib-redux";
-import { proRoot } from "@kleiolab/lib-redux";
-import { storeFlattened } from "@kleiolab/lib-redux";
-import { Flattener } from "@kleiolab/lib-redux";
+import { DatActions, Flattener, InfActions, LoadActionMeta, ModifyActionMeta, NotificationsAPIActions, proRoot, SchemaEpicsFactory, SchemaObject, SchemaService, storeFlattened } from '@kleiolab/lib-redux';
+import { ProClassFieldConfig, ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi, ProInfoProjRel, ProInfoProjRelApi, ProProject, ProProjectApi, ProTextProperty, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
+import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { NotificationsAPIActions } from "@kleiolab/lib-redux";
-import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProProject, ProProjectApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { LoadByPkANsVersionActionMeta } from "@kleiolab/lib-redux";
-import { ModifyActionMeta } from "@kleiolab/lib-redux";
-import { LoadActionMeta } from "@kleiolab/lib-redux";
-import { SchemaEpicsFactory } from "@kleiolab/lib-redux";
-import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkStatementAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
-import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
-import { SchemaObject } from "@kleiolab/lib-redux";
-import { SchemaObjectService } from "@kleiolab/lib-redux";
-import { AnalysisService } from "@kleiolab/lib-sdk-lb4";
-import { map } from 'rxjs/operators';
-import { ProAnalysis } from "@kleiolab/lib-sdk-lb4";
+import { MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory } from './pro.actions';
+import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from './pro.models';
 
 
 @Injectable()
@@ -37,7 +21,7 @@ export class ProEpics {
     public classFieldConfApi: ProClassFieldConfigApi,
     public textPropertyApi: ProTextPropertyApi,
     public analysisApi: AnalysisService,
-    private schemaObjectService: SchemaObjectService
+    private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {

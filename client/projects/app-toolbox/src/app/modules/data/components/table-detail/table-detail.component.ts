@@ -1,22 +1,18 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { DatDigitalApi } from '@kleiolab/lib-sdk-lb3';
-import { DatColumn } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from "@kleiolab/lib-redux";
-import { TableService } from "@kleiolab/lib-sdk-lb4";
-import { TableRow } from "@kleiolab/lib-sdk-lb4";
-import { SchemaObjectService } from "@kleiolab/lib-redux";
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { InfActions, SchemaService } from '@kleiolab/lib-redux';
+import { DatColumn, DatDigitalApi } from '@kleiolab/lib-sdk-lb3';
+import { TableRow, TableService } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
-import { ColumnMapping, Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
+import { Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { equals, indexBy, values, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TColFilter, TColFilters } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
@@ -120,7 +116,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     private p: ActiveProjectService,
     private worker: WorkerWrapperService,
     private tableAPI: TableService,
-    private s: SchemaObjectService,
+    private s: SchemaService,
     private c: ConfigurationPipesService,
     private inf: InfActions
   ) { }

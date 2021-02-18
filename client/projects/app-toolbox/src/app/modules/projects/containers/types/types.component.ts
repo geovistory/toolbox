@@ -1,11 +1,10 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DfhConfig } from '@kleiolab/lib-config';
+import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService, TemporalEntityItem } from '@kleiolab/lib-queries';
-import { IAppState, InfActions, SchemaObjectService } from '@kleiolab/lib-redux';
+import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
-import { SysConfig } from "@kleiolab/lib-config";
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { createPaginateBy } from 'projects/app-toolbox/src/app/modules/base/base.helpers';
@@ -68,7 +67,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     public b: InformationBasicPipesService,
     public i: InformationPipesService,
     private pag: PaginationService,
-    public s: SchemaObjectService,
+    public s: SchemaService,
     private m: BaseModalsService
   ) {
   }

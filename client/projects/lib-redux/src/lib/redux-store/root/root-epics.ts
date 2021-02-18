@@ -12,6 +12,7 @@ import { DatEpics } from '../state-schema/epics/dat.epics';
 import { DfhEpics } from '../state-schema/epics/dfh.epics';
 import { InfEpics } from '../state-schema/epics/inf.epics';
 import { ProEpics } from '../state-schema/epics/pro.epics';
+import { SchemaEpics } from '../state-schema/epics/schema.epics';
 import { SysEpics } from '../state-schema/epics/sys.epics';
 import { IAppState } from './models/model';
 
@@ -29,24 +30,26 @@ export class RootEpics {
     private notificationEpics: NotificationsAPIEpics,
     private activeProjectEpics: ActiveProjectEpics,
     private accountEpics: AccountEpics,
-    private systemEpics: SysEpics,
+    private sysEpics: SysEpics,
     private dfhEpics: DfhEpics,
     private infEpics: InfEpics,
     private datEpics: DatEpics,
     private proEpics: ProEpics,
+    private schemaObjectEpics: SchemaEpics,
     private actionResolver: ActionResolverEpics
   ) {
 
     this.rootEpicStream$ = new BehaviorSubject(combineEpics(
       this.loadingBarEpics.createEpics(),
       this.notificationEpics.createEpics(),
-      this.systemEpics.createEpics(),
       this.activeProjectEpics.createEpics(),
       this.accountEpics.createEpics(),
+      this.sysEpics.createEpics(),
       this.dfhEpics.createEpics(),
       this.infEpics.createEpics(),
       this.datEpics.createEpics(),
       this.proEpics.createEpics(),
+      this.schemaObjectEpics.createEpics(),
       // important: this needs to be the last epic in
       this.actionResolver.createEpics()
     ));

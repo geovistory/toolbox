@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { Field, SubfieldType } from "@kleiolab/lib-queries";
-import { IAppState, SchemaObjectService } from "@kleiolab/lib-redux";
+import { Field, SubfieldType } from '@kleiolab/lib-queries';
+import { IAppState, SchemaService } from '@kleiolab/lib-redux';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
-import { GvSchemaObject } from "@kleiolab/lib-sdk-lb4";
+import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
 import { DfhApiClassMock } from '__tests__/helpers/data/auto-gen/DfhApiClassMock';
@@ -22,7 +22,7 @@ import { ConfigurationPipesService } from './configuration-pipes.service';
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: ConfigurationPipesService;
-  let schemaObjServcie: SchemaObjectService;
+  let schemaObjServcie: SchemaService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -32,7 +32,7 @@ describe('ConfigurationPipeService', () => {
       ]
     });
     service = TestBed.get(ConfigurationPipesService);
-    schemaObjServcie = TestBed.get(SchemaObjectService);
+    schemaObjServcie = TestBed.get(SchemaService);
     ngRedux = TestBed.get(NgRedux);
 
 

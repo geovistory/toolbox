@@ -55,11 +55,7 @@ const appearance: MatFormFieldDefaultOptions = {
 
 registerLocaleData(localeDeCh);
 
-
-
-// Third party imports
-// Own imports
-@NgModule({
+export const APP_MODULE_DECORATOR = {
   declarations: [
     AppComponent,
   ],
@@ -70,18 +66,16 @@ registerLocaleData(localeDeCh);
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule,
     HttpClientModule,
     MaterialModule,
 
 
-    // OLD?
-    AngularCesiumModule.forRoot(),
 
     // other thid party modules
     NgReduxRouterModule,
     NgReduxModule,
     NgbModule.forRoot(),
+    AngularCesiumModule.forRoot(),
     ElasticInputModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
     DndModule.forRoot(),
@@ -103,6 +97,7 @@ registerLocaleData(localeDeCh);
     NotificationsModule,
 
     // own modules (@kleiolab/app-toolbox)
+    AppRoutingModule,
     BasicModule,
     RepoModule,
     ProjectsModule,
@@ -132,7 +127,12 @@ registerLocaleData(localeDeCh);
     AppComponent
   ],
   bootstrap: [AppComponent]
-})
+}
+
+
+// Third party imports
+// Own imports
+@NgModule(APP_MODULE_DECORATOR)
 export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.baseUrl + '/assets/mdi/mdi.svg'));

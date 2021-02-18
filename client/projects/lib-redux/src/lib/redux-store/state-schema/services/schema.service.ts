@@ -18,7 +18,7 @@ import { WarActions } from '../actions/war.actions';
 /**
  * Class to put schema objects into store
  */
-export class SchemaObjectService {
+export class SchemaService {
 
   constructor(
     public api: SchemaObjectApi,
@@ -136,6 +136,7 @@ export class SchemaObjectService {
       console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);')
     }
   }
+
 
   // /**
   //  * Adds the entity previews to the streamed entity previews (for ws communication)

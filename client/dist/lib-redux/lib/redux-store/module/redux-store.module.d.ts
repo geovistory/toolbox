@@ -22,5 +22,5 @@ export declare function apiConfigFactory(): Configuration;
 export declare class ReduxModule {
     ngRedux: NgRedux<IAppState>;
     static forRoot(): ModuleWithProviders;
-    constructor(ngRedux: NgRedux<IAppState>, devTools: DevToolsExtension, rootEpics: RootEpics, initialState: IAppState, parentModule: ReduxModule, sdkLb3: SdkLb3Module, sdkLb4: SdkLb4Module);
+    constructor(ngRedux: NgRedux<IAppState>, devTools: DevToolsExtension, rootEpics: RootEpics, parentModule?: ReduxModule, sdkLb3?: SdkLb3Module, sdkLb4?: SdkLb4Module, initialState?: IAppState);
 }

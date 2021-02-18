@@ -353,7 +353,49 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C16"
-}
+  }
+
+  static readonly EN_51_PLACE: DfhApiClass = {
+    "pk_entity": 3728,
+    "dfh_pk_class": 51,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Place",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "This class comprises extents in space, in particular on the surface of the earth, in the pure sense of physics: independent from\r\n            temporal phenomena and matter. The instances of E53 Place are usually determined by reference to the position of “immobile” objects such\r\n            as buildings, cities, mountains, rivers, or dedicated geodetic marks. A Place can be determined by combining a frame of reference and a\r\n            location with respect to this frame. It may be identified by one or more instances of E44 Place Appellation. It is sometimes argued that\r\n            instances of E53 Place are best identified by global coordinates or absolute reference systems. However, relative references are often\r\n            more relevant in the context of cultural documentation and tend to be more precise. In particular, we are often interested in position in\r\n            relation to large, mobile objects, such as ships. For example, the Place at which Nelson died is known with reference to a large mobile\r\n            object – H.M.S Victory. A resolution of this Place in terms of absolute coordinates would require knowledge of the movements of the vessel\r\n            and the precise time of death, either of which may be revised, and the result would lack historical and cultural relevance. Any object can\r\n            serve as a frame of reference for E53 Place determination. The model foresees the notion of a \"section\" of an E19 Physical Object as a\r\n            valid E53 Place determination.",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E53"
+  }
+
+  static readonly EN_84_PRESENCE: DfhApiClass = {
+    "pk_entity": 3730,
+    "dfh_pk_class": 84,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Presence",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "This class comprises instances of E92 Spacetime Volume that result from intersection of instances of E92 Spacetime Volume with an\n            instance of E52 Time-Span. The identity of an instance of this class is determined by the identities of the constituing spacetime volume\n            and the time-span. This class can be used to define temporal snapshots at a particular time-span, such as the extent of the Roman Empire\n            at 33 B.C., or the extent occupied by a museum object at rest in an exhibit. In particular, it can be used to define the spatial\n            projection of a spacetime volume during a particular time-span, such as the maximal spatial extent of a flood at some particular hour, or\n            all areas covered by the Poland within the 20th century AD. ",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E93"
+  }
 }
 
 
@@ -361,26 +403,35 @@ export class DfhApiClassMock {
 /**
  * SQL to create mock items
  */
-// SELECT jsonb_pretty(jsonb_build_object(
-//   'pk_entity',pk_entity,
-//   'tmsp_last_modification', tmsp_last_modification,
-//   'dfh_pk_class',dfh_pk_class,
-//   'dfh_class_identifier_in_namespace',dfh_class_identifier_in_namespace,
-//   'dfh_class_label_language',dfh_class_label_language,
-//   'dfh_class_label',dfh_class_label,
-//   'dfh_class_scope_note_language',dfh_class_scope_note_language,
-//   'dfh_class_scope_note',dfh_class_scope_note,
-//   'dfh_basic_type',dfh_basic_type,
-//   'dfh_basic_type_label',dfh_basic_type_label,
-//   'dfh_fk_namespace',dfh_fk_namespace,
-//   'dfh_namespace_label_language',dfh_namespace_label_language,
-//   'dfh_namespace_label',dfh_namespace_label,
-//   'dfh_namespace_uri',dfh_namespace_uri,
-//   'dfh_profile_association_type',dfh_profile_association_type,
-//   'dfh_fk_profile',dfh_fk_profile,
-//   'dfh_profile_label_language',dfh_profile_label_language,
-//   'dfh_profile_label',dfh_profile_label
-//   ))
-//   FROM data_for_history.api_class t1
-//   WHERE dfh_pk_class = 365
-//   AND dfh_profile_association_type='selected'
+
+// SELECT concat(
+// 	'static readonly ',
+// 	UPPER(dfh_class_label_language),
+// 	'_',
+// 	dfh_pk_class,
+// 	'_',
+// 	UPPER(REPLACE (dfh_class_label, ' ', '_')),
+// 	': DfhApiClass = ',
+// 	jsonb_pretty(jsonb_build_object(
+//    'pk_entity',pk_entity,
+//    'tmsp_last_modification', tmsp_last_modification,
+//    'dfh_pk_class',dfh_pk_class,
+//    'dfh_class_identifier_in_namespace',dfh_class_identifier_in_namespace,
+//    'dfh_class_label_language',dfh_class_label_language,
+//    'dfh_class_label',dfh_class_label,
+//    'dfh_class_scope_note_language',dfh_class_scope_note_language,
+//    'dfh_class_scope_note',dfh_class_scope_note,
+//    'dfh_basic_type',dfh_basic_type,
+//    'dfh_basic_type_label',dfh_basic_type_label,
+//    'dfh_fk_namespace',dfh_fk_namespace,
+//    'dfh_namespace_label_language',dfh_namespace_label_language,
+//    'dfh_namespace_label',dfh_namespace_label,
+//    'dfh_namespace_uri',dfh_namespace_uri,
+//    'dfh_profile_association_type',dfh_profile_association_type,
+//    'dfh_fk_profile',dfh_fk_profile,
+//    'dfh_profile_label_language',dfh_profile_label_language,
+//    'dfh_profile_label',dfh_profile_label
+//    )))
+//    FROM data_for_history.api_class t1
+//    WHERE dfh_pk_class = 84
+//    AND dfh_profile_association_type='selected'

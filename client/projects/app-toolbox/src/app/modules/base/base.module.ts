@@ -46,6 +46,7 @@ import { PropertiesTreeDialogComponent } from './components/properties-tree-dial
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
+import { SubfieldComponent } from './components/subfield/subfield.component';
 import { TemporalEntityAddListComponent } from './components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
 import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
@@ -89,7 +90,8 @@ const components = [
   FgPlaceComponent,
   FgTextPropertyComponent,
   FgLangStringComponent,
-  FgDimensionComponent
+  FgDimensionComponent,
+  SubfieldComponent
 ]
 
 const baseModules = [

@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.module.ts
 api/account.service.ts
@@ -92,10 +91,12 @@ model/geoEntityMapAndTimeCont.ts
 model/getEntityLabelConfigResponse.ts
 model/getFactoidsFromEntityResponse.ts
 model/getTablePageOptions.ts
+model/gvLoadSubfieldPageReq.ts
 model/gvPaginationAlternativeLeafItemsReq.ts
 model/gvPaginationObject.ts
 model/gvPaginationStatementFilter.ts
 model/gvSchemaObject.ts
+model/gvSubfieldType.ts
 model/header.ts
 model/httpErrorModel.ts
 model/httpErrorObjectModel.ts

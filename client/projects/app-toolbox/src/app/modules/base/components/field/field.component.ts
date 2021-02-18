@@ -1,25 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { InfActions } from "@kleiolab/lib-redux";
 import { NestedTreeControl } from '@angular/cdk/tree';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Field, InformationPipesService, Subfield } from '@kleiolab/lib-queries';
+import { InfActions } from '@kleiolab/lib-redux';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { sum } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { isValueObjectSubfield } from '../../base.helpers';
-import { InformationPipesService } from "@kleiolab/lib-queries";
+import { createPaginateBy, isValueObjectSubfield, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
+import { TimeSpanService } from '../../services/time-span.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
-import { SubfieldType } from "@kleiolab/lib-queries";
-import { Subfield } from "@kleiolab/lib-queries";
-import { Field } from "@kleiolab/lib-queries";
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { temporalEntityListDefaultPageIndex } from "../../base.helpers";
 
-import { temporalEntityListDefaultLimit } from "../../base.helpers";
-import { createPaginateBy } from "../../base.helpers";
-import { TimeSpanService } from '../../services/time-span.service';
 
 interface SubfieldWithItemCount extends Subfield {
   itemsCount: number
@@ -65,7 +59,7 @@ export class FieldComponent implements OnInit {
     const limit = temporalEntityListDefaultLimit
     const offset = temporalEntityListDefaultPageIndex
     /**
-     * Trigger loading of statement lists
+     * Trigger loading from REST API
      */
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.fieldDefinition.listDefinitions.forEach(l => {
@@ -78,6 +72,9 @@ export class FieldComponent implements OnInit {
       })
     })
 
+    /**
+     * Pipe data from redux store
+     */
     if (this.fieldDefinition.isSpecialField !== 'has-type') {
 
       this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {

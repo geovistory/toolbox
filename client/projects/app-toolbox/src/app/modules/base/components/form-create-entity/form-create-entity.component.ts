@@ -3,7 +3,7 @@ import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, FieldProperty, SchemaSelectorsService, Subfield, SubfieldType, TableName } from '@kleiolab/lib-queries';
-import { InfActions, SchemaObjectService } from '@kleiolab/lib-redux';
+import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfDimension, InfLangString, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
@@ -130,7 +130,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     private inf: InfActions,
     private ss: SchemaSelectorsService,
     public ap: ActiveProjectPipesService,
-    public s: SchemaObjectService
+    public s: SchemaService
   ) { }
 
   ngOnInit() {

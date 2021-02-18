@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from "@kleiolab/lib-redux";
-import { SchemaObjectService } from "@kleiolab/lib-redux";
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { RamListService } from "@kleiolab/lib-sdk-lb4";
-import { DatDigital } from "@kleiolab/lib-sdk-lb4";
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DatDigital, RamListService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -17,8 +14,6 @@ import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeU
 import { GraphPathEntity, GraphPathSegment } from '../graph-path/graph-path.component';
 import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListRemoveDialogComponent, RamListRemoveDialogData } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
-import { SchemaSelectorsService } from "@kleiolab/lib-queries";
 
 interface GraphPath {
   segments: GraphPathSegment[];
@@ -80,7 +75,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   loading$ = new BehaviorSubject(true);
 
   constructor(
-    private s: SchemaObjectService,
+    private s: SchemaService,
     private ramListApi: RamListService,
     private inf: InfActions,
     private p: ActiveProjectService,

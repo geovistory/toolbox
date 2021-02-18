@@ -8,5 +8,5 @@ curl http://0.0.0.0:3000/explorer/openapi.json \
 ./node_modules/.bin/openapi-generator-cli generate \
   -i openapi.json \
   -g typescript-angular \
-  -o ../client/projects/toolbox/src/app/core/sdk-lb4 \
+  -o ../client/projects/lib-sdk-lb4/src/lib/sdk-lb4 \
   --additional-properties=\"ngVersion=8.3.1\"

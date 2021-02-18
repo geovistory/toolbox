@@ -2,29 +2,23 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { ActiveAccountService } from "projects/app-toolbox/src/app/core/active-account";
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { DatDigital } from '@kleiolab/lib-sdk-lb3';
-import { InfActions } from "@kleiolab/lib-redux";
-import { ByPk } from "@kleiolab/lib-redux";
-import { SchemaObjectService } from "@kleiolab/lib-redux";
+import { SysConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, DatSelector, InformationPipesService } from '@kleiolab/lib-queries';
+import { ByPk, InfActions, SchemaService } from '@kleiolab/lib-redux';
+import { DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { ContentTreeService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { RepoService } from 'projects/app-toolbox/src/app/core/repo/repo.service';
-import { ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
-import { InformationPipesService } from "@kleiolab/lib-queries";
+import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/app/modules/data/components/importer/importer.component';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { DatSelector } from "@kleiolab/lib-queries";
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
-import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
-import { ContentTreeService } from "@kleiolab/lib-sdk-lb4";
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 /**
  * Food data with nested structure.
@@ -133,7 +127,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     public p: ActiveProjectService,
     public ap: ActiveProjectPipesService,
     public a: ActiveAccountService,
-    private s: SchemaObjectService,
+    private s: SchemaService,
     private contentTree: ContentTreeService,
     private r: RepoService,
     private inf: InfActions,

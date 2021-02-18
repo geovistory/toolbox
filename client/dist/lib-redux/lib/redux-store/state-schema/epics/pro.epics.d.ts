@@ -5,7 +5,7 @@ import { NotificationsAPIActions } from '../../state-gui/actions/notifications.a
 import { DatActions } from '../actions/dat.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
-import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaService } from '../services/schema.service';
 export declare class ProEpics {
     notification: NotificationsAPIActions;
     infActions: InfActions;
@@ -19,6 +19,6 @@ export declare class ProEpics {
     textPropertyApi: ProTextPropertyApi;
     analysisApi: AnalysisService;
     private schemaObjectService;
-    constructor(notification: NotificationsAPIActions, infActions: InfActions, proActions: ProActions, datActions: DatActions, projectApi: ProProjectApi, infoProjRelApi: ProInfoProjRelApi, classProjRelApi: ProDfhClassProjRelApi, profileProjRelApi: ProDfhProfileProjRelApi, classFieldConfApi: ProClassFieldConfigApi, textPropertyApi: ProTextPropertyApi, analysisApi: AnalysisService, schemaObjectService: SchemaObjectService);
+    constructor(notification: NotificationsAPIActions, infActions: InfActions, proActions: ProActions, datActions: DatActions, projectApi: ProProjectApi, infoProjRelApi: ProInfoProjRelApi, classProjRelApi: ProDfhClassProjRelApi, profileProjRelApi: ProDfhProfileProjRelApi, classFieldConfApi: ProClassFieldConfigApi, textPropertyApi: ProTextPropertyApi, analysisApi: AnalysisService, schemaObjectService: SchemaService);
     createEpics(): Epic;
 }

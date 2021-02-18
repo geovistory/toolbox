@@ -11,6 +11,7 @@
  */
 import { HttpClient, HttpHeaders, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { GvLoadSubfieldPageReq } from '../model/models';
 import { GvPaginationAlternativeLeafItemsReq } from '../model/models';
 import { GvPaginationObject } from '../model/models';
 import { Configuration } from '../configuration';
@@ -35,6 +36,20 @@ export declare class PaginatedStatementsControllerService {
         httpHeaderAccept?: 'application/json';
     }): Observable<HttpResponse<GvPaginationObject>>;
     paginatedStatementsControllerAlternativeLeafItems(gvPaginationAlternativeLeafItemsReq?: GvPaginationAlternativeLeafItemsReq, observe?: 'events', reportProgress?: boolean, options?: {
+        httpHeaderAccept?: 'application/json';
+    }): Observable<HttpEvent<GvPaginationObject>>;
+    /**
+     * @param gvLoadSubfieldPageReq
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {
+        httpHeaderAccept?: 'application/json';
+    }): Observable<GvPaginationObject>;
+    paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {
+        httpHeaderAccept?: 'application/json';
+    }): Observable<HttpResponse<GvPaginationObject>>;
+    paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {
         httpHeaderAccept?: 'application/json';
     }): Observable<HttpEvent<GvPaginationObject>>;
 }

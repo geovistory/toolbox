@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { SysConfig } from '@kleiolab/lib-config';
-import { AnalysisTabData, SchemaObjectService } from '@kleiolab/lib-redux';
+import { AnalysisTabData, SchemaService } from '@kleiolab/lib-redux';
 import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -29,7 +29,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
-    private s: SchemaObjectService,
+    private s: SchemaService,
     private analysisApi: AnalysisService) { }
 
   ngOnInit() {

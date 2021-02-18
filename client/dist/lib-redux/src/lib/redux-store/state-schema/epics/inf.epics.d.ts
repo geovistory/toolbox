@@ -4,7 +4,7 @@ import { NotificationsAPIActions } from '../../state-gui/actions/notifications.a
 import { DatActions } from '../actions/dat.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
-import { SchemaObjectService } from '../services/schema-object.service';
+import { SchemaService } from '../services/schema.service';
 export declare class InfEpics {
     notification: NotificationsAPIActions;
     peItApi: InfPersistentItemApi;
@@ -16,7 +16,7 @@ export declare class InfEpics {
     datActions: DatActions;
     infoProjRelApi: ProInfoProjRelApi;
     private schemaObjectService;
-    constructor(notification: NotificationsAPIActions, peItApi: InfPersistentItemApi, teEnApi: InfTemporalEntityApi, statementApi: InfStatementApi, textPropertyApi: InfTextPropertyApi, infActions: InfActions, proActions: ProActions, datActions: DatActions, infoProjRelApi: ProInfoProjRelApi, schemaObjectService: SchemaObjectService);
+    constructor(notification: NotificationsAPIActions, peItApi: InfPersistentItemApi, teEnApi: InfTemporalEntityApi, statementApi: InfStatementApi, textPropertyApi: InfTextPropertyApi, infActions: InfActions, proActions: ProActions, datActions: DatActions, infoProjRelApi: ProInfoProjRelApi, schemaObjectService: SchemaService);
     createEpics(): Epic;
     /**
      * handles the update of store for paginated temporal entity lists.

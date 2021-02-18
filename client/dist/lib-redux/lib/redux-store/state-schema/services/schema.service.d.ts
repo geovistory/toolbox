@@ -10,7 +10,7 @@ import { ProActions } from '../actions/pro.actions';
 import { SysActions } from '../actions/sys.actions';
 import { TabActions } from '../actions/tab.actions';
 import { WarActions } from '../actions/war.actions';
-export declare class SchemaObjectService {
+export declare class SchemaService {
     api: SchemaObjectApi;
     infActions: InfActions;
     proActions: ProActions;
