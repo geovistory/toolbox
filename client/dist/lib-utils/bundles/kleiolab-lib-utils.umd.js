@@ -1978,7 +1978,8 @@
                         ],
                         providers: [
                             TimePrimitivePipe,
-                            TimeSpanPipe
+                            TimeSpanPipe,
+                            common.DatePipe
                         ],
                         declarations: [
                             TimeSpanPipe,

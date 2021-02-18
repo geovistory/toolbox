@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState, SchemaObjectService } from '@kleiolab/lib-redux';
+import { IAppState, SchemaService } from '@kleiolab/lib-redux';
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { ProDfhProfileProjRelMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/ProDfhProfileProjRelMock';
 import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel } from 'projects/lib-queries/src/__tests__/helpers/data/transformers';
@@ -23,14 +23,14 @@ import { ConfigurationPipesService } from './configuration-pipes.service';
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: ConfigurationPipesService;
-  let schemaObjServcie: SchemaObjectService;
+  let schemaObjServcie: SchemaService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: moduleImports
     });
     service = TestBed.get(ConfigurationPipesService);
-    schemaObjServcie = TestBed.get(SchemaObjectService);
+    schemaObjServcie = TestBed.get(SchemaService);
     ngRedux = TestBed.get(NgRedux);
   });
   // afterEach(() => {

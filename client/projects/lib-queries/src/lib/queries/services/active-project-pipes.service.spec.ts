@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState, SchemaObjectService } from '@kleiolab/lib-redux';
+import { IAppState, SchemaService } from '@kleiolab/lib-redux';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
 import { PK_DEFAULT_CONFIG_PROJECT } from '../../../__tests__/helpers/data/auto-gen/local-model.helpers';
@@ -14,7 +14,7 @@ import { ActiveProjectPipesService } from './active-project-pipes.service';
 describe('ActiveProjectPipesService', () => {
   let service: ActiveProjectPipesService;
   let ngRedux: NgRedux<IAppState>;
-  let schemaObjServcie: SchemaObjectService;
+  let schemaObjServcie: SchemaService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,7 +22,7 @@ describe('ActiveProjectPipesService', () => {
     })
     service = TestBed.get(ActiveProjectPipesService);
     ngRedux = TestBed.get(NgRedux);
-    schemaObjServcie = TestBed.get(SchemaObjectService);
+    schemaObjServcie = TestBed.get(SchemaService);
   });
 
   describe('Service', () => {

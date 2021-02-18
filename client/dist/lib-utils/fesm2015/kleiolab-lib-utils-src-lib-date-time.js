@@ -1378,7 +1378,8 @@ DateTimeModule.decorators = [
                 ],
                 providers: [
                     TimePrimitivePipe,
-                    TimeSpanPipe
+                    TimeSpanPipe,
+                    DatePipe
                 ],
                 declarations: [
                     TimeSpanPipe,

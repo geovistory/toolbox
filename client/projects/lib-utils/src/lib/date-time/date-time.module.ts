@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TimePrimitivePipe } from './pipes/time-primitive.pipe';
 import { TimeSpanPipe } from './pipes/time-span.pipe';
@@ -9,7 +9,8 @@ import { TimeSpanPipe } from './pipes/time-span.pipe';
   ],
   providers: [
     TimePrimitivePipe,
-    TimeSpanPipe
+    TimeSpanPipe,
+    DatePipe
   ],
   declarations: [
     TimeSpanPipe,

@@ -1,11 +1,11 @@
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvLoadSubfieldPageReq, GvPaginationObject, PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { subfieldAppeHasAppeString } from 'projects/app-toolbox/src/app/__test__/data/SubfieldMock';
 import { InfAppellationMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/InfAppellationMock';
 import { InfStatementMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/InfStatementMock';
 import { ProInfoProjRelMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/ProInfoProjRelMock';
 import { IAppStateMock } from 'projects/lib-queries/src/__tests__/helpers/data/IAppStateMock';
+import { subfieldAppeHasAppeString } from 'projects/__test__/data/SubfieldMock';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { SubfieldComponent } from './subfield.component';

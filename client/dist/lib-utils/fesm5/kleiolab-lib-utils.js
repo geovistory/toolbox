@@ -1783,7 +1783,8 @@ var DateTimeModule = /** @class */ (function () {
                     ],
                     providers: [
                         TimePrimitivePipe,
-                        TimeSpanPipe
+                        TimeSpanPipe,
+                        DatePipe
                     ],
                     declarations: [
                         TimeSpanPipe,
