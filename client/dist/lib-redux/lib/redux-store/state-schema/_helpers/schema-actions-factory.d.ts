@@ -1,4 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
+import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionsObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -32,20 +33,16 @@ export interface FailActionMeta {
     pk?: number;
 }
 export interface PaginateByParam {
-    [key: string]: number | boolean;
+    [key: string]: number | boolean | string;
 }
 export interface LoadPageMeta {
-    paginateBy: PaginateByParam[];
-    limit: number;
-    offset: number;
+    page: GvSubfieldPage;
     pk?: number;
 }
 export interface LoadPageSucceededMeta {
     pks: number[];
     count: number;
-    paginateBy: PaginateByParam[];
-    limit: number;
-    offset: number;
+    page: GvSubfieldPage;
     pk?: number;
 }
 export interface ActionResultObservable<Model> {
@@ -88,12 +85,12 @@ export declare class SchemaActionsFactory<Payload, Model> {
     /**
      * @param pk is used for facetting
      */
-    loadPage: (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
+    loadPage: (page: GvSubfieldPage, pk?: number) => void;
     /**
    * @param pk is used for facetting
    */
-    loadPageSucceeded: (pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
-    loadPageFailed: (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
+    loadPageSucceeded: (pks: number[], count: number, page: GvSubfieldPage, pk?: number) => void;
+    loadPageFailed: (page: GvSubfieldPage, pk?: number) => void;
     /**
      * this action is not model specific but pendingKey specific.
      * Reducer will add whole meta part to the resolved key.

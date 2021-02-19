@@ -6,3 +6,6 @@ export interface BasicStatementItem extends ItemBasics {
   isOutgoing?: boolean;
   error?: string;
 }
+
+
+

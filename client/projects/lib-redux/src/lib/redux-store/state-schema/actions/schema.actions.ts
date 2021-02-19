@@ -1,15 +1,18 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { GvPaginationObject, GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvLoadSubfieldPageReq, GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
 import { IAppState } from '../../root/models/model';
 import { LoadActionMeta } from '../_helpers/schema-actions-factory';
-import { LoadPaginatedStatementListMeta } from './inf.actions';
 
 export type GvSchemaObjectAction = FluxStandardAction<Observable<GvSchemaObject>, LoadActionMeta>;
-export type GvPaginationObjectAction = FluxStandardAction<Observable<GvPaginationObject>, LoadPaginatedStatementListMeta>;
+
+interface GvPaginationObjectActionMeta extends LoadActionMeta {
+  req: GvLoadSubfieldPageReq
+}
+export type GvPaginationObjectAction = FluxStandardAction<null, GvPaginationObjectActionMeta>;
 
 
 /**
@@ -48,14 +51,12 @@ export class GvSchemaActions {
  *                we'll end up with two subscriptions and thus two api calls
  */
   loadGvPaginationObject(
-    apiCall$: Observable<GvPaginationObject>,
-    meta: Omit<LoadPaginatedStatementListMeta, 'addPending'>,
+    req: GvLoadSubfieldPageReq,
   ): void {
     const addPending = U.uuid()
     const action: GvPaginationObjectAction = {
       type: GvSchemaActions.GV_PAGINATION_OBJECT_LOAD,
-      meta: { addPending, ...meta },
-      payload: apiCall$,
+      meta: { addPending, req },
     };
     this.ngRedux.dispatch(action)
   }

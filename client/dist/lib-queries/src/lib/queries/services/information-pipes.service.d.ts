@@ -1,6 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, PaginateByParam } from '@kleiolab/lib-redux';
+import { IAppState } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { Observable } from 'rxjs';
 import { AppellationItem } from '../models/AppellationItem';
@@ -17,8 +18,9 @@ import { LanguageItem } from '../models/LanguageItem';
 import { PlaceItem } from '../models/PlaceItem';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
+import { StatementProjRel, StatementTarget, StatementWithTarget } from '../models/StatementWithTarget';
 import { Subfield } from '../models/Subfield';
-import { TemporalEntityItem } from '../models/TemporalEntityItem';
+import { SubfieldType } from '../models/SubfieldType';
 import { TemporalEntityRemoveProperties } from '../models/TemporalEntityRemoveProperties';
 import { TemporalEntityRow } from '../models/TemporalEntityRow';
 import { TimePrimitiveItem } from '../models/TimePrimitiveItem';
@@ -64,11 +66,27 @@ export declare class InformationPipesService {
    * Pipe the items in langString list
    */
     pipeListLangString<T>(listDefinition: Subfield, pkEntity: number, limit?: number): Observable<LangStringItem[]>;
-    pipeStatementListPage(paginateBy: PaginateByParam[], limit: number, offset: number, pkProject: number, listDefinition: Subfield, alternative?: boolean): Observable<EntityPreviewItem[]>;
+    /**
+     * pipe the project relation of given statment, if the scope of this page is inProject
+     * @param stmt InfStatement to be completed with projRel
+     * @param page page for which we are piping this stuff
+     */
+    pipeProjRelOfStatement(stmt: InfStatement, page: GvSubfieldPage): Observable<StatementProjRel>;
+    /**
+     * pipe the target of given statment
+     * @param stmt InfStatement to be completed with target
+     * @param page page for which we are piping this stuff
+     * @param subfieldType type of subfield for which we pipe this stupp
+     */
+    pipeTargetOfStatement(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementTarget>;
+    /**
+     * pipe target and projRel of the given statement
+     */
+    pipeStatementWithTarget(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget>;
+    pipeSubfieldPage(page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget[]>;
     /**
      * Pipe the temporal entities connected to given entity by statements that are in the current project
      */
-    pipeTemporalEntityTableRows(paginateBy: PaginateByParam[], limit: number, offset: number, pkProject: number, listDefinition: Subfield, fieldDefinitions: Field[], alternative?: boolean): Observable<TemporalEntityItem[]>;
     pipeItemTeEnRow(pkEntity: number, fieldDefinitions: Field[], pkProject: number, repo: boolean): Observable<TemporalEntityRow>;
     private pipeItem;
     pipeEntityProperties(listDef: Subfield, fkEntity: number, limit?: number): Observable<EntityProperties>;

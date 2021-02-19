@@ -27,8 +27,7 @@ export declare class InfStatementSlice {
     'by_subject+property'?: ByPk<ByPk<InfStatement>>;
     'by_object+property'?: ByPk<ByPk<InfStatement>>;
     by_fk_subject_data?: ByPk<ByPk<InfStatement>>;
-    pag_by_fk_property__fk_target_class__fk_object_info__ofProject?: ByPk<PaginationInfo>;
-    pag_by_fk_property__fk_target_class__fk_subject_info__ofProject?: ByPk<PaginationInfo>;
+    by_subfield_page?: ByPk<PaginationInfo>;
     loading?: boolean;
 }
 export declare class InfPlaceSlice {

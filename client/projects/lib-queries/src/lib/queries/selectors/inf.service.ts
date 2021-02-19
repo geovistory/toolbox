@@ -1,10 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
-import { ByPk, EntityModelAndClass, getFromTo, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, PaginateByParam, paginatedBy, paginateKey, paginateName, PR_ENTITY_MODEL_MAP, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { ByPk, createPaginateByKey, EntityModelAndClass, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
+import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { Observable, of, pipe } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 
 class Selector {
@@ -50,11 +51,11 @@ class Selector {
 
   paginationSelector<M>() {
 
-    const pipePage = (by: PaginateByParam[], limit: number, offset: number): Observable<M[]> => this.pkProject$.pipe(
+    const pipePage = (page: GvSubfieldPage): Observable<M[]> => this.pkProject$.pipe(
       switchMap(pk => {
         let path: any[];
-        const pagBy = paginatedBy(paginateName(by))
-        const key = paginateKey(by)
+        const pagBy = paginateBy
+        const key = createPaginateByKey(page)
         if (this.configs[this.model].facetteByPk) {
           path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
         } else {
@@ -64,8 +65,8 @@ class Selector {
           .pipe(
             filter(count => count !== undefined),
             switchMap(count => {
-              const start = offset;
-              const end = count <= (start + limit) ? count : (start + limit);
+              const start = page.offset;
+              const end = count <= (start + page.limit) ? count : (start + page.limit);
               const obs$: Observable<M>[] = [];
               for (let i = start; i < end; i++) {
                 obs$.push(
@@ -78,33 +79,33 @@ class Selector {
       })
     )
 
-    const pipePageLoadNeeded = (by: PaginateByParam[], limit: number, offset: number, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
+    // const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
+    //   switchMap(pk => {
+    //     let path: any[];
+    //     const pagBy = paginateBy
+    //     const key = createPaginateByKey(page)
+    //     if (this.configs[this.model].facetteByPk) {
+    //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+    //     } else {
+    //       path = [infRoot, this.model, pagBy, key];
+    //     }
+
+    //     return trigger$.pipe(
+    //       switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(page.limit, page.offset)])
+    //         .pipe(
+    //           first(),
+    //           map(loading => !loading)
+    //         )
+    //       ))
+
+    //   })
+    // )
+
+    const pipeCount = (page: GvSubfieldPage): Observable<number | undefined> => this.pkProject$.pipe(
       switchMap(pk => {
         let path: any[];
-        const pagBy = paginatedBy(paginateName(by))
-        const key = paginateKey(by)
-        if (this.configs[this.model].facetteByPk) {
-          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-        } else {
-          path = [infRoot, this.model, pagBy, key];
-        }
-
-        return trigger$.pipe(
-          switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(limit, offset)])
-            .pipe(
-              first(),
-              map(loading => !loading)
-            )
-          ))
-
-      })
-    )
-
-    const pipeCount = (by: PaginateByParam[]): Observable<number | undefined> => this.pkProject$.pipe(
-      switchMap(pk => {
-        let path: any[];
-        const pagBy = paginatedBy(paginateName(by))
-        const key = paginateKey(by)
+        const pagBy = paginateBy
+        const key = createPaginateByKey(page)
         if (this.configs[this.model].facetteByPk) {
           path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
         } else {
@@ -114,7 +115,7 @@ class Selector {
       })
     )
 
-    return { pipePage, pipePageLoadNeeded, pipeCount }
+    return { pipePage, pipeCount }
 
   }
 
@@ -220,7 +221,7 @@ class InfTemporalEntitySelections extends Selector {
 
 class InfStatementSelections extends Selector {
 
-  private _by_pk_entity$ = this.selector<InfStatement>('by_pk_entity')
+  public by_pk_entity$ = this.selector<InfStatement>('by_pk_entity')
   public by_fk_subject_data$ = this.selector<ByPk<InfStatement>>('by_fk_subject_data')
 
   public pagination$ = this.paginationSelector<number>()
@@ -233,7 +234,7 @@ class InfStatementSelections extends Selector {
   ) { super(ngRedux, pkProject$, configs, model) }
 
   by_pk_entity_key$(key: string | number, ofProject = true) {
-    const selection$ = this._by_pk_entity$.key(key)
+    const selection$ = this.by_pk_entity$.key(key)
     if (ofProject) return selection$.pipe(this.pipeItemInProject(this.pkProject$, (i) => i.pk_entity))
     return selection$
   }

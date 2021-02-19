@@ -1,16 +1,19 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
-import { GvPaginationObject, GvSchemaObject, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { InfAppellationMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/InfAppellationMock';
-import { InfLanguageMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/InfLanguageMock';
-import { InfStatementMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/InfStatementMock';
+import { GvSchemaObject, PaginatedStatementsControllerService, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellationMock } from 'projects/__test__/data/auto-gen/InfAppellationMock';
+import { InfLanguageMock } from 'projects/__test__/data/auto-gen/InfLanguageMock';
+import { InfStatementMock } from 'projects/__test__/data/auto-gen/InfStatementMock';
+import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/GvLoadSubfieldPageReq';
+import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { BehaviorSubject } from 'rxjs';
 import { IAppState, ReduxModule } from '../../public-api';
+import { createPaginateByKey } from '../_helpers/createPaginateByKey';
 import { GvSchemaActions } from './schema.actions';
 
 
-describe('ReduxModule', () => {
+describe('GvSchemaActions', () => {
   let actions: GvSchemaActions;
   let ngRedux: NgRedux<IAppState>;
 
@@ -20,6 +23,9 @@ describe('ReduxModule', () => {
         ReduxModule,
         SdkLb3Module.forRoot(), // lib-sdk-lb3
         SdkLb4Module
+      ],
+      providers: [
+        { provide: PaginatedStatementsControllerService, useClass: MockPaginatedStatementsControllerService }
       ]
     })
     actions = TestBed.get(GvSchemaActions);
@@ -38,34 +44,11 @@ describe('ReduxModule', () => {
 
   describe('.loadGvPaginationObject()', () => {
     it('should put paginated statements of subfield Appelation for language -> refers to name -> appellation ', () => {
-      const apiCall$ = new BehaviorSubject<GvPaginationObject>({
-        count: 1,
-        paginatedStatements: [
-          InfStatementMock.NAME_1_TO_APPE.pk_entity
-        ],
-        schemas: {
-          inf: {
-            statement: [
-              InfStatementMock.NAME_1_TO_APPE
-            ],
-            appellation: [
-              InfAppellationMock.JACK_THE_FOO
-            ]
-          }
-        }
-      })
-      actions.loadGvPaginationObject(apiCall$, {
-        pkSourceEntity: InfStatementMock.NAME_1_TO_APPE.fk_subject_info,
-        pkProperty: InfStatementMock.NAME_1_TO_APPE.fk_property,
-        isOutgoing: true,
-        fkTargetClass: InfAppellationMock.JACK_THE_FOO.fk_class,
-        alternatives: false,
-        limit: 7,
-        offset: 0
-      })
+      const req = GvLoadSubfieldPageReqMock.appeTeEnHasAppeVt
+      actions.loadGvPaginationObject(req)
       const paginationInfo = ngRedux.getState().inf
         .statement
-        .pag_by_fk_property__fk_target_class__fk_subject_info__ofProject['1113_40_4001_false']
+        .by_subfield_page[createPaginateByKey(req.page)]
 
       expect(paginationInfo.count).toEqual(1)
       expect(paginationInfo.loading['0_7']).toEqual(false)

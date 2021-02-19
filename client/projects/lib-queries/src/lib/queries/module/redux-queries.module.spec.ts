@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { moduleImports } from '../../../__tests__/helpers/module-imports';
+import { moduleImports } from "projects/lib-queries/src/__tests__/helpers/module-imports";
 import { ReduxQueriesModule } from './redux-queries.module';
 
 

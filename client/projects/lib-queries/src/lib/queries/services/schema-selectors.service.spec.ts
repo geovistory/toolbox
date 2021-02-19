@@ -2,10 +2,10 @@ import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { ByPk, IAppState, SchemaService } from '@kleiolab/lib-redux';
 import { GvSchemaObject, ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
+import { moduleImports } from "projects/lib-queries/src/__tests__/helpers/module-imports";
+import { ProClassFieldConfigMock } from 'projects/__test__/data/auto-gen/ProClassFieldConfigMock';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
-import { ProClassFieldConfigMock } from '../../../__tests__/helpers/data/auto-gen/ProClassFieldConfigMock';
-import { moduleImports } from '../../../__tests__/helpers/module-imports';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
 

@@ -96,7 +96,10 @@ model/gvPaginationAlternativeLeafItemsReq.ts
 model/gvPaginationObject.ts
 model/gvPaginationStatementFilter.ts
 model/gvSchemaObject.ts
+model/gvSubfieldPage.ts
+model/gvSubfieldPageInfo.ts
 model/gvSubfieldType.ts
+model/gvSubfieldaPageScope.ts
 model/header.ts
 model/httpErrorModel.ts
 model/httpErrorObjectModel.ts

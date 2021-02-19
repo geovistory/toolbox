@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
+import { GvSubfieldaPageScope, GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -14,7 +15,7 @@ import { infRoot } from '../reducer-configs/inf.config';
 import { SchemaService } from '../services/schema.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
 import { InfEpicsFactory } from '../_helpers/inf-epic-factory';
-import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../_helpers/schema-actions-factory';
+import { FluxActionObservable, ModifyActionMeta } from '../_helpers/schema-actions-factory';
 
 @Injectable({
   providedIn: 'root'
@@ -252,21 +253,26 @@ export class InfEpics {
     apiCall$: Observable<any>,
     pkProject) {
     const meta: LoadPaginatedStatementListMeta = action.meta;
+    const scope: GvSubfieldaPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
+    const req: GvSubfieldPage = {
+      fkSourceEntity: meta.pkSourceEntity,
+      fkProperty: meta.pkProperty,
+      isOutgoing: meta.isOutgoing,
+      targetClass: meta.fkTargetClass,
+      limit: meta.limit,
+      offset: meta.offset,
+      scope,
+    }
     const pendingKey = meta.addPending;
-    const paginateBy: PaginateByParam[] = [
-      { fk_property: meta.pkProperty },
-      { fk_target_class: meta.fkTargetClass },
-      { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
-      { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
-    ];
+
     // call action to set pagination loading on true
-    this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+    this.infActions.statement.loadPage(req, pkProject);
     // call api to load data
     apiCall$.subscribe((data: PaginatedStatementList) => {
       // call action to store records
       this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
       // call action to store pagination
-      this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+      this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, req, pkProject);
       // call action to conclude the pending request
       epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
     }, error => {

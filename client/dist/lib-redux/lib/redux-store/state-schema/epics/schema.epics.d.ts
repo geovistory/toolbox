@@ -1,3 +1,4 @@
+import { PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Epic } from 'redux-observable-es6-compat';
 import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
@@ -8,6 +9,7 @@ export declare class SchemaEpics {
     private loadingBarActions;
     private notificationActions;
     infActions: InfActions;
-    constructor(schemaObjectService: SchemaService, loadingBarActions: LoadingBarActions, notificationActions: NotificationsAPIActions, infActions: InfActions);
+    private pag;
+    constructor(schemaObjectService: SchemaService, loadingBarActions: LoadingBarActions, notificationActions: NotificationsAPIActions, infActions: InfActions, pag: PaginatedStatementsControllerService);
     createEpics(): Epic;
 }

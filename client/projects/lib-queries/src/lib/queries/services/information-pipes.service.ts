@@ -2,8 +2,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { IAppState, PaginateByParam } from '@kleiolab/lib-redux';
+import { IAppState } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { CalendarType, combineLatestOrEmpty, Granularity, limitTo, sortAbc, switchMapOr, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, groupBy, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -27,9 +28,10 @@ import { PlaceItem } from '../models/PlaceItem';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
 import { StatementItem } from '../models/StatementItem';
+import { EntitySubfield, StatementProjRel, StatementTarget, StatementWithTarget } from '../models/StatementWithTarget';
 import { Subfield } from '../models/Subfield';
+import { SubfieldType } from '../models/SubfieldType';
 import { TemporalEntityCell } from '../models/TemporalEntityCell';
-import { TemporalEntityItem } from '../models/TemporalEntityItem';
 import { TemporalEntityRemoveProperties } from '../models/TemporalEntityRemoveProperties';
 import { TemporalEntityRow } from '../models/TemporalEntityRow';
 import { TimePrimitiveItem } from '../models/TimePrimitiveItem';
@@ -251,124 +253,262 @@ export class InformationPipesService {
 
   }
 
-
-  pipeStatementListPage(
-    paginateBy: PaginateByParam[],
-    limit: number,
-    offset: number,
-    pkProject: number,
-    listDefinition: Subfield,
-    alternative = false): Observable<EntityPreviewItem[]> {
-
-    // prepare page loader
-    const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
-
-    // prepare basic statement item loader
-    const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
-      return alternative ?
-        this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
-        this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+  /**
+   * pipe the project relation of given statment, if the scope of this page is inProject
+   * @param stmt InfStatement to be completed with projRel
+   * @param page page for which we are piping this stuff
+   */
+  pipeProjRelOfStatement(stmt: InfStatement, page: GvSubfieldPage): Observable<StatementProjRel> {
+    if (page.scope.inProject) {
+      return this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
+        .key(page.scope.inProject + '_' + stmt.pk_entity).pipe(
+          map(
+            projRel => ({
+              projRel,
+              ordNum: page.isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain
+            })
+          )
+        )
     }
+  }
+  /**
+   * pipe the target of given statment
+   * @param stmt InfStatement to be completed with target
+   * @param page page for which we are piping this stuff
+   * @param subfieldType type of subfield for which we pipe this stupp
+   */
+  pipeTargetOfStatement(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementTarget> {
+    const isOutgoing = page.isOutgoing
+    const targetInfo = isOutgoing ? stmt.fk_object_info : stmt.fk_subject_info;
+    // here you could add targetData or targetCell
 
-    const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+    if (subfieldType.appellation) {
+      return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(
+        map(appellation => {
+          const stmtTarget: StatementTarget = {
+            statement: stmt,
+            isOutgoing,
+            targetLabel: appellation.string,
+            targetClass: page.targetClass,
+            target: {
+              appellation
+            }
+          }
+          return stmtTarget
+        })
+      )
+    }
+    else if (subfieldType.temporalEntity) {
+      // pipe the subfields of the temporalEntity class
+      const fields$ = this.c.pipeBasicAndSpecificFields(page.targetClass)
+      return fields$.pipe(
+        switchMap(fields => {
+          const entitySubfields$: Observable<EntitySubfield>[] = []
+          for (const field of fields) {
+            // for each of these subfields
+            for (const subfield of field.listDefinitions) {
+              // create page:GvSubfieldPage
+              const nestedPage: GvSubfieldPage = {
+                fkProperty: subfield.property.pkProperty,
+                fkSourceEntity: targetInfo,
+                isOutgoing: subfield.isOutgoing,
+                limit: 1,
+                offset: 0,
+                scope: page.scope,
+                targetClass: page.targetClass
+              }
+              // if the subfieldTypes of these are temporalEntity again, replace it with entityPreview
+              // in order to prevent infinit cycle
+              let nestedSubfieldType: SubfieldType = { entityPreview: 'true' };
+              if (!subfield.listType.temporalEntity) nestedSubfieldType = subfield.listType;
 
-    return paginatedStatementPks$.pipe(
-      switchMap((paginatedStatementPks) => combineLatestOrEmpty(
-        paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
-          .pipe(
-            filter(x => !!x),
-            switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
-              .pipe(
-                map((preview) => {
-                  const item: EntityPreviewItem = {
-                    ...x,
-                    preview,
-                    fkClass: preview.fk_class
+              const entitySubfield$ = this.pipeSubfieldPage(nestedPage, nestedSubfieldType).pipe(
+                map(stmtsWithTarget => {
+                  const { limit, offset, ...s } = nestedPage;
+                  const entitySubfield: EntitySubfield = {
+                    subfield: s,
+                    count: 1,
+                    stmtsWithTarget
                   }
-                  return item;
-                })
+                  return entitySubfield
+                }
+                )
               )
-            ))
-
+              entitySubfields$.push(entitySubfield$)
+            }
+            return combineLatestOrEmpty(entitySubfields$)
+          }
+        }),
+        map(
+          subfields => {
+            const stmtTarget: StatementTarget = {
+              statement: stmt,
+              isOutgoing,
+              targetLabel: '',
+              targetClass: page.targetClass,
+              target: {
+                entity: {
+                  pkEntity: targetInfo,
+                  projRel: undefined,
+                  subfields
+                }
+              }
+            }
+            return stmtTarget
+          }
         )
       )
-      ))
+    }
 
+    throw new Error(`No implementation found for subfieldType ${JSON.stringify(subfieldType)}`);
   }
+
+  /**
+   * pipe target and projRel of the given statement
+   */
+  pipeStatementWithTarget(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget> {
+    return combineLatest(
+      this.pipeTargetOfStatement(stmt, page, subfieldType),
+      this.pipeProjRelOfStatement(stmt, page)
+    ).pipe(
+      map(([target, projRel]) => ({ ...target, ...projRel }))
+    )
+  }
+
+  pipeSubfieldPage(page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget[]> {
+    // get the statments of that page
+    return this.s.inf$.statement$.pagination$.pipePage(page)
+      .pipe(
+        switchMap(
+          pkStmts => combineLatestOrEmpty(
+            pkStmts.map(pkStmt => this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
+              // for each statement, depending on the subfieldType, load the corresponding target
+              .pipe(
+                switchMap(stmt => this.pipeStatementWithTarget(stmt, page, subfieldType))
+              )
+            )
+          )
+        )
+      )
+  }
+
+  // pipeStatementListPage(
+  //   paginateBy: PaginateByParam[],
+  //   limit: number,
+  //   offset: number,
+  //   pkProject: number,
+  //   listDefinition: Subfield,
+  //   alternative = false): Observable<EntityPreviewItem[]> {
+
+  //   // prepare page loader
+  //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+
+  //   // prepare basic statement item loader
+  //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+  //     return alternative ?
+  //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+  //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+  //   }
+
+  //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+
+  //   return paginatedStatementPks$.pipe(
+  //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+  //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+  //         .pipe(
+  //           filter(x => !!x),
+  //           switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
+  //             .pipe(
+  //               map((preview) => {
+  //                 const item: EntityPreviewItem = {
+  //                   ...x,
+  //                   preview,
+  //                   fkClass: preview.fk_class
+  //                 }
+  //                 return item;
+  //               })
+  //             )
+  //           ))
+
+  //       )
+  //     )
+  //     ))
+
+  // }
 
 
   /**
    * Pipe the temporal entities connected to given entity by statements that are in the current project
    */
   // @spyTag
-  pipeTemporalEntityTableRows(
-    paginateBy: PaginateByParam[],
-    limit: number,
-    offset: number,
-    pkProject: number,
-    listDefinition: Subfield,
-    fieldDefinitions: Field[],
-    alternative = false): Observable<TemporalEntityItem[]> {
+  // pipeTemporalEntityTableRows(
+  //   paginateBy: PaginateByParam[],
+  //   limit: number,
+  //   offset: number,
+  //   pkProject: number,
+  //   listDefinition: Subfield,
+  //   fieldDefinitions: Field[],
+  //   alternative = false): Observable<TemporalEntityItem[]> {
 
-    // const propertyItemType = this.propertyItemType(fieldDefinitions)
+  //   // const propertyItemType = this.propertyItemType(fieldDefinitions)
 
-    const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
+  //   const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
 
-    // prepare page loader
-    const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+  //   // prepare page loader
+  //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
 
-    // prepare basic statement item loader
-    const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
-      return alternative ?
-        this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
-        this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
-    }
+  //   // prepare basic statement item loader
+  //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+  //     return alternative ?
+  //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+  //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+  //   }
 
-    // prepare TeEnRow loader
-    const rowLoader = (targetEntityPk, fieldDef, pkProj) => {
-      return alternative ?
-        this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
-        this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false)
-    }
+  //   // prepare TeEnRow loader
+  //   const rowLoader = (targetEntityPk, fieldDef, pkProj) => {
+  //     return alternative ?
+  //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
+  //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false)
+  //   }
 
-    const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+  //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
 
-    const rows$ = paginatedStatementPks$.pipe(
-      switchMap((paginatedStatementPks) => combineLatestOrEmpty(
-        paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
-          .pipe(filter(x => !!x))
-        )
-      )
-        .pipe(
-          switchMap((teEnStatement) => combineLatestOrEmpty(
-            teEnStatement.map((basicStatementItem) => {
-              const pkTeEn = targetEntityOfStatementItem(basicStatementItem);
-              return combineLatest(
-                rowLoader(
-                  pkTeEn,
-                  fieldDefinitions,
-                  // propertyItemType,
-                  pkProject
-                ),
-                this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
-              ).pipe(
-                map(([row, teEnProjRel]) => {
-                  const item: TemporalEntityItem = {
-                    ...basicStatementItem,
-                    row,
-                    pkEntity: pkTeEn,
-                    teEnProjRel
-                  };
-                  return item
-                })
-              )
-            })
-          )),
-        )),
+  //   const rows$ = paginatedStatementPks$.pipe(
+  //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+  //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+  //         .pipe(filter(x => !!x))
+  //       )
+  //     )
+  //       .pipe(
+  //         switchMap((teEnStatement) => combineLatestOrEmpty(
+  //           teEnStatement.map((basicStatementItem) => {
+  //             const pkTeEn = targetEntityOfStatementItem(basicStatementItem);
+  //             return combineLatest(
+  //               rowLoader(
+  //                 pkTeEn,
+  //                 fieldDefinitions,
+  //                 // propertyItemType,
+  //                 pkProject
+  //               ),
+  //               this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
+  //             ).pipe(
+  //               map(([row, teEnProjRel]) => {
+  //                 const item: TemporalEntityItem = {
+  //                   ...basicStatementItem,
+  //                   row,
+  //                   pkEntity: pkTeEn,
+  //                   teEnProjRel
+  //                 };
+  //                 return item
+  //               })
+  //             )
+  //           })
+  //         )),
+  //       )),
 
-    )
-    return rows$
-  }
+  //   )
+  //   return rows$
+  // }
 
 
 

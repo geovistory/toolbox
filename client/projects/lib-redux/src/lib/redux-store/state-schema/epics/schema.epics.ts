@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType, StateObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -20,6 +21,7 @@ export class SchemaEpics {
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions,
     public infActions: InfActions,
+    private pag: PaginatedStatementsControllerService
 
   ) { }
 
@@ -60,25 +62,27 @@ export class SchemaEpics {
 
           const pkProject = store.value.activeProject.pk_project;
           const meta = action.meta;
-          const paginateBy = createPaginateByKey(meta);
+          const paginateBy = createPaginateByKey(meta.req.page);
 
           // call action to set pagination loading on true
-          this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+          this.infActions.statement.loadPage(meta.req.page, pkProject);
 
-
-          action.payload.subscribe((data) => {
-            // call action to store records
-            this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
-            // call action to store pagination
-            this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
-            // call action to complete loading bar
-            actionEmitter.next(this.loadingBarActions.completeLoading());
-          }, error => {
-            actionEmitter.next(this.notificationActions.addToast({
-              type: 'error',
-              options: { title: error }
-            }))
-          })
+          this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
+            .subscribe((data) => {
+              // call action to store records
+              this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
+              // call action to store page informations
+              for (const subfieldPage of data.subfieldPages) {
+                this.infActions.statement.loadPageSucceeded(subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject);
+              }
+              // call action to complete loading bar
+              actionEmitter.next(this.loadingBarActions.completeLoading());
+            }, error => {
+              actionEmitter.next(this.notificationActions.addToast({
+                type: 'error',
+                options: { title: error }
+              }))
+            })
         }))
       )
     )

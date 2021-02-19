@@ -165,22 +165,19 @@ class StatementPageLoader2 {
         takeUntil(until$)
       ).subscribe(() => {
         const req: GvLoadSubfieldPageReq = {
+          pkProject: pkProject,
           subfieldType: { appellation: 'true' },
-          filterObject: {},
-          pkProject,
-          limit,
-          offset
+          page: {
+            fkProperty: l.property.pkProperty,
+            fkSourceEntity: pkEntity,
+            scope: { inProject: pkProject },
+            targetClass: l.targetClass,
+            isOutgoing: l.isOutgoing,
+            limit,
+            offset
+          }
         }
-        const apiCall$ = this.pag.paginatedStatementsControllerLoadSubfieldPage(req)
-        this.schemaActions.loadGvPaginationObject(apiCall$, {
-          pkSourceEntity: pkEntity,
-          alternatives,
-          fkTargetClass: l.targetClass,
-          isOutgoing: l.isOutgoing,
-          pkProperty: l.property.pkProperty,
-          limit,
-          offset
-        })
+        this.schemaActions.loadGvPaginationObject(req)
 
       })
 

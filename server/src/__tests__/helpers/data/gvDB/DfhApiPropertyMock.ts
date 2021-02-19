@@ -31,6 +31,36 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "histP9"
   }
+  static readonly EN_1111_IS_APPE_OF_PERSON: DfhApiProperty = {
+    "pk_entity": 4185,
+    "dfh_fk_profile": 4,
+    "dfh_pk_property": 1111,
+    "dfh_fk_namespace": 3,
+    "dfh_is_inherited": true,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Professional life",
+    "dfh_property_label": "is appellation for language of",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
+    "dfh_property_domain": 365,
+    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+    "dfh_identity_defining": true,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "histP9"
+  }
   static readonly EN_1113_REFERS_TO_NAME: DfhApiProperty = {
     "pk_entity": 3789,
     "dfh_fk_profile": 5,
@@ -738,6 +768,36 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": 1,
     "dfh_property_identifier_in_namespace": "P167"
   }
+
+  static readonly EN_4_HAS_TIME_SPAN: DfhApiProperty = {
+    "pk_entity": 7459,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 4,
+    "dfh_fk_namespace": 1,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_property_label": "has time-span",
+    "dfh_property_range": 50,
+    "requested_language": "en",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_property_domain": 2,
+    "tmsp_last_dfh_update": "2021-02-19T09:36:16.162+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property describes the temporal confinement of an instance of an E2 Temporal Entity. The related E52 Time-Span is\n            understood as the real Time-Span during which the phenomena were active, which make up the temporal entity instance. It does not convey\n            any other meaning than a positioning on the “time-line” of chronology. The Time-Span in turn is approximated by a set of dates (E61 Time\n            Primitive). A temporal entity can have in reality only one Time-Span, but there may exist alternative opinions about it, which we would\n            express by assigning multiple Time-Spans. Related temporal entities may share a Time-Span. Time-Spans may have completely unknown dates\n            but other descriptions by which we can infer knowledge. ",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 1,
+    "dfh_property_identifier_in_namespace": "P4"
 }
 /**
  * SQL to create mock items

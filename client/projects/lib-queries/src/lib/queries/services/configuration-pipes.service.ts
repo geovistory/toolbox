@@ -6,7 +6,7 @@ import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFiel
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { cache } from '../decorators/method-decorators';
 import { Field } from '../models/Field';
 import { FieldPlaceOfDisplay } from '../models/FieldPosition';
@@ -58,7 +58,7 @@ export class ConfigurationPipesService {
   * The array will always include PK_PROFILE_GEOVISTORY_BASIC
   */
   // @spyTag
-  @cache({ refCount: false })
+  // @cache({ refCount: false })
   public pipeProfilesEnabledByProject(): Observable<number[]> {
     return this.a.pkProject$.pipe(
       switchMap(pkProject => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
@@ -69,6 +69,7 @@ export class ConfigurationPipesService {
           ),
           map(enabled => [...enabled, DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]),
         )),
+      shareReplay()
     )
   }
 
@@ -286,9 +287,7 @@ export class ConfigurationPipesService {
 
 
 
-
-
-  @cache({ refCount: false }) private pipePropertiesToSubfields(
+  @cache({ refCount: false }) pipePropertiesToSubfields(
     properties: DfhProperty[],
     isOutgoing: boolean,
     enabledProfiles: number[],
@@ -948,11 +947,16 @@ function getSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuant
     return classConfig.valueObjectType
   }
 
+
   else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
     return { typeItem: 'true' }
   }
   else if (klass.basic_type === 8 || klass.basic_type === 30) {
     return { entityPreview: 'true' }
+  }
+  // TODO add this to sysConfigValue
+  else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
+    return { timeSpan: 'true' }
   }
   else {
     return { temporalEntity: 'true' }
@@ -1012,7 +1016,7 @@ function createAppellationProperty(rangeClass: number) {
 
 
 
-function createHasTimeSpanProperty(domainClass: number) {
+export function createHasTimeSpanProperty(domainClass: number) {
   const profiles: Profiles = [
     {
       removed_from_api: false,
@@ -1023,10 +1027,10 @@ function createHasTimeSpanProperty(domainClass: number) {
     has_domain: domainClass,
     pk_property: DfhConfig.PROPERTY_PK_HAS_TIME_SPAN,
     has_range: DfhConfig.ClASS_PK_TIME_SPAN,
-    domain_instances_max_quantifier: 1,
+    domain_instances_max_quantifier: -1,
     domain_instances_min_quantifier: 1,
     range_instances_max_quantifier: 1,
-    range_instances_min_quantifier: 0,
+    range_instances_min_quantifier: 1,
     identifier_in_namespace: 'P4',
     identity_defining: false,
     is_inherited: true,

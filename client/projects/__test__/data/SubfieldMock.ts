@@ -1,28 +1,44 @@
 import { Subfield, SubfieldType } from '@kleiolab/lib-queries';
-import { DfhApiClassMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/DfhApiClassMock';
-import { DfhApiPropertyMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/DfhApiPropertyMock';
-import { DfhApiClass, DfhApiProperty } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/local-model.helpers';
+import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/DfhApiClassMock';
+import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/DfhApiPropertyMock';
+import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/local-model.helpers';
 
 
 
 
+export namespace SubfieldMock {
 
-export const subfieldAppeHasAppeString: Subfield = createSubfield(
-  DfhApiClassMock.EN_365_NAMING,
-  DfhApiPropertyMock.EN_1113_REFERS_TO_NAME,
-  DfhApiClassMock.EN_40_APPELLATION,
-  true,
-  { appellation: 'true' }
-)
+  export const subfieldAppeHasAppeString: Subfield = createSubfield(
+    DfhApiClassMock.EN_365_NAMING,
+    DfhApiPropertyMock.EN_1113_REFERS_TO_NAME,
+    DfhApiClassMock.EN_40_APPELLATION,
+    true,
+    { appellation: 'true' }
+  )
+  export const subfieldAppeHasTimeSpan: Subfield = createSubfield(
+    DfhApiClassMock.EN_365_NAMING,
+    DfhApiPropertyMock.EN_4_HAS_TIME_SPAN,
+    DfhApiClassMock.EN_50_TIME_SPAN,
+    true,
+    { timeSpan: 'true' }
+  )
 
 
-export const subfieldPresenceWasAtPlace: Subfield = createSubfield(
-  DfhApiClassMock.EN_84_PRESENCE,
-  DfhApiPropertyMock.EN_148_WAS_AT,
-  DfhApiClassMock.EN_51_PLACE,
-  true,
-  { place: 'true' }
-)
+  export const subfieldPresenceWasAtPlace: Subfield = createSubfield(
+    DfhApiClassMock.EN_84_PRESENCE,
+    DfhApiPropertyMock.EN_148_WAS_AT,
+    DfhApiClassMock.EN_51_PLACE,
+    true,
+    { place: 'true' }
+  )
+  export const manifestationSingletonHasDefinitionShortTitle: Subfield = createSubfield(
+    DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
+    DfhApiPropertyMock.EN_1762_HAS_DEFINITION,
+    DfhApiClassMock.EN_785_TEXT,
+    true,
+    { langString: 'true' }
+  )
+}
 
 function createSubfield(
   domain: DfhApiClass,
@@ -72,7 +88,7 @@ function createSubfield(
     targetClassLabel: target.dfh_class_label,
     removedFromAllProfiles: false,
     label,
-    ontoInfoUrl: 'string',
+    ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + property.dfh_pk_property,
     ontoInfoLabel: property.dfh_property_identifier_in_namespace,
     property: { pkProperty: property.dfh_pk_property },
     isHasTypeField,

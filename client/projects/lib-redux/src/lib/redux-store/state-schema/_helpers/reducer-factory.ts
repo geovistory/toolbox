@@ -3,7 +3,8 @@ import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals, indexBy, keys, omit, values } from 'ramda';
 import { combineReducers, Reducer } from 'redux';
-import { LoadPageMeta, LoadPageSucceededMeta, PaginateByParam } from './schema-actions-factory';
+import { createPaginateByKey } from './createPaginateByKey';
+import { LoadPageMeta, LoadPageSucceededMeta } from './schema-actions-factory';
 
 export const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap'
 export interface EntityModelAndClass<ModelName> {
@@ -33,12 +34,13 @@ export interface Meta<Model> { items: Model[], pk?: number }
 
 
 export const by = (name: string) => 'by_' + name;
-export const paginateName = (pagBy: PaginateByParam[]) => pagBy.map(p => Object.keys(p)[0]).join('__');
+// export const paginateName = (pagBy: PaginateByParam[]) => pagBy.map(p => Object.keys(p)[0]).join('__');
 
-export const pag = (name: string) => 'pag_' + name;
-export const paginatedBy = (name: string) => pag(by(name));
+// export const pag = (name: string) => 'pag_' + name;
+// export const paginatedBy = (name: string) => pag(by(name));
 
-export const paginateKey = (pagBy: PaginateByParam[]) => pagBy.map(p => values(p)[0]).join('_');
+// export const paginateKey = (pagBy: PaginateByParam[]) => pagBy.map(p => values(p)[0]).join('_');
+export const paginateBy = 'by_subfield_page'
 
 export function getFromTo(limit: number, offset: number) {
   return getStart(limit, offset) + '_' + getEnd(limit, offset);
@@ -171,11 +173,11 @@ export class ReducerFactory<Payload, Model> {
 
       }
 
+
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE') {
         const meta = action.meta as any as LoadPageMeta;
-        const paginateBy = paginatedBy(paginateName(meta.paginateBy))
-        const key = meta.paginateBy.map(p => values(p)[0]).join('_')
-        const fromTo = getFromTo(meta.limit, meta.offset);
+        const key = createPaginateByKey(meta.page)
+        const fromTo = getFromTo(meta.page.limit, meta.page.offset);
 
         state = facette(action, state, (innerState) => ({
           ...innerState,
@@ -193,9 +195,9 @@ export class ReducerFactory<Payload, Model> {
       }
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
         const meta = action.meta as any as LoadPageMeta;
-        const paginateBy = paginatedBy(paginateName(meta.paginateBy))
-        const key = paginateKey(meta.paginateBy)
-        const fromTo = getFromTo(meta.limit, meta.offset);
+
+        const key = createPaginateByKey(meta.page)
+        const fromTo = getFromTo(meta.page.limit, meta.page.offset);
 
         state = facette(action, state, (innerState) => ({
           ...innerState,
@@ -214,10 +216,10 @@ export class ReducerFactory<Payload, Model> {
 
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
         const meta = action.meta as any as LoadPageSucceededMeta;
-        const paginateBy = paginatedBy(paginateName(meta.paginateBy))
-        const key = paginateKey(meta.paginateBy)
-        const start = getStart(meta.limit, meta.offset);
-        const fromTo = getFromTo(meta.limit, meta.offset);
+        const key = createPaginateByKey(meta.page)
+        const fromTo = getFromTo(meta.page.limit, meta.page.offset);
+        const start = getStart(meta.page.limit, meta.page.offset);
+
         const rows = {}
         if (meta.pks) {
           meta.pks.forEach((pk, i) => {

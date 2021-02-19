@@ -9,12 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvPaginationStatementFilter } from './gvPaginationStatementFilter';
+import { GvSubfieldPage } from './gvSubfieldPage';
 import { GvSubfieldType } from './gvSubfieldType';
 export interface GvLoadSubfieldPageReq {
-    pkProject?: number;
-    filterObject?: GvPaginationStatementFilter;
-    subfieldType?: GvSubfieldType;
-    limit?: number;
-    offset?: number;
+    pkProject: number;
+    page: GvSubfieldPage;
+    subfieldType: GvSubfieldType;
 }

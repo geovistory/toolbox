@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 import { GvSchemaObject } from './gvSchemaObject';
+import { GvSubfieldPageInfo } from './gvSubfieldPageInfo';
 
 
 export interface GvPaginationObject { 
-    count: number;
     schemas: GvSchemaObject;
-    paginatedStatements: Array<number>;
+    subfieldPages: Array<GvSubfieldPageInfo>;
 }
 

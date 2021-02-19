@@ -1718,11 +1718,7 @@
     function LoadPageMeta() { }
     if (false) {
         /** @type {?} */
-        LoadPageMeta.prototype.paginateBy;
-        /** @type {?} */
-        LoadPageMeta.prototype.limit;
-        /** @type {?} */
-        LoadPageMeta.prototype.offset;
+        LoadPageMeta.prototype.page;
         /** @type {?|undefined} */
         LoadPageMeta.prototype.pk;
     }
@@ -1736,11 +1732,7 @@
         /** @type {?} */
         LoadPageSucceededMeta.prototype.count;
         /** @type {?} */
-        LoadPageSucceededMeta.prototype.paginateBy;
-        /** @type {?} */
-        LoadPageSucceededMeta.prototype.limit;
-        /** @type {?} */
-        LoadPageSucceededMeta.prototype.offset;
+        LoadPageSucceededMeta.prototype.page;
         /** @type {?|undefined} */
         LoadPageSucceededMeta.prototype.pk;
     }
@@ -1940,17 +1932,15 @@
                 _this.ngRedux.dispatch(action);
             });
             this.loadPage = (/**
-             * @param {?} paginateBy
-             * @param {?} limit
-             * @param {?} offset
+             * @param {?} page
              * @param {?=} pk
              * @return {?}
              */
-            function (paginateBy, limit, offset, pk) {
+            function (page, pk) {
                 /** @type {?} */
                 var action = ({
                     type: _this.actionPrefix + '.' + _this.modelName + '::LOAD_PAGE',
-                    meta: { paginateBy: paginateBy, limit: limit, offset: offset, pk: pk },
+                    meta: { page: page, pk: pk },
                     payload: null,
                 });
                 _this.ngRedux.dispatch(action);
@@ -1958,33 +1948,29 @@
             this.loadPageSucceeded = (/**
              * @param {?} pks
              * @param {?} count
-             * @param {?} paginateBy
-             * @param {?} limit
-             * @param {?} offset
+             * @param {?} page
              * @param {?=} pk
              * @return {?}
              */
-            function (pks, count, paginateBy, limit, offset, pk) {
+            function (pks, count, page, pk) {
                 /** @type {?} */
                 var action = ({
                     type: _this.actionPrefix + '.' + _this.modelName + '::LOAD_PAGE_SUCCEEDED',
-                    meta: { pks: pks, paginateBy: paginateBy, count: count, limit: limit, offset: offset, pk: pk },
+                    meta: { page: page, pks: pks, count: count, pk: pk },
                     payload: null,
                 });
                 _this.ngRedux.dispatch(action);
             });
             this.loadPageFailed = (/**
-             * @param {?} paginateBy
-             * @param {?} limit
-             * @param {?} offset
+             * @param {?} page
              * @param {?=} pk
              * @return {?}
              */
-            function (paginateBy, limit, offset, pk) {
+            function (page, pk) {
                 /** @type {?} */
                 var action = ({
                     type: _this.actionPrefix + '.' + _this.modelName + '::LOAD_PAGE_FAILED',
-                    meta: { paginateBy: paginateBy, limit: limit, offset: offset, pk: pk },
+                    meta: { page: page, pk: pk },
                     payload: null,
                 });
                 _this.ngRedux.dispatch(action);
@@ -7263,21 +7249,25 @@
          * @return {?}
          */
         function (action, epicsFactory, globalActions, apiCall$, pkProject) {
-            var _a, _b;
             var _this = this;
             /** @type {?} */
             var meta = action.meta;
             /** @type {?} */
-            var pendingKey = meta.addPending;
+            var scope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject };
             /** @type {?} */
-            var paginateBy = [
-                { fk_property: meta.pkProperty },
-                { fk_target_class: meta.fkTargetClass },
-                (_a = {}, _a[meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info'] = meta.pkSourceEntity, _a),
-                (_b = {}, _b[meta.alternatives ? 'alternatives' : 'ofProject'] = meta.alternatives, _b)
-            ];
+            var req = {
+                fkSourceEntity: meta.pkSourceEntity,
+                fkProperty: meta.pkProperty,
+                isOutgoing: meta.isOutgoing,
+                targetClass: meta.fkTargetClass,
+                limit: meta.limit,
+                offset: meta.offset,
+                scope: scope,
+            };
+            /** @type {?} */
+            var pendingKey = meta.addPending;
             // call action to set pagination loading on true
-            this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+            this.infActions.statement.loadPage(req, pkProject);
             // call api to load data
             apiCall$.subscribe((/**
              * @param {?} data
@@ -7287,7 +7277,7 @@
                 // call action to store records
                 _this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
                 // call action to store pagination
-                _this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+                _this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, req, pkProject);
                 // call action to conclude the pending request
                 epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
             }), (/**
@@ -7675,6 +7665,14 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
+     * @record
+     */
+    function GvPaginationObjectActionMeta() { }
+    if (false) {
+        /** @type {?} */
+        GvPaginationObjectActionMeta.prototype.req;
+    }
+    /**
      * Class for actions that handle the loading of schema objects,
      * negative schema objects ect.
      */
@@ -7717,26 +7715,21 @@
        */
         /**
          * Action for loading GvPaginationObject into the store
-         * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
-         *                we'll end up with two subscriptions and thus two api calls
-         * @param {?} meta
+         * @param {?} req
          * @return {?}
          */
         GvSchemaActions.prototype.loadGvPaginationObject = /**
          * Action for loading GvPaginationObject into the store
-         * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
-         *                we'll end up with two subscriptions and thus two api calls
-         * @param {?} meta
+         * @param {?} req
          * @return {?}
          */
-        function (apiCall$, meta) {
+        function (req) {
             /** @type {?} */
             var addPending = libUtils.U.uuid();
             /** @type {?} */
             var action = {
                 type: GvSchemaActions.GV_PAGINATION_OBJECT_LOAD,
-                meta: __assign({ addPending: addPending }, meta),
-                payload: apiCall$,
+                meta: { addPending: addPending, req: req },
             };
             this.ngRedux.dispatch(action);
         };
@@ -7772,17 +7765,11 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * @param {?} meta
+     * @param {?} x
      * @return {?}
      */
-    function createPaginateByKey(meta) {
-        var _a, _b;
-        return [
-            { fk_property: meta.pkProperty },
-            { fk_target_class: meta.fkTargetClass },
-            (_a = {}, _a[meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info'] = meta.pkSourceEntity, _a),
-            (_b = {}, _b[meta.alternatives ? 'alternatives' : 'ofProject'] = meta.alternatives, _b)
-        ];
+    function createPaginateByKey(x) {
+        return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + x.targetClass + "_" + ramda.keys(x.scope)[0] + "_" + ramda.values(x.scope)[0];
     }
 
     /**
@@ -7791,11 +7778,12 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var SchemaEpics = /** @class */ (function () {
-        function SchemaEpics(schemaObjectService, loadingBarActions, notificationActions, infActions) {
+        function SchemaEpics(schemaObjectService, loadingBarActions, notificationActions, infActions, pag) {
             this.schemaObjectService = schemaObjectService;
             this.loadingBarActions = loadingBarActions;
             this.notificationActions = notificationActions;
             this.infActions = infActions;
+            this.pag = pag;
         }
         /**
          * @return {?}
@@ -7879,18 +7867,32 @@
                 /** @type {?} */
                 var meta = action.meta;
                 /** @type {?} */
-                var paginateBy = createPaginateByKey(meta);
+                var paginateBy = createPaginateByKey(meta.req.page);
                 // call action to set pagination loading on true
-                _this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
-                action.payload.subscribe((/**
+                _this.infActions.statement.loadPage(meta.req.page, pkProject);
+                _this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
+                    .subscribe((/**
                  * @param {?} data
                  * @return {?}
                  */
                 function (data) {
+                    var e_1, _a;
                     // call action to store records
                     _this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
-                    // call action to store pagination
-                    _this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+                    try {
+                        // call action to store page informations
+                        for (var _b = __values(data.subfieldPages), _c = _b.next(); !_c.done; _c = _b.next()) {
+                            var subfieldPage = _c.value;
+                            _this.infActions.statement.loadPageSucceeded(subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject);
+                        }
+                    }
+                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                    finally {
+                        try {
+                            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                    }
                     // call action to complete loading bar
                     actionEmitter.next(_this.loadingBarActions.completeLoading());
                 }), (/**
@@ -7915,9 +7917,10 @@
             { type: SchemaService },
             { type: LoadingBarActions },
             { type: NotificationsAPIActions },
-            { type: InfActions }
+            { type: InfActions },
+            { type: libSdkLb4.PaginatedStatementsControllerService }
         ]; };
-        /** @nocollapse */ SchemaEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(core.ɵɵinject(SchemaService), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions)); }, token: SchemaEpics, providedIn: "root" });
+        /** @nocollapse */ SchemaEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(core.ɵɵinject(SchemaService), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb4.PaginatedStatementsControllerService)); }, token: SchemaEpics, providedIn: "root" });
         return SchemaEpics;
     }());
     if (false) {
@@ -7938,6 +7941,11 @@
         SchemaEpics.prototype.notificationActions;
         /** @type {?} */
         SchemaEpics.prototype.infActions;
+        /**
+         * @type {?}
+         * @private
+         */
+        SchemaEpics.prototype.pag;
     }
 
     /**
@@ -8825,38 +8833,12 @@
      * @return {?}
      */
     function (name) { return 'by_' + name; });
+    // export const paginateName = (pagBy: PaginateByParam[]) => pagBy.map(p => Object.keys(p)[0]).join('__');
+    // export const pag = (name: string) => 'pag_' + name;
+    // export const paginatedBy = (name: string) => pag(by(name));
+    // export const paginateKey = (pagBy: PaginateByParam[]) => pagBy.map(p => values(p)[0]).join('_');
     /** @type {?} */
-    var paginateName = (/**
-     * @param {?} pagBy
-     * @return {?}
-     */
-    function (pagBy) { return pagBy.map((/**
-     * @param {?} p
-     * @return {?}
-     */
-    function (p) { return Object.keys(p)[0]; })).join('__'); });
-    /** @type {?} */
-    var pag = (/**
-     * @param {?} name
-     * @return {?}
-     */
-    function (name) { return 'pag_' + name; });
-    /** @type {?} */
-    var paginatedBy = (/**
-     * @param {?} name
-     * @return {?}
-     */
-    function (name) { return pag(by(name)); });
-    /** @type {?} */
-    var paginateKey = (/**
-     * @param {?} pagBy
-     * @return {?}
-     */
-    function (pagBy) { return pagBy.map((/**
-     * @param {?} p
-     * @return {?}
-     */
-    function (p) { return ramda.values(p)[0]; })).join('_'); });
+    var paginateBy = 'by_subfield_page';
     /**
      * @param {?} limit
      * @param {?} offset
@@ -9067,53 +9049,43 @@
                     /** @type {?} */
                     var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                     /** @type {?} */
-                    var paginateBy_1 = paginatedBy(paginateName(meta.paginateBy));
+                    var key_1 = createPaginateByKey(meta.page);
                     /** @type {?} */
-                    var key_1 = meta.paginateBy.map((/**
-                     * @param {?} p
-                     * @return {?}
-                     */
-                    function (p) { return ramda.values(p)[0]; })).join('_');
-                    /** @type {?} */
-                    var fromTo_1 = getFromTo(meta.limit, meta.offset);
+                    var fromTo_1 = getFromTo(meta.page.limit, meta.page.offset);
                     state = facette(action, state, (/**
                      * @param {?} innerState
                      * @return {?}
                      */
                     function (innerState) {
                         var _a, _b, _c;
-                        return (__assign({}, innerState, (_a = {}, _a[paginateBy_1] = __assign({}, innerState[paginateBy_1], (_b = {}, _b[key_1] = __assign({}, (innerState[paginateBy_1] || {})[key_1], { loading: __assign({}, ((innerState[paginateBy_1] || {})[key_1] || {}).loading, (_c = {}, _c[fromTo_1] = true, _c)) }), _b)), _a)));
+                        return (__assign({}, innerState, (_a = {}, _a[paginateBy] = __assign({}, innerState[paginateBy], (_b = {}, _b[key_1] = __assign({}, (innerState[paginateBy] || {})[key_1], { loading: __assign({}, ((innerState[paginateBy] || {})[key_1] || {}).loading, (_c = {}, _c[fromTo_1] = true, _c)) }), _b)), _a)));
                     }));
                 }
                 else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
                     /** @type {?} */
                     var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                     /** @type {?} */
-                    var paginateBy_2 = paginatedBy(paginateName(meta.paginateBy));
+                    var key_2 = createPaginateByKey(meta.page);
                     /** @type {?} */
-                    var key_2 = paginateKey(meta.paginateBy);
-                    /** @type {?} */
-                    var fromTo_2 = getFromTo(meta.limit, meta.offset);
+                    var fromTo_2 = getFromTo(meta.page.limit, meta.page.offset);
                     state = facette(action, state, (/**
                      * @param {?} innerState
                      * @return {?}
                      */
                     function (innerState) {
                         var _a, _b, _c;
-                        return (__assign({}, innerState, (_a = {}, _a[paginateBy_2] = __assign({}, innerState[paginateBy_2], (_b = {}, _b[key_2] = __assign({}, (innerState[paginateBy_2] || {})[key_2], { loading: __assign({}, ((innerState[paginateBy_2] || {})[key_2] || {}).loading, (_c = {}, _c[fromTo_2] = false, _c)) }), _b)), _a)));
+                        return (__assign({}, innerState, (_a = {}, _a[paginateBy] = __assign({}, innerState[paginateBy], (_b = {}, _b[key_2] = __assign({}, (innerState[paginateBy] || {})[key_2], { loading: __assign({}, ((innerState[paginateBy] || {})[key_2] || {}).loading, (_c = {}, _c[fromTo_2] = false, _c)) }), _b)), _a)));
                     }));
                 }
                 else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
                     /** @type {?} */
                     var meta_1 = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                     /** @type {?} */
-                    var paginateBy_3 = paginatedBy(paginateName(meta_1.paginateBy));
+                    var key_3 = createPaginateByKey(meta_1.page);
                     /** @type {?} */
-                    var key_3 = paginateKey(meta_1.paginateBy);
+                    var fromTo_3 = getFromTo(meta_1.page.limit, meta_1.page.offset);
                     /** @type {?} */
-                    var start_1 = getStart(meta_1.limit, meta_1.offset);
-                    /** @type {?} */
-                    var fromTo_3 = getFromTo(meta_1.limit, meta_1.offset);
+                    var start_1 = getStart(meta_1.page.limit, meta_1.page.offset);
                     /** @type {?} */
                     var rows_1 = {};
                     if (meta_1.pks) {
@@ -9132,7 +9104,7 @@
                      */
                     function (innerState) {
                         var _a, _b, _c;
-                        return (__assign({}, innerState, (_a = {}, _a[paginateBy_3] = __assign({}, innerState[paginateBy_3], (_b = {}, _b[key_3] = __assign({}, (innerState[paginateBy_3] || {})[key_3], { count: meta_1.count || 0, rows: __assign({}, ((innerState[paginateBy_3] || {})[key_3] || {}).rows, rows_1), loading: __assign({}, ((innerState[paginateBy_3] || {})[key_3] || {}).loading, (_c = {}, _c[fromTo_3] = false, _c)) }), _b)), _a)));
+                        return (__assign({}, innerState, (_a = {}, _a[paginateBy] = __assign({}, innerState[paginateBy], (_b = {}, _b[key_3] = __assign({}, (innerState[paginateBy] || {})[key_3], { count: meta_1.count || 0, rows: __assign({}, ((innerState[paginateBy] || {})[key_3] || {}).rows, rows_1), loading: __assign({}, ((innerState[paginateBy] || {})[key_3] || {}).loading, (_c = {}, _c[fromTo_3] = false, _c)) }), _b)), _a)));
                     }));
                 }
                 return state;
@@ -10955,9 +10927,7 @@
         /** @type {?} */
         InfStatementSlice.prototype.by_fk_subject_data;
         /** @type {?} */
-        InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_object_info__ofProject;
-        /** @type {?} */
-        InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_subject_info__ofProject;
+        InfStatementSlice.prototype.by_subfield_page;
         /** @type {?} */
         InfStatementSlice.prototype.loading;
     }
@@ -11358,10 +11328,7 @@
     exports.infDefinitions = infDefinitions;
     exports.infRoot = infRoot;
     exports.ofSubstore = ofSubstore;
-    exports.pag = pag;
-    exports.paginateKey = paginateKey;
-    exports.paginateName = paginateName;
-    exports.paginatedBy = paginatedBy;
+    exports.paginateBy = paginateBy;
     exports.pendingRequestReducer = pendingRequestReducer;
     exports.proClassFieldConfgByProjectAndClassKey = proClassFieldConfgByProjectAndClassKey;
     exports.proDefinitions = proDefinitions;

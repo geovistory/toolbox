@@ -1,13 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
+import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
+import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
+import { PK_DEFAULT_CONFIG_PROJECT } from 'projects/__test__/data/auto-gen/local-model.helpers';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { BehaviorSubject } from 'rxjs';
 import { first, toArray } from 'rxjs/operators';
-import { PK_DEFAULT_CONFIG_PROJECT } from '../../../__tests__/helpers/data/auto-gen/local-model.helpers';
-import { IAppStateMock } from '../../../__tests__/helpers/data/IAppStateMock';
-import { project1 } from '../../../__tests__/helpers/data/positive-schema-objects/project-1';
-import { moduleImports } from '../../../__tests__/helpers/module-imports';
-import { setAppState } from '../../../__tests__/helpers/set-app-state';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 
 
@@ -47,12 +47,12 @@ describe('ActiveProjectPipesService', () => {
   describe('.pipeActiveProject()', () => {
     it('should return ProProject', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeGv(new BehaviorSubject(GvSchemaObjectMock.project1), PK_DEFAULT_CONFIG_PROJECT)
       const q$ = service.pipeActiveProject().pipe(first())
       q$.pipe(toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence).toEqual(project1.pro.project)
+            expect(actualSequence).toEqual(GvSchemaObjectMock.project1.pro.project)
           },
           null,
           done);
@@ -61,12 +61,12 @@ describe('ActiveProjectPipesService', () => {
   describe('.pipeActiveProjectLanguage()', () => {
     it('should return InfLanguage', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      schemaObjServcie.storeGv(new BehaviorSubject(project1), PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeGv(new BehaviorSubject(GvSchemaObjectMock.project1), PK_DEFAULT_CONFIG_PROJECT)
       const q$ = service.pipeActiveDefaultLanguage().pipe(first())
       q$.pipe(toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence).toEqual(project1.inf.language)
+            expect(actualSequence).toEqual(GvSchemaObjectMock.project1.inf.language)
           },
           null,
           done);

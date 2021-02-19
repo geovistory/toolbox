@@ -1,25 +1,33 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { ProDfhProfileProjRelMock } from 'projects/lib-queries/src/__tests__/helpers/data/auto-gen/ProDfhProfileProjRelMock';
-import { PK_DEFAULT_CONFIG_PROJECT } from '../../../__tests__/helpers/data/auto-gen/local-model.helpers';
-import { IAppStateMock } from '../../../__tests__/helpers/data/IAppStateMock';
-import { moduleImports } from '../../../__tests__/helpers/module-imports';
-import { setAppState } from '../../../__tests__/helpers/set-app-state';
+import { GvSchemaActions, IAppState, SchemaService } from '@kleiolab/lib-redux';
+import { PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
+import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
+import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
+import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/GvLoadSubfieldPageReq';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
+import { StatementWithTargetMock } from 'projects/__test__/data/StatementWithTargetMock';
+import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
+import { take, toArray } from 'rxjs/operators';
 import { InformationPipesService } from './information-pipes.service';
 
 describe('InformationPipesService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: InformationPipesService;
-  let schemaObjServcie: SchemaService;
+  let schemaActions: GvSchemaActions;
+  let schemaService: SchemaService
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: moduleImports
+      imports: moduleImports,
+      providers: [
+        { provide: PaginatedStatementsControllerService, useClass: MockPaginatedStatementsControllerService }
+      ]
     });
     service = TestBed.get(InformationPipesService);
-    schemaObjServcie = TestBed.get(SchemaService);
+    schemaActions = TestBed.get(GvSchemaActions);
+    schemaService = TestBed.get(SchemaService);
     ngRedux = TestBed.get(NgRedux);
   });
 
@@ -31,36 +39,51 @@ describe('InformationPipesService', () => {
   })
 
   describe('.pipeSubfieldPage()', () => {
-    it('should return ItemList with AppellationVT', async (done) => {
-      setAppState(ngRedux, IAppStateMock.stateProject1)
+    it('should return subfield page for subfieldType appellation', async (done) => {
       // seeding data
-      const gvSchemaObj: GvSchemaObject = {
-        pro: {
-          dfh_profile_proj_rel: [
-            ProDfhProfileProjRelMock.PROJ_1_PROFILE_12,
-            ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
-          ]
-        }
-      }
-      schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      const req = GvLoadSubfieldPageReqMock.appeTeEnHasAppeVt
+      schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      // const q$ = service.pipeStatementListPage()
-
+      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
       // // testing pipe
-      // const expectedSequence = [12, 4, 5]
 
-      // q$.pipe(take(1), toArray())
-      //   .subscribe(
-      //     actualSequence => {
-      //       expect(actualSequence[0]).toContain(12)
-      //       expect(actualSequence[0]).toContain(4)
-      //       expect(actualSequence[0]).toContain(5)
-      //     },
-      //     null,
-      //     done);
+      const expectedSequence = [[StatementWithTargetMock.appeTeEnHasAppeVtWithTarget]]
+
+      q$.pipe(take(1), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence).toEqual(expectedSequence)
+          },
+          null,
+          done);
     });
 
+    it('should return subfield page for subfieldType temporalEntity', async (done) => {
+      // seeding data
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      const req = GvLoadSubfieldPageReqMock.person1HasAppeTeEn
+      schemaActions.loadGvPaginationObject(req)
+      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
+      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
+      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, 0)
+
+
+      // using pipe
+      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+
+      // testing pipe
+      const expectedSequence = [[StatementWithTargetMock.person1HasAppeTeEnWithTarget]]
+
+      q$.pipe(take(1), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence).toEqual(expectedSequence)
+          },
+          null,
+          done);
+    });
 
 
   })

@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/core'), require('@kleiolab/lib-redux'), require('rxjs/operators'), require('rxjs-spy/operators'), require('@angular-redux/store'), require('@kleiolab/lib-utils'), require('rxjs'), require('d3'), require('ramda'), require('@kleiolab/lib-sockets'), require('@kleiolab/lib-config'), require('@kleiolab/lib-sdk-lb3')) :
-    typeof define === 'function' && define.amd ? define('@kleiolab/lib-queries/src/lib/queries', ['exports', '@angular/common', '@angular/core', '@kleiolab/lib-redux', 'rxjs/operators', 'rxjs-spy/operators', '@angular-redux/store', '@kleiolab/lib-utils', 'rxjs', 'd3', 'ramda', '@kleiolab/lib-sockets', '@kleiolab/lib-config', '@kleiolab/lib-sdk-lb3'], factory) :
-    (global = global || self, factory((global.kleiolab = global.kleiolab || {}, global.kleiolab['lib-queries'] = global.kleiolab['lib-queries'] || {}, global.kleiolab['lib-queries'].src = global.kleiolab['lib-queries'].src || {}, global.kleiolab['lib-queries'].src.lib = global.kleiolab['lib-queries'].src.lib || {}, global.kleiolab['lib-queries'].src.lib.queries = {}), global.ng.common, global.ng.core, global.libRedux, global.rxjs.operators, global.operators$1, global.store, global.libUtils, global.rxjs, global.d3, global.ramda, global.libSockets, global.libConfig, global.libSdkLb3));
-}(this, (function (exports, common, core, libRedux, operators, operators$1, store, libUtils, rxjs, d3, ramda, libSockets, libConfig, libSdkLb3) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rxjs/operators'), require('rxjs-spy/operators'), require('@angular/common'), require('@angular/core'), require('@kleiolab/lib-redux'), require('@angular-redux/store'), require('@kleiolab/lib-utils'), require('rxjs'), require('d3'), require('ramda'), require('@kleiolab/lib-sockets'), require('@kleiolab/lib-config'), require('@kleiolab/lib-sdk-lb3')) :
+    typeof define === 'function' && define.amd ? define('@kleiolab/lib-queries/src/lib/queries', ['exports', 'rxjs/operators', 'rxjs-spy/operators', '@angular/common', '@angular/core', '@kleiolab/lib-redux', '@angular-redux/store', '@kleiolab/lib-utils', 'rxjs', 'd3', 'ramda', '@kleiolab/lib-sockets', '@kleiolab/lib-config', '@kleiolab/lib-sdk-lb3'], factory) :
+    (global = global || self, factory((global.kleiolab = global.kleiolab || {}, global.kleiolab['lib-queries'] = global.kleiolab['lib-queries'] || {}, global.kleiolab['lib-queries'].src = global.kleiolab['lib-queries'].src || {}, global.kleiolab['lib-queries'].src.lib = global.kleiolab['lib-queries'].src.lib || {}, global.kleiolab['lib-queries'].src.lib.queries = {}), global.rxjs.operators, global.operators$1, global.ng.common, global.ng.core, global.libRedux, global.store, global.libUtils, global.rxjs, global.d3, global.ramda, global.libSockets, global.libConfig, global.libSdkLb3));
+}(this, (function (exports, operators, operators$1, common, core, libRedux, store, libUtils, rxjs, d3, ramda, libSockets, libConfig, libSdkLb3) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -203,39 +203,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: module/redux-queries.module.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ReduxQueriesModule = /** @class */ (function () {
-        function ReduxQueriesModule(parentModule, reduxModule) {
-            /** @type {?} */
-            var errors = [];
-            if (parentModule)
-                errors.push('ReduxQueriesModule is already loaded. Import in your base AppModule only.');
-            if (!reduxModule)
-                errors.push('You need to import the ReduxModule in your AppModule!');
-            if (errors.length)
-                throw new Error(errors.join('\n'));
-        }
-        ReduxQueriesModule.decorators = [
-            { type: core.NgModule, args: [{
-                        declarations: [],
-                        imports: [
-                            common.CommonModule,
-                        ],
-                        providers: []
-                    },] }
-        ];
-        /** @nocollapse */
-        ReduxQueriesModule.ctorParameters = function () { return [
-            { type: ReduxQueriesModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] },
-            { type: libRedux.ReduxModule, decorators: [{ type: core.Optional }] }
-        ]; };
-        return ReduxQueriesModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: decorators/method-decorators.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -323,6 +290,719 @@
         });
         return descriptor;
     }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/AppellationItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function AppellationItem() { }
+    if (false) {
+        /** @type {?} */
+        AppellationItem.prototype.fkClass;
+        /** @type {?} */
+        AppellationItem.prototype.label;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/BasicStatementItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function BasicStatementItem() { }
+    if (false) {
+        /** @type {?} */
+        BasicStatementItem.prototype.statement;
+        /** @type {?|undefined} */
+        BasicStatementItem.prototype.isOutgoing;
+        /** @type {?|undefined} */
+        BasicStatementItem.prototype.error;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/ClassAndTypeNode.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function ClassAndTypeNode() { }
+    if (false) {
+        /** @type {?} */
+        ClassAndTypeNode.prototype.label;
+        /** @type {?} */
+        ClassAndTypeNode.prototype.data;
+        /** @type {?|undefined} */
+        ClassAndTypeNode.prototype.children;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/ClassAndTypePk.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function ClassAndTypePk() { }
+    if (false) {
+        /** @type {?} */
+        ClassAndTypePk.prototype.pkClass;
+        /** @type {?} */
+        ClassAndTypePk.prototype.pkType;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/ClassAndTypeSelectModel.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function ClassAndTypeSelectModel() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ClassAndTypeSelectModel.prototype.classes;
+        /** @type {?|undefined} */
+        ClassAndTypeSelectModel.prototype.types;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/CtrlTimeSpanDialogData.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function CtrlTimeSpanDialogData() { }
+    if (false) {
+        /** @type {?} */
+        CtrlTimeSpanDialogData.prototype.timePrimitives;
+        /** @type {?|undefined} */
+        CtrlTimeSpanDialogData.prototype.beforeCloseCallback;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/CtrlTimeSpanDialogResult.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function CtrlTimeSpanDialogResult() { }
+    if (false) {
+        /* Skipping unnamed member:
+        72?: InfTimePrimitiveWithCalendar;*/
+        /* Skipping unnamed member:
+        152?: InfTimePrimitiveWithCalendar;*/
+        /* Skipping unnamed member:
+        153?: InfTimePrimitiveWithCalendar;*/
+        /* Skipping unnamed member:
+        71?: InfTimePrimitiveWithCalendar;*/
+        /* Skipping unnamed member:
+        150?: InfTimePrimitiveWithCalendar;*/
+        /* Skipping unnamed member:
+        151?: InfTimePrimitiveWithCalendar;*/
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/DimensionItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function DimensionItem() { }
+    if (false) {
+        /** @type {?} */
+        DimensionItem.prototype.fkClass;
+        /** @type {?} */
+        DimensionItem.prototype.label;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/EntityPreviewItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function EntityPreviewItem() { }
+    if (false) {
+        /** @type {?} */
+        EntityPreviewItem.prototype.preview;
+        /** @type {?} */
+        EntityPreviewItem.prototype.fkClass;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/EntityProperties.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function EntityProperties() { }
+    if (false) {
+        /** @type {?} */
+        EntityProperties.prototype.listDefinition;
+        /** @type {?} */
+        EntityProperties.prototype.items;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/Field.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * A Field contains all information to create the different GUI's to display and edit
+     * statements of an entity.
+     *
+     * The Fields of an entity depend on the properties of its class. Each Field contains or represents
+     * the properties that have the given class as as domain or range and share the same pk_property.
+     *
+     * Explanation:
+     * The identity (uniqueness) of a property is defined by its domain, pk_propery and its range,
+     * It is possible that one class has two outgoing properties with the same pk_property but different
+     * ranges. The Field then contains both of them.
+     *
+     * The Subfields (listDefinitions) are then representing only one property with a uniqur domain, pk_propery and range
+     * All Subfields of a Field share all properties defined in FieldBase.
+     *
+     * In practice the Field a wrapper for SubFileds containing all information that is equal amongst all Subfields.
+     * @record
+     */
+    function Field() { }
+    if (false) {
+        /** @type {?} */
+        Field.prototype.placeOfDisplay;
+        /** @type {?|undefined} */
+        Field.prototype.fieldConfig;
+        /** @type {?} */
+        Field.prototype.targetClasses;
+        /** @type {?} */
+        Field.prototype.listDefinitions;
+        /** @type {?} */
+        Field.prototype.allSubfieldsRemovedFromAllProfiles;
+        /** @type {?} */
+        Field.prototype.isSpecialField;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/FieldBase.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function FieldBase() { }
+    if (false) {
+        /** @type {?} */
+        FieldBase.prototype.label;
+        /** @type {?} */
+        FieldBase.prototype.ontoInfoUrl;
+        /** @type {?} */
+        FieldBase.prototype.ontoInfoLabel;
+        /** @type {?} */
+        FieldBase.prototype.property;
+        /** @type {?} */
+        FieldBase.prototype.isHasTypeField;
+        /** @type {?} */
+        FieldBase.prototype.isOutgoing;
+        /** @type {?} */
+        FieldBase.prototype.sourceClass;
+        /** @type {?} */
+        FieldBase.prototype.sourceClassLabel;
+        /** @type {?} */
+        FieldBase.prototype.targetMinQuantity;
+        /** @type {?} */
+        FieldBase.prototype.targetMaxQuantity;
+        /** @type {?} */
+        FieldBase.prototype.sourceMinQuantity;
+        /** @type {?} */
+        FieldBase.prototype.sourceMaxQuantity;
+        /** @type {?} */
+        FieldBase.prototype.identityDefiningForSource;
+        /** @type {?} */
+        FieldBase.prototype.identityDefiningForTarget;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/FieldPosition.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function FieldPosition() { }
+    if (false) {
+        /** @type {?|undefined} */
+        FieldPosition.prototype.position;
+    }
+    /**
+     * @record
+     */
+    function FieldPlaceOfDisplay() { }
+    if (false) {
+        /** @type {?|undefined} */
+        FieldPlaceOfDisplay.prototype.basicFields;
+        /** @type {?|undefined} */
+        FieldPlaceOfDisplay.prototype.specificFields;
+        /** @type {?|undefined} */
+        FieldPlaceOfDisplay.prototype.hidden;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/FieldProperty.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function FieldProperty() { }
+    if (false) {
+        /** @type {?|undefined} */
+        FieldProperty.prototype.pkProperty;
+        /** @type {?|undefined} */
+        FieldProperty.prototype.pkPropertyOfProperty;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/Item.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/ItemBasics.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function ItemBasics() { }
+    if (false) {
+        /** @type {?} */
+        ItemBasics.prototype.projRel;
+        /** @type {?} */
+        ItemBasics.prototype.ordNum;
+        /** @type {?} */
+        ItemBasics.prototype.label;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/ItemList.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/ItemType.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/LangStringItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function LangStringItem() { }
+    if (false) {
+        /** @type {?} */
+        LangStringItem.prototype.fkClass;
+        /** @type {?} */
+        LangStringItem.prototype.label;
+        /** @type {?} */
+        LangStringItem.prototype.fkLanguage;
+        /** @type {?} */
+        LangStringItem.prototype.language;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/LanguageItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function LanguageItem() { }
+    if (false) {
+        /** @type {?} */
+        LanguageItem.prototype.fkClass;
+        /** @type {?} */
+        LanguageItem.prototype.label;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/PlaceItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function PlaceItem() { }
+    if (false) {
+        /** @type {?} */
+        PlaceItem.prototype.fkClass;
+        /** @type {?} */
+        PlaceItem.prototype.label;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/PropertyItemTypeMap.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function PropertyItemTypeMap() { }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/PropertyOption.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function PropertyOption() { }
+    if (false) {
+        /** @type {?} */
+        PropertyOption.prototype.propertyFieldKey;
+        /** @type {?} */
+        PropertyOption.prototype.isOutgoing;
+        /** @type {?} */
+        PropertyOption.prototype.pk;
+        /** @type {?} */
+        PropertyOption.prototype.label;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/PropertySelectModel.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function PropertySelectModel() { }
+    if (false) {
+        /** @type {?|undefined} */
+        PropertySelectModel.prototype.outgoingProperties;
+        /** @type {?|undefined} */
+        PropertySelectModel.prototype.ingoingProperties;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/SpecialFieldType.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/StatementItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/StatementWithTarget.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function StatementTarget() { }
+    if (false) {
+        /** @type {?} */
+        StatementTarget.prototype.statement;
+        /** @type {?} */
+        StatementTarget.prototype.isOutgoing;
+        /** @type {?} */
+        StatementTarget.prototype.targetLabel;
+        /** @type {?} */
+        StatementTarget.prototype.targetClass;
+        /** @type {?} */
+        StatementTarget.prototype.target;
+    }
+    /**
+     * @record
+     */
+    function StatementProjRel() { }
+    if (false) {
+        /** @type {?} */
+        StatementProjRel.prototype.projRel;
+        /** @type {?} */
+        StatementProjRel.prototype.ordNum;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/Subfield.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * A Subfiel contains contains information to create the different GUI's to display and edit
+     * statements of an entity.
+     *
+     * Each Subfield stands for one property with a unique domain, pk_propery and range.
+     *
+     * Since the display of the statement and its target value depends on the target class, the Subfield
+     * has a SubfieldType. This SubfieldType determines what components are used to create, edit or display
+     * the statement and its target.
+     * @record
+     */
+    function Subfield() { }
+    if (false) {
+        /** @type {?} */
+        Subfield.prototype.listType;
+        /** @type {?} */
+        Subfield.prototype.targetClass;
+        /** @type {?} */
+        Subfield.prototype.targetClassLabel;
+        /** @type {?} */
+        Subfield.prototype.removedFromAllProfiles;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/SubfieldType.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function SubfieldType() { }
+    if (false) {
+        /** @type {?|undefined} */
+        SubfieldType.prototype.temporalEntity;
+        /** @type {?|undefined} */
+        SubfieldType.prototype.entityPreview;
+        /** @type {?|undefined} */
+        SubfieldType.prototype.typeItem;
+        /** @type {?|undefined} */
+        SubfieldType.prototype.timeSpan;
+        /** @type {?|undefined} */
+        SubfieldType.prototype.textProperty;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TemporalEntityCell.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TemporalEntityCell() { }
+    if (false) {
+        /** @type {?} */
+        TemporalEntityCell.prototype.pkProperty;
+        /** @type {?} */
+        TemporalEntityCell.prototype.isOutgoing;
+        /** @type {?} */
+        TemporalEntityCell.prototype.label;
+        /** @type {?} */
+        TemporalEntityCell.prototype.entityPreview;
+        /** @type {?|undefined} */
+        TemporalEntityCell.prototype.items;
+        /** @type {?|undefined} */
+        TemporalEntityCell.prototype.firstItem;
+        /** @type {?} */
+        TemporalEntityCell.prototype.itemsCount;
+        /** @type {?|undefined} */
+        TemporalEntityCell.prototype.isTimeSpan;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TemporalEntityItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TemporalEntityItem() { }
+    if (false) {
+        /** @type {?} */
+        TemporalEntityItem.prototype.row;
+        /** @type {?} */
+        TemporalEntityItem.prototype.pkEntity;
+        /** @type {?} */
+        TemporalEntityItem.prototype.teEnProjRel;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TemporalEntityRemoveProperties.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * This interface is used for creating objects containing all the
+     * information related to a temporal entity that should be removed
+     * from project, when the temporal entity is removed
+     * @record
+     */
+    function TemporalEntityRemoveProperties() { }
+    if (false) {
+        /** @type {?} */
+        TemporalEntityRemoveProperties.prototype.temporalEntity;
+        /** @type {?} */
+        TemporalEntityRemoveProperties.prototype.statements;
+        /** @type {?} */
+        TemporalEntityRemoveProperties.prototype.textProperties;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TemporalEntityRow.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TemporalEntityRow() { }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TemporalEntityTableI.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TemporalEntityTableI() { }
+    if (false) {
+        /** @type {?} */
+        TemporalEntityTableI.prototype.rows$;
+        /** @type {?} */
+        TemporalEntityTableI.prototype.columns$;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TextPropertyItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TextPropertyItem() { }
+    if (false) {
+        /** @type {?} */
+        TextPropertyItem.prototype.textProperty;
+        /** @type {?} */
+        TextPropertyItem.prototype.language;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TimePrimitiveItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TimePrimitiveItem() { }
+    if (false) {
+        /** @type {?} */
+        TimePrimitiveItem.prototype.fkClass;
+        /** @type {?} */
+        TimePrimitiveItem.prototype.label;
+        /** @type {?} */
+        TimePrimitiveItem.prototype.timePrimitive;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TimeSpanItem.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TimeSpanItem() { }
+    if (false) {
+        /** @type {?} */
+        TimeSpanItem.prototype.label;
+        /** @type {?} */
+        TimeSpanItem.prototype.properties;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: models/TimeSpanProperty.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function TimeSpanProperty() { }
+    if (false) {
+        /** @type {?} */
+        TimeSpanProperty.prototype.listDefinition;
+        /** @type {?} */
+        TimeSpanProperty.prototype.items;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * Generated from: module/redux-queries.module.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ReduxQueriesModule = /** @class */ (function () {
+        function ReduxQueriesModule(parentModule, reduxModule) {
+            /** @type {?} */
+            var errors = [];
+            if (parentModule)
+                errors.push('ReduxQueriesModule is already loaded. Import in your base AppModule only.');
+            if (!reduxModule)
+                errors.push('You need to import the ReduxModule in your AppModule!');
+            if (errors.length)
+                throw new Error(errors.join('\n'));
+        }
+        ReduxQueriesModule.decorators = [
+            { type: core.NgModule, args: [{
+                        declarations: [],
+                        imports: [
+                            common.CommonModule,
+                        ],
+                        providers: []
+                    },] }
+        ];
+        /** @nocollapse */
+        ReduxQueriesModule.ctorParameters = function () { return [
+            { type: ReduxQueriesModule, decorators: [{ type: core.Optional }, { type: core.SkipSelf }] },
+            { type: libRedux.ReduxModule, decorators: [{ type: core.Optional }] }
+        ]; };
+        return ReduxQueriesModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -900,12 +1580,10 @@
             var _this = this;
             /** @type {?} */
             var pipePage = (/**
-             * @param {?} by
-             * @param {?} limit
-             * @param {?} offset
+             * @param {?} page
              * @return {?}
              */
-            function (by, limit, offset) { return _this.pkProject$.pipe(operators.switchMap((/**
+            function (page) { return _this.pkProject$.pipe(operators.switchMap((/**
              * @param {?} pk
              * @return {?}
              */
@@ -913,9 +1591,9 @@
                 /** @type {?} */
                 var path;
                 /** @type {?} */
-                var pagBy = libRedux.paginatedBy(libRedux.paginateName(by));
+                var pagBy = libRedux.paginateBy;
                 /** @type {?} */
-                var key = libRedux.paginateKey(by);
+                var key = libRedux.createPaginateByKey(page);
                 if (_this.configs[_this.model].facetteByPk) {
                     path = [libRedux.infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, pagBy, key];
                 }
@@ -933,9 +1611,9 @@
                  */
                 function (count) {
                     /** @type {?} */
-                    var start = offset;
+                    var start = page.offset;
                     /** @type {?} */
-                    var end = count <= (start + limit) ? count : (start + limit);
+                    var end = count <= (start + page.limit) ? count : (start + page.limit);
                     /** @type {?} */
                     var obs$ = [];
                     for (var i = start; i < end; i++) {
@@ -947,48 +1625,52 @@
                     }
                     return libUtils.combineLatestOrEmpty(obs$);
                 })));
-            }))); });
-            /** @type {?} */
-            var pipePageLoadNeeded = (/**
-             * @param {?} by
-             * @param {?} limit
-             * @param {?} offset
-             * @param {?=} trigger$
-             * @return {?}
-             */
-            function (by, limit, offset, trigger$) { return _this.pkProject$.pipe(operators.switchMap((/**
-             * @param {?} pk
-             * @return {?}
-             */
-            function (pk) {
-                /** @type {?} */
-                var path;
-                /** @type {?} */
-                var pagBy = libRedux.paginatedBy(libRedux.paginateName(by));
-                /** @type {?} */
-                var key = libRedux.paginateKey(by);
-                if (_this.configs[_this.model].facetteByPk) {
-                    path = [libRedux.infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, pagBy, key];
-                }
-                else {
-                    path = [libRedux.infRoot, _this.model, pagBy, key];
-                }
-                return trigger$.pipe(operators.switchMap((/**
-                 * @return {?}
-                 */
-                function () { return _this.ngRedux.select(__spread(path, ['loading', libRedux.getFromTo(limit, offset)]))
-                    .pipe(operators.first(), operators.map((/**
-                 * @param {?} loading
-                 * @return {?}
-                 */
-                function (loading) { return !loading; }))); })));
-            }))); });
+            }))); })
+            // const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
+            //   switchMap(pk => {
+            //     let path: any[];
+            //     const pagBy = paginateBy
+            //     const key = createPaginateByKey(page)
+            //     if (this.configs[this.model].facetteByPk) {
+            //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+            //     } else {
+            //       path = [infRoot, this.model, pagBy, key];
+            //     }
+            //     return trigger$.pipe(
+            //       switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(page.limit, page.offset)])
+            //         .pipe(
+            //           first(),
+            //           map(loading => !loading)
+            //         )
+            //       ))
+            //   })
+            // )
+            ;
+            // const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
+            //   switchMap(pk => {
+            //     let path: any[];
+            //     const pagBy = paginateBy
+            //     const key = createPaginateByKey(page)
+            //     if (this.configs[this.model].facetteByPk) {
+            //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+            //     } else {
+            //       path = [infRoot, this.model, pagBy, key];
+            //     }
+            //     return trigger$.pipe(
+            //       switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(page.limit, page.offset)])
+            //         .pipe(
+            //           first(),
+            //           map(loading => !loading)
+            //         )
+            //       ))
+            //   })
+            // )
             /** @type {?} */
             var pipeCount = (/**
-             * @param {?} by
+             * @param {?} page
              * @return {?}
              */
-            function (by) { return _this.pkProject$.pipe(operators.switchMap((/**
+            function (page) { return _this.pkProject$.pipe(operators.switchMap((/**
              * @param {?} pk
              * @return {?}
              */
@@ -996,9 +1678,9 @@
                 /** @type {?} */
                 var path;
                 /** @type {?} */
-                var pagBy = libRedux.paginatedBy(libRedux.paginateName(by));
+                var pagBy = libRedux.paginateBy;
                 /** @type {?} */
-                var key = libRedux.paginateKey(by);
+                var key = libRedux.createPaginateByKey(page);
                 if (_this.configs[_this.model].facetteByPk) {
                     path = [libRedux.infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, pagBy, key];
                 }
@@ -1007,7 +1689,7 @@
                 }
                 return _this.ngRedux.select(__spread(path, ['count']));
             }))); });
-            return { pipePage: pipePage, pipePageLoadNeeded: pipePageLoadNeeded, pipeCount: pipeCount };
+            return { pipePage: pipePage, pipeCount: pipeCount };
         };
         /**
          * @template M
@@ -1276,7 +1958,7 @@
             _this.pkProject$ = pkProject$;
             _this.configs = configs;
             _this.model = model;
-            _this._by_pk_entity$ = _this.selector('by_pk_entity');
+            _this.by_pk_entity$ = _this.selector('by_pk_entity');
             _this.by_fk_subject_data$ = _this.selector('by_fk_subject_data');
             _this.pagination$ = _this.paginationSelector();
             return _this;
@@ -1294,7 +1976,7 @@
         function (key, ofProject) {
             if (ofProject === void 0) { ofProject = true; }
             /** @type {?} */
-            var selection$ = this._by_pk_entity$.key(key);
+            var selection$ = this.by_pk_entity$.key(key);
             if (ofProject)
                 return selection$.pipe(this.pipeItemInProject(this.pkProject$, (/**
                  * @param {?} i
@@ -1458,11 +2140,8 @@
         return InfStatementSelections;
     }(Selector$2));
     if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        InfStatementSelections.prototype._by_pk_entity$;
+        /** @type {?} */
+        InfStatementSelections.prototype.by_pk_entity$;
         /** @type {?} */
         InfStatementSelections.prototype.by_fk_subject_data$;
         /** @type {?} */
@@ -6047,203 +6726,464 @@
             })));
         };
         /**
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
-         * @param {?} pkProject
-         * @param {?} listDefinition
-         * @param {?=} alternative
-         * @return {?}
+         * pipe the project relation of given statment, if the scope of this page is inProject
+         * @param stmt InfStatement to be completed with projRel
+         * @param page page for which we are piping this stuff
          */
-        InformationPipesService.prototype.pipeStatementListPage = /**
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
-         * @param {?} pkProject
-         * @param {?} listDefinition
-         * @param {?=} alternative
-         * @return {?}
-         */
-        function (paginateBy, limit, offset, pkProject, listDefinition, alternative) {
-            var _this = this;
-            if (alternative === void 0) { alternative = false; }
-            // prepare page loader
-            /** @type {?} */
-            var pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
-            // prepare basic statement item loader
-            /** @type {?} */
-            var basicStatementItemLoader = (/**
-             * @param {?} pkStatement
-             * @param {?} isOutgoing
-             * @param {?} pkProj
-             * @return {?}
-             */
-            function (pkStatement, isOutgoing, pkProj) {
-                return alternative ?
-                    _this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
-                    _this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing);
-            });
-            /** @type {?} */
-            var paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset);
-            return paginatedStatementPks$.pipe(operators.switchMap((/**
-             * @param {?} paginatedStatementPks
-             * @return {?}
-             */
-            function (paginatedStatementPks) { return libUtils.combineLatestOrEmpty(paginatedStatementPks.map((/**
-             * @param {?} pkStatement
-             * @return {?}
-             */
-            function (pkStatement) { return basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
-                .pipe(operators.filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            function (x) { return !!x; })), operators.switchMap((/**
-             * @param {?} x
-             * @return {?}
-             */
-            function (x) { return _this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
-                .pipe(operators.map((/**
-             * @param {?} preview
-             * @return {?}
-             */
-            function (preview) {
-                /** @type {?} */
-                var item = __assign({}, x, { preview: preview, fkClass: preview.fk_class });
-                return item;
-            }))); }))); }))); })));
-        };
         /**
-         * Pipe the temporal entities connected to given entity by statements that are in the current project
-         */
-        // @spyTag
-        /**
-         * Pipe the temporal entities connected to given entity by statements that are in the current project
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
-         * @param {?} pkProject
-         * @param {?} listDefinition
-         * @param {?} fieldDefinitions
-         * @param {?=} alternative
+         * pipe the project relation of given statment, if the scope of this page is inProject
+         * @param {?} stmt InfStatement to be completed with projRel
+         * @param {?} page page for which we are piping this stuff
          * @return {?}
          */
-        // @spyTag
-        InformationPipesService.prototype.pipeTemporalEntityTableRows = /**
-         * Pipe the temporal entities connected to given entity by statements that are in the current project
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
-         * @param {?} pkProject
-         * @param {?} listDefinition
-         * @param {?} fieldDefinitions
-         * @param {?=} alternative
+        InformationPipesService.prototype.pipeProjRelOfStatement = /**
+         * pipe the project relation of given statment, if the scope of this page is inProject
+         * @param {?} stmt InfStatement to be completed with projRel
+         * @param {?} page page for which we are piping this stuff
          * @return {?}
          */
-        // @spyTag
-        function (paginateBy, limit, offset, pkProject, listDefinition, fieldDefinitions, alternative) {
-            // const propertyItemType = this.propertyItemType(fieldDefinitions)
-            var _this = this;
-            if (alternative === void 0) { alternative = false; }
-            // const propertyItemType = this.propertyItemType(fieldDefinitions)
-            /** @type {?} */
-            var targetEntityOfStatementItem = (/**
-             * @param {?} r
-             * @return {?}
-             */
-            function (r) { return r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info; });
-            // prepare page loader
-            /** @type {?} */
-            var pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
-            // prepare basic statement item loader
-            /** @type {?} */
-            var basicStatementItemLoader = (/**
-             * @param {?} pkStatement
-             * @param {?} isOutgoing
-             * @param {?} pkProj
-             * @return {?}
-             */
-            function (pkStatement, isOutgoing, pkProj) {
-                return alternative ?
-                    _this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
-                    _this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing);
-            })
-            // prepare TeEnRow loader
-            ;
-            // prepare TeEnRow loader
-            /** @type {?} */
-            var rowLoader = (/**
-             * @param {?} targetEntityPk
-             * @param {?} fieldDef
-             * @param {?} pkProj
-             * @return {?}
-             */
-            function (targetEntityPk, fieldDef, pkProj) {
-                return alternative ?
-                    _this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
-                    _this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false);
-            });
-            /** @type {?} */
-            var paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset);
-            /** @type {?} */
-            var rows$ = paginatedStatementPks$.pipe(operators.switchMap((/**
-             * @param {?} paginatedStatementPks
-             * @return {?}
-             */
-            function (paginatedStatementPks) { return libUtils.combineLatestOrEmpty(paginatedStatementPks.map((/**
-             * @param {?} pkStatement
-             * @return {?}
-             */
-            function (pkStatement) { return basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
-                .pipe(operators.filter((/**
-             * @param {?} x
-             * @return {?}
-             */
-            function (x) { return !!x; }))); })))
-                .pipe(operators.switchMap((/**
-             * @param {?} teEnStatement
-             * @return {?}
-             */
-            function (teEnStatement) { return libUtils.combineLatestOrEmpty(teEnStatement.map((/**
-             * @param {?} basicStatementItem
-             * @return {?}
-             */
-            function (basicStatementItem) {
-                /** @type {?} */
-                var pkTeEn = targetEntityOfStatementItem(basicStatementItem);
-                return rxjs.combineLatest(rowLoader(pkTeEn, fieldDefinitions, 
-                // propertyItemType,
-                pkProject), _this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)).pipe(operators.map((/**
-                 * @param {?} __0
+        function (stmt, page) {
+            if (page.scope.inProject) {
+                return this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
+                    .key(page.scope.inProject + '_' + stmt.pk_entity).pipe(operators.map((/**
+                 * @param {?} projRel
                  * @return {?}
                  */
-                function (_a) {
-                    var _b = __read(_a, 2), row = _b[0], teEnProjRel = _b[1];
-                    /** @type {?} */
-                    var item = __assign({}, basicStatementItem, { row: row, pkEntity: pkTeEn, teEnProjRel: teEnProjRel });
-                    return item;
-                })));
-            }))); }))); })));
-            return rows$;
+                function (projRel) { return ({
+                    projRel: projRel,
+                    ordNum: page.isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain
+                }); })));
+            }
         };
-        // @spyTag
-        // @spyTag
         /**
+         * pipe the target of given statment
+         * @param stmt InfStatement to be completed with target
+         * @param page page for which we are piping this stuff
+         * @param subfieldType type of subfield for which we pipe this stupp
+         */
+        /**
+         * pipe the target of given statment
+         * @param {?} stmt InfStatement to be completed with target
+         * @param {?} page page for which we are piping this stuff
+         * @param {?} subfieldType type of subfield for which we pipe this stupp
+         * @return {?}
+         */
+        InformationPipesService.prototype.pipeTargetOfStatement = /**
+         * pipe the target of given statment
+         * @param {?} stmt InfStatement to be completed with target
+         * @param {?} page page for which we are piping this stuff
+         * @param {?} subfieldType type of subfield for which we pipe this stupp
+         * @return {?}
+         */
+        function (stmt, page, subfieldType) {
+            /** @type {?} */
+            var isOutgoing = page.isOutgoing;
+            /** @type {?} */
+            var targetInfo = isOutgoing ? stmt.fk_object_info : stmt.fk_subject_info;
+            // here you could add targetData or targetCell
+            if (subfieldType.appellation) {
+                return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(operators.map((/**
+                 * @param {?} appellation
+                 * @return {?}
+                 */
+                function (appellation) {
+                    /** @type {?} */
+                    var stmtTarget = {
+                        statement: stmt,
+                        isOutgoing: isOutgoing,
+                        targetLabel: appellation.string,
+                        targetClass: appellation.fk_class,
+                        target: {
+                            appellation: appellation
+                        }
+                    };
+                    return stmtTarget;
+                })));
+            }
+            else if (subfieldType.temporalEntity) {
+                // pipe the subfields of the temporalEntity class
+                // if the subfieldTypes of these are temporalEntity again, replace it with entityPreview
+                // in order to prevent infinit cycle
+                // for each of these subfields
+                // - create page:GvSubfieldPage
+                // - call this.pipeSubfieldPage(page, subfieldType)
+            }
+            throw new Error("No implementation found for subfieldType " + JSON.stringify(subfieldType));
+        };
+        /**
+         * pipe target and projRel of the given statement
+         */
+        /**
+         * pipe target and projRel of the given statement
+         * @param {?} stmt
+         * @param {?} page
+         * @param {?} subfieldType
+         * @return {?}
+         */
+        InformationPipesService.prototype.pipeStatementWithTarget = /**
+         * pipe target and projRel of the given statement
+         * @param {?} stmt
+         * @param {?} page
+         * @param {?} subfieldType
+         * @return {?}
+         */
+        function (stmt, page, subfieldType) {
+            return rxjs.combineLatest(this.pipeTargetOfStatement(stmt, page, subfieldType), this.pipeProjRelOfStatement(stmt, page)).pipe(operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), target = _b[0], projRel = _b[1];
+                return (__assign({}, target, projRel));
+            })));
+        };
+        /**
+         * @param {?} page
+         * @param {?} subfieldType
+         * @return {?}
+         */
+        InformationPipesService.prototype.pipeSubfieldPage = /**
+         * @param {?} page
+         * @param {?} subfieldType
+         * @return {?}
+         */
+        function (page, subfieldType) {
+            var _this = this;
+            // get the statments of that page
+            return this.s.inf$.statement$.pagination$.pipePage(page)
+                .pipe(operators.switchMap((/**
+             * @param {?} pkStmts
+             * @return {?}
+             */
+            function (pkStmts) { return libUtils.combineLatestOrEmpty(pkStmts.map((/**
+             * @param {?} pkStmt
+             * @return {?}
+             */
+            function (pkStmt) { return _this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
+                // for each statement, depending on the subfieldType, load the corresponding target
+                .pipe(operators.switchMap((/**
+             * @param {?} stmt
+             * @return {?}
+             */
+            function (stmt) { return _this.pipeStatementWithTarget(stmt, page, subfieldType); }))); }))); })));
+        };
+        // pipeStatementListPage(
+        //   paginateBy: PaginateByParam[],
+        //   limit: number,
+        //   offset: number,
+        //   pkProject: number,
+        //   listDefinition: Subfield,
+        //   alternative = false): Observable<EntityPreviewItem[]> {
+        //   // prepare page loader
+        //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+        //   // prepare basic statement item loader
+        //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+        //     return alternative ?
+        //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+        //   }
+        //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+        //   return paginatedStatementPks$.pipe(
+        //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+        //         .pipe(
+        //           filter(x => !!x),
+        //           switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
+        //             .pipe(
+        //               map((preview) => {
+        //                 const item: EntityPreviewItem = {
+        //                   ...x,
+        //                   preview,
+        //                   fkClass: preview.fk_class
+        //                 }
+        //                 return item;
+        //               })
+        //             )
+        //           ))
+        //       )
+        //     )
+        //     ))
+        // }
+        /**
+         * Pipe the temporal entities connected to given entity by statements that are in the current project
+         */
+        // @spyTag
+        // pipeTemporalEntityTableRows(
+        //   paginateBy: PaginateByParam[],
+        //   limit: number,
+        //   offset: number,
+        //   pkProject: number,
+        //   listDefinition: Subfield,
+        //   fieldDefinitions: Field[],
+        //   alternative = false): Observable<TemporalEntityItem[]> {
+        //   // const propertyItemType = this.propertyItemType(fieldDefinitions)
+        //   const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
+        //   // prepare page loader
+        //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+        //   // prepare basic statement item loader
+        //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+        //     return alternative ?
+        //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+        //   }
+        //   // prepare TeEnRow loader
+        //   const rowLoader = (targetEntityPk, fieldDef, pkProj) => {
+        //     return alternative ?
+        //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
+        //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false)
+        //   }
+        //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+        //   const rows$ = paginatedStatementPks$.pipe(
+        //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+        //         .pipe(filter(x => !!x))
+        //       )
+        //     )
+        //       .pipe(
+        //         switchMap((teEnStatement) => combineLatestOrEmpty(
+        //           teEnStatement.map((basicStatementItem) => {
+        //             const pkTeEn = targetEntityOfStatementItem(basicStatementItem);
+        //             return combineLatest(
+        //               rowLoader(
+        //                 pkTeEn,
+        //                 fieldDefinitions,
+        //                 // propertyItemType,
+        //                 pkProject
+        //               ),
+        //               this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
+        //             ).pipe(
+        //               map(([row, teEnProjRel]) => {
+        //                 const item: TemporalEntityItem = {
+        //                   ...basicStatementItem,
+        //                   row,
+        //                   pkEntity: pkTeEn,
+        //                   teEnProjRel
+        //                 };
+        //                 return item
+        //               })
+        //             )
+        //           })
+        //         )),
+        //       )),
+        //   )
+        //   return rows$
+        // }
+        // @spyTag
+        // pipeStatementListPage(
+        //   paginateBy: PaginateByParam[],
+        //   limit: number,
+        //   offset: number,
+        //   pkProject: number,
+        //   listDefinition: Subfield,
+        //   alternative = false): Observable<EntityPreviewItem[]> {
+        //   // prepare page loader
+        //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+        //   // prepare basic statement item loader
+        //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+        //     return alternative ?
+        //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+        //   }
+        //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+        //   return paginatedStatementPks$.pipe(
+        //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+        //         .pipe(
+        //           filter(x => !!x),
+        //           switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
+        //             .pipe(
+        //               map((preview) => {
+        //                 const item: EntityPreviewItem = {
+        //                   ...x,
+        //                   preview,
+        //                   fkClass: preview.fk_class
+        //                 }
+        //                 return item;
+        //               })
+        //             )
+        //           ))
+        //       )
+        //     )
+        //     ))
+        // }
+        /**
+         * Pipe the temporal entities connected to given entity by statements that are in the current project
          * @param {?} pkEntity
          * @param {?} fieldDefinitions
          * @param {?} pkProject
          * @param {?} repo
          * @return {?}
          */
+        // @spyTag
+        // pipeTemporalEntityTableRows(
+        //   paginateBy: PaginateByParam[],
+        //   limit: number,
+        //   offset: number,
+        //   pkProject: number,
+        //   listDefinition: Subfield,
+        //   fieldDefinitions: Field[],
+        //   alternative = false): Observable<TemporalEntityItem[]> {
+        //   // const propertyItemType = this.propertyItemType(fieldDefinitions)
+        //   const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
+        //   // prepare page loader
+        //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+        //   // prepare basic statement item loader
+        //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+        //     return alternative ?
+        //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+        //   }
+        //   // prepare TeEnRow loader
+        //   const rowLoader = (targetEntityPk, fieldDef, pkProj) => {
+        //     return alternative ?
+        //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
+        //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false)
+        //   }
+        //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+        //   const rows$ = paginatedStatementPks$.pipe(
+        //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+        //         .pipe(filter(x => !!x))
+        //       )
+        //     )
+        //       .pipe(
+        //         switchMap((teEnStatement) => combineLatestOrEmpty(
+        //           teEnStatement.map((basicStatementItem) => {
+        //             const pkTeEn = targetEntityOfStatementItem(basicStatementItem);
+        //             return combineLatest(
+        //               rowLoader(
+        //                 pkTeEn,
+        //                 fieldDefinitions,
+        //                 // propertyItemType,
+        //                 pkProject
+        //               ),
+        //               this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
+        //             ).pipe(
+        //               map(([row, teEnProjRel]) => {
+        //                 const item: TemporalEntityItem = {
+        //                   ...basicStatementItem,
+        //                   row,
+        //                   pkEntity: pkTeEn,
+        //                   teEnProjRel
+        //                 };
+        //                 return item
+        //               })
+        //             )
+        //           })
+        //         )),
+        //       )),
+        //   )
+        //   return rows$
+        // }
+        // @spyTag
         InformationPipesService.prototype.pipeItemTeEnRow = 
-        // @spyTag
+        // pipeStatementListPage(
+        //   paginateBy: PaginateByParam[],
+        //   limit: number,
+        //   offset: number,
+        //   pkProject: number,
+        //   listDefinition: Subfield,
+        //   alternative = false): Observable<EntityPreviewItem[]> {
+        //   // prepare page loader
+        //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+        //   // prepare basic statement item loader
+        //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+        //     return alternative ?
+        //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+        //   }
+        //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+        //   return paginatedStatementPks$.pipe(
+        //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+        //         .pipe(
+        //           filter(x => !!x),
+        //           switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
+        //             .pipe(
+        //               map((preview) => {
+        //                 const item: EntityPreviewItem = {
+        //                   ...x,
+        //                   preview,
+        //                   fkClass: preview.fk_class
+        //                 }
+        //                 return item;
+        //               })
+        //             )
+        //           ))
+        //       )
+        //     )
+        //     ))
+        // }
         /**
+         * Pipe the temporal entities connected to given entity by statements that are in the current project
          * @param {?} pkEntity
          * @param {?} fieldDefinitions
          * @param {?} pkProject
          * @param {?} repo
          * @return {?}
          */
+        // @spyTag
+        // pipeTemporalEntityTableRows(
+        //   paginateBy: PaginateByParam[],
+        //   limit: number,
+        //   offset: number,
+        //   pkProject: number,
+        //   listDefinition: Subfield,
+        //   fieldDefinitions: Field[],
+        //   alternative = false): Observable<TemporalEntityItem[]> {
+        //   // const propertyItemType = this.propertyItemType(fieldDefinitions)
+        //   const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
+        //   // prepare page loader
+        //   const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.s.inf$.statement$.pagination$;
+        //   // prepare basic statement item loader
+        //   const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
+        //     return alternative ?
+        //       this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        //       this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
+        //   }
+        //   // prepare TeEnRow loader
+        //   const rowLoader = (targetEntityPk, fieldDef, pkProj) => {
+        //     return alternative ?
+        //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
+        //       this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false)
+        //   }
+        //   const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+        //   const rows$ = paginatedStatementPks$.pipe(
+        //     switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        //       paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
+        //         .pipe(filter(x => !!x))
+        //       )
+        //     )
+        //       .pipe(
+        //         switchMap((teEnStatement) => combineLatestOrEmpty(
+        //           teEnStatement.map((basicStatementItem) => {
+        //             const pkTeEn = targetEntityOfStatementItem(basicStatementItem);
+        //             return combineLatest(
+        //               rowLoader(
+        //                 pkTeEn,
+        //                 fieldDefinitions,
+        //                 // propertyItemType,
+        //                 pkProject
+        //               ),
+        //               this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
+        //             ).pipe(
+        //               map(([row, teEnProjRel]) => {
+        //                 const item: TemporalEntityItem = {
+        //                   ...basicStatementItem,
+        //                   row,
+        //                   pkEntity: pkTeEn,
+        //                   teEnProjRel
+        //                 };
+        //                 return item
+        //               })
+        //             )
+        //           })
+        //         )),
+        //       )),
+        //   )
+        //   return rows$
+        // }
+        // @spyTag
         function (pkEntity, fieldDefinitions, pkProject, repo) {
             var _this = this;
             // pipe outgoing statements
@@ -8280,654 +9220,6 @@
      */
     function propertyOptionFieldKey(fkProperty, isOutgoing) {
         return '_' + fkProperty + '_' + (isOutgoing ? 'outgoing' : 'ingoing');
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/AppellationItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function AppellationItem() { }
-    if (false) {
-        /** @type {?} */
-        AppellationItem.prototype.fkClass;
-        /** @type {?} */
-        AppellationItem.prototype.label;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/BasicStatementItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function BasicStatementItem() { }
-    if (false) {
-        /** @type {?} */
-        BasicStatementItem.prototype.statement;
-        /** @type {?|undefined} */
-        BasicStatementItem.prototype.isOutgoing;
-        /** @type {?|undefined} */
-        BasicStatementItem.prototype.error;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/ClassAndTypeNode.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function ClassAndTypeNode() { }
-    if (false) {
-        /** @type {?} */
-        ClassAndTypeNode.prototype.label;
-        /** @type {?} */
-        ClassAndTypeNode.prototype.data;
-        /** @type {?|undefined} */
-        ClassAndTypeNode.prototype.children;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/ClassAndTypePk.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function ClassAndTypePk() { }
-    if (false) {
-        /** @type {?} */
-        ClassAndTypePk.prototype.pkClass;
-        /** @type {?} */
-        ClassAndTypePk.prototype.pkType;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/ClassAndTypeSelectModel.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function ClassAndTypeSelectModel() { }
-    if (false) {
-        /** @type {?|undefined} */
-        ClassAndTypeSelectModel.prototype.classes;
-        /** @type {?|undefined} */
-        ClassAndTypeSelectModel.prototype.types;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/CtrlTimeSpanDialogData.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function CtrlTimeSpanDialogData() { }
-    if (false) {
-        /** @type {?} */
-        CtrlTimeSpanDialogData.prototype.timePrimitives;
-        /** @type {?|undefined} */
-        CtrlTimeSpanDialogData.prototype.beforeCloseCallback;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/CtrlTimeSpanDialogResult.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function CtrlTimeSpanDialogResult() { }
-    if (false) {
-        /* Skipping unnamed member:
-        72?: InfTimePrimitiveWithCalendar;*/
-        /* Skipping unnamed member:
-        152?: InfTimePrimitiveWithCalendar;*/
-        /* Skipping unnamed member:
-        153?: InfTimePrimitiveWithCalendar;*/
-        /* Skipping unnamed member:
-        71?: InfTimePrimitiveWithCalendar;*/
-        /* Skipping unnamed member:
-        150?: InfTimePrimitiveWithCalendar;*/
-        /* Skipping unnamed member:
-        151?: InfTimePrimitiveWithCalendar;*/
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/DimensionItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function DimensionItem() { }
-    if (false) {
-        /** @type {?} */
-        DimensionItem.prototype.fkClass;
-        /** @type {?} */
-        DimensionItem.prototype.label;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/EntityPreviewItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function EntityPreviewItem() { }
-    if (false) {
-        /** @type {?} */
-        EntityPreviewItem.prototype.preview;
-        /** @type {?} */
-        EntityPreviewItem.prototype.fkClass;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/EntityProperties.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function EntityProperties() { }
-    if (false) {
-        /** @type {?} */
-        EntityProperties.prototype.listDefinition;
-        /** @type {?} */
-        EntityProperties.prototype.items;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/Field.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * A Field contains all information to create the different GUI's to display and edit
-     * statements of an entity.
-     *
-     * The Fields of an entity depend on the properties of its class. Each Field contains or represents
-     * the properties that have the given class as as domain or range and share the same pk_property.
-     *
-     * Explanation:
-     * The identity (uniqueness) of a property is defined by its domain, pk_propery and its range,
-     * It is possible that one class has two outgoing properties with the same pk_property but different
-     * ranges. The Field then contains both of them.
-     *
-     * The Subfields (listDefinitions) are then representing only one property with a uniqur domain, pk_propery and range
-     * All Subfields of a Field share all properties defined in FieldBase.
-     *
-     * In practice the Field a wrapper for SubFileds containing all information that is equal amongst all Subfields.
-     * @record
-     */
-    function Field() { }
-    if (false) {
-        /** @type {?} */
-        Field.prototype.placeOfDisplay;
-        /** @type {?|undefined} */
-        Field.prototype.fieldConfig;
-        /** @type {?} */
-        Field.prototype.targetClasses;
-        /** @type {?} */
-        Field.prototype.listDefinitions;
-        /** @type {?} */
-        Field.prototype.allSubfieldsRemovedFromAllProfiles;
-        /** @type {?} */
-        Field.prototype.isSpecialField;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/FieldBase.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function FieldBase() { }
-    if (false) {
-        /** @type {?} */
-        FieldBase.prototype.label;
-        /** @type {?} */
-        FieldBase.prototype.ontoInfoUrl;
-        /** @type {?} */
-        FieldBase.prototype.ontoInfoLabel;
-        /** @type {?} */
-        FieldBase.prototype.property;
-        /** @type {?} */
-        FieldBase.prototype.isHasTypeField;
-        /** @type {?} */
-        FieldBase.prototype.isOutgoing;
-        /** @type {?} */
-        FieldBase.prototype.sourceClass;
-        /** @type {?} */
-        FieldBase.prototype.sourceClassLabel;
-        /** @type {?} */
-        FieldBase.prototype.targetMinQuantity;
-        /** @type {?} */
-        FieldBase.prototype.targetMaxQuantity;
-        /** @type {?} */
-        FieldBase.prototype.sourceMinQuantity;
-        /** @type {?} */
-        FieldBase.prototype.sourceMaxQuantity;
-        /** @type {?} */
-        FieldBase.prototype.identityDefiningForSource;
-        /** @type {?} */
-        FieldBase.prototype.identityDefiningForTarget;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/FieldPosition.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function FieldPosition() { }
-    if (false) {
-        /** @type {?|undefined} */
-        FieldPosition.prototype.position;
-    }
-    /**
-     * @record
-     */
-    function FieldPlaceOfDisplay() { }
-    if (false) {
-        /** @type {?|undefined} */
-        FieldPlaceOfDisplay.prototype.basicFields;
-        /** @type {?|undefined} */
-        FieldPlaceOfDisplay.prototype.specificFields;
-        /** @type {?|undefined} */
-        FieldPlaceOfDisplay.prototype.hidden;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/FieldProperty.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function FieldProperty() { }
-    if (false) {
-        /** @type {?|undefined} */
-        FieldProperty.prototype.pkProperty;
-        /** @type {?|undefined} */
-        FieldProperty.prototype.pkPropertyOfProperty;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/Item.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/ItemBasics.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function ItemBasics() { }
-    if (false) {
-        /** @type {?} */
-        ItemBasics.prototype.projRel;
-        /** @type {?} */
-        ItemBasics.prototype.ordNum;
-        /** @type {?} */
-        ItemBasics.prototype.label;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/ItemList.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/ItemType.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/LangStringItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function LangStringItem() { }
-    if (false) {
-        /** @type {?} */
-        LangStringItem.prototype.fkClass;
-        /** @type {?} */
-        LangStringItem.prototype.label;
-        /** @type {?} */
-        LangStringItem.prototype.fkLanguage;
-        /** @type {?} */
-        LangStringItem.prototype.language;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/LanguageItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function LanguageItem() { }
-    if (false) {
-        /** @type {?} */
-        LanguageItem.prototype.fkClass;
-        /** @type {?} */
-        LanguageItem.prototype.label;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/PlaceItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function PlaceItem() { }
-    if (false) {
-        /** @type {?} */
-        PlaceItem.prototype.fkClass;
-        /** @type {?} */
-        PlaceItem.prototype.label;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/PropertyItemTypeMap.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function PropertyItemTypeMap() { }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/PropertyOption.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function PropertyOption() { }
-    if (false) {
-        /** @type {?} */
-        PropertyOption.prototype.propertyFieldKey;
-        /** @type {?} */
-        PropertyOption.prototype.isOutgoing;
-        /** @type {?} */
-        PropertyOption.prototype.pk;
-        /** @type {?} */
-        PropertyOption.prototype.label;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/PropertySelectModel.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function PropertySelectModel() { }
-    if (false) {
-        /** @type {?|undefined} */
-        PropertySelectModel.prototype.outgoingProperties;
-        /** @type {?|undefined} */
-        PropertySelectModel.prototype.ingoingProperties;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/SpecialFieldType.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/StatementItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/Subfield.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * A Subfiel contains contains information to create the different GUI's to display and edit
-     * statements of an entity.
-     *
-     * Each Subfield stands for one property with a unique domain, pk_propery and range.
-     *
-     * Since the display of the statement and its target value depends on the target class, the Subfield
-     * has a SubfieldType. This SubfieldType determines what components are used to create, edit or display
-     * the statement and its target.
-     * @record
-     */
-    function Subfield() { }
-    if (false) {
-        /** @type {?} */
-        Subfield.prototype.listType;
-        /** @type {?} */
-        Subfield.prototype.targetClass;
-        /** @type {?} */
-        Subfield.prototype.targetClassLabel;
-        /** @type {?} */
-        Subfield.prototype.removedFromAllProfiles;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/SubfieldType.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function SubfieldType() { }
-    if (false) {
-        /** @type {?|undefined} */
-        SubfieldType.prototype.temporalEntity;
-        /** @type {?|undefined} */
-        SubfieldType.prototype.entityPreview;
-        /** @type {?|undefined} */
-        SubfieldType.prototype.typeItem;
-        /** @type {?|undefined} */
-        SubfieldType.prototype.timeSpan;
-        /** @type {?|undefined} */
-        SubfieldType.prototype.textProperty;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TemporalEntityCell.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TemporalEntityCell() { }
-    if (false) {
-        /** @type {?} */
-        TemporalEntityCell.prototype.pkProperty;
-        /** @type {?} */
-        TemporalEntityCell.prototype.isOutgoing;
-        /** @type {?} */
-        TemporalEntityCell.prototype.label;
-        /** @type {?} */
-        TemporalEntityCell.prototype.entityPreview;
-        /** @type {?|undefined} */
-        TemporalEntityCell.prototype.items;
-        /** @type {?|undefined} */
-        TemporalEntityCell.prototype.firstItem;
-        /** @type {?} */
-        TemporalEntityCell.prototype.itemsCount;
-        /** @type {?|undefined} */
-        TemporalEntityCell.prototype.isTimeSpan;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TemporalEntityItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TemporalEntityItem() { }
-    if (false) {
-        /** @type {?} */
-        TemporalEntityItem.prototype.row;
-        /** @type {?} */
-        TemporalEntityItem.prototype.pkEntity;
-        /** @type {?} */
-        TemporalEntityItem.prototype.teEnProjRel;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TemporalEntityRemoveProperties.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * This interface is used for creating objects containing all the
-     * information related to a temporal entity that should be removed
-     * from project, when the temporal entity is removed
-     * @record
-     */
-    function TemporalEntityRemoveProperties() { }
-    if (false) {
-        /** @type {?} */
-        TemporalEntityRemoveProperties.prototype.temporalEntity;
-        /** @type {?} */
-        TemporalEntityRemoveProperties.prototype.statements;
-        /** @type {?} */
-        TemporalEntityRemoveProperties.prototype.textProperties;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TemporalEntityRow.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TemporalEntityRow() { }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TemporalEntityTableI.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TemporalEntityTableI() { }
-    if (false) {
-        /** @type {?} */
-        TemporalEntityTableI.prototype.rows$;
-        /** @type {?} */
-        TemporalEntityTableI.prototype.columns$;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TextPropertyItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TextPropertyItem() { }
-    if (false) {
-        /** @type {?} */
-        TextPropertyItem.prototype.textProperty;
-        /** @type {?} */
-        TextPropertyItem.prototype.language;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TimePrimitiveItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TimePrimitiveItem() { }
-    if (false) {
-        /** @type {?} */
-        TimePrimitiveItem.prototype.fkClass;
-        /** @type {?} */
-        TimePrimitiveItem.prototype.label;
-        /** @type {?} */
-        TimePrimitiveItem.prototype.timePrimitive;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TimeSpanItem.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TimeSpanItem() { }
-    if (false) {
-        /** @type {?} */
-        TimeSpanItem.prototype.label;
-        /** @type {?} */
-        TimeSpanItem.prototype.properties;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/TimeSpanProperty.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function TimeSpanProperty() { }
-    if (false) {
-        /** @type {?} */
-        TimeSpanProperty.prototype.listDefinition;
-        /** @type {?} */
-        TimeSpanProperty.prototype.items;
     }
 
     exports.ActiveProjectPipesService = ActiveProjectPipesService;

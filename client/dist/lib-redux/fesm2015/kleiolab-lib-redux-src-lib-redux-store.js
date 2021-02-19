@@ -3,7 +3,7 @@ import { Injectable, ɵɵdefineInjectable, ɵɵinject, InjectionToken, NgModule,
 import { SlimLoadingBarService, SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ToastyService, ToastyConfig, ToastyModule } from '@cime/ngx-toasty';
 import { PubAccountApi, SchemaObjectApi, ProProjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
-import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SystemConfigurationService, Configuration, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, PaginatedStatementsControllerService, SystemConfigurationService, Configuration, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { omit, keys, values, pathOr, equals, indexBy } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
@@ -1397,11 +1397,7 @@ function PaginateByParam() { }
 function LoadPageMeta() { }
 if (false) {
     /** @type {?} */
-    LoadPageMeta.prototype.paginateBy;
-    /** @type {?} */
-    LoadPageMeta.prototype.limit;
-    /** @type {?} */
-    LoadPageMeta.prototype.offset;
+    LoadPageMeta.prototype.page;
     /** @type {?|undefined} */
     LoadPageMeta.prototype.pk;
 }
@@ -1415,11 +1411,7 @@ if (false) {
     /** @type {?} */
     LoadPageSucceededMeta.prototype.count;
     /** @type {?} */
-    LoadPageSucceededMeta.prototype.paginateBy;
-    /** @type {?} */
-    LoadPageSucceededMeta.prototype.limit;
-    /** @type {?} */
-    LoadPageSucceededMeta.prototype.offset;
+    LoadPageSucceededMeta.prototype.page;
     /** @type {?|undefined} */
     LoadPageSucceededMeta.prototype.pk;
 }
@@ -1610,17 +1602,15 @@ class SchemaActionsFactory {
             this.ngRedux.dispatch(action);
         });
         this.loadPage = (/**
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
+         * @param {?} page
          * @param {?=} pk
          * @return {?}
          */
-        (paginateBy, limit, offset, pk) => {
+        (page, pk) => {
             /** @type {?} */
             const action = ({
                 type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE',
-                meta: { paginateBy, limit, offset, pk },
+                meta: { page, pk },
                 payload: null,
             });
             this.ngRedux.dispatch(action);
@@ -1628,33 +1618,29 @@ class SchemaActionsFactory {
         this.loadPageSucceeded = (/**
          * @param {?} pks
          * @param {?} count
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
+         * @param {?} page
          * @param {?=} pk
          * @return {?}
          */
-        (pks, count, paginateBy, limit, offset, pk) => {
+        (pks, count, page, pk) => {
             /** @type {?} */
             const action = ({
                 type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
-                meta: { pks, paginateBy, count, limit, offset, pk },
+                meta: { page, pks, count, pk },
                 payload: null,
             });
             this.ngRedux.dispatch(action);
         });
         this.loadPageFailed = (/**
-         * @param {?} paginateBy
-         * @param {?} limit
-         * @param {?} offset
+         * @param {?} page
          * @param {?=} pk
          * @return {?}
          */
-        (paginateBy, limit, offset, pk) => {
+        (page, pk) => {
             /** @type {?} */
             const action = ({
                 type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_FAILED',
-                meta: { paginateBy, limit, offset, pk },
+                meta: { page, pk },
                 payload: null,
             });
             this.ngRedux.dispatch(action);
@@ -6649,16 +6635,21 @@ class InfEpics {
         /** @type {?} */
         const meta = action.meta;
         /** @type {?} */
-        const pendingKey = meta.addPending;
+        const scope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject };
         /** @type {?} */
-        const paginateBy = [
-            { fk_property: meta.pkProperty },
-            { fk_target_class: meta.fkTargetClass },
-            { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
-            { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
-        ];
+        const req = {
+            fkSourceEntity: meta.pkSourceEntity,
+            fkProperty: meta.pkProperty,
+            isOutgoing: meta.isOutgoing,
+            targetClass: meta.fkTargetClass,
+            limit: meta.limit,
+            offset: meta.offset,
+            scope,
+        };
+        /** @type {?} */
+        const pendingKey = meta.addPending;
         // call action to set pagination loading on true
-        this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+        this.infActions.statement.loadPage(req, pkProject);
         // call api to load data
         apiCall$.subscribe((/**
          * @param {?} data
@@ -6668,7 +6659,7 @@ class InfEpics {
             // call action to store records
             this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
             // call action to store pagination
-            this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+            this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, req, pkProject);
             // call action to conclude the pending request
             epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
         }), (/**
@@ -7064,6 +7055,14 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
+ * @record
+ */
+function GvPaginationObjectActionMeta() { }
+if (false) {
+    /** @type {?} */
+    GvPaginationObjectActionMeta.prototype.req;
+}
+/**
  * Class for actions that handle the loading of schema objects,
  * negative schema objects ect.
  */
@@ -7093,19 +7092,16 @@ class GvSchemaActions {
     }
     /**
      * Action for loading GvPaginationObject into the store
-     * @param {?} apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
-     *                we'll end up with two subscriptions and thus two api calls
-     * @param {?} meta
+     * @param {?} req
      * @return {?}
      */
-    loadGvPaginationObject(apiCall$, meta) {
+    loadGvPaginationObject(req) {
         /** @type {?} */
         const addPending = U.uuid();
         /** @type {?} */
         const action = {
             type: GvSchemaActions.GV_PAGINATION_OBJECT_LOAD,
-            meta: Object.assign({ addPending }, meta),
-            payload: apiCall$,
+            meta: { addPending, req },
         };
         this.ngRedux.dispatch(action);
     }
@@ -7140,16 +7136,11 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
- * @param {?} meta
+ * @param {?} x
  * @return {?}
  */
-function createPaginateByKey(meta) {
-    return [
-        { fk_property: meta.pkProperty },
-        { fk_target_class: meta.fkTargetClass },
-        { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
-        { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
-    ];
+function createPaginateByKey(x) {
+    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${x.targetClass}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
 }
 
 /**
@@ -7163,12 +7154,14 @@ class SchemaEpics {
      * @param {?} loadingBarActions
      * @param {?} notificationActions
      * @param {?} infActions
+     * @param {?} pag
      */
-    constructor(schemaObjectService, loadingBarActions, notificationActions, infActions) {
+    constructor(schemaObjectService, loadingBarActions, notificationActions, infActions, pag) {
         this.schemaObjectService = schemaObjectService;
         this.loadingBarActions = loadingBarActions;
         this.notificationActions = notificationActions;
         this.infActions = infActions;
+        this.pag = pag;
     }
     /**
      * @return {?}
@@ -7234,18 +7227,21 @@ class SchemaEpics {
             /** @type {?} */
             const meta = action.meta;
             /** @type {?} */
-            const paginateBy = createPaginateByKey(meta);
+            const paginateBy = createPaginateByKey(meta.req.page);
             // call action to set pagination loading on true
-            this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
-            action.payload.subscribe((/**
+            this.infActions.statement.loadPage(meta.req.page, pkProject);
+            this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
+                .subscribe((/**
              * @param {?} data
              * @return {?}
              */
             (data) => {
                 // call action to store records
                 this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
-                // call action to store pagination
-                this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+                // call action to store page informations
+                for (const subfieldPage of data.subfieldPages) {
+                    this.infActions.statement.loadPageSucceeded(subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject);
+                }
                 // call action to complete loading bar
                 actionEmitter.next(this.loadingBarActions.completeLoading());
             }), (/**
@@ -7271,9 +7267,10 @@ SchemaEpics.ctorParameters = () => [
     { type: SchemaService },
     { type: LoadingBarActions },
     { type: NotificationsAPIActions },
-    { type: InfActions }
+    { type: InfActions },
+    { type: PaginatedStatementsControllerService }
 ];
-/** @nocollapse */ SchemaEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(ɵɵinject(SchemaService), ɵɵinject(LoadingBarActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(InfActions)); }, token: SchemaEpics, providedIn: "root" });
+/** @nocollapse */ SchemaEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(ɵɵinject(SchemaService), ɵɵinject(LoadingBarActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(InfActions), ɵɵinject(PaginatedStatementsControllerService)); }, token: SchemaEpics, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
@@ -7292,6 +7289,11 @@ if (false) {
     SchemaEpics.prototype.notificationActions;
     /** @type {?} */
     SchemaEpics.prototype.infActions;
+    /**
+     * @type {?}
+     * @private
+     */
+    SchemaEpics.prototype.pag;
 }
 
 /**
@@ -8168,38 +8170,12 @@ const by = (/**
  * @return {?}
  */
 (name) => 'by_' + name);
+// export const paginateName = (pagBy: PaginateByParam[]) => pagBy.map(p => Object.keys(p)[0]).join('__');
+// export const pag = (name: string) => 'pag_' + name;
+// export const paginatedBy = (name: string) => pag(by(name));
+// export const paginateKey = (pagBy: PaginateByParam[]) => pagBy.map(p => values(p)[0]).join('_');
 /** @type {?} */
-const paginateName = (/**
- * @param {?} pagBy
- * @return {?}
- */
-(pagBy) => pagBy.map((/**
- * @param {?} p
- * @return {?}
- */
-p => Object.keys(p)[0])).join('__'));
-/** @type {?} */
-const pag = (/**
- * @param {?} name
- * @return {?}
- */
-(name) => 'pag_' + name);
-/** @type {?} */
-const paginatedBy = (/**
- * @param {?} name
- * @return {?}
- */
-(name) => pag(by(name)));
-/** @type {?} */
-const paginateKey = (/**
- * @param {?} pagBy
- * @return {?}
- */
-(pagBy) => pagBy.map((/**
- * @param {?} p
- * @return {?}
- */
-p => values(p)[0])).join('_'));
+const paginateBy = 'by_subfield_page';
 /**
  * @param {?} limit
  * @param {?} offset
@@ -8380,15 +8356,9 @@ class ReducerFactory {
                 /** @type {?} */
                 const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                 /** @type {?} */
-                const paginateBy = paginatedBy(paginateName(meta.paginateBy));
+                const key = createPaginateByKey(meta.page);
                 /** @type {?} */
-                const key = meta.paginateBy.map((/**
-                 * @param {?} p
-                 * @return {?}
-                 */
-                p => values(p)[0])).join('_');
-                /** @type {?} */
-                const fromTo = getFromTo(meta.limit, meta.offset);
+                const fromTo = getFromTo(meta.page.limit, meta.page.offset);
                 state = facette(action, state, (/**
                  * @param {?} innerState
                  * @return {?}
@@ -8399,11 +8369,9 @@ class ReducerFactory {
                 /** @type {?} */
                 const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                 /** @type {?} */
-                const paginateBy = paginatedBy(paginateName(meta.paginateBy));
+                const key = createPaginateByKey(meta.page);
                 /** @type {?} */
-                const key = paginateKey(meta.paginateBy);
-                /** @type {?} */
-                const fromTo = getFromTo(meta.limit, meta.offset);
+                const fromTo = getFromTo(meta.page.limit, meta.page.offset);
                 state = facette(action, state, (/**
                  * @param {?} innerState
                  * @return {?}
@@ -8414,13 +8382,11 @@ class ReducerFactory {
                 /** @type {?} */
                 const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                 /** @type {?} */
-                const paginateBy = paginatedBy(paginateName(meta.paginateBy));
+                const key = createPaginateByKey(meta.page);
                 /** @type {?} */
-                const key = paginateKey(meta.paginateBy);
+                const fromTo = getFromTo(meta.page.limit, meta.page.offset);
                 /** @type {?} */
-                const start = getStart(meta.limit, meta.offset);
-                /** @type {?} */
-                const fromTo = getFromTo(meta.limit, meta.offset);
+                const start = getStart(meta.page.limit, meta.page.offset);
                 /** @type {?} */
                 const rows = {};
                 if (meta.pks) {
@@ -10086,9 +10052,7 @@ if (false) {
     /** @type {?} */
     InfStatementSlice.prototype.by_fk_subject_data;
     /** @type {?} */
-    InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_object_info__ofProject;
-    /** @type {?} */
-    InfStatementSlice.prototype.pag_by_fk_property__fk_target_class__fk_subject_info__ofProject;
+    InfStatementSlice.prototype.by_subfield_page;
     /** @type {?} */
     InfStatementSlice.prototype.loading;
 }
@@ -10377,5 +10341,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { APP_INITIAL_STATE, AccountActions, ActiveProjectActions, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, GvSchemaActions, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, LoadingBarActions, NamespaceSlice, Notifications, NotificationsAPIActions, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, apiConfigFactory, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createPaginateByKey, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, ofSubstore, pag, paginateKey, paginateName, paginatedBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, LoadingBarEpics as ɵa, NotificationsAPIEpics as ɵb, ActiveProjectEpics as ɵc, AccountEpics as ɵd, SysEpics as ɵe, DfhEpics as ɵf, InfEpics as ɵg, DatEpics as ɵh, ProEpics as ɵi, SchemaEpics as ɵj, ActionResolverEpics as ɵk, accountRootReducer as ɵl, loadingBarReducer as ɵm, activeProjectReducer as ɵn, informationReducer as ɵo, sourceListReducer as ɵp, createProjectsReducer as ɵq };
+export { APP_INITIAL_STATE, AccountActions, ActiveProjectActions, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, GvSchemaActions, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, LoadingBarActions, NamespaceSlice, Notifications, NotificationsAPIActions, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, apiConfigFactory, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createPaginateByKey, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, ofSubstore, paginateBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, LoadingBarEpics as ɵa, NotificationsAPIEpics as ɵb, ActiveProjectEpics as ɵc, AccountEpics as ɵd, SysEpics as ɵe, DfhEpics as ɵf, InfEpics as ɵg, DatEpics as ɵh, ProEpics as ɵi, SchemaEpics as ɵj, ActionResolverEpics as ɵk, accountRootReducer as ɵl, loadingBarReducer as ɵm, activeProjectReducer as ɵn, informationReducer as ɵo, sourceListReducer as ɵp, createProjectsReducer as ɵq };
 //# sourceMappingURL=kleiolab-lib-redux-src-lib-redux-store.js.map

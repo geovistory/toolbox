@@ -1,6 +1,5 @@
 import { FluxStandardAction } from 'flux-standard-action';
 import { Reducer } from 'redux';
-import { PaginateByParam } from './schema-actions-factory';
 export declare const PR_ENTITY_MODEL_MAP = "pkEntityModelMap";
 export interface EntityModelAndClass<ModelName> {
     modelName: ModelName;
@@ -26,10 +25,7 @@ export interface Meta<Model> {
     pk?: number;
 }
 export declare const by: (name: string) => string;
-export declare const paginateName: (pagBy: PaginateByParam[]) => string;
-export declare const pag: (name: string) => string;
-export declare const paginatedBy: (name: string) => string;
-export declare const paginateKey: (pagBy: PaginateByParam[]) => string;
+export declare const paginateBy = "by_subfield_page";
 export declare function getFromTo(limit: number, offset: number): string;
 export declare function getEnd(limit: number, offset: number): number;
 export declare function getStart(limit: number, offset: number): number;
