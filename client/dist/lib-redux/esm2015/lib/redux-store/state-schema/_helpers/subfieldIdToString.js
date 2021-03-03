@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: lib/redux-store/state-schema/_helpers/subfieldIdToString.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { keys, values } from 'ramda';
+/**
+ * @param {?} x
+ * @return {?}
+ */
+export function subfieldIdToString(x) {
+    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${x.targetClass}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3ViZmllbGRJZFRvU3RyaW5nLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQGtsZWlvbGFiL2xpYi1yZWR1eC8iLCJzb3VyY2VzIjpbImxpYi9yZWR1eC1zdG9yZS9zdGF0ZS1zY2hlbWEvX2hlbHBlcnMvc3ViZmllbGRJZFRvU3RyaW5nLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7O0FBQ0EsT0FBTyxFQUFFLElBQUksRUFBRSxNQUFNLEVBQUUsTUFBTSxPQUFPLENBQUM7Ozs7O0FBQ3JDLE1BQU0sVUFBVSxrQkFBa0IsQ0FBQyxDQUFlO0lBQ2hELE9BQU8sR0FBRyxDQUFDLENBQUMsY0FBYyxJQUFJLENBQUMsQ0FBQyxVQUFVLElBQUksQ0FBQyxDQUFDLFVBQVUsQ0FBQyxDQUFDLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxJQUFJLElBQUksQ0FBQyxDQUFDLFdBQVcsSUFBSSxJQUFJLENBQUMsQ0FBQyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxJQUFJLE1BQU0sQ0FBQyxDQUFDLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDLEVBQUUsQ0FBQTtBQUN4SSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgR3ZTdWJmaWVsZElkIH0gZnJvbSAnQGtsZWlvbGFiL2xpYi1zZGstbGI0JztcbmltcG9ydCB7IGtleXMsIHZhbHVlcyB9IGZyb20gJ3JhbWRhJztcbmV4cG9ydCBmdW5jdGlvbiBzdWJmaWVsZElkVG9TdHJpbmcoeDogR3ZTdWJmaWVsZElkKTogc3RyaW5nIHtcbiAgcmV0dXJuIGAke3guZmtTb3VyY2VFbnRpdHl9XyR7eC5ma1Byb3BlcnR5fV8ke3guaXNPdXRnb2luZyA/ICdvdXQnIDogJ2luJ31fJHt4LnRhcmdldENsYXNzfV8ke2tleXMoeC5zY29wZSlbMF19XyR7dmFsdWVzKHguc2NvcGUpWzBdfWBcbn1cbiJdfQ==

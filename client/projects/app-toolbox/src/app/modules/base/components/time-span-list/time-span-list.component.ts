@@ -1,13 +1,9 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { InformationPipesService, Subfield, TimeSpanItem } from '@kleiolab/lib-queries';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, of, Subject } from 'rxjs';
-import { MatDialog } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
-import { InfActions } from "@kleiolab/lib-redux";
-import { TimeSpanItem } from "@kleiolab/lib-queries";
-import { Subfield } from "@kleiolab/lib-queries";
-import { InformationPipesService } from "@kleiolab/lib-queries";
 import { TimeSpanService } from '../../services/time-span.service';
 
 @Component({
@@ -48,7 +44,7 @@ export class TimeSpanListComponent implements OnInit {
   }
 
   openModal() {
-    this.timeSpan.openModal(this.item, this.pkEntity)
+    // this.timeSpan.openModal(this.item, this.pkEntity)
   }
 
 

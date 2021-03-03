@@ -1153,18 +1153,6 @@ GregorianDateTime = /** @class */ (function (_super) {
  * Generated from: lib/date-time/classes/time-primitive.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @record
- */
-function ITimePrimitive() { }
-if (false) {
-    /** @type {?|undefined} */
-    ITimePrimitive.prototype.julianDay;
-    /** @type {?|undefined} */
-    ITimePrimitive.prototype.duration;
-    /** @type {?|undefined} */
-    ITimePrimitive.prototype.calendar;
-}
 var TimePrimitive = /** @class */ (function () {
     function TimePrimitive(data) {
         // Last day of the era before christ

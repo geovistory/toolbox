@@ -3,34 +3,14 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfActions } from "@kleiolab/lib-redux";
-import { InfTextProperty } from "@kleiolab/lib-sdk-lb4";
-import { InfPlace } from "@kleiolab/lib-sdk-lb4";
-import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
-import { InfLangString } from "@kleiolab/lib-sdk-lb4";
-import { InfDimension } from "@kleiolab/lib-sdk-lb4";
-import { InfAppellation } from "@kleiolab/lib-sdk-lb4";
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { PaginatedStatementsControllerService } from "@kleiolab/lib-sdk-lb4";
-import { InfStatement } from "@kleiolab/lib-sdk-lb4";
-import { GvPaginationObject } from "@kleiolab/lib-sdk-lb4";
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, InformationPipesService, Item, ItemList, LangStringItem, LanguageItem, PlaceItem, Subfield } from '@kleiolab/lib-queries';
+import { InfActions } from '@kleiolab/lib-redux';
+import { GvPaginationObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, PaginatedStatementsControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { isLeafItemSubfield } from '../../base.helpers';
-import { InformationPipesService } from "@kleiolab/lib-queries";
-import { TextPropertyItem } from "@kleiolab/lib-queries";
-import { Subfield } from "@kleiolab/lib-queries";
-import { PlaceItem } from "@kleiolab/lib-queries";
-import { LanguageItem } from "@kleiolab/lib-queries";
-import { LangStringItem } from "@kleiolab/lib-queries";
-import { ItemList } from "@kleiolab/lib-queries";
-import { Item } from "@kleiolab/lib-queries";
-import { EntityPreviewItem } from "@kleiolab/lib-queries";
-import { DimensionItem } from "@kleiolab/lib-queries";
-import { BasicStatementItem } from "@kleiolab/lib-queries";
-import { AppellationItem } from "@kleiolab/lib-queries";
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 type Row<M> = Item & {
@@ -126,16 +106,16 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    res$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((res: GvPaginationObject) => {
-      if (res.count === 0) {
-        this.next.emit()
-      } else {
-        this.itemsCount = res.count;
-        this.dataSource.data = this.getItems(res);
-      }
-    })
+    // res$.pipe(
+    //   takeUntil(this.destroy$)
+    // ).subscribe((res: GvPaginationObject) => {
+    //   if (res.count === 0) {
+    //     this.next.emit()
+    //   } else {
+    //     this.itemsCount = res.count;
+    //     this.dataSource.data = this.getItems(res);
+    //   }
+    // })
 
     const allowMultiSelect = this.listDefinition.targetMaxQuantity === 1 ? false : true;
 

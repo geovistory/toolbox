@@ -82,4 +82,9 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
 
+  static readonly MADRIDS_PRESENCE: OmitEntity<InfTemporalEntity> = ({
+    pk_entity: 4016,
+    fk_class: DfhApiClassMock.EN_51_PLACE.dfh_pk_class,
+  })
+
 }

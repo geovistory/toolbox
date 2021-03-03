@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { IAppState } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvSubfieldPage, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 import { TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { Observable } from 'rxjs';
 import { AppellationItem } from '../models/AppellationItem';
@@ -18,9 +18,8 @@ import { LanguageItem } from '../models/LanguageItem';
 import { PlaceItem } from '../models/PlaceItem';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
-import { StatementProjRel, StatementTarget, StatementWithTarget } from '../models/StatementWithTarget';
+import { StatementProjRel, StatementTarget, StatementWithTarget, SubfieldPage } from '../models/StatementWithTarget';
 import { Subfield } from '../models/Subfield';
-import { SubfieldType } from '../models/SubfieldType';
 import { TemporalEntityRemoveProperties } from '../models/TemporalEntityRemoveProperties';
 import { TemporalEntityRow } from '../models/TemporalEntityRow';
 import { TimePrimitiveItem } from '../models/TimePrimitiveItem';
@@ -76,14 +75,15 @@ export declare class InformationPipesService {
      * pipe the target of given statment
      * @param stmt InfStatement to be completed with target
      * @param page page for which we are piping this stuff
-     * @param subfieldType type of subfield for which we pipe this stupp
+     * @param subfieldType type of subfield for which we pipe this stuff
      */
-    pipeTargetOfStatement(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementTarget>;
+    pipeTargetOfStatement(stmt: InfStatement, page: GvSubfieldPage, subfieldType: GvSubfieldType): Observable<StatementTarget>;
     /**
      * pipe target and projRel of the given statement
      */
-    pipeStatementWithTarget(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget>;
-    pipeSubfieldPage(page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget[]>;
+    pipeStatementWithTarget(stmt: InfStatement, page: GvSubfieldPage, subfieldType: GvSubfieldType): Observable<StatementWithTarget>;
+    pipeSubfieldPage(page: GvSubfieldPage, subfieldType: GvSubfieldType): Observable<SubfieldPage>;
+    private pipeTimeSpan;
     /**
      * Pipe the temporal entities connected to given entity by statements that are in the current project
      */

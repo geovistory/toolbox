@@ -8,7 +8,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
@@ -98,22 +98,22 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy {
 
     const columns$ = this.c.pipeSpecificAndBasicFields(this.listDefinition.targetClass)
 
-    this.rows$ = combineLatest(pagination$, columns$).pipe(
-      distinctUntilChanged(equals),
-      switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
-        paginateBy,
-        limit,
-        offset,
-        pkProject,
-        this.listDefinition,
-        columns
-      )),
-      shareReplay({ refCount: true, bufferSize: 1 }),
-    )
+    // this.rows$ = combineLatest(pagination$, columns$).pipe(
+    //   distinctUntilChanged(equals),
+    //   switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
+    //     paginateBy,
+    //     limit,
+    //     offset,
+    //     pkProject,
+    //     this.listDefinition,
+    //     columns
+    //   )),
+    //   shareReplay({ refCount: true, bufferSize: 1 }),
+    // )
 
     this.table = new TemporalEntityTable(this.rows$, columns$, this.destroy$, this.listDefinition, customCols);
 
-    this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
+    // this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
 
   }
 

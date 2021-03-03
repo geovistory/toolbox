@@ -1,11 +1,12 @@
-import { Subfield, SubfieldType } from '@kleiolab/lib-queries';
+import { Subfield } from '@kleiolab/lib-queries';
 import { PaginateByParam } from '@kleiolab/lib-redux';
+import { GvSubfieldId, GvSubfieldPage, GvSubfieldPageScope, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 
 /**
  * returns true if the subfield type is representing a value object type
  * @param subfieldType
  */
-export function isValueObjectSubfield(subfieldType: SubfieldType): boolean {
+export function isValueObjectSubfield(subfieldType: GvSubfieldType): boolean {
   if (subfieldType.appellation) return true
   else if (subfieldType.language) return true
   else if (subfieldType.place) return true
@@ -23,7 +24,7 @@ export function isValueObjectSubfield(subfieldType: SubfieldType): boolean {
  * It returns false if the subfield type is temporalEntity, typeItem or timeSpan
  * @param subfieldType
  */
-export function isLeafItemSubfield(subfieldType: SubfieldType): boolean {
+export function isLeafItemSubfield(subfieldType: GvSubfieldType): boolean {
   if (isValueObjectSubfield(subfieldType)) return true
   else if (subfieldType.entityPreview) return true
   return false
@@ -31,13 +32,34 @@ export function isLeafItemSubfield(subfieldType: SubfieldType): boolean {
 
 
 
-export function createPaginateBy(listDefinition: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
+export function createPaginateBy(subfield: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
   return [
-    { fk_property: listDefinition.property.pkProperty },
-    { fk_target_class: listDefinition.targetClass },
-    { [listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
+    { fk_property: subfield.property.pkProperty },
+    { fk_target_class: subfield.targetClass },
+    { [subfield.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
     { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
   ]
+}
+
+export function subfieldToSubfieldPage(subfield: Subfield, fkSourceEntity: number, scope: GvSubfieldPageScope, limit: number, offset: number): GvSubfieldPage {
+  return {
+    fkSourceEntity,
+    fkProperty: subfield.property.pkProperty,
+    targetClass: subfield.targetClass,
+    limit,
+    offset,
+    isOutgoing: subfield.isOutgoing,
+    scope
+  }
+}
+export function subfieldToSubfieldId(subfield: Subfield, fkSourceEntity: number, scope: GvSubfieldPageScope): GvSubfieldId {
+  return {
+    fkSourceEntity,
+    fkProperty: subfield.property.pkProperty,
+    targetClass: subfield.targetClass,
+    isOutgoing: subfield.isOutgoing,
+    scope
+  }
 }
 
 

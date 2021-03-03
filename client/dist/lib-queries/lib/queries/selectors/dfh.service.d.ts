@@ -1,14 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
-import { IAppState } from '@kleiolab/lib-redux';
-import { ByPk } from '@kleiolab/lib-redux';
+import { ByPk, DfhActions, DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { DfhProperty } from '@kleiolab/lib-sdk-lb4';
-import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
-import { DfhLabel } from '@kleiolab/lib-sdk-lb4';
-import { DfhClass } from '@kleiolab/lib-sdk-lb4';
-import { ReducerConfigCollection } from '@kleiolab/lib-redux';
-import { DfhActions } from '@kleiolab/lib-redux';
-import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from '@kleiolab/lib-redux';
 import { ShouldPauseService } from '../services/should-pause.service';
 declare class Selector<Slice> {
     ngRedux: NgRedux<IAppState>;
@@ -64,22 +57,6 @@ declare class DfhPropertySelections extends Selector<DfhPropertySlice> {
         };
     };
     by_pk_property$: {
-        all$: Observable<ByPk<ByPk<DfhProperty>>>;
-        key: (x: any) => Observable<ByPk<DfhProperty>>;
-        noPause: {
-            all$: Observable<ByPk<ByPk<DfhProperty>>>;
-            key: (x: any) => Observable<ByPk<DfhProperty>>;
-        };
-    };
-    by_has_domain__pk_property$: {
-        all$: Observable<ByPk<ByPk<DfhProperty>>>;
-        key: (x: any) => Observable<ByPk<DfhProperty>>;
-        noPause: {
-            all$: Observable<ByPk<ByPk<DfhProperty>>>;
-            key: (x: any) => Observable<ByPk<DfhProperty>>;
-        };
-    };
-    by_has_range__pk_property$: {
         all$: Observable<ByPk<ByPk<DfhProperty>>>;
         key: (x: any) => Observable<ByPk<DfhProperty>>;
         noPause: {

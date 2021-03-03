@@ -1,21 +1,86 @@
-import { Subfield, SubfieldType } from '@kleiolab/lib-queries';
+import { Subfield } from '@kleiolab/lib-queries';
+import { GvLoadSubentitySubfieldPageReq, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/DfhApiPropertyMock';
 import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/local-model.helpers';
+
+function subfieldToSubentitySubfieldReq(subfield: Subfield, isCircular: boolean): GvLoadSubentitySubfieldPageReq {
+  return {
+    subfieldType: subfield.listType,
+    page: {
+      fkProperty: subfield.property.pkProperty,
+      targetClass: subfield.targetClass,
+      isOutgoing: subfield.isOutgoing,
+      isCircular,
+      limit: 1,
+      offset: 0,
+    }
+  }
+}
 
 
 
 
 export namespace SubfieldMock {
 
-  export const subfieldAppeHasAppeString: Subfield = createSubfield(
+
+
+  export const presenceWasAtPlace: Subfield = createSubfield(
+    DfhApiClassMock.EN_84_PRESENCE,
+    DfhApiPropertyMock.EN_148_WAS_AT,
+    DfhApiClassMock.EN_51_PLACE,
+    true,
+    { place: 'true' }
+  )
+  export const manifestationSingletonHasDefinition: Subfield = createSubfield(
+    DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
+    DfhApiPropertyMock.EN_1762_HAS_DEFINITION,
+    DfhApiClassMock.EN_785_TEXT,
+    true,
+    { langString: 'true' }
+  )
+
+  export const manifestationSingletonHasShortTitle: Subfield = createSubfield(
+    DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
+    DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE,
+    DfhApiClassMock.EN_784_SHORT_TITLE,
+    true,
+    { langString: 'true' }
+  )
+
+  export const accountOfJourneyHasDuration: Subfield = createSubfield(
+    DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY,
+    DfhApiPropertyMock.EN_1613_HAS_DURATION,
+    DfhApiClassMock.EN_689_DURATION,
+    true,
+    {
+      dimension: {
+        measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
+      }
+    }
+  )
+  export const appeHasAppeString: Subfield = createSubfield(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1113_REFERS_TO_NAME,
     DfhApiClassMock.EN_40_APPELLATION,
     true,
     { appellation: 'true' }
   )
-  export const subfieldAppeHasTimeSpan: Subfield = createSubfield(
+  export const appeTeEnUsedInLanguage: Subfield = createSubfield(
+    DfhApiClassMock.EN_365_NAMING,
+    DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE,
+    DfhApiClassMock.EN_54_LANGUAGE,
+    true,
+    { language: 'true' }
+  )
+  export const appeTeEnIsAppeOfPerson: Subfield = createSubfield(
+    DfhApiClassMock.EN_365_NAMING,
+    DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
+    DfhApiClassMock.EN_21_PERSON,
+    true,
+    { entityPreview: 'true' }
+  )
+  export const appeHasTimeSpan: Subfield = createSubfield(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_4_HAS_TIME_SPAN,
     DfhApiClassMock.EN_50_TIME_SPAN,
@@ -23,20 +88,19 @@ export namespace SubfieldMock {
     { timeSpan: 'true' }
   )
 
-
-  export const subfieldPresenceWasAtPlace: Subfield = createSubfield(
-    DfhApiClassMock.EN_84_PRESENCE,
-    DfhApiPropertyMock.EN_148_WAS_AT,
-    DfhApiClassMock.EN_51_PLACE,
-    true,
-    { place: 'true' }
-  )
-  export const manifestationSingletonHasDefinitionShortTitle: Subfield = createSubfield(
-    DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
-    DfhApiPropertyMock.EN_1762_HAS_DEFINITION,
-    DfhApiClassMock.EN_785_TEXT,
-    true,
-    { langString: 'true' }
+  export const personHasAppeTeEn: Subfield = createSubfield(
+    DfhApiClassMock.EN_365_NAMING,
+    DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
+    DfhApiClassMock.EN_21_PERSON,
+    false,
+    {
+      temporalEntity: [
+        subfieldToSubentitySubfieldReq(appeHasAppeString, false),
+        subfieldToSubentitySubfieldReq(appeTeEnUsedInLanguage, false),
+        subfieldToSubentitySubfieldReq(appeTeEnIsAppeOfPerson, true),
+        subfieldToSubentitySubfieldReq(appeHasTimeSpan, false),
+      ]
+    }
   )
 }
 
@@ -45,7 +109,7 @@ function createSubfield(
   property: DfhApiProperty,
   range: DfhApiClass,
   isOutgoing: boolean,
-  subfieldType: SubfieldType
+  subfieldType: GvSubfieldType
 ): Subfield {
 
   let source: DfhApiClass
@@ -92,7 +156,7 @@ function createSubfield(
     ontoInfoLabel: property.dfh_property_identifier_in_namespace,
     property: { pkProperty: property.dfh_pk_property },
     isHasTypeField,
-    isOutgoing: true,
+    isOutgoing,
     sourceClass: source.dfh_pk_class,
     sourceClassLabel: source.dfh_class_label,
     targetMinQuantity,

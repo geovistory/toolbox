@@ -1,7 +1,7 @@
-import { DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { DfhClass, DfhLabel, DfhProperty, GvSubfieldType, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { Field } from '../models/Field';
-import { SubfieldType } from '../models/SubfieldType';
+import { Subfield } from '../models/Subfield';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
 export declare type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'persistent_item' | 'temporal_entity';
@@ -55,20 +55,28 @@ export declare class ConfigurationPipesService {
     * - basic fields
     */
     pipeSpecificAndBasicFields(pkClass: number): Observable<Field[]>;
-    private pipePropertiesToSubfields;
+    pipePropertiesToSubfields(properties: DfhProperty[], isOutgoing: boolean, enabledProfiles: number[], sysConfig: SysConfigValue): Observable<Subfield[]>;
+    pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean): Observable<Subfield>;
+    private pipeSubfield;
     /**
      * Pipes the type of Subfield for a given class
+     *
      * Currently (to be revised if good) sublcasses of E55 Type,
      * that are the target of a field with targetMaxQantity=1,
      * get Subfield type 'hasType'.
      * Therefore targetMaxQuantity is needed.
+     *
+     * If we are nesting subfields, we'll end up with circular fields.
+     * E.g.: Person 21 -> has appellation 1111 -> AppeTeEn 365 -> is appellation of 1111 -> Person 21
+     * In order to detect them, we can additionally pass in the parent property.
      *
      * This behavior has to be revised, because it can lead to problems
      * when the Subfield belongs to a Field with multiple target classes
      * (and thus Subfields) because the UI then does not allow to choose
      * the right target class.
      */
-    pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType>;
+    pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number): Observable<GvSubfieldType>;
+    pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number): Observable<GvSubfieldType>;
     /**
      * Gets class field configs of given pkClass
      *
@@ -204,6 +212,7 @@ export declare class ConfigurationPipesService {
     pipeTypePropertyOfTypedClass(pkTypedClass: any): Observable<number>;
     pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]>;
 }
+export declare function createHasTimeSpanProperty(domainClass: number): DfhProperty;
 export {};
 /**
  * Pipes the fields for temporal entity forms

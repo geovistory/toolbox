@@ -1,15 +1,19 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfStatement } from '../../../../models';
-import { DatDigitalMock } from './DatDigitalMock';
-import { DfhApiPropertyMock } from './DfhApiPropertyMock';
-import { InfAppellationMock } from './InfAppellationMock';
-import { InfPersistentItemMock } from './InfPersistentItemMock';
-import { InfTemporalEntityMock } from './InfTemporalEntityMock';
-import { InfTimePrimitiveMock } from './InfTimePrimitiveMock';
-import { TabCellXMock } from './TabCellXMock';
-import { DatChunkMock } from './DatChunkMock';
+import {InfStatement} from '../../../../models';
+import {DatChunkMock} from './DatChunkMock';
+import {DatDigitalMock} from './DatDigitalMock';
+import {DfhApiPropertyMock} from './DfhApiPropertyMock';
+import {InfAppellationMock} from './InfAppellationMock';
+import {InfDimensionMock} from './InfDimensionMock';
+import {InfLangStringMock} from './InfLangStringMock';
+import {InfLanguageMock} from './InfLanguageMock';
+import {InfPersistentItemMock} from './InfPersistentItemMock';
+import {InfPlaceMock} from './InfPlaceMock';
+import {InfTemporalEntityMock} from './InfTemporalEntityMock';
+import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
 import {OmitEntity} from './local-model.helpers';
+import {TabCellXMock} from './TabCellXMock';
 
 /**
  * pk_entity prefix: 300
@@ -370,6 +374,42 @@ export class InfStatementMock {
     fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING_2.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
+  })
+
+  static readonly MADRIDS_PRESENCE_WAS_AT_PLACE_123: OmitEntity<InfStatement> = ({
+    pk_entity: 3052,
+    fk_subject_info: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property,
+    fk_object_info: InfPlaceMock.PLACE_123.pk_entity,
+  })
+
+  static readonly MADRIDS_PRESENCE_WAS_PRESENCE_OF: OmitEntity<InfStatement> = ({
+    pk_entity: 3053,
+    fk_subject_info: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.GEO_PLACE_MADRID.pk_entity,
+  })
+
+  static readonly ACCOUNT_OF_JOURNEY_HAS_DURATION: OmitEntity<InfStatement> = ({
+    pk_entity: 3054,
+    fk_subject_info: InfPersistentItemMock.ACCOUNT_OF_JOURNEY.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property,
+    fk_object_info: InfDimensionMock.ONE_MONTH.pk_entity,
+  })
+
+
+  static readonly MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER: OmitEntity<InfStatement> = ({
+    pk_entity: 3055,
+    fk_subject_info: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property,
+    fk_object_info: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER.pk_entity,
+  })
+
+  static readonly NAME_1_TO_LANG: OmitEntity<InfStatement> = ({
+    pk_entity: 3056,
+    fk_subject_info: InfTemporalEntityMock.NAMING_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property,
+    fk_object_info: InfLanguageMock.ENGLISH.pk_entity,
   })
 
 }

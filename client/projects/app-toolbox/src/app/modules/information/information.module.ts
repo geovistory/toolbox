@@ -19,7 +19,6 @@ import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/comp
 import { ListModule } from 'projects/app-toolbox/src/app/shared/components/list/list.module';
 import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
-import { InfTimePrimitivePipeModule } from 'projects/app-toolbox/src/app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
@@ -62,7 +61,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     TreeviewModule,
     TableModule,
     DateTimeModule,
-    InfTimePrimitivePipeModule,
     DragDropModule,
     CdkTreeModule,
     ListDrawerHeaderModule,

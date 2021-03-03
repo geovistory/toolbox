@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
-import { ByPk, createPaginateByKey, EntityModelAndClass, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { ByPk, EntityModelAndClass, getFromTo, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvSubfieldId, GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { Observable, of, pipe } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 
 class Selector {
@@ -18,104 +18,67 @@ class Selector {
 
   selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
-    const all$ = this.pkProject$.pipe(
-      switchMap(pk => {
-        let path: any[];
-        if (this.configs[this.model].facetteByPk) {
-          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey];
-        } else {
-          path = [infRoot, this.model, indexKey];
-        }
-        return this.ngRedux.select<ByPk<M>>(path)
-      })
-    )
-
-
+    const all$ = this.ngRedux.select<ByPk<M>>([infRoot, this.model, indexKey])
     const key = (x): Observable<M> => {
-      return this.pkProject$.pipe(
-        switchMap(pk => {
-          let path: any[];
-          if (this.configs[this.model].facetteByPk) {
-            path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey, x];
-          } else {
-            path = [infRoot, this.model, indexKey, x];
-          }
-          return this.ngRedux.select<M>(path)
-        })
-      )
-
+      return this.ngRedux.select<M>([infRoot, this.model, indexKey, x])
     }
-
     return { all$, key }
   }
 
   paginationSelector<M>() {
 
-    const pipePage = (page: GvSubfieldPage): Observable<M[]> => this.pkProject$.pipe(
-      switchMap(pk => {
-        let path: any[];
-        const pagBy = paginateBy
-        const key = createPaginateByKey(page)
-        if (this.configs[this.model].facetteByPk) {
-          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-        } else {
-          path = [infRoot, this.model, pagBy, key];
-        }
-        return this.ngRedux.select<number>([...path, 'count'])
+    const pipePage = (page: GvSubfieldPage): Observable<M[]> => {
+      let path: any[];
+      const pagBy = paginateBy
+      const key = subfieldIdToString(page)
+      path = [infRoot, this.model, pagBy, key];
+      return this.ngRedux.select<number>([...path, 'count'])
+        .pipe(
+          filter(count => count !== undefined),
+          switchMap(count => {
+            const start = page.offset;
+            const end = count <= (start + page.limit) ? count : (start + page.limit);
+            const obs$: Observable<M>[] = [];
+            for (let i = start; i < end; i++) {
+              obs$.push(
+                this.ngRedux.select<M>([...path, 'rows', i]).pipe(filter(x => !!x))
+              )
+            }
+            return combineLatestOrEmpty(obs$)
+          })
+        )
+    }
+
+
+    const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$: Observable<any>): Observable<boolean> => {
+      let path: any[];
+      const pagBy = paginateBy
+      const key = subfieldIdToString(page)
+
+      path = [infRoot, this.model, pagBy, key];
+      const fromToString = getFromTo(page.limit, page.offset)
+      return trigger$.pipe(
+        switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', fromToString])
           .pipe(
-            filter(count => count !== undefined),
-            switchMap(count => {
-              const start = page.offset;
-              const end = count <= (start + page.limit) ? count : (start + page.limit);
-              const obs$: Observable<M>[] = [];
-              for (let i = start; i < end; i++) {
-                obs$.push(
-                  this.ngRedux.select<M>([...path, 'rows', i]).pipe(filter(x => !!x))
-                )
-              }
-              return combineLatestOrEmpty(obs$)
-            })
+            first(),
+            map(loading => !loading)
           )
-      })
-    )
+        ))
 
-    // const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
-    //   switchMap(pk => {
-    //     let path: any[];
-    //     const pagBy = paginateBy
-    //     const key = createPaginateByKey(page)
-    //     if (this.configs[this.model].facetteByPk) {
-    //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-    //     } else {
-    //       path = [infRoot, this.model, pagBy, key];
-    //     }
+    }
 
-    //     return trigger$.pipe(
-    //       switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(page.limit, page.offset)])
-    //         .pipe(
-    //           first(),
-    //           map(loading => !loading)
-    //         )
-    //       ))
 
-    //   })
-    // )
+    const pipeCount = (page: GvSubfieldId): Observable<number | undefined> => {
+      let path: any[];
+      const pagBy = paginateBy
+      const key = subfieldIdToString(page)
 
-    const pipeCount = (page: GvSubfieldPage): Observable<number | undefined> => this.pkProject$.pipe(
-      switchMap(pk => {
-        let path: any[];
-        const pagBy = paginateBy
-        const key = createPaginateByKey(page)
-        if (this.configs[this.model].facetteByPk) {
-          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-        } else {
-          path = [infRoot, this.model, pagBy, key];
-        }
-        return this.ngRedux.select<number>([...path, 'count'])
-      })
-    )
+      path = [infRoot, this.model, pagBy, key];
+      return this.ngRedux.select<number>([...path, 'count'])
+    }
 
-    return { pipePage, pipeCount }
+
+    return { pipePage, pipeCount, pipePageLoadNeeded }
 
   }
 

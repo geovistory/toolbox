@@ -7132,19 +7132,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: state-schema/_helpers/createPaginateByKey.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} x
- * @return {?}
- */
-function createPaginateByKey(x) {
-    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${x.targetClass}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: state-schema/epics/schema.epics.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -7226,8 +7213,6 @@ class SchemaEpics {
             const pkProject = store.value.activeProject.pk_project;
             /** @type {?} */
             const meta = action.meta;
-            /** @type {?} */
-            const paginateBy = createPaginateByKey(meta.req.page);
             // call action to set pagination loading on true
             this.infActions.statement.loadPage(meta.req.page, pkProject);
             this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
@@ -8119,6 +8104,19 @@ const createProjectsReducer = (/**
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: state-schema/_helpers/subfieldIdToString.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} x
+ * @return {?}
+ */
+function subfieldIdToString(x) {
+    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${x.targetClass}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: state-schema/_helpers/reducer-factory.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -8356,7 +8354,7 @@ class ReducerFactory {
                 /** @type {?} */
                 const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                 /** @type {?} */
-                const key = createPaginateByKey(meta.page);
+                const key = subfieldIdToString(meta.page);
                 /** @type {?} */
                 const fromTo = getFromTo(meta.page.limit, meta.page.offset);
                 state = facette(action, state, (/**
@@ -8369,7 +8367,7 @@ class ReducerFactory {
                 /** @type {?} */
                 const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                 /** @type {?} */
-                const key = createPaginateByKey(meta.page);
+                const key = subfieldIdToString(meta.page);
                 /** @type {?} */
                 const fromTo = getFromTo(meta.page.limit, meta.page.offset);
                 state = facette(action, state, (/**
@@ -8382,7 +8380,7 @@ class ReducerFactory {
                 /** @type {?} */
                 const meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                 /** @type {?} */
-                const key = createPaginateByKey(meta.page);
+                const key = subfieldIdToString(meta.page);
                 /** @type {?} */
                 const fromTo = getFromTo(meta.page.limit, meta.page.offset);
                 /** @type {?} */
@@ -10341,5 +10339,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { APP_INITIAL_STATE, AccountActions, ActiveProjectActions, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, GvSchemaActions, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, LoadingBarActions, NamespaceSlice, Notifications, NotificationsAPIActions, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, apiConfigFactory, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createPaginateByKey, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, ofSubstore, paginateBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, LoadingBarEpics as ɵa, NotificationsAPIEpics as ɵb, ActiveProjectEpics as ɵc, AccountEpics as ɵd, SysEpics as ɵe, DfhEpics as ɵf, InfEpics as ɵg, DatEpics as ɵh, ProEpics as ɵi, SchemaEpics as ɵj, ActionResolverEpics as ɵk, accountRootReducer as ɵl, loadingBarReducer as ɵm, activeProjectReducer as ɵn, informationReducer as ɵo, sourceListReducer as ɵp, createProjectsReducer as ɵq };
+export { APP_INITIAL_STATE, AccountActions, ActiveProjectActions, ChunkActionsFactory, ChunkSlice, ClassColumnMappingSlice, ColumnActionsFactory, ColumnSlice, DatActions, DfhActions, DfhClassActionFactory, DfhClassSlice, DfhLabelActionFactory, DfhLabelSlice, DfhProfileActionFactory, DfhProfileSlice, DfhPropertyActionFactory, DfhPropertySlice, DigitalActionsFactory, DigitalSlice, EntityDetail, Flattener, GvSchemaActions, INIT_SANDBOX_STATE, InfActionFactory, InfActions, InfAppellationSlice, InfDimensionSlice, InfEpicsFactory, InfLangStringSlice, InfLanguageSlice, InfPersistentItemActionFactory, InfPersistentItemSlice, InfPlaceSlice, InfStatementActionFactory, InfStatementSlice, InfTemporalEntityActionFactory, InfTemporalEntitySlice, InfTextPropertyActionFactory, InfTextPropertySlice, InfTimePrimitiveSlice, Information, List, LoadingBarActions, NamespaceSlice, Notifications, NotificationsAPIActions, PR_ENTITY_MODEL_MAP, ProActions, ProAnalysisActionFactory, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory, ProjectSettingsData, ProjectsActions, ReducerFactory, ReduxModule, RootEpics, SET_APP_STATE, SchemaActionsFactory, SchemaEpicsFactory, SchemaService, SourceList, SysActions, TabActions, TabBase, TabCellSlice, TextPropertySlice, Types, WarActions, apiConfigFactory, by, cleanupResolved, createDatReducer, createDfhReducer, createInfReducer, createProReducer, createSysReducer, createTabReducer, createWarReducer, datDefinitions, datRoot, dfhDefinitions, dfhLabelByFksKey, dfhRoot, facetteByPk, getEnd, getFromTo, getStart, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, ofSubstore, paginateBy, pendingRequestReducer, proClassFieldConfgByProjectAndClassKey, proDefinitions, proRoot, resolvedRequestReducer, rootReducer, sandboxStateReducer, setAppState, storeFlattened, subfieldIdToString, sysDefinitions, sysRoot, tabDefinitions, tabRoot, textPropertyByFksKey, textPropertyByFksWithoutLang, warDefinitions, warRoot, LoadingBarEpics as ɵa, NotificationsAPIEpics as ɵb, ActiveProjectEpics as ɵc, AccountEpics as ɵd, SysEpics as ɵe, DfhEpics as ɵf, InfEpics as ɵg, DatEpics as ɵh, ProEpics as ɵi, SchemaEpics as ɵj, ActionResolverEpics as ɵk, accountRootReducer as ɵl, loadingBarReducer as ɵm, activeProjectReducer as ɵn, informationReducer as ɵo, sourceListReducer as ɵp, createProjectsReducer as ɵq };
 //# sourceMappingURL=kleiolab-lib-redux-src-lib-redux-store.js.map

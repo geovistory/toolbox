@@ -8,7 +8,8 @@ import {Postgres1DataSource} from '../datasources';
 import {GvPaginationAlternativeLeafItemsReq} from '../models/paginated-statements/gv-pagination-alternative-leaf-items-req';
 import {GvPaginationObject} from '../models/paginated-statements/gv-pagination-object';
 import {GvLoadSubfieldPageReq} from '../models/paginated-statements/gv-load-subfield-page-req';
-
+import {GvSubfieldId} from '../models/paginated-statements/gv-subfield-id'
+import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
 export class PaginatedStatementsController {
   constructor(
     @inject('datasources.postgres1')
@@ -57,7 +58,9 @@ export class PaginatedStatementsController {
   async loadSubfieldPage(
     @requestBody() req: GvLoadSubfieldPageReq
   ): Promise<GvPaginationObject> {
-
-    throw new Error("not yet implemented" + JSON.stringify(req));
+    const x: Partial<GvSubfieldId> = {}
+    throw new Error("not yet implemented" + JSON.stringify({...req, ...x}));
   }
 }
+
+registerType(GvSubfieldId)

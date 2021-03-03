@@ -888,18 +888,6 @@ class GregorianDateTime extends DateTimeCommons {
  * Generated from: classes/time-primitive.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @record
- */
-function ITimePrimitive() { }
-if (false) {
-    /** @type {?|undefined} */
-    ITimePrimitive.prototype.julianDay;
-    /** @type {?|undefined} */
-    ITimePrimitive.prototype.duration;
-    /** @type {?|undefined} */
-    ITimePrimitive.prototype.calendar;
-}
 class TimePrimitive {
     // the calendar initialy used by user to create time primitive
     /**

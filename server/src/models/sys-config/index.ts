@@ -9,5 +9,6 @@ export * from './sys-config-fields-of-source-class.model';
 export * from './sys-config-special-fields.model';
 export * from './sys-config-value-obect-type';
 export * from './sys-config-value.model';
+export * from './TrueEnum';
 // end:ng42.barrel
 

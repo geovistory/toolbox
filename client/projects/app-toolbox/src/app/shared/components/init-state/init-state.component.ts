@@ -1,6 +1,7 @@
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { INIT_SANDBOX_STATE, sandboxStateReducer } from '@kleiolab/lib-redux';
+import { INIT_SANDBOX_STATE, sandboxStateReducer, SchemaService } from '@kleiolab/lib-redux';
+import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, Subject, timer } from 'rxjs';
@@ -35,6 +36,8 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   @Input() sandboxState: any;
 
+  @Input() schemaObjects: GvSchemaObject[]
+
   @Output() ok = new EventEmitter();
 
   initialized: boolean;
@@ -44,7 +47,8 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private ngRedux: NgRedux<any>,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    private schemaService: SchemaService
   ) { }
 
   ngOnInit() {
@@ -102,6 +106,11 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.waitForAll.push(timer(100))
 
+    if (this.schemaObjects) {
+      this.schemaObjects.forEach(item => {
+        this.schemaService.storeSchemaObjectGv(item, 0)
+      })
+    }
   }
 
   ngAfterViewInit() {

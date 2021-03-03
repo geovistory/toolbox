@@ -29,13 +29,24 @@ export namespace GvSchemaObjectMock {
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
-
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END)
       ],
       label: [
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_153_END_OF_THE_END),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_365_NAMING),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_785_TEXT),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_40_APPELLATION),
@@ -43,7 +54,6 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_335_TIME_PRIMITIVE),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_21_PERSON),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_50_TIME_SPAN),
-
 
       ]
     },
@@ -57,8 +67,29 @@ export namespace GvSchemaObjectMock {
 
   /**
    * This object should provide the classes and properties
-   * for working with EN_220_MANIFESTATION_SINGLETON
+   * for working with Ship Voyage
    */
+  export const modelOfShipVoyage: GvSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_523_SHIP_VOYAGE),
+      ],
+      property: [
+      ],
+      label: [
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_523_SHIP_VOYAGE),
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+      ]
+    }
+  }
+  /**
+    * This object should provide the classes and properties
+    * for working with EN_220_MANIFESTATION_SINGLETON
+    */
   export const fieldsOfManifestationSingleton: GvSchemaObject = {
     dfh: {
       klass: [

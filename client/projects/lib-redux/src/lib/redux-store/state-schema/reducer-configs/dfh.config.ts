@@ -1,8 +1,7 @@
-import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
-import { DfhProperty } from '@kleiolab/lib-sdk-lb4';
+import { DfhClass, DfhProperty } from '@kleiolab/lib-sdk-lb4';
+import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 
-import { DfhClass } from '@kleiolab/lib-sdk-lb4';
 
 export const dfhRoot = 'dfh';
 
@@ -45,14 +44,14 @@ export const dfhDefinitions: ReducerConfigCollection = {
         keyInStore: 'has_range',
         groupByFn: (d: DfhProperty): string => d.has_range.toString()
       },
-      {
-        keyInStore: 'has_domain__fk_property',
-        groupByFn: (d: DfhProperty): string => d.has_domain + '_' + d.pk_property
-      },
-      {
-        keyInStore: 'has_range__fk_property',
-        groupByFn: (d: DfhProperty): string => d.has_range + '_' + d.pk_property
-      },
+      // {
+      //   keyInStore: 'has_domain__fk_property',
+      //   groupByFn: (d: DfhProperty): string => d.has_domain + '_' + d.pk_property
+      // },
+      // {
+      //   keyInStore: 'has_range__fk_property',
+      //   groupByFn: (d: DfhProperty): string => d.has_range + '_' + d.pk_property
+      // },
       {
         keyInStore: 'is_has_type_subproperty',
         groupByFn: (d: DfhProperty): string => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined

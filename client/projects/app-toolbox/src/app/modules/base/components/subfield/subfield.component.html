@@ -1,17 +1,75 @@
-<p>subfield works!</p>
-<p>
-  type: {{subfield.listType|json}}
-</p>
-<p>
-  itemsCount: {{itemsCount$|async}}
-</p>
-<p>
-  limit: {{limit$|async}}
-</p>
-<p>
-  offset: {{offset$|async}}
-</p>
+<ng-container *ngIf="subfield.listType.temporalEntity; else simple">
+  <gv-subfield-table [items$]="items$" [subfield]="subfield" [showOntoInfo$]="showOntoInfo$"></gv-subfield-table>
+</ng-container>
 
-<p>
-  items: {{items$|async|json}}
-</p>
+<ng-template #timespan>
+  <ng-container *ngIf="subfield.listType.timeSpan; else simple">
+
+    <gv-time-span-list fxLayout="column" fxLayoutAlign="space-between stretch" [showOntoInfo$]="showOntoInfo$"
+      [pkEntity]="pkEntity">
+    </gv-time-span-list>
+  </ng-container>
+</ng-template>
+
+
+<ng-template #simple>
+  <ng-container>
+    <div *ngFor="let item of (items$ | async); let i = index;" class="literal-item">
+      <div class="full-width ">
+        <span class="left-col ellipsis">
+          <gv-onto-class-info class="mr-2" [pkClass]="subfield.targetClass" *ngIf="showOntoInfo$ | async">
+          </gv-onto-class-info>
+          <span *ngIf="!item.target.entityPreview" class="ellipsis">
+            {{item.targetLabel}}
+          </span>
+          <gv-entity-preview *ngIf="item.target.entityPreview" [preview]="item.target.entityPreview"
+            [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
+        </span>
+
+        <span class="right-col">
+          <mat-menu #appMenu="matMenu">
+
+            <ng-container *ngIf="item.target.timeSpan; else normal">
+              <button mat-menu-item (click)="openTimespanModal(item.target.timeSpan)">
+                <mat-icon>edit</mat-icon>
+                Edit
+              </button>
+              <mat-divider></mat-divider>
+            </ng-container>
+
+            <ng-template #normal>
+              <ng-container *ngIf="item.target.langString">
+                <button mat-menu-item (click)="openPopup(item)">
+                  <mat-icon svgIcon="arrow-expand-all"></mat-icon>
+                  <span>Open in popup</span>
+                </button>
+                <mat-divider></mat-divider>
+              </ng-container>
+
+
+
+              <div class="dropdown-header">Danger Zone</div>
+              <button mat-menu-item (click)="remove(item)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Remove</span>
+              </button>
+
+            </ng-template>
+          </mat-menu>
+
+          <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </span>
+      </div>
+      <mat-divider></mat-divider>
+    </div>
+  </ng-container>
+</ng-template>
+
+
+<mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="pageIndex$ | async"
+  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [hidden]="(itemsCount$ | async) <= 5"
+  (page)="onPageChange($event)">
+</mat-paginator>
+<mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>

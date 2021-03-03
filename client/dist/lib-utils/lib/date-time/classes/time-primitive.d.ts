@@ -1,18 +1,14 @@
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4/public-api';
 import { Granularity } from './date-time-commons';
 import { GregorianDateTime } from './gregorian-date-time';
 import { JulianDateTime } from './julian-date-time';
-export declare type CalendarType = 'gregorian' | 'julian';
-interface ITimePrimitive {
-    julianDay?: number;
-    duration?: Granularity;
-    calendar?: CalendarType;
-}
+export declare type CalendarType = TimePrimitiveWithCal.CalendarEnum;
 export declare class TimePrimitive {
     readonly LAST_DAY_BC = 1721422;
     julianDay: number;
-    duration: Granularity;
-    calendar: CalendarType;
-    constructor(data?: ITimePrimitive);
+    duration: TimePrimitiveWithCal.DurationEnum;
+    calendar: TimePrimitiveWithCal.CalendarEnum;
+    constructor(data?: TimePrimitiveWithCal);
     getGregorianDateTime(): GregorianDateTime;
     getJulianDateTime(): JulianDateTime;
     /**
@@ -46,4 +42,3 @@ export declare class TimePrimitive {
      */
     getLastSecond(calendar?: CalendarType): number | null;
 }
-export {};

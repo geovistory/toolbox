@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { WarEntityPreviewWithFulltext } from './warEntityPreviewWithFulltext';
+import { WarEntityPreview } from './warEntityPreview';
 export interface WarObject {
-    entity_preview?: Array<WarEntityPreviewWithFulltext>;
+    entity_preview?: Array<WarEntityPreview>;
 }

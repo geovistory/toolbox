@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, FieldProperty, SchemaSelectorsService, Subfield, SubfieldType, TableName } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, FieldProperty, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfDimension, InfLangString, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
@@ -664,7 +665,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   };
 
 
-  private getControlNodes(arrayConfig: LocalArrayConfig, listType: SubfieldType): Observable<LocalNodeConfig[]> {
+  private getControlNodes(arrayConfig: LocalArrayConfig, listType: GvSubfieldType): Observable<LocalNodeConfig[]> {
 
     if (listType.timeSpan) {
 

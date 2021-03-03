@@ -8,7 +8,7 @@ import { InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
@@ -99,7 +99,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy {
 
     const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity, true)
 
-    this.itemsCount$ = infRepo.statement$.pagination$.pipeCount(paginateBy)
+    // this.itemsCount$ = infRepo.statement$.pagination$.pipeCount(paginateBy)
 
     const nextPage$ = new Subject();
     pagination$.pipe(
@@ -130,27 +130,27 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy {
 
     const alternative = true;
 
-    this.rows$ = combineLatest(pagination$, columns$).pipe(
-      distinctUntilChanged(equals),
-      switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
-        paginateBy,
-        limit,
-        offset,
-        pkProject,
-        this.listDefinition,
-        columns,
-        alternative
-      )),
-      shareReplay({ refCount: true, bufferSize: 1 }),
-      tap((rows) => {
-        if (!allowMultiSelect && rows.length === 1) {
-          setTimeout(() => this.selection.select(rows[0].statement.pk_entity))
-        }
-        rows.forEach(row => {
-          this.statementsByPk[row.statement.pk_entity] = row.statement;
-        })
-      })
-    )
+    // this.rows$ = combineLatest(pagination$, columns$).pipe(
+    //   distinctUntilChanged(equals),
+    //   switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
+    //     paginateBy,
+    //     limit,
+    //     offset,
+    //     pkProject,
+    //     this.listDefinition,
+    //     columns,
+    //     alternative
+    //   )),
+    //   shareReplay({ refCount: true, bufferSize: 1 }),
+    //   tap((rows) => {
+    //     if (!allowMultiSelect && rows.length === 1) {
+    //       setTimeout(() => this.selection.select(rows[0].statement.pk_entity))
+    //     }
+    //     rows.forEach(row => {
+    //       this.statementsByPk[row.statement.pk_entity] = row.statement;
+    //     })
+    //   })
+    // )
 
     this.table = new TemporalEntityTable(this.rows$, columns$, this.destroy$, this.listDefinition, customCols);
 

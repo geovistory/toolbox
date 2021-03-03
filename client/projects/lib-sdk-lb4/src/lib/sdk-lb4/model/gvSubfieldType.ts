@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { GvLoadSubentitySubfieldPageReq } from './gvLoadSubentitySubfieldPageReq';
 import { DimensionValueObjectType } from './dimensionValueObjectType';
 
 
@@ -22,11 +23,11 @@ export interface GvSubfieldType {
     timePrimitive?: GvSubfieldType.TimePrimitiveEnum;
     langString?: GvSubfieldType.LangStringEnum;
     dimension?: DimensionValueObjectType;
-    temporalEntity?: GvSubfieldType.TemporalEntityEnum;
     entityPreview?: GvSubfieldType.EntityPreviewEnum;
     typeItem?: GvSubfieldType.TypeItemEnum;
     timeSpan?: GvSubfieldType.TimeSpanEnum;
     textProperty?: GvSubfieldType.TextPropertyEnum;
+    temporalEntity?: Array<GvLoadSubentitySubfieldPageReq>;
 }
 export namespace GvSubfieldType {
     export type AppellationEnum = 'true';
@@ -48,10 +49,6 @@ export namespace GvSubfieldType {
     export type LangStringEnum = 'true';
     export const LangStringEnum = {
         True: 'true' as LangStringEnum
-    };
-    export type TemporalEntityEnum = 'true';
-    export const TemporalEntityEnum = {
-        True: 'true' as TemporalEntityEnum
     };
     export type EntityPreviewEnum = 'true';
     export const EntityPreviewEnum = {

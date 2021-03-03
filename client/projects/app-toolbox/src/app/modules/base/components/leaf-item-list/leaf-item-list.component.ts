@@ -8,7 +8,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
@@ -82,20 +82,20 @@ export class LeafItemListComponent implements OnInit {
       const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity)
 
       // Piping from store
-      this.items$ = pagination$.pipe(
-        distinctUntilChanged(equals),
-        switchMap(([limit, offset, pkProject]) => this.i.pipeStatementListPage(
-          paginateBy,
-          limit,
-          offset,
-          pkProject,
-          this.listDefinition,
-          false
-        )),
-        shareReplay({ refCount: true, bufferSize: 1 }),
-      )
+      // this.items$ = pagination$.pipe(
+      //   distinctUntilChanged(equals),
+      //   switchMap(([limit, offset, pkProject]) => this.i.pipeStatementListPage(
+      //     paginateBy,
+      //     limit,
+      //     offset,
+      //     pkProject,
+      //     this.listDefinition,
+      //     false
+      //   )),
+      //   shareReplay({ refCount: true, bufferSize: 1 }),
+      // )
 
-      this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
+      // this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
 
 
     } else {

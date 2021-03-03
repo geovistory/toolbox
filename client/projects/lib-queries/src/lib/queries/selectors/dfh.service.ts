@@ -1,17 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState } from '@kleiolab/lib-redux';
-import { ByPk } from '@kleiolab/lib-redux';
+import { ByPk, DfhActions, DfhClassSlice, dfhDefinitions, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice, dfhRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { empty, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { DfhProperty } from '@kleiolab/lib-sdk-lb4';
-import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
-import { DfhLabel } from '@kleiolab/lib-sdk-lb4';
-import { DfhClass } from '@kleiolab/lib-sdk-lb4';
-import { ReducerConfigCollection } from '@kleiolab/lib-redux';
-import { DfhActions } from '@kleiolab/lib-redux';
-import { dfhDefinitions, dfhRoot } from '@kleiolab/lib-redux';
-import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from '@kleiolab/lib-redux';
 import { ShouldPauseService } from '../services/should-pause.service';
 class Selector<Slice> {
 
@@ -59,10 +51,10 @@ class DfhClassSelections extends Selector<DfhClassSlice> {
 
 // Property Selectors
 class DfhPropertySelections extends Selector<DfhPropertySlice> {
-  public pk_property__has_domain__has_range$ = this.selector<DfhProperty>('pk_property__has_domain__has_range');
+  public pk_property__has_domain__has_range$ = this.selector<DfhProperty>('by_pk_property__has_domain__has_range');
   public by_pk_property$ = this.selector<ByPk<DfhProperty>>('by_pk_property');
-  public by_has_domain__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_domain__pk_property');
-  public by_has_range__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_range__pk_property');
+  // public by_has_domain__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_domain__fk_property');
+  // public by_has_range__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_range__fk_property');
   public by_has_domain$ = this.selector<ByPk<DfhProperty>>('by_has_domain');
   public by_has_range$ = this.selector<ByPk<DfhProperty>>('by_has_range');
   public by_is_has_type_subproperty$ = this.selector<ByPk<DfhProperty>>('by_is_has_type_subproperty');

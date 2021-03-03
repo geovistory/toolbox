@@ -1,4 +1,5 @@
 export * from './decorators/method-decorators';
+export * from './functions/functions';
 export * from './models/AppellationItem';
 export * from './models/BasicStatementItem';
 export * from './models/ClassAndTypeNode';
@@ -27,7 +28,6 @@ export * from './models/SpecialFieldType';
 export * from './models/StatementItem';
 export * from './models/StatementWithTarget';
 export * from './models/Subfield';
-export * from './models/SubfieldType';
 export * from './models/TemporalEntityCell';
 export * from './models/TemporalEntityItem';
 export * from './models/TemporalEntityRemoveProperties';

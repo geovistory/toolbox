@@ -1,5 +1,13 @@
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { TemporalEntityRow } from './TemporalEntityRow';
+import { GvSubfieldId, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, ProInfoProjRel, TimePrimitiveWithCal, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+export interface SubentitySubfieldPage {
+    subfield: GvSubfieldId;
+    count: number;
+    statements: Array<StatementWithTarget>;
+}
+export interface StatementTargetTimeSpan {
+    subfields: SubentitySubfieldPage[];
+    preview: WarEntityPreviewTimeSpan;
+}
 export interface StatementTarget {
     statement: InfStatement;
     isOutgoing: boolean;
@@ -11,17 +19,21 @@ export interface StatementTarget {
         dimension?: InfDimension;
         langString?: InfLangString;
         language?: InfLanguage;
-        timePrimitive?: InfTimePrimitive;
+        timePrimitive?: TimePrimitiveWithCal;
         place?: InfPlace;
+        timeSpan?: StatementTargetTimeSpan;
         entity?: {
-            row: TemporalEntityRow;
+            subfields: SubentitySubfieldPage[];
             pkEntity: number;
-            projRel: ProInfoProjRel;
         };
     };
 }
 export interface StatementProjRel {
-    projRel: ProInfoProjRel;
+    projRel?: ProInfoProjRel;
     ordNum: number;
 }
 export declare type StatementWithTarget = StatementTarget & StatementProjRel;
+export interface SubfieldPage {
+    statements: StatementWithTarget[];
+    count: number;
+}

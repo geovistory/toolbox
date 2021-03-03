@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldaPageScope, GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvSubfieldPage, GvSubfieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -253,7 +253,7 @@ export class InfEpics {
     apiCall$: Observable<any>,
     pkProject) {
     const meta: LoadPaginatedStatementListMeta = action.meta;
-    const scope: GvSubfieldaPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
+    const scope: GvSubfieldPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
     const req: GvSubfieldPage = {
       fkSourceEntity: meta.pkSourceEntity,
       fkProperty: meta.pkProperty,

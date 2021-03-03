@@ -4,14 +4,14 @@ import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvSubfieldPage, GvSubfieldType, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { CalendarType, combineLatestOrEmpty, Granularity, limitTo, sortAbc, switchMapOr, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, groupBy, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { tag } from 'rxjs-spy/operators';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { cache, spyTag } from '../decorators/method-decorators';
-import { timeSpanItemToTimeSpan } from '../functions/functions';
+import { infTimePrimToTimePrimWithCal, timeSpanItemToTimeSpan } from '../functions/functions';
 import { AppellationItem } from '../models/AppellationItem';
 import { BasicStatementItem } from '../models/BasicStatementItem';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
@@ -28,9 +28,8 @@ import { PlaceItem } from '../models/PlaceItem';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
 import { StatementItem } from '../models/StatementItem';
-import { EntitySubfield, StatementProjRel, StatementTarget, StatementWithTarget } from '../models/StatementWithTarget';
+import { StatementProjRel, StatementTarget, StatementWithTarget, SubentitySubfieldPage, SubfieldPage } from '../models/StatementWithTarget';
 import { Subfield } from '../models/Subfield';
-import { SubfieldType } from '../models/SubfieldType';
 import { TemporalEntityCell } from '../models/TemporalEntityCell';
 import { TemporalEntityRemoveProperties } from '../models/TemporalEntityRemoveProperties';
 import { TemporalEntityRow } from '../models/TemporalEntityRow';
@@ -275,9 +274,9 @@ export class InformationPipesService {
    * pipe the target of given statment
    * @param stmt InfStatement to be completed with target
    * @param page page for which we are piping this stuff
-   * @param subfieldType type of subfield for which we pipe this stupp
+   * @param subfieldType type of subfield for which we pipe this stuff
    */
-  pipeTargetOfStatement(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementTarget> {
+  pipeTargetOfStatement(stmt: InfStatement, page: GvSubfieldPage, subfieldType: GvSubfieldType): Observable<StatementTarget> {
     const isOutgoing = page.isOutgoing
     const targetInfo = isOutgoing ? stmt.fk_object_info : stmt.fk_subject_info;
     // here you could add targetData or targetCell
@@ -298,65 +297,255 @@ export class InformationPipesService {
         })
       )
     }
-    else if (subfieldType.temporalEntity) {
-      // pipe the subfields of the temporalEntity class
-      const fields$ = this.c.pipeBasicAndSpecificFields(page.targetClass)
-      return fields$.pipe(
-        switchMap(fields => {
-          const entitySubfields$: Observable<EntitySubfield>[] = []
-          for (const field of fields) {
-            // for each of these subfields
-            for (const subfield of field.listDefinitions) {
-              // create page:GvSubfieldPage
-              const nestedPage: GvSubfieldPage = {
-                fkProperty: subfield.property.pkProperty,
-                fkSourceEntity: targetInfo,
-                isOutgoing: subfield.isOutgoing,
-                limit: 1,
-                offset: 0,
-                scope: page.scope,
-                targetClass: page.targetClass
-              }
-              // if the subfieldTypes of these are temporalEntity again, replace it with entityPreview
-              // in order to prevent infinit cycle
-              let nestedSubfieldType: SubfieldType = { entityPreview: 'true' };
-              if (!subfield.listType.temporalEntity) nestedSubfieldType = subfield.listType;
-
-              const entitySubfield$ = this.pipeSubfieldPage(nestedPage, nestedSubfieldType).pipe(
-                map(stmtsWithTarget => {
-                  const { limit, offset, ...s } = nestedPage;
-                  const entitySubfield: EntitySubfield = {
-                    subfield: s,
-                    count: 1,
-                    stmtsWithTarget
+    else if (subfieldType.place) {
+      return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(
+        map(place => {
+          const stmtTarget: StatementTarget = {
+            statement: stmt,
+            isOutgoing,
+            targetLabel: `WGS84: ${place.lat}°, ${place.long}°`,
+            targetClass: page.targetClass,
+            target: {
+              place
+            }
+          }
+          return stmtTarget
+        })
+      )
+    }
+    else if (subfieldType.dimension) {
+      return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(
+        switchMap(dimension => {
+          return this.p.streamEntityPreview(dimension.fk_measurement_unit)
+            .pipe(
+              map(
+                unitPreview => {
+                  const stmtTarget: StatementTarget = {
+                    statement: stmt,
+                    isOutgoing,
+                    targetLabel: `${dimension.numeric_value} ${unitPreview.entity_label}`,
+                    targetClass: page.targetClass,
+                    target: {
+                      dimension
+                    }
                   }
-                  return entitySubfield
+                  return stmtTarget
+
                 }
+              )
+            )
+        })
+      )
+    }
+    else if (subfieldType.langString) {
+      return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(
+        switchMap(langString => {
+          return this.s.inf$.language$.by_pk_entity$.key(langString.fk_language)
+            .pipe(
+              map(
+                language => {
+                  const stmtTarget: StatementTarget = {
+                    statement: stmt,
+                    isOutgoing,
+                    targetLabel: `${langString.string} (${language.iso6391})`,
+                    targetClass: page.targetClass,
+                    target: {
+                      langString
+                    }
+                  }
+                  return stmtTarget
+
+                }
+              )
+            )
+        })
+      )
+    }
+    else if (subfieldType.language) {
+      return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(
+        map(language => {
+          const stmtTarget: StatementTarget = {
+            statement: stmt,
+            isOutgoing,
+            targetLabel: `${language.notes || language.iso6391}`,
+            targetClass: page.targetClass,
+            target: {
+              language
+            }
+          }
+          return stmtTarget
+        })
+      )
+    }
+    else if (subfieldType.entityPreview) {
+      return this.p.streamEntityPreview(targetInfo).pipe(
+        map(entityPreview => {
+          const stmtTarget: StatementTarget = {
+            statement: stmt,
+            isOutgoing,
+            targetLabel: `${entityPreview.entity_label}`,
+            targetClass: page.targetClass,
+            target: {
+              entityPreview
+            }
+          }
+          return stmtTarget
+        })
+      )
+    }
+
+    else if (subfieldType.temporalEntity) {
+      // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
+
+      // for each of these subfields
+      const subentityPages$ = subfieldType.temporalEntity.map(subfieldReq => {
+
+        // console.log('subentity subfield for targetInfo', targetInfo)
+
+        // create page:GvSubfieldPage
+        const { isCircular, ...p } = subfieldReq.page
+        const nestedPage: GvSubfieldPage = {
+          ...p,
+          fkSourceEntity: targetInfo,
+          scope: page.scope,
+        }
+
+        return this.pipeSubfieldPage(nestedPage, subfieldReq.subfieldType).pipe(
+          map(({ count, statements }) => {
+            const { limit, offset, ...s } = nestedPage;
+            const subentitySubfieldPage: SubentitySubfieldPage = {
+              subfield: s,
+              count,
+              statements
+            }
+            return subentitySubfieldPage
+          })
+        )
+      })
+
+      return combineLatestOrEmpty(subentityPages$)
+        .pipe(
+          map(
+            subfields => {
+              const stmtTarget: StatementTarget = {
+                statement: stmt,
+                isOutgoing,
+                targetLabel: '',
+                targetClass: page.targetClass,
+                target: {
+                  entity: {
+                    pkEntity: targetInfo,
+                    subfields
+                  }
+                }
+              }
+              return stmtTarget
+            }
+          )
+        )
+    }
+    else if (subfieldType.timeSpan) {
+      // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
+
+      // for each of these subfields
+      const subentityPages$ = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE
+        .map(fkProperty => {
+
+          // console.log('subentity subfield for targetInfo', targetInfo)
+
+          // create page:GvSubfieldPage
+          const nestedPage: GvSubfieldPage = {
+            fkProperty,
+            isOutgoing: true,
+            limit: 1,
+            offset: 0,
+            targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+            fkSourceEntity: targetInfo,
+            scope: page.scope,
+          }
+          const subfType: GvSubfieldType = {
+            timePrimitive: 'true'
+          }
+
+          return this.pipeSubfieldPage(nestedPage, subfType).pipe(
+            map(({ count, statements }) => {
+              const { limit, offset, ...s } = nestedPage;
+              const subentitySubfieldPage: SubentitySubfieldPage = {
+                subfield: s,
+                count,
+                statements
+              }
+              return subentitySubfieldPage
+            })
+          )
+        })
+
+
+      return combineLatestOrEmpty(subentityPages$)
+        .pipe(
+          map(
+            subfields => {
+              const timeSpanPreview: WarEntityPreviewTimeSpan = {}
+              subfields.forEach(s => {
+                if (s.statements[0]) {
+                  const st = s.statements[0]
+                  const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[st.statement.fk_property]
+                  timeSpanPreview[key] = st.target.timePrimitive
+                }
+              })
+              const stmtTarget: StatementTarget = {
+                statement: stmt,
+                isOutgoing,
+                targetLabel: this.timeSpanPipe.transform(new TimeSpanUtil(timeSpanPreview)),
+                targetClass: page.targetClass,
+                target: {
+                  timeSpan: {
+                    preview: timeSpanPreview,
+                    subfields
+                  }
+                }
+              }
+              return stmtTarget
+            }
+          )
+        )
+    }
+    else if (subfieldType.timePrimitive) {
+      return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(
+        switchMap(timePrimitive => {
+          // get calendar
+          let cal$: Observable<TimePrimitiveWithCal.CalendarEnum>
+          if (page.scope.inProject) {
+            cal$ = this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(page.scope.inProject + '_' + stmt.pk_entity)
+              .pipe(
+                map(
+                  infoProjRel => infoProjRel.calendar as TimePrimitiveWithCal.CalendarEnum
                 )
               )
-              entitySubfields$.push(entitySubfield$)
-            }
-            return combineLatestOrEmpty(entitySubfields$)
           }
-        }),
-        map(
-          subfields => {
-            const stmtTarget: StatementTarget = {
-              statement: stmt,
-              isOutgoing,
-              targetLabel: '',
-              targetClass: page.targetClass,
-              target: {
-                entity: {
-                  pkEntity: targetInfo,
-                  projRel: undefined,
-                  subfields
+          else {
+            cal$ = new BehaviorSubject(stmt.community_favorite_calendar as TimePrimitiveWithCal.CalendarEnum)
+          }
+          // pipe target time primitive of stmt
+          return cal$.pipe(
+            map(
+              cal => {
+                const timePrimWithCal = infTimePrimToTimePrimWithCal(timePrimitive, cal)
+                const stmtTarget: StatementTarget = {
+                  statement: stmt,
+                  isOutgoing,
+                  targetLabel: this.timePrimitivePipe.transform(timePrimWithCal),
+                  targetClass: page.targetClass,
+                  target: {
+                    timePrimitive: timePrimWithCal
+                  }
                 }
+                return stmtTarget
+
               }
-            }
-            return stmtTarget
-          }
-        )
+            )
+          )
+        })
       )
     }
 
@@ -366,7 +555,7 @@ export class InformationPipesService {
   /**
    * pipe target and projRel of the given statement
    */
-  pipeStatementWithTarget(stmt: InfStatement, page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget> {
+  pipeStatementWithTarget(stmt: InfStatement, page: GvSubfieldPage, subfieldType: GvSubfieldType): Observable<StatementWithTarget> {
     return combineLatest(
       this.pipeTargetOfStatement(stmt, page, subfieldType),
       this.pipeProjRelOfStatement(stmt, page)
@@ -375,21 +564,46 @@ export class InformationPipesService {
     )
   }
 
-  pipeSubfieldPage(page: GvSubfieldPage, subfieldType: SubfieldType): Observable<StatementWithTarget[]> {
-    // get the statments of that page
-    return this.s.inf$.statement$.pagination$.pipePage(page)
-      .pipe(
-        switchMap(
-          pkStmts => combineLatestOrEmpty(
-            pkStmts.map(pkStmt => this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
-              // for each statement, depending on the subfieldType, load the corresponding target
-              .pipe(
-                switchMap(stmt => this.pipeStatementWithTarget(stmt, page, subfieldType))
+  pipeSubfieldPage(page: GvSubfieldPage, subfieldType: GvSubfieldType): Observable<SubfieldPage> {
+    if (subfieldType.timeSpan) {
+      // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
+      return this.pipeTimeSpan(page, subfieldType);
+    }
+    else {
+      // get the statments of that page
+      return combineLatest(
+        this.s.inf$.statement$.pagination$.pipeCount(page),
+        this.s.inf$.statement$.pagination$.pipePage(page)
+          .pipe(
+            switchMap(
+              pkStmts => combineLatestOrEmpty(
+                pkStmts.map(pkStmt => this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
+                  // for each statement, depending on the subfieldType, load the corresponding target
+                  .pipe(
+                    filter(stmt => !!stmt),
+                    switchMap(stmt => this.pipeStatementWithTarget(stmt, page, subfieldType))
+                  )
+                )
               )
-            )
+            ),
           )
-        )
+      ).pipe(
+        map(([count, statements]) => ({ count, statements }))
       )
+    }
+
+  }
+
+  private pipeTimeSpan(page: GvSubfieldPage, subfieldType: GvSubfieldType) {
+    const virtualStatementToTimeSpan = { fk_object_info: page.fkSourceEntity };
+    return this.pipeTargetOfStatement(virtualStatementToTimeSpan, page, subfieldType).pipe(map(stmtTarget => {
+      const stmtWT: StatementWithTarget = {
+        ...stmtTarget,
+        projRel: undefined,
+        ordNum: undefined
+      };
+      return { count: 1, statements: [stmtWT] };
+    }));
   }
 
   // pipeStatementListPage(

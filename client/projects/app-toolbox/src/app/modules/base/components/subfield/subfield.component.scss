@@ -1,0 +1,35 @@
+.action-cell {
+  width: 24px;
+  padding-right: 0;
+}
+
+td.mat-cell:last-of-type.action-cell {
+  padding-right: 0;
+}
+
+.full-width {
+  display: flex;
+  width: 100%;
+  padding-left: 24px;
+  min-height: 40px;
+}
+
+.left-col {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right-col {
+  display: flex;
+  flex: 0 0 64px;
+  align-items: center;
+  justify-content: center;
+}

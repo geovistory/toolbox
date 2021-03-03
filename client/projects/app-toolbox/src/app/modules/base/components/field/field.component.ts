@@ -7,7 +7,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { sum } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { createPaginateBy, isValueObjectSubfield, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
+import { isValueObjectSubfield, subfieldToSubfieldId, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
@@ -70,52 +70,53 @@ export class FieldComponent implements OnInit {
           this.pag.statements.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
       })
-    })
 
-    /**
-     * Pipe data from redux store
-     */
-    if (this.fieldDefinition.isSpecialField !== 'has-type') {
+      /**
+       * Pipe data from redux store
+       */
+      if (this.fieldDefinition.isSpecialField !== 'has-type') {
 
-      this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
-        let obs$: Observable<number>;
-        if (l.listType.temporalEntity || l.listType.entityPreview) {
-          obs$ = this.p.inf$.statement$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
-        } else {
-          obs$ = this.i.pipeListLength(l, this.pkEntity)
-        }
-        return obs$.pipe(
-          map((itemsCount) => ({ ...l, itemsCount }))
+        this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
+          let obs$: Observable<number>;
+          if (l.listType.temporalEntity || l.listType.entityPreview) {
+            obs$ = this.p.inf$.statement$.pagination$.pipeCount(subfieldToSubfieldId(l, this.pkEntity, { inProject: pkProject }))
+          } else {
+            obs$ = this.i.pipeListLength(l, this.pkEntity)
+          }
+          return obs$.pipe(
+            map((itemsCount) => ({ ...l, itemsCount }))
+          )
+        })).pipe(
+          map(lists => lists.filter((list: SubfieldWithItemCount) => list.itemsCount > 0)),
+          shareReplay({ refCount: true, bufferSize: 1 }),
         )
-      })).pipe(
-        map(lists => lists.filter((list: SubfieldWithItemCount) => list.itemsCount > 0)),
-        shareReplay({ refCount: true, bufferSize: 1 }),
-      )
 
-      this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
+        this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
 
 
-      this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
-        .pipe(map(([n, r]) => {
-          if (r) return false;
+        this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
+          .pipe(map(([n, r]) => {
+            if (r) return false;
 
-          if (this.fieldDefinition.targetMaxQuantity === -1) return true;
-          if (this.fieldDefinition.targetMaxQuantity <= n) return false
-          if (this.fieldDefinition.isSpecialField === 'time-span' && 1 <= n) return false
-          return true;
-        }))
-    } else {
-      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty, this.fieldDefinition.isOutgoing).pipe(
-        map(hasTypeStatement => hasTypeStatement ? 1 : 0)
-      )
-    }
+            if (this.fieldDefinition.targetMaxQuantity === -1) return true;
+            if (this.fieldDefinition.targetMaxQuantity <= n) return false
+            if (this.fieldDefinition.isSpecialField === 'time-span' && 1 <= n) return false
+            return true;
+          }))
+      } else {
+        this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty, this.fieldDefinition.isOutgoing).pipe(
+          map(hasTypeStatement => hasTypeStatement ? 1 : 0)
+        )
+      }
 
+    })
   }
 
   addClick() {
     if (this.fieldDefinition.isSpecialField === 'time-span') {
       this.i.pipeItemTimeSpan(this.pkEntity).pipe(first(), takeUntil(this.destroy$)).subscribe(item => {
-        this.timeSpan.openModal(item, this.pkEntity)
+        // TODO
+        // this.timeSpan.openModal(item, this.pkEntity)
       })
     }
     // More than one target class?

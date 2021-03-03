@@ -1,16 +1,16 @@
-import { __assign, __spread, __extends, __decorate, __metadata, __read, __values } from 'tslib';
-import { shareReplay, map, switchMap, filter, distinctUntilChanged, first, startWith, tap } from 'rxjs/operators';
+import { __assign, __spread, __extends, __decorate, __metadata, __read, __values, __rest } from 'tslib';
+import { shareReplay, map, switchMap, filter, first, distinctUntilChanged, tap, startWith } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
+import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
+import { TimeSpanUtil, latestVersion, combineLatestOrEmpty, limitTo, switchMapOr, TimePrimitive, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { CommonModule } from '@angular/common';
 import { NgModule, Optional, SkipSelf, Injectable, ɵɵdefineInjectable, ɵɵinject } from '@angular/core';
-import { ReduxModule, datRoot, datDefinitions, DatActions, dfhRoot, dfhDefinitions, DfhActions, infRoot, paginateBy, createPaginateByKey, indexStatementBySubject, indexStatementBySubjectProperty, indexStatementByObject, indexStatementByObjectProperty, infDefinitions, PR_ENTITY_MODEL_MAP, proRoot, proDefinitions, ProActions, sysRoot, sysDefinitions, SysActions, tabRoot, tabDefinitions, TabActions, warRoot, warDefinitions, WarActions, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey, dfhLabelByFksKey } from '@kleiolab/lib-redux';
+import { ReduxModule, datRoot, datDefinitions, DatActions, dfhRoot, dfhDefinitions, DfhActions, infRoot, paginateBy, subfieldIdToString, getFromTo, indexStatementBySubject, indexStatementBySubjectProperty, indexStatementByObject, indexStatementByObjectProperty, infDefinitions, PR_ENTITY_MODEL_MAP, proRoot, proDefinitions, ProActions, sysRoot, sysDefinitions, SysActions, tabRoot, tabDefinitions, TabActions, warRoot, warDefinitions, WarActions, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey, dfhLabelByFksKey } from '@kleiolab/lib-redux';
 import { NgRedux } from '@angular-redux/store';
-import { latestVersion, combineLatestOrEmpty, TimeSpanUtil, limitTo, switchMapOr, TimePrimitive, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { BehaviorSubject, empty, pipe, of, Observable, combineLatest, merge, iif } from 'rxjs';
 import { values } from 'd3';
 import { toString, equals, values as values$1, indexBy, uniq, flatten, omit, groupBy, pick } from 'ramda';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
-import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 
 /**
@@ -101,6 +101,43 @@ function spyTag(target, propertyKey, descriptor) {
         return boundOriginalFunction.apply(void 0, __spread(request)).pipe(tag(target.constructor.name + "::" + propertyKey + "::" + request.join(':')));
     });
     return descriptor;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: functions/functions.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} timeSpanItem
+ * @return {?}
+ */
+function timeSpanItemToTimeSpan(timeSpanItem) {
+    /** @type {?} */
+    var t = new TimeSpanUtil();
+    timeSpanItem.properties.forEach((/**
+     * @param {?} p
+     * @return {?}
+     */
+    function (p) {
+        /** @type {?} */
+        var key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty];
+        if (p.items && p.items.length)
+            t[key] = p.items[0].timePrimitive;
+    }));
+    return t;
+}
+/**
+ * @param {?} infTimePrim
+ * @param {?} cal
+ * @return {?}
+ */
+function infTimePrimToTimePrimWithCal(infTimePrim, cal) {
+    return {
+        julianDay: infTimePrim.julian_day,
+        duration: (/** @type {?} */ (infTimePrim.duration)),
+        calendar: cal,
+    };
 }
 
 /**
@@ -550,6 +587,28 @@ if (false) {
 /**
  * @record
  */
+function SubentitySubfieldPage() { }
+if (false) {
+    /** @type {?} */
+    SubentitySubfieldPage.prototype.subfield;
+    /** @type {?} */
+    SubentitySubfieldPage.prototype.count;
+    /** @type {?} */
+    SubentitySubfieldPage.prototype.statements;
+}
+/**
+ * @record
+ */
+function StatementTargetTimeSpan() { }
+if (false) {
+    /** @type {?} */
+    StatementTargetTimeSpan.prototype.subfields;
+    /** @type {?} */
+    StatementTargetTimeSpan.prototype.preview;
+}
+/**
+ * @record
+ */
 function StatementTarget() { }
 if (false) {
     /** @type {?} */
@@ -568,10 +627,20 @@ if (false) {
  */
 function StatementProjRel() { }
 if (false) {
-    /** @type {?} */
+    /** @type {?|undefined} */
     StatementProjRel.prototype.projRel;
     /** @type {?} */
     StatementProjRel.prototype.ordNum;
+}
+/**
+ * @record
+ */
+function SubfieldPage() { }
+if (false) {
+    /** @type {?} */
+    SubfieldPage.prototype.statements;
+    /** @type {?} */
+    SubfieldPage.prototype.count;
 }
 
 /**
@@ -600,28 +669,6 @@ if (false) {
     Subfield.prototype.targetClassLabel;
     /** @type {?} */
     Subfield.prototype.removedFromAllProfiles;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: models/SubfieldType.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function SubfieldType() { }
-if (false) {
-    /** @type {?|undefined} */
-    SubfieldType.prototype.temporalEntity;
-    /** @type {?|undefined} */
-    SubfieldType.prototype.entityPreview;
-    /** @type {?|undefined} */
-    SubfieldType.prototype.typeItem;
-    /** @type {?|undefined} */
-    SubfieldType.prototype.timeSpan;
-    /** @type {?|undefined} */
-    SubfieldType.prototype.textProperty;
 }
 
 /**
@@ -1224,10 +1271,10 @@ DfhPropertySelections = /** @class */ (function (_super) {
     __extends(DfhPropertySelections, _super);
     function DfhPropertySelections() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.pk_property__has_domain__has_range$ = _this.selector('pk_property__has_domain__has_range');
+        _this.pk_property__has_domain__has_range$ = _this.selector('by_pk_property__has_domain__has_range');
         _this.by_pk_property$ = _this.selector('by_pk_property');
-        _this.by_has_domain__pk_property$ = _this.selector('by_has_domain__pk_property');
-        _this.by_has_range__pk_property$ = _this.selector('by_has_range__pk_property');
+        // public by_has_domain__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_domain__fk_property');
+        // public by_has_range__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_range__fk_property');
         _this.by_has_domain$ = _this.selector('by_has_domain');
         _this.by_has_range$ = _this.selector('by_has_range');
         _this.by_is_has_type_subproperty$ = _this.selector('by_is_has_type_subproperty');
@@ -1240,10 +1287,6 @@ if (false) {
     DfhPropertySelections.prototype.pk_property__has_domain__has_range$;
     /** @type {?} */
     DfhPropertySelections.prototype.by_pk_property$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_has_domain__pk_property$;
-    /** @type {?} */
-    DfhPropertySelections.prototype.by_has_range__pk_property$;
     /** @type {?} */
     DfhPropertySelections.prototype.by_has_domain$;
     /** @type {?} */
@@ -1341,42 +1384,14 @@ var Selector$2 = /** @class */ (function () {
     function (indexKey) {
         var _this = this;
         /** @type {?} */
-        var all$ = this.pkProject$.pipe(switchMap((/**
-         * @param {?} pk
-         * @return {?}
-         */
-        function (pk) {
-            /** @type {?} */
-            var path;
-            if (_this.configs[_this.model].facetteByPk) {
-                path = [infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, indexKey];
-            }
-            else {
-                path = [infRoot, _this.model, indexKey];
-            }
-            return _this.ngRedux.select(path);
-        })));
+        var all$ = this.ngRedux.select([infRoot, this.model, indexKey]);
         /** @type {?} */
         var key = (/**
          * @param {?} x
          * @return {?}
          */
         function (x) {
-            return _this.pkProject$.pipe(switchMap((/**
-             * @param {?} pk
-             * @return {?}
-             */
-            function (pk) {
-                /** @type {?} */
-                var path;
-                if (_this.configs[_this.model].facetteByPk) {
-                    path = [infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, indexKey, x];
-                }
-                else {
-                    path = [infRoot, _this.model, indexKey, x];
-                }
-                return _this.ngRedux.select(path);
-            })));
+            return _this.ngRedux.select([infRoot, _this.model, indexKey, x]);
         });
         return { all$: all$, key: key };
     };
@@ -1395,23 +1410,14 @@ var Selector$2 = /** @class */ (function () {
          * @param {?} page
          * @return {?}
          */
-        function (page) { return _this.pkProject$.pipe(switchMap((/**
-         * @param {?} pk
-         * @return {?}
-         */
-        function (pk) {
+        function (page) {
             /** @type {?} */
             var path;
             /** @type {?} */
             var pagBy = paginateBy;
             /** @type {?} */
-            var key = createPaginateByKey(page);
-            if (_this.configs[_this.model].facetteByPk) {
-                path = [infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, pagBy, key];
-            }
-            else {
-                path = [infRoot, _this.model, pagBy, key];
-            }
+            var key = subfieldIdToString(page);
+            path = [infRoot, _this.model, pagBy, key];
             return _this.ngRedux.select(__spread(path, ['count']))
                 .pipe(filter((/**
              * @param {?} count
@@ -1437,71 +1443,49 @@ var Selector$2 = /** @class */ (function () {
                 }
                 return combineLatestOrEmpty(obs$);
             })));
-        }))); })
-        // const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
-        //   switchMap(pk => {
-        //     let path: any[];
-        //     const pagBy = paginateBy
-        //     const key = createPaginateByKey(page)
-        //     if (this.configs[this.model].facetteByPk) {
-        //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-        //     } else {
-        //       path = [infRoot, this.model, pagBy, key];
-        //     }
-        //     return trigger$.pipe(
-        //       switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(page.limit, page.offset)])
-        //         .pipe(
-        //           first(),
-        //           map(loading => !loading)
-        //         )
-        //       ))
-        //   })
-        // )
-        ;
-        // const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$?: Observable<any>): Observable<boolean> => this.pkProject$.pipe(
-        //   switchMap(pk => {
-        //     let path: any[];
-        //     const pagBy = paginateBy
-        //     const key = createPaginateByKey(page)
-        //     if (this.configs[this.model].facetteByPk) {
-        //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-        //     } else {
-        //       path = [infRoot, this.model, pagBy, key];
-        //     }
-        //     return trigger$.pipe(
-        //       switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', getFromTo(page.limit, page.offset)])
-        //         .pipe(
-        //           first(),
-        //           map(loading => !loading)
-        //         )
-        //       ))
-        //   })
-        // )
+        });
         /** @type {?} */
-        var pipeCount = (/**
+        var pipePageLoadNeeded = (/**
          * @param {?} page
+         * @param {?} trigger$
          * @return {?}
          */
-        function (page) { return _this.pkProject$.pipe(switchMap((/**
-         * @param {?} pk
-         * @return {?}
-         */
-        function (pk) {
+        function (page, trigger$) {
             /** @type {?} */
             var path;
             /** @type {?} */
             var pagBy = paginateBy;
             /** @type {?} */
-            var key = createPaginateByKey(page);
-            if (_this.configs[_this.model].facetteByPk) {
-                path = [infRoot, _this.model, _this.configs[_this.model].facetteByPk, pk, pagBy, key];
-            }
-            else {
-                path = [infRoot, _this.model, pagBy, key];
-            }
+            var key = subfieldIdToString(page);
+            path = [infRoot, _this.model, pagBy, key];
+            /** @type {?} */
+            var fromToString = getFromTo(page.limit, page.offset);
+            return trigger$.pipe(switchMap((/**
+             * @return {?}
+             */
+            function () { return _this.ngRedux.select(__spread(path, ['loading', fromToString]))
+                .pipe(first(), map((/**
+             * @param {?} loading
+             * @return {?}
+             */
+            function (loading) { return !loading; }))); })));
+        });
+        /** @type {?} */
+        var pipeCount = (/**
+         * @param {?} page
+         * @return {?}
+         */
+        function (page) {
+            /** @type {?} */
+            var path;
+            /** @type {?} */
+            var pagBy = paginateBy;
+            /** @type {?} */
+            var key = subfieldIdToString(page);
+            path = [infRoot, _this.model, pagBy, key];
             return _this.ngRedux.select(__spread(path, ['count']));
-        }))); });
-        return { pipePage: pipePage, pipeCount: pipeCount };
+        });
+        return { pipePage: pipePage, pipeCount: pipeCount, pipePageLoadNeeded: pipePageLoadNeeded };
     };
     /**
      * @template M
@@ -3191,6 +3175,7 @@ var ConfigurationPipesService = /** @class */ (function () {
     * The array will always include PK_PROFILE_GEOVISTORY_BASIC
     */
     // @spyTag
+    // @cache({ refCount: false })
     /**
      * returns observable number[] wher the numbers are the pk_profile
      * of all profiles that are enabled by the given project.
@@ -3198,6 +3183,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @return {?}
      */
     // @spyTag
+    // @cache({ refCount: false })
     ConfigurationPipesService.prototype.pipeProfilesEnabledByProject = /**
      * returns observable number[] wher the numbers are the pk_profile
      * of all profiles that are enabled by the given project.
@@ -3205,6 +3191,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @return {?}
      */
     // @spyTag
+    // @cache({ refCount: false })
     function () {
         var _this = this;
         return this.a.pkProject$.pipe(switchMap((/**
@@ -3230,7 +3217,7 @@ var ConfigurationPipesService = /** @class */ (function () {
          * @param {?} enabled
          * @return {?}
          */
-        function (enabled) { return __spread(enabled, [DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]); }))); })));
+        function (enabled) { return __spread(enabled, [DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]); }))); })), shareReplay());
     };
     /**
      * Pipe all fields of given class
@@ -3284,15 +3271,21 @@ var ConfigurationPipesService = /** @class */ (function () {
          */
         function (_a) {
             var _b = __read(_a, 5), sourceKlass = _b[0], outgoingProps = _b[1], ingoingProps = _b[2], sysConfig = _b[3], enabledProfiles = _b[4];
-            // if class is not appellation for language, add appellation for language (1111) property
-            if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-                ingoingProps.push(createAppellationProperty(pkClass));
+            if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
+                // remove the has time span property
+                ingoingProps = [];
             }
-            // if is temporal entity, add has time span property
-            if (sourceKlass.basic_type === 9) {
-                outgoingProps.push(createHasTimeSpanProperty(pkClass));
+            else {
+                // if class is not appellation for language, add appellation for language (1111) property
+                if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+                    ingoingProps.push(createAppellationProperty(pkClass));
+                }
+                // if is temporal entity, add has time span property
+                if (sourceKlass.basic_type === 9) {
+                    outgoingProps.push(createHasTimeSpanProperty(pkClass));
+                }
+                outgoingProps.push(createHasDefinitionProperty(pkClass));
             }
-            outgoingProps.push(createHasDefinitionProperty(pkClass));
             return combineLatest(_this.pipePropertiesToSubfields(outgoingProps, true, enabledProfiles, sysConfig), _this.pipePropertiesToSubfields(ingoingProps, false, enabledProfiles, sysConfig), _this.pipeFieldConfigs(pkClass)).pipe(map((/**
              * @param {?} __0
              * @return {?}
@@ -3594,7 +3587,6 @@ var ConfigurationPipesService = /** @class */ (function () {
         })));
     };
     /**
-     * @private
      * @param {?} properties
      * @param {?} isOutgoing
      * @param {?} enabledProfiles
@@ -3602,7 +3594,6 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @return {?}
      */
     ConfigurationPipesService.prototype.pipePropertiesToSubfields = /**
-     * @private
      * @param {?} properties
      * @param {?} isOutgoing
      * @param {?} enabledProfiles
@@ -3616,67 +3607,162 @@ var ConfigurationPipesService = /** @class */ (function () {
          * @return {?}
          */
         function (p) {
+            return _this.pipeSubfield(isOutgoing, p, sysConfig, enabledProfiles);
+        })));
+    };
+    /**
+     * @param {?} sourceClass
+     * @param {?} property
+     * @param {?} targetClass
+     * @param {?} isOutgoing
+     * @return {?}
+     */
+    ConfigurationPipesService.prototype.pipeSubfieldIdToSubfield = /**
+     * @param {?} sourceClass
+     * @param {?} property
+     * @param {?} targetClass
+     * @param {?} isOutgoing
+     * @return {?}
+     */
+    function (sourceClass, property, targetClass, isOutgoing) {
+        var _this = this;
+        /** @type {?} */
+        var domain = isOutgoing ? sourceClass : targetClass;
+        /** @type {?} */
+        var range = isOutgoing ? targetClass : sourceClass;
+        return combineLatest(this.s.dfh$.property$.pk_property__has_domain__has_range$.key([property, domain, range].join('_'))
+            .pipe(filter((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return !!x;
+        }))), this.s.sys$.config$.main$.pipe(filter((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return !!x;
+        }))), this.pipeProfilesEnabledByProject().pipe(filter((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return !!x;
+        })))).pipe(switchMap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 3), dfhProp = _b[0], sysConf = _b[1], enabledProfiles = _b[2];
+            return _this.pipeSubfield(isOutgoing, dfhProp, sysConf, enabledProfiles);
+        })));
+    };
+    /**
+     * @private
+     * @param {?} isOutgoing
+     * @param {?} p
+     * @param {?} sysConfig
+     * @param {?} enabledProfiles
+     * @return {?}
+     */
+    ConfigurationPipesService.prototype.pipeSubfield = /**
+     * @private
+     * @param {?} isOutgoing
+     * @param {?} p
+     * @param {?} sysConfig
+     * @param {?} enabledProfiles
+     * @return {?}
+     */
+    function (isOutgoing, p, sysConfig, enabledProfiles) {
+        /** @type {?} */
+        var o = isOutgoing;
+        /** @type {?} */
+        var targetClass = o ? p.has_range : p.has_domain;
+        /** @type {?} */
+        var sourceClass = o ? p.has_domain : p.has_range;
+        /** @type {?} */
+        var targetMaxQuantity = o ?
+            p.range_instances_max_quantifier :
+            p.domain_instances_max_quantifier;
+        /** @type {?} */
+        var sourceMaxQuantity = o ?
+            p.domain_instances_max_quantifier :
+            p.range_instances_max_quantifier;
+        /** @type {?} */
+        var targetMinQuantity = o ?
+            p.range_instances_min_quantifier :
+            p.domain_instances_min_quantifier;
+        /** @type {?} */
+        var sourceMinQuantity = o ?
+            p.domain_instances_min_quantifier :
+            p.range_instances_min_quantifier;
+        return combineLatest(this.pipeClassLabel(sourceClass).pipe(tap((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return x;
+        }))), this.pipeClassLabel(targetClass).pipe(tap((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return x;
+        }))), this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property).pipe(tap((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return x;
+        }))), this.pipeFieldLabel(p.pk_property, isOutgoing ? p.has_domain : null, isOutgoing ? null : p.has_range).pipe(tap((/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) {
+            return x;
+        }))))
+            .pipe(map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 4), sourceClassLabel = _b[0], targetClassLabel = _b[1], listType = _b[2], label = _b[3];
             /** @type {?} */
-            var o = isOutgoing;
-            /** @type {?} */
-            var targetClass = o ? p.has_range : p.has_domain;
-            /** @type {?} */
-            var sourceClass = o ? p.has_domain : p.has_range;
-            /** @type {?} */
-            var targetMaxQuantity = o ?
-                p.range_instances_max_quantifier :
-                p.domain_instances_max_quantifier;
-            /** @type {?} */
-            var sourceMaxQuantity = o ?
-                p.domain_instances_max_quantifier :
-                p.range_instances_max_quantifier;
-            /** @type {?} */
-            var targetMinQuantity = o ?
-                p.range_instances_min_quantifier :
-                p.domain_instances_min_quantifier;
-            /** @type {?} */
-            var sourceMinQuantity = o ?
-                p.domain_instances_min_quantifier :
-                p.range_instances_min_quantifier;
-            return combineLatest(_this.pipeClassLabel(sourceClass), _this.pipeClassLabel(targetClass), _this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity), _this.pipeFieldLabel(p.pk_property, isOutgoing ? p.has_domain : null, isOutgoing ? null : p.has_range)).pipe(map((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            function (_a) {
-                var _b = __read(_a, 4), sourceClassLabel = _b[0], targetClassLabel = _b[1], listType = _b[2], label = _b[3];
-                /** @type {?} */
-                var node = {
-                    listType: listType,
-                    sourceClass: sourceClass,
-                    sourceClassLabel: sourceClassLabel,
-                    sourceMaxQuantity: sourceMaxQuantity,
-                    sourceMinQuantity: sourceMinQuantity,
-                    targetClass: targetClass,
-                    targetClassLabel: targetClassLabel,
-                    targetMinQuantity: targetMinQuantity,
-                    targetMaxQuantity: targetMaxQuantity,
-                    label: label,
-                    isHasTypeField: o && p.is_has_type_subproperty,
-                    property: { pkProperty: p.pk_property },
-                    isOutgoing: o,
-                    identityDefiningForSource: o ? p.identity_defining : false,
-                    // replace false with p.identity_defining_for_range when available
-                    identityDefiningForTarget: o ? false : p.identity_defining,
-                    // replace false with p.identity_defining_for_range when available
-                    ontoInfoLabel: p.identifier_in_namespace,
-                    ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
-                    removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
-                };
-                return node;
-            })));
+            var node = {
+                listType: listType,
+                sourceClass: sourceClass,
+                sourceClassLabel: sourceClassLabel,
+                sourceMaxQuantity: sourceMaxQuantity,
+                sourceMinQuantity: sourceMinQuantity,
+                targetClass: targetClass,
+                targetClassLabel: targetClassLabel,
+                targetMinQuantity: targetMinQuantity,
+                targetMaxQuantity: targetMaxQuantity,
+                label: label,
+                isHasTypeField: o && p.is_has_type_subproperty,
+                property: { pkProperty: p.pk_property },
+                isOutgoing: o,
+                identityDefiningForSource: o ? p.identity_defining : false,
+                identityDefiningForTarget: o ? false : p.identity_defining,
+                ontoInfoLabel: p.identifier_in_namespace,
+                ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
+                removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
+            };
+            return node;
         })));
     };
     /**
      * Pipes the type of Subfield for a given class
+     *
      * Currently (to be revised if good) sublcasses of E55 Type,
      * that are the target of a field with targetMaxQantity=1,
      * get Subfield type 'hasType'.
      * Therefore targetMaxQuantity is needed.
+     *
+     * If we are nesting subfields, we'll end up with circular fields.
+     * E.g.: Person 21 -> has appellation 1111 -> AppeTeEn 365 -> is appellation of 1111 -> Person 21
+     * In order to detect them, we can additionally pass in the parent property.
      *
      * This behavior has to be revised, because it can lead to problems
      * when the Subfield belongs to a Field with multiple target classes
@@ -3686,10 +3772,15 @@ var ConfigurationPipesService = /** @class */ (function () {
     // @spyTag
     /**
      * Pipes the type of Subfield for a given class
+     *
      * Currently (to be revised if good) sublcasses of E55 Type,
      * that are the target of a field with targetMaxQantity=1,
      * get Subfield type 'hasType'.
      * Therefore targetMaxQuantity is needed.
+     *
+     * If we are nesting subfields, we'll end up with circular fields.
+     * E.g.: Person 21 -> has appellation 1111 -> AppeTeEn 365 -> is appellation of 1111 -> Person 21
+     * In order to detect them, we can additionally pass in the parent property.
      *
      * This behavior has to be revised, because it can lead to problems
      * when the Subfield belongs to a Field with multiple target classes
@@ -3698,15 +3789,21 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} config
      * @param {?} pkClass
      * @param {?} targetMaxQuantity
+     * @param {?=} parentProperty
      * @return {?}
      */
     // @spyTag
     ConfigurationPipesService.prototype.pipeSubfieldTypeOfClass = /**
      * Pipes the type of Subfield for a given class
+     *
      * Currently (to be revised if good) sublcasses of E55 Type,
      * that are the target of a field with targetMaxQantity=1,
      * get Subfield type 'hasType'.
      * Therefore targetMaxQuantity is needed.
+     *
+     * If we are nesting subfields, we'll end up with circular fields.
+     * E.g.: Person 21 -> has appellation 1111 -> AppeTeEn 365 -> is appellation of 1111 -> Person 21
+     * In order to detect them, we can additionally pass in the parent property.
      *
      * This behavior has to be revised, because it can lead to problems
      * when the Subfield belongs to a Field with multiple target classes
@@ -3715,19 +3812,123 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} config
      * @param {?} pkClass
      * @param {?} targetMaxQuantity
+     * @param {?=} parentProperty
      * @return {?}
      */
     // @spyTag
-    function (config, pkClass, targetMaxQuantity) {
+    function (config, pkClass, targetMaxQuantity, parentProperty) {
+        var _this = this;
         return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter((/**
          * @param {?} i
          * @return {?}
          */
-        function (i) { return !!i; })), map((/**
+        function (i) { return !!i; })), switchMap((/**
          * @param {?} klass
          * @return {?}
          */
-        function (klass) { return getSubfieldType(config, klass, targetMaxQuantity); })));
+        function (klass) { return _this.pipeSubfieldType(config, klass, targetMaxQuantity, parentProperty); })));
+    };
+    /**
+     * @param {?} config
+     * @param {?} klass
+     * @param {?} targetMaxQuantity
+     * @param {?=} parentProperty
+     * @return {?}
+     */
+    ConfigurationPipesService.prototype.pipeSubfieldType = /**
+     * @param {?} config
+     * @param {?} klass
+     * @param {?} targetMaxQuantity
+     * @param {?=} parentProperty
+     * @return {?}
+     */
+    function (config, klass, targetMaxQuantity, parentProperty) {
+        /** @type {?} */
+        var res = (/**
+         * @param {?} x
+         * @return {?}
+         */
+        function (x) { return new BehaviorSubject(x); });
+        /** @type {?} */
+        var classConfig;
+        if (config)
+            classConfig = config.classes[klass.pk_class];
+        if (classConfig && classConfig.valueObjectType) {
+            return res(classConfig.valueObjectType);
+        }
+        else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
+            return res({ typeItem: 'true' });
+        }
+        else if (klass.basic_type === 8 || klass.basic_type === 30) {
+            return res({ entityPreview: 'true' });
+        }
+        // TODO add this to sysConfigValue
+        else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
+            return res({ timeSpan: 'true' });
+        }
+        else {
+            // pipe the subfields of the temporalEntity class
+            return this.pipeBasicAndSpecificFields(klass.pk_class).pipe(map((/**
+             * @param {?} fields
+             * @return {?}
+             */
+            function (fields) {
+                var e_2, _a, e_3, _b;
+                /** @type {?} */
+                var subentitySubfieldPage = [];
+                try {
+                    for (var fields_1 = __values(fields), fields_1_1 = fields_1.next(); !fields_1_1.done; fields_1_1 = fields_1.next()) {
+                        var field = fields_1_1.value;
+                        try {
+                            // for each of these subfields
+                            for (var _c = (e_3 = void 0, __values(field.listDefinitions)), _d = _c.next(); !_d.done; _d = _c.next()) {
+                                var subfield = _d.value;
+                                // create page:GvSubfieldPage
+                                /** @type {?} */
+                                var nestedSubfieldType = { entityPreview: 'true' };
+                                if (!subfield.listType.temporalEntity)
+                                    nestedSubfieldType = subfield.listType;
+                                /** @type {?} */
+                                var isCircular = false;
+                                if (parentProperty &&
+                                    subfield.property.pkProperty == parentProperty &&
+                                    subfield.targetMaxQuantity === 1) {
+                                    isCircular = true;
+                                }
+                                /** @type {?} */
+                                var nestedPage = {
+                                    subfieldType: nestedSubfieldType,
+                                    page: {
+                                        fkProperty: subfield.property.pkProperty,
+                                        isOutgoing: subfield.isOutgoing,
+                                        limit: 1,
+                                        offset: 0,
+                                        targetClass: subfield.targetClass,
+                                        isCircular: isCircular
+                                    }
+                                };
+                                subentitySubfieldPage.push(nestedPage);
+                            }
+                        }
+                        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                        finally {
+                            try {
+                                if (_d && !_d.done && (_b = _c.return)) _b.call(_c);
+                            }
+                            finally { if (e_3) throw e_3.error; }
+                        }
+                    }
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (fields_1_1 && !fields_1_1.done && (_a = fields_1.return)) _a.call(fields_1);
+                    }
+                    finally { if (e_2) throw e_2.error; }
+                }
+                return { temporalEntity: subentitySubfieldPage };
+            })));
+        }
     };
     /**
      * Gets class field configs of given pkClass
@@ -4750,12 +4951,6 @@ var ConfigurationPipesService = /** @class */ (function () {
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
-        __metadata("design:returntype", Observable)
-    ], ConfigurationPipesService.prototype, "pipeProfilesEnabledByProject", null);
-    __decorate([
-        cache({ refCount: false }),
-        __metadata("design:type", Function),
         __metadata("design:paramtypes", [Number]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeFields", null);
@@ -4798,7 +4993,13 @@ var ConfigurationPipesService = /** @class */ (function () {
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Number, Number]),
+        __metadata("design:paramtypes", [Number, Number, Number, Boolean]),
+        __metadata("design:returntype", Observable)
+    ], ConfigurationPipesService.prototype, "pipeSubfieldIdToSubfield", null);
+    __decorate([
+        cache({ refCount: false }),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Number, Number, Number]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeSubfieldTypeOfClass", null);
     __decorate([
@@ -4942,30 +5143,6 @@ if (false) {
     ConfigurationPipesService.prototype.s;
 }
 /**
- * @param {?} config
- * @param {?} klass
- * @param {?} targetMaxQuantity
- * @return {?}
- */
-function getSubfieldType(config, klass, targetMaxQuantity) {
-    /** @type {?} */
-    var classConfig;
-    if (config)
-        classConfig = config.classes[klass.pk_class];
-    if (classConfig && classConfig.valueObjectType) {
-        return classConfig.valueObjectType;
-    }
-    else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
-        return { typeItem: 'true' };
-    }
-    else if (klass.basic_type === 8 || klass.basic_type === 30) {
-        return { entityPreview: 'true' };
-    }
-    else {
-        return { temporalEntity: 'true' };
-    }
-}
-/**
  * @param {?} domainClass
  * @return {?}
  */
@@ -5040,10 +5217,10 @@ function createHasTimeSpanProperty(domainClass) {
         has_domain: domainClass,
         pk_property: DfhConfig.PROPERTY_PK_HAS_TIME_SPAN,
         has_range: DfhConfig.ClASS_PK_TIME_SPAN,
-        domain_instances_max_quantifier: 1,
+        domain_instances_max_quantifier: -1,
         domain_instances_min_quantifier: 1,
         range_instances_max_quantifier: 1,
-        range_instances_min_quantifier: 0,
+        range_instances_min_quantifier: 1,
         identifier_in_namespace: 'P4',
         identity_defining: false,
         is_inherited: true,
@@ -6091,31 +6268,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: functions/functions.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} timeSpanItem
- * @return {?}
- */
-function timeSpanItemToTimeSpan(timeSpanItem) {
-    /** @type {?} */
-    var t = new TimeSpanUtil();
-    timeSpanItem.properties.forEach((/**
-     * @param {?} p
-     * @return {?}
-     */
-    function (p) {
-        /** @type {?} */
-        var key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty];
-        if (p.items && p.items.length)
-            t[key] = p.items[0].timePrimitive;
-    }));
-    return t;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: services/information-pipes.service.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -6571,23 +6723,24 @@ var InformationPipesService = /** @class */ (function () {
      * pipe the target of given statment
      * @param stmt InfStatement to be completed with target
      * @param page page for which we are piping this stuff
-     * @param subfieldType type of subfield for which we pipe this stupp
+     * @param subfieldType type of subfield for which we pipe this stuff
      */
     /**
      * pipe the target of given statment
      * @param {?} stmt InfStatement to be completed with target
      * @param {?} page page for which we are piping this stuff
-     * @param {?} subfieldType type of subfield for which we pipe this stupp
+     * @param {?} subfieldType type of subfield for which we pipe this stuff
      * @return {?}
      */
     InformationPipesService.prototype.pipeTargetOfStatement = /**
      * pipe the target of given statment
      * @param {?} stmt InfStatement to be completed with target
      * @param {?} page page for which we are piping this stuff
-     * @param {?} subfieldType type of subfield for which we pipe this stupp
+     * @param {?} subfieldType type of subfield for which we pipe this stuff
      * @return {?}
      */
     function (stmt, page, subfieldType) {
+        var _this = this;
         /** @type {?} */
         var isOutgoing = page.isOutgoing;
         /** @type {?} */
@@ -6604,7 +6757,7 @@ var InformationPipesService = /** @class */ (function () {
                     statement: stmt,
                     isOutgoing: isOutgoing,
                     targetLabel: appellation.string,
-                    targetClass: appellation.fk_class,
+                    targetClass: page.targetClass,
                     target: {
                         appellation: appellation
                     }
@@ -6612,13 +6765,289 @@ var InformationPipesService = /** @class */ (function () {
                 return stmtTarget;
             })));
         }
+        else if (subfieldType.place) {
+            return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(map((/**
+             * @param {?} place
+             * @return {?}
+             */
+            function (place) {
+                /** @type {?} */
+                var stmtTarget = {
+                    statement: stmt,
+                    isOutgoing: isOutgoing,
+                    targetLabel: "WGS84: " + place.lat + "\u00B0, " + place.long + "\u00B0",
+                    targetClass: page.targetClass,
+                    target: {
+                        place: place
+                    }
+                };
+                return stmtTarget;
+            })));
+        }
+        else if (subfieldType.dimension) {
+            return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(switchMap((/**
+             * @param {?} dimension
+             * @return {?}
+             */
+            function (dimension) {
+                return _this.p.streamEntityPreview(dimension.fk_measurement_unit)
+                    .pipe(map((/**
+                 * @param {?} unitPreview
+                 * @return {?}
+                 */
+                function (unitPreview) {
+                    /** @type {?} */
+                    var stmtTarget = {
+                        statement: stmt,
+                        isOutgoing: isOutgoing,
+                        targetLabel: dimension.numeric_value + " " + unitPreview.entity_label,
+                        targetClass: page.targetClass,
+                        target: {
+                            dimension: dimension
+                        }
+                    };
+                    return stmtTarget;
+                })));
+            })));
+        }
+        else if (subfieldType.langString) {
+            return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(switchMap((/**
+             * @param {?} langString
+             * @return {?}
+             */
+            function (langString) {
+                return _this.s.inf$.language$.by_pk_entity$.key(langString.fk_language)
+                    .pipe(map((/**
+                 * @param {?} language
+                 * @return {?}
+                 */
+                function (language) {
+                    /** @type {?} */
+                    var stmtTarget = {
+                        statement: stmt,
+                        isOutgoing: isOutgoing,
+                        targetLabel: langString.string + " (" + language.iso6391 + ")",
+                        targetClass: page.targetClass,
+                        target: {
+                            langString: langString
+                        }
+                    };
+                    return stmtTarget;
+                })));
+            })));
+        }
+        else if (subfieldType.language) {
+            return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(map((/**
+             * @param {?} language
+             * @return {?}
+             */
+            function (language) {
+                /** @type {?} */
+                var stmtTarget = {
+                    statement: stmt,
+                    isOutgoing: isOutgoing,
+                    targetLabel: "" + (language.notes || language.iso6391),
+                    targetClass: page.targetClass,
+                    target: {
+                        language: language
+                    }
+                };
+                return stmtTarget;
+            })));
+        }
+        else if (subfieldType.entityPreview) {
+            return this.p.streamEntityPreview(targetInfo).pipe(map((/**
+             * @param {?} entityPreview
+             * @return {?}
+             */
+            function (entityPreview) {
+                /** @type {?} */
+                var stmtTarget = {
+                    statement: stmt,
+                    isOutgoing: isOutgoing,
+                    targetLabel: "" + entityPreview.entity_label,
+                    targetClass: page.targetClass,
+                    target: {
+                        entityPreview: entityPreview
+                    }
+                };
+                return stmtTarget;
+            })));
+        }
         else if (subfieldType.temporalEntity) {
-            // pipe the subfields of the temporalEntity class
-            // if the subfieldTypes of these are temporalEntity again, replace it with entityPreview
-            // in order to prevent infinit cycle
+            // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
             // for each of these subfields
-            // - create page:GvSubfieldPage
-            // - call this.pipeSubfieldPage(page, subfieldType)
+            /** @type {?} */
+            var subentityPages$ = subfieldType.temporalEntity.map((/**
+             * @param {?} subfieldReq
+             * @return {?}
+             */
+            function (subfieldReq) {
+                // console.log('subentity subfield for targetInfo', targetInfo)
+                // console.log('subentity subfield for targetInfo', targetInfo)
+                // create page:GvSubfieldPage
+                var _a = subfieldReq.page, isCircular = _a.isCircular, p = __rest(_a, ["isCircular"]);
+                /** @type {?} */
+                var nestedPage = __assign({}, p, { fkSourceEntity: targetInfo, scope: page.scope });
+                return _this.pipeSubfieldPage(nestedPage, subfieldReq.subfieldType).pipe(map((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var count = _a.count, statements = _a.statements;
+                    var limit = nestedPage.limit, offset = nestedPage.offset, s = __rest(nestedPage, ["limit", "offset"]);
+                    /** @type {?} */
+                    var subentitySubfieldPage = {
+                        subfield: s,
+                        count: count,
+                        statements: statements
+                    };
+                    return subentitySubfieldPage;
+                })));
+            }));
+            return combineLatestOrEmpty(subentityPages$)
+                .pipe(map((/**
+             * @param {?} subfields
+             * @return {?}
+             */
+            function (subfields) {
+                /** @type {?} */
+                var stmtTarget = {
+                    statement: stmt,
+                    isOutgoing: isOutgoing,
+                    targetLabel: '',
+                    targetClass: page.targetClass,
+                    target: {
+                        entity: {
+                            pkEntity: targetInfo,
+                            subfields: subfields
+                        }
+                    }
+                };
+                return stmtTarget;
+            })));
+        }
+        else if (subfieldType.timeSpan) {
+            // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
+            // for each of these subfields
+            /** @type {?} */
+            var subentityPages$ = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE
+                .map((/**
+             * @param {?} fkProperty
+             * @return {?}
+             */
+            function (fkProperty) {
+                // console.log('subentity subfield for targetInfo', targetInfo)
+                // console.log('subentity subfield for targetInfo', targetInfo)
+                // create page:GvSubfieldPage
+                /** @type {?} */
+                var nestedPage = {
+                    fkProperty: fkProperty,
+                    isOutgoing: true,
+                    limit: 1,
+                    offset: 0,
+                    targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+                    fkSourceEntity: targetInfo,
+                    scope: page.scope,
+                };
+                /** @type {?} */
+                var subfType = {
+                    timePrimitive: 'true'
+                };
+                return _this.pipeSubfieldPage(nestedPage, subfType).pipe(map((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var count = _a.count, statements = _a.statements;
+                    var limit = nestedPage.limit, offset = nestedPage.offset, s = __rest(nestedPage, ["limit", "offset"]);
+                    /** @type {?} */
+                    var subentitySubfieldPage = {
+                        subfield: s,
+                        count: count,
+                        statements: statements
+                    };
+                    return subentitySubfieldPage;
+                })));
+            }));
+            return combineLatestOrEmpty(subentityPages$)
+                .pipe(map((/**
+             * @param {?} subfields
+             * @return {?}
+             */
+            function (subfields) {
+                /** @type {?} */
+                var timeSpanPreview = {};
+                subfields.forEach((/**
+                 * @param {?} s
+                 * @return {?}
+                 */
+                function (s) {
+                    if (s.statements[0]) {
+                        /** @type {?} */
+                        var st = s.statements[0];
+                        /** @type {?} */
+                        var key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[st.statement.fk_property];
+                        timeSpanPreview[key] = st.target.timePrimitive;
+                    }
+                }));
+                /** @type {?} */
+                var stmtTarget = {
+                    statement: stmt,
+                    isOutgoing: isOutgoing,
+                    targetLabel: _this.timeSpanPipe.transform(new TimeSpanUtil(timeSpanPreview)),
+                    targetClass: page.targetClass,
+                    target: {
+                        timeSpan: {
+                            preview: timeSpanPreview,
+                            subfields: subfields
+                        }
+                    }
+                };
+                return stmtTarget;
+            })));
+        }
+        else if (subfieldType.timePrimitive) {
+            return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(switchMap((/**
+             * @param {?} timePrimitive
+             * @return {?}
+             */
+            function (timePrimitive) {
+                // get calendar
+                /** @type {?} */
+                var cal$;
+                if (page.scope.inProject) {
+                    cal$ = _this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(page.scope.inProject + '_' + stmt.pk_entity)
+                        .pipe(map((/**
+                     * @param {?} infoProjRel
+                     * @return {?}
+                     */
+                    function (infoProjRel) { return (/** @type {?} */ (infoProjRel.calendar)); })));
+                }
+                else {
+                    cal$ = new BehaviorSubject((/** @type {?} */ (stmt.community_favorite_calendar)));
+                }
+                // pipe target time primitive of stmt
+                return cal$.pipe(map((/**
+                 * @param {?} cal
+                 * @return {?}
+                 */
+                function (cal) {
+                    /** @type {?} */
+                    var timePrimWithCal = infTimePrimToTimePrimWithCal(timePrimitive, cal);
+                    /** @type {?} */
+                    var stmtTarget = {
+                        statement: stmt,
+                        isOutgoing: isOutgoing,
+                        targetLabel: _this.timePrimitivePipe.transform(timePrimWithCal),
+                        targetClass: page.targetClass,
+                        target: {
+                            timePrimitive: timePrimWithCal
+                        }
+                    };
+                    return stmtTarget;
+                })));
+            })));
         }
         throw new Error("No implementation found for subfieldType " + JSON.stringify(subfieldType));
     };
@@ -6661,23 +7090,65 @@ var InformationPipesService = /** @class */ (function () {
      */
     function (page, subfieldType) {
         var _this = this;
-        // get the statments of that page
-        return this.s.inf$.statement$.pagination$.pipePage(page)
-            .pipe(switchMap((/**
-         * @param {?} pkStmts
+        if (subfieldType.timeSpan) {
+            // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
+            return this.pipeTimeSpan(page, subfieldType);
+        }
+        else {
+            // get the statments of that page
+            return combineLatest(this.s.inf$.statement$.pagination$.pipeCount(page), this.s.inf$.statement$.pagination$.pipePage(page)
+                .pipe(switchMap((/**
+             * @param {?} pkStmts
+             * @return {?}
+             */
+            function (pkStmts) { return combineLatestOrEmpty(pkStmts.map((/**
+             * @param {?} pkStmt
+             * @return {?}
+             */
+            function (pkStmt) { return _this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
+                // for each statement, depending on the subfieldType, load the corresponding target
+                .pipe(filter((/**
+             * @param {?} stmt
+             * @return {?}
+             */
+            function (stmt) { return !!stmt; })), switchMap((/**
+             * @param {?} stmt
+             * @return {?}
+             */
+            function (stmt) { return _this.pipeStatementWithTarget(stmt, page, subfieldType); }))); }))); })))).pipe(map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), count = _b[0], statements = _b[1];
+                return ({ count: count, statements: statements });
+            })));
+        }
+    };
+    /**
+     * @private
+     * @param {?} page
+     * @param {?} subfieldType
+     * @return {?}
+     */
+    InformationPipesService.prototype.pipeTimeSpan = /**
+     * @private
+     * @param {?} page
+     * @param {?} subfieldType
+     * @return {?}
+     */
+    function (page, subfieldType) {
+        /** @type {?} */
+        var virtualStatementToTimeSpan = { fk_object_info: page.fkSourceEntity };
+        return this.pipeTargetOfStatement(virtualStatementToTimeSpan, page, subfieldType).pipe(map((/**
+         * @param {?} stmtTarget
          * @return {?}
          */
-        function (pkStmts) { return combineLatestOrEmpty(pkStmts.map((/**
-         * @param {?} pkStmt
-         * @return {?}
-         */
-        function (pkStmt) { return _this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
-            // for each statement, depending on the subfieldType, load the corresponding target
-            .pipe(switchMap((/**
-         * @param {?} stmt
-         * @return {?}
-         */
-        function (stmt) { return _this.pipeStatementWithTarget(stmt, page, subfieldType); }))); }))); })));
+        function (stmtTarget) {
+            /** @type {?} */
+            var stmtWT = __assign({}, stmtTarget, { projRel: undefined, ordNum: undefined });
+            return { count: 1, statements: [stmtWT] };
+        })));
     };
     // pipeStatementListPage(
     //   paginateBy: PaginateByParam[],
@@ -9046,5 +9517,5 @@ function propertyOptionFieldKey(fkProperty, isOutgoing) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ActiveProjectPipesService, ConfigurationPipesService, DatSelector, DfhSelector, InfSelector, InformationBasicPipesService, InformationPipesService, ProSelector, ReduxQueriesModule, SchemaSelectorsService, ShouldPauseService, SysSelector, TabSelector, WarSelector, cache, propertyOptionFieldKey, spyTag };
+export { ActiveProjectPipesService, ConfigurationPipesService, DatSelector, DfhSelector, InfSelector, InformationBasicPipesService, InformationPipesService, ProSelector, ReduxQueriesModule, SchemaSelectorsService, ShouldPauseService, SysSelector, TabSelector, WarSelector, cache, createHasTimeSpanProperty, infTimePrimToTimePrimWithCal, propertyOptionFieldKey, spyTag, timeSpanItemToTimeSpan };
 //# sourceMappingURL=kleiolab-lib-queries-src-lib-queries.js.map

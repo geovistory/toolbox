@@ -1,6 +1,7 @@
 
 
 export * from './decorators/method-decorators';
+export * from './functions/functions';
 export * from './models/AppellationItem';
 export * from './models/BasicStatementItem';
 export * from './models/ClassAndTypeNode';
@@ -29,7 +30,6 @@ export * from './models/SpecialFieldType';
 export * from './models/StatementItem';
 export * from './models/StatementWithTarget';
 export * from './models/Subfield';
-export * from './models/SubfieldType';
 export * from './models/TemporalEntityCell';
 export * from './models/TemporalEntityItem';
 export * from './models/TemporalEntityRemoveProperties';
@@ -53,7 +53,6 @@ export * from './services/information-basic-pipes.service';
 export * from './services/information-pipes.service';
 export * from './services/schema-selectors.service';
 export * from './services/should-pause.service';
-
 
 
 

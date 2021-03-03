@@ -9,7 +9,7 @@ import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/GvLoadSubfield
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { BehaviorSubject } from 'rxjs';
 import { IAppState, ReduxModule } from '../../public-api';
-import { createPaginateByKey } from '../_helpers/createPaginateByKey';
+import { subfieldIdToString } from '../_helpers/subfieldIdToString';
 import { GvSchemaActions } from './schema.actions';
 
 
@@ -44,11 +44,11 @@ describe('GvSchemaActions', () => {
 
   describe('.loadGvPaginationObject()', () => {
     it('should put paginated statements of subfield Appelation for language -> refers to name -> appellation ', () => {
-      const req = GvLoadSubfieldPageReqMock.appeTeEnHasAppeVt
+      const req = GvLoadSubfieldPageReqMock.appeTeEnRefersToName
       actions.loadGvPaginationObject(req)
       const paginationInfo = ngRedux.getState().inf
         .statement
-        .by_subfield_page[createPaginateByKey(req.page)]
+        .by_subfield_page[subfieldIdToString(req.page)]
 
       expect(paginationInfo.count).toEqual(1)
       expect(paginationInfo.loading['0_7']).toEqual(false)

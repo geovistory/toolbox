@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvSchemaObject, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/DfhApiClassMock';
@@ -16,7 +16,7 @@ import { SubfieldMock } from 'projects/__test__/data/SubfieldMock';
 import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhProperty } from 'projects/__test__/helpers/transformers';
 import { first, take, toArray } from 'rxjs/operators';
 import { Field } from '../models/Field';
-import { SubfieldType } from '../models/SubfieldType';
+import { Subfield } from '../models/Subfield';
 import { ConfigurationPipesService, createHasTimeSpanProperty } from './configuration-pipes.service';
 
 describe('ConfigurationPipeService', () => {
@@ -190,7 +190,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const expectedSequence: SubfieldType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class].valueObjectType]
+      const expectedSequence: GvSubfieldType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class].valueObjectType]
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -214,7 +214,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const expectedSequence: SubfieldType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class].valueObjectType]
+      const expectedSequence: GvSubfieldType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class].valueObjectType]
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -241,7 +241,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const expectedSequence = [[SubfieldMock.subfieldAppeHasAppeString]]
+      const expectedSequence = [[SubfieldMock.appeHasAppeString]]
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -268,7 +268,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe (remove source class info because this is a generic property where souce is CRM Entity)
-      const { sourceClass, sourceClassLabel, ...subfield } = SubfieldMock.manifestationSingletonHasDefinitionShortTitle;
+      const { sourceClass, sourceClassLabel, ...subfield } = SubfieldMock.manifestationSingletonHasDefinition;
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -296,7 +296,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe (remove source class info because this is a generic property where souce is CRM Entity)
-      const { sourceClass, sourceClassLabel, ...subfield } = SubfieldMock.subfieldAppeHasTimeSpan;
+      const { sourceClass, sourceClassLabel, ...subfield } = SubfieldMock.appeHasTimeSpan;
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -321,6 +321,29 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeFields(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0].length).toEqual(6)
+          },
+          null,
+          done);
+
+    });
+
+
+    fit('should return fields of time span', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeFields(DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]
@@ -363,6 +386,51 @@ describe('ConfigurationPipeService', () => {
           null,
           done);
 
+    });
+
+    it('should mark the field Person->AppeTeEn->Person as circular', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      // using pipe
+      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_21_PERSON.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            // console.log(JSON.stringify(actualSequence))
+            const fs = actualSequence[0];
+            expect(fs[0].property.pkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
+            expect(fs[0].listDefinitions[0].listType.temporalEntity[2].page.isCircular).toEqual(true)
+          },
+          null,
+          done);
+    });
+    it('should mark the field Person->AppeTeEn->Appe as not circular', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      // using pipe
+      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_21_PERSON.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            // console.log(JSON.stringify(actualSequence))
+            const fs = actualSequence[0];
+            expect(fs[0].property.pkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
+            expect(fs[0].listDefinitions[0].listType.temporalEntity[3].page.isCircular).toEqual(false)
+          },
+          null,
+          done);
     });
     it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
@@ -476,6 +544,38 @@ describe('ConfigurationPipeService', () => {
     });
 
   })
+
+  describe('.pipeSubfieldIdToSubfield()', () => {
+    it('should return subfield', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      // using pipe
+      const q$ = service.pipeSubfieldIdToSubfield(
+        21,
+        1111,
+        365,
+        false
+      )
+
+      // testing pipe
+      const expectedSequence: Subfield[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            const fs = actualSequence[0];
+            expect(fs.sourceClass).toEqual(21)
+            expect(fs.targetClass).toEqual(365)
+          },
+          null,
+          done);
+
+    });
+
+  })
+
 });
 function pipeClassLabelTest(dfhClass: DfhApiClass, ngRedux: NgRedux<IAppState>, schemaObjServcie: SchemaService, service: ConfigurationPipesService, done: DoneFn) {
   setAppState(ngRedux, IAppStateMock.stateProject1);

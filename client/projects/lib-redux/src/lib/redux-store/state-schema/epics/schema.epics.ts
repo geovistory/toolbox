@@ -10,7 +10,6 @@ import { NotificationsAPIActions } from '../../state-gui/actions/notifications.a
 import { InfActions } from '../actions/inf.actions';
 import { GvPaginationObjectAction, GvSchemaActions, GvSchemaObjectAction } from '../actions/schema.actions';
 import { SchemaService } from '../services/schema.service';
-import { createPaginateByKey } from '../_helpers/createPaginateByKey';
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +61,6 @@ export class SchemaEpics {
 
           const pkProject = store.value.activeProject.pk_project;
           const meta = action.meta;
-          const paginateBy = createPaginateByKey(meta.req.page);
 
           // call action to set pagination loading on true
           this.infActions.statement.loadPage(meta.req.page, pkProject);

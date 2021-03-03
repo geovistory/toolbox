@@ -1,8 +1,8 @@
-import { PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TimePrimitive } from '../classes/time-primitive';
+import { PipeTransform } from '@angular/core';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 export declare class TimePrimitivePipe implements PipeTransform {
     private datePipe;
     constructor(datePipe: DatePipe);
-    transform(timePrimitive: TimePrimitive): string;
+    transform(timePrimitive: TimePrimitiveWithCal): string;
 }

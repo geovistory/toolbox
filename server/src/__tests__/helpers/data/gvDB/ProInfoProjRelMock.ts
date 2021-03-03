@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProInfoProjRel } from '../../../../models';
-import { InfPersistentItemMock } from './InfPersistentItemMock';
-import { InfStatementMock } from './InfStatementMock';
-import { InfTemporalEntityMock } from './InfTemporalEntityMock';
-import { ProProjectMock } from './ProProjectMock';
-import { PubAccountMock } from './PubAccountMock';
+import {ProInfoProjRel} from '../../../../models';
+import {InfPersistentItemMock} from './InfPersistentItemMock';
+import {InfStatementMock} from './InfStatementMock';
+import {InfTemporalEntityMock} from './InfTemporalEntityMock';
+import {ProProjectMock} from './ProProjectMock';
+import {PubAccountMock} from './PubAccountMock';
 import {OmitEntity} from './local-model.helpers';
 
 /**
@@ -239,6 +239,47 @@ export class ProInfoProjRelMock {
     pk_entity: 2028,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfPersistentItemMock.ALBERT_IV.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+
+  static readonly PROJ_1_STMT_MADRIDS_PRESENCE_WAS_AT_PLACE_123: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2029,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_MADRIDS_PRESENCE_WAS_PRESENCE_OF: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2030,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.MADRIDS_PRESENCE_WAS_PRESENCE_OF.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2031,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2032,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_NAME_1_TO_LANG: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2033,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.NAME_1_TO_LANG.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })

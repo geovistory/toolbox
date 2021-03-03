@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfPersistentItem } from '@kleiolab/lib-sdk-lb4';
-import { DfhApiClassMock } from './DfhApiClassMock';
+import {InfPersistentItem} from '@kleiolab/lib-sdk-lb4';
+import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
 /**
@@ -70,5 +70,21 @@ export class InfPersistentItemMock {
   static readonly UNIONS_EXPR: OmitEntity<InfPersistentItem> = ({
     pk_entity: 2013,
     fk_class: DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class,
+  })
+
+  static readonly ACCOUNT_OF_JOURNEY: OmitEntity<InfPersistentItem> = ({
+    pk_entity: 2014,
+    fk_class: DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY.dfh_pk_class,
+  })
+
+  static readonly TIME_UNIT_MONTH: OmitEntity<InfPersistentItem> = ({
+    pk_entity: 2015,
+    fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class,
+  })
+
+
+  static readonly MANIF_SINGLETON_THE_MURDERER: OmitEntity<InfPersistentItem> = ({
+    pk_entity: 2016,
+    fk_class: DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
   })
 }

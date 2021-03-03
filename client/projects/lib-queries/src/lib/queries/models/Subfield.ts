@@ -1,4 +1,4 @@
-import { SubfieldType } from './SubfieldType';
+import { GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 import { FieldBase } from './FieldBase';
 /**
  * A Subfiel contains contains information to create the different GUI's to display and edit
@@ -11,13 +11,13 @@ import { FieldBase } from './FieldBase';
  * the statement and its target.
  */
 export interface Subfield extends FieldBase {
-    // determines what components are used to create, edit or display
-    // the statement and its target.
-    listType: SubfieldType;
-    // the target class of the sub-field (if is outgoing range else domain)
-    targetClass: number;
-    // label of the target class
-    targetClassLabel: string;
-    // true if the property is removed from all profiles activated by the project
-    removedFromAllProfiles: boolean;
+  // determines what components are used to create, edit or display
+  // the statement and its target.
+  listType: GvSubfieldType;
+  // the target class of the sub-field (if is outgoing range else domain)
+  targetClass: number;
+  // label of the target class
+  targetClassLabel: string;
+  // true if the property is removed from all profiles activated by the project
+  removedFromAllProfiles: boolean;
 }

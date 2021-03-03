@@ -7761,19 +7761,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: state-schema/_helpers/createPaginateByKey.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} x
-     * @return {?}
-     */
-    function createPaginateByKey(x) {
-        return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + x.targetClass + "_" + ramda.keys(x.scope)[0] + "_" + ramda.values(x.scope)[0];
-    }
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: state-schema/epics/schema.epics.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -7866,8 +7853,6 @@
                 var pkProject = store.value.activeProject.pk_project;
                 /** @type {?} */
                 var meta = action.meta;
-                /** @type {?} */
-                var paginateBy = createPaginateByKey(meta.req.page);
                 // call action to set pagination loading on true
                 _this.infActions.statement.loadPage(meta.req.page, pkProject);
                 _this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
@@ -8782,6 +8767,19 @@
 
     /**
      * @fileoverview added by tsickle
+     * Generated from: state-schema/_helpers/subfieldIdToString.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} x
+     * @return {?}
+     */
+    function subfieldIdToString(x) {
+        return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + x.targetClass + "_" + ramda.keys(x.scope)[0] + "_" + ramda.values(x.scope)[0];
+    }
+
+    /**
+     * @fileoverview added by tsickle
      * Generated from: state-schema/_helpers/reducer-factory.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -9049,7 +9047,7 @@
                     /** @type {?} */
                     var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                     /** @type {?} */
-                    var key_1 = createPaginateByKey(meta.page);
+                    var key_1 = subfieldIdToString(meta.page);
                     /** @type {?} */
                     var fromTo_1 = getFromTo(meta.page.limit, meta.page.offset);
                     state = facette(action, state, (/**
@@ -9065,7 +9063,7 @@
                     /** @type {?} */
                     var meta = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                     /** @type {?} */
-                    var key_2 = createPaginateByKey(meta.page);
+                    var key_2 = subfieldIdToString(meta.page);
                     /** @type {?} */
                     var fromTo_2 = getFromTo(meta.page.limit, meta.page.offset);
                     state = facette(action, state, (/**
@@ -9081,7 +9079,7 @@
                     /** @type {?} */
                     var meta_1 = (/** @type {?} */ ((/** @type {?} */ (action.meta))));
                     /** @type {?} */
-                    var key_3 = createPaginateByKey(meta_1.page);
+                    var key_3 = subfieldIdToString(meta_1.page);
                     /** @type {?} */
                     var fromTo_3 = getFromTo(meta_1.page.limit, meta_1.page.offset);
                     /** @type {?} */
@@ -11307,7 +11305,6 @@
     exports.createDatReducer = createDatReducer;
     exports.createDfhReducer = createDfhReducer;
     exports.createInfReducer = createInfReducer;
-    exports.createPaginateByKey = createPaginateByKey;
     exports.createProReducer = createProReducer;
     exports.createSysReducer = createSysReducer;
     exports.createTabReducer = createTabReducer;
@@ -11338,6 +11335,7 @@
     exports.sandboxStateReducer = sandboxStateReducer;
     exports.setAppState = setAppState;
     exports.storeFlattened = storeFlattened;
+    exports.subfieldIdToString = subfieldIdToString;
     exports.sysDefinitions = sysDefinitions;
     exports.sysRoot = sysRoot;
     exports.tabDefinitions = tabDefinitions;

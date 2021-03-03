@@ -1,14 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, Field } from '@kleiolab/lib-queries';
 import { ByPk } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, first, map, mergeMap, takeUntil } from 'rxjs/operators';
-import { Field } from "@kleiolab/lib-queries";
 import { FormPart, MergeDef } from './FormPart';
 
 export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
@@ -171,7 +170,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
 
           return new FormPart(this.formGroup, field.label, field.listDefinitions, {
             initSubfield: {
-              listType: 'time-span',
+              listType: { timeSpan: 'true' },
               ...{} as any
             },
             initTimeSpan: this.data.timePrimitives

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 export interface InfPlace {
-    _long: number;
+    long: number;
     lat: number;
     fk_class: number;
     pk_entity?: number;

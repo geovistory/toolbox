@@ -6,8 +6,28 @@ export class MockPaginatedStatementsControllerService {
     if (gvLoadSubfieldPageReq.subfieldType.appellation) {
       return new BehaviorSubject(GvPaginationObjectMock.appeTeEnHasAppeVt);
     }
+    else if (gvLoadSubfieldPageReq.subfieldType.place) {
+      return new BehaviorSubject(GvPaginationObjectMock.madridsPresenceWasAtPlace);
+    }
     else if (gvLoadSubfieldPageReq.subfieldType.temporalEntity) {
       return new BehaviorSubject(GvPaginationObjectMock.personHasAppeTeEn);
+    }
+
+    else if (gvLoadSubfieldPageReq.subfieldType.dimension) {
+      return new BehaviorSubject(GvPaginationObjectMock.journeyHasDuration);
+    }
+    else if (gvLoadSubfieldPageReq.subfieldType.langString) {
+      return new BehaviorSubject(GvPaginationObjectMock.manifSingletonHasShortTitleMurderer);
+    }
+
+    else if (gvLoadSubfieldPageReq.subfieldType.language) {
+      return new BehaviorSubject(GvPaginationObjectMock.appeTeEnUsedInLanguage);
+    }
+    else if (gvLoadSubfieldPageReq.subfieldType.timePrimitive) {
+      return new BehaviorSubject(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
+    }
+    else if (gvLoadSubfieldPageReq.subfieldType.timeSpan) {
+      return new BehaviorSubject(GvPaginationObjectMock.shipVoyageHasTimeSpan);
     }
 
     throw new Error('mock not implemented for this request');

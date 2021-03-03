@@ -9,10 +9,11 @@ import {Socket} from 'socket.io';
 import {QWarEntityPreviewSearchExisiting, SearchExistingRelatedStatement} from '../components/query/q-war-search-existing';
 import {Postgres1DataSource} from '../datasources';
 import {ws} from '../decorators/websocket.decorator';
-import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations, InfStatement} from '../models';
+import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations} from '../models';
 import {Streams} from '../realtime/streams/streams';
 import {WarEntityPreviewRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
+import {EntitySearchHit} from './EntitySearchHit';
 
 /**
  * TODO-LB3-LB4
@@ -53,14 +54,6 @@ interface AddToStreamMsg {
   pks: (number | string)[];
 }
 
-@model() export class EntitySearchHit extends WarEntityPreview {
-  @property() full_text_headline?: string;
-  @property() class_label_headline?: string;
-  @property() entity_label_headline?: string;
-  @property() type_label_headline?: string;
-  @property.array(Number) projects?: number[]
-  @property.array(InfStatement) related_statements?: InfStatement[]
-}
 @model() export class WareEntityPreviewPage {
   @property() totalCount: number
   @property.array(EntitySearchHit) data: EntitySearchHit[]

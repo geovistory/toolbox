@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvSubfieldaPageScope } from './gvSubfieldaPageScope';
+import { GvSubfieldPageScope } from './gvSubfieldPageScope';
 export interface GvSubfieldPage {
-  fkSourceEntity: number;
-  fkProperty: number;
-  isOutgoing: boolean;
-  targetClass: number;
-  scope: GvSubfieldaPageScope;
-  limit: number;
-  offset: number;
+    fkProperty: number;
+    isOutgoing: boolean;
+    targetClass: number;
+    limit: number;
+    offset: number;
+    fkSourceEntity: number;
+    scope: GvSubfieldPageScope;
 }

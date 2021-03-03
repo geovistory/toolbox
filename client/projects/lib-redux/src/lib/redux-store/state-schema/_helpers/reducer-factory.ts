@@ -3,8 +3,8 @@ import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals, indexBy, keys, omit, values } from 'ramda';
 import { combineReducers, Reducer } from 'redux';
-import { createPaginateByKey } from './createPaginateByKey';
 import { LoadPageMeta, LoadPageSucceededMeta } from './schema-actions-factory';
+import { subfieldIdToString } from './subfieldIdToString';
 
 export const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap'
 export interface EntityModelAndClass<ModelName> {
@@ -176,7 +176,7 @@ export class ReducerFactory<Payload, Model> {
 
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE') {
         const meta = action.meta as any as LoadPageMeta;
-        const key = createPaginateByKey(meta.page)
+        const key = subfieldIdToString(meta.page)
         const fromTo = getFromTo(meta.page.limit, meta.page.offset);
 
         state = facette(action, state, (innerState) => ({
@@ -196,7 +196,7 @@ export class ReducerFactory<Payload, Model> {
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
         const meta = action.meta as any as LoadPageMeta;
 
-        const key = createPaginateByKey(meta.page)
+        const key = subfieldIdToString(meta.page)
         const fromTo = getFromTo(meta.page.limit, meta.page.offset);
 
         state = facette(action, state, (innerState) => ({
@@ -216,7 +216,7 @@ export class ReducerFactory<Payload, Model> {
 
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
         const meta = action.meta as any as LoadPageSucceededMeta;
-        const key = createPaginateByKey(meta.page)
+        const key = subfieldIdToString(meta.page)
         const fromTo = getFromTo(meta.page.limit, meta.page.offset);
         const start = getStart(meta.page.limit, meta.page.offset);
 

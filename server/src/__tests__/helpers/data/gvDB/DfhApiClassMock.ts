@@ -417,6 +417,87 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E52"
   }
+  static readonly EN_689_DURATION: DfhApiClass = {
+    "pk_entity": 5617,
+    "dfh_pk_class": 689,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Duration",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "A time length. A duration is a specialisation of E54 Dimension providing a measure of time.",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C1"
+  }
+  static readonly EN_690_TIME_UNIT: DfhApiClass = {
+    "pk_entity": 5618,
+    "dfh_pk_class": 690,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Time unit",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "A measurement unit of durations and periods of time like second, hour, day, year or century",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C2"
+  }
+
+  static readonly EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY: DfhApiClass = {
+    "pk_entity": 5567,
+    "dfh_pk_class": 691,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 5, // changed to 5 from 15
+    "dfh_class_label": "Account of a journey or stay",
+    "dfh_fk_namespace": 88,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "ANR Processetti",
+    "dfh_namespace_label": "Processetti ongoing",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "Propositional object relating a stay or one or more journeys of a person",
+    "tmsp_last_modification": "2020-08-13T09:39:54.473605+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C4"
+  }
+  static readonly EN_54_LANGUAGE: DfhApiClass = {
+    "pk_entity": 3729,
+    "dfh_pk_class": 54,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Language",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "This class is a specialization of E55 Type and comprises the natural languages in the sense of concepts. This type is used\n            categorically in the model without reference to instances of it, i.e. the Model does not foresee the description of instances of instances\n            of E56 Language, e.g.: “instances of Mandarin Chinese”. It is recommended that internationally or nationally agreed codes and terminology\n            are used to denote instances of E56 Language, such as those defined in ISO 639:1988. ",
+    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E56"
+  }
 }
 
 

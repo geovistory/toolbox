@@ -2,17 +2,16 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvLoadSubentitySubfieldPageReq, GvSubfieldType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
-import { combineLatest, Observable } from 'rxjs';
-import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { cache } from '../decorators/method-decorators';
 import { Field } from '../models/Field';
 import { FieldPlaceOfDisplay } from '../models/FieldPosition';
 import { SpecialFieldType } from '../models/SpecialFieldType';
 import { Subfield } from '../models/Subfield';
-import { SubfieldType } from '../models/SubfieldType';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
@@ -95,17 +94,22 @@ export class ConfigurationPipesService {
     ).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
 
-        // if class is not appellation for language, add appellation for language (1111) property
-        if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-          ingoingProps.push(createAppellationProperty(pkClass))
-        }
-        // if is temporal entity, add has time span property
-        if (sourceKlass.basic_type === 9) {
-          outgoingProps.push(createHasTimeSpanProperty(pkClass))
-        }
+        if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
+          // remove the has time span property
+          ingoingProps = []
 
-        outgoingProps.push(createHasDefinitionProperty(pkClass))
+        } else {
+          // if class is not appellation for language, add appellation for language (1111) property
+          if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+            ingoingProps.push(createAppellationProperty(pkClass))
+          }
+          // if is temporal entity, add has time span property
+          if (sourceKlass.basic_type === 9) {
+            outgoingProps.push(createHasTimeSpanProperty(pkClass))
+          }
 
+          outgoingProps.push(createHasDefinitionProperty(pkClass))
+        }
         return combineLatest(
           this.pipePropertiesToSubfields(outgoingProps, true, enabledProfiles, sysConfig),
           this.pipePropertiesToSubfields(ingoingProps, false, enabledProfiles, sysConfig),
@@ -283,10 +287,6 @@ export class ConfigurationPipesService {
   }
 
 
-
-
-
-
   @cache({ refCount: false }) pipePropertiesToSubfields(
     properties: DfhProperty[],
     isOutgoing: boolean,
@@ -295,73 +295,111 @@ export class ConfigurationPipesService {
   ): Observable<Subfield[]> {
     return combineLatestOrEmpty(
       properties.map(p => {
-
-        const o = isOutgoing;
-        const targetClass = o ? p.has_range : p.has_domain;
-        const sourceClass = o ? p.has_domain : p.has_range;
-        const targetMaxQuantity = o ?
-          p.range_instances_max_quantifier :
-          p.domain_instances_max_quantifier;
-
-        const sourceMaxQuantity = o ?
-          p.domain_instances_max_quantifier :
-          p.range_instances_max_quantifier;
-
-        const targetMinQuantity = o ?
-          p.range_instances_min_quantifier :
-          p.domain_instances_min_quantifier;
-
-        const sourceMinQuantity = o ?
-          p.domain_instances_min_quantifier :
-          p.range_instances_min_quantifier;
-
-        return combineLatest(
-          this.pipeClassLabel(sourceClass),
-          this.pipeClassLabel(targetClass),
-          this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity),
-          this.pipeFieldLabel(
-            p.pk_property,
-            isOutgoing ? p.has_domain : null,
-            isOutgoing ? null : p.has_range,
-          )
-        ).pipe(
-          map(([sourceClassLabel, targetClassLabel, listType, label]) => {
-
-            const node: Subfield = {
-              listType,
-              sourceClass,
-              sourceClassLabel,
-              sourceMaxQuantity,
-              sourceMinQuantity,
-              targetClass,
-              targetClassLabel,
-              targetMinQuantity,
-              targetMaxQuantity,
-              label,
-              isHasTypeField: o && p.is_has_type_subproperty,
-              property: { pkProperty: p.pk_property },
-              isOutgoing: o,
-              identityDefiningForSource: o ? p.identity_defining : false, // replace false with p.identity_defining_for_range when available
-              identityDefiningForTarget: o ? false : p.identity_defining, // replace false with p.identity_defining_for_range when available
-              ontoInfoLabel: p.identifier_in_namespace,
-              ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
-              removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
-            }
-            return node
-          })
-        )
+        return this.pipeSubfield(isOutgoing, p, sysConfig, enabledProfiles);
       })
     )
 
   }
 
 
+  @cache({ refCount: false })
+  pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean): Observable<Subfield> {
+    const domain = isOutgoing ? sourceClass : targetClass;
+    const range = isOutgoing ? targetClass : sourceClass;
+    return combineLatest(
+      this.s.dfh$.property$.pk_property__has_domain__has_range$.key([property, domain, range].join('_'))
+        .pipe(filter(x => {
+          return !!x
+        })),
+      this.s.sys$.config$.main$.pipe(filter(x => {
+        return !!x
+      })),
+      this.pipeProfilesEnabledByProject().pipe(filter(x => {
+        return !!x
+      })),
+    ).pipe(
+      switchMap(([dfhProp, sysConf, enabledProfiles]) => this.pipeSubfield(
+        isOutgoing,
+        dfhProp,
+        sysConf,
+        enabledProfiles
+      ))
+    )
+  }
+
+
+  private pipeSubfield(
+    isOutgoing: boolean,
+    p: DfhProperty,
+    sysConfig: SysConfigValue,
+    enabledProfiles: number[]
+  ): Observable<Subfield> {
+    const o = isOutgoing;
+    const targetClass = o ? p.has_range : p.has_domain;
+    const sourceClass = o ? p.has_domain : p.has_range;
+    const targetMaxQuantity = o ?
+      p.range_instances_max_quantifier :
+      p.domain_instances_max_quantifier;
+    const sourceMaxQuantity = o ?
+      p.domain_instances_max_quantifier :
+      p.range_instances_max_quantifier;
+    const targetMinQuantity = o ?
+      p.range_instances_min_quantifier :
+      p.domain_instances_min_quantifier;
+    const sourceMinQuantity = o ?
+      p.domain_instances_min_quantifier :
+      p.range_instances_min_quantifier;
+    return combineLatest(
+      this.pipeClassLabel(sourceClass).pipe(tap(x => {
+        return x
+      })),
+      this.pipeClassLabel(targetClass).pipe(tap(x => {
+        return x
+      })),
+      this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property).pipe(tap(x => {
+        return x
+      })),
+      this.pipeFieldLabel(p.pk_property, isOutgoing ? p.has_domain : null, isOutgoing ? null : p.has_range).pipe(tap(x => {
+        return x
+      })),
+    )
+      .pipe(map(([sourceClassLabel, targetClassLabel, listType, label]
+      ) => {
+        const node: Subfield = {
+          listType,
+          sourceClass,
+          sourceClassLabel,
+          sourceMaxQuantity,
+          sourceMinQuantity,
+          targetClass,
+          targetClassLabel,
+          targetMinQuantity,
+          targetMaxQuantity,
+          label,
+          isHasTypeField: o && p.is_has_type_subproperty,
+          property: { pkProperty: p.pk_property },
+          isOutgoing: o,
+          identityDefiningForSource: o ? p.identity_defining : false,
+          identityDefiningForTarget: o ? false : p.identity_defining,
+          ontoInfoLabel: p.identifier_in_namespace,
+          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
+          removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
+        };
+        return node;
+      }));
+  }
+
   /**
    * Pipes the type of Subfield for a given class
+   *
    * Currently (to be revised if good) sublcasses of E55 Type,
    * that are the target of a field with targetMaxQantity=1,
    * get Subfield type 'hasType'.
    * Therefore targetMaxQuantity is needed.
+   *
+   * If we are nesting subfields, we'll end up with circular fields.
+   * E.g.: Person 21 -> has appellation 1111 -> AppeTeEn 365 -> is appellation of 1111 -> Person 21
+   * In order to detect them, we can additionally pass in the parent property.
    *
    * This behavior has to be revised, because it can lead to problems
    * when the Subfield belongs to a Field with multiple target classes
@@ -369,11 +407,72 @@ export class ConfigurationPipesService {
    * the right target class.
    */
   // @spyTag
-  @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number): Observable<SubfieldType> {
+  @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number): Observable<GvSubfieldType> {
     return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
-      map((klass) => getSubfieldType(config, klass, targetMaxQuantity))
+      switchMap((klass) => this.pipeSubfieldType(config, klass, targetMaxQuantity, parentProperty))
     )
+  }
+
+
+  pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number): Observable<GvSubfieldType> {
+
+    const res = (x: GvSubfieldType) => new BehaviorSubject(x)
+    let classConfig: ClassConfig
+    if (config) classConfig = config.classes[klass.pk_class];
+    if (classConfig && classConfig.valueObjectType) {
+      return res(classConfig.valueObjectType)
+    }
+
+
+    else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
+      return res({ typeItem: 'true' })
+    }
+    else if (klass.basic_type === 8 || klass.basic_type === 30) {
+      return res({ entityPreview: 'true' })
+    }
+    // TODO add this to sysConfigValue
+    else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
+      return res({ timeSpan: 'true' })
+    }
+    else {
+      // pipe the subfields of the temporalEntity class
+      return this.pipeBasicAndSpecificFields(klass.pk_class).pipe(
+        map(fields => {
+          const subentitySubfieldPage: GvLoadSubentitySubfieldPageReq[] = []
+          for (const field of fields) {
+            // for each of these subfields
+            for (const subfield of field.listDefinitions) {
+              // create page:GvSubfieldPage
+              let nestedSubfieldType: GvSubfieldType = { entityPreview: 'true' };
+              if (!subfield.listType.temporalEntity) nestedSubfieldType = subfield.listType;
+              let isCircular = false;
+              if (
+                parentProperty &&
+                subfield.property.pkProperty == parentProperty &&
+                subfield.targetMaxQuantity === 1
+              ) {
+                isCircular = true
+              }
+              const nestedPage: GvLoadSubentitySubfieldPageReq = {
+                subfieldType: nestedSubfieldType,
+                page: {
+                  fkProperty: subfield.property.pkProperty,
+                  isOutgoing: subfield.isOutgoing,
+                  limit: 1,
+                  offset: 0,
+                  targetClass: subfield.targetClass,
+                  isCircular
+                }
+              }
+              subentitySubfieldPage.push(nestedPage)
+            }
+          }
+          return { temporalEntity: subentitySubfieldPage }
+        }),
+
+      )
+    }
   }
 
 
@@ -938,30 +1037,6 @@ export class ConfigurationPipesService {
   }
 }
 
-
-function getSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number): SubfieldType {
-
-  let classConfig: ClassConfig
-  if (config) classConfig = config.classes[klass.pk_class];
-  if (classConfig && classConfig.valueObjectType) {
-    return classConfig.valueObjectType
-  }
-
-
-  else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
-    return { typeItem: 'true' }
-  }
-  else if (klass.basic_type === 8 || klass.basic_type === 30) {
-    return { entityPreview: 'true' }
-  }
-  // TODO add this to sysConfigValue
-  else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
-    return { timeSpan: 'true' }
-  }
-  else {
-    return { temporalEntity: 'true' }
-  }
-}
 
 
 function createHasDefinitionProperty(domainClass: number) {

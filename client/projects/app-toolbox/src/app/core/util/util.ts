@@ -1,10 +1,7 @@
 // TODO DELETE UNUSED
 import { FormArray, FormGroup } from '@angular/forms';
-import { DfhConfig } from '@kleiolab/lib-config';
-import { TimeSpanItem } from '@kleiolab/lib-queries';
 import { ByPk, ProjectPreview } from '@kleiolab/lib-redux';
-import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
+import { ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
 import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
@@ -73,55 +70,20 @@ export class Utils {
   }
 
 
-  /**
-   *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
-  */
-  static getCalendarFromStatement(statement: InfStatement): CalendarType {
-    if (!statement) return null;
+  // /**
+  //  *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
+  // */
+  // static getCalendarFromStatement(statement: InfStatement): CalendarType {
+  //   if (!statement) return null;
 
-    const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
-      statement.entity_version_project_rels[0].calendar :
-      statement.community_favorite_calendar ?
-        statement.community_favorite_calendar : null;
+  //   const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
+  //     statement.entity_version_project_rels[0].calendar :
+  //     statement.community_favorite_calendar ?
+  //       statement.community_favorite_calendar : null;
 
-    return cal as CalendarType;
-  }
+  //   return cal as CalendarType;
+  // }
 
-  /**
-   * Converts InfStatement to TimePrimitive
-   * @param r the InfStatement to convert
-   */
-  static infStatement2TimePrimitive(r: InfStatement): TimePrimitive {
-
-    // from InfTimePrimitve to TimePrimitive
-    const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
-    let timePrimitive: TimePrimitive = null;
-    const obj: any = {}
-
-    if (
-      infTp && infTp.duration && infTp.julian_day &&
-      Utils.getCalendarFromStatement(r)
-    ) {
-      // add duration
-      obj.duration = infTp.duration
-
-      // add calendar
-      obj.calendar = Utils.getCalendarFromStatement(r)
-
-      // add julian day
-      obj.julianDay = infTp.julian_day;
-
-      timePrimitive = new TimePrimitive({ ...obj })
-    }
-
-    if (timePrimitive === null) {
-      return new TimePrimitive({
-        calendar: 'julian'
-      })
-    } else {
-      return timePrimitive;
-    }
-  }
 
   static stringFromQuillDoc(quillDoc: QuillDoc): string {
     if (quillDoc && quillDoc.ops && quillDoc.ops.length) return quillDoc.ops.map(op => op.insert).join('');
@@ -170,15 +132,6 @@ export class Utils {
     });
   }
 
-  static timeSpanItemToTimeSpan(timeSpanItem: TimeSpanItem): TimeSpanUtil {
-    const t = new TimeSpanUtil();
-
-    timeSpanItem.properties.forEach(p => {
-      const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty]
-      if (p.items && p.items.length) t[key] = p.items[0].timePrimitive
-    })
-    return t;
-  }
 
   static recursiveMarkAsTouched = (f: FormArray | FormGroup) => {
 
@@ -238,45 +191,6 @@ export class Utils {
     }
 
     return string;
-  }
-
-
-
-
-  /**
-   * Converts InfStatement to TimePrimitive
-   * @param r the InfStatement to convert
-   */
-  infStatement2TimePrimitive(r: InfStatement): TimePrimitive {
-
-    // from InfTimePrimitve to TimePrimitive
-    const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
-    let timePrimitive: TimePrimitive = null;
-    const obj: any = {}
-
-    if (
-      infTp && infTp.duration && infTp.julian_day &&
-      Utils.getCalendarFromStatement(r)
-    ) {
-      // add duration
-      obj.duration = infTp.duration
-
-      // add calendar
-      obj.calendar = Utils.getCalendarFromStatement(r)
-
-      // add julian day
-      obj.julianDay = infTp.julian_day;
-
-      timePrimitive = new TimePrimitive({ ...obj })
-    }
-
-    if (timePrimitive === null) {
-      return new TimePrimitive({
-        calendar: 'julian'
-      })
-    } else {
-      return timePrimitive;
-    }
   }
 
 }
