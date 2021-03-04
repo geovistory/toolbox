@@ -523,6 +523,12 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: models/Profiles.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: models/PropertyItemTypeMap.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -3231,6 +3237,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * If you want specific subsets of Fields and/or ordered Fields, use the pipes
      * that build on this pipe.
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     ConfigurationPipesService.prototype.pipeFields = /**
@@ -3239,10 +3246,12 @@ var ConfigurationPipesService = /** @class */ (function () {
      * If you want specific subsets of Fields and/or ordered Fields, use the pipes
      * that build on this pipe.
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
-    function (pkClass) {
+    function (pkClass, noNesting) {
         var _this = this;
+        if (noNesting === void 0) { noNesting = false; }
         return combineLatest(
         // pipe source class
         this.s.dfh$.class$.by_pk_class$.key(pkClass), 
@@ -3276,17 +3285,17 @@ var ConfigurationPipesService = /** @class */ (function () {
                 ingoingProps = [];
             }
             else {
-                // if class is not appellation for language, add appellation for language (1111) property
-                if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-                    ingoingProps.push(createAppellationProperty(pkClass));
-                }
+                // // if class is not appellation for language, add appellation for language (1111) property
+                // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+                //   ingoingProps.push(createAppellationProperty(pkClass))
+                // }
                 // if is temporal entity, add has time span property
                 if (sourceKlass.basic_type === 9) {
                     outgoingProps.push(createHasTimeSpanProperty(pkClass));
                 }
                 outgoingProps.push(createHasDefinitionProperty(pkClass));
             }
-            return combineLatest(_this.pipePropertiesToSubfields(outgoingProps, true, enabledProfiles, sysConfig), _this.pipePropertiesToSubfields(ingoingProps, false, enabledProfiles, sysConfig), _this.pipeFieldConfigs(pkClass)).pipe(map((/**
+            return combineLatest(_this.pipePropertiesToSubfields(outgoingProps, true, enabledProfiles, sysConfig, noNesting), _this.pipePropertiesToSubfields(ingoingProps, false, enabledProfiles, sysConfig, noNesting), _this.pipeFieldConfigs(pkClass)).pipe(map((/**
              * @param {?} __0
              * @return {?}
              */
@@ -3384,6 +3393,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * pipe all the specific fields of a class,
      * ordered by the position of the field within the specific fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
@@ -3391,11 +3401,13 @@ var ConfigurationPipesService = /** @class */ (function () {
      * pipe all the specific fields of a class,
      * ordered by the position of the field within the specific fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
-    function (pkClass) {
-        return this.pipeFields(pkClass).pipe(map((/**
+    function (pkClass, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
+        return this.pipeFields(pkClass, noNesting).pipe(map((/**
          * @param {?} fields
          * @return {?}
          */
@@ -3423,6 +3435,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * pipe all the basic fields of a class,
      * ordered by the position of the field within the basic fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
@@ -3430,11 +3443,13 @@ var ConfigurationPipesService = /** @class */ (function () {
      * pipe all the basic fields of a class,
      * ordered by the position of the field within the basic fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
-    function (pkClass) {
-        return this.pipeFields(pkClass).pipe(map((/**
+    function (pkClass, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
+        return this.pipeFields(pkClass, noNesting).pipe(map((/**
          * @param {?} fields
          * @return {?}
          */
@@ -3466,6 +3481,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * - the when field
      * - if available: the type field
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
@@ -3475,11 +3491,13 @@ var ConfigurationPipesService = /** @class */ (function () {
      * - the when field
      * - if available: the type field
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
-    function (pkClass) {
-        return this.pipeFields(pkClass).pipe(
+    function (pkClass, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
+        return this.pipeFields(pkClass, noNesting).pipe(
         // filter fields that are displayd in specific fields
         map((/**
          * @param {?} allFields
@@ -3531,6 +3549,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * - basic fields
      * - specific fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
@@ -3539,11 +3558,13 @@ var ConfigurationPipesService = /** @class */ (function () {
      * - basic fields
      * - specific fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
-    function (pkClass) {
-        return combineLatest(this.pipeBasicFieldsOfClass(pkClass), this.pipeSpecificFieldOfClass(pkClass))
+    function (pkClass, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
+        return combineLatest(this.pipeBasicFieldsOfClass(pkClass, noNesting), this.pipeSpecificFieldOfClass(pkClass, noNesting))
             .pipe(map((/**
          * @param {?} __0
          * @return {?}
@@ -3564,6 +3585,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * - specific fields
      * - basic fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
@@ -3572,11 +3594,13 @@ var ConfigurationPipesService = /** @class */ (function () {
      * - specific fields
      * - basic fields
      * @param {?} pkClass
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
-    function (pkClass) {
-        return combineLatest(this.pipeSpecificFieldOfClass(pkClass), this.pipeBasicFieldsOfClass(pkClass))
+    function (pkClass, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
+        return combineLatest(this.pipeSpecificFieldOfClass(pkClass, noNesting), this.pipeBasicFieldsOfClass(pkClass, noNesting))
             .pipe(map((/**
          * @param {?} __0
          * @return {?}
@@ -3591,6 +3615,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} isOutgoing
      * @param {?} enabledProfiles
      * @param {?} sysConfig
+     * @param {?=} noNesting
      * @return {?}
      */
     ConfigurationPipesService.prototype.pipePropertiesToSubfields = /**
@@ -3598,16 +3623,18 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} isOutgoing
      * @param {?} enabledProfiles
      * @param {?} sysConfig
+     * @param {?=} noNesting
      * @return {?}
      */
-    function (properties, isOutgoing, enabledProfiles, sysConfig) {
+    function (properties, isOutgoing, enabledProfiles, sysConfig, noNesting) {
         var _this = this;
+        if (noNesting === void 0) { noNesting = false; }
         return combineLatestOrEmpty(properties.map((/**
          * @param {?} p
          * @return {?}
          */
         function (p) {
-            return _this.pipeSubfield(isOutgoing, p, sysConfig, enabledProfiles);
+            return _this.pipeSubfield(isOutgoing, p, sysConfig, enabledProfiles, noNesting);
         })));
     };
     /**
@@ -3615,6 +3642,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} property
      * @param {?} targetClass
      * @param {?} isOutgoing
+     * @param {?=} noNesting
      * @return {?}
      */
     ConfigurationPipesService.prototype.pipeSubfieldIdToSubfield = /**
@@ -3622,10 +3650,12 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} property
      * @param {?} targetClass
      * @param {?} isOutgoing
+     * @param {?=} noNesting
      * @return {?}
      */
-    function (sourceClass, property, targetClass, isOutgoing) {
+    function (sourceClass, property, targetClass, isOutgoing, noNesting) {
         var _this = this;
+        if (noNesting === void 0) { noNesting = false; }
         /** @type {?} */
         var domain = isOutgoing ? sourceClass : targetClass;
         /** @type {?} */
@@ -3655,7 +3685,7 @@ var ConfigurationPipesService = /** @class */ (function () {
          */
         function (_a) {
             var _b = __read(_a, 3), dfhProp = _b[0], sysConf = _b[1], enabledProfiles = _b[2];
-            return _this.pipeSubfield(isOutgoing, dfhProp, sysConf, enabledProfiles);
+            return _this.pipeSubfield(isOutgoing, dfhProp, sysConf, enabledProfiles, noNesting);
         })));
     };
     /**
@@ -3664,6 +3694,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} p
      * @param {?} sysConfig
      * @param {?} enabledProfiles
+     * @param {?=} noNesting
      * @return {?}
      */
     ConfigurationPipesService.prototype.pipeSubfield = /**
@@ -3672,9 +3703,11 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} p
      * @param {?} sysConfig
      * @param {?} enabledProfiles
+     * @param {?=} noNesting
      * @return {?}
      */
-    function (isOutgoing, p, sysConfig, enabledProfiles) {
+    function (isOutgoing, p, sysConfig, enabledProfiles, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
         /** @type {?} */
         var o = isOutgoing;
         /** @type {?} */
@@ -3697,29 +3730,34 @@ var ConfigurationPipesService = /** @class */ (function () {
         var sourceMinQuantity = o ?
             p.domain_instances_min_quantifier :
             p.range_instances_min_quantifier;
+        // console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return combineLatest(this.pipeClassLabel(sourceClass).pipe(tap((/**
          * @param {?} x
          * @return {?}
          */
         function (x) {
+            // console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
             return x;
         }))), this.pipeClassLabel(targetClass).pipe(tap((/**
          * @param {?} x
          * @return {?}
          */
         function (x) {
+            // console.log('pppp found targetClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
             return x;
-        }))), this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property).pipe(tap((/**
+        }))), this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, noNesting).pipe(tap((/**
          * @param {?} x
          * @return {?}
          */
         function (x) {
+            // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
             return x;
         }))), this.pipeFieldLabel(p.pk_property, isOutgoing ? p.has_domain : null, isOutgoing ? null : p.has_range).pipe(tap((/**
          * @param {?} x
          * @return {?}
          */
         function (x) {
+            // console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
             return x;
         }))))
             .pipe(map((/**
@@ -3727,7 +3765,9 @@ var ConfigurationPipesService = /** @class */ (function () {
          * @return {?}
          */
         function (_a) {
+            // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
             var _b = __read(_a, 4), sourceClassLabel = _b[0], targetClassLabel = _b[1], listType = _b[2], label = _b[3];
+            // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
             /** @type {?} */
             var node = {
                 listType: listType,
@@ -3790,6 +3830,7 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} pkClass
      * @param {?} targetMaxQuantity
      * @param {?=} parentProperty
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
@@ -3813,11 +3854,13 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} pkClass
      * @param {?} targetMaxQuantity
      * @param {?=} parentProperty
+     * @param {?=} noNesting
      * @return {?}
      */
     // @spyTag
-    function (config, pkClass, targetMaxQuantity, parentProperty) {
+    function (config, pkClass, targetMaxQuantity, parentProperty, noNesting) {
         var _this = this;
+        if (noNesting === void 0) { noNesting = false; }
         return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter((/**
          * @param {?} i
          * @return {?}
@@ -3826,13 +3869,14 @@ var ConfigurationPipesService = /** @class */ (function () {
          * @param {?} klass
          * @return {?}
          */
-        function (klass) { return _this.pipeSubfieldType(config, klass, targetMaxQuantity, parentProperty); })));
+        function (klass) { return _this.pipeSubfieldType(config, klass, targetMaxQuantity, parentProperty, noNesting); })));
     };
     /**
      * @param {?} config
      * @param {?} klass
      * @param {?} targetMaxQuantity
      * @param {?=} parentProperty
+     * @param {?=} noNesting
      * @return {?}
      */
     ConfigurationPipesService.prototype.pipeSubfieldType = /**
@@ -3840,9 +3884,11 @@ var ConfigurationPipesService = /** @class */ (function () {
      * @param {?} klass
      * @param {?} targetMaxQuantity
      * @param {?=} parentProperty
+     * @param {?=} noNesting
      * @return {?}
      */
-    function (config, klass, targetMaxQuantity, parentProperty) {
+    function (config, klass, targetMaxQuantity, parentProperty, noNesting) {
+        if (noNesting === void 0) { noNesting = false; }
         /** @type {?} */
         var res = (/**
          * @param {?} x
@@ -3859,16 +3905,18 @@ var ConfigurationPipesService = /** @class */ (function () {
         else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
             return res({ typeItem: 'true' });
         }
-        else if (klass.basic_type === 8 || klass.basic_type === 30) {
-            return res({ entityPreview: 'true' });
-        }
         // TODO add this to sysConfigValue
         else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
             return res({ timeSpan: 'true' });
         }
+        else if (klass.basic_type === 8 || klass.basic_type === 30 || noNesting) {
+            return res({ entityPreview: 'true' });
+        }
         else {
             // pipe the subfields of the temporalEntity class
-            return this.pipeBasicAndSpecificFields(klass.pk_class).pipe(map((/**
+            /** @type {?} */
+            var noNest = true;
+            return this.pipeBasicAndSpecificFields(klass.pk_class, noNest).pipe(map((/**
              * @param {?} fields
              * @return {?}
              */
@@ -4951,55 +4999,55 @@ var ConfigurationPipesService = /** @class */ (function () {
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeFields", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeSpecificFieldOfClass", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeBasicFieldsOfClass", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeFieldsForTeEnForm", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeBasicAndSpecificFields", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeSpecificAndBasicFields", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Array, Boolean, Array, Object]),
+        __metadata("design:paramtypes", [Array, Boolean, Array, Object, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipePropertiesToSubfields", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number, Number, Number, Boolean]),
+        __metadata("design:paramtypes", [Number, Number, Number, Boolean, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeSubfieldIdToSubfield", null);
     __decorate([
         cache({ refCount: false }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object, Number, Number, Number]),
+        __metadata("design:paramtypes", [Object, Number, Number, Number, Object]),
         __metadata("design:returntype", Observable)
     ], ConfigurationPipesService.prototype, "pipeSubfieldTypeOfClass", null);
     __decorate([
@@ -5170,35 +5218,6 @@ function createHasDefinitionProperty(domainClass) {
         profiles: profiles
     };
     return hasDefinition;
-}
-/**
- * @param {?} rangeClass
- * @return {?}
- */
-function createAppellationProperty(rangeClass) {
-    /** @type {?} */
-    var profiles = [
-        {
-            removed_from_api: false,
-            fk_profile: DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
-        }
-    ];
-    /** @type {?} */
-    var hasAppeProp = {
-        has_domain: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
-        pk_property: DfhConfig.PROPERTY_PK_IS_APPELLATION_OF,
-        has_range: rangeClass,
-        domain_instances_max_quantifier: -1,
-        domain_instances_min_quantifier: 0,
-        range_instances_max_quantifier: 1,
-        range_instances_min_quantifier: 1,
-        identifier_in_namespace: 'histP9',
-        identity_defining: true,
-        is_inherited: true,
-        is_has_type_subproperty: false,
-        profiles: profiles
-    };
-    return hasAppeProp;
 }
 /**
  * @param {?} domainClass

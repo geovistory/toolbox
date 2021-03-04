@@ -336,7 +336,7 @@ describe('ConfigurationPipeService', () => {
     });
 
 
-    fit('should return fields of time span', (done) => {
+    it('should return fields of time span', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)

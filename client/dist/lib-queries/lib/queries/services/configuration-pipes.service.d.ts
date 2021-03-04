@@ -25,38 +25,38 @@ export declare class ConfigurationPipesService {
      * If you want specific subsets of Fields and/or ordered Fields, use the pipes
      * that build on this pipe.
      */
-    pipeFields(pkClass: number): Observable<Field[]>;
+    pipeFields(pkClass: number, noNesting?: boolean): Observable<Field[]>;
     /**
      * pipe all the specific fields of a class,
      * ordered by the position of the field within the specific fields
      */
-    pipeSpecificFieldOfClass(pkClass: number): Observable<Field[]>;
+    pipeSpecificFieldOfClass(pkClass: number, noNesting?: boolean): Observable<Field[]>;
     /**
       * pipe all the basic fields of a class,
       * ordered by the position of the field within the basic fields
       */
-    pipeBasicFieldsOfClass(pkClass: number): Observable<Field[]>;
+    pipeBasicFieldsOfClass(pkClass: number, noNesting?: boolean): Observable<Field[]>;
     /**
        * Pipes the fields for temporal entity forms
        * - the specific fields
        * - the when field
        * - if available: the type field
        */
-    pipeFieldsForTeEnForm(pkClass: number): Observable<Field[]>;
+    pipeFieldsForTeEnForm(pkClass: number, noNesting?: boolean): Observable<Field[]>;
     /**
      * Pipes the fields of given class in this order:
      * - basic fields
      * - specific fields
      */
-    pipeBasicAndSpecificFields(pkClass: number): Observable<Field[]>;
+    pipeBasicAndSpecificFields(pkClass: number, noNesting?: boolean): Observable<Field[]>;
     /**
     * Pipes the fields of given class in this order:
     * - specific fields
     * - basic fields
     */
-    pipeSpecificAndBasicFields(pkClass: number): Observable<Field[]>;
-    pipePropertiesToSubfields(properties: DfhProperty[], isOutgoing: boolean, enabledProfiles: number[], sysConfig: SysConfigValue): Observable<Subfield[]>;
-    pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean): Observable<Subfield>;
+    pipeSpecificAndBasicFields(pkClass: number, noNesting?: boolean): Observable<Field[]>;
+    pipePropertiesToSubfields(properties: DfhProperty[], isOutgoing: boolean, enabledProfiles: number[], sysConfig: SysConfigValue, noNesting?: boolean): Observable<Subfield[]>;
+    pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean, noNesting?: boolean): Observable<Subfield>;
     private pipeSubfield;
     /**
      * Pipes the type of Subfield for a given class
@@ -75,8 +75,8 @@ export declare class ConfigurationPipesService {
      * (and thus Subfields) because the UI then does not allow to choose
      * the right target class.
      */
-    pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number): Observable<GvSubfieldType>;
-    pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number): Observable<GvSubfieldType>;
+    pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number, noNesting?: boolean): Observable<GvSubfieldType>;
+    pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number, noNesting?: boolean): Observable<GvSubfieldType>;
     /**
      * Gets class field configs of given pkClass
      *

@@ -21,6 +21,7 @@ export * from './models/ItemType';
 export * from './models/LangStringItem';
 export * from './models/LanguageItem';
 export * from './models/PlaceItem';
+export * from './models/Profiles';
 export * from './models/PropertyItemTypeMap';
 export * from './models/PropertyOption';
 export * from './models/PropertySelectModel';

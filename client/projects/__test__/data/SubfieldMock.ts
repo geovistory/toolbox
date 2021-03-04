@@ -1,4 +1,4 @@
-import { Subfield } from '@kleiolab/lib-queries';
+import { FieldBase, Subfield } from '@kleiolab/lib-queries';
 import { GvLoadSubentitySubfieldPageReq, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/DfhApiPropertyMock';
@@ -89,9 +89,9 @@ export namespace SubfieldMock {
   )
 
   export const personHasAppeTeEn: Subfield = createSubfield(
-    DfhApiClassMock.EN_365_NAMING,
-    DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
     DfhApiClassMock.EN_21_PERSON,
+    DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
+    DfhApiClassMock.EN_365_NAMING,
     false,
     {
       temporalEntity: [
@@ -104,16 +104,12 @@ export namespace SubfieldMock {
   )
 }
 
-function createSubfield(
-  domain: DfhApiClass,
+export function createFieldBase(
+  source: DfhApiClass,
   property: DfhApiProperty,
-  range: DfhApiClass,
   isOutgoing: boolean,
-  subfieldType: GvSubfieldType
-): Subfield {
+): FieldBase {
 
-  let source: DfhApiClass
-  let target: DfhApiClass
   let label: string
   let targetMinQuantity: number
   let targetMaxQuantity: number
@@ -123,8 +119,6 @@ function createSubfield(
   let identityDefiningForTarget: boolean
   let isHasTypeField: boolean
   if (isOutgoing) {
-    source = domain
-    target = range
     label = property.dfh_property_label
     sourceMinQuantity = property.dfh_domain_instances_min_quantifier
     sourceMaxQuantity = property.dfh_domain_instances_max_quantifier
@@ -134,8 +128,6 @@ function createSubfield(
     identityDefiningForTarget = false
     isHasTypeField = property.dfh_is_has_type_subproperty
   } else {
-    source = range
-    target = domain
     label = 'reverseOf: ' + property.dfh_property_label
     sourceMinQuantity = property.dfh_range_instances_min_quantifier
     sourceMaxQuantity = property.dfh_range_instances_max_quantifier
@@ -146,11 +138,7 @@ function createSubfield(
     isHasTypeField = false
   }
 
-  return {
-    listType: subfieldType,
-    targetClass: target.dfh_pk_class,
-    targetClassLabel: target.dfh_class_label,
-    removedFromAllProfiles: false,
+  const base: FieldBase = {
     label,
     ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + property.dfh_pk_property,
     ontoInfoLabel: property.dfh_property_identifier_in_namespace,
@@ -166,5 +154,24 @@ function createSubfield(
     identityDefiningForSource,
     identityDefiningForTarget,
   }
-
+  return base
 }
+export function createSubfield(
+  source: DfhApiClass,
+  property: DfhApiProperty,
+  target: DfhApiClass,
+  isOutgoing: boolean,
+  subfieldType: GvSubfieldType
+): Subfield {
+
+  const base = createFieldBase(source, property, isOutgoing)
+
+  return {
+    ...base,
+    listType: subfieldType,
+    targetClass: target.dfh_pk_class,
+    targetClassLabel: target.dfh_class_label,
+    removedFromAllProfiles: false,
+  }
+}
+

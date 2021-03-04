@@ -1,3 +1,5 @@
+import { DfhConfig } from '@kleiolab/lib-config';
+import { Profiles } from '@kleiolab/lib-queries';
 import { DfhClass, DfhLabel, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClass, DfhApiProperty } from '../data/auto-gen/local-model.helpers';
 
@@ -67,3 +69,30 @@ export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: DfhApiProperty
     type: 'label'
   }
 }
+
+
+
+export function createAppellationProperty(rangeClass: number) {
+  const profiles: Profiles = [
+    {
+      removed_from_api: false,
+      fk_profile: DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
+    }
+  ]
+  const hasAppeProp: DfhProperty = {
+    has_domain: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
+    pk_property: DfhConfig.PROPERTY_PK_IS_APPELLATION_OF,
+    has_range: rangeClass,
+    domain_instances_max_quantifier: -1,
+    domain_instances_min_quantifier: 0,
+    range_instances_max_quantifier: 1,
+    range_instances_min_quantifier: 1,
+    identifier_in_namespace: 'histP9',
+    identity_defining: true,
+    is_inherited: true,
+    is_has_type_subproperty: false,
+    profiles
+  }
+  return hasAppeProp
+}
+

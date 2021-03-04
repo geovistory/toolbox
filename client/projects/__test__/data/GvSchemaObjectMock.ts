@@ -1,5 +1,5 @@
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
+import { createAppellationProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
 import { DfhApiClassMock } from './auto-gen/DfhApiClassMock';
 import { DfhApiPropertyMock } from './auto-gen/DfhApiPropertyMock';
 import { InfLanguageMock } from './auto-gen/InfLanguageMock';
@@ -101,6 +101,8 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_365_NAMING),
       ],
       property: [
+        createAppellationProperty(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class),
+
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
 
