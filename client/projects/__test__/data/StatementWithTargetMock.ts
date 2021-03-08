@@ -1,18 +1,18 @@
 import { infTimePrimToTimePrimWithCal } from '@kleiolab/lib-queries';
 import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { StatementWithTarget } from 'projects/lib-queries/src/lib/queries/models/StatementWithTarget';
-import { DfhApiClassMock } from './auto-gen/DfhApiClassMock';
-import { InfAppellationMock } from './auto-gen/InfAppellationMock';
-import { InfDimensionMock } from './auto-gen/InfDimensionMock';
-import { InfLangStringMock } from './auto-gen/InfLangStringMock';
-import { InfLanguageMock } from './auto-gen/InfLanguageMock';
-import { InfPlaceMock } from './auto-gen/InfPlaceMock';
-import { InfStatementMock } from './auto-gen/InfStatementMock';
-import { InfTemporalEntityMock } from './auto-gen/InfTemporalEntityMock';
-import { InfTimePrimitiveMock } from './auto-gen/InfTimePrimitiveMock';
-import { ProInfoProjRelMock } from './auto-gen/ProInfoProjRelMock';
-import { ProProjectMock } from './auto-gen/ProProjectMock';
-import { WarEntityPreviewMock } from './auto-gen/WarEntityPreviewMock';
+import { DfhApiClassMock } from './auto-gen/gvDB/DfhApiClassMock';
+import { InfAppellationMock } from './auto-gen/gvDB/InfAppellationMock';
+import { InfDimensionMock } from './auto-gen/gvDB/InfDimensionMock';
+import { InfLangStringMock } from './auto-gen/gvDB/InfLangStringMock';
+import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
+import { InfPlaceMock } from './auto-gen/gvDB/InfPlaceMock';
+import { InfStatementMock } from './auto-gen/gvDB/InfStatementMock';
+import { InfTemporalEntityMock } from './auto-gen/gvDB/InfTemporalEntityMock';
+import { InfTimePrimitiveMock } from './auto-gen/gvDB/InfTimePrimitiveMock';
+import { ProInfoProjRelMock } from './auto-gen/gvDB/ProInfoProjRelMock';
+import { ProProjectMock } from './auto-gen/gvDB/ProProjectMock';
+import { WarEntityPreviewMock } from './auto-gen/gvDB/WarEntityPreviewMock';
 
 export namespace StatementWithTargetMock {
   export const appeTeEnHasAppeVtWithTarget: StatementWithTarget = {

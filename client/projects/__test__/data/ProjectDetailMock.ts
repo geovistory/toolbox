@@ -1,6 +1,6 @@
-import { ProProjectMock } from './auto-gen/ProProjectMock';
-import { InfLanguageMock } from './auto-gen/InfLanguageMock';
 import { ProjectDetail } from '@kleiolab/lib-redux';
+import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
+import { ProProjectMock } from './auto-gen/gvDB/ProProjectMock';
 
 export namespace ProjectDetailMock {
   export const project1: ProjectDetail = {

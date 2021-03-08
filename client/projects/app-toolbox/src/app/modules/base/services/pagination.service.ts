@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InfSelector, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
-import { ActionResultObservable, GvSchemaActions, InfActions, PaginatedStatementList, PaginatedStatements, SchemaService, subfieldIdToString, SucceedActionMeta } from '@kleiolab/lib-redux';
-import { GvLoadSubfieldPageReq, GvSchemaObject, GvSubfieldId, GvSubfieldPage, GvSubfieldPageScope, PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
+import { ActionResultObservable, GvSchemaActions, PaginatedStatementList, PaginatedStatements, subfieldIdToString, SucceedActionMeta } from '@kleiolab/lib-redux';
+import { GvLoadSubfieldPageReq, GvSchemaObject, GvSubfieldId, GvSubfieldPage, GvSubfieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -129,14 +129,11 @@ class StatementPageLoader2 {
   }>()
   constructor(
     private inf$: InfSelector,
-    private infActions: InfActions,
-    private s: SchemaService,
     private loadNeededFn: (subfieldId: GvSubfieldPage, trigger$?: Observable<any>) => Observable<boolean>,
     private schemaActions: GvSchemaActions,
-    private pag: PaginatedStatementsControllerService
   ) { }
 
-  public addPageLoader(l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, scope: GvSubfieldPageScope) {
+  public addPageLoader(pkProject: number, l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, scope: GvSubfieldPageScope) {
     const subfieldId = subfieldToSubfieldId(l, pkEntity, scope)
     const subfieldIdString = subfieldIdToString(subfieldId)
 
@@ -163,7 +160,7 @@ class StatementPageLoader2 {
         takeUntil(until$)
       ).subscribe(() => {
         const req: GvLoadSubfieldPageReq = {
-          pkProject: scope.inProject,
+          pkProject,
           subfieldType: l.listType,
           page: {
             fkSourceEntity: pkEntity,
@@ -263,19 +260,13 @@ export class PaginationService {
 
   subfield = new StatementPageLoader2(
     this.schemaSelctors.inf$,
-    this.inf,
-    this.s,
     this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
     this.schemaActions,
-    this.paginatedStatementsService
   )
   constructor(
     private schemaSelctors: SchemaSelectorsService,
     private p: ActiveProjectService,
-    private inf: InfActions,
-    private s: SchemaService,
     private schemaActions: GvSchemaActions,
-    private paginatedStatementsService: PaginatedStatementsControllerService
   ) { }
 
 }

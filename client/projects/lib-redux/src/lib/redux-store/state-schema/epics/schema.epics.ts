@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
+import { SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType, StateObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -20,7 +20,7 @@ export class SchemaEpics {
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions,
     public infActions: InfActions,
-    private pag: PaginatedStatementsControllerService
+    private pag: SubfieldPageControllerService
 
   ) { }
 
@@ -65,7 +65,7 @@ export class SchemaEpics {
           // call action to set pagination loading on true
           this.infActions.statement.loadPage(meta.req.page, pkProject);
 
-          this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
+          this.pag.subfieldPageControllerLoadSubfieldPage(action.meta.req)
             .subscribe((data) => {
               // call action to store records
               this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);

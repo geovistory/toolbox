@@ -2,28 +2,35 @@
   <gv-subfield-table [items$]="items$" [subfield]="subfield" [showOntoInfo$]="showOntoInfo$"></gv-subfield-table>
 </ng-container>
 
-<ng-template #timespan>
-  <ng-container *ngIf="subfield.listType.timeSpan; else simple">
-
-    <gv-time-span-list fxLayout="column" fxLayoutAlign="space-between stretch" [showOntoInfo$]="showOntoInfo$"
-      [pkEntity]="pkEntity">
-    </gv-time-span-list>
-  </ng-container>
-</ng-template>
-
-
 <ng-template #simple>
   <ng-container>
     <div *ngFor="let item of (items$ | async); let i = index;" class="literal-item">
       <div class="full-width ">
-        <span class="left-col ellipsis">
+
+
+        <span class="checkbox-col" *ngIf="addMode$|async">
+          <mat-checkbox *ngIf="allowMultiSelect" (click)="$event.stopPropagation()"
+            (change)="$event ? toggle(item) : null" [checked]="selection.isSelected(item.statement.pk_entity)">
+          </mat-checkbox>
+        </span>
+
+
+        <span class="left-col">
           <gv-onto-class-info class="mr-2" [pkClass]="subfield.targetClass" *ngIf="showOntoInfo$ | async">
           </gv-onto-class-info>
-          <span *ngIf="!item.target.entityPreview" class="ellipsis">
-            {{item.targetLabel}}
-          </span>
-          <gv-entity-preview *ngIf="item.target.entityPreview" [preview]="item.target.entityPreview"
-            [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
+          <gv-entity-preview *ngIf="item.target.entityPreview; else default" [preview]="item.target.entityPreview"
+            [dragEnabled]="false" [openTabOnClick]="true">
+          </gv-entity-preview>
+          <ng-template #default>
+            <div class="ellipsis">
+              {{item.targetLabel}}
+              <span *ngIf="!item.targetLabel && item.target.timeSpan" class="mat-text-secondary">
+                No temporal information
+              </span>
+            </div>
+            <gv-entity-preview *ngIf="item.target.entityPreview" [preview]="item.target.entityPreview"
+              [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
+          </ng-template>
         </span>
 
         <span class="right-col">
@@ -73,3 +80,12 @@
   (page)="onPageChange($event)">
 </mat-paginator>
 <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
+
+
+<div *ngIf="addMode$|async" class="my-3">
+  <button [disabled]="(selectedCount$ | async) < 1" type="submit" mat-flat-button color="primary" class="mr-2"
+    (click)="add()">Add
+    selected</button>
+  <button type="submit" mat-flat-button color="primary" class="mr-2" (click)="next.emit()">Create new</button>
+  <button type="button" mat-button (click)="close.emit()">Cancel</button>
+</div>

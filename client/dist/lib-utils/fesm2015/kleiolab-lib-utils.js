@@ -1,7 +1,7 @@
 import { DatePipe, CommonModule } from '@angular/common';
 import { EventEmitter, Pipe, NgModule } from '@angular/core';
-import { of, combineLatest, pipe, iif } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { of, combineLatest, pipe, Subject, iif } from 'rxjs';
+import { map, filter, first, takeUntil, switchMap } from 'rxjs/operators';
 import { concat, values, sort } from 'ramda';
 import { tag } from 'rxjs-spy/operators';
 
@@ -1410,6 +1410,29 @@ DateTimeModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/functions/combineLatestOrEmpty.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Combine Latest or, if input is an empty array, emit empty array
+ * @template I
+ * @param {?} obs
+ * @return {?}
+ */
+function combineLatestOrEmpty(obs) {
+    obs = [of(null), ...obs];
+    return combineLatest(obs).pipe(map((/**
+     * @param {?} values
+     * @return {?}
+     */
+    (values) => {
+        values.shift();
+        return values;
+    })));
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/functions/util.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1601,29 +1624,6 @@ U.recursiveMarkAsTouched = (/**
 if (false) {
     /** @type {?} */
     U.recursiveMarkAsTouched;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/functions/combineLatestOrEmpty.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Combine Latest or, if input is an empty array, emit empty array
- * @template I
- * @param {?} obs
- * @return {?}
- */
-function combineLatestOrEmpty(obs) {
-    obs = [of(null), ...obs];
-    return combineLatest(obs).pipe(map((/**
-     * @param {?} values
-     * @return {?}
-     */
-    (values) => {
-        values.shift();
-        return values;
-    })));
 }
 
 /**
@@ -1841,6 +1841,64 @@ function sortAbc(stringFn) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/functions/debug-combine-latest-or-empty.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Debug combineLatestOrEmpty:
+ * Waits for a moment and reports to console which items did not next
+ *
+ * @template I
+ * @param {?} obs
+ * @param {?=} wait number of miliseconds to wait
+ * @return {?}
+ */
+function debugCombineLatestOrEmpty(obs, wait = 500) {
+    /** @type {?} */
+    const until$ = new Subject();
+    /** @type {?} */
+    const report = [];
+    setTimeout((/**
+     * @return {?}
+     */
+    () => {
+        until$.next();
+        console.log('> Report');
+        console.log(`  ${report.map((/**
+         * @param {?} item
+         * @param {?} i
+         * @return {?}
+         */
+        (item, i) => `${i} ${item}`)).join('\n')}`);
+    }), wait);
+    obs.forEach((/**
+     * @param {?} item
+     * @param {?} i
+     * @return {?}
+     */
+    (item, i) => {
+        report.push('> No value emitted');
+        item.pipe(first(), takeUntil(until$)).subscribe((/**
+         * @param {?} val
+         * @return {?}
+         */
+        (val) => {
+            report[i] = 'Ok';
+        }));
+    }));
+    obs = [of(null), ...obs];
+    return combineLatest(obs).pipe(map((/**
+     * @param {?} values
+     * @return {?}
+     */
+    (values) => {
+        values.shift();
+        return values;
+    })));
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/functions/switchMapOr.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -1903,5 +1961,5 @@ function switchMapOr(defaultValue, elseOutput, conditionForDefault) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { DateTimeCommons, DateTimeModule, GregorianDateTime, JulianDateTime, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil, U, combineLatestOrEmpty, getSpecificVersion, latestEntityVersion, latestEntityVersions, latestVersion, limitOffset, limitTo, mapConcat, sortAbc, switchMapOr, x };
+export { DateTimeCommons, DateTimeModule, GregorianDateTime, JulianDateTime, TimePrimitive, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil, U, combineLatestOrEmpty, debugCombineLatestOrEmpty, getSpecificVersion, latestEntityVersion, latestEntityVersions, latestVersion, limitOffset, limitTo, mapConcat, sortAbc, switchMapOr, x };
 //# sourceMappingURL=kleiolab-lib-utils.js.map

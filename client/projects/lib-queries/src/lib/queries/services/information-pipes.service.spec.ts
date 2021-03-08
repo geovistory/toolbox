@@ -1,10 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { GvSchemaActions, IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
+import { SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
-import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/GvLoadSubfieldPageReq';
+import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvLoadSubfieldPageReq';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { SubfieldPageMock } from 'projects/__test__/data/SubfieldPageMock';
@@ -26,7 +26,7 @@ describe('InformationPipesService', () => {
     TestBed.configureTestingModule({
       imports: moduleImports,
       providers: [
-        { provide: PaginatedStatementsControllerService, useClass: MockPaginatedStatementsControllerService }
+        { provide: SubfieldPageControllerService, useClass: MockPaginatedStatementsControllerService }
       ]
     });
     service = TestBed.get(InformationPipesService);
@@ -191,7 +191,7 @@ describe('InformationPipesService', () => {
         imports: moduleImports,
         providers: [
           // inject other mock service
-          { provide: PaginatedStatementsControllerService, useClass: MockPaginationControllerForSandboxes }
+          { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes }
         ]
       });
       service = TestBed.get(InformationPipesService);

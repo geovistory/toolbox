@@ -21,6 +21,7 @@ export * from './inf-statement.repository';
 export * from './inf-temporal-entity.repository';
 export * from './inf-text-property.repository';
 export * from './inf-time-primitive.repository';
+export * from './inf-dimension.repository';
 export * from './pro-analysis.repository';
 export * from './pro-class-field-config.repository';
 export * from './pro-dfh-class-proj-rel.repository';

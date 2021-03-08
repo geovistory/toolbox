@@ -4,6 +4,7 @@ import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistent
 import { GvSubfieldId, GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
+import { equals } from 'ramda';
 import { Observable, of, pipe } from 'rxjs';
 import { filter, first, map, switchMap } from 'rxjs/operators';
 export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
@@ -20,7 +21,8 @@ class Selector {
 
     const all$ = this.ngRedux.select<ByPk<M>>([infRoot, this.model, indexKey])
     const key = (x): Observable<M> => {
-      return this.ngRedux.select<M>([infRoot, this.model, indexKey, x])
+      // REMARK: 'equals' comparator is very very important for performance !
+      return this.ngRedux.select<M>([infRoot, this.model, indexKey, x], equals)
     }
     return { all$, key }
   }

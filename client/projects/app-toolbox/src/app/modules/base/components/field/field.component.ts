@@ -183,7 +183,7 @@ export class FieldComponent implements OnInit {
       pkEntity: this.pkEntity
     };
     const config: MatDialogConfig = {
-      height: isValueLike ? '50%' : '100%',
+      height: 'calc(100% - 30px)',
       width: showAddList ? '980px' : '500px',
       maxWidth: '100%',
       data,

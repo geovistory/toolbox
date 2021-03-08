@@ -1,9 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { WarEntityPreviewControllerService } from "@kleiolab/lib-sdk-lb4";
-import { SearchExistingRelatedStatement } from "@kleiolab/lib-sdk-lb4";
-import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
-import { WarEntityPreviewSearchExistingReq } from "@kleiolab/lib-sdk-lb4";
+import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
@@ -130,7 +127,6 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
       projectId: this.pkProject,
       searchString: this.searchString,
       pkClasses: [this.pkClass],
-      entityType: null,
       limit: this.limit,
       page: this.page,
       relatedStatement: relatedStatement

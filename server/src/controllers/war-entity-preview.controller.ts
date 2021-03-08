@@ -63,9 +63,9 @@ interface AddToStreamMsg {
   @property({required: true}) projectId: number
   @property({required: true}) searchString: string
   @property.array(Number, {required: true}) pkClasses: number[]
-  @property({required: true}) entityType: string
   @property({required: true}) limit: number
   @property({required: true}) page: number
+  @property() entityType?: string
 }
 @model() export class WarEntityPreviewSearchExistingReq extends WarEntityPreviewSearchReq {
   @property() relatedStatement?: SearchExistingRelatedStatement
@@ -478,7 +478,7 @@ export class WarEntityPreviewController {
           ${
       queryString
         ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
-          queryString
+          req.searchString
         )})`
         : ''
       }
@@ -544,7 +544,7 @@ export class WarEntityPreviewController {
   ): Promise<WareEntityPreviewPage> {
     const i = this.prepareSearchInputs(req.limit, req.page, req.searchString)
     const q = new QWarEntityPreviewSearchExisiting(this.dataSource)
-    return q.query(req.projectId, i.queryString, req.pkClasses, req.entityType, i.limit, i.offset, req.relatedStatement)
+    return q.query(req.projectId, i.queryString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement)
   }
 
   @post('/war-entity-previews/paginated-list-by-pks', {

@@ -1,8 +1,8 @@
 import { FieldBase, Subfield } from '@kleiolab/lib-queries';
 import { GvLoadSubentitySubfieldPageReq, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
-import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/DfhApiClassMock';
-import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/DfhApiPropertyMock';
-import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/local-model.helpers';
+import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
+import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 
 function subfieldToSubentitySubfieldReq(subfield: Subfield, isCircular: boolean): GvLoadSubentitySubfieldPageReq {
   return {

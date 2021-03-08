@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {logSql} from '../helpers';
 
 export interface BuiltQuery {
@@ -54,4 +55,6 @@ export class SqlBuilderBase {
     logSql(this.sql, this.params)
     return {sql: this.sql, params: this.params}
   }
+
+
 }

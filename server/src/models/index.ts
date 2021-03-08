@@ -53,3 +53,6 @@ export * from './analysis'
 
 // sys-config models
 export * from './sys-config'
+
+// subfield models
+export * from './subfield'

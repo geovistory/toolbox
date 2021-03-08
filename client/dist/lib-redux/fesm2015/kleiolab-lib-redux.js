@@ -3,7 +3,7 @@ import { Injectable, ɵɵdefineInjectable, ɵɵinject, InjectionToken, NgModule,
 import { SlimLoadingBarService, SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ToastyService, ToastyConfig, ToastyModule } from '@cime/ngx-toasty';
 import { PubAccountApi, SchemaObjectApi, ProProjectApi, ProInfoProjRel, ProDfhClassProjRel, ProDfhProfileProjRel, InfPersistentItem, InfTemporalEntity, InfStatement, InfAppellation, InfPlace, InfTimePrimitive, InfLanguage, InfLangString, InfDimension, InfTextProperty, DatDigital, DatChunk, ProProject, ProTextProperty, ProClassFieldConfig, DatDigitalApi, DatChunkApi, DatColumnApi, DatNamespaceApi, DfhProfileApi, DfhLabelApi, InfPersistentItemApi, InfTemporalEntityApi, InfStatementApi, InfTextPropertyApi, ProInfoProjRelApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProClassFieldConfigApi, ProTextPropertyApi, SysSystemRelevantClassApi, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
-import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, PaginatedStatementsControllerService, SystemConfigurationService, Configuration, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { DfhClassControllerService, DfhPropertyControllerService, AnalysisService, SubfieldPageControllerService, SystemConfigurationService, Configuration, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { omit, keys, values, pathOr, equals, indexBy } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { combineEpics, ofType, createEpicMiddleware } from 'redux-observable-es6-compat';
@@ -1974,23 +1974,15 @@ const ɵ0$1 = /**
  * @param {?} d
  * @return {?}
  */
-(d) => d.has_domain + '_' + d.pk_property, ɵ8$1 = /**
+(d) => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined, ɵ8$1 = /**
  * @param {?} d
  * @return {?}
  */
-(d) => d.has_range + '_' + d.pk_property, ɵ9$1 = /**
+(d) => !d.fk_class ? undefined : `${d.fk_class}_${d.type}`, ɵ9$1 = /**
  * @param {?} d
  * @return {?}
  */
-(d) => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined, ɵ10$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => !d.fk_class ? undefined : `${d.fk_class}_${d.type}`, ɵ11$1 = /**
- * @param {?} d
- * @return {?}
- */
-(d) => !d.fk_property ? undefined : `${d.fk_property}_${d.type}`, ɵ12$1 = /**
+(d) => !d.fk_property ? undefined : `${d.fk_property}_${d.type}`, ɵ10$1 = /**
  * @param {?} d
  * @return {?}
  */
@@ -2033,17 +2025,17 @@ const dfhDefinitions = {
                 keyInStore: 'has_range',
                 groupByFn: (ɵ6$1)
             },
-            {
-                keyInStore: 'has_domain__fk_property',
-                groupByFn: (ɵ7$1)
-            },
-            {
-                keyInStore: 'has_range__fk_property',
-                groupByFn: (ɵ8$1)
-            },
+            // {
+            //   keyInStore: 'has_domain__fk_property',
+            //   groupByFn: (d: DfhProperty): string => d.has_domain + '_' + d.pk_property
+            // },
+            // {
+            //   keyInStore: 'has_range__fk_property',
+            //   groupByFn: (d: DfhProperty): string => d.has_range + '_' + d.pk_property
+            // },
             {
                 keyInStore: 'is_has_type_subproperty',
-                groupByFn: (ɵ9$1)
+                groupByFn: (ɵ7$1)
             }
         ]
     },
@@ -2055,15 +2047,15 @@ const dfhDefinitions = {
         groupBy: [
             {
                 keyInStore: 'fk_class__type',
-                groupByFn: (ɵ10$1)
+                groupByFn: (ɵ8$1)
             },
             {
                 keyInStore: 'fk_property__type',
-                groupByFn: (ɵ11$1)
+                groupByFn: (ɵ9$1)
             },
             {
                 keyInStore: 'fk_profile__type',
-                groupByFn: (ɵ12$1)
+                groupByFn: (ɵ10$1)
             }
         ]
     },
@@ -2380,11 +2372,11 @@ const ɵ0$2 = /**
  */
 (item) => {
     return item.pk_entity.toString();
-}, ɵ11$2 = /**
+}, ɵ11$1 = /**
  * @param {?} d
  * @return {?}
  */
-(d) => d.fk_concerned_entity + '_' + d.fk_class_field, ɵ12$2 = /**
+(d) => d.fk_concerned_entity + '_' + d.fk_class_field, ɵ12$1 = /**
  * @param {?} d
  * @return {?}
  */
@@ -2487,11 +2479,11 @@ const infDefinitions = {
         groupBy: [
             {
                 keyInStore: 'fk_concerned_entity__fk_class_field',
-                groupByFn: (ɵ11$2)
+                groupByFn: (ɵ11$1)
             },
             {
                 keyInStore: 'fk_concerned_entity',
-                groupByFn: (ɵ12$2)
+                groupByFn: (ɵ12$1)
             },
         ]
     },
@@ -7215,7 +7207,7 @@ class SchemaEpics {
             const meta = action.meta;
             // call action to set pagination loading on true
             this.infActions.statement.loadPage(meta.req.page, pkProject);
-            this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
+            this.pag.subfieldPageControllerLoadSubfieldPage(action.meta.req)
                 .subscribe((/**
              * @param {?} data
              * @return {?}
@@ -7253,9 +7245,9 @@ SchemaEpics.ctorParameters = () => [
     { type: LoadingBarActions },
     { type: NotificationsAPIActions },
     { type: InfActions },
-    { type: PaginatedStatementsControllerService }
+    { type: SubfieldPageControllerService }
 ];
-/** @nocollapse */ SchemaEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(ɵɵinject(SchemaService), ɵɵinject(LoadingBarActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(InfActions), ɵɵinject(PaginatedStatementsControllerService)); }, token: SchemaEpics, providedIn: "root" });
+/** @nocollapse */ SchemaEpics.ngInjectableDef = ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(ɵɵinject(SchemaService), ɵɵinject(LoadingBarActions), ɵɵinject(NotificationsAPIActions), ɵɵinject(InfActions), ɵɵinject(SubfieldPageControllerService)); }, token: SchemaEpics, providedIn: "root" });
 if (false) {
     /**
      * @type {?}

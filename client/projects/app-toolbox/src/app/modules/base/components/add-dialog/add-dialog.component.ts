@@ -2,9 +2,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ClassAndTypePk, ConfigurationPipesService, Subfield } from '@kleiolab/lib-queries';
 import { InfStatement, InfTemporalEntityApi } from '@kleiolab/lib-sdk-lb3';
+import { GvLoadSubfieldPageReq, GvSubfieldPageScope, GvSubfieldType, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.helpers';
 import { NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
@@ -12,6 +13,7 @@ type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
 export interface AddDialogData {
   listDefinition: Subfield;
+
 
   // primary key of the source entity
   pkEntity: number;
@@ -27,6 +29,9 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   activeElement$ = new BehaviorSubject<ActiveElement>('add-existing-statements')
   showOntoInfo$ = new BehaviorSubject(false)
   readonly$ = new BehaviorSubject(false)
+  addMode$ = new BehaviorSubject(true)
+  scope$: Observable<GvSubfieldPageScope>
+
   isLeafItemList: boolean;
 
   searchString$ = new Subject<string>();
@@ -37,6 +42,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   notInProjectClickBehavior: NotInProjectClickBehavior;
 
   loading$ = new BehaviorSubject(false);
+  notInProjectCount$ = new Observable<number>();
 
   constructor(
     public p: ActiveProjectService,
@@ -44,11 +50,12 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<AddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddDialogData,
-    public teEnApi: InfTemporalEntityApi
+    public teEnApi: InfTemporalEntityApi,
+    public paginationApi: SubfieldPageControllerService
   ) {
 
     this.isLeafItemList = isLeafItemSubfield(data.listDefinition.listType);
-
+    this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
 
     this.classAndTypePk = { pkClass: data.listDefinition.targetClass, pkType: undefined }
     this.alreadyInProjectBtnText = 'Select'
@@ -58,6 +65,38 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // get count from rest api first
+    this.notInProjectCount$ = this.p.pkProject$.pipe(
+      first(),
+      switchMap(pkProject => {
+        let subfieldType: GvSubfieldType
+        if (this.data.listDefinition.listType.temporalEntity) {
+          subfieldType = { entityPreview: 'true' }
+        } else {
+          subfieldType = this.data.listDefinition.listType
+        }
+        const req: GvLoadSubfieldPageReq = {
+          pkProject,
+          subfieldType,
+          page: {
+            fkSourceEntity: this.data.pkEntity,
+            fkProperty: this.data.listDefinition.property.pkProperty,
+            targetClass: this.data.listDefinition.targetClass,
+            isOutgoing: this.data.listDefinition.isOutgoing,
+            scope: { notInProject: pkProject },
+            limit: 0,
+            offset: 0
+          }
+        }
+        return this.paginationApi.subfieldPageControllerLoadSubfieldPage(req).pipe(
+          map(res => res.subfieldPages[0].count)
+        )
+      }),
+      shareReplay()
+    )
+    this.notInProjectCount$.pipe(first()).subscribe(count => {
+      if (count === 0) this.onNext()
+    })
   }
 
   onClose() {

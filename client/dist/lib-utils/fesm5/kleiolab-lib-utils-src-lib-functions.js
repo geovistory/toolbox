@@ -1,8 +1,31 @@
 import { __spread } from 'tslib';
-import { of, combineLatest, pipe, iif } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { of, combineLatest, pipe, Subject, iif } from 'rxjs';
+import { map, filter, first, takeUntil, switchMap } from 'rxjs/operators';
 import { concat, values, sort } from 'ramda';
 import { tag } from 'rxjs-spy/operators';
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: combineLatestOrEmpty.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Combine Latest or, if input is an empty array, emit empty array
+ * @template I
+ * @param {?} obs
+ * @return {?}
+ */
+function combineLatestOrEmpty(obs) {
+    obs = __spread([of(null)], obs);
+    return combineLatest(obs).pipe(map((/**
+     * @param {?} values
+     * @return {?}
+     */
+    function (values) {
+        values.shift();
+        return values;
+    })));
+}
 
 /**
  * @fileoverview added by tsickle
@@ -267,29 +290,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: combineLatestOrEmpty.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Combine Latest or, if input is an empty array, emit empty array
- * @template I
- * @param {?} obs
- * @return {?}
- */
-function combineLatestOrEmpty(obs) {
-    obs = __spread([of(null)], obs);
-    return combineLatest(obs).pipe(map((/**
-     * @param {?} values
-     * @return {?}
-     */
-    function (values) {
-        values.shift();
-        return values;
-    })));
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: custom-rxjs-operators.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -503,6 +503,65 @@ function sortAbc(stringFn) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: debug-combine-latest-or-empty.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Debug combineLatestOrEmpty:
+ * Waits for a moment and reports to console which items did not next
+ *
+ * @template I
+ * @param {?} obs
+ * @param {?=} wait number of miliseconds to wait
+ * @return {?}
+ */
+function debugCombineLatestOrEmpty(obs, wait) {
+    if (wait === void 0) { wait = 500; }
+    /** @type {?} */
+    var until$ = new Subject();
+    /** @type {?} */
+    var report = [];
+    setTimeout((/**
+     * @return {?}
+     */
+    function () {
+        until$.next();
+        console.log('> Report');
+        console.log("  " + report.map((/**
+         * @param {?} item
+         * @param {?} i
+         * @return {?}
+         */
+        function (item, i) { return i + " " + item; })).join('\n'));
+    }), wait);
+    obs.forEach((/**
+     * @param {?} item
+     * @param {?} i
+     * @return {?}
+     */
+    function (item, i) {
+        report.push('> No value emitted');
+        item.pipe(first(), takeUntil(until$)).subscribe((/**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            report[i] = 'Ok';
+        }));
+    }));
+    obs = __spread([of(null)], obs);
+    return combineLatest(obs).pipe(map((/**
+     * @param {?} values
+     * @return {?}
+     */
+    function (values) {
+        values.shift();
+        return values;
+    })));
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: switchMapOr.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -553,5 +612,5 @@ function switchMapOr(defaultValue, elseOutput, conditionForDefault) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { U, combineLatestOrEmpty, getSpecificVersion, latestEntityVersion, latestEntityVersions, latestVersion, limitOffset, limitTo, mapConcat, sortAbc, switchMapOr };
+export { U, combineLatestOrEmpty, debugCombineLatestOrEmpty, getSpecificVersion, latestEntityVersion, latestEntityVersions, latestVersion, limitOffset, limitTo, mapConcat, sortAbc, switchMapOr };
 //# sourceMappingURL=kleiolab-lib-utils-src-lib-functions.js.map

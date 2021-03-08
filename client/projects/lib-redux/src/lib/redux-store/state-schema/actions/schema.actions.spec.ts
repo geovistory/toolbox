@@ -1,13 +1,14 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
-import { GvSchemaObject, PaginatedStatementsControllerService, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { InfAppellationMock } from 'projects/__test__/data/auto-gen/InfAppellationMock';
-import { InfLanguageMock } from 'projects/__test__/data/auto-gen/InfLanguageMock';
-import { InfStatementMock } from 'projects/__test__/data/auto-gen/InfStatementMock';
-import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/GvLoadSubfieldPageReq';
+import { GvSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvLoadSubfieldPageReq';
+import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
+import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
+import { InfStatementMock } from 'projects/__test__/data/auto-gen/gvDB/InfStatementMock';
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { BehaviorSubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { IAppState, ReduxModule } from '../../public-api';
 import { subfieldIdToString } from '../_helpers/subfieldIdToString';
 import { GvSchemaActions } from './schema.actions';
@@ -25,7 +26,7 @@ describe('GvSchemaActions', () => {
         SdkLb4Module
       ],
       providers: [
-        { provide: PaginatedStatementsControllerService, useClass: MockPaginatedStatementsControllerService }
+        { provide: SubfieldPageControllerService, useClass: MockPaginatedStatementsControllerService }
       ]
     })
     actions = TestBed.get(GvSchemaActions);
@@ -43,19 +44,32 @@ describe('GvSchemaActions', () => {
   })
 
   describe('.loadGvPaginationObject()', () => {
-    it('should put paginated statements of subfield Appelation for language -> refers to name -> appellation ', () => {
+    it('should put paginated statements of subfield Appelation for language -> refers to name -> appellation ', (done) => {
       const req = GvLoadSubfieldPageReqMock.appeTeEnRefersToName
       actions.loadGvPaginationObject(req)
-      const paginationInfo = ngRedux.getState().inf
-        .statement
-        .by_subfield_page[subfieldIdToString(req.page)]
 
-      expect(paginationInfo.count).toEqual(1)
-      expect(paginationInfo.loading['0_7']).toEqual(false)
-      expect(paginationInfo.rows[0]).toEqual(InfStatementMock.NAME_1_TO_APPE.pk_entity)
+      const q$ = ngRedux.select(['inf', 'statement', 'by_subfield_page', subfieldIdToString(req.page)])
+        .pipe(
+          first((p: any) => (p && !!p.rows))
+        )
 
-      const appellation = ngRedux.getState().inf.appellation.by_pk_entity[InfAppellationMock.JACK_THE_FOO.pk_entity]
-      expect(appellation.fk_class).toEqual(InfAppellationMock.JACK_THE_FOO.fk_class)
+      q$.subscribe(
+        (paginationInfo: any) => {
+
+          // const paginationInfo = ngRedux.getState().inf
+          //   .statement
+          //   .by_subfield_page[subfieldIdToString(req.page)]
+
+          expect(paginationInfo.count).toEqual(1)
+          expect(paginationInfo.loading['0_7']).toEqual(false)
+          expect(paginationInfo.rows[0]).toEqual(InfStatementMock.NAME_1_TO_APPE.pk_entity)
+
+          const appellation = ngRedux.getState().inf.appellation.by_pk_entity[InfAppellationMock.JACK_THE_FOO.pk_entity]
+          expect(appellation.fk_class).toEqual(InfAppellationMock.JACK_THE_FOO.fk_class)
+        },
+        () => { },
+        done
+      )
     });
   })
 

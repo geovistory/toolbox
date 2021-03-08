@@ -8,7 +8,7 @@ import { ReduxModule, datRoot, DatActions, datDefinitions, dfhRoot, DfhActions, 
 import { NgRedux } from '@angular-redux/store';
 import { BehaviorSubject, empty, pipe, of, Observable, combineLatest, merge, iif } from 'rxjs';
 import { values } from 'd3';
-import { toString, equals, values as values$1, indexBy, uniq, flatten, omit, groupBy, pick } from 'ramda';
+import { equals, toString, values as values$1, indexBy, uniq, flatten, omit, groupBy, pick } from 'ramda';
 import { __decorate, __metadata, __rest } from 'tslib';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
@@ -1374,7 +1374,8 @@ class Selector$2 {
          * @return {?}
          */
         (x) => {
-            return this.ngRedux.select([infRoot, this.model, indexKey, x]);
+            // REMARK: 'equals' comparator is very very important for performance !
+            return this.ngRedux.select([infRoot, this.model, indexKey, x], equals);
         });
         return { all$, key };
     }
@@ -5762,6 +5763,12 @@ class InformationPipesService {
                 ordNum: page.isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain
             }))));
         }
+        else {
+            return new BehaviorSubject({
+                projRel: undefined,
+                ordNum: 0
+            });
+        }
     }
     /**
      * pipe the target of given statment
@@ -5777,7 +5784,11 @@ class InformationPipesService {
         const targetInfo = isOutgoing ? stmt.fk_object_info : stmt.fk_subject_info;
         // here you could add targetData or targetCell
         if (subfieldType.appellation) {
-            return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(map((/**
+            return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), map((/**
              * @param {?} appellation
              * @return {?}
              */
@@ -5796,7 +5807,11 @@ class InformationPipesService {
             })));
         }
         else if (subfieldType.place) {
-            return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(map((/**
+            return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), map((/**
              * @param {?} place
              * @return {?}
              */
@@ -5815,7 +5830,11 @@ class InformationPipesService {
             })));
         }
         else if (subfieldType.dimension) {
-            return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(switchMap((/**
+            return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), switchMap((/**
              * @param {?} dimension
              * @return {?}
              */
@@ -5841,7 +5860,11 @@ class InformationPipesService {
             })));
         }
         else if (subfieldType.langString) {
-            return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(switchMap((/**
+            return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), switchMap((/**
              * @param {?} langString
              * @return {?}
              */
@@ -5867,7 +5890,11 @@ class InformationPipesService {
             })));
         }
         else if (subfieldType.language) {
-            return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(map((/**
+            return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), map((/**
              * @param {?} language
              * @return {?}
              */
@@ -5885,8 +5912,12 @@ class InformationPipesService {
                 return stmtTarget;
             })));
         }
-        else if (subfieldType.entityPreview) {
-            return this.p.streamEntityPreview(targetInfo).pipe(map((/**
+        else if (subfieldType.entityPreview || subfieldType.typeItem) {
+            return this.p.streamEntityPreview(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), map((/**
              * @param {?} entityPreview
              * @return {?}
              */
@@ -5935,7 +5966,19 @@ class InformationPipesService {
                 })));
             }));
             return combineLatestOrEmpty(subentityPages$)
-                .pipe(map((/**
+                .pipe(
+            // filter(subfields => {
+            //   console.log('subfields\n', subfields.map((item, i) => {
+            //     const req = subfieldType.temporalEntity[i]
+            //     const fieldInfo = targetInfo + '_' + req.page.fkProperty + '_' + req.page.targetClass + '_' + keys(req.subfieldType)[0]
+            //     return `${i}: ${item === undefined ?
+            //       `undefined ${fieldInfo}` :
+            //       `ok        ${fieldInfo}`
+            //       }`
+            //   }).join('\n'))
+            //   return !subfields.includes(undefined)
+            // }),
+            map((/**
              * @param {?} subfields
              * @return {?}
              */
@@ -6036,7 +6079,11 @@ class InformationPipesService {
             })));
         }
         else if (subfieldType.timePrimitive) {
-            return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(switchMap((/**
+            return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            x => !!x)), switchMap((/**
              * @param {?} timePrimitive
              * @return {?}
              */

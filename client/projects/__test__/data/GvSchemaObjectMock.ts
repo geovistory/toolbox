@@ -1,12 +1,16 @@
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { createAppellationProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
-import { DfhApiClassMock } from './auto-gen/DfhApiClassMock';
-import { DfhApiPropertyMock } from './auto-gen/DfhApiPropertyMock';
-import { InfLanguageMock } from './auto-gen/InfLanguageMock';
-import { ProDfhProfileProjRelMock } from './auto-gen/ProDfhProfileProjRelMock';
-import { ProProjectMock } from './auto-gen/ProProjectMock';
-import { SysConfigValueMock } from './auto-gen/SysConfigValueMock';
+import { DfhApiClassMock } from './auto-gen/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from './auto-gen/gvDB/DfhApiPropertyMock';
+import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
+import { ProDfhProfileProjRelMock } from './auto-gen/gvDB/ProDfhProfileProjRelMock';
+import { ProProjectMock } from './auto-gen/gvDB/ProProjectMock';
+import { SysConfigValueMock } from './auto-gen/gvDB/SysConfigValueMock';
 
+/**
+ * Objects to feed the client redux store with mockdata
+ * be it for testing pipes (lib-queries) or sanboxes (app-toolbox)
+ */
 export namespace GvSchemaObjectMock {
 
   /**

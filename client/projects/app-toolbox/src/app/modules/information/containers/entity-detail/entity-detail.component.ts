@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
@@ -29,7 +29,7 @@ import { entityDetailReducer } from './api/entity-detail.reducer';
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EntityDetailComponent implements SubstoreComponent, TabLayoutComponentInterface, OnDestroy {
+export class EntityDetailComponent implements SubstoreComponent, TabLayoutComponentInterface, OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() basePath: string[];
@@ -111,17 +111,17 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true)
 
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    // this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      // TODO merge persistent_item and temporal_entity tables
-      combineLatest(
-        this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
-        this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
-      ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
-        this.t.setTabLoading(false)
-      })
+    //   // TODO merge persistent_item and temporal_entity tables
+    //   combineLatest(
+    //     this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
+    //     this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
+    //   ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
+    //     this.t.setTabLoading(false)
+    //   })
 
-    })
+    // })
 
     this.showRightArea$.pipe(first(b => b !== undefined), takeUntil(this.destroy$)).subscribe((b) => {
       this.t.setLayoutMode(b ? 'both' : 'left-only')

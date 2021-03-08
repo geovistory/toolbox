@@ -9,7 +9,7 @@ import {OmitEntity} from './local-model.helpers';
 
 export class InfLanguageMock {
   static readonly ENGLISH: OmitEntity<InfLanguage> = {
-    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    fk_class: DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class,
     "notes": "English",
     "iso6391": "en ",
     "iso6392b": "eng",
@@ -18,7 +18,7 @@ export class InfLanguageMock {
     "pk_language": "eng"
   }
   static readonly GERMAN: OmitEntity<InfLanguage> = {
-    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    fk_class: DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class,
     "notes": "German",
     "iso6391": "de ",
     "iso6392b": "ger",
@@ -28,7 +28,7 @@ export class InfLanguageMock {
   }
 
   static readonly ITALIAN: OmitEntity<InfLanguage> = {
-    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    fk_class: DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class,
     "notes": "Italian",
     "iso6391": "it ",
     "iso6392b": "ita",
@@ -38,7 +38,7 @@ export class InfLanguageMock {
   }
 
   static readonly FRENCH: OmitEntity<InfLanguage> = {
-    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    fk_class: DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class,
     "notes": "French",
     "iso6391": "fr ",
     "iso6392b": "fre",

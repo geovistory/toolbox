@@ -22,7 +22,6 @@ import { InfPlaceService } from './api/infPlace.service';
 import { InfStatementService } from './api/infStatement.service';
 import { InfTemporalEntityService } from './api/infTemporalEntity.service';
 import { InfTextPropertyService } from './api/infTextProperty.service';
-import { PaginatedStatementsControllerService } from './api/paginatedStatementsController.service';
 import { PingControllerService } from './api/pingController.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';
 import { ProDfhClassProjRelService } from './api/proDfhClassProjRel.service';
@@ -34,6 +33,7 @@ import { ProjectConfigurationService } from './api/projectConfiguration.service'
 import { PubAccountService } from './api/pubAccount.service';
 import { RamListService } from './api/ramList.service';
 import { SchemaObjectService } from './api/schemaObject.service';
+import { SubfieldPageControllerService } from './api/subfieldPageController.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';

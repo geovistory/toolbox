@@ -38,10 +38,13 @@
       [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()" class="gv-flex-fh">
     </gv-temporal-entity-add-list>
 
-    <gv-leaf-item-add-list *ngIf="isLeafItemList" xLayout="column" fxLayoutAlign="space-between stretch"
+    <!-- <gv-leaf-item-add-list *ngIf="isLeafItemList" xLayout="column" fxLayoutAlign="space-between stretch"
       [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
       [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()">
-    </gv-leaf-item-add-list>
+    </gv-leaf-item-add-list> -->
+    <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [pkEntity]="data.pkEntity" [subfield]="data.listDefinition"
+      [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose()"
+      (next)="onNext()"></gv-subfield>
   </ng-container>
 
 

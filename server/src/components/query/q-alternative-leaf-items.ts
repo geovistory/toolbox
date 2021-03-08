@@ -1,8 +1,6 @@
 import {Postgres1DataSource} from '../../datasources';
-import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, WarEntityPreview} from '../../models';
+import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, WarEntityPreview, GvPaginationStatementFilter, GvPaginationObject} from '../../models';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {GvPaginationObject} from '../../models/paginated-statements/gv-pagination-object';
-import {GvPaginationStatementFilter} from '../../models/paginated-statements/gv-pagination-statement-filter';
 
 
 export class QAlternativeLeafItems extends SqlBuilderLb4Models {

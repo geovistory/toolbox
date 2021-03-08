@@ -2,15 +2,15 @@ import { GvLoadSubfieldPageReq, GvPaginationObject, GvSubfieldPage, GvSubfieldPa
 import { concat, mergeDeepWith } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { DfhApiClassMock } from '../data/auto-gen/DfhApiClassMock';
-import { DfhApiPropertyMock } from '../data/auto-gen/DfhApiPropertyMock';
-import { InfLanguageMock } from '../data/auto-gen/InfLanguageMock';
-import { InfPersistentItemMock } from '../data/auto-gen/InfPersistentItemMock';
-import { InfTimePrimitiveMock } from '../data/auto-gen/InfTimePrimitiveMock';
-import { OmitEntity } from '../data/auto-gen/local-model.helpers';
-import { ProProjectMock } from '../data/auto-gen/ProProjectMock';
-import { PubAccountMock } from '../data/auto-gen/PubAccountMock';
-import { WarEntityPreviewMock } from '../data/auto-gen/WarEntityPreviewMock';
+import { DfhApiClassMock } from '../data/auto-gen/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
+import { InfLanguageMock } from '../data/auto-gen/gvDB/InfLanguageMock';
+import { InfPersistentItemMock } from '../data/auto-gen/gvDB/InfPersistentItemMock';
+import { InfTimePrimitiveMock } from '../data/auto-gen/gvDB/InfTimePrimitiveMock';
+import { OmitEntity } from '../data/auto-gen/gvDB/local-model.helpers';
+import { ProProjectMock } from '../data/auto-gen/gvDB/ProProjectMock';
+import { PubAccountMock } from '../data/auto-gen/gvDB/PubAccountMock';
+import { WarEntityPreviewMock } from '../data/auto-gen/gvDB/WarEntityPreviewMock';
 import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
 
 /**
@@ -27,9 +27,9 @@ export class MockPaginationControllerForSandboxes {
   infDimensionSerial: number
   infTimePrimitiveSerial: number;
 
-  paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq): Observable<GvPaginationObject> {
+  subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq): Observable<GvPaginationObject> {
     this.resetIdBase();
-    console.log('REST API called: paginatedStatementsControllerLoadSubfieldPage')
+    console.log('REST API called: subfieldPageControllerLoadSubfieldPage')
     return new BehaviorSubject(this.generateData(gvLoadSubfieldPageReq)).pipe(delay(250))
 
   }

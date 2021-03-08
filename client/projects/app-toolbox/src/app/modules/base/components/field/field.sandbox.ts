@@ -2,10 +2,10 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material';
 import { Field } from '@kleiolab/lib-queries';
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
-import { GvSubfieldPageScope, PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvSubfieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
-import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/InfPersistentItemMock';
+import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/gvDB/InfPersistentItemMock';
 import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
@@ -25,7 +25,7 @@ export default sandboxOf(FieldComponent, {
   ],
   providers: [
     { provide: APP_INITIAL_STATE, useValue: IAppStateMock.stateProject1 },
-    { provide: PaginatedStatementsControllerService, useClass: MockPaginationControllerForSandboxes }
+    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes }
   ]
 })
   .add('Field | type: LangStringVT ', {

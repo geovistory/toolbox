@@ -203,6 +203,29 @@
 
     /**
      * @fileoverview added by tsickle
+     * Generated from: combineLatestOrEmpty.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Combine Latest or, if input is an empty array, emit empty array
+     * @template I
+     * @param {?} obs
+     * @return {?}
+     */
+    function combineLatestOrEmpty(obs) {
+        obs = __spread([rxjs.of(null)], obs);
+        return rxjs.combineLatest(obs).pipe(operators.map((/**
+         * @param {?} values
+         * @return {?}
+         */
+        function (values) {
+            values.shift();
+            return values;
+        })));
+    }
+
+    /**
+     * @fileoverview added by tsickle
      * Generated from: util.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -464,29 +487,6 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: combineLatestOrEmpty.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Combine Latest or, if input is an empty array, emit empty array
-     * @template I
-     * @param {?} obs
-     * @return {?}
-     */
-    function combineLatestOrEmpty(obs) {
-        obs = __spread([rxjs.of(null)], obs);
-        return rxjs.combineLatest(obs).pipe(operators.map((/**
-         * @param {?} values
-         * @return {?}
-         */
-        function (values) {
-            values.shift();
-            return values;
-        })));
-    }
-
-    /**
-     * @fileoverview added by tsickle
      * Generated from: custom-rxjs-operators.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -700,6 +700,65 @@
 
     /**
      * @fileoverview added by tsickle
+     * Generated from: debug-combine-latest-or-empty.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Debug combineLatestOrEmpty:
+     * Waits for a moment and reports to console which items did not next
+     *
+     * @template I
+     * @param {?} obs
+     * @param {?=} wait number of miliseconds to wait
+     * @return {?}
+     */
+    function debugCombineLatestOrEmpty(obs, wait) {
+        if (wait === void 0) { wait = 500; }
+        /** @type {?} */
+        var until$ = new rxjs.Subject();
+        /** @type {?} */
+        var report = [];
+        setTimeout((/**
+         * @return {?}
+         */
+        function () {
+            until$.next();
+            console.log('> Report');
+            console.log("  " + report.map((/**
+             * @param {?} item
+             * @param {?} i
+             * @return {?}
+             */
+            function (item, i) { return i + " " + item; })).join('\n'));
+        }), wait);
+        obs.forEach((/**
+         * @param {?} item
+         * @param {?} i
+         * @return {?}
+         */
+        function (item, i) {
+            report.push('> No value emitted');
+            item.pipe(operators.first(), operators.takeUntil(until$)).subscribe((/**
+             * @param {?} val
+             * @return {?}
+             */
+            function (val) {
+                report[i] = 'Ok';
+            }));
+        }));
+        obs = __spread([rxjs.of(null)], obs);
+        return rxjs.combineLatest(obs).pipe(operators.map((/**
+         * @param {?} values
+         * @return {?}
+         */
+        function (values) {
+            values.shift();
+            return values;
+        })));
+    }
+
+    /**
+     * @fileoverview added by tsickle
      * Generated from: switchMapOr.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -740,6 +799,7 @@
 
     exports.U = U;
     exports.combineLatestOrEmpty = combineLatestOrEmpty;
+    exports.debugCombineLatestOrEmpty = debugCombineLatestOrEmpty;
     exports.getSpecificVersion = getSpecificVersion;
     exports.latestEntityVersion = latestEntityVersion;
     exports.latestEntityVersions = latestEntityVersions;

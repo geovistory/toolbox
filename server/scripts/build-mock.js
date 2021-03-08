@@ -1,8 +1,22 @@
 const fs = require('fs');
 
-const fromPathMock = __dirname + '/../src/__tests__/helpers/data/gvDB/';
-const toPathMock =
-  __dirname + '/../../client/projects/__test__/data/auto-gen';
+const pathMappings = [
+  {
+    fromPathMock: __dirname + '/../src/__tests__/helpers/data/gvDB/',
+    toPathMock:
+      __dirname + '/../../client/projects/__test__/data/auto-gen/gvDB',
+  },
+  {
+    fromPathMock: __dirname + '/../src/__tests__/helpers/data/api-requests/',
+    toPathMock:
+      __dirname + '/../../client/projects/__test__/data/auto-gen/api-requests',
+  },
+  {
+    fromPathMock: __dirname + '/../src/__tests__/helpers/data/api-responses/',
+    toPathMock:
+      __dirname + '/../../client/projects/__test__/data/auto-gen/api-responses',
+  },
+];
 
 // if I am correct, these MOCK are usefull only for the backend
 // (not exhaustive, they are the ones that had errors in it in the client because an import was not in the SDK)
@@ -19,13 +33,16 @@ const blacklist = [
  * ProAnalysisMock > enum ColDefDefaultType
  * WarEntityPreviewMock > enum CalendarType and Granularity
  */
-
-initializePath(fromPathMock, toPathMock, 'mock');
-autoGenFiles(fromPathMock, toPathMock, 'mock');
+for (const pathMap of pathMappings) {
+  initializePath(pathMap.fromPathMock, pathMap.toPathMock, 'mock');
+  autoGenFiles(pathMap.fromPathMock, pathMap.toPathMock, 'mock');
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 function initializePath(from, to, type) {
+  console.log('> copy from: ' + from);
+  console.log('         to: ' + to);
   if (!fs.existsSync(from)) {
     console.log(
       '> Script was not able to run: the origin path (' +
@@ -88,16 +105,12 @@ function autoGenFiles(from, to, type) {
       "'${param}' as TimePrimitiveWithCal.CalendarEnum",
     );
 
-
-
     content = treatEnum(
       content,
       'SysConfigValueObjectType',
       'TrueEnum',
-      "'${param}' as SysConfigValueObjectType.AppellationEnum",
+      "'${param}' as unknown as SysConfigValueObjectType.AppellationEnum",
     );
-
-
 
     content = treatEnumSpecial(
       content,

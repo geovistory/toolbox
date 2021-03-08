@@ -32,9 +32,9 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
     pkProject: number,
     searchString: string,
     pkClasses: number[],
-    entityType: string,
     limit: number,
     offset: number,
+    entityType?: string,
     relatedStatement?: SearchExistingRelatedStatement,
   ) {
 

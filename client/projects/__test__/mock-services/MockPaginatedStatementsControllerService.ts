@@ -1,8 +1,8 @@
 import { GvLoadSubfieldPageReq, GvPaginationObject } from '@kleiolab/lib-sdk-lb4';
-import { GvPaginationObjectMock } from 'projects/__test__/data/GvPaginationObjectMock';
+import { GvPaginationObjectMock } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { BehaviorSubject, Observable } from 'rxjs';
 export class MockPaginatedStatementsControllerService {
-  paginatedStatementsControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq): Observable<GvPaginationObject> {
+  subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq): Observable<GvPaginationObject> {
     if (gvLoadSubfieldPageReq.subfieldType.appellation) {
       return new BehaviorSubject(GvPaginationObjectMock.appeTeEnHasAppeVt);
     }

@@ -16,9 +16,9 @@ export interface WarEntityPreviewSearchExistingReq {
     projectId: number;
     searchString: string;
     pkClasses: Array<number>;
-    entityType: string;
     limit: number;
     page: number;
+    entityType?: string;
     relatedStatement?: SearchExistingRelatedStatement;
 }
 

@@ -60,7 +60,7 @@
                   </mat-slide-toggle>
                 </button>
                 <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
-                <gv-entity-label-config-open-btn [fkClass]="fkClass$ | async">
+                <gv-entity-label-config-open-btn *ngIf="fkClass$|async" [fkClass]="fkClass$ | async">
 
                   <button mat-menu-item *ngIf="!(isViewMode$ | async)">
                     <mat-icon svgIcon="cogs"></mat-icon>
@@ -187,8 +187,8 @@
               <mat-icon svgIcon="alpha-f-box-outline" class="gv-digital-color"></mat-icon>
               Factoids
             </ng-template>
-            
-            <gv-factoid-list [pkEntity]="pkEntity$|async" ></gv-factoid-list>
+
+            <gv-factoid-list [pkEntity]="pkEntity$|async"></gv-factoid-list>
 
           </mat-tab>
         </ng-container>

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
 import {clone, omit} from 'ramda';
-import {AnalysisTableExportRequest, ColDefDefaultType, QueryPathSegmentType, TableExportFileType} from '../../../models';
-import {AnalysisMapRequest} from '../../../models/analysis/analysis-map-request.model';
+import {ColDefDefaultType, QueryPathSegmentType, TableExportFileType} from '../../../models';
 import {AnalysisMapResponse} from '../../../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../../../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-request.model';

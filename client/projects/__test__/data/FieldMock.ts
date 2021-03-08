@@ -1,8 +1,8 @@
 import { Field, SpecialFieldType } from '@kleiolab/lib-queries';
 import { GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
-import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/DfhApiClassMock';
-import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/DfhApiPropertyMock';
-import { DfhApiClass, DfhApiProperty } from './auto-gen/local-model.helpers';
+import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
+import { DfhApiClass, DfhApiProperty } from './auto-gen/gvDB/local-model.helpers';
 import { createFieldBase, createSubfield } from './SubfieldMock';
 
 

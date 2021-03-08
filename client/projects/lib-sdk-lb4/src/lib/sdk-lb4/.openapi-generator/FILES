@@ -22,7 +22,6 @@ api/infPlace.service.ts
 api/infStatement.service.ts
 api/infTemporalEntity.service.ts
 api/infTextProperty.service.ts
-api/paginatedStatementsController.service.ts
 api/pingController.service.ts
 api/proClassFieldConfig.service.ts
 api/proDfhClassProjRel.service.ts
@@ -34,6 +33,7 @@ api/projectConfiguration.service.ts
 api/pubAccount.service.ts
 api/ramList.service.ts
 api/schemaObject.service.ts
+api/subfieldPageController.service.ts
 api/sysClassField.service.ts
 api/sysClassHasTypeProperty.service.ts
 api/sysSystemRelevantClass.service.ts

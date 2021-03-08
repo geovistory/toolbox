@@ -1,7 +1,7 @@
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Profiles } from '@kleiolab/lib-queries';
 import { DfhClass, DfhLabel, DfhProperty } from '@kleiolab/lib-sdk-lb4';
-import { DfhApiClass, DfhApiProperty } from '../data/auto-gen/local-model.helpers';
+import { DfhApiClass, DfhApiProperty } from '../data/auto-gen/gvDB/local-model.helpers';
 
 
 /**

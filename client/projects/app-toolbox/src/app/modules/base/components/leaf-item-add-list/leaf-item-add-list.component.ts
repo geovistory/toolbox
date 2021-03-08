@@ -5,7 +5,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, InformationPipesService, Item, ItemList, LangStringItem, LanguageItem, PlaceItem, Subfield } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
-import { GvPaginationObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, PaginatedStatementsControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvPaginationObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -65,7 +65,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     public i: InformationPipesService,
     public t: PropertiesTreeService,
     public inf: InfActions,
-    public pagApi: PaginatedStatementsControllerService
+    public pagApi: SubfieldPageControllerService
   ) { }
 
   ngOnInit() {
@@ -94,7 +94,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         pageIndex,
         pkProject,
 
-      ]) => this.pagApi.paginatedStatementsControllerAlternativeLeafItems({
+      ]) => this.pagApi.subfieldPageControllerAlternativeLeafItems({
         pkProject,
         filterObject,
         limit: pageSize,
@@ -283,8 +283,6 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     this.selection.selected.forEach(s => {
       if (s.store) s.store.storeFn(s.store.items, '')
     })
-
-
   }
 
   ngOnDestroy() {

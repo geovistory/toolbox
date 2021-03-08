@@ -1,9 +1,9 @@
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
-import { GvSubfieldPageScope, PaginatedStatementsControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvSubfieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
-import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/InfPersistentItemMock';
-import { InfTemporalEntityMock } from 'projects/__test__/data/auto-gen/InfTemporalEntityMock';
+import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/gvDB/InfPersistentItemMock';
+import { InfTemporalEntityMock } from 'projects/__test__/data/auto-gen/gvDB/InfTemporalEntityMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { SubfieldMock } from 'projects/__test__/data/SubfieldMock';
@@ -22,7 +22,7 @@ export default sandboxOf(SubfieldComponent, {
   ],
   providers: [
     { provide: APP_INITIAL_STATE, useValue: IAppStateMock.stateProject1 },
-    { provide: PaginatedStatementsControllerService, useClass: MockPaginationControllerForSandboxes }
+    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes }
   ]
 })
   .add('Subfield | type: AppellationVT ', {
@@ -101,20 +101,26 @@ export default sandboxOf(SubfieldComponent, {
       subfield: SubfieldMock.manifestationSingletonHasShortTitle,
       pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
       showOntoInfo$: new BehaviorSubject(false),
+      addMode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-          <gv-subfield
+          <gv-subfield #s
           [pkEntity]="pkEntity"
           [subfield]="subfield"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
+          [addMode$]="addMode$"
           ></gv-subfield>
       </div>
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+        <button (click)="addMode$.next(!addMode$.value)">toggle add mode</button>
+        <pre>
+          {{s.selected|json:2}}
+        </pre>
       </div>
     </div>
     `
@@ -185,6 +191,36 @@ export default sandboxOf(SubfieldComponent, {
     template: `
     <gv-init-state [schemaObjects]="schemaObjects"></gv-init-state>
     <div class="d-flex justify-content-center mt-5">
+      <div>
+        <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+      </div>
+       <div style="width:1200px;height:400px; border: 1px dashed pink;" class="d-flex mr-4 p-1">
+          <gv-subfield
+          [pkEntity]="pkEntity"
+          [subfield]="subfield"
+          [scope]="scope"
+          [showOntoInfo$]="showOntoInfo$"
+          ></gv-subfield>
+      </div>
+    </div>
+    `
+  })
+
+  .add('Subfield | type: TimeSpan', {
+    context: {
+      subfield: SubfieldMock.appeHasTimeSpan,
+      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
+      showOntoInfo$: new BehaviorSubject(false),
+      scope: inProjectScope,
+      schemaObjects: [
+        GvSchemaObjectMock.basicClassesAndProperties,
+        GvSchemaObjectMock.project1,
+        GvSchemaObjectMock.sysConfig,
+      ]
+    },
+    template: `
+    <gv-init-state [schemaObjects]="schemaObjects"></gv-init-state>
+    <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
           [pkEntity]="pkEntity"
@@ -199,10 +235,10 @@ export default sandboxOf(SubfieldComponent, {
     </div>
     `
   })
-  .add('Subfield | type: TimeSpan', {
+  .add('Subfield | type: TimeSpan empty', {
     context: {
       subfield: SubfieldMock.appeHasTimeSpan,
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
+      pkEntity: InfTemporalEntityMock.NAMING_2_STADT.pk_entity,
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [

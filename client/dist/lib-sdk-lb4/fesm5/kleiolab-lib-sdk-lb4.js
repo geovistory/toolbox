@@ -7841,269 +7841,6 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
- * Generated from: lib/sdk-lb4/api/paginatedStatementsController.service.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var PaginatedStatementsControllerService = /** @class */ (function () {
-    function PaginatedStatementsControllerService(httpClient, basePath, configuration) {
-        this.httpClient = httpClient;
-        this.basePath = 'http://0.0.0.0:3000';
-        this.defaultHeaders = new HttpHeaders();
-        this.configuration = new Configuration();
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
-    /**
-     * @private
-     * @param {?} httpParams
-     * @param {?} value
-     * @param {?=} key
-     * @return {?}
-     */
-    PaginatedStatementsControllerService.prototype.addToHttpParams = /**
-     * @private
-     * @param {?} httpParams
-     * @param {?} value
-     * @param {?=} key
-     * @return {?}
-     */
-    function (httpParams, value, key) {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        }
-        else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    };
-    /**
-     * @private
-     * @param {?} httpParams
-     * @param {?=} value
-     * @param {?=} key
-     * @return {?}
-     */
-    PaginatedStatementsControllerService.prototype.addToHttpParamsRecursive = /**
-     * @private
-     * @param {?} httpParams
-     * @param {?=} value
-     * @param {?=} key
-     * @return {?}
-     */
-    function (httpParams, value, key) {
-        var _this = this;
-        if (value == null) {
-            return httpParams;
-        }
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                ((/** @type {?} */ (value))).forEach((/**
-                 * @param {?} elem
-                 * @return {?}
-                 */
-                function (elem) { return httpParams = _this.addToHttpParamsRecursive(httpParams, elem, key); }));
-            }
-            else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key, ((/** @type {?} */ (value))).toISOString().substr(0, 10));
-                }
-                else {
-                    throw Error("key may not be null if value is Date");
-                }
-            }
-            else {
-                Object.keys(value).forEach((/**
-                 * @param {?} k
-                 * @return {?}
-                 */
-                function (k) { return httpParams = _this.addToHttpParamsRecursive(httpParams, value[k], key != null ? key + "." + k : k); }));
-            }
-        }
-        else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        }
-        else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    };
-    /**
-     * @param {?=} gvPaginationAlternativeLeafItemsReq
-     * @param {?=} observe
-     * @param {?=} reportProgress
-     * @param {?=} options
-     * @return {?}
-     */
-    PaginatedStatementsControllerService.prototype.paginatedStatementsControllerAlternativeLeafItems = /**
-     * @param {?=} gvPaginationAlternativeLeafItemsReq
-     * @param {?=} observe
-     * @param {?=} reportProgress
-     * @param {?=} options
-     * @return {?}
-     */
-    function (gvPaginationAlternativeLeafItemsReq, observe, reportProgress, options) {
-        if (observe === void 0) { observe = 'body'; }
-        if (reportProgress === void 0) { reportProgress = false; }
-        /** @type {?} */
-        var headers = this.defaultHeaders;
-        /** @type {?} */
-        var credential;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-        // authentication (jwt) required
-        credential = this.configuration.lookupCredential('jwt');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-        /** @type {?} */
-        var httpHeaderAcceptSelected = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            /** @type {?} */
-            var httpHeaderAccepts = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-        // to determine the Content-Type header
-        /** @type {?} */
-        var consumes = [
-            'application/json'
-        ];
-        /** @type {?} */
-        var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-        /** @type {?} */
-        var responseType = 'json';
-        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-        return this.httpClient.post(this.configuration.basePath + "/paginated-statements/alternative-leaf-items", gvPaginationAlternativeLeafItemsReq, {
-            responseType: (/** @type {?} */ (responseType)),
-            withCredentials: this.configuration.withCredentials,
-            headers: headers,
-            observe: observe,
-            reportProgress: reportProgress
-        });
-    };
-    /**
-     * @param {?=} gvLoadSubfieldPageReq
-     * @param {?=} observe
-     * @param {?=} reportProgress
-     * @param {?=} options
-     * @return {?}
-     */
-    PaginatedStatementsControllerService.prototype.paginatedStatementsControllerLoadSubfieldPage = /**
-     * @param {?=} gvLoadSubfieldPageReq
-     * @param {?=} observe
-     * @param {?=} reportProgress
-     * @param {?=} options
-     * @return {?}
-     */
-    function (gvLoadSubfieldPageReq, observe, reportProgress, options) {
-        if (observe === void 0) { observe = 'body'; }
-        if (reportProgress === void 0) { reportProgress = false; }
-        /** @type {?} */
-        var headers = this.defaultHeaders;
-        /** @type {?} */
-        var credential;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-        // authentication (jwt) required
-        credential = this.configuration.lookupCredential('jwt');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-        /** @type {?} */
-        var httpHeaderAcceptSelected = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            /** @type {?} */
-            var httpHeaderAccepts = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-        // to determine the Content-Type header
-        /** @type {?} */
-        var consumes = [
-            'application/json'
-        ];
-        /** @type {?} */
-        var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-        /** @type {?} */
-        var responseType = 'json';
-        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-        return this.httpClient.post(this.configuration.basePath + "/paginated-statements/load-subfield-page", gvLoadSubfieldPageReq, {
-            responseType: (/** @type {?} */ (responseType)),
-            withCredentials: this.configuration.withCredentials,
-            headers: headers,
-            observe: observe,
-            reportProgress: reportProgress
-        });
-    };
-    PaginatedStatementsControllerService.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root'
-                },] }
-    ];
-    /** @nocollapse */
-    PaginatedStatementsControllerService.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: String, decorators: [{ type: Optional }, { type: Inject, args: [BASE_PATH,] }] },
-        { type: Configuration, decorators: [{ type: Optional }] }
-    ]; };
-    /** @nocollapse */ PaginatedStatementsControllerService.ngInjectableDef = ɵɵdefineInjectable({ factory: function PaginatedStatementsControllerService_Factory() { return new PaginatedStatementsControllerService(ɵɵinject(HttpClient), ɵɵinject(BASE_PATH, 8), ɵɵinject(Configuration, 8)); }, token: PaginatedStatementsControllerService, providedIn: "root" });
-    return PaginatedStatementsControllerService;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    PaginatedStatementsControllerService.prototype.basePath;
-    /** @type {?} */
-    PaginatedStatementsControllerService.prototype.defaultHeaders;
-    /** @type {?} */
-    PaginatedStatementsControllerService.prototype.configuration;
-    /** @type {?} */
-    PaginatedStatementsControllerService.prototype.encoder;
-    /**
-     * @type {?}
-     * @protected
-     */
-    PaginatedStatementsControllerService.prototype.httpClient;
-}
-
-/**
- * @fileoverview added by tsickle
  * Generated from: lib/sdk-lb4/api/pingController.service.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -12207,6 +11944,269 @@ if (false) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: lib/sdk-lb4/api/subfieldPageController.service.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var SubfieldPageControllerService = /** @class */ (function () {
+    function SubfieldPageControllerService(httpClient, basePath, configuration) {
+        this.httpClient = httpClient;
+        this.basePath = 'http://0.0.0.0:3000';
+        this.defaultHeaders = new HttpHeaders();
+        this.configuration = new Configuration();
+        if (configuration) {
+            this.configuration = configuration;
+        }
+        if (typeof this.configuration.basePath !== 'string') {
+            if (typeof basePath !== 'string') {
+                basePath = this.basePath;
+            }
+            this.configuration.basePath = basePath;
+        }
+        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+    }
+    /**
+     * @private
+     * @param {?} httpParams
+     * @param {?} value
+     * @param {?=} key
+     * @return {?}
+     */
+    SubfieldPageControllerService.prototype.addToHttpParams = /**
+     * @private
+     * @param {?} httpParams
+     * @param {?} value
+     * @param {?=} key
+     * @return {?}
+     */
+    function (httpParams, value, key) {
+        if (typeof value === "object" && value instanceof Date === false) {
+            httpParams = this.addToHttpParamsRecursive(httpParams, value);
+        }
+        else {
+            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+        }
+        return httpParams;
+    };
+    /**
+     * @private
+     * @param {?} httpParams
+     * @param {?=} value
+     * @param {?=} key
+     * @return {?}
+     */
+    SubfieldPageControllerService.prototype.addToHttpParamsRecursive = /**
+     * @private
+     * @param {?} httpParams
+     * @param {?=} value
+     * @param {?=} key
+     * @return {?}
+     */
+    function (httpParams, value, key) {
+        var _this = this;
+        if (value == null) {
+            return httpParams;
+        }
+        if (typeof value === "object") {
+            if (Array.isArray(value)) {
+                ((/** @type {?} */ (value))).forEach((/**
+                 * @param {?} elem
+                 * @return {?}
+                 */
+                function (elem) { return httpParams = _this.addToHttpParamsRecursive(httpParams, elem, key); }));
+            }
+            else if (value instanceof Date) {
+                if (key != null) {
+                    httpParams = httpParams.append(key, ((/** @type {?} */ (value))).toISOString().substr(0, 10));
+                }
+                else {
+                    throw Error("key may not be null if value is Date");
+                }
+            }
+            else {
+                Object.keys(value).forEach((/**
+                 * @param {?} k
+                 * @return {?}
+                 */
+                function (k) { return httpParams = _this.addToHttpParamsRecursive(httpParams, value[k], key != null ? key + "." + k : k); }));
+            }
+        }
+        else if (key != null) {
+            httpParams = httpParams.append(key, value);
+        }
+        else {
+            throw Error("key may not be null if value is not object or array");
+        }
+        return httpParams;
+    };
+    /**
+     * @param {?=} gvPaginationAlternativeLeafItemsReq
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @param {?=} options
+     * @return {?}
+     */
+    SubfieldPageControllerService.prototype.subfieldPageControllerAlternativeLeafItems = /**
+     * @param {?=} gvPaginationAlternativeLeafItemsReq
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @param {?=} options
+     * @return {?}
+     */
+    function (gvPaginationAlternativeLeafItemsReq, observe, reportProgress, options) {
+        if (observe === void 0) { observe = 'body'; }
+        if (reportProgress === void 0) { reportProgress = false; }
+        /** @type {?} */
+        var headers = this.defaultHeaders;
+        /** @type {?} */
+        var credential;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+        /** @type {?} */
+        var httpHeaderAcceptSelected = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            /** @type {?} */
+            var httpHeaderAccepts = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        var consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        /** @type {?} */
+        var responseType = 'json';
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+        return this.httpClient.post(this.configuration.basePath + "/subfield-page/alternative-leaf-items", gvPaginationAlternativeLeafItemsReq, {
+            responseType: (/** @type {?} */ (responseType)),
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    };
+    /**
+     * @param {?=} gvLoadSubfieldPageReq
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @param {?=} options
+     * @return {?}
+     */
+    SubfieldPageControllerService.prototype.subfieldPageControllerLoadSubfieldPage = /**
+     * @param {?=} gvLoadSubfieldPageReq
+     * @param {?=} observe
+     * @param {?=} reportProgress
+     * @param {?=} options
+     * @return {?}
+     */
+    function (gvLoadSubfieldPageReq, observe, reportProgress, options) {
+        if (observe === void 0) { observe = 'body'; }
+        if (reportProgress === void 0) { reportProgress = false; }
+        /** @type {?} */
+        var headers = this.defaultHeaders;
+        /** @type {?} */
+        var credential;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+        /** @type {?} */
+        var httpHeaderAcceptSelected = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            /** @type {?} */
+            var httpHeaderAccepts = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        /** @type {?} */
+        var consumes = [
+            'application/json'
+        ];
+        /** @type {?} */
+        var httpContentTypeSelected = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+        /** @type {?} */
+        var responseType = 'json';
+        if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+        return this.httpClient.post(this.configuration.basePath + "/subfield-page/load-subfield-page", gvLoadSubfieldPageReq, {
+            responseType: (/** @type {?} */ (responseType)),
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    };
+    SubfieldPageControllerService.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root'
+                },] }
+    ];
+    /** @nocollapse */
+    SubfieldPageControllerService.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: String, decorators: [{ type: Optional }, { type: Inject, args: [BASE_PATH,] }] },
+        { type: Configuration, decorators: [{ type: Optional }] }
+    ]; };
+    /** @nocollapse */ SubfieldPageControllerService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SubfieldPageControllerService_Factory() { return new SubfieldPageControllerService(ɵɵinject(HttpClient), ɵɵinject(BASE_PATH, 8), ɵɵinject(Configuration, 8)); }, token: SubfieldPageControllerService, providedIn: "root" });
+    return SubfieldPageControllerService;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    SubfieldPageControllerService.prototype.basePath;
+    /** @type {?} */
+    SubfieldPageControllerService.prototype.defaultHeaders;
+    /** @type {?} */
+    SubfieldPageControllerService.prototype.configuration;
+    /** @type {?} */
+    SubfieldPageControllerService.prototype.encoder;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SubfieldPageControllerService.prototype.httpClient;
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: lib/sdk-lb4/api/sysClassField.service.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -14085,7 +14085,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var APIS = [AccountService, AnalysisService, ContentTreeService, DatChunkService, DatChunkControllerService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, RamListService, SchemaObjectService, SysClassFieldService, SysClassHasTypePropertyService, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TableService, WarEntityPreviewControllerService];
+var APIS = [AccountService, AnalysisService, ContentTreeService, DatChunkService, DatChunkControllerService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, RamListService, SchemaObjectService, SubfieldPageControllerService, SysClassFieldService, SysClassHasTypePropertyService, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TableService, WarEntityPreviewControllerService];
 
 /**
  * @fileoverview added by tsickle
@@ -17825,11 +17825,11 @@ if (false) {
     /** @type {?} */
     WarEntityPreviewSearchExistingReq.prototype.pkClasses;
     /** @type {?} */
-    WarEntityPreviewSearchExistingReq.prototype.entityType;
-    /** @type {?} */
     WarEntityPreviewSearchExistingReq.prototype.limit;
     /** @type {?} */
     WarEntityPreviewSearchExistingReq.prototype.page;
+    /** @type {?|undefined} */
+    WarEntityPreviewSearchExistingReq.prototype.entityType;
     /** @type {?|undefined} */
     WarEntityPreviewSearchExistingReq.prototype.relatedStatement;
 }
@@ -18197,5 +18197,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { APIS, AccountService, AnalysisService, AnalysisTableExportRequest, BASE_PATH, COLLECTION_FORMATS, ColDef, Configuration, ContentTreeService, DatChunkControllerService, DatChunkService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, GetTablePageOptions, GvSubentitySubfieldType, GvSubfieldType, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PaginatedStatementsControllerService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, QueryFilterData, QueryPathSegment, RamListService, SchemaObjectService, ApiModule as SdkLb4Module, SysClassFieldService, SysClassHasTypePropertyService, SysConfigValueObjectType, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TColFilterNum, TColFilterTxt, TableService, TimePrimitiveWithCal, WarEntityPreviewControllerService, WarStatementGeoJson, WarStatementTimePrimitiveVT };
+export { APIS, AccountService, AnalysisService, AnalysisTableExportRequest, BASE_PATH, COLLECTION_FORMATS, ColDef, Configuration, ContentTreeService, DatChunkControllerService, DatChunkService, DatColumnService, DatDigitalService, DatNamespaceService, DfhClassControllerService, DfhLabelService, DfhProfileService, DfhPropertyControllerService, FactoidControllerService, GetTablePageOptions, GvSubentitySubfieldType, GvSubfieldType, ImportTableControllerService, InfLanguageService, InfPersistentItemService, InfPlaceService, InfStatementService, InfTemporalEntityService, InfTextPropertyService, PingControllerService, ProClassFieldConfigService, ProDfhClassProjRelService, ProDfhProfileProjRelService, ProInfoProjRelService, ProProjectService, ProTextPropertyService, ProjectConfigurationService, PubAccountService, QueryFilterData, QueryPathSegment, RamListService, SchemaObjectService, ApiModule as SdkLb4Module, SubfieldPageControllerService, SysClassFieldService, SysClassHasTypePropertyService, SysConfigValueObjectType, SysSystemRelevantClassService, SysSystemTypeService, SystemConfigurationService, TColFilterNum, TColFilterTxt, TableService, TimePrimitiveWithCal, WarEntityPreviewControllerService, WarStatementGeoJson, WarStatementTimePrimitiveVT };
 //# sourceMappingURL=kleiolab-lib-sdk-lb4.js.map

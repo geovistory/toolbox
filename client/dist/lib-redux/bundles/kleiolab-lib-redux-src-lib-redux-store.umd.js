@@ -2315,23 +2315,15 @@
      * @param {?} d
      * @return {?}
      */
-    function (d) { return d.has_domain + '_' + d.pk_property; }, ɵ8$1 = /**
+    function (d) { return d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined; }, ɵ8$1 = /**
      * @param {?} d
      * @return {?}
      */
-    function (d) { return d.has_range + '_' + d.pk_property; }, ɵ9$1 = /**
+    function (d) { return !d.fk_class ? undefined : d.fk_class + "_" + d.type; }, ɵ9$1 = /**
      * @param {?} d
      * @return {?}
      */
-    function (d) { return d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined; }, ɵ10$1 = /**
-     * @param {?} d
-     * @return {?}
-     */
-    function (d) { return !d.fk_class ? undefined : d.fk_class + "_" + d.type; }, ɵ11$1 = /**
-     * @param {?} d
-     * @return {?}
-     */
-    function (d) { return !d.fk_property ? undefined : d.fk_property + "_" + d.type; }, ɵ12$1 = /**
+    function (d) { return !d.fk_property ? undefined : d.fk_property + "_" + d.type; }, ɵ10$1 = /**
      * @param {?} d
      * @return {?}
      */
@@ -2374,17 +2366,17 @@
                     keyInStore: 'has_range',
                     groupByFn: (ɵ6$1)
                 },
-                {
-                    keyInStore: 'has_domain__fk_property',
-                    groupByFn: (ɵ7$1)
-                },
-                {
-                    keyInStore: 'has_range__fk_property',
-                    groupByFn: (ɵ8$1)
-                },
+                // {
+                //   keyInStore: 'has_domain__fk_property',
+                //   groupByFn: (d: DfhProperty): string => d.has_domain + '_' + d.pk_property
+                // },
+                // {
+                //   keyInStore: 'has_range__fk_property',
+                //   groupByFn: (d: DfhProperty): string => d.has_range + '_' + d.pk_property
+                // },
                 {
                     keyInStore: 'is_has_type_subproperty',
-                    groupByFn: (ɵ9$1)
+                    groupByFn: (ɵ7$1)
                 }
             ]
         },
@@ -2396,15 +2388,15 @@
             groupBy: [
                 {
                     keyInStore: 'fk_class__type',
-                    groupByFn: (ɵ10$1)
+                    groupByFn: (ɵ8$1)
                 },
                 {
                     keyInStore: 'fk_property__type',
-                    groupByFn: (ɵ11$1)
+                    groupByFn: (ɵ9$1)
                 },
                 {
                     keyInStore: 'fk_profile__type',
-                    groupByFn: (ɵ12$1)
+                    groupByFn: (ɵ10$1)
                 }
             ]
         },
@@ -2735,11 +2727,11 @@
      */
     function (item) {
         return item.pk_entity.toString();
-    }, ɵ11$2 = /**
+    }, ɵ11$1 = /**
      * @param {?} d
      * @return {?}
      */
-    function (d) { return d.fk_concerned_entity + '_' + d.fk_class_field; }, ɵ12$2 = /**
+    function (d) { return d.fk_concerned_entity + '_' + d.fk_class_field; }, ɵ12$1 = /**
      * @param {?} d
      * @return {?}
      */
@@ -2842,11 +2834,11 @@
             groupBy: [
                 {
                     keyInStore: 'fk_concerned_entity__fk_class_field',
-                    groupByFn: (ɵ11$2)
+                    groupByFn: (ɵ11$1)
                 },
                 {
                     keyInStore: 'fk_concerned_entity',
-                    groupByFn: (ɵ12$2)
+                    groupByFn: (ɵ12$1)
                 },
             ]
         },
@@ -7855,7 +7847,7 @@
                 var meta = action.meta;
                 // call action to set pagination loading on true
                 _this.infActions.statement.loadPage(meta.req.page, pkProject);
-                _this.pag.paginatedStatementsControllerLoadSubfieldPage(action.meta.req)
+                _this.pag.subfieldPageControllerLoadSubfieldPage(action.meta.req)
                     .subscribe((/**
                  * @param {?} data
                  * @return {?}
@@ -7903,9 +7895,9 @@
             { type: LoadingBarActions },
             { type: NotificationsAPIActions },
             { type: InfActions },
-            { type: libSdkLb4.PaginatedStatementsControllerService }
+            { type: libSdkLb4.SubfieldPageControllerService }
         ]; };
-        /** @nocollapse */ SchemaEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(core.ɵɵinject(SchemaService), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb4.PaginatedStatementsControllerService)); }, token: SchemaEpics, providedIn: "root" });
+        /** @nocollapse */ SchemaEpics.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SchemaEpics_Factory() { return new SchemaEpics(core.ɵɵinject(SchemaService), core.ɵɵinject(LoadingBarActions), core.ɵɵinject(NotificationsAPIActions), core.ɵɵinject(InfActions), core.ɵɵinject(libSdkLb4.SubfieldPageControllerService)); }, token: SchemaEpics, providedIn: "root" });
         return SchemaEpics;
     }());
     if (false) {

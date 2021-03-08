@@ -11,7 +11,7 @@ export class InfPlaceMock {
   static readonly PLACE_123: OmitEntity<InfPlace> = {
     pk_entity: 7001,
     fk_class: DfhApiClassMock.EN_51_PLACE.dfh_pk_class,
-    lat: 123,
+    lat: 11,
     long: 123
   }
 

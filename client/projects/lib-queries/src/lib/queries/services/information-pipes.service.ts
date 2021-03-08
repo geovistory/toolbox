@@ -268,6 +268,11 @@ export class InformationPipesService {
             })
           )
         )
+    } else {
+      return new BehaviorSubject({
+        projRel: undefined,
+        ordNum: 0
+      })
     }
   }
   /**
@@ -283,6 +288,7 @@ export class InformationPipesService {
 
     if (subfieldType.appellation) {
       return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(
+        filter(x => !!x),
         map(appellation => {
           const stmtTarget: StatementTarget = {
             statement: stmt,
@@ -299,6 +305,7 @@ export class InformationPipesService {
     }
     else if (subfieldType.place) {
       return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(
+        filter(x => !!x),
         map(place => {
           const stmtTarget: StatementTarget = {
             statement: stmt,
@@ -315,6 +322,7 @@ export class InformationPipesService {
     }
     else if (subfieldType.dimension) {
       return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(
+        filter(x => !!x),
         switchMap(dimension => {
           return this.p.streamEntityPreview(dimension.fk_measurement_unit)
             .pipe(
@@ -339,6 +347,7 @@ export class InformationPipesService {
     }
     else if (subfieldType.langString) {
       return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(
+        filter(x => !!x),
         switchMap(langString => {
           return this.s.inf$.language$.by_pk_entity$.key(langString.fk_language)
             .pipe(
@@ -363,6 +372,7 @@ export class InformationPipesService {
     }
     else if (subfieldType.language) {
       return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(
+        filter(x => !!x),
         map(language => {
           const stmtTarget: StatementTarget = {
             statement: stmt,
@@ -377,8 +387,9 @@ export class InformationPipesService {
         })
       )
     }
-    else if (subfieldType.entityPreview) {
+    else if (subfieldType.entityPreview || subfieldType.typeItem) {
       return this.p.streamEntityPreview(targetInfo).pipe(
+        filter(x => !!x),
         map(entityPreview => {
           const stmtTarget: StatementTarget = {
             statement: stmt,
@@ -419,12 +430,24 @@ export class InformationPipesService {
               statements
             }
             return subentitySubfieldPage
-          })
+          }),
+          // startWith(undefined) // TODO remove! this is for debugging
         )
       })
 
       return combineLatestOrEmpty(subentityPages$)
         .pipe(
+          // filter(subfields => {
+          //   console.log('subfields\n', subfields.map((item, i) => {
+          //     const req = subfieldType.temporalEntity[i]
+          //     const fieldInfo = targetInfo + '_' + req.page.fkProperty + '_' + req.page.targetClass + '_' + keys(req.subfieldType)[0]
+          //     return `${i}: ${item === undefined ?
+          //       `undefined ${fieldInfo}` :
+          //       `ok        ${fieldInfo}`
+          //       }`
+          //   }).join('\n'))
+          //   return !subfields.includes(undefined)
+          // }),
           map(
             subfields => {
               const stmtTarget: StatementTarget = {
@@ -512,6 +535,7 @@ export class InformationPipesService {
     }
     else if (subfieldType.timePrimitive) {
       return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(
+        filter(x => !!x),
         switchMap(timePrimitive => {
           // get calendar
           let cal$: Observable<TimePrimitiveWithCal.CalendarEnum>

@@ -92,6 +92,10 @@ export async function cleanDb() {
     await testdb.execute('DELETE FROM information.lang_string');
     await testdb.execute('ALTER TABLE information.lang_string ENABLE TRIGGER versioning_trigger');
 
+    await testdb.execute('ALTER TABLE information.dimension DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.dimension');
+    await testdb.execute('ALTER TABLE information.dimension ENABLE TRIGGER versioning_trigger');
+
     await testdb.execute('ALTER TABLE information.persistent_item DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.persistent_item');
     await testdb.execute('ALTER TABLE information.persistent_item ENABLE TRIGGER versioning_trigger');
