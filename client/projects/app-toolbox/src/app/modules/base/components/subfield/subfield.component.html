@@ -45,6 +45,7 @@
             </ng-container>
 
             <ng-template #normal>
+
               <ng-container *ngIf="item.target.langString">
                 <button mat-menu-item (click)="openPopup(item)">
                   <mat-icon svgIcon="arrow-expand-all"></mat-icon>
@@ -53,6 +54,20 @@
                 <mat-divider></mat-divider>
               </ng-container>
 
+              <ng-container *ngIf="item.target.entityPreview">
+                <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
+                  (click)="openInNewTab(item.target.entityPreview.pk_entity)">
+                  <mat-icon>tab</mat-icon>
+                  Open {{subfield.targetClassLabel}} in new Tab
+                </button>
+                <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
+                  (click)="addAndOpenInNewTab(item.target.entityPreview.pk_entity)">
+                  <mat-icon>add</mat-icon>
+                  Add {{subfield.targetClassLabel}} to project and open
+                </button>
+
+                <mat-divider></mat-divider>
+              </ng-container>
 
 
               <div class="dropdown-header">Danger Zone</div>

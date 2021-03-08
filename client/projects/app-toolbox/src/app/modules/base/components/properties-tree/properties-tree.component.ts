@@ -1,5 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -13,7 +13,8 @@ import { PropertiesTreeService } from './properties-tree.service';
   styleUrls: ['./properties-tree.component.scss'],
   providers: [
     PropertiesTreeService
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PropertiesTreeComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

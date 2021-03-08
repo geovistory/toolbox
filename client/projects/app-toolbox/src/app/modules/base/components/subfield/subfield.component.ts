@@ -5,6 +5,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ActiveProjectPipesService, InformationPipesService, StatementTargetTimeSpan, StatementWithTarget, Subfield } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvSubfieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
@@ -43,7 +44,8 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   @Output() next = new EventEmitter()
 
   constructor(
-    private p: ActiveProjectPipesService,
+    private p: ActiveProjectService,
+    private ap: ActiveProjectPipesService,
     private dialog: MatDialog,
     private pag: PaginationService,
     private inf: InfActions,
@@ -66,7 +68,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
 
 
-    const pagination$ = combineLatest(this.limit$, this.offset$, this.p.pkProject$)
+    const pagination$ = combineLatest(this.limit$, this.offset$, this.ap.pkProject$)
       .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
     const nextPage$ = new Subject();
     const until$ = merge(nextPage$, this.destroy$);
@@ -125,7 +127,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     if (this.subfield.identityDefiningForSource && this.subfield.isOutgoing) {
       alert('Item can not be removed, since it is defining the identity of the connected temporal entity. You might want to replace the entire temporal entity.')
     } else {
-      this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.ap.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
 
         const statement = item.statement;
         this.inf.statement.remove([statement], pkProject)
@@ -137,12 +139,21 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   openTimespanModal(x: StatementTargetTimeSpan) {
     this.timeSpan.openModal(x, this.pkEntity)
   }
+  openInNewTab(pkEntity: number) {
+    this.p.addEntityTab(pkEntity, this.subfield.targetClass)
+  }
+
+  addAndOpenInNewTab(pkEntity: number) {
+    this.p.addEntityToProject(pkEntity, () => {
+      this.openInNewTab(pkEntity)
+    })
+  }
 
 
   add() {
     // collect selected statements
     const statements: InfStatement[] = values(this.selected)
-    this.p.pkProject$.pipe(first()).subscribe(
+    this.ap.pkProject$.pipe(first()).subscribe(
       // upsert them in db
       pkProject => this.inf.statement.upsert(statements, pkProject).resolved$
         .pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {

@@ -111,17 +111,19 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true)
 
-    // this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-    //   // TODO merge persistent_item and temporal_entity tables
-    //   combineLatest(
-    //     this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
-    //     this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
-    //   ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
-    //     this.t.setTabLoading(false)
-    //   })
+      // TODO merge persistent_item and temporal_entity tables
+      combineLatest(
+        this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
+        this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
+        // this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
+        // this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
+      ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
+        this.t.setTabLoading(false)
+      })
 
-    // })
+    })
 
     this.showRightArea$.pipe(first(b => b !== undefined), takeUntil(this.destroy$)).subscribe((b) => {
       this.t.setLayoutMode(b ? 'both' : 'left-only')
