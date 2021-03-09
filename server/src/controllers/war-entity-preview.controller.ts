@@ -2,7 +2,7 @@
 import {inject, Subscription} from '@loopback/core';
 import {Fields} from '@loopback/filter';
 import {model, property, repository} from '@loopback/repository';
-import {get, HttpErrors, param, requestBody, post} from '@loopback/rest';
+import {HttpErrors, post, requestBody} from '@loopback/rest';
 import _ from 'lodash';
 import {indexBy, keys} from 'ramda';
 import {Socket} from 'socket.io';
@@ -459,7 +459,7 @@ export class WarEntityPreviewController {
     @requestBody() req: WarEntityPreviewSearchExistingReq
   ): Promise<WareEntityPreviewPage> {
 
-    const {queryString, offset, limit} = this.prepareSearchInputs(req.limit, req.page, req.searchString);
+    const {tsSearchString, offset, limit} = this.prepareSearchInputs(req.limit, req.page, req.searchString);
 
     const q = new SqlBuilderLb4Models(this.dataSource)
 
@@ -473,10 +473,10 @@ export class WarEntityPreviewController {
           ts_headline(type_label, q) as type_label_headline,
           count(pk_entity) OVER() AS total_count
           from war.entity_preview t1,
-          to_tsquery(${q.addParam(queryString)}) q
+          to_tsquery(${q.addParam(tsSearchString)}) q
           WHERE 1=1
           ${
-      queryString
+      tsSearchString
         ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
           req.searchString
         )})`
@@ -544,7 +544,7 @@ export class WarEntityPreviewController {
   ): Promise<WareEntityPreviewPage> {
     const i = this.prepareSearchInputs(req.limit, req.page, req.searchString)
     const q = new QWarEntityPreviewSearchExisiting(this.dataSource)
-    return q.query(req.projectId, i.queryString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement)
+    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement)
   }
 
   @post('/war-entity-previews/paginated-list-by-pks', {
@@ -616,7 +616,7 @@ export class WarEntityPreviewController {
 
     const offset = limit * (page - 1);
 
-    const queryString = searchString ?
+    const tsSearchString = searchString ?
       searchString
         .trim()
         .split(' ')
@@ -625,7 +625,7 @@ export class WarEntityPreviewController {
         })
         .join(' & ')
       : '';
-    return {queryString, offset, limit};
+    return {tsSearchString, offset, limit};
   }
 
   /************************ Generics ****************************/

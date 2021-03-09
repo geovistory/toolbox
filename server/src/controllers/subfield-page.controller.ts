@@ -67,11 +67,12 @@ export class SubfieldPageController {
         const subPageQueries = res.schemas.inf?.temporal_entity.map(subentity => {
           const fkSourceEntity = subentity.pk_entity as number;
           const subreqs = req.subfieldType.temporalEntity as GvLoadSubentitySubfieldPageReq[]
+          const scope = req.page.scope.notInProject ? {inRepo: true} : req.page.scope
           return this.querySubfields(
             req.pkProject,
             fkSourceEntity,
             subreqs,
-            req.page.scope
+            scope
           )
         })
 

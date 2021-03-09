@@ -33,10 +33,10 @@
     <mat-spinner diameter=20></mat-spinner>
   </div>
   <ng-container *ngIf="(activeElement$ | async) === 'add-existing-statements'">
-    <gv-temporal-entity-add-list *ngIf="data.listDefinition.listType.temporalEntity"
+    <!-- <gv-temporal-entity-add-list *ngIf="data.listDefinition.listType.temporalEntity"
       [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
       [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()" class="gv-flex-fh">
-    </gv-temporal-entity-add-list>
+    </gv-temporal-entity-add-list> -->
 
     <!-- <gv-leaf-item-add-list *ngIf="isLeafItemList" xLayout="column" fxLayoutAlign="space-between stretch"
       [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"

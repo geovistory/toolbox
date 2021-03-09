@@ -449,7 +449,7 @@ export class ConfigurationPipesService {
     else {
       // pipe the subfields of the temporalEntity class
       const noNest = true;
-      return this.pipeBasicAndSpecificFields(klass.pk_class, noNest).pipe(
+      return this.pipeSpecificAndBasicFields(klass.pk_class, noNest).pipe(
         map(fields => {
           const subentitySubfieldPage: GvLoadSubentitySubfieldPageReq[] = []
           for (const field of fields) {

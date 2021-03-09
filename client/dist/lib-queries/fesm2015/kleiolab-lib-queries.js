@@ -3593,7 +3593,7 @@ class ConfigurationPipesService {
             // pipe the subfields of the temporalEntity class
             /** @type {?} */
             const noNest = true;
-            return this.pipeBasicAndSpecificFields(klass.pk_class, noNest).pipe(map((/**
+            return this.pipeSpecificAndBasicFields(klass.pk_class, noNest).pipe(map((/**
              * @param {?} fields
              * @return {?}
              */
@@ -5949,7 +5949,9 @@ class InformationPipesService {
                 // create page:GvSubfieldPage
                 const _a = subfieldReq.page, { isCircular } = _a, p = __rest(_a, ["isCircular"]);
                 /** @type {?} */
-                const nestedPage = Object.assign({}, p, { fkSourceEntity: targetInfo, scope: page.scope });
+                const scope = page.scope.notInProject ? { inRepo: true } : page.scope;
+                /** @type {?} */
+                const nestedPage = Object.assign({}, p, { fkSourceEntity: targetInfo, scope });
                 return this.pipeSubfieldPage(nestedPage, subfieldReq.subfieldType).pipe(map((/**
                  * @param {?} __0
                  * @return {?}
@@ -6013,6 +6015,8 @@ class InformationPipesService {
                 // console.log('subentity subfield for targetInfo', targetInfo)
                 // create page:GvSubfieldPage
                 /** @type {?} */
+                const scope = page.scope.notInProject ? { inRepo: true } : page.scope;
+                /** @type {?} */
                 const nestedPage = {
                     fkProperty,
                     isOutgoing: true,
@@ -6020,7 +6024,7 @@ class InformationPipesService {
                     offset: 0,
                     targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
                     fkSourceEntity: targetInfo,
-                    scope: page.scope,
+                    scope,
                 };
                 /** @type {?} */
                 const subfType = {

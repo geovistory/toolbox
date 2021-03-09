@@ -30,6 +30,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
    */
   query(
     pkProject: number,
+    tsSearchString: string,
     searchString: string,
     pkClasses: number[],
     limit: number,
@@ -55,7 +56,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       -- this ensures we allways search in the full repo full-text (finds more)
       -- and it includes the information, whether the entity is in project or not
       tw0 AS (
-        SELECT  to_tsquery(${this.addParam(searchString)}) q
+        SELECT  to_tsquery(${this.addParam(tsSearchString)}) q
       ),
       tw1 AS (
         SELECT
@@ -78,7 +79,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
             AND t2.fk_project = ${this.addParam(pkProject)}
             AND t2.is_in_project = true
           WHERE t1.fk_project IS NULL
-          ${searchString ? `
+          ${tsSearchString ? `
           AND (
             t1.ts_vector @@ t0.q
             OR

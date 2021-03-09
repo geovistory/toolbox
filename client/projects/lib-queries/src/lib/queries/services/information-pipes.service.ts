@@ -415,10 +415,11 @@ export class InformationPipesService {
 
         // create page:GvSubfieldPage
         const { isCircular, ...p } = subfieldReq.page
+        const scope = page.scope.notInProject ? { inRepo: true } : page.scope
         const nestedPage: GvSubfieldPage = {
           ...p,
           fkSourceEntity: targetInfo,
-          scope: page.scope,
+          scope,
         }
 
         return this.pipeSubfieldPage(nestedPage, subfieldReq.subfieldType).pipe(
@@ -477,6 +478,8 @@ export class InformationPipesService {
           // console.log('subentity subfield for targetInfo', targetInfo)
 
           // create page:GvSubfieldPage
+          const scope = page.scope.notInProject ? { inRepo: true } : page.scope
+
           const nestedPage: GvSubfieldPage = {
             fkProperty,
             isOutgoing: true,
@@ -484,7 +487,7 @@ export class InformationPipesService {
             offset: 0,
             targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
             fkSourceEntity: targetInfo,
-            scope: page.scope,
+            scope,
           }
           const subfType: GvSubfieldType = {
             timePrimitive: 'true'

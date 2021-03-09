@@ -2,17 +2,25 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectPipesService, InformationPipesService, StatementTargetTimeSpan, StatementWithTarget, Subfield } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, InformationPipesService, StatementTargetTimeSpan, StatementWithTarget, SubentitySubfieldPage, Subfield } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { GvSubfieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { GvLoadSubentitySubfieldPageReq, GvSubentitySubfieldPage, GvSubentitySubfieldType, GvSubfieldId, GvSubfieldPageScope, GvSubfieldType, InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { equals, values } from 'ramda';
+import { equals, indexBy, mapObjIndexed, values } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { subfieldToSubfieldPage, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
+import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/subfield-dialog.component';
+
+interface DataCol {
+  name: string;
+  id: string;
+  pkProperty: number;
+  subfieldType: GvSubfieldType;
+}
 
 @Component({
   selector: 'gv-subfield',
@@ -43,6 +51,11 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter()
   @Output() next = new EventEmitter()
 
+  dataColumnsVisibility$ = new BehaviorSubject<{ [key: string]: boolean; }>({});
+  dataColumns$: Observable<DataCol[]>
+  visibleDataColumns$: Observable<DataCol[]>
+  subfieldMap: { [key: string]: GvSubentitySubfieldType; }
+
   constructor(
     private p: ActiveProjectService,
     private ap: ActiveProjectPipesService,
@@ -51,7 +64,8 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     private inf: InfActions,
     private i: InformationPipesService,
     private timeSpan: TimeSpanService,
-    private s: SchemaService
+    private s: SchemaService,
+    private c: ConfigurationPipesService,
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -98,8 +112,48 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     const initialSelection = [];
     this.selection = new SelectionModel<number>(this.allowMultiSelect, initialSelection);
     this.selectedCount$ = this.selection.changed.pipe(
-      map(s => s.source.selected.length)
+      map(s => s.source.selected.length),
+      startWith(0)
     )
+
+    if (this.subfield.listType.temporalEntity) {
+      this.subfieldMap = mapObjIndexed<GvLoadSubentitySubfieldPageReq, GvSubentitySubfieldType>(
+        (val, key, obj) => val.subfieldType,
+        indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
+      );
+      const dataColMap = mapObjIndexed<GvLoadSubentitySubfieldPageReq, boolean>(
+        (val, key, obj) => {
+          // hideCircularField on init
+          if (val.page.isCircular) return false
+          return true
+        },
+        indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
+      );
+      this.dataColumnsVisibility$.next(dataColMap)
+      this.dataColumns$ = combineLatest(
+        this.subfield.listType.temporalEntity.map(subentityField => {
+          const page = subentityField.page;
+          const domain = page.isOutgoing ? this.subfield.targetClass : null
+          const range = page.isOutgoing ? null : this.subfield.targetClass
+          return this.c.pipeFieldLabel(page.fkProperty, domain, range)
+            .pipe(
+              map(fieldLabel => {
+                return {
+                  id: this.getColId(page),
+                  name: fieldLabel,
+                  pkProperty: page.fkProperty,
+                  subfieldType: subentityField.subfieldType
+                }
+              })
+            )
+        })
+      )
+      this.visibleDataColumns$ = combineLatest(this.dataColumnsVisibility$, this.dataColumns$).pipe(
+        map(
+          ([colMap, all]) => all.filter(column => colMap[column.id])
+        )
+      )
+    }
 
   }
 
@@ -151,32 +205,155 @@ export class SubfieldComponent implements OnInit, OnDestroy {
 
 
   add() {
-    // collect selected statements
-    const statements: InfStatement[] = values(this.selected)
-    this.ap.pkProject$.pipe(first()).subscribe(
-      // upsert them in db
-      pkProject => this.inf.statement.upsert(statements, pkProject).resolved$
-        .pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-          // put them in store
-          this.s.storeSchemaObjectGv({ inf: { statement: statements } }, undefined)
-          this.close.emit()
-        })
-    )
+    if (this.subfield.listType.temporalEntity) {
+      this.addTeEn()
+    } else {
+
+      // collect selected statements
+      const statements: InfStatement[] = values(this.selected)
+      this.ap.pkProject$.pipe(first()).subscribe(
+        // upsert them in db
+        pkProject => this.inf.statement.upsert(statements, pkProject).resolved$
+          .pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
+            // put them in store
+            this.s.storeSchemaObjectGv({ inf: { statement: statements } }, undefined)
+            this.close.emit()
+          })
+      )
+    }
+
   }
-  toggle(stmtWT: StatementWithTarget) {
+  toggleSelection(stmtWT: StatementWithTarget) {
     const id = stmtWT.statement.pk_entity
+    if (!this.allowMultiSelect) this.selected = {}
     if (this.selected[id]) {
       delete this.selected[id]
     } else {
       this.selected[id] = stmtWT.statement;
     }
     this.selection.toggle(stmtWT.statement.pk_entity)
+  }
+
+  /**
+   * For TemporalEntity view
+   */
+
+  toggleCol(colId: string) {
+    // this.dataColumnsVisibility$.pipe(first()).subscribe(colMap => {
+
+    // });
+    setTimeout(() => {
+
+      const colMap = this.dataColumnsVisibility$.value
+      this.dataColumnsVisibility$.next({
+        ...colMap,
+        [colId]: !colMap[colId]
+      });
+    })
+  }
+  openList(subentityPage: SubentitySubfieldPage) {
+    const data: SubfieldDialogData = {
+      sourceClass: this.subfield.targetClass,
+      fkProperty: subentityPage.subfield.fkProperty,
+      targetClass: subentityPage.subfield.targetClass,
+      isOutgoing: subentityPage.subfield.isOutgoing,
+      sourceEntity: subentityPage.subfield.fkSourceEntity,
+      scope: this.scope,
+      showOntoInfo$: this.showOntoInfo$,
+    }
+    // const pkEntities = cell.items.map(i => cell.isOutgoing ? i.statement.fk_object_info : i.statement.fk_subject_info)
+    // this.listDialog.open(true, pkEntities, 'Items')
+    this.dialog.open(SubfieldDialogComponent, {
+      data
+    })
+    // throw new Error('TODO');
+  }
+  markAsFavorite(item: StatementWithTarget) {
+    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+      this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)
+    })
+  }
+  removeEntity(item: StatementWithTarget) {
+    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+
+      // remove the statement
+      this.inf.statement.remove([item.statement], pkProject)
+
+      // remove the related temporal entity
+      this.p.removeEntityFromProject(item.target.entity.pkEntity)
+    })
 
   }
 
+
+  /**
+   * makes separate api calls to add items to project:
+   * - one per related temporal entity
+   * - one for all selected statements
+   */
+  addTeEn() {
+
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      // the selected pks
+      const pkStatements: number[] = this.selection.selected;
+      const statements: InfStatement[] = values(this.selected)
+
+      // prepare api calls to add target entities to project
+      const entities$ = statements.map(r => {
+
+        // get pk of target entity
+        const pkEntity = this.subfield.isOutgoing ? r.fk_object_info : r.fk_subject_info;
+
+        // create api call
+        return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+      })
+
+      // prepare entity project rels for the statement pointing to target entity
+      const projRels: Partial<ProInfoProjRel>[] = pkStatements.map(pk => {
+
+        // pepare entity project rel
+        const proRel: Partial<ProInfoProjRel> = {
+          fk_project: pkProject,
+          fk_entity: pk,
+          is_in_project: true
+        }
+
+        return proRel;
+      })
+
+      // wait until target entities are added to project
+      combineLatest(entities$).pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
+
+        // add the statements pointing to these entities to project
+        this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$
+          .pipe(
+            first(res => !!res),
+            takeUntil(this.destroy$)
+          ).subscribe(() => {
+
+            // done!
+            this.close.emit()
+          })
+
+      })
+
+
+    })
+
+  }
+
+
+  /**
+  * End of TemporalEntity view
+  */
 
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+  getColId(page: GvSubentitySubfieldPage | GvSubfieldId): string {
+    return page.fkProperty + '_' + page.isOutgoing + '_' + page.targetClass
+  }
 }
+
+

@@ -33,6 +33,7 @@ type ObjectWiths = {
 type StatementTargetMeta = {
   modelDefinition: ModelDefinition,
   modelPk: string,
+  projectFk?: string
   statementObjectFk: string,
   statementSubjectFk: string,
   classFk: string,
@@ -154,6 +155,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
       entityPreview: {
         modelDefinition: WarEntityPreview.definition,
         modelPk: 'pk_entity',
+        projectFk: 'fk_project',
         statementObjectFk: 'fk_object_info',
         statementSubjectFk: 'fk_subject_info',
         tableName: 'war.entity_preview',
@@ -163,6 +165,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
       typeItem: {
         modelDefinition: WarEntityPreview.definition,
         modelPk: 'pk_entity',
+        projectFk: 'fk_project',
         statementObjectFk: 'fk_object_info',
         statementSubjectFk: 'fk_subject_info',
         tableName: 'war.entity_preview',
@@ -349,9 +352,23 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
         ].join(' AND ')}
        )`
     }
+    else if (scope.inRepo) {
+      sqlAllStatements = `
+      -- all statements
+      ${twAllStatements} AS (
+        SELECT ${this.createSelect('t1', InfStatement.definition)}
+        FROM
+        information.v_statement t1
+        ${innerJoinTarget}
+        WHERE
+        ${[
+        ...this.getFiltersByObject('t1', filterObject),
+        `t1.is_in_project_count > 0`
+      ].join(' AND ')}
+     )`
+    }
     else {
-      // TODO
-      throw new Error("scope not yet implemented: " + JSON.stringify(scope));
+      throw new Error("scope not implemented: " + JSON.stringify(scope));
     }
 
     return [
@@ -580,12 +597,12 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     const key = keys(subfiedfType)[0] as GvSubfieldTypeKey
     const config = this.config[key]
     if (!config) throw new Error("This subfield type is not implemented: " + key);
-    const x = this.joinSimpleTarget(page.isOutgoing, twStatements, config, page.scope, subfiedfType)
+    const x = this.joinSimpleTarget(page.isOutgoing, twStatements, config, page.scope)
     sqls.push(x.sql);
 
     if (subfiedfType.dimension) sqls.push(this.joinMeasurementUnit(x.tw));
     else if (subfiedfType.langString) sqls.push(this.joinLanguage(x.tw));
-    else if (subfiedfType.temporalEntity) sqls.push(this.joinProjRel(page.scope, x.tw))
+    else if (subfiedfType.temporalEntity && page.scope.inProject) sqls.push(this.joinProjRel(page.scope, x.tw))
 
 
     return sqls.join(',\n')
@@ -595,14 +612,18 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     isOutgoing: boolean,
     twStatements: string,
     spec: StatementTargetMeta,
-    parentScope: GvSubfieldPageScope,
-    parentSubfieldType: GvSubfieldType
+    scope: GvSubfieldPageScope
   ) {
 
     const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, objectWith} = spec
     const sqls: string[] = []
     const twTarget = this.nextWith;
     objectWith.push(twTarget);
+    let whereProject = ''
+    if (spec.projectFk) {
+      const fkProject = scope.inProject ?? scope.notInProject ?? null;
+      whereProject = `AND t1.${spec.projectFk} IS NOT DISTINCT FROM ${fkProject}`
+    }
     const sqlTarget = `
         -- ${tableName}
         ${twTarget} AS (
@@ -613,6 +634,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
             ${tableName} t1,
             ${twStatements} t2
           WHERE t1.${modelPk} = t2.${isOutgoing ? statementObjectFk : statementSubjectFk}
+          ${whereProject}
       )`;
     sqls.push(sqlTarget)
 
@@ -625,17 +647,9 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     parentScope: GvSubfieldPageScope,
     twTarget: string,
   ) {
-    const sqls = []
-
-
-
-    /**
-     * selects the twInfoProjRelObjects
-     * only if scope.inProject (!)
-     */
-    if (parentScope.inProject) {
-      const twInfoProjRelObjects = this.nextWith;
-      const sqlInfoProjRelsObjects = `
+    const twInfoProjRelObjects = this.nextWith;
+    this.objectWiths.info_proj_rel.push(twInfoProjRelObjects);
+    return `
           -- info_proj_rel as objects
           ${twInfoProjRelObjects} AS (
             SELECT
@@ -648,10 +662,6 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
             AND
             t1.fk_project = ${this.addParam(parentScope.inProject)}
         )`;
-      sqls.push(sqlInfoProjRelsObjects);
-      this.objectWiths.info_proj_rel.push(twInfoProjRelObjects);
-    }
-    return sqls.join(',\n')
   }
 
 

@@ -35,6 +35,7 @@ import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.com
 import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from './components/fg-place/fg-place.component';
 import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-property.component';
+import { FieldLabelComponent } from './components/field-label/field-label.component';
 import { FieldComponent } from './components/field/field.component';
 import { FormArrayComponent } from './components/form-array/form-array.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
@@ -95,7 +96,9 @@ const components = [
   FgDimensionComponent,
   SubfieldComponent,
   SubfieldTableComponent,
-  SubfieldDialogComponent
+  SubfieldDialogComponent,
+  FieldLabelComponent
+
 ]
 
 const baseModules = [

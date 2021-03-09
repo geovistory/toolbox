@@ -181,6 +181,7 @@ export default sandboxOf(SubfieldComponent, {
       subfield: SubfieldMock.personHasAppeTeEn,
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity,
       showOntoInfo$: new BehaviorSubject(false),
+      addMode$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [
         GvSchemaObjectMock.basicClassesAndProperties,
@@ -193,6 +194,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+        <button (click)="addMode$.next(!addMode$.value)">toggle add mode</button>
       </div>
        <div style="width:1200px;height:400px; border: 1px dashed pink;" class="d-flex mr-4 p-1">
           <gv-subfield
@@ -200,6 +202,7 @@ export default sandboxOf(SubfieldComponent, {
           [subfield]="subfield"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
+          [addMode$]="addMode$"
           ></gv-subfield>
       </div>
     </div>

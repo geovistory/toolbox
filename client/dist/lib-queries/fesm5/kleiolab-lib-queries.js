@@ -3917,7 +3917,7 @@ var ConfigurationPipesService = /** @class */ (function () {
             // pipe the subfields of the temporalEntity class
             /** @type {?} */
             var noNest = true;
-            return this.pipeBasicAndSpecificFields(klass.pk_class, noNest).pipe(map((/**
+            return this.pipeSpecificAndBasicFields(klass.pk_class, noNest).pipe(map((/**
              * @param {?} fields
              * @return {?}
              */
@@ -6938,7 +6938,9 @@ var InformationPipesService = /** @class */ (function () {
                 // create page:GvSubfieldPage
                 var _a = subfieldReq.page, isCircular = _a.isCircular, p = __rest(_a, ["isCircular"]);
                 /** @type {?} */
-                var nestedPage = __assign({}, p, { fkSourceEntity: targetInfo, scope: page.scope });
+                var scope = page.scope.notInProject ? { inRepo: true } : page.scope;
+                /** @type {?} */
+                var nestedPage = __assign({}, p, { fkSourceEntity: targetInfo, scope: scope });
                 return _this.pipeSubfieldPage(nestedPage, subfieldReq.subfieldType).pipe(map((/**
                  * @param {?} __0
                  * @return {?}
@@ -7003,6 +7005,8 @@ var InformationPipesService = /** @class */ (function () {
                 // console.log('subentity subfield for targetInfo', targetInfo)
                 // create page:GvSubfieldPage
                 /** @type {?} */
+                var scope = page.scope.notInProject ? { inRepo: true } : page.scope;
+                /** @type {?} */
                 var nestedPage = {
                     fkProperty: fkProperty,
                     isOutgoing: true,
@@ -7010,7 +7014,7 @@ var InformationPipesService = /** @class */ (function () {
                     offset: 0,
                     targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
                     fkSourceEntity: targetInfo,
-                    scope: page.scope,
+                    scope: scope,
                 };
                 /** @type {?} */
                 var subfType = {
