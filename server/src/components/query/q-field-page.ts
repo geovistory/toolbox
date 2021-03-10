@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {ModelDefinition} from '@loopback/repository';
 import {keys} from 'lodash';
+import {groupBy} from 'ramda';
+import {PK_PROPERTY_HAS_TIME_SPAN} from '../../config';
 import {Postgres1DataSource} from '../../datasources';
-import {GvLoadSubfieldPageReq, GvPaginationObject, GvPaginationStatementFilter, GvSubfieldPage, GvSubfieldPageScope, GvSubfieldType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
+import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
+import {GvFieldTargets} from '../../models/field/gv-field-targets';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
@@ -40,7 +43,7 @@ type StatementTargetMeta = {
   tableName: string,
   objectWith: string[],
 }
-type GvSubfieldTypeKey = keyof Omit<GvSubfieldType, 'timeSpan' | 'textProperty'>;
+type GvSubfieldTypeKey = keyof Omit<GvTargetType, 'timeSpan' | 'textProperty'>;
 
 type Config = {
   [key in GvSubfieldTypeKey]: StatementTargetMeta
@@ -51,8 +54,8 @@ type ModelToFindClassConfig = {
 }
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
-type GvSubfieldPageWithoutFkSource = PartialBy<GvSubfieldPage, 'fkSourceEntity'>
-export class QSubfieldPage extends SqlBuilderLb4Models {
+type GvFieldPageWithoutFkSource = PartialBy<GvFieldPage, 'fkSourceEntity'>
+export class QFieldPage extends SqlBuilderLb4Models {
 
   withClauses: With[] = [];
   withCount = 0
@@ -204,7 +207,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
 
 
 
-  async query(req: GvLoadSubfieldPageReq): Promise<GvPaginationObject> {
+  async query(req: GvFieldPageReq): Promise<GvPaginationObject> {
 
 
     const select = this.createSelects(req);
@@ -266,9 +269,9 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
 
 
 
-  createSelects(req: GvLoadSubfieldPageReq) {
+  createSelects(req: GvFieldPageReq) {
 
-    if (req.subfieldType.timeSpan) {
+    if (req.page.fkProperty === PK_PROPERTY_HAS_TIME_SPAN) {
 
       const requests = this.createTimeSpanFieldRequests(req)
       return requests.map(request => this.createSelectForPage(request)).join(',\n')
@@ -289,7 +292,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
    * inProject: selects only statements with info_proj_rel.is_in_project=true
    * notInProject: selects all statements except for the ones inProject
    */
-  private createSelectForPage(req: GvLoadSubfieldPageReq) {
+  private createSelectForPage(req: GvFieldPageReq) {
 
     const page = req.page;
     const filterObject: GvPaginationStatementFilter = {
@@ -302,14 +305,15 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     let sqlAllStatements: string;
 
     // inner join target already to filter on its class!
-    const innerJoinTarget = this.joinTargetFilteredByClass(page, req.subfieldType, 't1')
+    const innerJoinTarget = this.joinTargetFilteredByClass(page, req.targets, 't1')
 
     if (scope.inProject) {
       // this is for scope inProject: TODO other scopes
       sqlAllStatements = `
       -- all statements
       ${twAllStatements} AS (
-        SELECT ${this.createSelect('t1', InfStatement.definition)}
+        SELECT ${this.createSelect('t1', InfStatement.definition)},
+        target.fk_class
         FROM
         information.v_statement t1
         INNER JOIN projects.info_proj_rel t2
@@ -328,7 +332,8 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
       sqlAllStatements = `
         -- all statements
         ${twAllStatements} AS (
-          SELECT ${this.createSelect('t1', InfStatement.definition)}
+          SELECT ${this.createSelect('t1', InfStatement.definition)},
+          target.fk_class
           FROM
           information.v_statement t1
           ${innerJoinTarget}
@@ -338,7 +343,8 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
           `t1.is_in_project_count > 0`
         ].join(' AND ')}
         EXCEPT
-          SELECT ${this.createSelect('t1', InfStatement.definition)}
+          SELECT ${this.createSelect('t1', InfStatement.definition)},
+          target.fk_class
           FROM
           information.v_statement t1
           INNER JOIN projects.info_proj_rel t2
@@ -356,15 +362,16 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
       sqlAllStatements = `
       -- all statements
       ${twAllStatements} AS (
-        SELECT ${this.createSelect('t1', InfStatement.definition)}
+        SELECT ${this.createSelect('t1', InfStatement.definition)},
+        target.fk_class
         FROM
         information.v_statement t1
         ${innerJoinTarget}
         WHERE
         ${[
-        ...this.getFiltersByObject('t1', filterObject),
-        `t1.is_in_project_count > 0`
-      ].join(' AND ')}
+          ...this.getFiltersByObject('t1', filterObject),
+          `t1.is_in_project_count > 0`
+        ].join(' AND ')}
      )`
     }
     else {
@@ -373,7 +380,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
 
     return [
       sqlAllStatements,
-      this.joinPage(twAllStatements, page, scope, req.subfieldType)
+      this.joinPage(twAllStatements, page, scope, req.targets)
     ].join(',\n')
   }
 
@@ -429,32 +436,38 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
   // }
 
   joinTargetFilteredByClass(
-    p: GvSubfieldPageWithoutFkSource,
-    subfiedfType: GvSubfieldType,
+    p: GvFieldPageWithoutFkSource,
+    targets: GvFieldTargets,
     stmtTable: string
   ) {
-    const key = keys(subfiedfType)[0] as GvSubfieldTypeKey
-    const config = this.tableToFindClass[key]
-    if (!config) throw new Error("tableToFindClass missing for: " + key);
+    const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvSubfieldTypeKey}))
+    const classesByTarget = groupBy((t) => t.target, targetArray)
+    const configs: {meta: StatementTargetMeta[], classes: number[]}[] = [];
+    keys(classesByTarget).forEach((key) => {
+      const meta = this.tableToFindClass[key as GvSubfieldTypeKey]
+      if (!meta) throw new Error("tableToFindClass missing for: " + key);
+      const classes = classesByTarget[key].map(val => parseInt(val.fkClass))
+      configs.push({meta, classes})
+    })
     const join = `
     JOIN LATERAL (
-      ${config.map(c => `
-      SELECT ${c.modelPk} pk_entity, ${c.classFk} fk_class
-      FROM ${c.tableName}
-      WHERE ${c.modelPk} = ${stmtTable}.${p.isOutgoing ? c.statementObjectFk : c.statementSubjectFk}
-      `).join('UNION ALL \n')}
-    ) target
-    ON target.fk_class = ${p.targetClass}
-
+      ${configs.map(config => config.meta.map(m => `
+      SELECT ${m.modelPk} pk_entity, ${m.classFk} fk_class
+      FROM ${m.tableName}
+      WHERE ${m.modelPk} = ${stmtTable}.${p.isOutgoing ? m.statementObjectFk : m.statementSubjectFk}
+      AND ${m.classFk} IN (${this.addParams(config.classes)})
+      `).join('UNION ALL \n')
+    )}
+    ) target ON TRUE
     `
     return join
   }
 
   private joinPage(
     twAllStatements: string,
-    page: GvSubfieldPageWithoutFkSource,
-    scope: GvSubfieldPageScope,
-    subfieldType: GvSubfieldType,
+    page: GvFieldPageWithoutFkSource,
+    scope: GvFieldPageScope,
+    targets: GvFieldTargets,
     twSource?: string
   ) {
     const sqls: string[] = []
@@ -587,23 +600,26 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     /**
      * joins the targets of twPageStatements
      */
-    sqls.push(this.joinTargetOfStatement(page, subfieldType, twPageStatements));
+    sqls.push(this.joinTargetOfStatement(page, targets, twPageStatements));
 
     return sqls.join(',\n');
   }
 
-  joinTargetOfStatement(page: GvSubfieldPageWithoutFkSource, subfiedfType: GvSubfieldType, twStatements: string): string {
+  joinTargetOfStatement(page: GvFieldPageWithoutFkSource, targets: GvFieldTargets, twStatements: string): string {
     const sqls = []
-    const key = keys(subfiedfType)[0] as GvSubfieldTypeKey
-    const config = this.config[key]
-    if (!config) throw new Error("This subfield type is not implemented: " + key);
-    const x = this.joinSimpleTarget(page.isOutgoing, twStatements, config, page.scope)
-    sqls.push(x.sql);
+    const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvSubfieldTypeKey}))
+    const targetTypes: GvSubfieldTypeKey[] = targetArray.map(t => t.target)
 
-    if (subfiedfType.dimension) sqls.push(this.joinMeasurementUnit(x.tw));
-    else if (subfiedfType.langString) sqls.push(this.joinLanguage(x.tw));
-    else if (subfiedfType.temporalEntity && page.scope.inProject) sqls.push(this.joinProjRel(page.scope, x.tw))
+    for (const targetType of targetTypes) {
+      const config = this.config[targetType]
+      if (!config) throw new Error("This subfield type is not implemented: " + targetType);
+      const x = this.joinSimpleTarget(page.isOutgoing, twStatements, config, page.scope)
+      sqls.push(x.sql);
 
+      if (targetType === 'dimension') sqls.push(this.joinMeasurementUnit(x.tw));
+      else if (targetType === 'langString') sqls.push(this.joinLanguage(x.tw));
+      else if (targetType === 'temporalEntity' && page.scope.inProject) sqls.push(this.joinProjRel(page.scope, x.tw))
+    }
 
     return sqls.join(',\n')
   }
@@ -612,7 +628,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     isOutgoing: boolean,
     twStatements: string,
     spec: StatementTargetMeta,
-    scope: GvSubfieldPageScope
+    scope: GvFieldPageScope
   ) {
 
     const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, objectWith} = spec
@@ -644,7 +660,7 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
   }
 
   private joinProjRel(
-    parentScope: GvSubfieldPageScope,
+    parentScope: GvFieldPageScope,
     twTarget: string,
   ) {
     const twInfoProjRelObjects = this.nextWith;
@@ -796,34 +812,33 @@ export class QSubfieldPage extends SqlBuilderLb4Models {
     return filters;
   }
 
-  private createTimeSpanFieldRequests(req: GvLoadSubfieldPageReq): GvLoadSubfieldPageReq[] {
+  private createTimeSpanFieldRequests(req: GvFieldPageReq): GvFieldPageReq[] {
     return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
-      const request: GvLoadSubfieldPageReq = {
+      const request: GvFieldPageReq = {
         ...req,
         page: {
           ...req.page,
           fkProperty: timeSpanProperty,
-          targetClass: 335
         },
-        subfieldType: {timePrimitive: TrueEnum.true}
+        targets: {335: {timePrimitive: TrueEnum.true}}
       };
       return request;
     });
   }
 
-  private createTimeSpanSubFieldRequests(p: GvSubfieldPageWithoutFkSource) {
-    return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
+  // private createTimeSpanSubFieldRequests(p: GvFieldPageWithoutFkSource) {
+  //   return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
 
-      const page: GvSubfieldPageWithoutFkSource = {
-        ...p,
-        fkProperty: timeSpanProperty,
-        targetClass: 335
-      }
-      const subfieldType: GvSubfieldType = {timePrimitive: TrueEnum.true}
-      return {
-        page,
-        subfieldType
-      };
-    });
-  }
+  //     const page: GvFieldPageWithoutFkSource = {
+  //       ...p,
+  //       fkProperty: timeSpanProperty,
+  //       targetClass: 335
+  //     }
+  //     const subfieldType: GvTargetType = {timePrimitive: TrueEnum.true}
+  //     return {
+  //       page,
+  //       subfieldType
+  //     };
+  //   });
+  // }
 }

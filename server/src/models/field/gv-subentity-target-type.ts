@@ -9,7 +9,7 @@ import {TrueEnum} from '../sys-config/TrueEnum';
     minProperties: 1,
   }
 })
-export class GvSubentitySubfieldType {
+export class GvSubentityTargetType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   appellation?: TrueEnum;
 

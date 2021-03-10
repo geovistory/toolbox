@@ -1,4 +1,4 @@
-import {GvLoadSubentitySubfieldPageReq, TrueEnum} from '../../../../models'
+import {GvSubentitFieldPageReq, TrueEnum} from '../../../../models'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
 
@@ -6,55 +6,59 @@ export namespace GvLoadSubentitySubfieldPageReqMock {
 
 
 
-  export const appeTeEnRefersToName: GvLoadSubentitySubfieldPageReq = {
-    subfieldType: {
-      appellation: TrueEnum.true
+  export const appeTeEnRefersToName: GvSubentitFieldPageReq = {
+    targets: {
+      [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
+        appellation: TrueEnum.true
+      }
     },
     page: {
       fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
       isCircular: false,
       limit: 7,
       offset: 0
     }
   }
 
-  export const appeTeEnHasDefinition: GvLoadSubentitySubfieldPageReq = {
-    subfieldType: {
-      langString: TrueEnum.true
+  export const appeTeEnHasDefinition: GvSubentitFieldPageReq = {
+    targets: {
+      [DfhApiClassMock.EN_365_NAMING.dfh_pk_class]: {
+        langString: TrueEnum.true
+      }
     },
     page: {
       fkProperty: DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
       isCircular: false,
       limit: 1,
       offset: 0,
     }
   }
 
-  export const appeTeEnHasTimeSpan: GvLoadSubentitySubfieldPageReq = {
-    subfieldType: {
-      timeSpan: TrueEnum.true
+  export const appeTeEnHasTimeSpan: GvSubentitFieldPageReq = {
+    targets: {
+      [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+        timeSpan: TrueEnum.true
+      }
     },
     page: {
       fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class,
       isCircular: false,
       limit: 1,
       offset: 0,
     }
   }
-  export const appeTeEnIsAppeOfPerson: GvLoadSubentitySubfieldPageReq = {
-    subfieldType: {
-      entityPreview: TrueEnum.true
+  export const appeTeEnIsAppeOfPerson: GvSubentitFieldPageReq = {
+    targets: {
+      [DfhApiClassMock.EN_21_PERSON.dfh_pk_class]: {
+        entityPreview: TrueEnum.true
+      }
     },
     page: {
       fkProperty: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
       isCircular: true,
       limit: 1,
       offset: 0,

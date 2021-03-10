@@ -4,10 +4,10 @@ import {inject} from '@loopback/core';
 import {post, requestBody} from '@loopback/rest';
 import {Roles} from '../components/authorization/keys';
 import {QAlternativeLeafItems} from '../components/query/q-alternative-leaf-items';
-import {QSubfieldPage} from '../components/query/q-subfield-page';
+import {QFieldPage} from '../components/query/q-field-page';
 import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
 import {Postgres1DataSource} from '../datasources';
-import {GvLoadSubfieldPageReq, GvPaginationAlternativeLeafItemsReq, GvPaginationObject, GvSubfieldId, GvLoadSubentitySubfieldPageReq, GvSubfieldPageScope, GvSubfieldPage} from '../models';
+import {GvFieldPageReq, GvPaginationAlternativeLeafItemsReq, GvPaginationObject, GvFieldId, GvSubentitFieldPageReq, GvFieldPageScope, GvFieldPage} from '../models';
 import {flatten, mergeDeepWith, concat} from 'ramda';
 
 export class SubfieldPageController {
@@ -56,29 +56,32 @@ export class SubfieldPageController {
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async loadSubfieldPage(
-    @requestBody() req: GvLoadSubfieldPageReq
+    @requestBody() req: GvFieldPageReq
   ): Promise<GvPaginationObject> {
 
     const results: GvPaginationObject[] = []
-    const res = await new QSubfieldPage(this.datasource).query(req)
+    const res = await new QFieldPage(this.datasource).query(req)
 
-    if (req.subfieldType.temporalEntity?.length) {
-      if (res.schemas.inf?.temporal_entity?.length) {
-        const subPageQueries = res.schemas.inf?.temporal_entity.map(subentity => {
-          const fkSourceEntity = subentity.pk_entity as number;
-          const subreqs = req.subfieldType.temporalEntity as GvLoadSubentitySubfieldPageReq[]
+    if (res.schemas.inf?.temporal_entity?.length) {
+      const subPageQueries: Promise<GvPaginationObject[]>[] = []
+      res.schemas.inf?.temporal_entity.forEach(e => {
+        const fkSourceEntity = e.pk_entity as number;
+        const fkClass = e.fk_class as number;
+        const targetType = req.targets[fkClass]
+        if (targetType?.temporalEntity?.length) {
+          const subreqs = targetType.temporalEntity as GvSubentitFieldPageReq[]
           const scope = req.page.scope.notInProject ? {inRepo: true} : req.page.scope
-          return this.querySubfields(
+          subPageQueries.push(this.querySubfields(
             req.pkProject,
             fkSourceEntity,
             subreqs,
             scope
-          )
-        })
+          ))
+        }
+      })
 
-        const r = await Promise.all(subPageQueries)
-        results.push(...flatten(r))
-      }
+      const r = await Promise.all(subPageQueries)
+      results.push(...flatten(r))
     }
     let result = res
     for (const obj of results) {
@@ -90,14 +93,14 @@ export class SubfieldPageController {
   private async querySubfields(
     pkProject: number,
     fkSourceEntity: number,
-    subReqs: GvLoadSubentitySubfieldPageReq[],
-    parentScope: GvSubfieldPageScope,
+    subReqs: GvSubentitFieldPageReq[],
+    parentScope: GvFieldPageScope,
   ) {
 
     /**
      * generate the scope of the subpages
      */
-    let scope: GvSubfieldPageScope;
+    let scope: GvFieldPageScope;
     if (parentScope.notInProject)
       scope = {inRepo: true};
     else
@@ -108,19 +111,19 @@ export class SubfieldPageController {
       /**
        * convert GvLoadSubentitySubfieldPageReq to GvLoadSubfieldPageReq
        */
-      const page: GvSubfieldPage = {
+      const page: GvFieldPage = {
         ...subReq.page,
         scope,
         fkSourceEntity
       };
-      const subfieldType = subReq.subfieldType;
-      const req: GvLoadSubfieldPageReq = {
+      const targets = subReq.targets;
+      const req: GvFieldPageReq = {
         page,
-        subfieldType,
+        targets,
         pkProject
       }
 
-      promises$.push(new QSubfieldPage(this.datasource).query(req));
+      promises$.push(new QFieldPage(this.datasource).query(req));
 
     }
 
@@ -130,4 +133,4 @@ export class SubfieldPageController {
 
 }
 
-registerType(GvSubfieldId)
+registerType(GvFieldId)

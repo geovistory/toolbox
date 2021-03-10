@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {GvPaginationObject} from '../../../../models'
+import {GvFieldPage, GvPaginationObject} from '../../../../models'
 import {GvLoadSubfieldPageReqMock} from '../api-requests/GvLoadSubfieldPageReq'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {InfAppellationMock} from '../gvDB/InfAppellationMock'
-import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
-import {InfLanguageMock} from '../gvDB/InfLanguageMock'
-import {InfPersistentItemMock} from '../gvDB/InfPersistentItemMock'
-import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
-import {InfPlaceMock} from '../gvDB/InfPlaceMock'
-import {InfDimensionMock} from '../gvDB/InfDimensionMock'
-import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
-import {InfLangStringMock} from '../gvDB/InfLangStringMock'
-import {InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {InfAppellationMock} from '../gvDB/InfAppellationMock'
+import {InfDimensionMock} from '../gvDB/InfDimensionMock'
+import {InfLangStringMock} from '../gvDB/InfLangStringMock'
+import {InfLanguageMock} from '../gvDB/InfLanguageMock'
+import {InfPlaceMock} from '../gvDB/InfPlaceMock'
+import {InfStatementMock} from '../gvDB/InfStatementMock'
+import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
+import {InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
 import {DfhApiProperty} from '../gvDB/local-model.helpers'
-import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
 import {ProProjectMock} from '../gvDB/ProProjectMock'
+import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
 
 export namespace GvPaginationObjectMock {
   export const appeTeEnHasAppeVt: GvPaginationObject = {
@@ -306,12 +304,12 @@ export namespace GvPaginationObjectMock {
 
 }
 
-export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty) {
+export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPage {
   return {
     fkSourceEntity: sourceEntity,
     fkProperty: property.dfh_pk_property,
     isOutgoing: true,
-    targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
+    // targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
     limit: 1,
     offset: 0

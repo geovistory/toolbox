@@ -6,7 +6,7 @@ import {model, property} from '@loopback/repository';
     minProperties: 1,
   }
 })
-export class GvSubfieldPageScope {
+export class GvFieldPageScope {
   @property() inProject?: number;
   @property() notInProject?: number;
   @property() inRepo?: boolean;

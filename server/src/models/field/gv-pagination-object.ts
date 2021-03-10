@@ -1,10 +1,10 @@
 import {model, property} from '@loopback/repository';
 import {GvSchemaObject} from '../gv-schema-object.model';
-import {GvSubfieldPage} from './gv-subfield-page';
+import {GvFieldPage} from './gv-field-page';
 
 @model()
 export class GvSubfieldPageInfo {
-  @property({required: true}) page: GvSubfieldPage
+  @property({required: true}) page: GvFieldPage
   @property({required: true}) count: number
   @property.array(Number, {required: true}) paginatedStatements: number[]
 }

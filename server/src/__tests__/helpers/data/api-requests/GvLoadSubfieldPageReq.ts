@@ -1,4 +1,4 @@
-import {GvLoadSubfieldPageReq, TrueEnum} from '../../../../models'
+import {GvFieldPageReq, TrueEnum} from '../../../../models'
 import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
 import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
@@ -10,56 +10,60 @@ import {GvLoadSubentitySubfieldPageReqMock} from './GvLoadSubentitySubfieldPageR
 export namespace GvLoadSubfieldPageReqMock {
 
 
-  export const person1HasAppeTeEn: GvLoadSubfieldPageReq = {
+  export const person1HasAppeTeEn: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     page: {
       fkSourceEntity: InfStatementMock.NAME_1_TO_PERSON.fk_object_info,
       fkProperty: InfStatementMock.NAME_1_TO_PERSON.fk_property,
       isOutgoing: false,
-      targetClass: InfTemporalEntityMock.NAMING_1.fk_class,
+
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
     },
-    subfieldType: {
-      temporalEntity: [
-        {
-          ...GvLoadSubentitySubfieldPageReqMock.appeTeEnRefersToName,
-          page: {
-            ...GvLoadSubentitySubfieldPageReqMock.appeTeEnRefersToName.page,
-            ...{limit: 1, offset: 0}
+    targets: {
+      [DfhApiClassMock.EN_365_NAMING.dfh_pk_class]: {
+        temporalEntity: [
+          {
+            ...GvLoadSubentitySubfieldPageReqMock.appeTeEnRefersToName,
+            page: {
+              ...GvLoadSubentitySubfieldPageReqMock.appeTeEnRefersToName.page,
+              ...{limit: 1, offset: 0}
+            }
           }
-        }
-      ]
+        ]
+      }
     },
   }
 
-  export const appeTeEnRefersToName: GvLoadSubfieldPageReq = {
+  export const appeTeEnRefersToName: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      appellation: TrueEnum.true
+    targets: {
+      [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
+        appellation: TrueEnum.true
+      }
     },
     page: {
       fkSourceEntity: InfStatementMock.NAME_1_TO_APPE.fk_subject_info,
       fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
     }
   }
 
-  export const madridsPresenceWasAtPlace: GvLoadSubfieldPageReq = {
+  export const madridsPresenceWasAtPlace: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      place: TrueEnum.true
+    targets: {
+      [DfhApiClassMock.EN_51_PLACE.dfh_pk_class]: {
+        place: TrueEnum.true
+      }
     },
     page: {
       fkSourceEntity: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity,
       fkProperty: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_51_PLACE.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
@@ -67,33 +71,35 @@ export namespace GvLoadSubfieldPageReqMock {
   }
 
 
-  export const journyeHasDuration: GvLoadSubfieldPageReq = {
+  export const journyeHasDuration: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      dimension: {
-        measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
+    targets: {
+      [DfhApiClassMock.EN_689_DURATION.dfh_pk_class]: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
+        }
       }
     },
     page: {
       fkSourceEntity: InfPersistentItemMock.ACCOUNT_OF_JOURNEY.pk_entity,
       fkProperty: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
     }
   }
-  export const manifSingletonHasShortTitleMurderer: GvLoadSubfieldPageReq = {
+  export const manifSingletonHasShortTitleMurderer: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      langString: TrueEnum.true
+    targets: {
+      [DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class]: {
+        langString: TrueEnum.true
+      }
     },
     page: {
       fkSourceEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
       fkProperty: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
@@ -101,16 +107,17 @@ export namespace GvLoadSubfieldPageReqMock {
   }
 
 
-  export const appeTeEnUsedInLanguage: GvLoadSubfieldPageReq = {
+  export const appeTeEnUsedInLanguage: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      language: TrueEnum.true
+    targets: {
+      [DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class]: {
+        language: TrueEnum.true
+      }
     },
     page: {
       fkSourceEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
       fkProperty: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
@@ -118,32 +125,34 @@ export namespace GvLoadSubfieldPageReqMock {
   }
 
 
-  export const shipVoyageAtSomeTimeWithin: GvLoadSubfieldPageReq = {
+  export const shipVoyageAtSomeTimeWithin: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      timePrimitive: TrueEnum.true
+    targets: {
+      [DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class]: {
+        timePrimitive: TrueEnum.true
+      }
     },
     page: {
       fkSourceEntity: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
       fkProperty: DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 7,
       offset: 0
     }
   }
 
-  export const shipVoyageHasTimeSpan: GvLoadSubfieldPageReq = {
+  export const shipVoyageHasTimeSpan: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    subfieldType: {
-      timeSpan: TrueEnum.true
+    targets: {
+      [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+        timeSpan: TrueEnum.true
+      }
     },
     page: {
       fkSourceEntity: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
       fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property,
       isOutgoing: true,
-      targetClass: DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 1,
       offset: 0

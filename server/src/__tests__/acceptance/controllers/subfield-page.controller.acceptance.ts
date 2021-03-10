@@ -3,8 +3,9 @@ import {GeovistoryServer} from '../../../server';
 import {GvLoadSubfieldPageReqMock} from '../../helpers/data/api-requests/GvLoadSubfieldPageReq';
 import {GvPaginationObjectMock} from '../../helpers/data/api-responses/GvPaginationObjectMock';
 import {SubfieldHelper} from '../../helpers/graphs/subfield-page.helper';
-import {setupApplication} from '../../helpers/gv-server-helpers';
+import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
+import {GvFieldPageReq} from '../../../models/field/gv-field-page-req';
 
 describe('SubfieldPageController', () => {
   let server: GeovistoryServer;
@@ -92,6 +93,7 @@ describe('SubfieldPageController', () => {
     });
     it('should return subfield page for personHasAppeTeEn', async () => {
       await SubfieldHelper.personHasAppeTeEn()
+      await validateAgainstSchema(GvLoadSubfieldPageReqMock.person1HasAppeTeEn, GvFieldPageReq,server)
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
         .send(GvLoadSubfieldPageReqMock.person1HasAppeTeEn)
