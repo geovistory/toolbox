@@ -1,0 +1,24 @@
+<div *ngIf="(page$|async)?.count>0" class="main">
+
+
+  <!-- small header of field -->
+  <div class="mat-caption mat-text-secondary d-flex">
+    <gv-field-label [fkProperty]="subfield.property.pkProperty" [fkSourceClass]="subfield.targetClass"
+      [isOutgoing]="subfield.isOutgoing" [showTooltip]=true></gv-field-label>
+    <a href *ngIf="(page$|async)?.count > 1" class="gv-passive-link ml-1" (click)="openList()" matTooltip="Open list">
+      ({{(page$|async)?.count }})
+    </a>
+  </div>
+  <!-- value of field -->
+  <ng-container *ngIf="subfield.listType.entityPreview || subfield.listType.typeItem; else default">
+    <gv-entity-preview *ngIf="(page$|async).statements[0]" [dragEnabled]="false" [openTabOnClick]="true"
+      [preview]="(page$|async).statements[0].target.entityPreview"
+      [matTooltip]="(page$|async).statements[0].target.entityPreview.entity_label"></gv-entity-preview>
+  </ng-container>
+  <ng-template #default>
+    <span [matTooltip]="(page$|async).statements[0]?.targetLabel">
+      {{(page$|async)?.statements[0]?.targetLabel}}
+    </span>
+  </ng-template>
+
+</div>

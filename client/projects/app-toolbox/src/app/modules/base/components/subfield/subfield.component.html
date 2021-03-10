@@ -130,35 +130,14 @@
           </gv-entity-preview>
           <ng-template #teEn>
             <ng-container *ngIf="item.target.entity; else rest">
-              <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="subfield.targetClass">
-              </gv-onto-class-info>
-              <span class="font-xs text-muted" [matTooltip]="'Temporal Entity ' + item?.target?.entity?.pkEntity">
+              <span class="font-xs text-muted class-label" [matTooltip]="'Temporal Entity ' + pkEntity">
                 <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                 <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
                 {{subfield.targetClassLabel}}
               </span>
-              <span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2">
-                {{item?.target?.entity?.pkEntity}}</span>
-
-              <ng-container *ngFor="let cell of item.target.entity.subfields">
-                <div class="gv-fade-out-right" *ngIf="cell.count>0">
-                  <gv-field-label class="mat-caption mat-text-secondary d-block" [fkProperty]="cell.subfield.fkProperty"
-                    [fkSourceClass]="subfield.targetClass" [isOutgoing]="cell.subfield.isOutgoing"></gv-field-label>
-                  <div>
-                    <span *ngIf="item.target.entityPreview; else default">
-                      <gv-entity-preview *ngIf="cell.statements[0]" [dragEnabled]="false" [openTabOnClick]="true"
-                        [preview]="cell.statements[0].target.entityPreview"></gv-entity-preview>
-                    </span>
-                    <ng-template #default>
-                      {{cell?.statements[0]?.targetLabel}}
-                    </ng-template>
-
-                    <a href *ngIf="cell?.count > 1" class="gv-passive-link small" (click)="openList(cell)">
-                      ({{cell?.count }})
-                    </a>
-                  </div>
-                </div>
-              </ng-container>
+              <gv-entity-with-fields [pkEntity]="item.target.entity.pkEntity" [fkClass]="subfield.targetClass"
+                [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope">
+              </gv-entity-with-fields>
             </ng-container>
           </ng-template>
           <ng-template #rest>
@@ -174,13 +153,41 @@
         <span class="right-col" *ngIf="!(addMode$|async)">
           <mat-menu #appMenu="matMenu">
 
-            <ng-container *ngIf="item.target.timeSpan; else normal">
+            <ng-container *ngIf="item.target.timeSpan; else entity">
               <button mat-menu-item (click)="openTimespanModal(item.target.timeSpan)">
                 <mat-icon>edit</mat-icon>
                 Edit
               </button>
               <mat-divider></mat-divider>
             </ng-container>
+            <ng-template #entity>
+              <ng-container *ngIf="item.target.entity; else normal">
+                <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
+                  (click)="openInNewTab(item.target.entity.pkEntity)">
+                  <mat-icon>tab</mat-icon>
+                  Open {{subfield.targetClassLabel}} in new Tab
+                </button>
+                <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
+                  (click)="addAndOpenInNewTab(item.target.entity.pkEntity)">
+                  <mat-icon>add</mat-icon>
+                  Add {{subfield.targetClassLabel}} to project and open
+                </button>
+
+                <button mat-menu-item (click)="markAsFavorite(item)">
+                  <mat-icon>star</mat-icon>
+                  Mark As Favorite
+                </button>
+
+                <mat-divider></mat-divider>
+                <div class="dropdown-header">Danger Zone</div>
+                <button mat-menu-item (click)="removeEntity(item)">
+                  <mat-icon color="warn">delete</mat-icon>
+                  <span>Remove</span>
+                </button>
+
+              </ng-container>
+            </ng-template>
+
 
             <ng-template #normal>
 

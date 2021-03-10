@@ -31,6 +31,8 @@ import { CtrlTimeSpanComponent } from './components/ctrl-time-span/ctrl-time-spa
 import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existence-time-help/existence-time-help.component';
 import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
+import { EntityFieldComponent } from './components/entity-field/entity-field.component';
+import { EntityWithFieldsComponent } from './components/entity-with-fields/entity-with-fields.component';
 import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from './components/fg-place/fg-place.component';
@@ -97,7 +99,9 @@ const components = [
   SubfieldComponent,
   SubfieldTableComponent,
   SubfieldDialogComponent,
-  FieldLabelComponent
+  FieldLabelComponent,
+  EntityWithFieldsComponent,
+  EntityFieldComponent
 
 ]
 

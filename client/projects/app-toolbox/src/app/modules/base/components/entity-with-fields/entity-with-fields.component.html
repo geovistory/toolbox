@@ -1,0 +1,10 @@
+<span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2">
+  {{pkEntity}}</span>
+
+<ng-container *ngFor="let field of (fields$|async)">
+
+  <gv-entity-field *ngFor="let subfield of field.listDefinitions" [subfield]="subfield" [pkSourceEntity]="pkEntity"
+    [scope]="scope" [showOntoInfo$]="showOntoInfo$">
+
+  </gv-entity-field>
+</ng-container>

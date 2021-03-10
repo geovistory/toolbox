@@ -2,7 +2,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectPipesService, ConfigurationPipesService, InformationPipesService, StatementTargetTimeSpan, StatementWithTarget, SubentitySubfieldPage, Subfield } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, InformationPipesService, StatementTargetTimeSpan, StatementWithTarget, Subfield } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvLoadSubentitySubfieldPageReq, GvSubentitySubfieldPage, GvSubentitySubfieldType, GvSubfieldId, GvSubfieldPageScope, GvSubfieldType, InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -13,7 +13,6 @@ import { distinctUntilChanged, first, map, shareReplay, startWith, switchMap, ta
 import { subfieldToSubfieldPage, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
-import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/subfield-dialog.component';
 
 interface DataCol {
   name: string;
@@ -251,23 +250,23 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       });
     })
   }
-  openList(subentityPage: SubentitySubfieldPage) {
-    const data: SubfieldDialogData = {
-      sourceClass: this.subfield.targetClass,
-      fkProperty: subentityPage.subfield.fkProperty,
-      targetClass: subentityPage.subfield.targetClass,
-      isOutgoing: subentityPage.subfield.isOutgoing,
-      sourceEntity: subentityPage.subfield.fkSourceEntity,
-      scope: this.scope,
-      showOntoInfo$: this.showOntoInfo$,
-    }
-    // const pkEntities = cell.items.map(i => cell.isOutgoing ? i.statement.fk_object_info : i.statement.fk_subject_info)
-    // this.listDialog.open(true, pkEntities, 'Items')
-    this.dialog.open(SubfieldDialogComponent, {
-      data
-    })
-    // throw new Error('TODO');
-  }
+  // openList(subentityPage: SubentitySubfieldPage) {
+  //   const data: SubfieldDialogData = {
+  //     sourceClass: this.subfield.targetClass,
+  //     fkProperty: subentityPage.subfield.fkProperty,
+  //     targetClass: subentityPage.subfield.targetClass,
+  //     isOutgoing: subentityPage.subfield.isOutgoing,
+  //     sourceEntity: subentityPage.subfield.fkSourceEntity,
+  //     scope: this.scope,
+  //     showOntoInfo$: this.showOntoInfo$,
+  //   }
+  //   // const pkEntities = cell.items.map(i => cell.isOutgoing ? i.statement.fk_object_info : i.statement.fk_subject_info)
+  //   // this.listDialog.open(true, pkEntities, 'Items')
+  //   this.dialog.open(SubfieldDialogComponent, {
+  //     data
+  //   })
+  //   // throw new Error('TODO');
+  // }
   markAsFavorite(item: StatementWithTarget) {
     this.p.pkProject$.pipe(first()).subscribe(pkProject => {
       this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)

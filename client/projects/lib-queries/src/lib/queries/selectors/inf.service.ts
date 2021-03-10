@@ -6,7 +6,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { equals } from 'ramda';
 import { Observable, of, pipe } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { filter, first, map, switchMap, throttleTime } from 'rxjs/operators';
 export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 
 class Selector {
@@ -59,6 +59,16 @@ class Selector {
 
       path = [infRoot, this.model, pagBy, key];
       const fromToString = getFromTo(page.limit, page.offset)
+      // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+      //   .pipe(
+      //     // map(loading => !loading),
+      //     switchMap((loading) => {
+      //       if (loading) return of(false)
+      //       else return trigger$.pipe(mapTo(true))
+      //     }),
+      //     // first(),
+      //   )
+
       return trigger$.pipe(
         switchMap(() => this.ngRedux.select<boolean>([...path, 'loading', fromToString])
           .pipe(
@@ -86,6 +96,7 @@ class Selector {
 
 
   pipeItemsInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number) {
+
     return pipe(
       switchMap((items: ByPk<M>) => {
         return pkProject$.pipe(
@@ -101,6 +112,7 @@ class Selector {
               }
             }
             return combineLatestOrEmpty(proRelsAndKey$).pipe(
+              throttleTime(0),
               map(proRels => {
                 const itemsInProject: ByPk<M> = {};
                 for (let i = 0; i < proRels.length; i++) {
@@ -117,6 +129,7 @@ class Selector {
 
       })
     )
+
   }
 
   pipeItemInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number) {

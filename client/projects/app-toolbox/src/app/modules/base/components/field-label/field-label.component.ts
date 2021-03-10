@@ -10,6 +10,7 @@ export class FieldLabelComponent implements OnInit {
   @Input() fkSourceClass: number
   @Input() fkProperty: number
   @Input() isOutgoing: boolean;
+  @Input() showTooltip: boolean
   label$: Observable<string>
   constructor(private c: ConfigurationPipesService) { }
 
