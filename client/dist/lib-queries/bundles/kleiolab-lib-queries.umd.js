@@ -1654,7 +1654,26 @@
                 var key = libRedux.subfieldIdToString(page);
                 path = [libRedux.infRoot, _this.model, pagBy, key];
                 /** @type {?} */
-                var fromToString = libRedux.getFromTo(page.limit, page.offset);
+                var fromToString = libRedux.getFromTo(page.limit, page.offset)
+                // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+                //   .pipe(
+                //     // map(loading => !loading),
+                //     switchMap((loading) => {
+                //       if (loading) return of(false)
+                //       else return trigger$.pipe(mapTo(true))
+                //     }),
+                //     // first(),
+                //   )
+                ;
+                // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+                //   .pipe(
+                //     // map(loading => !loading),
+                //     switchMap((loading) => {
+                //       if (loading) return of(false)
+                //       else return trigger$.pipe(mapTo(true))
+                //     }),
+                //     // first(),
+                //   )
                 return trigger$.pipe(operators.switchMap((/**
                  * @return {?}
                  */
@@ -1723,7 +1742,7 @@
                     for (var k in items) {
                         _loop_1(k);
                     }
-                    return libUtils.combineLatestOrEmpty(proRelsAndKey$).pipe(operators.map((/**
+                    return libUtils.combineLatestOrEmpty(proRelsAndKey$).pipe(operators.throttleTime(0), operators.map((/**
                      * @param {?} proRels
                      * @return {?}
                      */

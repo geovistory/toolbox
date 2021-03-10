@@ -1,5 +1,5 @@
 import { __assign, __spread, __extends, __decorate, __metadata, __read, __values, __rest } from 'tslib';
-import { shareReplay, map, switchMap, filter, first, distinctUntilChanged, tap, startWith } from 'rxjs/operators';
+import { shareReplay, map, switchMap, filter, first, throttleTime, distinctUntilChanged, tap, startWith } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { TimeSpanUtil, latestVersion, combineLatestOrEmpty, limitTo, switchMapOr, TimePrimitive, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
@@ -1466,7 +1466,26 @@ var Selector$2 = /** @class */ (function () {
             var key = subfieldIdToString(page);
             path = [infRoot, _this.model, pagBy, key];
             /** @type {?} */
-            var fromToString = getFromTo(page.limit, page.offset);
+            var fromToString = getFromTo(page.limit, page.offset)
+            // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+            //   .pipe(
+            //     // map(loading => !loading),
+            //     switchMap((loading) => {
+            //       if (loading) return of(false)
+            //       else return trigger$.pipe(mapTo(true))
+            //     }),
+            //     // first(),
+            //   )
+            ;
+            // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+            //   .pipe(
+            //     // map(loading => !loading),
+            //     switchMap((loading) => {
+            //       if (loading) return of(false)
+            //       else return trigger$.pipe(mapTo(true))
+            //     }),
+            //     // first(),
+            //   )
             return trigger$.pipe(switchMap((/**
              * @return {?}
              */
@@ -1535,7 +1554,7 @@ var Selector$2 = /** @class */ (function () {
                 for (var k in items) {
                     _loop_1(k);
                 }
-                return combineLatestOrEmpty(proRelsAndKey$).pipe(map((/**
+                return combineLatestOrEmpty(proRelsAndKey$).pipe(throttleTime(0), map((/**
                  * @param {?} proRels
                  * @return {?}
                  */

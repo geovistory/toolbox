@@ -1,4 +1,4 @@
-import { shareReplay, map, switchMap, filter, first, distinctUntilChanged, tap, startWith } from 'rxjs/operators';
+import { shareReplay, map, switchMap, filter, first, throttleTime, distinctUntilChanged, tap, startWith } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { TimeSpanUtil, latestVersion, combineLatestOrEmpty, limitTo, switchMapOr, TimePrimitive, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
@@ -1438,7 +1438,26 @@ class Selector$2 {
             const key = subfieldIdToString(page);
             path = [infRoot, this.model, pagBy, key];
             /** @type {?} */
-            const fromToString = getFromTo(page.limit, page.offset);
+            const fromToString = getFromTo(page.limit, page.offset)
+            // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+            //   .pipe(
+            //     // map(loading => !loading),
+            //     switchMap((loading) => {
+            //       if (loading) return of(false)
+            //       else return trigger$.pipe(mapTo(true))
+            //     }),
+            //     // first(),
+            //   )
+            ;
+            // return this.ngRedux.select<boolean>([...path, 'loading', fromToString])
+            //   .pipe(
+            //     // map(loading => !loading),
+            //     switchMap((loading) => {
+            //       if (loading) return of(false)
+            //       else return trigger$.pipe(mapTo(true))
+            //     }),
+            //     // first(),
+            //   )
             return trigger$.pipe(switchMap((/**
              * @return {?}
              */
@@ -1497,7 +1516,7 @@ class Selector$2 {
                         rel => ({ key: k, rel })))));
                     }
                 }
-                return combineLatestOrEmpty(proRelsAndKey$).pipe(map((/**
+                return combineLatestOrEmpty(proRelsAndKey$).pipe(throttleTime(0), map((/**
                  * @param {?} proRels
                  * @return {?}
                  */

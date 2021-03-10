@@ -10,8 +10,6 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { isValueObjectSubfield, subfieldToSubfieldId } from '../../base.helpers';
-import { PaginationService } from '../../services/pagination.service';
-import { TimeSpanService } from '../../services/time-span.service';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
@@ -50,8 +48,6 @@ export class FieldComponent implements OnInit {
     public ap: ActiveProjectPipesService,
     public inf: InfActions,
     public dialog: MatDialog,
-    private timeSpan: TimeSpanService,
-    private pag: PaginationService
   ) {
     this.scope$ = this.ap.pkProject$.pipe(map(pkProject => {
       return { inProject: pkProject }
