@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionsObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -36,13 +36,13 @@ export interface PaginateByParam {
     [key: string]: number | boolean | string;
 }
 export interface LoadPageMeta {
-    page: GvSubfieldPage;
+    page: GvFieldPage;
     pk?: number;
 }
 export interface LoadPageSucceededMeta {
     pks: number[];
     count: number;
-    page: GvSubfieldPage;
+    page: GvFieldPage;
     pk?: number;
 }
 export interface ActionResultObservable<Model> {
@@ -85,12 +85,12 @@ export declare class SchemaActionsFactory<Payload, Model> {
     /**
      * @param pk is used for facetting
      */
-    loadPage: (page: GvSubfieldPage, pk?: number) => void;
+    loadPage: (page: GvFieldPage, pk?: number) => void;
     /**
    * @param pk is used for facetting
    */
-    loadPageSucceeded: (pks: number[], count: number, page: GvSubfieldPage, pk?: number) => void;
-    loadPageFailed: (page: GvSubfieldPage, pk?: number) => void;
+    loadPageSucceeded: (pks: number[], count: number, page: GvFieldPage, pk?: number) => void;
+    loadPageFailed: (page: GvFieldPage, pk?: number) => void;
     /**
      * this action is not model specific but pendingKey specific.
      * Reducer will add whole meta part to the resolved key.

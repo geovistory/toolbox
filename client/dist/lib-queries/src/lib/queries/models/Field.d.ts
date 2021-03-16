@@ -1,8 +1,8 @@
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { FieldBase } from './FieldBase';
 import { FieldPlaceOfDisplay } from './FieldPosition';
+import { FieldTargetClass } from './FieldTargetClass';
 import { SpecialFieldType } from './SpecialFieldType';
-import { Subfield } from './Subfield';
 /**
  * A Field contains all information to create the different GUI's to display and edit
  * statements of an entity.
@@ -24,7 +24,9 @@ export interface Field extends FieldBase {
     placeOfDisplay: FieldPlaceOfDisplay;
     fieldConfig?: ProClassFieldConfig;
     targetClasses: number[];
-    listDefinitions: Subfield[];
     allSubfieldsRemovedFromAllProfiles: boolean;
     isSpecialField: SpecialFieldType;
+    targets: {
+        [fkClass: number]: FieldTargetClass;
+    };
 }

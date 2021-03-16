@@ -2,20 +2,20 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material';
 import { Field } from '@kleiolab/lib-queries';
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
-import { GvSubfieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/gvDB/InfPersistentItemMock';
-import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
+import { SubfieldMock } from 'projects/__test__/data/SubfieldMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { FieldComponent } from './field.component';
 
-const inProjectScope: GvSubfieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }
+const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }
 const dataSource = new MatTreeNestedDataSource<Field>()
-dataSource.data = [FieldMock.manifestationSingletonHasDefinition];
+dataSource.data = [SubfieldMock.manifestationSingletonHasDefinition];
 
 export default sandboxOf(FieldComponent, {
   declareComponent: false,
@@ -30,7 +30,7 @@ export default sandboxOf(FieldComponent, {
 })
   .add('Field | type: LangStringVT ', {
     context: {
-      field: FieldMock.manifestationSingletonHasDefinition,
+      field: SubfieldMock.manifestationSingletonHasDefinition,
       pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),

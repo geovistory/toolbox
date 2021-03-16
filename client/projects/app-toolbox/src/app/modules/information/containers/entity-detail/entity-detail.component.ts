@@ -1,5 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
@@ -11,6 +12,7 @@ import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
 import { slideInOut } from '../../shared/animations';
 import { EntityDetailAPIActions } from './api/entity-detail.actions';
 import { entityDetailReducer } from './api/entity-detail.reducer';
@@ -91,7 +93,8 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
     private inf: InfActions,
-    private truncatePipe: TruncatePipe
+    private truncatePipe: TruncatePipe,
+    private dialog: MatDialog
 
   ) {
 
@@ -192,6 +195,27 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   toggle(keyToToggle: string) {
     this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
+  openClassConfig() {
+    combineLatest(this.p.pkProject$, this.fkClass$).pipe(
+      first(([pro, kla]) => !!pro && !!kla),
+      takeUntil(this.destroy$)
+    ).subscribe(
+      ([pro, kla]) => {
+        const data: ClassConfigDialogData = {
+          fkAppContext: 45,
+          fkClass: kla,
+          fkProject: pro
+        }
+        this.dialog.open(ClassConfigDialogComponent, {
+          data,
+          height: 'calc(100% - 30px)',
+          width: '850px',
+          maxWidth: '100%',
+          // maxHeight: '100%'
+        })
+      })
+  }
+
 
   ngOnDestroy() {
     this.destroy$.next(true);

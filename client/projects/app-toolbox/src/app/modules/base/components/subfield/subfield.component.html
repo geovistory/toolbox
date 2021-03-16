@@ -1,5 +1,5 @@
 <ng-container *ngIf="(items$|async)?.length">
-  <!-- <ng-container *ngIf="subfield.listType.temporalEntity; else simple">
+  <!-- <ng-container *ngIf="field.listType.temporalEntity; else simple">
 
     <table class="mat-table bg-transparent w-100">
       <thead>
@@ -45,23 +45,23 @@
           </td>
 
           <td class="mat-cell class-cell gv-fade-out-right">
-            <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="subfield.targetClass">
+            <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="field.targetClass">
             </gv-onto-class-info>
             <span class="font-xs text-muted" [matTooltip]="'Temporal Entity ' + row?.target?.entity?.pkEntity">
               <i *ngIf="row.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
               <i *ngIf="row.ordNum===0" class="gv-entity-color fa fa-star"></i>
-              {{subfield.targetClassLabel}}
+              {{field.targetClassLabel}}
             </span>
             <span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2">
               {{row?.target?.entity?.pkEntity}}</span>
           </td>
-          <ng-container *ngFor="let cell of row.target.entity.subfields">
+          <ng-container *ngFor="let cell of row.target.entity.fields">
             <td class="mat-cell gv-fade-out-right"
-              *ngIf="((dataColumnsVisibility$ | async ) || {} )[getColId(cell.subfield)]">
-              <gv-field-label class="mat-caption mat-text-secondary d-block" [fkProperty]="cell.subfield.fkProperty"
-                [fkSourceClass]="subfield.targetClass" [isOutgoing]="cell.subfield.isOutgoing"></gv-field-label>
+              *ngIf="((dataColumnsVisibility$ | async ) || {} )[getColId(cell.field)]">
+              <gv-field-label class="mat-caption mat-text-secondary d-block" [fkProperty]="cell.field.fkProperty"
+                [fkSourceClass]="field.targetClass" [isOutgoing]="cell.field.isOutgoing"></gv-field-label>
 
-              <span *ngIf="subfieldMap[getColId(cell.subfield)].entityPreview; else default">
+              <span *ngIf="fieldMap[getColId(cell.field)].entityPreview; else default">
                 <gv-entity-preview *ngIf="cell.statements[0]" [dragEnabled]="false" [openTabOnClick]="true"
                   [preview]="cell.statements[0].target.entityPreview"></gv-entity-preview>
               </span>
@@ -80,12 +80,12 @@
               <button mat-menu-item *ngIf="row?.projRel?.is_in_project"
                 (click)="openInNewTab(row.target.entity.pkEntity)">
                 <mat-icon>tab</mat-icon>
-                Open {{subfield.targetClassLabel}} in new Tab
+                Open {{field.targetClassLabel}} in new Tab
               </button>
               <button mat-menu-item *ngIf="!row?.projRel?.is_in_project"
-                (click)="addAndOpenInNewTab(row.target.entity.pkEntity)">
+                (click)="addAndOpenInNewTabFromEntity(row.target.entity)">
                 <mat-icon>add</mat-icon>
-                Add {{subfield.targetClassLabel}} to project and open
+                Add {{field.targetClassLabel}} to project and open
               </button>
 
               <button mat-menu-item (click)="markAsFavorite(row)">
@@ -123,19 +123,34 @@
 
 
         <span class="left-col">
-          <gv-onto-class-info class="mr-2" [pkClass]="subfield.targetClass" *ngIf="showOntoInfo$ | async">
+          <gv-onto-class-info class="mr-2" [pkClass]="item.targetClass" *ngIf="showOntoInfo$ | async">
           </gv-onto-class-info>
           <gv-entity-preview *ngIf="item.target.entityPreview; else teEn" [preview]="item.target.entityPreview"
             [dragEnabled]="false" [openTabOnClick]="true">
           </gv-entity-preview>
           <ng-template #teEn>
             <ng-container *ngIf="item.target.entity; else rest">
-              <span class="font-xs text-muted class-label" [matTooltip]="'Temporal Entity ' + pkEntity">
+
+              <mat-menu #teEnMenu="matMenu">
+                <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
+                  (click)="openInNewTabFromEntity(item.target.entity)">
+                  <mat-icon>tab</mat-icon>
+                  Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
+                </button>
+                <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
+                  (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
+                  <mat-icon>add</mat-icon>
+                  Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
+                </button>
+              </mat-menu>
+
+              <span class="font-xs text-muted class-label" [matTooltip]="'Temporal Entity ' + pkEntity"
+                [matMenuTriggerFor]="teEnMenu">
                 <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                 <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
-                {{subfield.targetClassLabel}}
+                {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
               </span>
-              <gv-entity-with-fields [pkEntity]="item.target.entity.pkEntity" [fkClass]="subfield.targetClass"
+              <gv-entity-with-fields [pkEntity]="item.target.entity.pkEntity" [fkClass]="item.target.entity.fkClass"
                 [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope">
               </gv-entity-with-fields>
             </ng-container>
@@ -163,14 +178,14 @@
             <ng-template #entity>
               <ng-container *ngIf="item.target.entity; else normal">
                 <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
-                  (click)="openInNewTab(item.target.entity.pkEntity)">
+                  (click)="openInNewTabFromEntity(item.target.entity)">
                   <mat-icon>tab</mat-icon>
-                  Open {{subfield.targetClassLabel}} in new Tab
+                  Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
                 </button>
                 <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
-                  (click)="addAndOpenInNewTab(item.target.entity.pkEntity)">
+                  (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
                   <mat-icon>add</mat-icon>
-                  Add {{subfield.targetClassLabel}} to project and open
+                  Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
                 </button>
 
                 <button mat-menu-item (click)="markAsFavorite(item)">
@@ -201,14 +216,14 @@
 
               <ng-container *ngIf="item.target.entityPreview">
                 <button mat-menu-item *ngIf="item.target.entityPreview.fk_project"
-                  (click)="openInNewTab(item.target.entityPreview.pk_entity)">
+                  (click)="openInNewTabFromPreview(item.target.entityPreview)">
                   <mat-icon>tab</mat-icon>
-                  Open {{subfield.targetClassLabel}} in new Tab
+                  Open {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} in new Tab
                 </button>
                 <button mat-menu-item *ngIf="!item.target.entityPreview.fk_project"
-                  (click)="addAndOpenInNewTab(item.target.entityPreview.pk_entity)">
+                  (click)="addAndOpenInNewTabFromPreview(item.target.entityPreview)">
                   <mat-icon>add</mat-icon>
-                  Add {{subfield.targetClassLabel}} to project and open
+                  Add {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} to project and open
                 </button>
 
                 <mat-divider></mat-divider>
@@ -241,11 +256,17 @@
 
 
   <div *ngIf="addMode$|async" class="my-3">
-    <button [disabled]="(selectedCount$ | async) < 1" type="submit" mat-flat-button color="primary" class="mr-2"
-      (click)="add()">
-      Add selected ({{selectedCount$|async}})
+    <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button color="primary"
+      class="mr-2" (click)="add()">
+      <ng-container *ngIf="!(adding$|async)">
+        Add selected ({{selectedCount$|async}})
+      </ng-container>
+      <div *ngIf="(adding$|async)" style="margin: 6px;">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
     </button>
-    <button type="submit" mat-flat-button color="primary" class="mr-2" (click)="next.emit()">Create new</button>
+    <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
+      (click)="next.emit()">Create new</button>
     <button type="button" mat-button (click)="close.emit()">Cancel</button>
   </div>
 

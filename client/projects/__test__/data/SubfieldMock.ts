@@ -1,16 +1,26 @@
-import { FieldBase, Subfield } from '@kleiolab/lib-queries';
-import { GvLoadSubentitySubfieldPageReq, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
+import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
+import { GvSubentitFieldPageReq, GvSubentityTargetType, GvTargetType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
 import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 
-function subfieldToSubentitySubfieldReq(subfield: Subfield, isCircular: boolean): GvLoadSubentitySubfieldPageReq {
+function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentitFieldPageReq {
+  const targets: { [key: number]: GvSubentityTargetType } = {}
+  for (const key in field.targets) {
+    if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
+      const element = field.targets[key];
+      if (element.listType.temporalEntity) {
+        targets[key] = { entityPreview: 'true' }
+      } else {
+        targets[key] = element.listType
+      }
+    }
+  }
   return {
-    subfieldType: subfield.listType,
+    targets,
     page: {
-      fkProperty: subfield.property.pkProperty,
-      targetClass: subfield.targetClass,
-      isOutgoing: subfield.isOutgoing,
+      fkProperty: field.property.pkProperty,
+      isOutgoing: field.isOutgoing,
       isCircular,
       limit: 1,
       offset: 0,
@@ -25,82 +35,79 @@ export namespace SubfieldMock {
 
 
 
-  export const presenceWasAtPlace: Subfield = createSubfield(
+  export const presenceWasAtPlace: Field = createField(
     DfhApiClassMock.EN_84_PRESENCE,
     DfhApiPropertyMock.EN_148_WAS_AT,
-    DfhApiClassMock.EN_51_PLACE,
+    [{ class: DfhApiClassMock.EN_51_PLACE, subfieldType: { place: 'true' } }],
     true,
-    { place: 'true' }
   )
-  export const manifestationSingletonHasDefinition: Subfield = createSubfield(
+  export const manifestationSingletonHasDefinition: Field = createField(
     DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
     DfhApiPropertyMock.EN_1762_HAS_DEFINITION,
-    DfhApiClassMock.EN_785_TEXT,
+    [{ class: DfhApiClassMock.EN_785_TEXT, subfieldType: { langString: 'true' } }],
     true,
-    { langString: 'true' }
   )
 
-  export const manifestationSingletonHasShortTitle: Subfield = createSubfield(
+  export const manifestationSingletonHasShortTitle: Field = createField(
     DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
     DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE,
-    DfhApiClassMock.EN_784_SHORT_TITLE,
+    [{ class: DfhApiClassMock.EN_784_SHORT_TITLE, subfieldType: { langString: 'true' } }],
     true,
-    { langString: 'true' }
   )
 
-  export const accountOfJourneyHasDuration: Subfield = createSubfield(
+  export const accountOfJourneyHasDuration: Field = createField(
     DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY,
     DfhApiPropertyMock.EN_1613_HAS_DURATION,
-    DfhApiClassMock.EN_689_DURATION,
-    true,
-    {
-      dimension: {
-        measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
+    [{
+      class: DfhApiClassMock.EN_689_DURATION, subfieldType: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
+        }
       }
-    }
+    }],
+    true,
   )
-  export const appeHasAppeString: Subfield = createSubfield(
+  export const appeHasAppeString: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1113_REFERS_TO_NAME,
-    DfhApiClassMock.EN_40_APPELLATION,
+    [{ class: DfhApiClassMock.EN_40_APPELLATION, subfieldType: { appellation: 'true' } }],
     true,
-    { appellation: 'true' }
   )
-  export const appeTeEnUsedInLanguage: Subfield = createSubfield(
+  export const appeTeEnUsedInLanguage: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE,
-    DfhApiClassMock.EN_54_LANGUAGE,
+    [{ class: DfhApiClassMock.EN_54_LANGUAGE, subfieldType: { language: 'true' } }],
     true,
-    { language: 'true' }
   )
-  export const appeTeEnIsAppeOfPerson: Subfield = createSubfield(
+  export const appeTeEnIsAppeOfPerson: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
-    DfhApiClassMock.EN_21_PERSON,
+    [{ class: DfhApiClassMock.EN_21_PERSON, subfieldType: { entityPreview: 'true' } }],
     true,
-    { entityPreview: 'true' }
   )
-  export const appeHasTimeSpan: Subfield = createSubfield(
+  export const appeHasTimeSpan: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_4_HAS_TIME_SPAN,
-    DfhApiClassMock.EN_50_TIME_SPAN,
+    [{ class: DfhApiClassMock.EN_50_TIME_SPAN, subfieldType: { timeSpan: 'true' } }],
     true,
-    { timeSpan: 'true' }
   )
 
-  export const personHasAppeTeEn: Subfield = createSubfield(
+  export const personHasAppeTeEn: Field = createField(
     DfhApiClassMock.EN_21_PERSON,
     DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
-    DfhApiClassMock.EN_365_NAMING,
+    [{
+      class: DfhApiClassMock.EN_365_NAMING,
+      subfieldType: {
+        temporalEntity: [
+          fieldToSubentityFieldReq(appeHasAppeString, false),
+          fieldToSubentityFieldReq(appeTeEnUsedInLanguage, false),
+          fieldToSubentityFieldReq(appeTeEnIsAppeOfPerson, true),
+          fieldToSubentityFieldReq(appeHasTimeSpan, false),
+        ]
+      }
+    }],
     false,
-    {
-      temporalEntity: [
-        subfieldToSubentitySubfieldReq(appeHasAppeString, false),
-        subfieldToSubentitySubfieldReq(appeTeEnUsedInLanguage, false),
-        subfieldToSubentitySubfieldReq(appeTeEnIsAppeOfPerson, true),
-        subfieldToSubentitySubfieldReq(appeHasTimeSpan, false),
-      ]
-    }
+
   )
 }
 
@@ -156,22 +163,59 @@ export function createFieldBase(
   }
   return base
 }
-export function createSubfield(
+// export function createField(
+//   source: DfhApiClass,
+//   property: DfhApiProperty,
+//   target: DfhApiClass,
+//   isOutgoing: boolean,
+//   subfieldType: GvTargetType
+// ): Field {
+
+//   const base = createFieldBase(source, property, isOutgoing)
+
+//   return {
+//     ...base,
+//     listType: subfieldType,
+//     targetClass: target.dfh_pk_class,
+//     targetClassLabel: target.dfh_class_label,
+//     removedFromAllProfiles: false,
+//   }
+// }
+
+
+function createField(
   source: DfhApiClass,
   property: DfhApiProperty,
-  target: DfhApiClass,
+  targets: {
+    class: DfhApiClass,
+    subfieldType: GvTargetType
+  }[],
   isOutgoing: boolean,
-  subfieldType: GvSubfieldType
-): Subfield {
+  isSpecialField: SpecialFieldType = false
+): Field {
+
+  const ts: { [fkClass: number]: FieldTargetClass } = {}
+  for (const t of targets) {
+    ts[t.class.dfh_pk_class] = {
+      listType: t.subfieldType,
+      removedFromAllProfiles: false,
+      targetClass: t.class.dfh_pk_class,
+      targetClassLabel: t.class.dfh_class_label
+    }
+  }
 
   const base = createFieldBase(source, property, isOutgoing)
-
-  return {
+  const field: Field = {
     ...base,
-    listType: subfieldType,
-    targetClass: target.dfh_pk_class,
-    targetClassLabel: target.dfh_class_label,
-    removedFromAllProfiles: false,
+    placeOfDisplay: {
+      specificFields: {
+        position: 1
+      }
+    },
+    targetClasses: targets.map(t => t.class.dfh_pk_class),
+    allSubfieldsRemovedFromAllProfiles: false,
+    isSpecialField,
+    targets: ts
   }
+  return field
 }
-

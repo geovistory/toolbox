@@ -4707,6 +4707,7 @@
             this.dfhActions = dfhActions;
             this.sysActions = sysActions;
             this.notifications = notifications;
+            this.schemaObjectStored$ = new rxjs.Subject();
         }
         /**
          * watches an Observable<SchemaObject>
@@ -4906,8 +4907,7 @@
                         }));
                     }
                 }));
-                // this.extendEntityPreviewStream(object, pkProject);
-                console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
+                this.schemaObjectStored$.next(object);
             }
         };
         SchemaService.decorators = [
@@ -4931,6 +4931,8 @@
         return SchemaService;
     }());
     if (false) {
+        /** @type {?} */
+        SchemaService.prototype.schemaObjectStored$;
         /** @type {?} */
         SchemaService.prototype.api;
         /** @type {?} */
@@ -7217,6 +7219,8 @@
         /**
          * handles the update of store for paginated temporal entity lists.
          * @param pkProject if null, list is handled as 'repo' list
+         *
+         * TODO remove
          */
         /**
          * handles the update of store for paginated temporal entity lists.
@@ -7227,6 +7231,8 @@
          * @param {?} globalActions
          * @param {?} apiCall$
          * @param {?} pkProject if null, list is handled as 'repo' list
+         *
+         * TODO remove
          * @return {?}
          */
         InfEpics.prototype.handleTemporalEntityListAction = /**
@@ -7238,6 +7244,8 @@
          * @param {?} globalActions
          * @param {?} apiCall$
          * @param {?} pkProject if null, list is handled as 'repo' list
+         *
+         * TODO remove
          * @return {?}
          */
         function (action, epicsFactory, globalActions, apiCall$, pkProject) {
@@ -7251,7 +7259,6 @@
                 fkSourceEntity: meta.pkSourceEntity,
                 fkProperty: meta.pkProperty,
                 isOutgoing: meta.isOutgoing,
-                targetClass: meta.fkTargetClass,
                 limit: meta.limit,
                 offset: meta.offset,
                 scope: scope,
@@ -8767,7 +8774,7 @@
      * @return {?}
      */
     function subfieldIdToString(x) {
-        return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + x.targetClass + "_" + ramda.keys(x.scope)[0] + "_" + ramda.values(x.scope)[0];
+        return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + ramda.keys(x.scope)[0] + "_" + ramda.values(x.scope)[0];
     }
 
     /**
@@ -9147,7 +9154,7 @@
                             if (item.pk_entity) {
                                 idx[item.pk_entity] = {
                                     modelName: modelName,
-                                    fkClass: item.fkClass
+                                    fkClass: item.fk_class
                                 };
                             }
                         }

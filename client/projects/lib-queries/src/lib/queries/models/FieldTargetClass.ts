@@ -1,8 +1,8 @@
-import { GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
+import { GvTargetType } from '@kleiolab/lib-sdk-lb4';
 export interface FieldTargetClass {
   // determines what components are used to create, edit or display
   // the statement and its target.
-  listType: GvSubfieldType;
+  listType: GvTargetType;
   // the target class of the sub-field (if is outgoing range else domain)
   targetClass: number;
   // label of the target class

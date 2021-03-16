@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { GvSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
-import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvLoadSubfieldPageReq';
+import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvFieldPageReq';
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfStatementMock } from 'projects/__test__/data/auto-gen/gvDB/InfStatementMock';
@@ -45,7 +45,7 @@ describe('GvSchemaActions', () => {
 
   describe('.loadGvPaginationObject()', () => {
     it('should put paginated statements of subfield Appelation for language -> refers to name -> appellation ', (done) => {
-      const req = GvLoadSubfieldPageReqMock.appeTeEnRefersToName
+      const req = GvFieldPageReqMock.appeTeEnRefersToName
       actions.loadGvPaginationObject(req)
 
       const q$ = ngRedux.select(['inf', 'statement', 'by_subfield_page', subfieldIdToString(req.page)])

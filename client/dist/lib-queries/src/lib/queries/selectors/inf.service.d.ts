@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, EntityModelAndClass, IAppState, IndexStatementByObject, IndexStatementByObjectProperty, IndexStatementBySubject, IndexStatementBySubjectProperty, ReducerConfigCollection } from '@kleiolab/lib-redux';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTextProperty, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldId, GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { GvFieldId, GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 export declare type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 declare class Selector {
@@ -15,9 +15,9 @@ declare class Selector {
         key: (x: any) => Observable<M>;
     };
     paginationSelector<M>(): {
-        pipePage: (page: GvSubfieldPage) => Observable<M[]>;
-        pipeCount: (page: GvSubfieldId) => Observable<number>;
-        pipePageLoadNeeded: (page: GvSubfieldPage, trigger$: Observable<any>) => Observable<boolean>;
+        pipePage: (page: GvFieldPage) => Observable<M[]>;
+        pipeCount: (page: GvFieldId) => Observable<number>;
+        pipePageLoadNeeded: (page: GvFieldPage, trigger$: Observable<any>) => Observable<boolean>;
     };
     pipeItemsInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number): import("rxjs").UnaryFunction<Observable<ByPk<M>>, Observable<ByPk<M>>>;
     pipeItemInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number): import("rxjs").UnaryFunction<Observable<M>, Observable<any>>;
@@ -39,7 +39,10 @@ declare class InfTemporalEntitySelections extends Selector {
     pkProject$: Observable<number | string>;
     configs: ReducerConfigCollection;
     model: string;
-    private _by_pk_entity$;
+    _by_pk_entity$: {
+        all$: Observable<ByPk<InfTemporalEntity>>;
+        key: (x: any) => Observable<InfTemporalEntity>;
+    };
     constructor(ngRedux: NgRedux<IAppState>, pkProject$: Observable<number | string>, configs: ReducerConfigCollection, model: string);
     by_pk_entity_key$(key: string | number, ofProject?: boolean): Observable<any>;
 }
@@ -57,9 +60,9 @@ declare class InfStatementSelections extends Selector {
         key: (x: any) => Observable<ByPk<InfStatement>>;
     };
     pagination$: {
-        pipePage: (page: GvSubfieldPage) => Observable<number[]>;
-        pipeCount: (page: GvSubfieldId) => Observable<number>;
-        pipePageLoadNeeded: (page: GvSubfieldPage, trigger$: Observable<any>) => Observable<boolean>;
+        pipePage: (page: GvFieldPage) => Observable<number[]>;
+        pipeCount: (page: GvFieldId) => Observable<number>;
+        pipePageLoadNeeded: (page: GvFieldPage, trigger$: Observable<any>) => Observable<boolean>;
     };
     constructor(ngRedux: NgRedux<IAppState>, pkProject$: Observable<number | string>, configs: ReducerConfigCollection, model: string);
     by_pk_entity_key$(key: string | number, ofProject?: boolean): Observable<any>;

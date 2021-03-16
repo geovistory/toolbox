@@ -10,7 +10,7 @@ import {WarEntityPreview} from './war-entity-preview.model';
 
 
 @model()
-class InfObject {
+export class InfObject {
   @property.array(InfPersistentItem) persistent_item?: Partial<InfPersistentItem>[]
   @property.array(InfTemporalEntity) temporal_entity?: Partial<InfTemporalEntity>[]
   @property.array(InfStatement) statement?: Partial<InfStatement>[]
@@ -24,7 +24,7 @@ class InfObject {
 }
 
 @model()
-class ProObject {
+export class ProObject {
   @property.array(ProInfoProjRel) info_proj_rel?: Partial<ProInfoProjRel>[]
   @property.array(ProAnalysis) analysis?: Partial<ProAnalysis>[]
   @property.array(ProClassFieldConfig) class_field_config?: Partial<ProClassFieldConfig>[]
@@ -35,7 +35,7 @@ class ProObject {
 }
 
 @model()
-class DatObject {
+export class DatObject {
   @property.array(DatDigital) digital?: Partial<DatDigital>[]
   @property.array(DatColumn) column?: Partial<DatColumn>[]
   @property.array(DatTextProperty) text_property?: Partial<DatTextProperty>[]
@@ -44,11 +44,11 @@ class DatObject {
 
 
 @model()
-class WarObject {
+export class WarObject {
   @property.array(WarEntityPreview) entity_preview?: Partial<WarEntityPreview>[]
 }
 @model()
-class DfhObject {
+export class DfhObject {
   @property.array(DfhApiProfile) profile?: DfhApiProfile[];
   @property.array(DfhClass) klass?: DfhClass[];
   @property.array(DfhProperty) property?: DfhProperty[];
@@ -56,7 +56,7 @@ class DfhObject {
 }
 
 @model()
-class SysObject {
+export class SysObject {
   @property.array(SysConfigValue) config?: SysConfigValue[];
   @property.array(DfhClass) klass?: DfhClass[];
   @property.array(DfhProperty) property?: DfhProperty[];

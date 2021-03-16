@@ -1,19 +1,19 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClassAndTypePk, ConfigurationPipesService, Subfield } from '@kleiolab/lib-queries';
+import { ClassAndTypePk, ConfigurationPipesService, Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { InfStatement, InfTemporalEntityApi } from '@kleiolab/lib-sdk-lb3';
-import { GvLoadSubfieldPageReq, GvSubfieldPageScope, GvSubfieldType, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { isLeafItemSubfield, isValueObjectSubfield } from '../../base.helpers';
+import { fieldToFieldPage, fieldToGvFieldTargets, isValueObjectSubfield } from '../../base.helpers';
 import { NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
 export interface AddDialogData {
-  listDefinition: Subfield;
-
+  field: Field;
+  targetClass: number
 
   // primary key of the source entity
   pkEntity: number;
@@ -30,9 +30,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   showOntoInfo$ = new BehaviorSubject(false)
   readonly$ = new BehaviorSubject(false)
   addMode$ = new BehaviorSubject(true)
-  scope$: Observable<GvSubfieldPageScope>
-
-  isLeafItemList: boolean;
+  scope$: Observable<GvFieldPageScope>
 
   searchString$ = new Subject<string>();
 
@@ -44,6 +42,9 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   loading$ = new BehaviorSubject(false);
   notInProjectCount$ = new Observable<number>();
 
+  fieldWithOneTarget: Field
+  fieldTargetClass: FieldTargetClass
+
   constructor(
     public p: ActiveProjectService,
     public c: ConfigurationPipesService,
@@ -54,13 +55,25 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     public paginationApi: SubfieldPageControllerService
   ) {
 
-    this.isLeafItemList = isLeafItemSubfield(data.listDefinition.listType);
     this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
 
-    this.classAndTypePk = { pkClass: data.listDefinition.targetClass, pkType: undefined }
+    this.classAndTypePk = { pkClass: data.targetClass, pkType: undefined }
     this.alreadyInProjectBtnText = 'Select'
     this.notInProjectBtnText = 'Add and Select'
     this.notInProjectClickBehavior = 'selectOnly'
+
+    /**
+     * restrict the add dialog to only one class
+     */
+    this.fieldTargetClass = this.data.field.targets[this.data.targetClass]
+    if (!this.fieldTargetClass) throw new Error('target type is not retrievable for class: ' + this.data.targetClass);
+
+    this.fieldWithOneTarget = {
+      ...this.data.field,
+      targets: {
+        [this.data.targetClass]: this.fieldTargetClass
+      }
+    }
 
   }
 
@@ -69,24 +82,10 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.notInProjectCount$ = this.p.pkProject$.pipe(
       first(),
       switchMap(pkProject => {
-        let subfieldType: GvSubfieldType
-        if (this.data.listDefinition.listType.temporalEntity) {
-          subfieldType = { entityPreview: 'true' }
-        } else {
-          subfieldType = this.data.listDefinition.listType
-        }
-        const req: GvLoadSubfieldPageReq = {
+        const req: GvFieldPageReq = {
           pkProject,
-          subfieldType,
-          page: {
-            fkSourceEntity: this.data.pkEntity,
-            fkProperty: this.data.listDefinition.property.pkProperty,
-            targetClass: this.data.listDefinition.targetClass,
-            isOutgoing: this.data.listDefinition.isOutgoing,
-            scope: { notInProject: pkProject },
-            limit: 0,
-            offset: 0
-          }
+          targets: fieldToGvFieldTargets(this.fieldWithOneTarget),
+          page: fieldToFieldPage(this.fieldWithOneTarget, this.data.pkEntity, { notInProject: pkProject }, 0, 0)
         }
         return this.paginationApi.subfieldPageControllerLoadSubfieldPage(req).pipe(
           map(res => res.subfieldPages[0].count)
@@ -103,9 +102,10 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close()
   }
   onNext() {
-    const isValueLike = isValueObjectSubfield(this.data.listDefinition.listType)
 
-    if (isValueLike || this.data.listDefinition.identityDefiningForTarget) {
+    const isValueLike = isValueObjectSubfield(this.fieldTargetClass.listType)
+
+    if (isValueLike || this.fieldWithOneTarget.identityDefiningForTarget) {
       this.activeElement$.next('create-form')
     }
     else {
@@ -113,26 +113,26 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     }
   }
   onSelected(pkEntity: number, isInProject: boolean) {
-    const lDef = this.data.listDefinition;
+    const f = this.fieldWithOneTarget;
 
     this.loading$.next(true)
 
     // create the statement to add
     const r: Partial<InfStatement> = {}
-    if (lDef.isOutgoing) {
+    if (f.isOutgoing) {
       r.fk_subject_info = this.data.pkEntity
       r.fk_object_info = pkEntity
     } else {
       r.fk_object_info = this.data.pkEntity
       r.fk_subject_info = pkEntity
     }
-    r.fk_property = lDef.property.pkProperty;
-    r.fk_property_of_property = lDef.property.pkPropertyOfProperty;
+    r.fk_property = f.property.pkProperty;
+    r.fk_property_of_property = f.property.pkPropertyOfProperty;
 
 
     combineLatest(
       this.p.pkProject$,
-      this.c.pipeTableNameOfClass(lDef.targetClass)
+      this.c.pipeTableNameOfClass(this.data.targetClass)
     )
       .pipe(
         first(([pk, model]) => (!!pk && !!model)),

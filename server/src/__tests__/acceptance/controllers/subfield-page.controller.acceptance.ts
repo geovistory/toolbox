@@ -1,6 +1,6 @@
 import {Client, expect} from '@loopback/testlab';
 import {GeovistoryServer} from '../../../server';
-import {GvLoadSubfieldPageReqMock} from '../../helpers/data/api-requests/GvLoadSubfieldPageReq';
+import {GvFieldPageReqMock} from '../../helpers/data/api-requests/GvFieldPageReq';
 import {GvPaginationObjectMock} from '../../helpers/data/api-responses/GvPaginationObjectMock';
 import {SubfieldHelper} from '../../helpers/graphs/subfield-page.helper';
 import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
@@ -38,65 +38,72 @@ describe('SubfieldPageController', () => {
       await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
         .send({
-          ...GvLoadSubfieldPageReqMock.appeTeEnRefersToName,
+          ...GvFieldPageReqMock.appeTeEnRefersToName,
           pkProject: -99
         })
         .expect(403);
     });
-    it('should return subfield page for subfieldType appellation', async () => {
+    it('should return field page for appeTeEnRefersToName (targetType: appellation)', async () => {
       await SubfieldHelper.appeTeEnRefersToName()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.appeTeEnRefersToName)
+        .send(GvFieldPageReqMock.appeTeEnRefersToName)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.appeTeEnHasAppeVt);
     });
-    it('should return subfield page for subfieldType language', async () => {
+    it('should return field page for appeTeEnUsedInLanguage (targetType: language)', async () => {
       await SubfieldHelper.appeTeEnUsedInLanguage()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.appeTeEnUsedInLanguage)
+        .send(GvFieldPageReqMock.appeTeEnUsedInLanguage)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.appeTeEnUsedInLanguage);
     });
-    it('should return subfield page for madridsPresenceWasAtPlace', async () => {
+    it('should return field page for appeTeEnIsAppeOfPerson (targetType: entityPreview)', async () => {
+      await SubfieldHelper.appeTeEnIsAppeOfPerson()
+      const res = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send(GvFieldPageReqMock.appeTeEnIsAppeOfPerson)
+        .expect(200);
+      expect(res.body).to.containDeep(GvPaginationObjectMock.appeTeEnIsAppeOfPerson);
+    });
+    it('should return field page for madridsPresenceWasAtPlace (targetType: place)', async () => {
       await SubfieldHelper.madridsPresenceWasAtPlace()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.madridsPresenceWasAtPlace)
+        .send(GvFieldPageReqMock.madridsPresenceWasAtPlace)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.madridsPresenceWasAtPlace);
     });
-    it('should return subfield page for journeyHasDuration', async () => {
+    it('should return field page for journeyHasDuration (targetType: dimension)', async () => {
       await SubfieldHelper.journeyHasDuration()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.journyeHasDuration)
+        .send(GvFieldPageReqMock.journyeHasDuration)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.journeyHasDuration);
     });
-    it('should return subfield page for manifSingletonHasShortTitleMurderer', async () => {
+    it('should return field page for manifSingletonHasShortTitleMurderer', async () => {
       await SubfieldHelper.manifSingletonHasShortTitleMurderer()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.manifSingletonHasShortTitleMurderer)
+        .send(GvFieldPageReqMock.manifSingletonHasShortTitleMurderer)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.manifSingletonHasShortTitleMurderer);
     });
-    it('should return subfield page for shipVoyageHasTimeSpan', async () => {
+    it('should return field page for shipVoyageHasTimeSpan (targetType: timeSpan)', async () => {
       await SubfieldHelper.shipVoyageHasTimeSpan()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.shipVoyageHasTimeSpan)
+        .send(GvFieldPageReqMock.shipVoyageHasTimeSpan)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageHasTimeSpan);
     });
-    it('should return subfield page for personHasAppeTeEn', async () => {
+    it('should return field page for personHasAppeTeEn (targetType: temporalEntity)', async () => {
       await SubfieldHelper.personHasAppeTeEn()
-      await validateAgainstSchema(GvLoadSubfieldPageReqMock.person1HasAppeTeEn, GvFieldPageReq,server)
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
-        .send(GvLoadSubfieldPageReqMock.person1HasAppeTeEn)
+        .send(GvFieldPageReqMock.person1HasAppeTeEn)
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.personHasAppeTeEn);
     });

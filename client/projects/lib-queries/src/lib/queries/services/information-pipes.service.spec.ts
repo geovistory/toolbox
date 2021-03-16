@@ -4,7 +4,7 @@ import { GvSchemaActions, IAppState, SchemaService } from '@kleiolab/lib-redux';
 import { SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
-import { GvLoadSubfieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvLoadSubfieldPageReq';
+import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvFieldPageReq';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { SubfieldPageMock } from 'projects/__test__/data/SubfieldPageMock';
@@ -46,11 +46,11 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType appellation', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.appeTeEnRefersToName
+      const req = GvFieldPageReqMock.appeTeEnRefersToName
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnHasAppe]
@@ -65,11 +65,11 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType place', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.madridsPresenceWasAtPlace
+      const req = GvFieldPageReqMock.madridsPresenceWasAtPlace
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.madridsPresenceWasAtPlace]
@@ -84,11 +84,11 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType dimension', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.journyeHasDuration
+      const req = GvFieldPageReqMock.journyeHasDuration
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.journyeHasDuration]
@@ -104,11 +104,11 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType langString', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.manifSingletonHasShortTitleMurderer
+      const req = GvFieldPageReqMock.manifSingletonHasShortTitleMurderer
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.manifSingletonHasShortTitleMurderer]
@@ -124,11 +124,11 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType language', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.appeTeEnUsedInLanguage
+      const req = GvFieldPageReqMock.appeTeEnUsedInLanguage
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnUsedInLanguage]
@@ -143,11 +143,11 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType timePrimitive', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.shipVoyageAtSomeTimeWithin
+      const req = GvFieldPageReqMock.shipVoyageAtSomeTimeWithin
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.shipVoyageAtSomeTimeWithin]
@@ -163,7 +163,7 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType temporalEntity', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.person1HasAppeTeEn
+      const req = GvFieldPageReqMock.person1HasAppeTeEn
       schemaActions.loadGvPaginationObject(req)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
@@ -171,7 +171,7 @@ describe('InformationPipesService', () => {
 
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.person1HasAppeTeEn]
@@ -214,19 +214,19 @@ describe('InformationPipesService', () => {
 
         // get page 0-5
         const req = {
-          ...GvLoadSubfieldPageReqMock.person1HasAppeTeEn,
+          ...GvFieldPageReqMock.person1HasAppeTeEn,
           page: {
-            ...GvLoadSubfieldPageReqMock.person1HasAppeTeEn.page,
+            ...GvFieldPageReqMock.person1HasAppeTeEn.page,
             ...pages[i]
           }
         }
         schemaActions.loadGvPaginationObject(req)
 
         // using pipe
-        const q$ = service.pipeSubfieldPage(req.page, req.subfieldType).pipe(
+        const q$ = service.pipeSubfieldPage(req.page, req.targets).pipe(
           distinctUntilChanged((a, b) => {
-            console.log('a', JSON.stringify(a))
-            console.log('b', JSON.stringify(b))
+            // console.log('a', JSON.stringify(a))
+            // console.log('b', JSON.stringify(b))
             return equals(a, b)
           }),
         )
@@ -241,7 +241,7 @@ describe('InformationPipesService', () => {
         )
           .subscribe(
             actualSequence => {
-              console.log(JSON.stringify(pages[i]), actualSequence.length)
+              // console.log(JSON.stringify(pages[i]), actualSequence.length)
               expect(actualSequence.length).toEqual(1)
             },
             null,
@@ -256,7 +256,7 @@ describe('InformationPipesService', () => {
     it('should return subfield page for subfieldType timeSpan', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvLoadSubfieldPageReqMock.shipVoyageHasTimeSpan
+      const req = GvFieldPageReqMock.shipVoyageHasTimeSpan
       schemaActions.loadGvPaginationObject(req)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.modelOfShipVoyage, 0)
@@ -265,7 +265,7 @@ describe('InformationPipesService', () => {
 
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.subfieldType)
+      const q$ = service.pipeSubfieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.shipVoyageHasTimeSpan]
@@ -281,6 +281,26 @@ describe('InformationPipesService', () => {
 
 
   })
+
+  it('should return subfield page for subfieldType entityPreview', async (done) => {
+    // seeding data
+    setAppState(ngRedux, IAppStateMock.stateProject1)
+    const req = GvFieldPageReqMock.appeTeEnRefersToName
+    schemaActions.loadGvPaginationObject(req)
+
+    // using pipe
+    const q$ = service.pipeSubfieldPage(req.page, req.targets)
+
+    // testing pipe
+    const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnHasAppe]
+    q$.pipe(take(1), toArray())
+      .subscribe(
+        actualSequence => {
+          expect(actualSequence).toEqual(expectedSequence)
+        },
+        null,
+        done);
+  });
 
 
 });

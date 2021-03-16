@@ -275,7 +275,7 @@ export class ReducerFactory<Payload, Model> {
             if (item.pk_entity) {
               idx[item.pk_entity] = {
                 modelName,
-                fkClass: item.fkClass
+                fkClass: item.fk_class
               }
             }
           }

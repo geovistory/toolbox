@@ -2,16 +2,15 @@ import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IconType } from '@kleiolab/lib-redux';
 import { InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { CalendarType, combineLatestOrEmpty, Granularity, TimePrimitive, TimeSpanUtil } from '@kleiolab/lib-utils';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { CalendarType, combineLatestOrEmpty, Granularity, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { omit, values } from 'ramda';
-import { combineLatest, merge, Observable, of, pipe, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, pipe } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { spyTag } from '../decorators/method-decorators';
-import { BasicStatementItem, } from '../models/BasicStatementItem';
-import { Subfield } from '../models/Subfield';
+import { BasicStatementItem } from '../models/BasicStatementItem';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
-import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 
 
 
@@ -78,21 +77,21 @@ export class InformationBasicPipesService {
   }
 
 
-  pipeStatementsOfList(listDefinition: Subfield, pkEntity): Observable<InfStatement[]> {
-    if (listDefinition.isOutgoing) {
-      return this.s.inf$.statement$.by_subject_and_property$({
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        fk_subject_info: pkEntity
-      })
-    } else {
-      return this.s.inf$.statement$.by_object_and_property$({
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        fk_object_info: pkEntity
-      })
-    }
-  }
+  // pipeStatementsOfList(listDefinition: Subfield, pkEntity): Observable<InfStatement[]> {
+  //   if (listDefinition.isOutgoing) {
+  //     return this.s.inf$.statement$.by_subject_and_property$({
+  //       fk_property: listDefinition.property.pkProperty,
+  //       fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+  //       fk_subject_info: pkEntity
+  //     })
+  //   } else {
+  //     return this.s.inf$.statement$.by_object_and_property$({
+  //       fk_property: listDefinition.property.pkProperty,
+  //       fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+  //       fk_object_info: pkEntity
+  //     })
+  //   }
+  // }
 
   /**
    * Pipe outgoing statements of temporal entity

@@ -4322,6 +4322,7 @@ class SchemaService {
         this.dfhActions = dfhActions;
         this.sysActions = sysActions;
         this.notifications = notifications;
+        this.schemaObjectStored$ = new Subject();
     }
     /**
      * watches an Observable<SchemaObject>
@@ -4461,8 +4462,7 @@ class SchemaService {
                     }));
                 }
             }));
-            // this.extendEntityPreviewStream(object, pkProject);
-            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
+            this.schemaObjectStored$.next(object);
         }
     }
 }
@@ -4485,6 +4485,8 @@ SchemaService.ctorParameters = () => [
 ];
 /** @nocollapse */ SchemaService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SchemaService_Factory() { return new SchemaService(ɵɵinject(SchemaObjectApi), ɵɵinject(InfActions), ɵɵinject(ProActions), ɵɵinject(DatActions), ɵɵinject(WarActions), ɵɵinject(TabActions), ɵɵinject(DfhActions), ɵɵinject(SysActions), ɵɵinject(NotificationsAPIActions)); }, token: SchemaService, providedIn: "root" });
 if (false) {
+    /** @type {?} */
+    SchemaService.prototype.schemaObjectStored$;
     /** @type {?} */
     SchemaService.prototype.api;
     /** @type {?} */
@@ -6621,6 +6623,8 @@ class InfEpics {
      * @param {?} globalActions
      * @param {?} apiCall$
      * @param {?} pkProject if null, list is handled as 'repo' list
+     *
+     * TODO remove
      * @return {?}
      */
     handleTemporalEntityListAction(action, epicsFactory, globalActions, apiCall$, pkProject) {
@@ -6633,7 +6637,6 @@ class InfEpics {
             fkSourceEntity: meta.pkSourceEntity,
             fkProperty: meta.pkProperty,
             isOutgoing: meta.isOutgoing,
-            targetClass: meta.fkTargetClass,
             limit: meta.limit,
             offset: meta.offset,
             scope,
@@ -8104,7 +8107,7 @@ const createProjectsReducer = (/**
  * @return {?}
  */
 function subfieldIdToString(x) {
-    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${x.targetClass}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
+    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
 }
 
 /**
@@ -8433,7 +8436,7 @@ class ReducerFactory {
                         if (item.pk_entity) {
                             idx[item.pk_entity] = {
                                 modelName,
-                                fkClass: item.fkClass
+                                fkClass: item.fk_class
                             };
                         }
                     }

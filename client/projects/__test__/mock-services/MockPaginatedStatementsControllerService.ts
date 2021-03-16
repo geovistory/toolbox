@@ -1,32 +1,33 @@
-import { GvLoadSubfieldPageReq, GvPaginationObject } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvPaginationObject } from '@kleiolab/lib-sdk-lb4';
 import { GvPaginationObjectMock } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
+import { values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 export class MockPaginatedStatementsControllerService {
-  subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq): Observable<GvPaginationObject> {
-    if (gvLoadSubfieldPageReq.subfieldType.appellation) {
+  subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvFieldPageReq): Observable<GvPaginationObject> {
+    if (values(gvLoadSubfieldPageReq.targets)[0].appellation) {
       return new BehaviorSubject(GvPaginationObjectMock.appeTeEnHasAppeVt);
     }
-    else if (gvLoadSubfieldPageReq.subfieldType.place) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].place) {
       return new BehaviorSubject(GvPaginationObjectMock.madridsPresenceWasAtPlace);
     }
-    else if (gvLoadSubfieldPageReq.subfieldType.temporalEntity) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].temporalEntity) {
       return new BehaviorSubject(GvPaginationObjectMock.personHasAppeTeEn);
     }
 
-    else if (gvLoadSubfieldPageReq.subfieldType.dimension) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].dimension) {
       return new BehaviorSubject(GvPaginationObjectMock.journeyHasDuration);
     }
-    else if (gvLoadSubfieldPageReq.subfieldType.langString) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].langString) {
       return new BehaviorSubject(GvPaginationObjectMock.manifSingletonHasShortTitleMurderer);
     }
 
-    else if (gvLoadSubfieldPageReq.subfieldType.language) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].language) {
       return new BehaviorSubject(GvPaginationObjectMock.appeTeEnUsedInLanguage);
     }
-    else if (gvLoadSubfieldPageReq.subfieldType.timePrimitive) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].timePrimitive) {
       return new BehaviorSubject(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
     }
-    else if (gvLoadSubfieldPageReq.subfieldType.timeSpan) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
       return new BehaviorSubject(GvPaginationObjectMock.shipVoyageHasTimeSpan);
     }
 

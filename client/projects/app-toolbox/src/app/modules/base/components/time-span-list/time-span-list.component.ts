@@ -35,7 +35,7 @@ export class TimeSpanListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.item$ = this.t.pipeItemTimeSpan(this.pkEntity)
+    // this.item$ = this.t.pipeItemTimeSpan(this.pkEntity)
     this.itemsCount$ = of(1)
 
     this.item$.pipe(takeUntil(this.destroy$)).subscribe(item => {

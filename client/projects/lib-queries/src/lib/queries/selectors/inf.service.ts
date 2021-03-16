@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, EntityModelAndClass, getFromTo, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldId, GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { equals } from 'ramda';
@@ -29,7 +29,7 @@ class Selector {
 
   paginationSelector<M>() {
 
-    const pipePage = (page: GvSubfieldPage): Observable<M[]> => {
+    const pipePage = (page: GvFieldPage): Observable<M[]> => {
       let path: any[];
       const pagBy = paginateBy
       const key = subfieldIdToString(page)
@@ -52,7 +52,7 @@ class Selector {
     }
 
 
-    const pipePageLoadNeeded = (page: GvSubfieldPage, trigger$: Observable<any>): Observable<boolean> => {
+    const pipePageLoadNeeded = (page: GvFieldPage, trigger$: Observable<any>): Observable<boolean> => {
       let path: any[];
       const pagBy = paginateBy
       const key = subfieldIdToString(page)
@@ -80,7 +80,7 @@ class Selector {
     }
 
 
-    const pipeCount = (page: GvSubfieldId): Observable<number | undefined> => {
+    const pipeCount = (page: GvFieldId): Observable<number | undefined> => {
       let path: any[];
       const pagBy = paginateBy
       const key = subfieldIdToString(page)
@@ -179,7 +179,7 @@ class InfPersistentItemSelections extends Selector {
 }
 
 class InfTemporalEntitySelections extends Selector {
-  private _by_pk_entity$ = this.selector<InfTemporalEntity>('by_pk_entity')
+  _by_pk_entity$ = this.selector<InfTemporalEntity>('by_pk_entity')
   // public by_fk_class$ = this.selector<ByPk<InfTemporalEntity>>('by_fk_class')
 
   constructor(
@@ -401,7 +401,6 @@ export class InfSelector {
   dimension$ = new InfDimensionSelections(this.ngRedux, this.pkProject$, infDefinitions, 'dimension');
 
   pkEntityModelMap$ = this.ngRedux.select([infRoot, PR_ENTITY_MODEL_MAP]);
-
   constructor(public ngRedux: NgRedux<IAppState>, public pkProject$: Observable<number | string>) { }
 
   getModelOfEntity$(pkEntity: number) {

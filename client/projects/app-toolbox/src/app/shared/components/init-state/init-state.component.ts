@@ -1,8 +1,7 @@
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { INIT_SANDBOX_STATE, sandboxStateReducer, SchemaService } from '@kleiolab/lib-redux';
+import { IAppState, SchemaService, SET_APP_STATE } from '@kleiolab/lib-redux';
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { FluxStandardAction } from 'flux-standard-action';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -35,6 +34,7 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
    * Input for the subStore slice used by the current sandboxState
    */
   @Input() sandboxState: any;
+  @Input() initState: IAppState
 
   @Input() schemaObjects: GvSchemaObject[]
 
@@ -67,26 +67,32 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Init fractal store
      */
-    this.localStore = this.ngRedux.configureSubStore(['sandboxState'], sandboxStateReducer)
+    // this.localStore = this.ngRedux.configureSubStore(['sandboxState'], sandboxStateReducer)
 
-    if (this.sandboxState) {
-      this.localStore.dispatch({
-        type: INIT_SANDBOX_STATE,
-        payload: this.sandboxState
-      } as FluxStandardAction<any>)
+    // if (this.sandboxState) {
+    //   this.localStore.dispatch({
+    //     type: INIT_SANDBOX_STATE,
+    //     payload: this.sandboxState
+    //   } as FluxStandardAction<any>)
 
-      // const sandboxStateInit = new Subject<boolean>();
+    //   // const sandboxStateInit = new Subject<boolean>();
 
-      // this.waitForAll.push(sandboxStateInit)
+    //   // this.waitForAll.push(sandboxStateInit)
 
-      // this.localStore.select('').pipe(
-      //   // first(c => (!!c && c != {})),
-      //   takeUntil(this.destroy$)
-      // ).subscribe(ok => {
-      //   sandboxStateInit.next(true)
-      // })
+    //   // this.localStore.select('').pipe(
+    //   //   // first(c => (!!c && c != {})),
+    //   //   takeUntil(this.destroy$)
+    //   // ).subscribe(ok => {
+    //   //   sandboxStateInit.next(true)
+    //   // })
+    // }
+
+    if (this.initState) {
+      this.ngRedux.dispatch({
+        type: SET_APP_STATE,
+        payload: this.initState
+      })
     }
-
     /**
      * Init project with api call
      */

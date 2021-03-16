@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, Field } from '@kleiolab/lib-queries';
 import { ByPk } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -157,38 +158,43 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
 
     const formParts$ = this.c.pipeSpecificFieldOfClass(50).pipe(
       debounceTime(20),
-      map(fields => fields.filter(f => f.listDefinitions[0] && f.listDefinitions[0].listType.timePrimitive)),
+      map(fields => fields.filter(f => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(f.property.pkProperty))),
       mergeMap(fields => {
         // empty formGroup
         Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
         // map the field to a form part
         return combineLatest(fields.map((field, i) => {
           let resultTemplate;
-          let mergeDef: MergeDef;
+          const mergeDef: MergeDef = undefined
           resultTemplate = {}
           // mergeDef = { target: ['te_statements'],  }
-
-          return new FormPart(this.formGroup, field.label, field.listDefinitions, {
-            initSubfield: {
-              listType: { timeSpan: 'true' },
-              ...{} as any
+          return new FormPart(
+            this.formGroup,
+            field.label,
+            field,
+            DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+            {
+              initTimeSpan: this.data.timePrimitives
             },
-            initTimeSpan: this.data.timePrimitives
-          }, resultTemplate, mergeDef, false, this.p.state.default_language).this$
+            resultTemplate,
+            mergeDef,
+            false,
+            this.p.state.default_language
+          ).this$
         }));
       }));
 
     formParts$.pipe(takeUntil(this.destroy$)).subscribe(formParts => {
 
-      const ar = formParts.map(f => ({
-        key: '_' + f.items[0].formControlDef.listDefinition.property.pkProperty + '_outgoing',
-        val: f
+      const ar = formParts.map(fp => ({
+        key: '_' + fp.items[0].formControlDef.field.property.pkProperty + '_outgoing',
+        val: fp
       }))
       this.f = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.val, indexBy((f) => f.key, ar))
 
       this.cName = mapObjIndexed((val, key, obj) => val.items[0].formControlDef.formControlName, this.f)
       this.active = mapObjIndexed((val, key, obj) => false, this.f)
-      this.properties = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.key, indexBy((f) => f.val.listDefinitions[0].property.pkProperty.toString(), ar))
+      this.properties = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.key, indexBy((f) => f.val.field.property.pkProperty.toString(), ar))
 
       const f: TimeSpanFormDef = { formParts };
       this.formDef$.next(f);

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { GvSubfieldPage, GvSubfieldPageScope } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
@@ -245,6 +245,8 @@ export class InfEpics {
   /**
    * handles the update of store for paginated temporal entity lists.
    * @param pkProject if null, list is handled as 'repo' list
+   *
+   * TODO remove
    */
   private handleTemporalEntityListAction<M>(
     action,
@@ -253,12 +255,11 @@ export class InfEpics {
     apiCall$: Observable<any>,
     pkProject) {
     const meta: LoadPaginatedStatementListMeta = action.meta;
-    const scope: GvSubfieldPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
-    const req: GvSubfieldPage = {
+    const scope: GvFieldPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
+    const req: GvFieldPage = {
       fkSourceEntity: meta.pkSourceEntity,
       fkProperty: meta.pkProperty,
       isOutgoing: meta.isOutgoing,
-      targetClass: meta.fkTargetClass,
       limit: meta.limit,
       offset: meta.offset,
       scope,

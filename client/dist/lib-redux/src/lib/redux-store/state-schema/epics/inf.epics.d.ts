@@ -21,6 +21,8 @@ export declare class InfEpics {
     /**
      * handles the update of store for paginated temporal entity lists.
      * @param pkProject if null, list is handled as 'repo' list
+     *
+     * TODO remove
      */
     private handleTemporalEntityListAction;
 }

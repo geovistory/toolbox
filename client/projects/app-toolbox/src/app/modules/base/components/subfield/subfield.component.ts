@@ -2,24 +2,26 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectPipesService, ConfigurationPipesService, InformationPipesService, StatementTargetTimeSpan, StatementWithTarget, Subfield } from '@kleiolab/lib-queries';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService, StatementTargetEntity, StatementTargetTimeSpan, StatementWithTarget } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { GvLoadSubentitySubfieldPageReq, GvSubentitySubfieldPage, GvSubentitySubfieldType, GvSubfieldId, GvSubfieldPageScope, GvSubfieldType, InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { equals, indexBy, mapObjIndexed, values } from 'ramda';
+import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { subfieldToSubfieldPage, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
+import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
 
-interface DataCol {
-  name: string;
-  id: string;
-  pkProperty: number;
-  subfieldType: GvSubfieldType;
-}
+// interface DataCol {
+//   name: string;
+//   id: string;
+//   pkProperty: number;
+//   subfieldType: GvTargetType;
+// }
 
 @Component({
   selector: 'gv-subfield',
@@ -29,9 +31,9 @@ interface DataCol {
 export class SubfieldComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  @Input() subfield: Subfield
+  @Input() field: Field
   @Input() pkEntity: number
-  @Input() scope: GvSubfieldPageScope
+  @Input() scope: GvFieldPageScope
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
 
@@ -45,15 +47,17 @@ export class SubfieldComponent implements OnInit, OnDestroy {
 
   selectedCount$: Observable<number>
   selection: SelectionModel<number>;
-  selected: { [pk_stmt: number]: InfStatement } = {}
+  selected: { [pk_stmt: number]: StatementWithTarget } = {}
   allowMultiSelect: boolean
   @Output() close = new EventEmitter()
   @Output() next = new EventEmitter()
+  adding$ = new BehaviorSubject(false)
 
-  dataColumnsVisibility$ = new BehaviorSubject<{ [key: string]: boolean; }>({});
-  dataColumns$: Observable<DataCol[]>
-  visibleDataColumns$: Observable<DataCol[]>
-  subfieldMap: { [key: string]: GvSubentitySubfieldType; }
+  // dataColumnsVisibility$ = new BehaviorSubject<{ [key: string]: boolean; }>({});
+  // dataColumns$: Observable<DataCol[]>
+  // visibleDataColumns$: Observable<DataCol[]>
+  // subfieldMap: { [key: string]: GvSubentitySubfieldType; }
+  targetIsUnique: boolean;
 
   constructor(
     private p: ActiveProjectService,
@@ -69,17 +73,19 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
     )
+
   }
 
   ngOnInit() {
     const errors: string[] = []
-    if (!this.subfield) errors.push('@Input() subfield is required.');
+    if (!this.field) errors.push('@Input() subfield is required.');
     if (!this.pkEntity) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
 
+    this.targetIsUnique = this.field.identityDefiningForTarget && this.field.targetMaxQuantity == 1;
 
     const pagination$ = combineLatest(this.limit$, this.offset$, this.ap.pkProject$)
       .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
@@ -91,12 +97,36 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       // Loading from rest api (using service that avoids reloads of the same page)
       tap(([limit, offset, pkProject]) => {
         nextPage$.next();
-        this.pag.subfield.addPageLoader(pkProject, this.subfield, this.pkEntity, limit, offset, until$, this.scope);
+
+        let fields = [this.field]
+        if (this.field.isSpecialField === 'time-span') {
+          fields = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(
+            pkProperty => {
+              const field: Field = {
+                ...this.field,
+                property: { pkProperty: pkProperty },
+                targetClasses: [DfhConfig.CLASS_PK_TIME_PRIMITIVE],
+                targets: {
+                  [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: {
+                    listType: { timePrimitive: 'true' },
+                    removedFromAllProfiles: false,
+                    targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+                    targetClassLabel: ''
+                  }
+                }
+              }
+              return field
+            }
+          )
+        }
+        for (const field of fields) {
+          this.pag.subfield.addPageLoader(pkProject, field, this.pkEntity, limit, offset, until$, this.scope);
+        }
       }),
       // Piping from store
       switchMap(([limit, offset]) => this.i.pipeSubfieldPage(
-        subfieldToSubfieldPage(this.subfield, this.pkEntity, this.scope, limit, offset),
-        this.subfield.listType
+        fieldToFieldPage(this.field, this.pkEntity, this.scope, limit, offset),
+        fieldToGvFieldTargets(this.field)
       )),
       shareReplay({ refCount: true, bufferSize: 1 }),
 
@@ -106,7 +136,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     this.itemsCount$ = page$.pipe(map(page => page.count))
 
 
-    this.allowMultiSelect = this.subfield.targetMaxQuantity === 1 ? false : true;
+    this.allowMultiSelect = this.field.targetMaxQuantity === 1 ? false : true;
 
     const initialSelection = [];
     this.selection = new SelectionModel<number>(this.allowMultiSelect, initialSelection);
@@ -115,44 +145,44 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       startWith(0)
     )
 
-    if (this.subfield.listType.temporalEntity) {
-      this.subfieldMap = mapObjIndexed<GvLoadSubentitySubfieldPageReq, GvSubentitySubfieldType>(
-        (val, key, obj) => val.subfieldType,
-        indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
-      );
-      const dataColMap = mapObjIndexed<GvLoadSubentitySubfieldPageReq, boolean>(
-        (val, key, obj) => {
-          // hideCircularField on init
-          if (val.page.isCircular) return false
-          return true
-        },
-        indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
-      );
-      this.dataColumnsVisibility$.next(dataColMap)
-      this.dataColumns$ = combineLatest(
-        this.subfield.listType.temporalEntity.map(subentityField => {
-          const page = subentityField.page;
-          const domain = page.isOutgoing ? this.subfield.targetClass : null
-          const range = page.isOutgoing ? null : this.subfield.targetClass
-          return this.c.pipeFieldLabel(page.fkProperty, domain, range)
-            .pipe(
-              map(fieldLabel => {
-                return {
-                  id: this.getColId(page),
-                  name: fieldLabel,
-                  pkProperty: page.fkProperty,
-                  subfieldType: subentityField.subfieldType
-                }
-              })
-            )
-        })
-      )
-      this.visibleDataColumns$ = combineLatest(this.dataColumnsVisibility$, this.dataColumns$).pipe(
-        map(
-          ([colMap, all]) => all.filter(column => colMap[column.id])
-        )
-      )
-    }
+    // if (this.subfield.listType.temporalEntity) {
+    //   this.subfieldMap = mapObjIndexed<GvSubentitFieldPageReq, GvSubentitySubfieldType>(
+    //     (val, key, obj) => val.subfieldType,
+    //     indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
+    //   );
+    //   const dataColMap = mapObjIndexed<GvSubentitFieldPageReq, boolean>(
+    //     (val, key, obj) => {
+    //       // hideCircularField on init
+    //       if (val.page.isCircular) return false
+    //       return true
+    //     },
+    //     indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
+    //   );
+    //   this.dataColumnsVisibility$.next(dataColMap)
+    //   this.dataColumns$ = combineLatest(
+    //     this.subfield.listType.temporalEntity.map(subentityField => {
+    //       const page = subentityField.page;
+    //       const domain = page.isOutgoing ? this.subfield.targetClass : null
+    //       const range = page.isOutgoing ? null : this.subfield.targetClass
+    //       return this.c.pipeFieldLabel(page.fkProperty, domain, range)
+    //         .pipe(
+    //           map(fieldLabel => {
+    //             return {
+    //               id: this.getColId(page),
+    //               name: fieldLabel,
+    //               pkProperty: page.fkProperty,
+    //               subfieldType: subentityField.subfieldType
+    //             }
+    //           })
+    //         )
+    //     })
+    //   )
+    //   this.visibleDataColumns$ = combineLatest(this.dataColumnsVisibility$, this.dataColumns$).pipe(
+    //     map(
+    //       ([colMap, all]) => all.filter(column => colMap[column.id])
+    //     )
+    //   )
+    // }
 
   }
 
@@ -177,7 +207,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   }
 
   remove(item: StatementWithTarget) {
-    if (this.subfield.identityDefiningForSource && this.subfield.isOutgoing) {
+    if (this.field.identityDefiningForSource && this.field.isOutgoing) {
       alert('Item can not be removed, since it is defining the identity of the connected temporal entity. You might want to replace the entire temporal entity.')
     } else {
       this.ap.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
@@ -192,43 +222,52 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   openTimespanModal(x: StatementTargetTimeSpan) {
     this.timeSpan.openModal(x, this.pkEntity)
   }
-  openInNewTab(pkEntity: number) {
-    this.p.addEntityTab(pkEntity, this.subfield.targetClass)
+  openInNewTabFromEntity(e: StatementTargetEntity) {
+    this.p.addEntityTab(e.pkEntity, e.fkClass)
+  }
+  openInNewTabFromPreview(e: WarEntityPreview) {
+    this.p.addEntityTab(e.pk_entity, e.fk_class)
   }
 
-  addAndOpenInNewTab(pkEntity: number) {
+  addAndOpenInNewTabFromEntity(e: StatementTargetEntity) {
+    this.addAndOpenInNewTab(e.pkEntity, e.fkClass)
+  }
+  addAndOpenInNewTabFromPreview(e: WarEntityPreview) {
+    this.addAndOpenInNewTab(e.pk_entity, e.fk_class)
+  }
+  private addAndOpenInNewTab(pkEntity: number, fkClass: number) {
     this.p.addEntityToProject(pkEntity, () => {
-      this.openInNewTab(pkEntity)
+      this.p.addEntityTab(pkEntity, fkClass)
     })
   }
 
 
-  add() {
-    if (this.subfield.listType.temporalEntity) {
-      this.addTeEn()
-    } else {
+  // add() {
+  //   if (this.field.listType.temporalEntity) {
+  //     this.addTeEn()
+  //   } else {
 
-      // collect selected statements
-      const statements: InfStatement[] = values(this.selected)
-      this.ap.pkProject$.pipe(first()).subscribe(
-        // upsert them in db
-        pkProject => this.inf.statement.upsert(statements, pkProject).resolved$
-          .pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-            // put them in store
-            this.s.storeSchemaObjectGv({ inf: { statement: statements } }, undefined)
-            this.close.emit()
-          })
-      )
-    }
+  //     // collect selected statements
+  //     const statements: InfStatement[] = values(this.selected)
+  //     this.ap.pkProject$.pipe(first()).subscribe(
+  //       // upsert them in db
+  //       pkProject => this.inf.statement.upsert(statements, pkProject).resolved$
+  //         .pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
+  //           // put them in store
+  //           this.s.storeSchemaObjectGv({ inf: { statement: statements } }, undefined)
+  //           this.close.emit()
+  //         })
+  //     )
+  //   }
 
-  }
+  // }
   toggleSelection(stmtWT: StatementWithTarget) {
     const id = stmtWT.statement.pk_entity
     if (!this.allowMultiSelect) this.selected = {}
     if (this.selected[id]) {
       delete this.selected[id]
     } else {
-      this.selected[id] = stmtWT.statement;
+      this.selected[id] = stmtWT;
     }
     this.selection.toggle(stmtWT.statement.pk_entity)
   }
@@ -237,19 +276,19 @@ export class SubfieldComponent implements OnInit, OnDestroy {
    * For TemporalEntity view
    */
 
-  toggleCol(colId: string) {
-    // this.dataColumnsVisibility$.pipe(first()).subscribe(colMap => {
+  // toggleCol(colId: string) {
+  //   // this.dataColumnsVisibility$.pipe(first()).subscribe(colMap => {
 
-    // });
-    setTimeout(() => {
+  //   // });
+  //   setTimeout(() => {
 
-      const colMap = this.dataColumnsVisibility$.value
-      this.dataColumnsVisibility$.next({
-        ...colMap,
-        [colId]: !colMap[colId]
-      });
-    })
-  }
+  //     const colMap = this.dataColumnsVisibility$.value
+  //     this.dataColumnsVisibility$.next({
+  //       ...colMap,
+  //       [colId]: !colMap[colId]
+  //     });
+  //   })
+  // }
   // openList(subentityPage: SubentitySubfieldPage) {
   //   const data: SubfieldDialogData = {
   //     sourceClass: this.subfield.targetClass,
@@ -274,12 +313,11 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   }
   removeEntity(item: StatementWithTarget) {
     this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-
-      // remove the statement
-      this.inf.statement.remove([item.statement], pkProject)
-
       // remove the related temporal entity
-      this.p.removeEntityFromProject(item.target.entity.pkEntity)
+      this.p.removeEntityFromProject(item.target.entity.pkEntity, () => {
+        // remove the statement
+        this.inf.statement.remove([item.statement], pkProject)
+      })
     })
 
   }
@@ -290,22 +328,24 @@ export class SubfieldComponent implements OnInit, OnDestroy {
    * - one per related temporal entity
    * - one for all selected statements
    */
-  addTeEn() {
-
+  add() {
+    this.adding$.next(true)
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       // the selected pks
       const pkStatements: number[] = this.selection.selected;
-      const statements: InfStatement[] = values(this.selected)
+      const statementsWT = values(this.selected)
 
       // prepare api calls to add target entities to project
-      const entities$ = statements.map(r => {
+      const entities$ = statementsWT
+        // remove statements not targeting entities
+        .filter(s => s.target.entity)
+        .map(s => {
+          // get pk of target entity
+          const pkEntity = s.target.entity.pkEntity
 
-        // get pk of target entity
-        const pkEntity = this.subfield.isOutgoing ? r.fk_object_info : r.fk_subject_info;
-
-        // create api call
-        return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
-      })
+          // create api call
+          return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+        })
 
       // prepare entity project rels for the statement pointing to target entity
       const projRels: Partial<ProInfoProjRel>[] = pkStatements.map(pk => {
@@ -321,20 +361,22 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       })
 
       // wait until target entities are added to project
-      combineLatest(entities$).pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
+      combineLatestOrEmpty(entities$)
+        .pipe(first(x => !!x), takeUntil(this.destroy$))
+        .subscribe(pending => {
 
-        // add the statements pointing to these entities to project
-        this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$
-          .pipe(
-            first(res => !!res),
-            takeUntil(this.destroy$)
-          ).subscribe(() => {
+          // add the statements pointing to these entities to project
+          this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$
+            .pipe(
+              first(res => !!res),
+              takeUntil(this.destroy$)
+            ).subscribe(() => {
 
-            // done!
-            this.close.emit()
-          })
+              // done!
+              this.close.emit()
+            })
 
-      })
+        })
 
 
     })
@@ -350,9 +392,9 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-  getColId(page: GvSubentitySubfieldPage | GvSubfieldId): string {
-    return page.fkProperty + '_' + page.isOutgoing + '_' + page.targetClass
-  }
+  // getColId(page: GvSubentityFieldPage | GvFieldId): string {
+  //   return page.fkProperty + '_' + page.isOutgoing + '_' + page.targetClass
+  // }
 }
 
 

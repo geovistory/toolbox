@@ -60,14 +60,18 @@
                   </mat-slide-toggle>
                 </button>
                 <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
+                <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Settings for class {{classLabel$|async}}
+                </div>
                 <gv-entity-label-config-open-btn *ngIf="fkClass$|async" [fkClass]="fkClass$ | async">
-
                   <button mat-menu-item *ngIf="!(isViewMode$ | async)">
                     <mat-icon svgIcon="cogs"></mat-icon>
-                    <span>Configure {{classLabel$|async}} labels</span>
+                    <span>Configure Labels</span>
                   </button>
                 </gv-entity-label-config-open-btn>
-
+                <button mat-menu-item (click)="openClassConfig()">
+                  <mat-icon svgIcon="cogs"></mat-icon>
+                  Configure Fields
+                </button>
                 <!-- remove -->
                 <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
                 <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>

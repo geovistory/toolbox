@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
-import { FormControlConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormControlConfig";
+import { FormControlConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormControlConfig';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CtrlEntityComponent, CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
@@ -75,7 +75,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private configureEntityCtrl() {
-    const lDef = this.config.data.listDefinition;
+    const lDef = this.config.data.field;
     if (lDef && lDef.identityDefiningForSource && lDef.sourceMaxQuantity !== -1) {
       this.entityCtrlDisableStatement = {
         sourceClassLabel: lDef.sourceClassLabel,
@@ -93,14 +93,14 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getKeyOfRelatedStatement() {
-    const lDef = this.config.data.listDefinition
+    const lDef = this.config.data.field
     if (lDef.property.pkProperty) return 'fk_property';
     else if (lDef.property.pkPropertyOfProperty) return 'fk_property_of_property';
     console.error('key to relate related statement not found');
   }
 
   getRelateByOfRelatedStatement() {
-    const lDef = this.config.data.listDefinition
+    const lDef = this.config.data.field
     return lDef.isOutgoing ? 'fk_object_info' : 'fk_subject_info';
   }
 

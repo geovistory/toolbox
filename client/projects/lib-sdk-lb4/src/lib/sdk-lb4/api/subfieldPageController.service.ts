@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { GvLoadSubfieldPageReq } from '../model/models';
+import { GvFieldPageReq } from '../model/models';
 import { GvPaginationAlternativeLeafItemsReq } from '../model/models';
 import { GvPaginationObject } from '../model/models';
 
@@ -151,14 +151,14 @@ export class SubfieldPageControllerService {
     }
 
     /**
-     * @param gvLoadSubfieldPageReq 
+     * @param gvFieldPageReq 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPaginationObject>;
-    public subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPaginationObject>>;
-    public subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPaginationObject>>;
-    public subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPaginationObject>;
+    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPaginationObject>>;
+    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPaginationObject>>;
+    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -203,7 +203,7 @@ export class SubfieldPageControllerService {
         }
 
         return this.httpClient.post<GvPaginationObject>(`${this.configuration.basePath}/subfield-page/load-subfield-page`,
-            gvLoadSubfieldPageReq,
+            gvFieldPageReq,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,

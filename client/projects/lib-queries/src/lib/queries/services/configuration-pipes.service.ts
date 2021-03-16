@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvLoadSubentitySubfieldPageReq, GvSubfieldType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityTargetType, GvTargetType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -88,10 +88,15 @@ export class ConfigurationPipesService {
       this.pipeProfilesEnabledByProject(),
     ).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
+        const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
+          (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
+        );
+        const outP = outgoingProps.filter((prop) => isEnabled(prop))
+        let inP = ingoingProps.filter((prop) => isEnabled(prop))
 
         if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
           // remove the has time span property
-          ingoingProps = []
+          inP = []
 
         } else {
           // // if class is not appellation for language, add appellation for language (1111) property
@@ -101,14 +106,14 @@ export class ConfigurationPipesService {
 
           // if is temporal entity, add has time span property
           if (sourceKlass.basic_type === 9) {
-            outgoingProps.push(createHasTimeSpanProperty(pkClass))
+            outP.push(createHasTimeSpanProperty(pkClass))
           }
 
-          outgoingProps.push(createHasDefinitionProperty(pkClass))
+          outP.push(createHasDefinitionProperty(pkClass))
         }
         return combineLatest(
-          this.pipePropertiesToSubfields(outgoingProps, true, enabledProfiles, sysConfig, noNesting),
-          this.pipePropertiesToSubfields(ingoingProps, false, enabledProfiles, sysConfig, noNesting),
+          this.pipePropertiesToSubfields(outP, true, enabledProfiles, sysConfig, noNesting),
+          this.pipePropertiesToSubfields(inP, false, enabledProfiles, sysConfig, noNesting),
           this.pipeFieldConfigs(pkClass)
         ).pipe(
           map(([subfields1, subfields2, fieldConfigs]) => {
@@ -151,10 +156,17 @@ export class ConfigurationPipesService {
                   ontoInfoUrl: s.ontoInfoUrl,
                   allSubfieldsRemovedFromAllProfiles: s.removedFromAllProfiles,
                   targetClasses: [s.targetClass],
-                  listDefinitions: [s],
                   fieldConfig,
                   placeOfDisplay: getPlaceOfDisplay(sysConfig.specialFields, s, fieldConfig),
-                  isSpecialField
+                  isSpecialField,
+                  targets: {
+                    [s.targetClass]: {
+                      listType: s.listType,
+                      removedFromAllProfiles: s.removedFromAllProfiles,
+                      targetClass: s.targetClass,
+                      targetClassLabel: s.targetClassLabel
+                    }
+                  }
                 }
 
                 // mark subfield as added
@@ -168,7 +180,12 @@ export class ConfigurationPipesService {
                   uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles = false :
                   uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles = s.removedFromAllProfiles;
                 uniqFields[fieldId].targetClasses.push(s.targetClass)
-                uniqFields[fieldId].listDefinitions.push(s)
+                uniqFields[fieldId].targets[s.targetClass] = {
+                  listType: s.listType,
+                  removedFromAllProfiles: s.removedFromAllProfiles,
+                  targetClass: s.targetClass,
+                  targetClassLabel: s.targetClassLabel
+                }
               }
             }
 
@@ -229,8 +246,8 @@ export class ConfigurationPipesService {
       // filter fields that are displayd in specific fields
       map(allFields => {
         const fields = allFields
-          // filter fields that are displayd in specific fields
-          .filter(field => field.placeOfDisplay.specificFields)
+          // filter fields that are displayd in specific fields and not removed from all profiles
+          .filter(field => (field.placeOfDisplay.specificFields && field.allSubfieldsRemovedFromAllProfiles === false))
           // sort fields by the position defined in the specific fields
           .sort((a, b) => a.placeOfDisplay.specificFields.position - a.placeOfDisplay.specificFields.position)
 
@@ -418,7 +435,7 @@ export class ConfigurationPipesService {
    * the right target class.
    */
   // @spyTag
-  @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number, noNesting = false): Observable<GvSubfieldType> {
+  @cache({ refCount: false }) pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number, noNesting = false): Observable<GvTargetType> {
     return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
       switchMap((klass) => this.pipeSubfieldType(config, klass, targetMaxQuantity, parentProperty, noNesting))
@@ -426,9 +443,9 @@ export class ConfigurationPipesService {
   }
 
 
-  pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number, noNesting = false): Observable<GvSubfieldType> {
+  pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number, noNesting = false): Observable<GvTargetType> {
 
-    const res = (x: GvSubfieldType) => new BehaviorSubject(x)
+    const res = (x: GvTargetType) => new BehaviorSubject(x)
     let classConfig: ClassConfig
     if (config) classConfig = config.classes[klass.pk_class];
     if (classConfig && classConfig.valueObjectType) {
@@ -451,34 +468,41 @@ export class ConfigurationPipesService {
       const noNest = true;
       return this.pipeSpecificAndBasicFields(klass.pk_class, noNest).pipe(
         map(fields => {
-          const subentitySubfieldPage: GvLoadSubentitySubfieldPageReq[] = []
+          const subentitySubfieldPage: GvSubentitFieldPageReq[] = []
           for (const field of fields) {
             // for each of these subfields
-            for (const subfield of field.listDefinitions) {
-              // create page:GvSubfieldPage
-              let nestedSubfieldType: GvSubfieldType = { entityPreview: 'true' };
-              if (!subfield.listType.temporalEntity) nestedSubfieldType = subfield.listType;
-              let isCircular = false;
-              if (
-                parentProperty &&
-                subfield.property.pkProperty == parentProperty &&
-                subfield.targetMaxQuantity === 1
-              ) {
-                isCircular = true
+            // create page:GvSubfieldPage
+
+            const nestedTargets: GvSubentityFieldTargets = {};
+            for (const key in field.targets) {
+              if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
+                const listType = field.targets[key].listType;
+                // put temporalEntity to entityPreview
+                const subTargetType: GvSubentityTargetType = listType.temporalEntity ?
+                  { entityPreview: 'true' } :
+                  listType
+                nestedTargets[key] = subTargetType
               }
-              const nestedPage: GvLoadSubentitySubfieldPageReq = {
-                subfieldType: nestedSubfieldType,
-                page: {
-                  fkProperty: subfield.property.pkProperty,
-                  isOutgoing: subfield.isOutgoing,
-                  limit: 1,
-                  offset: 0,
-                  targetClass: subfield.targetClass,
-                  isCircular
-                }
-              }
-              subentitySubfieldPage.push(nestedPage)
             }
+            let isCircular = false;
+            if (
+              parentProperty &&
+              field.property.pkProperty == parentProperty &&
+              field.targetMaxQuantity === 1
+            ) {
+              isCircular = true
+            }
+            const nestedPage: GvSubentitFieldPageReq = {
+              targets: nestedTargets,
+              page: {
+                fkProperty: field.property.pkProperty,
+                isOutgoing: field.isOutgoing,
+                limit: 1,
+                offset: 0,
+                isCircular
+              }
+            }
+            subentitySubfieldPage.push(nestedPage)
           }
           return { temporalEntity: subentitySubfieldPage }
         }),

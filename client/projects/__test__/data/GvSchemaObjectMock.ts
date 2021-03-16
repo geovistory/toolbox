@@ -107,7 +107,6 @@ export namespace GvSchemaObjectMock {
       property: [
         createAppellationProperty(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class),
 
-        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
 
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
@@ -132,6 +131,88 @@ export namespace GvSchemaObjectMock {
       ]
     }
   }
+
+  export const modelOfPresence: GvSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_84_PRESENCE),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_51_PLACE),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_363_GEO_PLACE),
+      ],
+      property: [
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_148_WAS_AT),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE),
+      ],
+      label: [
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_148_WAS_AT),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_84_PRESENCE),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_363_GEO_PLACE),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_51_PLACE)
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+      ]
+    }
+  }
+
+  export const modelOfBirth: GvSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_61_BIRTH),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_633_UNION),
+      ],
+      property: [
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
+      ],
+      label: [
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1435_STEMS_FROM),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_61_BIRTH),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_21_PERSON),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_633_UNION)
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4,
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_12,
+
+      ]
+    }
+  }
+
+
+  export const modelOfPerson: GvSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_785_TEXT),
+      ],
+      property: [
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
+      ],
+      label: [
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_21_PERSON),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_785_TEXT)
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4,
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_12,
+
+      ]
+    }
+  }
+
 
   /**
    * If you work with PROJECT_1, this object provides basic schema data:

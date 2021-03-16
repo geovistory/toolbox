@@ -99,7 +99,7 @@ export class LeafItemListComponent implements OnInit {
 
 
     } else {
-      this.items$ = this.i.pipeList(this.listDefinition, this.pkEntity)
+      // this.items$ = this.i.pipeList(this.listDefinition, this.pkEntity)
       this.itemsCount$ = this.items$.pipe(map(i => (i || []).length))
     }
   }

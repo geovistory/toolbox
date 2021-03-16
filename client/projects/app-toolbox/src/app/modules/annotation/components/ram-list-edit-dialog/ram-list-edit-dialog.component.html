@@ -22,7 +22,8 @@
 <div mat-dialog-content>
   <mat-divider></mat-divider>
 
-  <gv-field [pkEntity]="data.statement.pk_entity" [fieldDefinition]="fieldDefinition" [readonly$]="readonly$">
+  <gv-field [pkEntity]="data.statement.pk_entity" [showOntoInfo$]="showOntoInfo$" [field]="fieldDefinition"
+    [readonly$]="readonly$">
   </gv-field>
 
 

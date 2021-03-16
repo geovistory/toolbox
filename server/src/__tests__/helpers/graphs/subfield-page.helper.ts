@@ -41,6 +41,15 @@ export namespace SubfieldHelper {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_LANG)
   }
 
+  // Data to test subfield-page-query for AppeTeEn->is appe. for lang. of->Person
+  export async function appeTeEnIsAppeOfPerson() {
+    await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
+    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createWarEntityPreview(WarEntityPreviewMock.PERSON_1)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
+  }
+
+
   // Data to test subfield-page-query for Presence->was at->Place
   export async function madridsPresenceWasAtPlace() {
     await createInfStatement(InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123)

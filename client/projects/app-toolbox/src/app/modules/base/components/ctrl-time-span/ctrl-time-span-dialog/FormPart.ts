@@ -1,17 +1,13 @@
 
-import { DfhConfig } from "@kleiolab/lib-config";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-queries';
+import { InfAppellation, InfLangString, InfPlace, InfStatement, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { U } from '@kleiolab/lib-utils';
+import { values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Subfield } from "@kleiolab/lib-queries";
-import { InfLangString } from '@kleiolab/lib-sdk-lb3';
-import { InfPlace } from '@kleiolab/lib-sdk-lb3';
-import { InfAppellation } from '@kleiolab/lib-sdk-lb3';
-import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { U } from "@kleiolab/lib-utils";
-import { shareReplay, map } from 'rxjs/operators';
-import { CtrlTimeSpanDialogResult } from "@kleiolab/lib-queries";
-import { InfLanguage } from "@kleiolab/lib-sdk-lb4";
+import { map, shareReplay } from 'rxjs/operators';
 
 export interface MergeDef {
   // path of the property in the parent, where the child needs to be appended
@@ -39,12 +35,13 @@ export class FormPart {
   }
 
   public items: FormItem[] = []
-
+  fieldTarget: FieldTargetClass
+  initValTarget: FieldTargetClass
   /**
    *
    * @param formGroup the root form group
    * @param title the title of this form part
-   * @param listDefinitions the listDefinitions, needed to create FormItems
+   * @param field the field, needed to create FormItems
    * @param initVal the initial value for this form part
    * @param required wgheter or not a value of this formPart is required
    * @param resultTemplate TODO: this is probably on the wrong level, belongs to the parent instead
@@ -53,56 +50,56 @@ export class FormPart {
   constructor(
     public formGroup: FormGroup,
     public title: string,
-    public listDefinitions: Subfield[],
+    public field: Field,
+    public targetClass: number,
     public initVal: FormPartInitValue,
     public resultTemplate,
     public mergeDef: MergeDef,
     public required = true,
     public defaultLanguage: InfLanguage
   ) {
+    this.fieldTarget = values(this.field.targets)[0]
+
+
     // Q: is there an initial value
-    if (this.initVal && this.initVal.initSubfield) {
+    if (this.initVal) {
 
 
-      this.listDefinitions.forEach(thisList => {
-        if (initVal.initSubfield.listType.timeSpan) {
-          if (initVal.initTimeSpan && initVal.initTimeSpan[thisList.property.pkProperty]) {
-            // Yes. It is matching a listDefinition, add a form item with initial (language) value
-            this.items.push({
-              fixed: false,
-              required: this.isRequired(thisList),
-              classSelect: false,
-              formControlDef: this.addFormControlDef(thisList, initVal.initTimeSpan[thisList.property.pkProperty])
-            })
-          }
+      if (initVal.initTimeSpan && initVal.initTimeSpan[this.field.property.pkProperty]) {
+        // Yes. It is matching a field, add a form item with initial (language) value
+        this.items.push({
+          fixed: false,
+          required: this.isRequired(this.field),
+          classSelect: false,
+          formControlDef: this.addFormControlDef(this.field, initVal.initTimeSpan[this.field.property.pkProperty])
+        })
+      }
 
-        }
-        // Q: is this list a statement list ??
-        else {
-          // Q: This is a list that connects one statement per item
-          const initList = this.initVal.initSubfield
-          const initProperty = initList.property.pkProperty;
+      // // Q: is this list a statement list ??
+      // else {
+      //   // Q: This is a list that connects one statement per item
+      //   const initList = this.initVal.initField
+      //   const initProperty = initList.property.pkProperty;
 
-          // we neet to flip source and target, when the list type is a temporal entity
-          const initTarget = initList.listType.temporalEntity ? initList.sourceClass : initList.targetClass;
-          const initSource = initList.listType.temporalEntity ? initList.targetClass : initList.sourceClass;
+      //   // we neet to flip source and target, when the list type is a temporal entity
+      //   const initTarget = this.initValTarget.listType.temporalEntity ? this.field.sourceClass : this.initValTarget.targetClass;
+      //   const initSource = this.initValTarget.listType.temporalEntity ? this.initValTarget.targetClass : this.field.sourceClass;
 
-          if (
-            thisList.property.pkProperty === initProperty
-            && thisList.sourceClass === initSource
-            && thisList.targetClass === initTarget
-          ) {
-            // Yes. It is matching a listDefinition, add a form item where the initial value is set (fixed)
-            this.items.push({
-              fixed: true,
-              required: this.isRequired(thisList),
-              classSelect: false,
-              formControlDef: this.addFormControlDef(thisList, this.initVal.initStatement.value)
-            })
-          }
+      //   if (
+      //     this.field.property.pkProperty === initProperty
+      //     && this.field.sourceClass === initSource
+      //     && this.fieldTarget.targetClass === initTarget
+      //   ) {
+      //     // Yes. It is matching a field, add a form item where the initial value is set (fixed)
+      //     this.items.push({
+      //       fixed: true,
+      //       required: this.isRequired(this.field),
+      //       classSelect: false,
+      //       formControlDef: this.addFormControlDef(this.field, this.initVal.initStatement.value)
+      //     })
+      //   }
 
-        }
-      })
+      // }
     }
 
     // Q: has there been added an item?
@@ -113,17 +110,17 @@ export class FormPart {
 
   public addItem() {
 
-    if (this.listDefinitions.length === 1) {
-      const initVal = this.listDefinitions[0].listType.language ? this.defaultLanguage : null;
+    if (this.field.targetClasses.length === 1) {
+      const initVal = this.fieldTarget.listType.language ? this.defaultLanguage : null;
       this.items.push({
         classSelect: false,
-        required: this.isRequired(this.listDefinitions[0]),
-        formControlDef: this.addFormControlDef(this.listDefinitions[0], initVal)
+        required: this.isRequired(this.field),
+        formControlDef: this.addFormControlDef(this.field, initVal)
       });
     }
     else {
       this.items.push({
-        required: this.isRequired(this.listDefinitions[0]),
+        required: this.isRequired(this.field),
         classSelect: true
       });
     }
@@ -131,9 +128,9 @@ export class FormPart {
     this.this$.next(this);
   }
 
-  classSelected(item: FormItem, listDefinition: Subfield) {
+  classSelected(item: FormItem, field: Field) {
     item.classSelect = 'disabled';
-    item.formControlDef = this.addFormControlDef(listDefinition, null)
+    item.formControlDef = this.addFormControlDef(field, null)
     this.this$.next(this);
   }
 
@@ -155,22 +152,22 @@ export class FormPart {
     this.formGroup.removeControl(formControlName)
   }
 
-  private addFormControlDef(listDefinition: Subfield, initialValue): FormControlDefinition {
+  private addFormControlDef(field: Field, initialValue): FormControlDefinition {
     const formControlName = U.uuid();
 
-    const validators = this.isRequired(listDefinition) ? [Validators.required] : []
+    const validators = this.isRequired(field) ? [Validators.required] : []
     const formControl = new FormControl(initialValue, validators);
     this.formGroup.addControl(formControlName, formControl);
     setTimeout(() => {
       formControl.setValue(initialValue)
     })
     return {
-      listDefinition,
+      field,
       formControlName,
       sourceValue$: formControl.valueChanges.pipe(shareReplay(), map((value) => {
-        return this.mapValue(value, listDefinition);
+        return this.mapValue(value, field);
       })),
-      // mergeDef: this.getMergeDef(listDefinition)
+      // mergeDef: this.getMergeDef(field)
     }
   }
 
@@ -179,10 +176,10 @@ export class FormPart {
    * - belongs to a temproal-entity or time-span (because there it can have not required fields)
    * - and the field itself is not an identity defining property
    */
-  private isRequired(listDefinition: Subfield): boolean {
+  private isRequired(field: Field): boolean {
 
-    if (this.initVal && this.initVal.initSubfield && (this.initVal.initSubfield.listType.temporalEntity || this.initVal.initSubfield.listType.timeSpan)) {
-      return listDefinition.identityDefiningForSource ? true : false;
+    if (this.initVal) {
+      return field.identityDefiningForSource
     }
     else {
       return true;
@@ -190,83 +187,83 @@ export class FormPart {
   }
 
 
-  private mapValue(val, listDefinition: Subfield): any {
-    if (!listDefinition) throw console.error('No listDefinition provided')
+  private mapValue(val, field: Field): any {
+    if (!field) throw console.error('No field provided')
 
-    if (listDefinition.listType.appellation) {
+    if (this.fieldTarget.listType.appellation) {
       if (!val) return null;
 
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        fk_property: field.property.pkProperty,
+        fk_property_of_property: field.property.pkPropertyOfProperty,
         object_appellation: {
           ...val,
-          fk_class: listDefinition.targetClass,
+          fk_class: this.fieldTarget.targetClass,
         },
       };
       return value;
     }
-    else if (listDefinition.listType.language) {
+    else if (this.fieldTarget.listType.language) {
       if (!val) return null;
 
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        fk_property: field.property.pkProperty,
+        fk_property_of_property: field.property.pkPropertyOfProperty,
         object_language: {
           ...val,
-          fk_class: listDefinition.targetClass,
+          fk_class: this.fieldTarget.targetClass,
         },
       };
       return value;
     }
-    else if (listDefinition.listType.langString) {
+    else if (this.fieldTarget.listType.langString) {
       if (!val) return null;
 
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        fk_property: field.property.pkProperty,
+        fk_property_of_property: field.property.pkPropertyOfProperty,
         object_lang_string: {
           ...val,
-          fk_class: listDefinition.targetClass,
+          fk_class: this.fieldTarget.targetClass,
         },
       };
       return value;
     }
-    else if (listDefinition.listType.place) {
+    else if (this.fieldTarget.listType.place) {
       if (!val) return null;
 
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        fk_property: field.property.pkProperty,
+        fk_property_of_property: field.property.pkPropertyOfProperty,
         object_place: {
           ...val,
-          fk_class: listDefinition.targetClass,
+          fk_class: this.fieldTarget.targetClass,
         },
       };
       return value;
     }
     else if (
-      listDefinition.listType.temporalEntity
-      || listDefinition.listType.entityPreview
-      || listDefinition.listType.typeItem
+      this.fieldTarget.listType.temporalEntity
+      || this.fieldTarget.listType.entityPreview
+      || this.fieldTarget.listType.typeItem
     ) {
       if (!val) return null;
 
       let value: InfStatement = {
         ...{} as any,
-        fk_property: listDefinition.property.pkProperty,
-        fk_property_of_property: listDefinition.property.pkPropertyOfProperty
+        fk_property: field.property.pkProperty,
+        fk_property_of_property: field.property.pkPropertyOfProperty
       };
 
-      if (listDefinition.isOutgoing) {
+      if (field.isOutgoing) {
         value = { ...value, fk_object_info: val }
       } else {
         value = { ...value, fk_subject_info: val }
@@ -276,7 +273,7 @@ export class FormPart {
     }
 
 
-    else if (listDefinition.listType.timeSpan) {
+    else if (this.fieldTarget.listType.timeSpan) {
       if (!val) return null;
 
       const v = val as CtrlTimeSpanDialogResult;
@@ -294,8 +291,7 @@ export class FormPart {
       return value;
     }
     else {
-      throw console.error('No mapping defined for list type', listDefinition.listType)
-      return;
+      throw console.error('No mapping defined for list type', this.fieldTarget.listType)
     }
   }
 
@@ -303,9 +299,9 @@ export class FormPart {
 
 
 export interface FormPartInitValue {
-  initSubfield: Subfield
-  initTextProperty?: FormPartInitValueTextProperty
-  initStatement?: FormPartInitValueStatement
+  // initField: Field
+  // initTextProperty?: FormPartInitValueTextProperty
+  // initStatement?: FormPartInitValueStatement
   initTimeSpan?: CtrlTimeSpanDialogResult
 }
 /**
@@ -345,7 +341,7 @@ export interface FormItem {
  * to a form control (using the name of the formControl within a formGroup)
  */
 export interface FormControlDefinition {
-  listDefinition: Subfield
+  field: Field
   formControlName: string
   sourceValue$: Observable<any>
 }

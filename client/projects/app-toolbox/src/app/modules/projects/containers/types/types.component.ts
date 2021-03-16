@@ -2,16 +2,18 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
 
@@ -57,6 +59,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
+    public ap: ActiveProjectPipesService,
     public inf: InfActions,
     public dialog: MatDialog,
     public ref: ChangeDetectorRef,
@@ -93,11 +96,11 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         let appeField: Field, definitionField: Field;
         fieldDefinitions.forEach(f => {
           // take only appellation for language, or ...
-          if (f.listDefinitions[0].property.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
+          if (f.property.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
             appeField = f;
           }
           // ... entit definition
-          else if (f.listDefinitions[0].property.pkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+          else if (f.property.pkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
             definitionField = f;
           }
         })
@@ -107,94 +110,69 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
 
 
-    const appeAndLangFields$ = appeAndDefFields$.pipe(
-      switchMap(appeAndDefFields =>
-        this.c.pipeBasicAndSpecificFields(appeAndDefFields.appeField.listDefinitions[0].targetClass).pipe(
-          map(fieldDefs => fieldDefs.filter(f => f.listDefinitions[0].listType.language || f.listDefinitions[0].listType.appellation))
-        )
-      )
-    )
+    // const appeAndLangFields$ = appeAndDefFields$.pipe(
+    //   switchMap(appeAndDefFields =>
+    //     this.c.pipeBasicAndSpecificFields(appeAndDefFields.appeField.listDefinitions[0].targetClass).pipe(
+    //       map(fieldDefs => fieldDefs.filter(f => f.listDefinitions[0].listType.language || f.listDefinitions[0].listType.appellation))
+    //     )
+    //   )
+    // )
 
     const itemsCache: { [pkEntity: number]: boolean } = {};
 
-    // this.items$ = combineLatest(this.p.pkProject$, appeAndDefFields$, appeAndLangFields$, this.p.defaultLanguage$).pipe(
-    //   switchMap(([pkProject, appeAndDefFields, appeAndLangFields, defaultLanguage]) => this.typePks$.pipe(
-    //     switchMap(typePks => combineLatestOrEmpty(
-    //       typePks.map(pkEntity => {
-    //         // get appellation
-    //         const l = appeAndDefFields.appeField.listDefinitions[0],
-    //           limit = 10,
-    //           offset = 0,
-    //           paginateBy = createPaginateBy(l, pkEntity)
+    this.items$ = combineLatest(this.p.pkProject$, appeAndDefFields$, this.p.defaultLanguage$, this.typePks$).pipe(
+      switchMap(([pkProject, appeAndDefFields, defaultLanguage, typePks]) => combineLatestOrEmpty(
+        typePks.map(pkEntity => {
+          const scope = { inProject: pkProject };
+          // // load appellation
+          // this.pag.subfield.addPageLoader(
+          //   pkProject,
+          //   appeAndDefFields.appeField,
+          //   pkEntity,
+          //   1,
+          //   0,
+          //   this.destroy$,
+          //   scope
+          // )
+          // load definition
+          this.pag.subfield.addPageLoader(
+            pkProject,
+            appeAndDefFields.definitionField,
+            pkEntity,
+            1,
+            0,
+            this.destroy$,
+            scope
+          )
 
-    //         if (!itemsCache[pkEntity]) {
-    //           itemsCache[pkEntity] = true;
+          // pipe the properties of the naming
+          const entityLabel$ = this.ap.streamEntityPreview(pkEntity).pipe(
+            map((e) => e.entity_label)
+          )
 
-    //           this.pag.temporalEntity.addPageLoader(
-    //             pkProject,
-    //             appeAndDefFields.appeField.listDefinitions[0],
-    //             pkEntity,
-    //             limit,
-    //             offset,
-    //             this.destroy$
-    //           )
-    //           this.p.inf.persistent_item.loadMinimal(pkProject, pkEntity)
-    //         }
-    //         // pipe the properties of the naming
-    //         const namings$: Observable<TemporalEntityItem[]> = this.i.pipeSubfieldPage(
-    //           paginateBy,
-    //           limit,
-    //           offset,
-    //           pkProject,
-    //           l,
-    //           appeAndLangFields
-    //         ).pipe(
-    //           map(items => items.filter(item => {
-    //             if (!item) return false;
-    //             const rs = values(item.row)
-    //             if (!rs || !rs.length) return false;
-    //             return !rs.includes(undefined);
-    //           }))
-    //         )
-    //         const definition$ = this.i.pipeListLangString(appeAndDefFields.definitionField.listDefinitions[0], pkEntity, 1).pipe(
-    //           map(definitions => {
-    //             if (!definitions || !definitions.length) return ''
-    //             let definition = definitions.find(def => !!def && def.fkLanguage === defaultLanguage.pk_entity);
-    //             definition = definition ? definition : definitions[0];
-    //             return definition.label
-    //           })
-    //         )
+          const definition$ = this.i.pipeSubfieldPage(
+            fieldToFieldPage(appeAndDefFields.definitionField, pkEntity, scope, 1, 0),
+            fieldToGvFieldTargets(appeAndDefFields.definitionField)
+          )
 
-    //         return combineLatest(namings$, definition$).pipe(
-    //           map(([namings, definition]) => {
-    //             // get one naming of the naming of that type
-    //             let naming = namings.find(n =>
-    //               !!values(n.row).find(r => (!!r && r.pkProperty === 1113 && r.firstItem.statement.fk_object_info === defaultLanguage.pk_entity))
-    //             )
-    //             naming = naming ? naming : namings[0];
+          return combineLatest(entityLabel$, definition$).pipe(
+            map(([entityLabel, definition]) => {
 
-    //             // get the appellation string and the language.
-    //             let spelling, language;
-    //             if (naming) {
-    //               spelling = values(naming.row).find(r => (r.pkProperty === 1113)).label;
-    //               language = values(naming.row).find(r => (r.pkProperty === 1112)).label;
-    //             }
+              const item: TypeItem = {
+                label: entityLabel,
+                labelLanguage: '',
+                pkEntity,
+                definition: definition.statements.map(s => s.targetLabel).join('')
+              }
 
-    //             const item: TypeItem = {
-    //               label: spelling,
-    //               labelLanguage: language,
-    //               pkEntity,
-    //               definition
-    //             }
-
-    //             return item;
-    //           })
-    //         )
-    //       }))
-    //     )
-    //   )),
-    //   sortAbc(n => n.label),
-    // )
+              return item;
+            })
+          )
+        }
+        )
+      )),
+      // sortAbc(n => n.label),
+    )
 
 
 

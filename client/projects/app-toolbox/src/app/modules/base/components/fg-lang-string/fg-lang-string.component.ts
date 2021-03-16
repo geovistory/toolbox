@@ -1,21 +1,18 @@
-import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfLangString } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { InfAppellation } from '@kleiolab/lib-sdk-lb3';
+import { InfAppellation, InfLangString, InfLanguage } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
+import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
+import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
+import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
-import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
-import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
-import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 
 type FgLangStringNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgLangStringInjectData extends FormFactoryCompontentInjectData<Observable<InfLangString>> {
@@ -68,7 +65,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
     this.initVal$ = combineLatest(this.initVal$, this.p.defaultLanguage$).pipe(
       switchMap(([initVal, defaultLang]) => {
         // if a fk_language is provied, get the language object
-        if (initVal.fk_language) {
+        if (initVal && initVal.fk_language) {
           return this.p.inf$.language$.by_pk_entity$.key(initVal.fk_language).pipe(
             map(language => {
               return {

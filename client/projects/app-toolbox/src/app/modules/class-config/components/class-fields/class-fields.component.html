@@ -5,8 +5,8 @@
   configured.
 </p>
 <br> -->
-<h3>General fields</h3>
-<p class="mat-caption">General fields are available for all classes and can't be enabled/disabled.</p>
+<h3>Basic fields</h3>
+<p class="mat-caption">Basic fields are available for all classes and can't be enabled/disabled.</p>
 
 <p-table [value]="defaultFields$|async" class="mat-table w-100">
   <ng-template pTemplate="header">
@@ -14,7 +14,7 @@
       <th class="mat-header-cell">OntoMe</th>
       <th class="mat-header-cell">Display Label</th>
       <th class="mat-header-cell">Relates to class(es)</th>
-      <th class="mat-header-cell">Enabled</th>
+      <!-- <th class="mat-header-cell">Enabled</th> -->
       <th class="mat-header-cell"></th>
     </tr>
   </ng-template>
@@ -37,9 +37,9 @@
           </span>
         </span>
       </td>
-      <td class="mat-cell">
+      <!-- <td class="mat-cell">
         <mat-checkbox [disabled]="true" [checked]="true"></mat-checkbox>
-      </td>
+      </td> -->
       <td class="mat-cell"><button mat-flat-button color="primary" *ngIf="row.propertyField"
           (click)="openFieldDialog(row)">Edit Labels</button></td>
     </tr>
@@ -63,7 +63,7 @@
       <th class="mat-header-cell">OntoMe</th>
       <th class="mat-header-cell">Display Label</th>
       <th class="mat-header-cell">Relates to class(es)</th>
-      <th class="mat-header-cell">Enabled</th>
+      <!-- <th class="mat-header-cell">Enabled</th> -->
       <th class="mat-header-cell"></th>
     </tr>
   </ng-template>
@@ -92,9 +92,9 @@
           </span>
         </span>
       </td>
-      <td class="mat-cell">
+      <!-- <td class="mat-cell">
         <mat-checkbox [checked]="true"></mat-checkbox>
-      </td>
+      </td> -->
       <td class="mat-cell"><button mat-flat-button color="primary" *ngIf="row.propertyField"
           (click)="openFieldDialog(row)">Edit Labels</button>
       </td>

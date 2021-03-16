@@ -20,6 +20,8 @@ import { WarActions } from '../actions/war.actions';
  */
 export class SchemaService {
 
+  schemaObjectStored$ = new Subject<GvSchemaObject>()
+
   constructor(
     public api: SchemaObjectApi,
     public infActions: InfActions,
@@ -132,23 +134,8 @@ export class SchemaService {
           });
         }
       });
-      // this.extendEntityPreviewStream(object, pkProject);
-      console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);')
+      this.schemaObjectStored$.next(object)
     }
   }
 
-
-  // /**
-  //  * Adds the entity previews to the streamed entity previews (for ws communication)
-  //  * @param object
-  //  * @param pkProject
-  //  */
-  // private extendEntityPreviewStream(object: GvSchemaObject, pkProject: number) {
-  //   if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
-  //     this.entityPreviewSocket.emit('extendStream', {
-  //       pkProject,
-  //       pks: object.war.entity_preview.map(p => p.pk_entity)
-  //     });
-  //   }
-  // }
 }

@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { Field, FieldBase, Subfield } from '@kleiolab/lib-queries';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { Subfield } from "@kleiolab/lib-queries";
-import { FieldBase } from "@kleiolab/lib-queries";
-import { Field } from "@kleiolab/lib-queries";
 import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
-import { DfhConfig } from "@kleiolab/lib-config";
 import { BehaviorSubject } from 'rxjs';
 export interface RamListEditDialogData {
 
@@ -50,9 +48,14 @@ export const fieldAtReferencePoP: Field = {
   targetClasses: [657],
   placeOfDisplay: {},
   allSubfieldsRemovedFromAllProfiles: false,
-  listDefinitions: [
-    listDef
-  ],
+  targets: {
+    657: {
+      listType: { langString: 'true' },
+      targetClass: 657,
+      targetClassLabel: 'Reference',
+      removedFromAllProfiles: false,
+    }
+  },
   fieldConfig: undefined,
   isSpecialField: false
 

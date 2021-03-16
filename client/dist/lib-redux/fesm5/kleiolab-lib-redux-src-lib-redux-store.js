@@ -4523,6 +4523,7 @@ var SchemaService = /** @class */ (function () {
         this.dfhActions = dfhActions;
         this.sysActions = sysActions;
         this.notifications = notifications;
+        this.schemaObjectStored$ = new Subject();
     }
     /**
      * watches an Observable<SchemaObject>
@@ -4722,8 +4723,7 @@ var SchemaService = /** @class */ (function () {
                     }));
                 }
             }));
-            // this.extendEntityPreviewStream(object, pkProject);
-            console.warn('!!!!!!!! Need to call this.extendEntityPreviewStream(object, pkProject);');
+            this.schemaObjectStored$.next(object);
         }
     };
     SchemaService.decorators = [
@@ -4747,6 +4747,8 @@ var SchemaService = /** @class */ (function () {
     return SchemaService;
 }());
 if (false) {
+    /** @type {?} */
+    SchemaService.prototype.schemaObjectStored$;
     /** @type {?} */
     SchemaService.prototype.api;
     /** @type {?} */
@@ -7033,6 +7035,8 @@ var InfEpics = /** @class */ (function () {
     /**
      * handles the update of store for paginated temporal entity lists.
      * @param pkProject if null, list is handled as 'repo' list
+     *
+     * TODO remove
      */
     /**
      * handles the update of store for paginated temporal entity lists.
@@ -7043,6 +7047,8 @@ var InfEpics = /** @class */ (function () {
      * @param {?} globalActions
      * @param {?} apiCall$
      * @param {?} pkProject if null, list is handled as 'repo' list
+     *
+     * TODO remove
      * @return {?}
      */
     InfEpics.prototype.handleTemporalEntityListAction = /**
@@ -7054,6 +7060,8 @@ var InfEpics = /** @class */ (function () {
      * @param {?} globalActions
      * @param {?} apiCall$
      * @param {?} pkProject if null, list is handled as 'repo' list
+     *
+     * TODO remove
      * @return {?}
      */
     function (action, epicsFactory, globalActions, apiCall$, pkProject) {
@@ -7067,7 +7075,6 @@ var InfEpics = /** @class */ (function () {
             fkSourceEntity: meta.pkSourceEntity,
             fkProperty: meta.pkProperty,
             isOutgoing: meta.isOutgoing,
-            targetClass: meta.fkTargetClass,
             limit: meta.limit,
             offset: meta.offset,
             scope: scope,
@@ -8583,7 +8590,7 @@ function () {
  * @return {?}
  */
 function subfieldIdToString(x) {
-    return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + x.targetClass + "_" + keys(x.scope)[0] + "_" + values(x.scope)[0];
+    return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + keys(x.scope)[0] + "_" + values(x.scope)[0];
 }
 
 /**
@@ -8963,7 +8970,7 @@ ReducerFactory = /** @class */ (function () {
                         if (item.pk_entity) {
                             idx[item.pk_entity] = {
                                 modelName: modelName,
-                                fkClass: item.fkClass
+                                fkClass: item.fk_class
                             };
                         }
                     }

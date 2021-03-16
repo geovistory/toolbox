@@ -76,6 +76,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     if (!this.pkClass) throw Error('please provide a pkClass')
+    if (typeof this.pkClass !== 'number') throw Error('pkClass is not a number')
     if (!this.searchString$) throw Error('please provide a searchString$')
     if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
     if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')

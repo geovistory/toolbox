@@ -1,10 +1,11 @@
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../base.module';
 import { CtrlTimeSpanComponent } from './ctrl-time-span.component';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 
 
 
@@ -21,10 +22,16 @@ export default sandboxOf(CtrlTimeSpanComponent, {
   .add('CtrlTimeSpan | New ', {
     context: {
       model: undefined,
-      parentPath: ''
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        GvSchemaObjectMock.basicClassesAndProperties,
+        GvSchemaObjectMock.modelOfPresence,
+        GvSchemaObjectMock.project1,
+        GvSchemaObjectMock.sysConfig,
+      ]
     },
     template: `
-        <gv-init-state [projectFromApi]="591" ></gv-init-state>
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
@@ -55,21 +62,27 @@ export default sandboxOf(CtrlTimeSpanComponent, {
   .add('CtrlTimeSpan | Existing ', {
     context: {
       model: {
-        "151": {
-          "julian_day": 2458721,
-          "duration": "1 day",
-          "calendar": "julian"
+        '151': {
+          'julian_day': 2458721,
+          'duration': '1 day',
+          'calendar': 'julian'
         },
-        "152": {
-          "julian_day": 2447193,
-          "duration": "1 day",
-          "calendar": "gregorian"
+        '152': {
+          'julian_day': 2447193,
+          'duration': '1 day',
+          'calendar': 'gregorian'
         }
       },
-      parentPath: ''
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        GvSchemaObjectMock.basicClassesAndProperties,
+        GvSchemaObjectMock.modelOfPresence,
+        GvSchemaObjectMock.project1,
+        GvSchemaObjectMock.sysConfig,
+      ]
     },
     template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">

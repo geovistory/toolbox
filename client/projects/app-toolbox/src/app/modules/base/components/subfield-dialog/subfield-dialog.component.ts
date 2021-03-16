@@ -1,18 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfigurationPipesService, Subfield } from '@kleiolab/lib-queries';
-import { GvSubfieldPageScope } from '@kleiolab/lib-sdk-lb4';
+import { Field, Subfield } from '@kleiolab/lib-queries';
+import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 
 export interface SubfieldDialogData {
-  sourceClass: number
-  targetClass: number
-  fkProperty: number
-  isOutgoing: boolean
-
+  title: string
+  field: Field
   sourceEntity: number
-
-  scope: GvSubfieldPageScope
+  scope: GvFieldPageScope
   showOntoInfo$: Observable<boolean>
 }
 @Component({
@@ -25,16 +21,10 @@ export class SubfieldDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SubfieldDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SubfieldDialogData,
-    public c: ConfigurationPipesService
   ) { }
 
   ngOnInit() {
-    this.subfield$ = this.c.pipeSubfieldIdToSubfield(
-      this.data.sourceClass,
-      this.data.fkProperty,
-      this.data.targetClass,
-      this.data.isOutgoing
-    )
+
   }
 
 }

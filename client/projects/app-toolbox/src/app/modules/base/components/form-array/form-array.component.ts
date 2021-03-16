@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { Subfield } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-queries';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
@@ -66,7 +66,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   get parentListDefsLength() {
     return this.formArrayFactory.parent.config.data &&
       this.formArrayFactory.parent.config.data.lists &&
-      this.formArrayFactory.parent.config.data.lists.fieldDefinition.listDefinitions.length
+      this.formArrayFactory.parent.config.data.lists.fieldDefinition.targetClasses.length
   }
 
   showRemoveBtn(child: LocalFormControlFactory | LocalFormChildFactory) {
@@ -149,9 +149,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  add() {
-    this.addItemInChildListDef(this.formArrayFactory.config.data.lists.fieldDefinition.listDefinitions[0])
-  }
+
   remove(i) {
     this.formArrayFactory.remove(i)
   }
@@ -178,19 +176,20 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   //   config.disabled = true;
 
   // }
-  addItemInChildListDef(lDef: Subfield) {
+  addItemInField(field: Field, targetClass: number) {
+
     // try to find the existing child FormArray containing the controls
     let childList = this.formArrayFactory.children.find(c => {
       if (c.factoryType == 'array') {
         const d = c.config.data as FormArrayData;
-        return equals(d.controls.listDefinition, lDef)
+        return equals({ field: d.controls.field, targetClass: d.controls.targetClass }, { field, targetClass })
       }
       return false
     }) as FormArrayFactory<FormControlData, FormArrayData, FormChildData>;
 
     // if not available, add a child FormArray containing the controls
     if (!childList) {
-      const config = this.formCreateEntity.getListNode(lDef, false, undefined)
+      const config = this.formCreateEntity.getListNode(field, targetClass, false, undefined)
       config.array.addOnInit = 0;
       childList = this.formArrayFactory.prepend(config) as FormArrayFactory<FormControlData, FormArrayData, FormChildData>;
     }

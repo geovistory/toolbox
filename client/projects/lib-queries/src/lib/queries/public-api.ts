@@ -16,6 +16,7 @@ export * from './models/Field';
 export * from './models/FieldBase';
 export * from './models/FieldPosition';
 export * from './models/FieldProperty';
+export * from './models/FieldTargetClass';
 export * from './models/Item';
 export * from './models/ItemBasics';
 export * from './models/ItemList';

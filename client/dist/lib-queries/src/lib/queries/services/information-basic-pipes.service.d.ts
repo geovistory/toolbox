@@ -3,7 +3,6 @@ import { InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { Observable } from 'rxjs';
 import { BasicStatementItem } from '../models/BasicStatementItem';
-import { Subfield } from '../models/Subfield';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { SchemaSelectorsService } from './schema-selectors.service';
 export declare class InformationBasicPipesService {
@@ -25,7 +24,6 @@ export declare class InformationBasicPipesService {
      * Pipe ingoing statements of an entity
      */
     pipeIngoingStatements(pkEntity: any): Observable<InfStatement[]>;
-    pipeStatementsOfList(listDefinition: Subfield, pkEntity: any): Observable<InfStatement[]>;
     /**
      * Pipe outgoing statements of temporal entity
      */

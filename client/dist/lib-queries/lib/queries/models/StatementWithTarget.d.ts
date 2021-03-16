@@ -1,12 +1,16 @@
-import { GvSubfieldId, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, ProInfoProjRel, TimePrimitiveWithCal, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, ProInfoProjRel, TimePrimitiveWithCal, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 export interface SubentitySubfieldPage {
-    subfield: GvSubfieldId;
+    subfield: GvFieldId;
     count: number;
     statements: Array<StatementWithTarget>;
 }
 export interface StatementTargetTimeSpan {
     subfields: SubentitySubfieldPage[];
     preview: WarEntityPreviewTimeSpan;
+}
+export interface StatementTargetEntity {
+    pkEntity: number;
+    fkClass: number;
 }
 export interface StatementTarget {
     statement: InfStatement;
@@ -22,10 +26,7 @@ export interface StatementTarget {
         timePrimitive?: TimePrimitiveWithCal;
         place?: InfPlace;
         timeSpan?: StatementTargetTimeSpan;
-        entity?: {
-            subfields: SubentitySubfieldPage[];
-            pkEntity: number;
-        };
+        entity?: StatementTargetEntity;
     };
 }
 export interface StatementProjRel {

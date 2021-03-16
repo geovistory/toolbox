@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { GvSubfieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionsObservable } from 'redux-observable-es6-compat';
@@ -16,8 +16,8 @@ export interface SucceedActionMeta<Model> { items: Model[], removePending: strin
 export interface FailActionMeta { removePending: string, pk?: number }
 
 export interface PaginateByParam { [key: string]: number | boolean | string }
-export interface LoadPageMeta { page: GvSubfieldPage, pk?: number }
-export interface LoadPageSucceededMeta { pks: number[], count: number, page: GvSubfieldPage, pk?: number }
+export interface LoadPageMeta { page: GvFieldPage, pk?: number }
+export interface LoadPageSucceededMeta { pks: number[], count: number, page: GvFieldPage, pk?: number }
 
 
 
@@ -70,13 +70,13 @@ export class SchemaActionsFactory<Payload, Model> {
   /**
    * @param pk is used for facetting
    */
-  loadPage: (page: GvSubfieldPage, pk?: number) => void;
+  loadPage: (page: GvFieldPage, pk?: number) => void;
 
   /**
  * @param pk is used for facetting
  */
-  loadPageSucceeded: (pks: number[], count: number, page: GvSubfieldPage, pk?: number) => void;
-  loadPageFailed: (page: GvSubfieldPage, pk?: number) => void;
+  loadPageSucceeded: (pks: number[], count: number, page: GvFieldPage, pk?: number) => void;
+  loadPageFailed: (page: GvFieldPage, pk?: number) => void;
 
   /**
    * this action is not model specific but pendingKey specific.
@@ -200,7 +200,7 @@ export class SchemaActionsFactory<Payload, Model> {
     }
 
 
-    this.loadPage = (page: GvSubfieldPage, pk?: number) => {
+    this.loadPage = (page: GvFieldPage, pk?: number) => {
       const action: FluxStandardAction<Payload, LoadPageMeta> = ({
         type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE',
         meta: { page, pk },
@@ -209,7 +209,7 @@ export class SchemaActionsFactory<Payload, Model> {
       this.ngRedux.dispatch(action)
     }
 
-    this.loadPageSucceeded = (pks: number[], count: number, page: GvSubfieldPage, pk?: number) => {
+    this.loadPageSucceeded = (pks: number[], count: number, page: GvFieldPage, pk?: number) => {
       const action: FluxStandardAction<Payload, LoadPageSucceededMeta> = ({
         type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
         meta: { page, pks, count, pk },
@@ -218,7 +218,7 @@ export class SchemaActionsFactory<Payload, Model> {
       this.ngRedux.dispatch(action)
     }
 
-    this.loadPageFailed = (page: GvSubfieldPage, pk?: number) => {
+    this.loadPageFailed = (page: GvFieldPage, pk?: number) => {
       const action: FluxStandardAction<Payload, LoadPageMeta> = ({
         type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_FAILED',
         meta: { page, pk },

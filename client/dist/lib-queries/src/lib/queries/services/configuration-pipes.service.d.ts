@@ -1,4 +1,4 @@
-import { DfhClass, DfhLabel, DfhProperty, GvSubfieldType, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { DfhClass, DfhLabel, DfhProperty, GvTargetType, InfLanguage, ProClassFieldConfig, ProTextProperty, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
@@ -75,8 +75,8 @@ export declare class ConfigurationPipesService {
      * (and thus Subfields) because the UI then does not allow to choose
      * the right target class.
      */
-    pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number, noNesting?: boolean): Observable<GvSubfieldType>;
-    pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number, noNesting?: boolean): Observable<GvSubfieldType>;
+    pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number, noNesting?: boolean): Observable<GvTargetType>;
+    pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number, noNesting?: boolean): Observable<GvTargetType>;
     /**
      * Gets class field configs of given pkClass
      *

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { InformationPipesService, Subfield, SubfieldPage } from '@kleiolab/lib-queries';
-import { GvSubfieldPage, GvSubfieldPageScope, GvSubfieldType } from '@kleiolab/lib-sdk-lb4';
+import { Field, InformationPipesService, SubfieldPage } from '@kleiolab/lib-queries';
+import { GvFieldPage, GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { fieldToGvFieldTargets } from '../../base.helpers';
 import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/subfield-dialog.component';
 
 @Component({
@@ -12,27 +13,28 @@ import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/
   styleUrls: ['./entity-field.component.scss']
 })
 export class EntityFieldComponent implements OnInit {
-  @Input() subfield: Subfield
+  @Input() field: Field
   @Input() pkSourceEntity: number
-  @Input() scope: GvSubfieldPageScope
+  @Input() scope: GvFieldPageScope
   @Input() showOntoInfo$: Observable<boolean>
+  isCircular = false;
   page$: Observable<SubfieldPage>
   constructor(
     private i: InformationPipesService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit() {
-    const page: GvSubfieldPage = {
+    const page: GvFieldPage = {
       fkSourceEntity: this.pkSourceEntity,
-      fkProperty: this.subfield.property.pkProperty,
-      isOutgoing: this.subfield.isOutgoing,
-      targetClass: this.subfield.targetClass,
+      fkProperty: this.field.property.pkProperty,
+      isOutgoing: this.field.isOutgoing,
       limit: 1,
       offset: 0,
       scope: this.scope,
     }
-    const subfieldType: GvSubfieldType = this.subfield.listType
-    this.page$ = this.i.pipeSubfieldPage(page, subfieldType)
+    this.page$ = this.i.pipeSubfieldPage(page, fieldToGvFieldTargets(this.field))
+
   }
 
 
@@ -40,20 +42,15 @@ export class EntityFieldComponent implements OnInit {
     this.page$.pipe(first()).subscribe((subentityPage) => {
 
       const data: SubfieldDialogData = {
-        sourceClass: this.subfield.targetClass,
-        fkProperty: this.subfield.property.pkProperty,
-        targetClass: this.subfield.targetClass,
-        isOutgoing: this.subfield.isOutgoing,
+        title: this.field.label,
+        field: this.field,
         sourceEntity: this.pkSourceEntity,
         scope: this.scope,
         showOntoInfo$: this.showOntoInfo$,
       }
-      // const pkEntities = cell.items.map(i => cell.isOutgoing ? i.statement.fk_object_info : i.statement.fk_subject_info)
-      // this.listDialog.open(true, pkEntities, 'Items')
       this.dialog.open(SubfieldDialogComponent, {
         data
       })
     })
-    // throw new Error('TODO');
   }
 }

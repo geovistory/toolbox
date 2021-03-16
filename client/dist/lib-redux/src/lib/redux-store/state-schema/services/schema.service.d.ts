@@ -1,6 +1,6 @@
 import { SchemaObjectApi } from '@kleiolab/lib-sdk-lb3';
 import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
@@ -20,6 +20,7 @@ export declare class SchemaService {
     dfhActions: DfhActions;
     sysActions: SysActions;
     notifications: NotificationsAPIActions;
+    schemaObjectStored$: Subject<GvSchemaObject>;
     constructor(api: SchemaObjectApi, infActions: InfActions, proActions: ProActions, datActions: DatActions, warActions: WarActions, tabActions: TabActions, dfhActions: DfhActions, sysActions: SysActions, notifications: NotificationsAPIActions);
     /**
      * watches an Observable<SchemaObject>

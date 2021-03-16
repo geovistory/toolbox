@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Observable, combineLatest, of, pipe, Subject } from 'rxjs';
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
-import { Field } from "@kleiolab/lib-queries";
-import { MatDialog } from '@angular/material';
-import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { ProClassFieldConfig } from "@kleiolab/lib-sdk-lb4";
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { values } from 'ramda';
+import { Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
 
 interface FieldConfig extends Field {
   propertyField?: {
@@ -83,8 +83,8 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
       const f: FieldConfig = {
         ...field,
         propertyField: {
-          identityDefiningForSource: field.listDefinitions[0].identityDefiningForSource,
-          targetClasses: field.listDefinitions.map(ld => ({
+          identityDefiningForSource: field.identityDefiningForSource,
+          targetClasses: values(field.targets).map(ld => ({
             pkClass: ld.targetClass,
             label: ld.targetClassLabel
           }))
@@ -100,7 +100,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
   }
 
   openFieldDialog(row: FieldConfig) {
-    const l = row.listDefinitions[0];
+    const l = row;
     const o = l.isOutgoing;
     const data: FieldConfigDialogData = {
       fkProject: this.fkProject,

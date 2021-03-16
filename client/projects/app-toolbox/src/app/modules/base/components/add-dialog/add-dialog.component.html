@@ -9,21 +9,21 @@
     Add item to field&nbsp;
   </div>
   <div class="d-flex align-items-center" style="flex: 1 1 auto; overflow:hidden; text-overflow: ellipsis;">
-    '{{data.listDefinition.label}}'
+    '{{data.field.label}}'
     <mat-icon class="mat-text-secondary">arrow_right_alt</mat-icon>
-    <span class="mat-text-secondary">{{data.listDefinition.targetClassLabel}}</span>
+    <span class="mat-text-secondary">{{ this.fieldTargetClass.targetClassLabel}}</span>
   </div>
   <mat-divider class="w-100"></mat-divider>
 
   <div *ngIf="(activeElement$ | async) === 'create-or-add'" class="gv-aoc-container mt-2">
     <div class="gv-aoc-left">
-      Define a new {{data.listDefinition.targetClassLabel}}
+      Define a new {{ this.fieldTargetClass.targetClassLabel}}
     </div>
     <div class="gv-aoc-center">
       or
     </div>
     <div class="gv-aoc-right">
-      Choose an existing {{data.listDefinition.targetClassLabel}}
+      Choose an existing {{ this.fieldTargetClass.targetClassLabel}}
     </div>
   </div>
 
@@ -33,24 +33,15 @@
     <mat-spinner diameter=20></mat-spinner>
   </div>
   <ng-container *ngIf="(activeElement$ | async) === 'add-existing-statements'">
-    <!-- <gv-temporal-entity-add-list *ngIf="data.listDefinition.listType.temporalEntity"
-      [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
-      [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()" class="gv-flex-fh">
-    </gv-temporal-entity-add-list> -->
-
-    <!-- <gv-leaf-item-add-list *ngIf="isLeafItemList" xLayout="column" fxLayoutAlign="space-between stretch"
-      [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
-      [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()">
-    </gv-leaf-item-add-list> -->
-    <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [pkEntity]="data.pkEntity" [subfield]="data.listDefinition"
+    <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [pkEntity]="data.pkEntity" [field]="fieldWithOneTarget"
       [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose()"
       (next)="onNext()"></gv-subfield>
   </ng-container>
 
 
   <ng-container *ngIf="(activeElement$ | async) === 'create-form'">
-    <gv-form-create-entity [listDefinition]="data.listDefinition" [pkSourceEntity]="data.pkEntity" (cancel)="onClose()"
-      (saved)="onClose()">
+    <gv-form-create-entity [field]="data.field" [targetClass]="data.targetClass" [pkSourceEntity]="data.pkEntity"
+      (cancel)="onClose()" (saved)="onClose()">
     </gv-form-create-entity>
   </ng-container>
 
@@ -59,8 +50,8 @@
 
     <div class="gv-aoc-container">
       <div class="gv-aoc-left gv-flex-fh">
-        <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [listDefinition]="data.listDefinition"
-          [pkSourceEntity]="data.pkEntity" (cancel)="onClose()" (saved)="onClose()"
+        <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [field]="data.field"
+          [targetClass]="data.targetClass" [pkSourceEntity]="data.pkEntity" (cancel)="onClose()" (saved)="onClose()"
           (searchString)="searchStringChange($event)" [hideTitle]="true">
         </gv-form-create-entity>
       </div>

@@ -19,20 +19,22 @@
       </span>
     </div>
 
-    <button class="right-col" mat-icon-button (click)="add()"
-      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.listDefinitions.length===1"
+    <button class="right-col" mat-icon-button (click)="addItemInField(
+      formArrayFactory.config.data.lists.fieldDefinition,
+      formArrayFactory.config.data.lists.fieldDefinition.targetClasses[0])"
+      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.targetClasses.length===1"
       [disabled]="length>=maxLength">
       <mat-icon>add</mat-icon>
     </button>
 
     <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col"
-      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.listDefinitions.length>1">
+      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.targetClasses.length>1">
       <mat-icon>add</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item *ngFor="let lDef of formArrayFactory.config.data.lists.fieldDefinition?.listDefinitions"
-        (click)="addItemInChildListDef(lDef)">
-        {{lDef.targetClassLabel}}
+      <button mat-menu-item *ngFor="let pkClass of formArrayFactory.config.data.lists.fieldDefinition.targetClasses "
+        (click)="addItemInField(formArrayFactory.config.data.lists.fieldDefinition, pkClass)">
+        {{formArrayFactory.config.data.lists.fieldDefinition.targets[pkClass]?.targetClassLabel}}
       </button>
     </mat-menu>
   </div>

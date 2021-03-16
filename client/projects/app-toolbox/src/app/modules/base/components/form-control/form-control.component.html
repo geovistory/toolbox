@@ -80,10 +80,10 @@
 
 <mat-form-field *ngIf="config?.data.controlType === 'ctrl-entity'" class="w-100" [appearance]="config.data.appearance">
   <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
-  <gv-ctrl-entity [placeholder]="('Add ' + config?.data?.listDefinition.targetClassLabel +'...')"
-    [formControl]="formControlFactory.control" [pkClass]="config?.data?.listDefinition.targetClass"
-    [property]="config?.data?.listDefinition.property" [required]="config?.required"
-    [showAddList]="!config.data.listDefinition.identityDefiningForTarget"
+  <gv-ctrl-entity [placeholder]="('Add ' + config?.data?.targetClassLabel +'...')"
+    [formControl]="formControlFactory.control" [pkClass]="config?.data?.targetClass"
+    [property]="config?.data?.field.property" [required]="config?.required"
+    [showAddList]="!config.data.field.identityDefiningForTarget"
     [disableExistingWithStatement]="entityCtrlDisableStatement">
   </gv-ctrl-entity>
   <mat-icon matSuffix svgIcon="pencil"></mat-icon>
@@ -98,7 +98,7 @@
 <mat-form-field *ngIf="config?.data.controlType === 'ctrl-type'" class="w-100" [appearance]="config.data.appearance">
   <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
   <gv-ctrl-type placeholder="Choose type..." [formControl]="formControlFactory.control" [autoopen]="false"
-    [pkTypedClass]="config?.data?.listDefinition.sourceClass" [pkTypeClass]="config?.data?.listDefinition.targetClass"
+    [pkTypedClass]="config?.data?.field.sourceClass" [pkTypeClass]="config?.data?.targetClass"
     [required]="config?.required">
   </gv-ctrl-type>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">

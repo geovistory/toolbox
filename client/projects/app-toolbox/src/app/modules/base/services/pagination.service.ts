@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { InfSelector, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
+import { Field, InfSelector, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
 import { ActionResultObservable, GvSchemaActions, PaginatedStatementList, PaginatedStatements, subfieldIdToString, SucceedActionMeta } from '@kleiolab/lib-redux';
-import { GvLoadSubfieldPageReq, GvSchemaObject, GvSubfieldId, GvSubfieldPage, GvSubfieldPageScope } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { subfieldToSubfieldId } from '../base.helpers';
+import { fieldToFieldId, fieldToGvFieldTargets } from '../base.helpers';
 
 
 class StatementPageLoader {
@@ -18,7 +18,7 @@ class StatementPageLoader {
   }>()
   constructor(
     private p: ActiveProjectService,
-    private loadNeededFn: (subfieldId: GvSubfieldId, trigger$?: Observable<any>) => Observable<boolean>,
+    private loadNeededFn: (subfieldId: GvFieldId, trigger$?: Observable<any>) => Observable<boolean>,
     private loadFn: (pkProject: number,
       pkEntity: number,
       pkProperty: number,
@@ -29,7 +29,7 @@ class StatementPageLoader {
   ) { }
 
   public addPageLoader(pkProject: number, l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
-    const subfieldId = subfieldToSubfieldId(l, pkEntity, { inProject: pkProject })
+    const subfieldId = fieldToFieldId(l as unknown as Field, pkEntity, { inProject: pkProject })
     const subfieldIdString = subfieldIdToString(subfieldId)
 
     const trigger$ = this.getTrigger(subfieldIdString, l, pkEntity, alternatives);
@@ -129,16 +129,16 @@ class StatementPageLoader2 {
   }>()
   constructor(
     private inf$: InfSelector,
-    private loadNeededFn: (subfieldId: GvSubfieldPage, trigger$?: Observable<any>) => Observable<boolean>,
+    private loadNeededFn: (subfieldId: GvFieldPage, trigger$?: Observable<any>) => Observable<boolean>,
     private schemaActions: GvSchemaActions,
   ) { }
 
-  public addPageLoader(pkProject: number, l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, scope: GvSubfieldPageScope) {
-    const subfieldId = subfieldToSubfieldId(l, pkEntity, scope)
+  public addPageLoader(pkProject: number, field: Field, pkEntity: number, limit, offset, takeUntil$: Observable<any>, scope: GvFieldPageScope) {
+    const subfieldId = fieldToFieldId(field, pkEntity, scope)
     const subfieldIdString = subfieldIdToString(subfieldId)
 
 
-    const trigger$ = this.getTrigger(subfieldIdString, l, pkEntity, scope);
+    const trigger$ = this.getTrigger(subfieldIdString, field, pkEntity, scope);
 
     const pageIdString = subfieldIdString + '_' + limit + '_' + offset;
 
@@ -154,19 +154,18 @@ class StatementPageLoader2 {
         until$,
         // loadEvent$
       })
-      const subfieldPage: GvSubfieldPage = { ...subfieldId, limit, offset }
+      const subfieldPage: GvFieldPage = { ...subfieldId, limit, offset }
       this.loadNeededFn(subfieldPage, trigger$).pipe(
         filter(loadNeeded => loadNeeded === true),
         takeUntil(until$)
       ).subscribe(() => {
-        const req: GvLoadSubfieldPageReq = {
+        const req: GvFieldPageReq = {
           pkProject,
-          subfieldType: l.listType,
+          targets: fieldToGvFieldTargets(field),
           page: {
             fkSourceEntity: pkEntity,
-            fkProperty: l.property.pkProperty,
-            targetClass: l.targetClass,
-            isOutgoing: l.isOutgoing,
+            fkProperty: field.property.pkProperty,
+            isOutgoing: field.isOutgoing,
             scope: scope,
             limit,
             offset
@@ -205,18 +204,18 @@ class StatementPageLoader2 {
 
   }
 
-  private getTrigger(subfieldId: string, l: Subfield, pkEntity: number, scope: GvSubfieldPageScope) {
+  private getTrigger(subfieldId: string, field: Field, pkEntity: number, scope: GvFieldPageScope) {
     if (!this.paginationTriggers.has(subfieldId)) {
       const ofProject = !!scope.inProject;
       const t = combineLatest([
         this.inf$.statement$.by_object_and_property_indexed$({
-          fk_property: l.property.pkProperty,
+          fk_property: field.property.pkProperty,
           fk_object_info: pkEntity
         }, ofProject).pipe(map(x => {
           return keys(x)
         }), distinctUntilChanged(equals)),
         this.inf$.statement$.by_subject_and_property_indexed$({
-          fk_property: l.property.pkProperty,
+          fk_property: field.property.pkProperty,
           fk_subject_info: pkEntity
         }, ofProject).pipe(map(x => {
           return keys(x)

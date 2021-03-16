@@ -1,3 +1,10 @@
-<p>subfield-dialog works!</p>
-<gv-subfield *ngIf="subfield$|async" [subfield]="subfield$|async" [pkEntity]="data.sourceEntity" [scope]="data.scope"
-  [showOntoInfo$]="data.showOntoInfo$"></gv-subfield>
+<h1 mat-dialog-title>
+  {{data.title}}
+</h1>
+<div mat-dialog-content>
+  <gv-subfield [field]="data.field" [pkEntity]="data.sourceEntity" [scope]="data.scope"
+    [showOntoInfo$]="data.showOntoInfo$"></gv-subfield>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]>Close</button>
+</div>

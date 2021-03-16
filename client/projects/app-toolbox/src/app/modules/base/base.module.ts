@@ -50,7 +50,6 @@ import { PropertiesTreeComponent } from './components/properties-tree/properties
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { SubfieldDialogComponent } from './components/subfield-dialog/subfield-dialog.component';
-import { SubfieldTableComponent } from './components/subfield-table/subfield-table.component';
 import { SubfieldComponent } from './components/subfield/subfield.component';
 import { TemporalEntityAddListComponent } from './components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
@@ -97,7 +96,6 @@ const components = [
   FgLangStringComponent,
   FgDimensionComponent,
   SubfieldComponent,
-  SubfieldTableComponent,
   SubfieldDialogComponent,
   FieldLabelComponent,
   EntityWithFieldsComponent,

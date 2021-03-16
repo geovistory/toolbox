@@ -11,7 +11,7 @@
  */
 import { HttpClient, HttpHeaders, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { GvLoadSubfieldPageReq } from '../model/models';
+import { GvFieldPageReq } from '../model/models';
 import { GvPaginationAlternativeLeafItemsReq } from '../model/models';
 import { GvPaginationObject } from '../model/models';
 import { Configuration } from '../configuration';
@@ -39,17 +39,17 @@ export declare class SubfieldPageControllerService {
         httpHeaderAccept?: 'application/json';
     }): Observable<HttpEvent<GvPaginationObject>>;
     /**
-     * @param gvLoadSubfieldPageReq
+     * @param gvFieldPageReq
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {
+    subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {
         httpHeaderAccept?: 'application/json';
     }): Observable<GvPaginationObject>;
-    subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {
+    subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {
         httpHeaderAccept?: 'application/json';
     }): Observable<HttpResponse<GvPaginationObject>>;
-    subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvLoadSubfieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {
+    subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {
         httpHeaderAccept?: 'application/json';
     }): Observable<HttpEvent<GvPaginationObject>>;
 }

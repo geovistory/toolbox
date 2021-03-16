@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {GvFieldPage, GvPaginationObject} from '../../../../models'
-import {GvLoadSubfieldPageReqMock} from '../api-requests/GvLoadSubfieldPageReq'
+import {GvFieldPageReqMock} from '../api-requests/GvFieldPageReq'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfAppellationMock} from '../gvDB/InfAppellationMock'
 import {InfDimensionMock} from '../gvDB/InfDimensionMock'
 import {InfLangStringMock} from '../gvDB/InfLangStringMock'
 import {InfLanguageMock} from '../gvDB/InfLanguageMock'
+import {InfPersistentItemMock} from '../gvDB/InfPersistentItemMock'
 import {InfPlaceMock} from '../gvDB/InfPlaceMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
 import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
@@ -19,7 +20,7 @@ export namespace GvPaginationObjectMock {
   export const appeTeEnHasAppeVt: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.appeTeEnRefersToName.page,
+        page: GvFieldPageReqMock.appeTeEnRefersToName.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.NAME_1_TO_APPE.pk_entity
@@ -45,7 +46,7 @@ export namespace GvPaginationObjectMock {
   export const appeTeEnUsedInLanguage: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.appeTeEnUsedInLanguage.page,
+        page: GvFieldPageReqMock.appeTeEnUsedInLanguage.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.NAME_1_TO_LANG.pk_entity
@@ -68,11 +69,41 @@ export namespace GvPaginationObjectMock {
       }
     }
   }
-
+  export const appeTeEnIsAppeOfPerson: GvPaginationObject = {
+    subfieldPages: [
+      {
+        page: GvFieldPageReqMock.appeTeEnIsAppeOfPerson.page,
+        count: 1,
+        paginatedStatements: [
+          InfStatementMock.NAME_1_TO_PERSON.pk_entity
+        ],
+      }
+    ],
+    schemas: {
+      inf: {
+        statement: [
+          InfStatementMock.NAME_1_TO_PERSON
+        ],
+        persistent_item: [
+          InfPersistentItemMock.PERSON_1
+        ]
+      },
+      war: {
+        entity_preview: [
+          WarEntityPreviewMock.PERSON_1
+        ]
+      },
+      pro: {
+        info_proj_rel: [
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON
+        ]
+      }
+    }
+  }
   export const madridsPresenceWasAtPlace: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.madridsPresenceWasAtPlace.page,
+        page: GvFieldPageReqMock.madridsPresenceWasAtPlace.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123.pk_entity
@@ -98,7 +129,7 @@ export namespace GvPaginationObjectMock {
   export const journeyHasDuration: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.journyeHasDuration.page,
+        page: GvFieldPageReqMock.journyeHasDuration.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION.pk_entity
@@ -129,7 +160,7 @@ export namespace GvPaginationObjectMock {
   export const manifSingletonHasShortTitleMurderer: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.manifSingletonHasShortTitleMurderer.page,
+        page: GvFieldPageReqMock.manifSingletonHasShortTitleMurderer.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.pk_entity
@@ -160,7 +191,7 @@ export namespace GvPaginationObjectMock {
   export const shipVoyageAtSomeTimeWithin: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.shipVoyageAtSomeTimeWithin.page,
+        page: GvFieldPageReqMock.shipVoyageAtSomeTimeWithin.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.pk_entity
@@ -263,14 +294,14 @@ export namespace GvPaginationObjectMock {
   export const personHasAppeTeEn: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvLoadSubfieldPageReqMock.person1HasAppeTeEn.page,
+        page: GvFieldPageReqMock.person1HasAppeTeEn.page,
         count: 1,
         paginatedStatements: [
           InfStatementMock.NAME_1_TO_PERSON.pk_entity
         ],
       },
       {
-        page: {...GvLoadSubfieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
+        page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
         count: 1,
         paginatedStatements: [
           InfStatementMock.NAME_1_TO_APPE.pk_entity

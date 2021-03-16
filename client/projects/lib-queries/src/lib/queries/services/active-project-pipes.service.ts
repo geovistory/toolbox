@@ -1,10 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState } from '@kleiolab/lib-redux';
-import { InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { IAppState, SchemaService } from '@kleiolab/lib-redux';
+import { GvSchemaObject, InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, first, switchMap } from 'rxjs/operators';
 import { cache } from '../decorators/method-decorators';
 import { SchemaSelectorsService } from './schema-selectors.service';
@@ -22,6 +22,7 @@ export class ActiveProjectPipesService {
     private ngRedux: NgRedux<IAppState>,
     private s: SchemaSelectorsService,
     private entityPreviewSocket: EntityPreviewSocket,
+    private schemaService: SchemaService
 
   ) {
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project'])
@@ -53,7 +54,9 @@ export class ActiveProjectPipesService {
         })
     })
 
-
+    combineLatest(this.schemaService.schemaObjectStored$, this.pkProject$).subscribe(([object, pkProject]) => {
+      this.extendEntityPreviewStream(object, pkProject)
+    })
 
   }
   @cache({ refCount: false }) pipeActiveProject(): Observable<ProProject> {
@@ -109,4 +112,18 @@ export class ActiveProjectPipesService {
       )
   }
 
+  /**
+   * Adds the entity previews to the streamed entity previews (for ws communication)
+   * @param object
+   * @param pkProject
+   */
+  private extendEntityPreviewStream(object: GvSchemaObject, pkProject: number) {
+
+    if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
+      this.entityPreviewSocket.emit('extendStream', {
+        pkProject,
+        pks: object.war.entity_preview.map(p => p.pk_entity)
+      });
+    }
+  }
 }

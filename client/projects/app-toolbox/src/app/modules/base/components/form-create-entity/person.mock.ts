@@ -1,37 +1,38 @@
 export const mockPerson = {
-  "text_properties": [
+  'outgoing_statements': [
     {
-      "fk_class_field": 219,
-      "quill_doc": {
-        "latestId": 4,
-        "ops": [
-          {
-            "attributes": {
-              "charid": "2"
+      'fk_property': 1762,
+      'object_lang_string': {
+        'fk_class': 785,
+        'fk_language': 18605,
+        'language': {
+          'fk_class': 54,
+          'notes': 'German',
+          'iso6391': 'de ',
+          'iso6392b': 'ger',
+          'iso6392t': 'deu',
+          'pk_entity': 18605,
+          'pk_language': 'deu'
+        },
+        'quill_doc': {
+          'latestId': 3,
+          'ops': [
+            {
+              'attributes': {
+                'charid': '3'
+              },
+              'insert': 'a'
             },
-            "insert": "a"
-          },
-          {
-            "attributes": {
-              "blockid": "1"
-            },
-            "insert": "\n"
-          }
-        ]
-      },
-      "language": {
-        "fk_class": 54,
-        "pk_language": "fra",
-        "lang_type": "living",
-        "scope": "individual",
-        "iso6392b": "fre",
-        "iso6392t": "fra",
-        "iso6391": "fr ",
-        "notes": "French",
-        "pk_entity": 19008
-      },
-      "fk_language": 19008
+            {
+              'attributes': {
+                'blockid': '2'
+              },
+              'insert': '\n'
+            }
+          ]
+        }
+      }
     }
   ],
-  "fk_class": 21
+  'fk_class': 21
 }

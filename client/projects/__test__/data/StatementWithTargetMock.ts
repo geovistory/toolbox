@@ -11,7 +11,6 @@ import { InfStatementMock } from './auto-gen/gvDB/InfStatementMock';
 import { InfTemporalEntityMock } from './auto-gen/gvDB/InfTemporalEntityMock';
 import { InfTimePrimitiveMock } from './auto-gen/gvDB/InfTimePrimitiveMock';
 import { ProInfoProjRelMock } from './auto-gen/gvDB/ProInfoProjRelMock';
-import { ProProjectMock } from './auto-gen/gvDB/ProProjectMock';
 import { WarEntityPreviewMock } from './auto-gen/gvDB/WarEntityPreviewMock';
 
 export namespace StatementWithTargetMock {
@@ -47,19 +46,20 @@ export namespace StatementWithTargetMock {
     target: {
       entity: {
         pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
-        subfields: [{
-          subfield: {
-            fkProperty: appeTeEnHasAppeVtWithTarget.statement.fk_property,
-            fkSourceEntity: appeTeEnHasAppeVtWithTarget.statement.fk_subject_info,
-            isOutgoing: appeTeEnHasAppeVtWithTarget.isOutgoing,
-            scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
-            targetClass: appeTeEnHasAppeVtWithTarget.targetClass,
-          },
-          count: 1,
-          statements: [
-            appeTeEnHasAppeVtWithTarget
-          ]
-        }]
+        fkClass: InfTemporalEntityMock.NAMING_1.fk_class,
+        // subfields: [{
+        //   subfield: {
+        //     fkProperty: appeTeEnHasAppeVtWithTarget.statement.fk_property,
+        //     fkSourceEntity: appeTeEnHasAppeVtWithTarget.statement.fk_subject_info,
+        //     isOutgoing: appeTeEnHasAppeVtWithTarget.isOutgoing,
+        //     scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
+        //     targetClass: appeTeEnHasAppeVtWithTarget.targetClass,
+        //   },
+        //   count: 1,
+        //   statements: [
+        //     appeTeEnHasAppeVtWithTarget
+        //   ]
+        // }]
       }
     }
   }
@@ -154,7 +154,6 @@ export namespace StatementWithTargetMock {
             subfield: {
               fkProperty: 71,
               isOutgoing: true,
-              targetClass: 335,
               fkSourceEntity: 4004,
               scope: {
                 inProject: 3001
@@ -167,7 +166,6 @@ export namespace StatementWithTargetMock {
             subfield: {
               fkProperty: 72,
               isOutgoing: true,
-              targetClass: 335,
               fkSourceEntity: 4004,
               scope: {
                 inProject: 3001
@@ -180,7 +178,6 @@ export namespace StatementWithTargetMock {
             subfield: {
               fkProperty: 150,
               isOutgoing: true,
-              targetClass: 335,
               fkSourceEntity: 4004,
               scope: {
                 inProject: 3001
@@ -193,7 +190,6 @@ export namespace StatementWithTargetMock {
             subfield: {
               fkProperty: 151,
               isOutgoing: true,
-              targetClass: 335,
               fkSourceEntity: 4004,
               scope: {
                 inProject: 3001
@@ -232,7 +228,6 @@ export namespace StatementWithTargetMock {
             subfield: {
               fkProperty: 152,
               isOutgoing: true,
-              targetClass: 335,
               fkSourceEntity: 4004,
               scope: {
                 inProject: 3001
@@ -271,7 +266,6 @@ export namespace StatementWithTargetMock {
             subfield: {
               fkProperty: 153,
               isOutgoing: true,
-              targetClass: 335,
               fkSourceEntity: 4004,
               scope: {
                 inProject: 3001

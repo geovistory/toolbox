@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvSubfieldPage } from './gvSubfieldPage';
+import { GvFieldPage } from './gvFieldPage';
 export interface GvSubfieldPageInfo {
-    page: GvSubfieldPage;
+    page: GvFieldPage;
     count: number;
     paginatedStatements: Array<number>;
 }
