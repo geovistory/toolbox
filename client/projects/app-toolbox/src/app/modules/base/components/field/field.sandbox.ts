@@ -31,7 +31,7 @@ export default sandboxOf(FieldComponent, {
   .add('Field | type: LangStringVT ', {
     context: {
       field: SubfieldMock.manifestationSingletonHasDefinition,
-      pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
+      source: { fkInfo: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),
       treeControl: new NestedTreeControl<Field>(node => ([])),
@@ -45,7 +45,7 @@ export default sandboxOf(FieldComponent, {
             <mat-nested-tree-node *matTreeNodeDef="let node">
 
               <gv-field #field [fieldDefinition]="node" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
-                [readonly$]="readonly$" [pkEntity]="pkEntity"></gv-field>
+                [readonly$]="readonly$" [source]="source"></gv-field>
 
             </mat-nested-tree-node>
           </mat-tree>

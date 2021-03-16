@@ -10,11 +10,13 @@
  * Do not edit the class manually.
  */
 import { GvFieldPageScope } from './gvFieldPageScope';
+import { GvFieldSourceEntity } from './gvFieldSourceEntity';
+import { GvFieldProperty } from './gvFieldProperty';
 
 
 export interface GvFieldId { 
-    fkSourceEntity: number;
-    fkProperty: number;
+    source: GvFieldSourceEntity;
+    property: GvFieldProperty;
     isOutgoing: boolean;
     scope: GvFieldPageScope;
 }

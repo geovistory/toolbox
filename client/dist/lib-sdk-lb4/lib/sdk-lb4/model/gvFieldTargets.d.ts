@@ -11,6 +11,6 @@
  */
 import { GvTargetType } from './gvTargetType';
 export interface GvFieldTargets {
-  [key: string]: GvTargetType;
-  _1?: GvTargetType;
+    [key: string]: GvTargetType | any;
+    _1?: GvTargetType;
 }

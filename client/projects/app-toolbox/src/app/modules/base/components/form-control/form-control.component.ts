@@ -84,7 +84,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
         relatedStatement: {
           filter: {
             key: this.getKeyOfRelatedStatement(),
-            value: (lDef.property.pkProperty || lDef.property.pkPropertyOfProperty)
+            value: (lDef.property.fkProperty || lDef.property.fkPropertyOfProperty)
           },
           relateBy: this.getRelateByOfRelatedStatement()
         }
@@ -94,8 +94,8 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getKeyOfRelatedStatement() {
     const lDef = this.config.data.field
-    if (lDef.property.pkProperty) return 'fk_property';
-    else if (lDef.property.pkPropertyOfProperty) return 'fk_property_of_property';
+    if (lDef.property.fkProperty) return 'fk_property';
+    else if (lDef.property.fkPropertyOfProperty) return 'fk_property_of_property';
     console.error('key to relate related statement not found');
   }
 

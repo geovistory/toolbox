@@ -6634,8 +6634,8 @@ class InfEpics {
         const scope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject };
         /** @type {?} */
         const req = {
-            fkSourceEntity: meta.pkSourceEntity,
-            fkProperty: meta.pkProperty,
+            source: { fkInfo: meta.pkSourceEntity },
+            property: { fkProperty: meta.pkProperty },
             isOutgoing: meta.isOutgoing,
             limit: meta.limit,
             offset: meta.offset,
@@ -8107,7 +8107,19 @@ const createProjectsReducer = (/**
  * @return {?}
  */
 function subfieldIdToString(x) {
-    return `${x.fkSourceEntity}_${x.fkProperty}_${x.isOutgoing ? 'out' : 'in'}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
+    /** @type {?} */
+    const source = Object.keys(x.source).map((/**
+     * @param {?} key
+     * @return {?}
+     */
+    key => `${key}-${x.source[key]}`)).join('_');
+    /** @type {?} */
+    const property = Object.keys(x.property).map((/**
+     * @param {?} key
+     * @return {?}
+     */
+    key => `${key}-${x.property[key]}`)).join('_');
+    return `${source}_${property}_${x.isOutgoing ? 'out' : 'in'}_${keys(x.scope)[0]}_${values(x.scope)[0]}`;
 }
 
 /**

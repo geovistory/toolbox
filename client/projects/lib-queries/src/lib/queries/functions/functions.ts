@@ -7,7 +7,7 @@ export function timeSpanItemToTimeSpan(timeSpanItem: TimeSpanItem): TimeSpanUtil
   const t = new TimeSpanUtil();
 
   timeSpanItem.properties.forEach(p => {
-    const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty]
+    const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.fkProperty]
     if (p.items && p.items.length) t[key] = p.items[0].timePrimitive
   })
   return t;

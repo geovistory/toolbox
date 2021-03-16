@@ -309,7 +309,7 @@
          */
         function (p) {
             /** @type {?} */
-            var key = libConfig.DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty];
+            var key = libConfig.DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.fkProperty];
             if (p.items && p.items.length)
                 t[key] = p.items[0].timePrimitive;
         }));
@@ -603,22 +603,6 @@
         FieldPlaceOfDisplay.prototype.specificFields;
         /** @type {?|undefined} */
         FieldPlaceOfDisplay.prototype.hidden;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * Generated from: models/FieldProperty.ts
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @record
-     */
-    function FieldProperty() { }
-    if (false) {
-        /** @type {?|undefined} */
-        FieldProperty.prototype.pkProperty;
-        /** @type {?|undefined} */
-        FieldProperty.prototype.pkPropertyOfProperty;
     }
 
     /**
@@ -3632,9 +3616,9 @@
                         for (var subfields_1 = __values(subfields), subfields_1_1 = subfields_1.next(); !subfields_1_1.done; subfields_1_1 = subfields_1.next()) {
                             var s = subfields_1_1.value;
                             /** @type {?} */
-                            var fieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing].join('_');
+                            var fieldId = [s.sourceClass, s.property.fkProperty, s.isOutgoing].join('_');
                             /** @type {?} */
-                            var subfieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing, s.targetClass].join('_');
+                            var subfieldId = [s.sourceClass, s.property.fkProperty, s.isOutgoing, s.targetClass].join('_');
                             /** @type {?} */
                             var fieldConfig = fieldConfigIdx[fieldId];
                             // the first time the group is established
@@ -3643,7 +3627,7 @@
                                 var isSpecialField = false;
                                 if (s.isHasTypeField)
                                     isSpecialField = 'has-type';
-                                else if (s.property.pkProperty === libConfig.DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
+                                else if (s.property.fkProperty === libConfig.DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
                                     isSpecialField = 'time-span';
                                 uniqFields[fieldId] = {
                                     sourceClass: s.sourceClass,
@@ -3843,7 +3827,7 @@
                  * @param {?} field
                  * @return {?}
                  */
-                function (field) { return field.property.pkProperty === libConfig.DfhConfig.PROPERTY_PK_HAS_TIME_SPAN; }));
+                function (field) { return field.property.fkProperty === libConfig.DfhConfig.PROPERTY_PK_HAS_TIME_SPAN; }));
                 if (whenField)
                     fields.push(whenField);
                 /** @type {?} */
@@ -4100,7 +4084,7 @@
                     targetMaxQuantity: targetMaxQuantity,
                     label: label,
                     isHasTypeField: o && p.is_has_type_subproperty,
-                    property: { pkProperty: p.pk_property },
+                    property: { fkProperty: p.pk_property },
                     isOutgoing: o,
                     identityDefiningForSource: o ? p.identity_defining : false,
                     identityDefiningForTarget: o ? false : p.identity_defining,
@@ -4265,7 +4249,7 @@
                             /** @type {?} */
                             var isCircular = false;
                             if (parentProperty &&
-                                field.property.pkProperty == parentProperty &&
+                                field.property.fkProperty == parentProperty &&
                                 field.targetMaxQuantity === 1) {
                                 isCircular = true;
                             }
@@ -4273,7 +4257,7 @@
                             var nestedPage = {
                                 targets: nestedTargets,
                                 page: {
-                                    fkProperty: field.property.pkProperty,
+                                    property: field.property,
                                     isOutgoing: field.isOutgoing,
                                     limit: 1,
                                     offset: 0,
@@ -5619,13 +5603,13 @@
             else if (specialFields.bySourceClass &&
                 specialFields.bySourceClass[subfield.sourceClass] &&
                 specialFields.bySourceClass[subfield.sourceClass].outgoingProperties &&
-                specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.pkProperty]) {
-                settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.pkProperty];
+                specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty]) {
+                settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty];
             }
             // get seetings by property
             else if (specialFields.outgoingProperties &&
-                specialFields.outgoingProperties[subfield.property.pkProperty]) {
-                settings = specialFields.outgoingProperties[subfield.property.pkProperty];
+                specialFields.outgoingProperties[subfield.property.fkProperty]) {
+                settings = specialFields.outgoingProperties[subfield.property.fkProperty];
             }
         }
         else {
@@ -5633,13 +5617,13 @@
             if (specialFields.bySourceClass &&
                 specialFields.bySourceClass[subfield.sourceClass] &&
                 specialFields.bySourceClass[subfield.sourceClass].incomingProperties &&
-                specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.pkProperty]) {
-                settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.pkProperty];
+                specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty]) {
+                settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty];
             }
             // get seetings by property
             else if (specialFields.incomingProperties &&
-                specialFields.incomingProperties[subfield.property.pkProperty]) {
-                settings = specialFields.incomingProperties[subfield.property.pkProperty];
+                specialFields.incomingProperties[subfield.property.fkProperty]) {
+                settings = specialFields.incomingProperties[subfield.property.fkProperty];
             }
         }
         return settings;
@@ -7479,7 +7463,7 @@
          */
         function (page, targets) {
             var _this = this;
-            if (page.fkProperty === libConfig.DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
+            if (page.property.fkProperty === libConfig.DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
                 // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
                 return this.pipeTimeSpan(page);
             }
@@ -7525,15 +7509,10 @@
          * @return {?}
          */
         function (page) {
-            var _a;
             var _this = this;
             /** @type {?} */
-            var virtualStatementToTimeSpan = { fk_object_info: page.fkSourceEntity };
-            /** @type {?} */
-            var targets = (_a = {}, _a[libConfig.DfhConfig.ClASS_PK_TIME_SPAN] = { timeSpan: 'true' }, _a)
-            // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
-            // for each of these subfields
-            ;
+            var virtualStatementToTimeSpan = { fk_object_info: page.source.fkInfo };
+            // const targets: GvFieldTargets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
             // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
             // for each of these subfields
             /** @type {?} */
@@ -7551,11 +7530,11 @@
                 var scope = page.scope.notInProject ? { inRepo: true } : page.scope;
                 /** @type {?} */
                 var nestedPage = {
-                    fkProperty: fkProperty,
+                    property: { fkProperty: fkProperty },
                     isOutgoing: true,
                     limit: 1,
                     offset: 0,
-                    fkSourceEntity: page.fkSourceEntity,
+                    source: page.source,
                     scope: scope,
                 };
                 /** @type {?} */
@@ -10283,7 +10262,7 @@
              * @param {?} f
              * @return {?}
              */
-            function (f) { return !!f.property.pkProperty; }))
+            function (f) { return !!f.property.fkProperty; }))
                 .map((/**
              * @param {?} f
              * @return {?}
@@ -10292,7 +10271,7 @@
                 isOutgoing: f.isOutgoing,
                 fkPropertyDomain: f.isOutgoing ? f.sourceClass : null,
                 fkPropertyRange: f.isOutgoing ? null : f.sourceClass,
-                pkProperty: f.property.pkProperty
+                pkProperty: f.property.fkProperty
             }); })); })), operators.switchMap((/**
              * @param {?} items
              * @return {?}

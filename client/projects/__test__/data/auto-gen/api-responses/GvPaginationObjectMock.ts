@@ -6,6 +6,7 @@ import {InfAppellationMock} from '../gvDB/InfAppellationMock'
 import {InfDimensionMock} from '../gvDB/InfDimensionMock'
 import {InfLangStringMock} from '../gvDB/InfLangStringMock'
 import {InfLanguageMock} from '../gvDB/InfLanguageMock'
+import {InfPersistentItemMock} from '../gvDB/InfPersistentItemMock'
 import {InfPlaceMock} from '../gvDB/InfPlaceMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
 import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
@@ -68,7 +69,37 @@ export namespace GvPaginationObjectMock {
       }
     }
   }
-
+  export const appeTeEnIsAppeOfPerson: GvPaginationObject = {
+    subfieldPages: [
+      {
+        page: GvFieldPageReqMock.appeTeEnIsAppeOfPerson.page,
+        count: 1,
+        paginatedStatements: [
+          InfStatementMock.NAME_1_TO_PERSON.pk_entity
+        ],
+      }
+    ],
+    schemas: {
+      inf: {
+        statement: [
+          InfStatementMock.NAME_1_TO_PERSON
+        ],
+        persistent_item: [
+          InfPersistentItemMock.PERSON_1
+        ]
+      },
+      war: {
+        entity_preview: [
+          WarEntityPreviewMock.PERSON_1
+        ]
+      },
+      pro: {
+        info_proj_rel: [
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON
+        ]
+      }
+    }
+  }
   export const madridsPresenceWasAtPlace: GvPaginationObject = {
     subfieldPages: [
       {
@@ -306,8 +337,8 @@ export namespace GvPaginationObjectMock {
 
 export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPage {
   return {
-    fkSourceEntity: sourceEntity,
-    fkProperty: property.dfh_pk_property,
+    source: {fkInfo: sourceEntity},
+    property: {fkProperty: property.dfh_pk_property},
     isOutgoing: true,
     // targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},

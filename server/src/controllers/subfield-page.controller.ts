@@ -9,6 +9,7 @@ import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
 import {Postgres1DataSource} from '../datasources';
 import {GvFieldPageReq, GvPaginationAlternativeLeafItemsReq, GvPaginationObject, GvFieldId, GvSubentitFieldPageReq, GvFieldPageScope, GvFieldPage} from '../models';
 import {flatten, mergeDeepWith, concat} from 'ramda';
+import {GvFieldSourceEntity} from '../models/field/gv-field-source-entity';
 
 export class SubfieldPageController {
   constructor(
@@ -65,7 +66,7 @@ export class SubfieldPageController {
     if (res.schemas.inf?.temporal_entity?.length) {
       const subPageQueries: Promise<GvPaginationObject[]>[] = []
       res.schemas.inf?.temporal_entity.forEach(e => {
-        const fkSourceEntity = e.pk_entity as number;
+        const source: GvFieldSourceEntity = {fkInfo: e.pk_entity as number};
         const fkClass = e.fk_class as number;
         const targetType = req.targets[fkClass]
         if (targetType?.temporalEntity?.length) {
@@ -73,7 +74,7 @@ export class SubfieldPageController {
           const scope = req.page.scope.notInProject ? {inRepo: true} : req.page.scope
           subPageQueries.push(this.querySubfields(
             req.pkProject,
-            fkSourceEntity,
+            source,
             subreqs,
             scope
           ))
@@ -92,7 +93,7 @@ export class SubfieldPageController {
 
   private async querySubfields(
     pkProject: number,
-    fkSourceEntity: number,
+    source: GvFieldSourceEntity,
     subReqs: GvSubentitFieldPageReq[],
     parentScope: GvFieldPageScope,
   ) {
@@ -114,7 +115,7 @@ export class SubfieldPageController {
       const page: GvFieldPage = {
         ...subReq.page,
         scope,
-        fkSourceEntity
+        source
       };
       const targets = subReq.targets;
       const req: GvFieldPageReq = {

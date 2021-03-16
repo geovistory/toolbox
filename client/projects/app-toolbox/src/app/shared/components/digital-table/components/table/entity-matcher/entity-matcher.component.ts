@@ -1,16 +1,14 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { DfhConfig } from '@kleiolab/lib-config';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { InfActions } from '@kleiolab/lib-redux';
+import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity.component';
-import { InfActions } from "@kleiolab/lib-redux";
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
-import { SchemaSelectorsService } from "@kleiolab/lib-queries";
+import { BehaviorSubject, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-entity-matcher',
@@ -71,7 +69,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           data: {
             initVal$: new BehaviorSubject(undefined),
             showAddList: true,
-            hiddenProperty: { pkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+            hiddenProperty: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
             alreadyInProjectBtnText: 'Select',
             notInProjectClickBehavior: 'selectOnly',
             notInProjectBtnText: 'Select',

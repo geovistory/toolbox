@@ -128,7 +128,7 @@ export class TimeSpanService {
       }
     } = {}
     item.subfields.forEach((s) => {
-      const p = s.subfield.fkProperty
+      const p = s.subfield.property.fkProperty
       if (s.statements.length > 0) {
         const r = s.statements[0].statement
         const i = s.statements[0].target.timePrimitive;

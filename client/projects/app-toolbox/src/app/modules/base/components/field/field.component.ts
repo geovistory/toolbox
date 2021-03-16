@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
-import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class FieldComponent implements OnInit {
 
   destroy$ = new Subject<boolean>();
 
-  @Input() pkEntity: number;
+  @Input() source: GvFieldSourceEntity;
   @Input() field: Field
   @Input() treeControl: NestedTreeControl<Field>;
   @Input() readonly$: Observable<boolean>
@@ -64,7 +64,7 @@ export class FieldComponent implements OnInit {
       this.itemsCount$ = this.scope$.pipe(
         switchMap(
           (scope) => this.s.inf$.statement$.pagination$
-            .pipeCount(fieldToFieldId(this.field, this.pkEntity, scope))
+            .pipeCount(fieldToFieldId(this.field, this.source, scope))
         ),
         shareReplay({ refCount: true, bufferSize: 1 })
       )
@@ -166,7 +166,7 @@ export class FieldComponent implements OnInit {
     const data: AddDialogData = {
       field: field,
       targetClass,
-      pkEntity: this.pkEntity
+      source: this.source
     };
     const config: MatDialogConfig = {
       height: 'calc(100% - 30px)',

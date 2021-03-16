@@ -5,6 +5,7 @@ import {ProProjectMock} from './ProProjectMock'
 import {DfhApiClassMock} from './DfhApiClassMock'
 import {InfLangStringMock} from './InfLangStringMock'
 import {OmitEntity} from './local-model.helpers'
+import {InfAppellationMock} from './InfAppellationMock'
 
 /**
  * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400
@@ -76,5 +77,14 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
+    static readonly PERSON_1: OmitEntity<WarEntityPreview> = ({
+        pk_entity: 2001,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+        class_label: DfhApiClassMock.EN_21_PERSON.dfh_class_label,
+        entity_label: InfAppellationMock.JACK_THE_FOO.string,
+        entity_type: 'peIt',
+    })
 }
 

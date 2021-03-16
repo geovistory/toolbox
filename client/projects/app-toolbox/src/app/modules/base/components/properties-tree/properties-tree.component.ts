@@ -2,6 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -21,7 +22,7 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
 
   @HostBinding('class.mat-typography') true;
 
-  @Input() pkEntity$: Observable<number>
+  @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
   // @Input() appContext: number;

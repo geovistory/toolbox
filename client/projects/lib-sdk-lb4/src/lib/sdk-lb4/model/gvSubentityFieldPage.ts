@@ -9,10 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { GvFieldProperty } from './gvFieldProperty';
 
 
 export interface GvSubentityFieldPage { 
-    fkProperty: number;
+    property: GvFieldProperty;
     isOutgoing: boolean;
     limit: number;
     offset: number;

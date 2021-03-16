@@ -113,7 +113,7 @@ function timeSpanItemToTimeSpan(timeSpanItem) {
      */
     p => {
         /** @type {?} */
-        const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty];
+        const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.fkProperty];
         if (p.items && p.items.length)
             t[key] = p.items[0].timePrimitive;
     }));
@@ -407,22 +407,6 @@ if (false) {
     FieldPlaceOfDisplay.prototype.specificFields;
     /** @type {?|undefined} */
     FieldPlaceOfDisplay.prototype.hidden;
-}
-
-/**
- * @fileoverview added by tsickle
- * Generated from: models/FieldProperty.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function FieldProperty() { }
-if (false) {
-    /** @type {?|undefined} */
-    FieldProperty.prototype.pkProperty;
-    /** @type {?|undefined} */
-    FieldProperty.prototype.pkPropertyOfProperty;
 }
 
 /**
@@ -3287,9 +3271,9 @@ class ConfigurationPipesService {
                 // group by source, pkProperty and isOutgoing
                 for (const s of subfields) {
                     /** @type {?} */
-                    const fieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing].join('_');
+                    const fieldId = [s.sourceClass, s.property.fkProperty, s.isOutgoing].join('_');
                     /** @type {?} */
-                    const subfieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing, s.targetClass].join('_');
+                    const subfieldId = [s.sourceClass, s.property.fkProperty, s.isOutgoing, s.targetClass].join('_');
                     /** @type {?} */
                     const fieldConfig = fieldConfigIdx[fieldId];
                     // the first time the group is established
@@ -3298,7 +3282,7 @@ class ConfigurationPipesService {
                         let isSpecialField = false;
                         if (s.isHasTypeField)
                             isSpecialField = 'has-type';
-                        else if (s.property.pkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
+                        else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
                             isSpecialField = 'time-span';
                         uniqFields[fieldId] = {
                             sourceClass: s.sourceClass,
@@ -3444,7 +3428,7 @@ class ConfigurationPipesService {
              * @param {?} field
              * @return {?}
              */
-            field => field.property.pkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN));
+            field => field.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN));
             if (whenField)
                 fields.push(whenField);
             /** @type {?} */
@@ -3629,7 +3613,7 @@ class ConfigurationPipesService {
                 targetMaxQuantity,
                 label,
                 isHasTypeField: o && p.is_has_type_subproperty,
-                property: { pkProperty: p.pk_property },
+                property: { fkProperty: p.pk_property },
                 isOutgoing: o,
                 identityDefiningForSource: o ? p.identity_defining : false,
                 identityDefiningForTarget: o ? false : p.identity_defining,
@@ -3738,7 +3722,7 @@ class ConfigurationPipesService {
                     /** @type {?} */
                     let isCircular = false;
                     if (parentProperty &&
-                        field.property.pkProperty == parentProperty &&
+                        field.property.fkProperty == parentProperty &&
                         field.targetMaxQuantity === 1) {
                         isCircular = true;
                     }
@@ -3746,7 +3730,7 @@ class ConfigurationPipesService {
                     const nestedPage = {
                         targets: nestedTargets,
                         page: {
-                            fkProperty: field.property.pkProperty,
+                            property: field.property,
                             isOutgoing: field.isOutgoing,
                             limit: 1,
                             offset: 0,
@@ -4809,13 +4793,13 @@ function getSettingsFromSysConfig(subfield, specialFields, settings) {
         else if (specialFields.bySourceClass &&
             specialFields.bySourceClass[subfield.sourceClass] &&
             specialFields.bySourceClass[subfield.sourceClass].outgoingProperties &&
-            specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.pkProperty]) {
-            settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.pkProperty];
+            specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty]) {
+            settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty];
         }
         // get seetings by property
         else if (specialFields.outgoingProperties &&
-            specialFields.outgoingProperties[subfield.property.pkProperty]) {
-            settings = specialFields.outgoingProperties[subfield.property.pkProperty];
+            specialFields.outgoingProperties[subfield.property.fkProperty]) {
+            settings = specialFields.outgoingProperties[subfield.property.fkProperty];
         }
     }
     else {
@@ -4823,13 +4807,13 @@ function getSettingsFromSysConfig(subfield, specialFields, settings) {
         if (specialFields.bySourceClass &&
             specialFields.bySourceClass[subfield.sourceClass] &&
             specialFields.bySourceClass[subfield.sourceClass].incomingProperties &&
-            specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.pkProperty]) {
-            settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.pkProperty];
+            specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty]) {
+            settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty];
         }
         // get seetings by property
         else if (specialFields.incomingProperties &&
-            specialFields.incomingProperties[subfield.property.pkProperty]) {
-            settings = specialFields.incomingProperties[subfield.property.pkProperty];
+            specialFields.incomingProperties[subfield.property.fkProperty]) {
+            settings = specialFields.incomingProperties[subfield.property.fkProperty];
         }
     }
     return settings;
@@ -6069,7 +6053,7 @@ class InformationPipesService {
      * @return {?}
      */
     pipeSubfieldPage(page, targets) {
-        if (page.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
+        if (page.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
             // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
             return this.pipeTimeSpan(page);
         }
@@ -6108,12 +6092,8 @@ class InformationPipesService {
      */
     pipeTimeSpan(page) {
         /** @type {?} */
-        const virtualStatementToTimeSpan = { fk_object_info: page.fkSourceEntity };
-        /** @type {?} */
-        const targets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
-        // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
-        // for each of these subfields
-        ;
+        const virtualStatementToTimeSpan = { fk_object_info: page.source.fkInfo };
+        // const targets: GvFieldTargets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
         // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
         // for each of these subfields
         /** @type {?} */
@@ -6130,11 +6110,11 @@ class InformationPipesService {
             const scope = page.scope.notInProject ? { inRepo: true } : page.scope;
             /** @type {?} */
             const nestedPage = {
-                fkProperty,
+                property: { fkProperty },
                 isOutgoing: true,
                 limit: 1,
                 offset: 0,
-                fkSourceEntity: page.fkSourceEntity,
+                source: page.source,
                 scope,
             };
             /** @type {?} */
@@ -7210,7 +7190,7 @@ class InformationPipesService {
          * @param {?} f
          * @return {?}
          */
-        f => !!f.property.pkProperty))
+        f => !!f.property.fkProperty))
             .map((/**
          * @param {?} f
          * @return {?}
@@ -7219,7 +7199,7 @@ class InformationPipesService {
             isOutgoing: f.isOutgoing,
             fkPropertyDomain: f.isOutgoing ? f.sourceClass : null,
             fkPropertyRange: f.isOutgoing ? null : f.sourceClass,
-            pkProperty: f.property.pkProperty
+            pkProperty: f.property.fkProperty
         }))))), switchMap((/**
          * @param {?} items
          * @return {?}

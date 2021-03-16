@@ -1,9 +1,9 @@
-import { FieldProperty } from './FieldProperty';
+import { GvFieldProperty } from '@kleiolab/lib-sdk-lb4';
 export interface FieldBase {
     label: string;
     ontoInfoUrl: string;
     ontoInfoLabel: string;
-    property: FieldProperty;
+    property: GvFieldProperty;
     isHasTypeField: boolean;
     isOutgoing: boolean;
     sourceClass: number;

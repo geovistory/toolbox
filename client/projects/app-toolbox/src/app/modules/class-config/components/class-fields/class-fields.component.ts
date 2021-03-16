@@ -104,7 +104,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
     const o = l.isOutgoing;
     const data: FieldConfigDialogData = {
       fkProject: this.fkProject,
-      fkProperty: row.property.pkProperty,
+      fkProperty: row.property.fkProperty,
       fkPropertyDomain: o ? l.sourceClass : null,
       fkPropertyRange: o ? null : l.sourceClass
     }
@@ -124,7 +124,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
       //
       const items = specificFields.map(field => {
         const item: Partial<ProClassFieldConfig> = {
-          fk_property: field.property.pkProperty,
+          fk_property: field.property.fkProperty,
           fk_domain_class: field.isOutgoing ? field.sourceClass : undefined,
           fk_range_class: field.isOutgoing ? undefined : field.sourceClass,
           fk_project: this.fkProject,

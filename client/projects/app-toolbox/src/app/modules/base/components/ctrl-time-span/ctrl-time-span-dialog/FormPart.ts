@@ -65,13 +65,13 @@ export class FormPart {
     if (this.initVal) {
 
 
-      if (initVal.initTimeSpan && initVal.initTimeSpan[this.field.property.pkProperty]) {
+      if (initVal.initTimeSpan && initVal.initTimeSpan[this.field.property.fkProperty]) {
         // Yes. It is matching a field, add a form item with initial (language) value
         this.items.push({
           fixed: false,
           required: this.isRequired(this.field),
           classSelect: false,
-          formControlDef: this.addFormControlDef(this.field, initVal.initTimeSpan[this.field.property.pkProperty])
+          formControlDef: this.addFormControlDef(this.field, initVal.initTimeSpan[this.field.property.fkProperty])
         })
       }
 
@@ -79,14 +79,14 @@ export class FormPart {
       // else {
       //   // Q: This is a list that connects one statement per item
       //   const initList = this.initVal.initField
-      //   const initProperty = initList.property.pkProperty;
+      //   const initProperty = initList.property.fkProperty;
 
       //   // we neet to flip source and target, when the list type is a temporal entity
       //   const initTarget = this.initValTarget.listType.temporalEntity ? this.field.sourceClass : this.initValTarget.targetClass;
       //   const initSource = this.initValTarget.listType.temporalEntity ? this.initValTarget.targetClass : this.field.sourceClass;
 
       //   if (
-      //     this.field.property.pkProperty === initProperty
+      //     this.field.property.fkProperty === initProperty
       //     && this.field.sourceClass === initSource
       //     && this.fieldTarget.targetClass === initTarget
       //   ) {
@@ -196,8 +196,8 @@ export class FormPart {
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: field.property.pkProperty,
-        fk_property_of_property: field.property.pkPropertyOfProperty,
+        fk_property: field.property.fkProperty,
+        fk_property_of_property: field.property.fkPropertyOfProperty,
         object_appellation: {
           ...val,
           fk_class: this.fieldTarget.targetClass,
@@ -211,8 +211,8 @@ export class FormPart {
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: field.property.pkProperty,
-        fk_property_of_property: field.property.pkPropertyOfProperty,
+        fk_property: field.property.fkProperty,
+        fk_property_of_property: field.property.fkPropertyOfProperty,
         object_language: {
           ...val,
           fk_class: this.fieldTarget.targetClass,
@@ -226,8 +226,8 @@ export class FormPart {
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: field.property.pkProperty,
-        fk_property_of_property: field.property.pkPropertyOfProperty,
+        fk_property: field.property.fkProperty,
+        fk_property_of_property: field.property.fkPropertyOfProperty,
         object_lang_string: {
           ...val,
           fk_class: this.fieldTarget.targetClass,
@@ -241,8 +241,8 @@ export class FormPart {
       const value: InfStatement = {
         ...{} as any,
         fk_object_info: undefined,
-        fk_property: field.property.pkProperty,
-        fk_property_of_property: field.property.pkPropertyOfProperty,
+        fk_property: field.property.fkProperty,
+        fk_property_of_property: field.property.fkPropertyOfProperty,
         object_place: {
           ...val,
           fk_class: this.fieldTarget.targetClass,
@@ -259,8 +259,8 @@ export class FormPart {
 
       let value: InfStatement = {
         ...{} as any,
-        fk_property: field.property.pkProperty,
-        fk_property_of_property: field.property.pkPropertyOfProperty
+        fk_property: field.property.fkProperty,
+        fk_property_of_property: field.property.fkPropertyOfProperty
       };
 
       if (field.isOutgoing) {

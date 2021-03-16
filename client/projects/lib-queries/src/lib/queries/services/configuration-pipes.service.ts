@@ -131,14 +131,14 @@ export class ConfigurationPipesService {
 
             // group by source, pkProperty and isOutgoing
             for (const s of subfields) {
-              const fieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing].join('_')
-              const subfieldId = [s.sourceClass, s.property.pkProperty, s.isOutgoing, s.targetClass].join('_')
+              const fieldId = [s.sourceClass, s.property.fkProperty, s.isOutgoing].join('_')
+              const subfieldId = [s.sourceClass, s.property.fkProperty, s.isOutgoing, s.targetClass].join('_')
               const fieldConfig: ProClassFieldConfig | undefined = fieldConfigIdx[fieldId];
               // the first time the group is established
               if (!uniqFields[fieldId]) {
                 let isSpecialField: SpecialFieldType = false;
                 if (s.isHasTypeField) isSpecialField = 'has-type';
-                else if (s.property.pkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
+                else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
                 uniqFields[fieldId] = {
                   sourceClass: s.sourceClass,
                   sourceClassLabel: s.sourceClassLabel,
@@ -251,7 +251,7 @@ export class ConfigurationPipesService {
           // sort fields by the position defined in the specific fields
           .sort((a, b) => a.placeOfDisplay.specificFields.position - a.placeOfDisplay.specificFields.position)
 
-        const whenField = allFields.find(field => field.property.pkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
+        const whenField = allFields.find(field => field.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
         if (whenField) fields.push(whenField)
 
         const typeField = allFields.find(field => field.isHasTypeField)
@@ -405,7 +405,7 @@ export class ConfigurationPipesService {
           targetMaxQuantity,
           label,
           isHasTypeField: o && p.is_has_type_subproperty,
-          property: { pkProperty: p.pk_property },
+          property: { fkProperty: p.pk_property },
           isOutgoing: o,
           identityDefiningForSource: o ? p.identity_defining : false,
           identityDefiningForTarget: o ? false : p.identity_defining,
@@ -487,7 +487,7 @@ export class ConfigurationPipesService {
             let isCircular = false;
             if (
               parentProperty &&
-              field.property.pkProperty == parentProperty &&
+              field.property.fkProperty == parentProperty &&
               field.targetMaxQuantity === 1
             ) {
               isCircular = true
@@ -495,7 +495,7 @@ export class ConfigurationPipesService {
             const nestedPage: GvSubentitFieldPageReq = {
               targets: nestedTargets,
               page: {
-                fkProperty: field.property.pkProperty,
+                property: field.property,
                 isOutgoing: field.isOutgoing,
                 limit: 1,
                 offset: 0,
@@ -1164,13 +1164,13 @@ function getSettingsFromSysConfig(
     else if (specialFields.bySourceClass &&
       specialFields.bySourceClass[subfield.sourceClass] &&
       specialFields.bySourceClass[subfield.sourceClass].outgoingProperties &&
-      specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.pkProperty]) {
-      settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.pkProperty];
+      specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty]) {
+      settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty];
     }
     // get seetings by property
     else if (specialFields.outgoingProperties &&
-      specialFields.outgoingProperties[subfield.property.pkProperty]) {
-      settings = specialFields.outgoingProperties[subfield.property.pkProperty];
+      specialFields.outgoingProperties[subfield.property.fkProperty]) {
+      settings = specialFields.outgoingProperties[subfield.property.fkProperty];
     }
   }
   else {
@@ -1178,13 +1178,13 @@ function getSettingsFromSysConfig(
     if (specialFields.bySourceClass &&
       specialFields.bySourceClass[subfield.sourceClass] &&
       specialFields.bySourceClass[subfield.sourceClass].incomingProperties &&
-      specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.pkProperty]) {
-      settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.pkProperty];
+      specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty]) {
+      settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty];
     }
     // get seetings by property
     else if (specialFields.incomingProperties &&
-      specialFields.incomingProperties[subfield.property.pkProperty]) {
-      settings = specialFields.incomingProperties[subfield.property.pkProperty];
+      specialFields.incomingProperties[subfield.property.fkProperty]) {
+      settings = specialFields.incomingProperties[subfield.property.fkProperty];
     }
   }
   return settings;

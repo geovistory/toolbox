@@ -144,14 +144,15 @@
                 </button>
               </mat-menu>
 
-              <span class="font-xs text-muted class-label" [matTooltip]="'Temporal Entity ' + pkEntity"
+              <span class="font-xs text-muted class-label" [matTooltip]="'Temporal Entity ' + source.fkInfo"
                 [matMenuTriggerFor]="teEnMenu">
                 <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                 <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
                 {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
               </span>
-              <gv-entity-with-fields [pkEntity]="item.target.entity.pkEntity" [fkClass]="item.target.entity.fkClass"
-                [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope">
+              <gv-entity-with-fields [source]="{fkInfo:item.target.entity.pkEntity}"
+                [fkClass]="item.target.entity.fkClass" [showOntoInfo$]="showOntoInfo$"
+                [scope]="scope.notInProject ? {inRepo:true} : scope">
               </gv-entity-with-fields>
             </ng-container>
           </ng-template>

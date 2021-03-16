@@ -17,7 +17,7 @@ import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 
-fdescribe('ConfigurationPipeService', () => {
+describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: ConfigurationPipesService;
   let schemaObjServcie: SchemaService;
@@ -402,7 +402,7 @@ fdescribe('ConfigurationPipeService', () => {
           actualSequence => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
-            expect(fs[0].property.pkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
+            expect(fs[0].property.fkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
             expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.temporalEntity[0].page.isCircular).toEqual(true)
           },
           null,
@@ -424,7 +424,7 @@ fdescribe('ConfigurationPipeService', () => {
           actualSequence => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
-            expect(fs[0].property.pkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
+            expect(fs[0].property.fkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
             expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.temporalEntity[3].page.isCircular).toEqual(false)
           },
           null,

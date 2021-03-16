@@ -16,3 +16,5 @@ export class GvPaginationStatementFilter {
   @property() fk_object_tables_row?: number;
   @property() fk_object_tables_cell?: number;
 }
+
+

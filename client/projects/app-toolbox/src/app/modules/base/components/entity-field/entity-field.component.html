@@ -2,7 +2,7 @@
 
   <!-- small header of field -->
   <div class="mat-caption mat-text-secondary d-flex">
-    <gv-field-label [fkProperty]="field.property.pkProperty" [fkSourceClass]="field.sourceClass"
+    <gv-field-label [fkProperty]="field.property.fkProperty" [fkSourceClass]="field.sourceClass"
       [isOutgoing]="field.isOutgoing" [showTooltip]=true></gv-field-label>
     <a href *ngIf="(page$|async)?.count > 1" class="gv-passive-link ml-1" (click)="openList()" matTooltip="Open list">
       ({{(page$|async)?.count }})

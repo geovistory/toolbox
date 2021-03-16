@@ -1,14 +1,11 @@
-import { indexBy, mapObjIndexed } from 'ramda';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatTableDataSource } from '@angular/material';
+import { Field, Subfield, TemporalEntityItem } from '@kleiolab/lib-queries';
+import { indexBy, mapObjIndexed } from 'ramda';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { Subfield } from "@kleiolab/lib-queries";
 
 
 
-import { TemporalEntityTableI } from "@kleiolab/lib-queries";
-import { TemporalEntityItem } from "@kleiolab/lib-queries";
-import { Field } from "@kleiolab/lib-queries";
 
 
 
@@ -43,7 +40,7 @@ export class TemporalEntityTable {
 
     this.columDefs$.pipe(first(fs => fs.length > 0), takeUntil(destroy$)).subscribe((fieldDefinitions) => {
       const dataColumnsMap = mapObjIndexed((val, key, obj) => true, indexBy((l) => l.label, fieldDefinitions));
-      const circularField = fieldDefinitions.find(f => f.property.pkProperty === listDefinition.property.pkProperty);
+      const circularField = fieldDefinitions.find(f => f.property.fkProperty === listDefinition.property.fkProperty);
       if (circularField && circularField.targetMaxQuantity === 1) {
         // hideCircularField
         const circularCol = circularField.label;

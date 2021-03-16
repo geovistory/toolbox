@@ -5,12 +5,12 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaObject } from '@kleiolab/lib-redux';
 import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
+import { GvFieldProperty } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { filter, first, map } from 'rxjs/operators';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
-import { FieldProperty } from "@kleiolab/lib-queries";
 import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
@@ -21,7 +21,7 @@ export interface CtrlEntityDialogData {
   alreadyInProjectBtnText: string
   notInProjectBtnText: string
   notInProjectClickBehavior: NotInProjectClickBehavior
-  hiddenProperty: FieldProperty
+  hiddenProperty: GvFieldProperty
   initVal$: Observable<CtrlEntityModel>
   showAddList: boolean
   disableIfHasStatement: DisableIfHasStatement

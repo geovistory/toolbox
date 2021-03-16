@@ -3,17 +3,14 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { SysConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { GvFieldProperty, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { FieldProperty } from "@kleiolab/lib-queries";
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
-import { SchemaSelectorsService } from "@kleiolab/lib-queries";
 
 export interface CtrlEntityModel {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side
@@ -39,7 +36,7 @@ export class CtrlEntityComponent implements OnDestroy,
   @Input() pkClass: number;
 
   // needed for creating the form, in order to exclude the circular field
-  @Input() property: FieldProperty;
+  @Input() property: GvFieldProperty;
   @Input() disableExistingWithStatement: DisableIfHasStatement;
 
   @Input() showAddList: boolean;
@@ -148,7 +145,7 @@ export class CtrlEntityComponent implements OnDestroy,
   }
 
   ngOnInit() {
-    if (!this.pkClass) throw "pkClass is required";
+    if (!this.pkClass) throw new Error("pkClass is required");
 
     this.c.pipeClassLabel(this.pkClass)
 

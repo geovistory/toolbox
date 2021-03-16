@@ -534,7 +534,7 @@ export class InformationPipesService {
   }
 
   pipeSubfieldPage(page: GvFieldPage, targets: GvFieldTargets): Observable<SubfieldPage> {
-    if (page.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
+    if (page.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
       // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
       return this.pipeTimeSpan(page)
     }
@@ -564,7 +564,7 @@ export class InformationPipesService {
   }
 
   private pipeTimeSpan(page: GvFieldPage) {
-    const virtualStatementToTimeSpan = { fk_object_info: page.fkSourceEntity };
+    const virtualStatementToTimeSpan = { fk_object_info: page.source.fkInfo };
     // const targets: GvFieldTargets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
 
     // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
@@ -579,11 +579,11 @@ export class InformationPipesService {
         const scope = page.scope.notInProject ? { inRepo: true } : page.scope
 
         const nestedPage: GvFieldPage = {
-          fkProperty,
+          property: { fkProperty },
           isOutgoing: true,
           limit: 1,
           offset: 0,
-          fkSourceEntity: page.fkSourceEntity,
+          source: page.source,
           scope,
         }
         const subfType: GvTargetType = {
@@ -1677,12 +1677,12 @@ export class InformationPipesService {
       switchMap(isTeEn => this.c.pipeSpecificAndBasicFields(pkClass)
         .pipe(
           map(classFields => classFields
-            .filter(f => !!f.property.pkProperty)
+            .filter(f => !!f.property.fkProperty)
             .map(f => ({
               isOutgoing: f.isOutgoing,
               fkPropertyDomain: f.isOutgoing ? f.sourceClass : null,
               fkPropertyRange: f.isOutgoing ? null : f.sourceClass,
-              pkProperty: f.property.pkProperty
+              pkProperty: f.property.fkProperty
             }))),
           switchMap(items => {
             if (isTeEn) {

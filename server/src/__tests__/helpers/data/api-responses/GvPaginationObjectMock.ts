@@ -337,8 +337,8 @@ export namespace GvPaginationObjectMock {
 
 export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPage {
   return {
-    fkSourceEntity: sourceEntity,
-    fkProperty: property.dfh_pk_property,
+    source: {fkInfo: sourceEntity},
+    property: {fkProperty: property.dfh_pk_property},
     isOutgoing: true,
     // targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},

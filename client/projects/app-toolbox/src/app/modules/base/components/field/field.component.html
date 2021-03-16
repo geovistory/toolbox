@@ -17,8 +17,9 @@
           !
         </span>
       </span>
-      <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity" [pkProperty]="field.property.pkProperty"
-        [pkTypedClass]="field.sourceClass" [pkTypeClass]="field.targetClasses[0]" [isOutgoing]="field.isOutgoing">
+      <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="source.fkInfo"
+        [pkProperty]="field.property.fkProperty" [pkTypedClass]="field.sourceClass"
+        [pkTypeClass]="field.targetClasses[0]" [isOutgoing]="field.isOutgoing">
       </gv-type-item>
     </div>
 
@@ -81,22 +82,8 @@
 
 
   <div class="child-content">
-    <gv-subfield [pkEntity]="pkEntity" [field]="field" [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$">
+    <gv-subfield [source]="source" [field]="field" [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$">
     </gv-subfield>
-    <!-- <gv-leaf-item-list fxLayout="column"
-      *ngIf="!listDefWithCount.listType.temporalEntity && !listDefWithCount.listType.timeSpan"
-      fxLayoutAlign="space-between stretch" [listDefinition]="listDefWithCount" [treeControl]="treeControl"
-      [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [pkEntity]="pkEntity"></gv-leaf-item-list>
-    <gv-temporal-entity-list *ngIf="listDefWithCount.listType.temporalEntity" fxLayout="column"
-      fxLayoutAlign="space-between stretch" [listDefinition]="listDefWithCount" [treeControl]="treeControl"
-      [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [pkEntity]="pkEntity">
-    </gv-temporal-entity-list>
-
-    <gv-time-span-list *ngIf="listDefWithCount.listType.timeSpan" fxLayout="column"
-      fxLayoutAlign="space-between stretch" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
-      [readonly$]="readonly$" [pkEntity]="pkEntity">
-    </gv-time-span-list> -->
-
   </div>
 
   <div class="child-no-content" *ngIf="!((itemsCount$ |async) > 0)">

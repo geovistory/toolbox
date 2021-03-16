@@ -75,8 +75,8 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     const relateBy = this.listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
     const filterObject: Partial<InfStatement> = {
       [relateBy]: this.pkEntity,
-      fk_property: this.listDefinition.property.pkProperty,
-      fk_property_of_property: this.listDefinition.property.pkPropertyOfProperty
+      fk_property: this.listDefinition.property.fkProperty,
+      fk_property_of_property: this.listDefinition.property.fkPropertyOfProperty
     }
     const loadConfig$ = combineLatest(
       this.pageSize$,

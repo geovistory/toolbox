@@ -1,6 +1,7 @@
 <h1 mat-dialog-title style="display: flex; flex-wrap:wrap">
   <div class="mat-body py-2" style="flex: 0 1 auto;">
-    <gv-entity-preview [pkEntity]="data.pkEntity" [dragEnabled]="false" [openTabOnClick]="false"></gv-entity-preview>
+    <gv-entity-preview [pkEntity]="data.source.fkInfo" [dragEnabled]="false" [openTabOnClick]="false">
+    </gv-entity-preview>
   </div>
   <div style="flex: 0 0 auto;">
     <mat-divider class="h-100 mx-3" [vertical]="true"></mat-divider>
@@ -33,14 +34,14 @@
     <mat-spinner diameter=20></mat-spinner>
   </div>
   <ng-container *ngIf="(activeElement$ | async) === 'add-existing-statements'">
-    <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [pkEntity]="data.pkEntity" [field]="fieldWithOneTarget"
+    <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [source]="data.source" [field]="fieldWithOneTarget"
       [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose()"
       (next)="onNext()"></gv-subfield>
   </ng-container>
 
 
   <ng-container *ngIf="(activeElement$ | async) === 'create-form'">
-    <gv-form-create-entity [field]="data.field" [targetClass]="data.targetClass" [pkSourceEntity]="data.pkEntity"
+    <gv-form-create-entity [field]="data.field" [targetClass]="data.targetClass" [source]="data.source"
       (cancel)="onClose()" (saved)="onClose()">
     </gv-form-create-entity>
   </ng-container>
@@ -51,7 +52,7 @@
     <div class="gv-aoc-container">
       <div class="gv-aoc-left gv-flex-fh">
         <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [field]="data.field"
-          [targetClass]="data.targetClass" [pkSourceEntity]="data.pkEntity" (cancel)="onClose()" (saved)="onClose()"
+          [targetClass]="data.targetClass" [source]="data.source" (cancel)="onClose()" (saved)="onClose()"
           (searchString)="searchStringChange($event)" [hideTitle]="true">
         </gv-form-create-entity>
       </div>

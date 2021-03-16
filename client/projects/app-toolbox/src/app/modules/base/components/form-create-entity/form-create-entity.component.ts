@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, FieldProperty, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfDimension, InfLangString, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, GvTargetType } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
@@ -34,7 +34,7 @@ export interface FormArrayData {
 
   fields?: {
     parentModel: EntityModel;
-    parentProperty: FieldProperty
+    parentProperty: GvFieldProperty
   }
 
   lists?: {
@@ -105,7 +105,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Input() pkClass: number
 
-  @Input() pkSourceEntity: number;
+  @Input() source: GvFieldSourceEntity;
   @Input() field: Field;
   @Input() targetClass: number;
 
@@ -114,7 +114,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Input() initVal$: Observable<InfPersistentItem | InfTemporalEntity | undefined>;
 
-  @Input() hiddenProperty: FieldProperty;
+  @Input() hiddenProperty: GvFieldProperty;
 
   @Output() cancel = new EventEmitter<void>()
   @Output() searchString = new EventEmitter<string>()
@@ -266,14 +266,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             const item = items[0]
 
             const statement: Partial<InfStatement> = {
-              fk_property: data.field.property.pkProperty,
-              fk_property_of_property: data.field.property.pkPropertyOfProperty,
+              fk_property: data.field.property.fkProperty,
+              fk_property_of_property: data.field.property.fkPropertyOfProperty,
             }
 
 
             if (data.field.isOutgoing) {
               // assign subject
-              statement.fk_subject_info = this.pkSourceEntity;
+              statement.fk_subject_info = this.source.fkInfo;
+              statement.fk_subject_data = this.source.fkData;
+              statement.fk_subject_tables_cell = this.source.fkTablesCell;
+              statement.fk_subject_tables_row = this.source.fkTablesRow;
 
               // assign object
               if (isCtrlEntityModel(item) && item.persistent_item) {
@@ -293,7 +296,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
             } else {
               // assign object
-              statement.fk_object_info = this.pkSourceEntity;
+              statement.fk_object_info = this.source.fkInfo;
+              statement.fk_object_data = this.source.fkData;
+              statement.fk_object_tables_cell = this.source.fkTablesCell;
+              statement.fk_object_tables_row = this.source.fkTablesRow;
 
               // assign subject
               if (isCtrlEntityModel(item) && item.persistent_item) {
@@ -407,9 +413,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             map((fieldDefs) => fieldDefs.filter(fDef => {
               // Q: is this field not circular or hidden?
               const prop = arrayConfig.data.fields.parentProperty;
-              const parentPropety = prop ? prop.pkProperty : undefined;
+              const parentPropety = prop ? prop.fkProperty : undefined;
               if (
-                (!parentPropety || parentPropety !== fDef.property.pkProperty) &&
+                (!parentPropety || parentPropety !== fDef.property.fkProperty) &&
                 !equals(fDef.property, this.hiddenProperty)
               ) {
                 return true;
@@ -423,7 +429,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               return combineLatestOrEmpty(fieldDefs.map(fDef => {
 
                 // make one definition required for each persistent item
-                if (parentModel === 'persistent_item' && fDef.property.pkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+                if (parentModel === 'persistent_item' && fDef.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
                   fDef.targetMinQuantity = 1;
                   fDef.identityDefiningForSource = true;
                 }
@@ -609,8 +615,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
   sameProperty(r: InfStatement, field: Field): boolean {
     return r.fk_property ?
-      r.fk_property === field.property.pkProperty :
-      r.fk_property_of_property ? r.fk_property_of_property === field.property.pkPropertyOfProperty : false
+      r.fk_property === field.property.fkProperty :
+      r.fk_property_of_property ? r.fk_property_of_property === field.property.fkPropertyOfProperty : false
   }
 
   /**
@@ -875,7 +881,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             const value: InfStatement = {
               ...{} as any,
               fk_object_info: undefined,
-              fk_property: field.property.pkProperty,
+              fk_property: field.property.fkProperty,
               object_language: {
                 ...val,
                 fk_class: arrayConfig.data.controls.targetClass,
@@ -918,7 +924,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
             let value: InfStatement = {
               ...{} as any,
-              fk_property: field.property.pkProperty,
+              fk_property: field.property.fkProperty,
             };
 
             if (field.isOutgoing) {
@@ -960,7 +966,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           const value: InfStatement = {
             ...{} as any,
             fk_object_info: undefined,
-            fk_property: field.property.pkProperty,
+            fk_property: field.property.fkProperty,
             object_appellation: {
               ...val,
               fk_class: arrayConfig.data.controls.targetClass,
@@ -997,7 +1003,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           const value: InfStatement = {
             ...{} as any,
             fk_object_info: undefined,
-            fk_property: field.property.pkProperty,
+            fk_property: field.property.fkProperty,
             object_place: {
               ...val,
               fk_class: arrayConfig.data.controls.targetClass,
@@ -1035,8 +1041,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           const value: InfStatement = {
             ...{} as any,
             fk_object_info: undefined,
-            fk_property: field.property.pkProperty,
-            fk_property_of_property: field.property.pkPropertyOfProperty,
+            fk_property: field.property.fkProperty,
+            fk_property_of_property: field.property.fkPropertyOfProperty,
             object_lang_string: {
               ...val,
               fk_class: arrayConfig.data.controls.targetClass,
@@ -1074,8 +1080,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           const value: InfStatement = {
             ...{} as any,
             fk_object_info: undefined,
-            fk_property: field.property.pkProperty,
-            fk_property_of_property: field.property.pkPropertyOfProperty,
+            fk_property: field.property.fkProperty,
+            fk_property_of_property: field.property.fkPropertyOfProperty,
             object_dimension: {
               ...val,
               fk_class: arrayConfig.data.controls.targetClass,
@@ -1137,8 +1143,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                 const statement: InfStatement = {
                   ...{} as any,
-                  fk_property: field.property.pkProperty,
-                  fk_property_of_property: field.property.pkPropertyOfProperty,
+                  fk_property: field.property.fkProperty,
+                  fk_property_of_property: field.property.fkPropertyOfProperty,
                 };
 
                 if (field.isOutgoing) {

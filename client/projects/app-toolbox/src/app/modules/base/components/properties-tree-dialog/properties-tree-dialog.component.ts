@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface PropertiesTreeDialogData {
-  pkEntity$: Observable<number>
+  source: GvFieldSourceEntity
   pkClass$: Observable<number>
   showOntoInfo$: Observable<boolean>;
   appContext: number;

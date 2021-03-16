@@ -1,5 +1,6 @@
+import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MatTreeNestedDataSource, MAT_DIALOG_DATA } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase, Subfield } from '@kleiolab/lib-queries';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
@@ -18,7 +19,7 @@ const fieldBase: FieldBase = {
   ontoInfoUrl: '[ontoInfoUrl]',
   ontoInfoLabel: '[ontoInfoLabel]',
   property: {
-    pkPropertyOfProperty: DfhConfig.P_O_P_GEOV_HAS_REFERENCE
+    fkPropertyOfProperty: DfhConfig.P_O_P_GEOV_HAS_REFERENCE
   },
   isOutgoing: true,
   identityDefiningForSource: false,
@@ -71,17 +72,18 @@ export const fieldAtReferencePoP: Field = {
 })
 export class RamListEditDialogComponent implements OnInit {
 
-  fieldDefinition: Field;
   readonly$ = new BehaviorSubject(false);
   showOntoInfo$ = new BehaviorSubject(false)
+  treeControl = new NestedTreeControl<Field>(node => ([]))
+  dataSource = new MatTreeNestedDataSource<Field>()
   constructor(
     public t: PropertiesTreeService,
     public dialogRef: MatDialogRef<RamListEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RamListEditDialogData,
   ) {
 
-
-    this.fieldDefinition = fieldAtReferencePoP
+    this.dataSource.data = [fieldAtReferencePoP];
+    this.treeControl.expand(fieldAtReferencePoP)
 
   }
 

@@ -7072,8 +7072,8 @@ var InfEpics = /** @class */ (function () {
         var scope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject };
         /** @type {?} */
         var req = {
-            fkSourceEntity: meta.pkSourceEntity,
-            fkProperty: meta.pkProperty,
+            source: { fkInfo: meta.pkSourceEntity },
+            property: { fkProperty: meta.pkProperty },
             isOutgoing: meta.isOutgoing,
             limit: meta.limit,
             offset: meta.offset,
@@ -8590,7 +8590,19 @@ function () {
  * @return {?}
  */
 function subfieldIdToString(x) {
-    return x.fkSourceEntity + "_" + x.fkProperty + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + keys(x.scope)[0] + "_" + values(x.scope)[0];
+    /** @type {?} */
+    var source = Object.keys(x.source).map((/**
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) { return key + "-" + x.source[key]; })).join('_');
+    /** @type {?} */
+    var property = Object.keys(x.property).map((/**
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) { return key + "-" + x.property[key]; })).join('_');
+    return source + "_" + property + "_" + (x.isOutgoing ? 'out' : 'in') + "_" + keys(x.scope)[0] + "_" + values(x.scope)[0];
 }
 
 /**

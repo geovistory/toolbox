@@ -47,19 +47,6 @@ export namespace StatementWithTargetMock {
       entity: {
         pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
         fkClass: InfTemporalEntityMock.NAMING_1.fk_class,
-        // subfields: [{
-        //   subfield: {
-        //     fkProperty: appeTeEnHasAppeVtWithTarget.statement.fk_property,
-        //     fkSourceEntity: appeTeEnHasAppeVtWithTarget.statement.fk_subject_info,
-        //     isOutgoing: appeTeEnHasAppeVtWithTarget.isOutgoing,
-        //     scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
-        //     targetClass: appeTeEnHasAppeVtWithTarget.targetClass,
-        //   },
-        //   count: 1,
-        //   statements: [
-        //     appeTeEnHasAppeVtWithTarget
-        //   ]
-        // }]
       }
     }
   }
@@ -152,9 +139,9 @@ export namespace StatementWithTargetMock {
         subfields: [
           {
             subfield: {
-              fkProperty: 71,
+              property: { fkProperty: 71 },
               isOutgoing: true,
-              fkSourceEntity: 4004,
+              source: { fkInfo: 4004 },
               scope: {
                 inProject: 3001
               }
@@ -164,9 +151,9 @@ export namespace StatementWithTargetMock {
           },
           {
             subfield: {
-              fkProperty: 72,
+              property: { fkProperty: 72 },
               isOutgoing: true,
-              fkSourceEntity: 4004,
+              source: { fkInfo: 4004 },
               scope: {
                 inProject: 3001
               }
@@ -176,9 +163,9 @@ export namespace StatementWithTargetMock {
           },
           {
             subfield: {
-              fkProperty: 150,
+              property: { fkProperty: 150 },
               isOutgoing: true,
-              fkSourceEntity: 4004,
+              source: { fkInfo: 4004 },
               scope: {
                 inProject: 3001
               }
@@ -188,9 +175,9 @@ export namespace StatementWithTargetMock {
           },
           {
             subfield: {
-              fkProperty: 151,
+              property: { fkProperty: 151 },
               isOutgoing: true,
-              fkSourceEntity: 4004,
+              source: { fkInfo: 4004 },
               scope: {
                 inProject: 3001
               }
@@ -226,9 +213,9 @@ export namespace StatementWithTargetMock {
           },
           {
             subfield: {
-              fkProperty: 152,
+              property: { fkProperty: 152 },
               isOutgoing: true,
-              fkSourceEntity: 4004,
+              source: { fkInfo: 4004 },
               scope: {
                 inProject: 3001
               }
@@ -264,9 +251,9 @@ export namespace StatementWithTargetMock {
           },
           {
             subfield: {
-              fkProperty: 153,
+              property: { fkProperty: 153 },
               isOutgoing: true,
-              fkSourceEntity: 4004,
+              source: { fkInfo: 4004 },
               scope: {
                 inProject: 3001
               }

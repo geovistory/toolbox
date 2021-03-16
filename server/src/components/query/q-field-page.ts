@@ -60,7 +60,7 @@ type ModelToFindClassConfig = {
 }
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
-type GvFieldPageWithoutFkSource = PartialBy<GvFieldPage, 'fkSourceEntity'>
+// type GvFieldPageWithoutFkSource = PartialBy<GvFieldPage, 'source'>
 export class QFieldPage extends SqlBuilderLb4Models {
 
   withClauses: With[] = [];
@@ -303,9 +303,16 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
     const page = req.page;
     const filterObject: GvPaginationStatementFilter = {
-      fk_subject_info: page.isOutgoing ? page.fkSourceEntity : undefined,
-      fk_object_info: page.isOutgoing ? undefined : page.fkSourceEntity,
-      fk_property: page.fkProperty
+      fk_subject_info: page.isOutgoing ? page.source.fkInfo : undefined,
+      fk_object_info: page.isOutgoing ? undefined : page.source.fkInfo,
+      fk_subject_data: page.isOutgoing ? page.source.fkData : undefined,
+      fk_object_data: page.isOutgoing ? undefined : page.source.fkData,
+      fk_subject_tables_cell: page.isOutgoing ? page.source.fkTablesCell : undefined,
+      fk_object_tables_cell: page.isOutgoing ? undefined : page.source.fkTablesCell,
+      fk_subject_tables_row: page.isOutgoing ? page.source.fkTablesRow : undefined,
+      fk_object_tables_row: page.isOutgoing ? undefined : page.source.fkTablesRow,
+      fk_property: page.property.fkProperty,
+      fk_property_of_property: page.property.fkPropertyOfProperty
     };
     const scope = page.scope
     const twAllStatements = this.nextWith
@@ -392,58 +399,8 @@ export class QFieldPage extends SqlBuilderLb4Models {
   }
 
 
-
-  // /**
-  //  * Select all statements of field without limit and offset
-  //  * this is the base for retieving the total count of the page
-  //  * and for selecting the statement-page according to limit and offset.
-  //  *
-  //  * This select depends on the scope:
-  //  * inRepo: selects all statements with is_in_project_count > 0
-  //  * inProject: selects only statements with info_proj_rel.is_in_project=true
-  //  * notInProject: selects all statements except for the ones inProject
-  //  */
-  // private joinSubentityPage(page: GvSubfieldPageWithoutFkSource, scope: GvSubfieldPageScope, twSource: string, subfieldType: GvSubentitySubfieldType) {
-  //   const twAllStatements = this.nextWith;
-  //   let sqlAllStatements: string;
-  //   const statementFk = page.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
-  //   const filterObject: GvPaginationStatementFilter = {
-  //     fk_property: page.fkProperty
-  //   };
-  //   // inner join target already to filter on its class!
-  //   const innerJoinTarget = this.joinTargetFilteredByClass(page, subfieldType, 't1')
-
-  //   if (scope.inProject) {
-  //     // this is for scope inProject: TODO other scopes
-  //     sqlAllStatements = `
-  //       -- all statements
-  //       ${twAllStatements} AS (
-  //         SELECT ${this.createSelect('t1', InfStatement.definition)}
-  //         FROM
-  //         ${twSource}
-  //         INNER JOIN information.v_statement t1
-  //         ON ${twSource}.pk = t1.${statementFk}
-  //         INNER JOIN projects.info_proj_rel t2
-  //         ON  t1.pk_entity = t2.fk_entity
-  //         ${innerJoinTarget}
-  //         WHERE
-  //         t2.fk_project = ${scope.inProject}
-  //         AND t2.is_in_project = true
-  //         AND ${this.getFiltersByObject('t1', filterObject).join('\nAND ')}
-  //       )`;
-  //   }
-  //   else {
-  //     // TODO
-  //     throw new Error("scope not yet implemented: " + JSON.stringify(scope));
-  //   }
-
-  //   const subPageSql = this.joinPage(twAllStatements, page, scope, subfieldType, twSource);
-  //   const subentityFieldsSql = [sqlAllStatements, subPageSql].join(',\n');
-  //   return subentityFieldsSql;
-  // }
-
   joinTargetFilteredByClass(
-    p: GvFieldPageWithoutFkSource,
+    p: GvFieldPage,
     targets: GvFieldTargets,
     stmtTable: string
   ) {
@@ -472,7 +429,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
   private joinPage(
     twAllStatements: string,
-    page: GvFieldPageWithoutFkSource,
+    page: GvFieldPage,
     scope: GvFieldPageScope,
     targets: GvFieldTargets,
     twSource?: string
@@ -554,26 +511,9 @@ export class QFieldPage extends SqlBuilderLb4Models {
      * builds the GvSubfieldPageInfo object
      */
     const twPkStatementArray = this.nextWith;
-    const twSourceEntity = this.nextWith;
     const twSubfieldPages = this.nextWith;
 
-    let sqlSourceEntity: string
-    if (page.fkSourceEntity) {
-      sqlSourceEntity = `
-      ${twSourceEntity} AS (
-        SELECT ${page.fkSourceEntity} as fk
-      )
-      `
-    } else {
-      sqlSourceEntity = `
-      ${twSourceEntity} AS (
-        SELECT DISTINCT pk as fk
-        FROM ${twSource}
-        LIMIT 1
-      )`
-    }
     const sqlGvSubfieldPageInfoObjects = `
-        ${sqlSourceEntity},
         ${twPkStatementArray} AS (
           SELECT json_agg(t1.pk_entity) obj
           FROM ${twPageStatements} t1
@@ -582,21 +522,12 @@ export class QFieldPage extends SqlBuilderLb4Models {
         -- GvSubfieldPageInfo as objects
         ${twSubfieldPages}  AS (
           SELECT jsonb_build_object (
-            'page', 	jsonb_set(
-                      '${JSON.stringify(page)}',
-                      '{fkSourceEntity}',
-                      COALESCE(
-                        ('${JSON.stringify(page)}'::jsonb)->'fkSourceEntity',
-                        to_jsonb(sourceEntity.fk)
-                      )
-            ),
+            'page', '${JSON.stringify(page)}'::json,
             'count', COALESCE(count.count,0),
             'paginatedStatements', COALESCE(paginatedStatements.obj, '[]'::json)
             ) objects
           FROM
-          --(select 0) as one_row
-          --LEFT JOIN
-           ${twSourceEntity} sourceEntity --ON true
+          (select 0) as one_row
           LEFT JOIN ${twCount} count ON true
           LEFT JOIN ${twPkStatementArray} paginatedStatements ON TRUE
 
@@ -612,7 +543,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
     return sqls.join(',\n');
   }
 
-  joinTargetOfStatement(page: GvFieldPageWithoutFkSource, targets: GvFieldTargets, twStatements: string): string {
+  joinTargetOfStatement(page: GvFieldPage, targets: GvFieldTargets, twStatements: string): string {
     const sqls = []
     const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
     const targetTypes: GvTargetTypeKey[] = uniq(targetArray.map(t => t.target))
@@ -905,7 +836,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         ...req,
         page: {
           ...req.page,
-          fkProperty: timeSpanProperty,
+          property: {fkProperty: timeSpanProperty},
         },
         targets: {335: {timePrimitive: TrueEnum.true}}
       };
@@ -913,19 +844,5 @@ export class QFieldPage extends SqlBuilderLb4Models {
     });
   }
 
-  // private createTimeSpanSubFieldRequests(p: GvFieldPageWithoutFkSource) {
-  //   return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
 
-  //     const page: GvFieldPageWithoutFkSource = {
-  //       ...p,
-  //       fkProperty: timeSpanProperty,
-  //       targetClass: 335
-  //     }
-  //     const subfieldType: GvTargetType = {timePrimitive: TrueEnum.true}
-  //     return {
-  //       page,
-  //       subfieldType
-  //     };
-  //   });
-  // }
 }

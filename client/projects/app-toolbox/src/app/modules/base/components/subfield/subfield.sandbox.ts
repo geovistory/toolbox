@@ -28,7 +28,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: AppellationVT ', {
     context: {
       field: SubfieldMock.appeHasAppeString,
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
+      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -36,7 +36,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -51,7 +51,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: PlaceVT ', {
     context: {
       field: SubfieldMock.presenceWasAtPlace,
-      pkEntity: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity,
+      source: { fkInfo: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -59,7 +59,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -75,7 +75,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: DimensionVT ', {
     context: {
       field: SubfieldMock.accountOfJourneyHasDuration,
-      pkEntity: InfPersistentItemMock.ACCOUNT_OF_JOURNEY.pk_entity,
+      source: { fkInfo: InfPersistentItemMock.ACCOUNT_OF_JOURNEY.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -83,7 +83,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -99,7 +99,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: LangStringVT ', {
     context: {
       field: SubfieldMock.manifestationSingletonHasShortTitle,
-      pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
+      source: { fkInfo: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope
@@ -108,7 +108,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield #s
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -128,7 +128,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: LanguageVT ', {
     context: {
       field: SubfieldMock.appeTeEnUsedInLanguage,
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
+      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -136,7 +136,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -151,7 +151,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: EntityPreview ', {
     context: {
       field: SubfieldMock.appeTeEnIsAppeOfPerson,
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
+      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       // schemaObjects: [
@@ -164,7 +164,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -179,7 +179,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: TemporalEntity ', {
     context: {
       field: SubfieldMock.personHasAppeTeEn,
-      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity,
+      source: { fkInfo: InfPersistentItemMock.PERSON_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope,
@@ -198,7 +198,7 @@ export default sandboxOf(SubfieldComponent, {
       </div>
        <div style="width:1200px;height:400px; border: 1px dashed pink;" class="d-flex mr-4 p-1">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -212,7 +212,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: TimeSpan', {
     context: {
       field: SubfieldMock.appeHasTimeSpan,
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
+      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [
@@ -226,7 +226,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"
@@ -241,7 +241,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: TimeSpan empty', {
     context: {
       field: SubfieldMock.appeHasTimeSpan,
-      pkEntity: InfTemporalEntityMock.NAMING_2_STADT.pk_entity,
+      source: { fkInfo: InfTemporalEntityMock.NAMING_2_STADT.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [
@@ -255,7 +255,7 @@ export default sandboxOf(SubfieldComponent, {
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
           <gv-subfield
-          [pkEntity]="pkEntity"
+          [source]="source"
           [field]="field"
           [scope]="scope"
           [showOntoInfo$]="showOntoInfo$"

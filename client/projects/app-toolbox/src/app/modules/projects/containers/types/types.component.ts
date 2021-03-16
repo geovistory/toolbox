@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
+import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
@@ -96,11 +97,11 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         let appeField: Field, definitionField: Field;
         fieldDefinitions.forEach(f => {
           // take only appellation for language, or ...
-          if (f.property.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
+          if (f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
             appeField = f;
           }
           // ... entit definition
-          else if (f.property.pkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+          else if (f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
             definitionField = f;
           }
         })
@@ -123,7 +124,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     this.items$ = combineLatest(this.p.pkProject$, appeAndDefFields$, this.p.defaultLanguage$, this.typePks$).pipe(
       switchMap(([pkProject, appeAndDefFields, defaultLanguage, typePks]) => combineLatestOrEmpty(
         typePks.map(pkEntity => {
-          const scope = { inProject: pkProject };
+          const scope: GvFieldPageScope = { inProject: pkProject };
+          const source: GvFieldSourceEntity = { fkInfo: pkEntity }
           // // load appellation
           // this.pag.subfield.addPageLoader(
           //   pkProject,
@@ -138,7 +140,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
           this.pag.subfield.addPageLoader(
             pkProject,
             appeAndDefFields.definitionField,
-            pkEntity,
+            source,
             1,
             0,
             this.destroy$,
@@ -151,7 +153,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
           )
 
           const definition$ = this.i.pipeSubfieldPage(
-            fieldToFieldPage(appeAndDefFields.definitionField, pkEntity, scope, 1, 0),
+            fieldToFieldPage(appeAndDefFields.definitionField, source, scope, 1, 0),
             fieldToGvFieldTargets(appeAndDefFields.definitionField)
           )
 
@@ -230,7 +232,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     const data: PropertiesTreeDialogData = {
       appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
       pkClass$: of(this.pkClass),
-      pkEntity$: of(pkEntity),
+      source: { fkInfo: pkEntity },
       readonly$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
     }

@@ -1,13 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Field, Subfield } from '@kleiolab/lib-queries';
-import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 
 export interface SubfieldDialogData {
   title: string
   field: Field
-  sourceEntity: number
+  source: GvFieldSourceEntity
   scope: GvFieldPageScope
   showOntoInfo$: Observable<boolean>
 }

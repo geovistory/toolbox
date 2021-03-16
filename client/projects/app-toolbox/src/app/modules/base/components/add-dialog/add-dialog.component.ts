@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ClassAndTypePk, ConfigurationPipesService, Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { InfStatement, InfTemporalEntityApi } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPageReq, GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export interface AddDialogData {
   targetClass: number
 
   // primary key of the source entity
-  pkEntity: number;
+  source: GvFieldSourceEntity;
 }
 
 @Component({
@@ -85,7 +85,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
         const req: GvFieldPageReq = {
           pkProject,
           targets: fieldToGvFieldTargets(this.fieldWithOneTarget),
-          page: fieldToFieldPage(this.fieldWithOneTarget, this.data.pkEntity, { notInProject: pkProject }, 0, 0)
+          page: fieldToFieldPage(this.fieldWithOneTarget, this.data.source, { notInProject: pkProject }, 0, 0)
         }
         return this.paginationApi.subfieldPageControllerLoadSubfieldPage(req).pipe(
           map(res => res.subfieldPages[0].count)
@@ -120,14 +120,14 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     // create the statement to add
     const r: Partial<InfStatement> = {}
     if (f.isOutgoing) {
-      r.fk_subject_info = this.data.pkEntity
+      r.fk_subject_info = this.data.source.fkInfo
       r.fk_object_info = pkEntity
     } else {
-      r.fk_object_info = this.data.pkEntity
+      r.fk_object_info = this.data.source.fkInfo
       r.fk_subject_info = pkEntity
     }
-    r.fk_property = f.property.pkProperty;
-    r.fk_property_of_property = f.property.pkPropertyOfProperty;
+    r.fk_property = f.property.fkProperty;
+    r.fk_property_of_property = f.property.fkPropertyOfProperty;
 
 
     combineLatest(

@@ -19,7 +19,7 @@ function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentit
   return {
     targets,
     page: {
-      fkProperty: field.property.pkProperty,
+      property: field.property,
       isOutgoing: field.isOutgoing,
       isCircular,
       limit: 1,
@@ -149,7 +149,7 @@ export function createFieldBase(
     label,
     ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + property.dfh_pk_property,
     ontoInfoLabel: property.dfh_property_identifier_in_namespace,
-    property: { pkProperty: property.dfh_pk_property },
+    property: { fkProperty: property.dfh_pk_property },
     isHasTypeField,
     isOutgoing,
     sourceClass: source.dfh_pk_class,

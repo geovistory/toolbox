@@ -48,6 +48,8 @@ export * from './gvFieldId';
 export * from './gvFieldPage';
 export * from './gvFieldPageReq';
 export * from './gvFieldPageScope';
+export * from './gvFieldProperty';
+export * from './gvFieldSourceEntity';
 export * from './gvFieldTargets';
 export * from './gvPaginationAlternativeLeafItemsReq';
 export * from './gvPaginationObject';

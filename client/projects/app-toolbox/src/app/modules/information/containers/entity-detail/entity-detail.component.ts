@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 import { MatDialog } from '@angular/material';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
-import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { MentioningListOf } from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
@@ -74,6 +74,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   fkClass$: Observable<number>;
   pkEntity$: Observable<number>
   preview$: Observable<WarEntityPreview>
+  source: GvFieldSourceEntity
 
   t: TabLayout;
   listOf: MentioningListOf;
@@ -162,7 +163,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
       })
 
     this.pkEntity$ = of(this.pkEntity)
-
+    this.source = { fkInfo: this.pkEntity }
     this.iconType$ = this.b.pipeIconType(this.pkEntity)
 
   }

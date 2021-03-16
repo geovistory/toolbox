@@ -95,6 +95,8 @@ model/gvFieldId.ts
 model/gvFieldPage.ts
 model/gvFieldPageReq.ts
 model/gvFieldPageScope.ts
+model/gvFieldProperty.ts
+model/gvFieldSourceEntity.ts
 model/gvFieldTargets.ts
 model/gvPaginationAlternativeLeafItemsReq.ts
 model/gvPaginationObject.ts

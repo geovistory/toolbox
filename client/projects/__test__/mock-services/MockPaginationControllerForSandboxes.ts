@@ -105,7 +105,7 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
+        fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
         fk_object_info: appellation.pk_entity,
       }
@@ -168,7 +168,7 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
+        fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property,
         fk_object_info: place.pk_entity,
       }
@@ -231,7 +231,7 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
+        fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property,
         fk_object_info: dimension.pk_entity,
       }
@@ -299,7 +299,7 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
+        fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property,
         fk_object_info: langString.pk_entity,
       }
@@ -365,7 +365,7 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
+        fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property,
         fk_object_info: language.pk_entity,
       }
@@ -470,7 +470,7 @@ export class MockPaginationControllerForSandboxes {
         pk_entity: this.infStatementSerial + i,
         fk_subject_info: temporalEntity.pk_entity,
         fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property,
-        fk_object_info: page.fkSourceEntity,
+        fk_object_info: page.source.fkInfo,
       }
       statements.push(statement)
       paginatedStatements.push(statement.pk_entity)
@@ -494,7 +494,7 @@ export class MockPaginationControllerForSandboxes {
 
         const p: GvFieldPage = {
           ...teEnSubfield.page,
-          fkSourceEntity: temporalEntity.pk_entity,
+          source: { fkInfo: temporalEntity.pk_entity },
           scope: page.scope
         }
         const subReq: GvFieldPageReq = {
@@ -534,8 +534,8 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
-        fk_property: page.fkProperty,
+        fk_subject_info: page.source.fkInfo,
+        fk_property: page.property.fkProperty,
         fk_object_info: entityPreview.pk_entity,
       }
       statements.push(statement)
@@ -626,15 +626,15 @@ export class MockPaginationControllerForSandboxes {
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.fkSourceEntity,
+        fk_subject_info: page.source.fkInfo,
         fk_property: prop.dfh_pk_property,
         fk_object_info: timePrimitive.pk_entity,
       }
       statements.push(statement)
       paginationObject.subfieldPages.push({
         page: {
-          fkProperty: prop.dfh_pk_property,
-          fkSourceEntity: page.fkSourceEntity,
+          property: { fkProperty: prop.dfh_pk_property },
+          source: page.source,
           isOutgoing: true,
           limit: 1,
           offset: 0,

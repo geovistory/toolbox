@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Field, InfSelector, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
 import { ActionResultObservable, GvSchemaActions, PaginatedStatementList, PaginatedStatements, subfieldIdToString, SucceedActionMeta } from '@kleiolab/lib-redux';
 import { GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -29,7 +30,7 @@ class StatementPageLoader {
   ) { }
 
   public addPageLoader(pkProject: number, l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
-    const subfieldId = fieldToFieldId(l as unknown as Field, pkEntity, { inProject: pkProject })
+    const subfieldId = fieldToFieldId(l as unknown as Field, { fkInfo: pkEntity }, { inProject: pkProject })
     const subfieldIdString = subfieldIdToString(subfieldId)
 
     const trigger$ = this.getTrigger(subfieldIdString, l, pkEntity, alternatives);
@@ -56,7 +57,7 @@ class StatementPageLoader {
       ).subscribe(() => {
         this.loadFn(pkProject,
           pkEntity,
-          l.property.pkProperty,
+          l.property.fkProperty,
           l.targetClass,
           l.isOutgoing,
           limit,
@@ -100,11 +101,11 @@ class StatementPageLoader {
       const ofProject = !alternatives;
       const t = combineLatest([
         this.p.inf$.statement$.by_object_and_property_indexed$({
-          fk_property: l.property.pkProperty,
+          fk_property: l.property.fkProperty,
           fk_object_info: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
         this.p.inf$.statement$.by_subject_and_property_indexed$({
-          fk_property: l.property.pkProperty,
+          fk_property: l.property.fkProperty,
           fk_subject_info: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
       ]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
@@ -133,12 +134,12 @@ class StatementPageLoader2 {
     private schemaActions: GvSchemaActions,
   ) { }
 
-  public addPageLoader(pkProject: number, field: Field, pkEntity: number, limit, offset, takeUntil$: Observable<any>, scope: GvFieldPageScope) {
-    const subfieldId = fieldToFieldId(field, pkEntity, scope)
+  public addPageLoader(pkProject: number, field: Field, source: GvFieldSourceEntity, limit, offset, takeUntil$: Observable<any>, scope: GvFieldPageScope) {
+    const subfieldId = fieldToFieldId(field, source, scope)
     const subfieldIdString = subfieldIdToString(subfieldId)
 
 
-    const trigger$ = this.getTrigger(subfieldIdString, field, pkEntity, scope);
+    const trigger$ = this.getTrigger(subfieldIdString, field, source, scope);
 
     const pageIdString = subfieldIdString + '_' + limit + '_' + offset;
 
@@ -163,8 +164,8 @@ class StatementPageLoader2 {
           pkProject,
           targets: fieldToGvFieldTargets(field),
           page: {
-            fkSourceEntity: pkEntity,
-            fkProperty: field.property.pkProperty,
+            source: source,
+            property: field.property,
             isOutgoing: field.isOutgoing,
             scope: scope,
             limit,
@@ -204,19 +205,29 @@ class StatementPageLoader2 {
 
   }
 
-  private getTrigger(subfieldId: string, field: Field, pkEntity: number, scope: GvFieldPageScope) {
+  private getTrigger(subfieldId: string, field: Field, source: GvFieldSourceEntity, scope: GvFieldPageScope) {
     if (!this.paginationTriggers.has(subfieldId)) {
       const ofProject = !!scope.inProject;
       const t = combineLatest([
         this.inf$.statement$.by_object_and_property_indexed$({
-          fk_property: field.property.pkProperty,
-          fk_object_info: pkEntity
+          fk_property: field.property.fkProperty,
+          fk_property_of_property: field.property.fkPropertyOfProperty,
+
+          fk_object_info: source.fkInfo,
+          fk_object_data: source.fkData,
+          fk_object_tables_cell: source.fkTablesCell,
+          fk_object_tables_row: source.fkTablesRow
         }, ofProject).pipe(map(x => {
           return keys(x)
         }), distinctUntilChanged(equals)),
         this.inf$.statement$.by_subject_and_property_indexed$({
-          fk_property: field.property.pkProperty,
-          fk_subject_info: pkEntity
+          fk_property: field.property.fkProperty,
+          fk_property_of_property: field.property.fkPropertyOfProperty,
+
+          fk_subject_info: source.fkInfo,
+          fk_subject_data: source.fkData,
+          fk_subject_tables_cell: source.fkTablesCell,
+          fk_subject_tables_row: source.fkTablesRow
         }, ofProject).pipe(map(x => {
           return keys(x)
         }), distinctUntilChanged(equals)),

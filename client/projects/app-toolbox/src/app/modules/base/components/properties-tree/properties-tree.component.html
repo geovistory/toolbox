@@ -12,7 +12,7 @@
     <gv-field #field
       [hidden]="(generalShowEmptyFields === false || node.allSubfieldsRemovedFromAllProfiles) && !(field.itemsCount$ | async)"
       [field]="node" [treeControl]="generalTreeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
-      [pkEntity]="pkEntity$ | async"></gv-field>
+      [source]="source"></gv-field>
 
   </mat-nested-tree-node>
 </mat-tree>
@@ -35,6 +35,6 @@
     <gv-field #field
       [hidden]="(specificShowEmptyFields === false || node.allSubfieldsRemovedFromAllProfiles) && !(field.itemsCount$ | async)"
       [field]="node" [treeControl]="specificTreeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
-      [pkEntity]="pkEntity$ | async"></gv-field>
+      [source]="source"></gv-field>
   </mat-nested-tree-node>
 </mat-tree>

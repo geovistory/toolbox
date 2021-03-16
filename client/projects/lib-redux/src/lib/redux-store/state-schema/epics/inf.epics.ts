@@ -257,8 +257,8 @@ export class InfEpics {
     const meta: LoadPaginatedStatementListMeta = action.meta;
     const scope: GvFieldPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
     const req: GvFieldPage = {
-      fkSourceEntity: meta.pkSourceEntity,
-      fkProperty: meta.pkProperty,
+      source: { fkInfo: meta.pkSourceEntity },
+      property: { fkProperty: meta.pkProperty },
       isOutgoing: meta.isOutgoing,
       limit: meta.limit,
       offset: meta.offset,

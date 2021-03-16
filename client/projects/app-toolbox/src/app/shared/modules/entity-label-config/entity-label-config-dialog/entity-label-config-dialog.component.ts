@@ -1,11 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { ProjectConfigurationService } from "@kleiolab/lib-sdk-lb4";
-import { ProEntityLabelConfig } from "@kleiolab/lib-sdk-lb4";
-import { LabelPartField } from "@kleiolab/lib-sdk-lb4";
-import { LabelPart } from "@kleiolab/lib-sdk-lb4";
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
@@ -62,7 +59,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
             const option: SelectFieldOption = {
               label: item.label,
               id: fieldIdToString({
-                fkProperty: item.property.pkProperty,
+                fkProperty: item.property.fkProperty,
                 isOutgoing: item.isOutgoing
               }),
               removedFromAllProfiles: item.allSubfieldsRemovedFromAllProfiles

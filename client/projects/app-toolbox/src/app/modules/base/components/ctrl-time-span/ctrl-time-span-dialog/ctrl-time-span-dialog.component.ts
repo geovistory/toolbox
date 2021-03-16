@@ -158,7 +158,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
 
     const formParts$ = this.c.pipeSpecificFieldOfClass(50).pipe(
       debounceTime(20),
-      map(fields => fields.filter(f => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(f.property.pkProperty))),
+      map(fields => fields.filter(f => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(f.property.fkProperty))),
       mergeMap(fields => {
         // empty formGroup
         Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
@@ -187,14 +187,14 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
     formParts$.pipe(takeUntil(this.destroy$)).subscribe(formParts => {
 
       const ar = formParts.map(fp => ({
-        key: '_' + fp.items[0].formControlDef.field.property.pkProperty + '_outgoing',
+        key: '_' + fp.items[0].formControlDef.field.property.fkProperty + '_outgoing',
         val: fp
       }))
       this.f = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.val, indexBy((f) => f.key, ar))
 
       this.cName = mapObjIndexed((val, key, obj) => val.items[0].formControlDef.formControlName, this.f)
       this.active = mapObjIndexed((val, key, obj) => false, this.f)
-      this.properties = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.key, indexBy((f) => f.val.field.property.pkProperty.toString(), ar))
+      this.properties = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.key, indexBy((f) => f.val.field.property.fkProperty.toString(), ar))
 
       const f: TimeSpanFormDef = { formParts };
       this.formDef$.next(f);

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Field, InformationPipesService, SubfieldPage } from '@kleiolab/lib-queries';
-import { GvFieldPage, GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { fieldToGvFieldTargets } from '../../base.helpers';
@@ -14,7 +14,7 @@ import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/
 })
 export class EntityFieldComponent implements OnInit {
   @Input() field: Field
-  @Input() pkSourceEntity: number
+  @Input() source: GvFieldSourceEntity
   @Input() scope: GvFieldPageScope
   @Input() showOntoInfo$: Observable<boolean>
   isCircular = false;
@@ -26,8 +26,8 @@ export class EntityFieldComponent implements OnInit {
 
   ngOnInit() {
     const page: GvFieldPage = {
-      fkSourceEntity: this.pkSourceEntity,
-      fkProperty: this.field.property.pkProperty,
+      source: this.source,
+      property: this.field.property,
       isOutgoing: this.field.isOutgoing,
       limit: 1,
       offset: 0,
@@ -44,7 +44,7 @@ export class EntityFieldComponent implements OnInit {
       const data: SubfieldDialogData = {
         title: this.field.label,
         field: this.field,
-        sourceEntity: this.pkSourceEntity,
+        source: this.source,
         scope: this.scope,
         showOntoInfo$: this.showOntoInfo$,
       }

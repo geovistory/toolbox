@@ -5,7 +5,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService, StatementTargetEntity, StatementTargetTimeSpan, StatementWithTarget } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -32,7 +32,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() field: Field
-  @Input() pkEntity: number
+  @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
@@ -79,7 +79,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const errors: string[] = []
     if (!this.field) errors.push('@Input() subfield is required.');
-    if (!this.pkEntity) errors.push('@Input() pkEntity is required.');
+    if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
@@ -101,10 +101,10 @@ export class SubfieldComponent implements OnInit, OnDestroy {
         let fields = [this.field]
         if (this.field.isSpecialField === 'time-span') {
           fields = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(
-            pkProperty => {
+            fkProperty => {
               const field: Field = {
                 ...this.field,
-                property: { pkProperty: pkProperty },
+                property: { fkProperty },
                 targetClasses: [DfhConfig.CLASS_PK_TIME_PRIMITIVE],
                 targets: {
                   [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: {
@@ -120,12 +120,12 @@ export class SubfieldComponent implements OnInit, OnDestroy {
           )
         }
         for (const field of fields) {
-          this.pag.subfield.addPageLoader(pkProject, field, this.pkEntity, limit, offset, until$, this.scope);
+          this.pag.subfield.addPageLoader(pkProject, field, this.source, limit, offset, until$, this.scope);
         }
       }),
       // Piping from store
       switchMap(([limit, offset]) => this.i.pipeSubfieldPage(
-        fieldToFieldPage(this.field, this.pkEntity, this.scope, limit, offset),
+        fieldToFieldPage(this.field, this.source, this.scope, limit, offset),
         fieldToGvFieldTargets(this.field)
       )),
       shareReplay({ refCount: true, bufferSize: 1 }),
@@ -220,7 +220,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   }
 
   openTimespanModal(x: StatementTargetTimeSpan) {
-    this.timeSpan.openModal(x, this.pkEntity)
+    this.timeSpan.openModal(x, this.source.fkInfo)
   }
   openInNewTabFromEntity(e: StatementTargetEntity) {
     this.p.addEntityTab(e.pkEntity, e.fkClass)
