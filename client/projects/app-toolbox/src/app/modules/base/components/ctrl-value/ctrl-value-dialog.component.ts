@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive } from 'app/core';
-import { ValueObjectTypeName } from 'app/shared/components/digital-table/components/table/table.component';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
-import { InfTimePrimitiveWithCalendar } from '../ctrl-time-primitive/ctrl-time-primitive.component';
+import { ValueObjectTypeName } from '../../../../shared/components/digital-table/components/table/table.component';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';

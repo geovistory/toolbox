@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {DfhApiProfile, InfLanguage} from '../../../models';
-import {createDfhApiClass} from '../atomic/dfh-api-class.helper';
-import {createDfhApiProfile} from '../atomic/dfh-api-profile.helper';
-import {createDfhApiProperty, DfhApiProperty} from '../atomic/dfh-api-property.helper';
-import {createInfLanguage} from '../atomic/inf-language.helper';
-import {createSysSystemType} from '../atomic/sys-system-type.helper';
-import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
-import {DfhApiProfileMock} from '../data/gvDB/DfhApiProfileMock';
-import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
-import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
+import { DfhApiProfile, InfLanguage } from '../../../models';
+import { createDfhApiClass } from '../atomic/dfh-api-class.helper';
+import { createDfhApiProfile } from '../atomic/dfh-api-profile.helper';
+import { createDfhApiProperty, DfhApiProperty } from '../atomic/dfh-api-property.helper';
+import { createInfLanguage } from '../atomic/inf-language.helper';
+import { createSysSystemType } from '../atomic/sys-system-type.helper';
+import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
+import { DfhApiProfileMock } from '../data/gvDB/DfhApiProfileMock';
+import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
+import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
 import { DfhApiClass } from '../data/gvDB/local-model.helpers';
-import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
+import { SysSystemTypeMock } from '../data/gvDB/SysSystemTypeMock';
 
 export async function createModel() {
     await createTypes();
@@ -63,7 +63,8 @@ export async function createClasses(): Promise<Array<DfhApiClass>> {
         await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE),
         await createDfhApiClass(DfhApiClassMock.EN_657_REFERENCE),
         await createDfhApiClass(DfhApiClassMock.EN_690_TIME_UNIT),
-        await createDfhApiClass(DfhApiClassMock.EN_689_DURATION)
+        await createDfhApiClass(DfhApiClassMock.EN_689_DURATION),
+        await createDfhApiClass(DfhApiClassMock.EN_50_TIME_SPAN),
     ]);
 }
 
@@ -79,7 +80,7 @@ export async function createProfiles(): Promise<Array<DfhApiProfile>> {
 
 export async function createProperties(): Promise<Array<DfhApiProperty>> {
     return Promise.all([
-        await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF),
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
         await createDfhApiProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
         await createDfhApiProperty(DfhApiPropertyMock.EN_979_CARRIERS_PROVIDED_BY),
         await createDfhApiProperty(DfhApiPropertyMock.EN_1206_HAS_TYPE_OF_MANIFESTATION_PRODUCT_TYPE),

@@ -189,11 +189,11 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   getVOT(fkClass: number): { type: ValueObjectTypeName, dimensionClass?: number } | undefined {
     if (Object.keys(this.config.classes).some(k => k === fkClass + '')) {
-      if (this.config.classes[fkClass].mapsToListType.appellation) return { type: ValueObjectTypeName.appellation };
-      if (this.config.classes[fkClass].mapsToListType.place) return { type: ValueObjectTypeName.place };
-      if (this.config.classes[fkClass].mapsToListType.dimension) return { type: ValueObjectTypeName.dimension, dimensionClass: fkClass };
-      if (this.config.classes[fkClass].mapsToListType.language) return { type: ValueObjectTypeName.langString };
-      if (this.config.classes[fkClass].mapsToListType.timePrimitive) return { type: ValueObjectTypeName.timePrimitive };
+      if (this.config.classes[fkClass].valueObjectType.appellation) return { type: ValueObjectTypeName.appellation };
+      if (this.config.classes[fkClass].valueObjectType.place) return { type: ValueObjectTypeName.place };
+      if (this.config.classes[fkClass].valueObjectType.dimension) return { type: ValueObjectTypeName.dimension, dimensionClass: fkClass };
+      if (this.config.classes[fkClass].valueObjectType.language) return { type: ValueObjectTypeName.langString };
+      if (this.config.classes[fkClass].valueObjectType.timePrimitive) return { type: ValueObjectTypeName.timePrimitive };
     }
     return undefined;
   }

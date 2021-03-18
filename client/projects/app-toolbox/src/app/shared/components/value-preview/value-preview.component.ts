@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { InfPlace, InfAppellation, InfDimension, InfLangString, InfTimePrimitive, ActiveProjectService, JulianDateTime } from 'app/core';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { InfAppellation, InfDimension, InfLangString, InfPlace, InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
+import { JulianDateTime } from '@kleiolab/lib-utils';
+import { Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { ValueObjectTypeName } from '../digital-table/components/table/table.component';
 
 @Component({
@@ -20,19 +21,20 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
   pkLanguage: string;
 
   constructor(
-    private p: ActiveProjectService
+    private ap: ActiveProjectPipesService,
+    private s: SchemaSelectorsService,
   ) { }
 
   ngOnInit() {
     if (this.vot.type == ValueObjectTypeName.dimension) {
-      this.p.streamEntityPreview((this.value as InfDimension).fk_measurement_unit).pipe(
+      this.ap.streamEntityPreview((this.value as InfDimension).fk_measurement_unit).pipe(
         map(ep => ep.entity_label),
         takeUntil(this.destroy$)
       ).subscribe(unitLabel => this.dimension_unit = unitLabel);
     };
 
     if (this.vot.type == ValueObjectTypeName.langString) {
-      this.p.inf$.language$.by_pk_entity$.key((this.value as InfLangString).fk_language).subscribe(language => this.pkLanguage = language ? language.pk_language : '');
+      this.s.inf$.language$.by_pk_entity$.key((this.value as InfLangString).fk_language).subscribe(language => this.pkLanguage = language ? language.pk_language : '');
     }
   }
 

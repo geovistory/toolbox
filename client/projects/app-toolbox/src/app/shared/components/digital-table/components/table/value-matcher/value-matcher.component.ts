@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService, InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive } from 'app/core';
-import { InfActions } from 'app/core/inf/inf.actions';
-import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { InfActions } from '@kleiolab/lib-redux';
+import { InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
 import { Observable, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ValueObjectTypeName } from '../table.component';
@@ -33,6 +34,8 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private inf: InfActions,
     public c: ConfigurationPipesService,
+    private s: SchemaSelectorsService,
+    private ap: ActiveProjectPipesService,
   ) { }
 
   ngOnDestroy() {
@@ -45,13 +48,13 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => { this.pkProject = pkProject });
 
     // get the statement
-    this.statement$ = this.p.inf$.statement$.by_subject_and_property$({
+    this.statement$ = this.s.inf$.statement$.by_subject_and_property$({
       fk_subject_tables_cell: this.pkCell,
       fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO
     }).pipe(
       map((statements) => {
         if (statements.length) {
-          this.p.streamEntityPreview(statements[0].fk_object_info).subscribe(ep => this.isInProject = !!ep.fk_project);
+          this.ap.streamEntityPreview(statements[0].fk_object_info).subscribe(ep => this.isInProject = !!ep.fk_project);
           return statements[0];
         } else return undefined;
       }),

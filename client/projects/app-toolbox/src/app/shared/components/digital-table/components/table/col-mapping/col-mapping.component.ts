@@ -1,20 +1,15 @@
-import { Statement } from '@angular/compiler';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatRadioChange, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from 'app/core/active-project';
-import { InfActions } from 'app/core/inf/inf.actions';
-import { ProActions } from 'app/core/pro/pro.actions';
-import { TableService } from 'app/core/sdk-lb4';
-import { UnMapCheckResponse } from 'app/core/sdk-lb4/model/unMapCheckResponse';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
-import { SystemSelector } from 'app/core/sys/sys.service';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
+import { SchemaService } from '@kleiolab/lib-redux';
+import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../confirm-dialog/confirm-dialog.component';
 import { ColumnMapping } from '../table.component';
 
 @Component({
@@ -52,12 +47,11 @@ export class ColMappingComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> },
     private p: ActiveProjectService,
-    private sys: SystemSelector,
-    private s: SchemaObjectService,
+    private sys: SysSelector,
+    private s: SchemaService,
     private tableAPI: TableService,
     public c: ConfigurationPipesService,
-    private dialog: MatDialog,
-    private proActions: ProActions
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -87,7 +81,7 @@ export class ColMappingComponent implements OnInit, OnDestroy {
         const specialClasses: Array<{ label: string, pkClass: number }> = [];
         const normalClasses: Array<{ label: string, pkClass: number }> = [];
         classes.forEach(c => {
-          if (config.classes[c.pkClass] && config.classes[c.pkClass].mapsToListType) specialClasses.push(c);
+          if (config.classes[c.pkClass] && config.classes[c.pkClass].valueObjectType) specialClasses.push(c);
           else normalClasses.push(c);
         })
         normalClasses.sort((a, b) => a.label < b.label ? -1 : 1);
