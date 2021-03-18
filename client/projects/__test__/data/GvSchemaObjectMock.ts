@@ -1,4 +1,4 @@
-import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { createAppellationProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
 import { DfhApiClassMock } from './auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from './auto-gen/gvDB/DfhApiPropertyMock';
@@ -17,7 +17,7 @@ export namespace GvSchemaObjectMock {
    * This schema object should a basic set of classes and properties
    * corresponding to the OntoME profile 'Geovistory Basics'
    */
-  export const basicClassesAndProperties: GvSchemaObject = {
+  export const basicClassesAndProperties: GvPositiveSchemaObject = {
     dfh: {
       klass: [
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_365_NAMING),
@@ -73,7 +73,7 @@ export namespace GvSchemaObjectMock {
    * This object should provide the classes and properties
    * for working with Ship Voyage
    */
-  export const modelOfShipVoyage: GvSchemaObject = {
+  export const modelOfShipVoyage: GvPositiveSchemaObject = {
     dfh: {
       klass: [
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_523_SHIP_VOYAGE),
@@ -94,7 +94,7 @@ export namespace GvSchemaObjectMock {
     * This object should provide the classes and properties
     * for working with EN_220_MANIFESTATION_SINGLETON
     */
-  export const fieldsOfManifestationSingleton: GvSchemaObject = {
+  export const fieldsOfManifestationSingleton: GvPositiveSchemaObject = {
     dfh: {
       klass: [
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON),
@@ -132,7 +132,7 @@ export namespace GvSchemaObjectMock {
     }
   }
 
-  export const modelOfPresence: GvSchemaObject = {
+  export const modelOfPresence: GvPositiveSchemaObject = {
     dfh: {
       klass: [
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_84_PRESENCE),
@@ -158,7 +158,7 @@ export namespace GvSchemaObjectMock {
     }
   }
 
-  export const modelOfBirth: GvSchemaObject = {
+  export const modelOfBirth: GvPositiveSchemaObject = {
     dfh: {
       klass: [
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_61_BIRTH),
@@ -187,7 +187,7 @@ export namespace GvSchemaObjectMock {
   }
 
 
-  export const modelOfPerson: GvSchemaObject = {
+  export const modelOfPerson: GvPositiveSchemaObject = {
     dfh: {
       klass: [
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON),
@@ -218,7 +218,7 @@ export namespace GvSchemaObjectMock {
    * If you work with PROJECT_1, this object provides basic schema data:
    * language and project
    */
-  export const project1: GvSchemaObject = {
+  export const project1: GvPositiveSchemaObject = {
     inf: {
       language: [
         InfLanguageMock.GERMAN
@@ -234,7 +234,7 @@ export namespace GvSchemaObjectMock {
   /**
    * Provides sys-config (should be as on production or ahead)
    */
-  export const sysConfig: GvSchemaObject = {
+  export const sysConfig: GvPositiveSchemaObject = {
     sys: {
       config: [
         SysConfigValueMock.SYS_CONFIC_VALID

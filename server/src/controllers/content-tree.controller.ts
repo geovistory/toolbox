@@ -6,7 +6,7 @@ import {get, param} from '@loopback/rest';
 import {Roles} from '../components/authorization/keys';
 import {QContentTree} from '../components/query/q-content-tree';
 import {Postgres1DataSource} from '../datasources';
-import {GvSchemaObject} from '../models/gv-schema-object.model';
+import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
 
 /**
  * A controller to get data for the content tree
@@ -24,7 +24,7 @@ export class ContentTreeController {
     responses: {
       '200': {
         description: 'Ok',
-        content: {'application/json': {schema: {'x-ts-type': GvSchemaObject}}},
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
       },
     },
   })
@@ -39,7 +39,7 @@ export class ContentTreeController {
       required: true,
       description: "Primary Key of the F2 Expression entity for which the content tree is needed.",
     }) pkExpressionEntity: number
-  ): Promise<GvSchemaObject> {
+  ): Promise<GvPositiveSchemaObject> {
     return new QContentTree(this.dataSource).query(pkProject, pkExpressionEntity)
   }
 

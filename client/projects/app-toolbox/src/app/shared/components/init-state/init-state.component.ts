@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IAppState, SchemaService, SET_APP_STATE } from '@kleiolab/lib-redux';
-import { GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -36,7 +36,7 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() sandboxState: any;
   @Input() initState: IAppState
 
-  @Input() schemaObjects: GvSchemaObject[]
+  @Input() schemaObjects: GvPositiveSchemaObject[]
 
   @Output() ok = new EventEmitter();
 

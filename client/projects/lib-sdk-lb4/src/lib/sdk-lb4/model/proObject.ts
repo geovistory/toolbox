@@ -15,12 +15,14 @@ import { ProProject } from './proProject';
 import { ProClassFieldConfig } from './proClassFieldConfig';
 import { ProDfhClassProjRel } from './proDfhClassProjRel';
 import { ProAnalysis } from './proAnalysis';
+import { ProTableConfig } from './proTableConfig';
 import { ProTextProperty } from './proTextProperty';
 
 
 export interface ProObject { 
     info_proj_rel?: Array<ProInfoProjRel>;
     analysis?: Array<ProAnalysis>;
+    table_config?: Array<ProTableConfig>;
     class_field_config?: Array<ProClassFieldConfig>;
     dfh_class_proj_rel?: Array<ProDfhClassProjRel>;
     text_property?: Array<ProTextProperty>;

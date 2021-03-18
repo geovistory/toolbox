@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
-import { GvSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvFieldPageReq';
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -34,7 +34,7 @@ describe('GvSchemaActions', () => {
   });
   describe('.loadGvSchemaObject()', () => {
     it('should put parts of object into store', () => {
-      const apiCall$ = new BehaviorSubject<GvSchemaObject>({
+      const apiCall$ = new BehaviorSubject<GvPositiveSchemaObject>({
         inf: { language: [InfLanguageMock.GERMAN] }
       })
       actions.loadGvSchemaObject(apiCall$)

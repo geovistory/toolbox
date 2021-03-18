@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
 import {clone, omit} from 'ramda';
-import {ColDefDefaultType, QueryPathSegmentType, TableExportFileType} from '../../../models';
+import {ColDefDefaultType, QueryPathSegmentType, TableExportFileType, AnalysisDefinition} from '../../../models';
 import {AnalysisMapResponse} from '../../../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../../../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-request.model';
@@ -53,7 +53,7 @@ describe('AnaylsisController', () => {
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req: AnalysisTableRequest = {
                 fkProject: pkProject,
-                analysisDefinition: corruptAnalysisDefinition
+                analysisDefinition: corruptAnalysisDefinition as AnalysisDefinition
             }
             const res = await client.post('/analysis/table-run')
                 .set('Authorization', lb4Token)

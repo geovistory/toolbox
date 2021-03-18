@@ -5,7 +5,7 @@ import {equals, groupBy, uniq} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
 import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
 import {GvFieldTargets} from '../../models/field/gv-field-targets';
-import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-schema-object.model';
+import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-positive-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
@@ -98,6 +98,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         dfh_profile_proj_rel: [],
         project: [],
         info_proj_rel: [],
+        table_config: [],
       },
       dfh: {
         profile: [],

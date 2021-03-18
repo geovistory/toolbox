@@ -1,12 +1,12 @@
 import {Postgres1DataSource} from '../../datasources';
 import {DatDigital} from '../../models/dat-digital.model';
-import {GvSchemaObject} from '../../models/gv-schema-object.model';
 import {InfLanguage} from '../../models/inf-language.model';
 import {InfStatement} from '../../models/inf-statement.model';
 import {InfTextProperty} from '../../models/inf-text-property.model';
 import {ProInfoProjRel} from '../../models/pro-info-proj-rel.model';
 import {WarEntityPreview} from '../../models/war-entity-preview.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 
 export class QContentTree extends SqlBuilderLb4Models {
 
@@ -266,6 +266,6 @@ export class QContentTree extends SqlBuilderLb4Models {
     `;
 
 
-    return this.executeAndReturnFirstData<GvSchemaObject>()
+    return this.executeAndReturnFirstData<GvPositiveSchemaObject>()
   }
 }

@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvSchemaObject, InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject, InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
@@ -117,7 +117,7 @@ export class ActiveProjectPipesService {
    * @param object
    * @param pkProject
    */
-  private extendEntityPreviewStream(object: GvSchemaObject, pkProject: number) {
+  private extendEntityPreviewStream(object: GvPositiveSchemaObject, pkProject: number) {
 
     if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
       this.entityPreviewSocket.emit('extendStream', {

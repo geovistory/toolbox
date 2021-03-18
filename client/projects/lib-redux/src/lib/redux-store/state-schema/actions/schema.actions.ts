@@ -1,13 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { GvFieldPageReq, GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
 import { IAppState } from '../../root/models/model';
 import { LoadActionMeta } from '../_helpers/schema-actions-factory';
 
-export type GvSchemaObjectAction = FluxStandardAction<Observable<GvSchemaObject>, LoadActionMeta>;
+export type GvSchemaObjectAction = FluxStandardAction<Observable<GvPositiveSchemaObject>, LoadActionMeta>;
 
 interface GvPaginationObjectActionMeta extends LoadActionMeta {
   req: GvFieldPageReq
@@ -34,7 +34,7 @@ export class GvSchemaActions {
    *                we'll end up with two subscriptions and thus two api calls
    */
   loadGvSchemaObject(
-    apiCall$: Observable<GvSchemaObject>
+    apiCall$: Observable<GvPositiveSchemaObject>
   ): void {
     const addPending = U.uuid()
     const action: GvSchemaObjectAction = {

@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { GvSchemaObject } from '../model/models';
+import { GvPositiveSchemaObject } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -91,9 +91,9 @@ export class ContentTreeService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
-    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
-    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
     public contentTreeControllerGetContentTree(pkProject: number, pkExpressionEntity: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling contentTreeControllerGetContentTree.');
@@ -145,7 +145,7 @@ export class ContentTreeService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<GvSchemaObject>(`${this.configuration.basePath}/get-content-tree`,
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/get-content-tree`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

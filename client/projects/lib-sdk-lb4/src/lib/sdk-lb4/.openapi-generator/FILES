@@ -93,9 +93,6 @@ model/geoEntityMapAndTimeCont.ts
 model/getEntityLabelConfigResponse.ts
 model/getFactoidsFromEntityResponse.ts
 model/getTablePageOptions.ts
-model/gvNegativeSchemaObject.ts
-model/gvPositiveSchemaObject.ts
-model/gvSchemaModifier.ts
 model/gvFieldId.ts
 model/gvFieldPage.ts
 model/gvFieldPageReq.ts
@@ -103,10 +100,12 @@ model/gvFieldPageScope.ts
 model/gvFieldProperty.ts
 model/gvFieldSourceEntity.ts
 model/gvFieldTargets.ts
+model/gvNegativeSchemaObject.ts
 model/gvPaginationAlternativeLeafItemsReq.ts
 model/gvPaginationObject.ts
 model/gvPaginationStatementFilter.ts
-model/gvSchemaObject.ts
+model/gvPositiveSchemaObject.ts
+model/gvSchemaModifier.ts
 model/gvSubentitFieldPageReq.ts
 model/gvSubentityFieldPage.ts
 model/gvSubentityFieldTargets.ts
@@ -199,7 +198,6 @@ model/timeChartContQueryDef.ts
 model/timeChartContVisualSettings.ts
 model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
-model/timePrimitiveWithCalWithRelations.ts
 model/unMapCheckResponse.ts
 model/unmapColumnBody.ts
 model/warEntityPreview.ts

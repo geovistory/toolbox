@@ -1,12 +1,12 @@
 import { model, ModelDefinition, property } from '@loopback/repository';
 import { without } from 'ramda';
-import { SysConfig } from '../../controllers';
 import { Postgres1DataSource } from '../../datasources';
 import { DatColumn, InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
 import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
 import { logSql } from '../../utils/helpers';
 import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 import { registerType } from '../spec-enhancer/model.spec.enhancer';
+import {SysConfigValue} from '../../models/sys-config';
 
 // Table column filter interface
 export enum SortDirection {
@@ -137,7 +137,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   colsWithMapping: string[];
   masterColumns: string[]
 
-  sysconfig: SysConfig;
+  sysconfig: SysConfigValue;
 
   constructor(
     dataSource: Postgres1DataSource
@@ -688,14 +688,14 @@ export class QTableTablePage extends SqlBuilderLb4Models {
 
   private getTableFromClassVOT(fkClass: number): 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | undefined {
     const theClass = this.sysconfig.classes[fkClass];
-    if (!theClass || !theClass.mapsToListType) return;
-    if (theClass.mapsToListType.appellation) return 'appellation';
-    if (theClass.mapsToListType.place) return 'place';
-    if (theClass.mapsToListType.dimension) return 'dimension';
-    if (theClass.mapsToListType.language) return 'lang_string';
-    if (theClass.mapsToListType.timePrimitive) return 'time_primitive';
+    if (!theClass || !theClass.valueObjectType) return;
+    if (theClass.valueObjectType.appellation) return 'appellation';
+    if (theClass.valueObjectType.place) return 'place';
+    if (theClass.valueObjectType.dimension) return 'dimension';
+    if (theClass.valueObjectType.language) return 'lang_string';
+    if (theClass.valueObjectType.timePrimitive) return 'time_primitive';
 
-    // const vots = Object.keys(theClass.mapsToListType).filter((vot: keyof ListType) => theClass.mapsToListType[vot]) //==> typescript does like it
+    // const vots = Object.keys(theClass.valueObjectType).filter((vot: keyof ListType) => theClass.valueObjectType[vot]) //==> typescript does like it
   }
 
 }

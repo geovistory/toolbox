@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvSchemaObject, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject, GvTargetType } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -43,7 +43,7 @@ describe('ConfigurationPipeService', () => {
     it('should return two custom profiles + basic profile (id:5)', async (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       // seeding data
-      const gvSchemaObj: GvSchemaObject = {
+      const gvSchemaObj: GvPositiveSchemaObject = {
         pro: {
           dfh_profile_proj_rel: [
             ProDfhProfileProjRelMock.PROJ_1_PROFILE_12,
@@ -78,7 +78,7 @@ describe('ConfigurationPipeService', () => {
     it('should return class config for class C365_NAMING', (done) => {
       setAppState(ngRedux, IAppStateMock.stateDefaultConfigProject)
       // seeding data
-      const gvSchemaObj: GvSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] } }
+      const gvSchemaObj: GvPositiveSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] } }
       schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
 
       setTimeout(() => {
@@ -467,7 +467,7 @@ describe('ConfigurationPipeService', () => {
     it('should return one type class', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       // seeding data
-      const gvSchemaObj: GvSchemaObject = {
+      const gvSchemaObj: GvPositiveSchemaObject = {
         dfh: {
           klass: [
             transformDfhApiClassToDfhClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE),
@@ -512,7 +512,7 @@ describe('ConfigurationPipeService', () => {
     it('should return class label of Geographical Place', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       // seeding data
-      const gvSchemaObj: GvSchemaObject = {
+      const gvSchemaObj: GvPositiveSchemaObject = {
         dfh: {
           klass: [
             transformDfhApiClassToDfhClass(DfhApiClassMock.EN_363_GEO_PLACE),

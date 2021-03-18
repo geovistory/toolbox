@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { Client, expect } from '@loopback/testlab';
-import { GetTablePageOptions, SortDirection } from '../../../components/query/q-table-page';
-import { PubAccount, TableConfig, TableConfigCol } from '../../../models';
-import { GvPositiveSchemaObject } from '../../../models/gv-positive-schema-object.model';
-import { GeovistoryServer } from '../../../server';
-import { createDatNamespace } from '../../helpers/atomic/dat-namespace.helper';
-import { DatClassColumnMappingMock } from '../../helpers/data/gvDB/DatClassColumnMappingMock';
-import { DatColumnMock } from '../../helpers/data/gvDB/DatColumnMock';
-import { DatDigitalMock } from '../../helpers/data/gvDB/DatDigitalMock';
-import { DatNamespaceMock } from '../../helpers/data/gvDB/DatNamespaceMock';
-import { DfhApiClassMock } from '../../helpers/data/gvDB/DfhApiClassMock';
-import { InfStatementMock } from '../../helpers/data/gvDB/InfStatementMock';
-import { ProProjectMock } from '../../helpers/data/gvDB/ProProjectMock';
-import { PubAccountMock } from '../../helpers/data/gvDB/PubAccountMock';
-import { PubCredentialMock } from '../../helpers/data/gvDB/PubCredentialMock';
-import { createJonasSchneider } from '../../helpers/graphs/account.helper';
-import { forFeatureX } from '../../helpers/graphs/feature-X.helper';
-import { createProject2 } from '../../helpers/graphs/project.helper';
-import { setupApplication } from '../../helpers/gv-server-helpers';
-import { cleanDb } from '../../helpers/meta/clean-db.helper';
+import {Client, expect} from '@loopback/testlab';
+import {GetTablePageOptions, SortDirection} from '../../../components/query/q-table-page';
+import {TableConfig} from '../../../models';
+import {GvPositiveSchemaObject} from '../../../models/gv-positive-schema-object.model';
+import {GeovistoryServer} from '../../../server';
+import {createDatNamespace} from '../../helpers/atomic/dat-namespace.helper';
+import {DatClassColumnMappingMock} from '../../helpers/data/gvDB/DatClassColumnMappingMock';
+import {DatColumnMock} from '../../helpers/data/gvDB/DatColumnMock';
+import {DatDigitalMock} from '../../helpers/data/gvDB/DatDigitalMock';
+import {DatNamespaceMock} from '../../helpers/data/gvDB/DatNamespaceMock';
+import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
+import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';
+import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
+import {PubAccountMock} from '../../helpers/data/gvDB/PubAccountMock';
+import {PubCredentialMock} from '../../helpers/data/gvDB/PubCredentialMock';
+import {createJonasSchneider} from '../../helpers/graphs/account.helper';
+import {forFeatureX} from '../../helpers/graphs/feature-X.helper';
+import {createProject2} from '../../helpers/graphs/project.helper';
+import {setupApplication} from '../../helpers/gv-server-helpers';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
 const qs = require('querystring');
 
 
@@ -31,9 +31,9 @@ describe('TableController', () => {
 
 
 
-    describe('POST /map-column', async () => {
+    describe('POST /map-column',  () => {
         const project = ProProjectMock.SANDBOX_PROJECT;
-        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const accountInProject = PubAccountMock.GAETAN_VERIFIED
         const pwdInProject = PubCredentialMock.GAETAN_PASSWORD.password;
         const namespaceInProject = DatNamespaceMock.SANDBOX_NAMESPACE
 
@@ -134,9 +134,9 @@ describe('TableController', () => {
 
     })
 
-    describe('POST /unmap-column a', async () => {
+    describe('POST /unmap-column a', () => {
         const project = ProProjectMock.SANDBOX_PROJECT;
-        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const accountInProject = PubAccountMock.GAETAN_VERIFIED
         const pwdInProject = PubCredentialMock.GAETAN_PASSWORD.password;
         const namespaceInProject = DatNamespaceMock.SANDBOX_NAMESPACE
 
@@ -224,9 +224,9 @@ describe('TableController', () => {
     })
 
 
-    describe('POST /unmap-column-check', async () => {
+    describe('POST /unmap-column-check', () => {
         const project = ProProjectMock.SANDBOX_PROJECT;
-        const accountInProject: PubAccount = PubAccountMock.GAETAN_VERIFIED
+        const accountInProject = PubAccountMock.GAETAN_VERIFIED
         const pwdInProject = PubCredentialMock.GAETAN_PASSWORD.password;
         const namespaceInProject = DatNamespaceMock.SANDBOX_NAMESPACE
 
@@ -557,7 +557,7 @@ describe('TableController', () => {
                 .query(query)
                 .send(options)
 
-            expect(res.body).to.be.deepEqual(should);    
+            expect(res.body).to.be.deepEqual(should);
         });
 
     })
@@ -566,7 +566,7 @@ describe('TableController', () => {
     describe('POST /set-table-config', () => {
         const project = ProProjectMock.SANDBOX_PROJECT;
         const wrongProject = ProProjectMock.PROJECT_1;
-        const account: PubAccount = PubAccountMock.GAETAN_VERIFIED;
+        const account = PubAccountMock.GAETAN_VERIFIED;
         const wrongAccount = PubAccountMock.JONAS;
         const pwd = PubCredentialMock.GAETAN_PASSWORD.password;
         const digital = DatDigitalMock.DIGITAL_UNIONS;
@@ -771,7 +771,7 @@ describe('TableController', () => {
     describe('GET /get-table-config', () => {
         const project = ProProjectMock.SANDBOX_PROJECT;
         const wrongProject = ProProjectMock.PROJECT_1;
-        const account: PubAccount = PubAccountMock.GAETAN_VERIFIED;
+        const account = PubAccountMock.GAETAN_VERIFIED;
         const wrongAccount = PubAccountMock.JONAS;
         const pwd = PubCredentialMock.GAETAN_PASSWORD.password;
         const digital = DatDigitalMock.DIGITAL_UNIONS;

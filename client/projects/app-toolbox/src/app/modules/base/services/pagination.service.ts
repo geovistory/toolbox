@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Field, InfSelector, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
 import { ActionResultObservable, GvSchemaActions, PaginatedStatementList, PaginatedStatements, subfieldIdToString, SucceedActionMeta } from '@kleiolab/lib-redux';
-import { GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, keys } from 'ramda';
@@ -117,7 +117,7 @@ class StatementPageLoader {
 
 export interface PaginatedStatementList2 {
   count: number;
-  schemas: GvSchemaObject;
+  schemas: GvPositiveSchemaObject;
   paginatedStatements: PaginatedStatements;
 }
 

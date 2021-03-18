@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository';
-import {GvSchemaObject} from '../gv-schema-object.model';
+import {GvPositiveSchemaObject} from '../gv-positive-schema-object.model';
 import {GvFieldPage} from './gv-field-page';
 
 @model()
@@ -11,6 +11,6 @@ export class GvSubfieldPageInfo {
 
 @model()
 export class GvPaginationObject {
-  @property({type: GvSchemaObject, required: true}) schemas: GvSchemaObject
+  @property({type: GvPositiveSchemaObject, required: true}) schemas: GvPositiveSchemaObject
   @property.array(GvSubfieldPageInfo, {required: true}) subfieldPages: GvSubfieldPageInfo[]
 }

@@ -9,12 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvSchemaObject } from './gvSchemaObject';
 import { GvSubfieldPageInfo } from './gvSubfieldPageInfo';
+import { GvPositiveSchemaObject } from './gvPositiveSchemaObject';
 
 
 export interface GvPaginationObject { 
-    schemas: GvSchemaObject;
+    schemas: GvPositiveSchemaObject;
     subfieldPages: Array<GvSubfieldPageInfo>;
 }
 
