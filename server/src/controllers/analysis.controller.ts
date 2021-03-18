@@ -20,7 +20,7 @@ import {AnalysisTableExportResponse} from '../models/analysis/analysis-table-exp
 import {AnalysisTableRequest} from '../models/analysis/analysis-table-request.model';
 import {AnalysisTimeChartRequest} from '../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse, ChartLine} from '../models/analysis/analysis-time-chart-response.model';
-import {GvSchemaObject} from '../models/gv-schema-object.model';
+import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
 import {ProAnalysisRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {SysConfigController} from './sys-config.controller';
@@ -194,7 +194,7 @@ export class AnalysisController {
     responses: {
       '200': {
         description: 'Ok.',
-        content: {'application/json': {schema: {'x-ts-type': GvSchemaObject}}},
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
       },
     },
   })
@@ -202,7 +202,7 @@ export class AnalysisController {
     @param.query.number('pkProject') pkProject: number,
     @param.query.number('pkEntity') pkEntity: number,
     @param.query.number('version') version: number,
-  ): Promise<GvSchemaObject> {
+  ): Promise<GvPositiveSchemaObject> {
     let res: (ProAnalysis & ProAnalysisRelations) | null
     if (!version) {
       res = await this.proAnalysisRepo.findOne({
@@ -242,7 +242,7 @@ export class AnalysisController {
         content: {
           'application/json': {
             schema: {
-              'x-ts-type': GvSchemaObject,
+              'x-ts-type': GvPositiveSchemaObject,
             }
           }
         },
@@ -251,7 +251,7 @@ export class AnalysisController {
   })
   async ofProject(
     @param.query.number('pkProject', {required: true}) pkProject: number
-  ): Promise<GvSchemaObject> {
+  ): Promise<GvPositiveSchemaObject> {
     const analysis = await this.proAnalysisRepo.find({
       where: {
         fk_project: {eq: pkProject}
@@ -270,7 +270,7 @@ export class AnalysisController {
         content: {
           'application/json': {
             schema: {
-              'x-ts-type': GvSchemaObject,
+              'x-ts-type': GvPositiveSchemaObject,
             }
           }
         },
@@ -291,7 +291,7 @@ export class AnalysisController {
         }
       },
     }) items: ProAnalysis[],
-  ): Promise<GvSchemaObject> {
+  ): Promise<GvPositiveSchemaObject> {
     const accountId = this.user[securityId];
     const promiseArray = items.map(item => {
       item.fk_last_modifier = parseInt(accountId, 10)

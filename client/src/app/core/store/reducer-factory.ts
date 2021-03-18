@@ -352,7 +352,7 @@ export class ReducerFactory<Payload, Model> {
       const itemKey = config.indexBy.indexByFn(removedItem); // second segment e.g. '807060'
 
       // get old item, if exists
-      let oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+      const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
 
       // Q: Does the item exists?
       if (oldItem) {
@@ -368,7 +368,7 @@ export class ReducerFactory<Payload, Model> {
 
         // delete the removedItem at path in the group index
         groups.forEach(g => {
-          const groupKey = this.getGroupKeyOfItem(g.groupByFn, removedItem)
+          const groupKey = this.getGroupKeyOfItem(g.groupByFn, oldItem)
           state = {
             ...state,
             [g.groupByKey]: {

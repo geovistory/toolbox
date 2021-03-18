@@ -1,8 +1,9 @@
-import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, WarStatementRepository} from '../../../repositories';
-import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
-import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
-import {PubRoleRepository} from '../../../repositories/pub-role.repository';
-import {testdb} from "../testdb";
+import { InfAppellation } from '../../../models';
+import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, ProTableConfigRepository, WarStatementRepository, InfAppellationRepository, InfStatementRepository, ProInfoProjRelRepository } from '../../../repositories';
+import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
+import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
+import { PubRoleRepository } from '../../../repositories/pub-role.repository';
+import { testdb } from "../testdb";
 
 export async function cleanDb() {
     //because we update it to create an information.language
@@ -13,15 +14,16 @@ export async function cleanDb() {
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE '%_vt'`);
-    tables.forEach(async (t: {name: string}) => {await testdb.execute('DELETE FROM ' + t.name)});
+    tables.forEach(async (t: { name: string }) => { await testdb.execute('DELETE FROM ' + t.name) });
 
     //delete all cell partitionned table
     const cellTables = await testdb.execute(`
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE 'cell_%'`);
-    cellTables.forEach(async (t: {name: string}) => {if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name)});
+    cellTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name) });
 
+    const proTableConfig = new ProTableConfigRepository(testdb);
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
     const datDigitalRepository = new DatDigitalRepository(testdb);
     const datNamespaceRepository = new DatNamespaceRepository(testdb);
@@ -47,6 +49,31 @@ export async function cleanDb() {
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
     const warClassPreviewRepository = new WarClassPreviewRepository(testdb);
     const warStatementRepository = new WarStatementRepository(testdb);
+
+
+    await testdb.execute('ALTER TABLE information.appellation DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.appellation');
+    await testdb.execute('ALTER TABLE information.appellation ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE information.place DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.place');
+    await testdb.execute('ALTER TABLE information.place ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE information.dimension DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.dimension');
+    await testdb.execute('ALTER TABLE information.dimension ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE information.lang_string DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.lang_string');
+    await testdb.execute('ALTER TABLE information.lang_string ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE information.time_primitive DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.time_primitive');
+    await testdb.execute('ALTER TABLE information.time_primitive ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE projects.table_config DISABLE TRIGGER versioning_trigger');
+    await proTableConfig.deleteAll();
+    await testdb.execute('ALTER TABLE projects.table_config ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE data.factoid_property_mapping DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM data.factoid_property_mapping');

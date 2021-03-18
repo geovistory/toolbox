@@ -25,7 +25,7 @@ import { AnalysisTableRequest } from '../model/models';
 import { AnalysisTableResponse } from '../model/models';
 import { AnalysisTimeChartRequest } from '../model/models';
 import { AnalysisTimeChartResponse } from '../model/models';
-import { GvSchemaObject } from '../model/models';
+import { GvPositiveSchemaObject } from '../model/models';
 import { ProAnalysis } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -171,9 +171,9 @@ export class AnalysisService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
-    public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
-    public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
     public analysisControllerBulkUpsert(pkProject?: number, proAnalysis?: Array<ProAnalysis>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -224,7 +224,7 @@ export class AnalysisService {
             responseType = 'text';
         }
 
-        return this.httpClient.put<GvSchemaObject>(`${this.configuration.basePath}/analysis/bulk-upsert`,
+        return this.httpClient.put<GvPositiveSchemaObject>(`${this.configuration.basePath}/analysis/bulk-upsert`,
             proAnalysis,
             {
                 params: queryParameters,
@@ -245,9 +245,9 @@ export class AnalysisService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
-    public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
-    public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
     public analysisControllerGetVersion(pkProject?: number, pkEntity?: number, version?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -297,7 +297,7 @@ export class AnalysisService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<GvSchemaObject>(`${this.configuration.basePath}/analysis/get-version`,
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/analysis/get-version`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
@@ -380,9 +380,9 @@ export class AnalysisService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public analysisControllerOfProject(pkProject: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
-    public analysisControllerOfProject(pkProject: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
-    public analysisControllerOfProject(pkProject: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public analysisControllerOfProject(pkProject: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public analysisControllerOfProject(pkProject: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public analysisControllerOfProject(pkProject: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
     public analysisControllerOfProject(pkProject: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling analysisControllerOfProject.');
@@ -427,7 +427,7 @@ export class AnalysisService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<GvSchemaObject>(`${this.configuration.basePath}/analysis/of-project`,
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/analysis/of-project`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

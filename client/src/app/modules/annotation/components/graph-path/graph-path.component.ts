@@ -52,8 +52,8 @@ export class GraphPathComponent implements OnInit {
     this.p.addTableTab(pkEntity)
   }
 
-  openCellInNewTab(fkDigital: number, fkRow: number) {
-    this.p.addTableTab(fkDigital, fkRow);
+  openCellInNewTab(fkDigital: number, fkRow: string) {
+    this.p.addTableTab(fkDigital, parseInt(fkRow, 10));
   }
 
 }

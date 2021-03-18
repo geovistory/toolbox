@@ -5,7 +5,7 @@ import {InfEntity} from '.';
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'v_language'}
+    postgresql: {schema: 'information', table: 'language'}
   }
 })
 export class InfLanguage extends Entity implements InfEntity {

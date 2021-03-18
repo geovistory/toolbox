@@ -52,7 +52,7 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
       this.pkClassOfDimension = injectedData.pkClassOfDimension
     }
 
-    if (!this.pkClassOfDimension) throw new Error('this.pkClassOfDimension is missing')
+    // if (!this.pkClassOfDimension) throw new Error('this.pkClassOfDimension is missing')
 
     this.pkClassOfMeasurementUnit$ = this.p.sys$.config$.main$.pipe(
       filter(c => !!c),

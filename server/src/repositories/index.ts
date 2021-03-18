@@ -40,3 +40,5 @@ export * from './pub-role-mapping.repository';
 export * from './pub-role.repository';
 export * from './pro-entity-label-config.repository';
 export * from './tab-row.repository';
+export * from './pro-table-config.repository';
+export * from './inf-dimension.repository';

@@ -36,4 +36,11 @@ export class DatDigitalMock {
         fk_system_type: SysSystemTypeMock.DIGITAL_TABLE.pk_entity,
         string: '',
     })
+
+    static readonly DIGITAL_OUT = new DatDigital({
+        pk_entity: 2005,
+        fk_namespace: DatNamespaceMock.NAMESPACE_2.pk_entity,
+        fk_system_type: SysSystemTypeMock.DIGITAL_TABLE.pk_entity,
+        string: '',
+    })
 }

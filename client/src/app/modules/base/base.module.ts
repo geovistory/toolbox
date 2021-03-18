@@ -20,6 +20,7 @@ import { ChooseClassDialogComponent } from './components/choose-class-dialog/cho
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
 import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
+import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dialog.component';
 import { CtrlLangStringComponent } from './components/ctrl-lang-string/ctrl-lang-string.component';
 import { CtrlLanguageComponent } from './components/ctrl-language/ctrl-language.component';
 import { CtrlPlaceComponent } from './components/ctrl-place/ctrl-place.component';
@@ -72,6 +73,7 @@ const components = [
   CtrlLanguageComponent,
   CtrlPlaceComponent,
   CtrlEntityComponent,
+  CtrlValueDialogComponent,
   CtrlEntityDialogComponent,
   CtrlTextPropertyComponent,
   CtrlLangStringComponent,
@@ -135,6 +137,7 @@ const baseModules = [
     ChooseClassDialogComponent,
     CtrlTimeSpanDialogComponent,
     CtrlEntityDialogComponent,
+    CtrlValueDialogComponent,
     PropertiesTreeDialogComponent,
     AddDialogComponent,
     AddOrCreateEntityDialogComponent,

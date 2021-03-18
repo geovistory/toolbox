@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { ActiveProjectService, InfStatement, SysConfig } from 'app/core';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { ActiveProjectService, InfStatement, SysConfig } from 'app/core';
+import { InfActions } from 'app/core/inf/inf.actions';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from 'app/modules/base/components/ctrl-entity/ctrl-entity.component';
-import { InfActions } from 'app/core/inf/inf.actions';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-entity-matcher',
@@ -52,7 +52,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
     ).subscribe(statement => this.statement = statement);
   }
 
-  changeMapping(mode: 'create' | 'edit' | 'delete') {
+  changeMatching(mode: 'create' | 'edit' | 'delete') {
     if (mode == 'delete') {
       if (this.statement) this.inf.statement.remove([this.statement], this.pkProject);
     } else {

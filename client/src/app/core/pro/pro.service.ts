@@ -9,6 +9,7 @@ import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
 import { toString } from 'ramda';
 import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProTableConfig } from '../sdk-lb4';
 
 
 class Selector {
@@ -23,7 +24,7 @@ class Selector {
     const all$ = this.ngRedux.select<ByPk<M>>([proRoot, this.model, indexKey])
 
     const key = (x: string | (string | number)[]): Observable<M> => {
-      const k = typeof x === 'string' ? x : x.map((part: string | number) => toString(part)).join('_');;
+      const k = typeof x === 'string' ? x : x.map((part: string | number) => toString(part)).join('_');
 
       return this.ngRedux.select<M>([proRoot, this.model, indexKey, k])
     }
@@ -42,6 +43,16 @@ class ProProjectSelector extends Selector {
   ) { super(ngRedux, configs, model) }
 }
 
+class ProTableConfigSelector extends Selector {
+  public by_pk_entity$ = this.selector<ProTableConfig>('by_pk_entity')
+  public by_fk_digital$ = this.selector<ByPk<ProTableConfig>>('by_fk_digital')
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
+}
 
 class ProInfoProjRelSelector extends Selector {
   public by_fk_project__fk_entity$ = this.selector<ProInfoProjRel>('by_fk_project__fk_entity')
@@ -126,6 +137,7 @@ export class ProSelector extends ProActions {
   class_field_config$ = new ProClassFieldConfigSelector(this.ngRedux, proDefinitions, 'class_field_config');
   text_property$ = new ProTextPropertySelector(this.ngRedux, proDefinitions, 'text_property');
   analysis$ = new ProAnalysisSelector(this.ngRedux, proDefinitions, 'analysis');
+  table_config$ = new ProTableConfigSelector(this.ngRedux, proDefinitions, 'table_config');
 
   constructor(public ngRedux: NgRedux<IAppState>) {
     super(ngRedux)

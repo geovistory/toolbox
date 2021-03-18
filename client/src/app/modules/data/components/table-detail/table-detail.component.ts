@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectService, DatColumn, DatDigitalApi, SysConfig } from 'app/core';
+import { ActiveAccountService, ActiveProjectService, DatColumn, DatDigitalApi, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { TableRow, TableService } from 'app/core/sdk-lb4';
+import { ProTableConfig, TableConfig, TableRow, TableService } from 'app/core/sdk-lb4';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
@@ -11,8 +11,9 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { ColumnMapping, Header } from 'app/shared/components/digital-table/components/table/table.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { TableBody } from 'primeng/table';
 import { equals, indexBy, values, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, of, config } from 'rxjs';
 import { auditTime, distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TColFilter, TColFilters } from '../../../../../../../server/src/lb3/server/table/interfaces';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
@@ -97,6 +98,15 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   colFiltersEnabled = false;
   lineBrakeInCells = false;
 
+  // for table config
+  order$ = new BehaviorSubject<{ col: number, direction: 'right' | 'left' }>({ col: -1, direction: 'right' });
+  tableConfig$: Observable<TableConfig>;
+
+
+  tableConfig: TableConfig = { columns: [] };
+  changingColumns = false;
+  configLoaded = false;
+
   // to target data on event of the stupid table component
   dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number, refersTo?: number }[][];
   colMapping: (string)[];
@@ -121,7 +131,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     private tableAPI: TableService,
     private s: SchemaObjectService,
     private c: ConfigurationPipesService,
-    private inf: InfActions
+    private inf: InfActions,
+    private a: ActiveAccountService,
   ) { }
 
   ngOnInit() {
@@ -131,6 +142,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       // this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
       this.s.storeGv(this.tableAPI.tableControllerGetTableColumns(pkProject, this.pkEntity), pkProject);
+      this.s.modifyGvSchema(this.tableAPI.tableControllerGetTableConfig(pkProject, this.pkEntity, this.a.account.id), pkProject)
       this.pkProject = pkProject
     })
 
@@ -196,14 +208,43 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     /**
      * Get all columns and add them to the column toggle
      */
-    this.colToggleOptions$ = this.p.dat$.column$.by_fk_digital$.key(this.pkEntity).pipe(
-      map(indexedCols => values(indexedCols).map(col => col)),
-      tap(cols => {
-        // make all checkboxes as checked
-        this.colToggleCtrl.setValue(cols.map(col => col.pk_entity))
+    // this.colToggleOptions$ = this.p.dat$.column$.by_fk_digital$.key(this.pkEntity).pipe(
+    //   map(indexedCols => values(indexedCols).map(col => col)),
+    //   tap(cols => {
+    //     // make all checkboxes as checked
+    //     this.colToggleCtrl.setValue(cols.map(col => col.pk_entity))
+    //   }),
+    //   switchMap(cols => combineLatestOrEmpty(
+    //     cols.map(datColumn => this.p.dat$.text_property$.by_fk_entity__fk_system_type$
+    //       .key(datColumn.pk_entity + '_' + 3295)
+    //       .pipe(
+    //         map(textProp => {
+    //           const display = (values(textProp)[0] || { string: '' }).string
+    //           return { display, value: datColumn.pk_entity, datColumn }
+    //         })
+    //       )
+    //     )
+    //   )),
+    //   shareReplay({ refCount: true, bufferSize: 1 })
+    // )
+
+    this.tableConfig$ = this.p.pro$.table_config$.by_fk_digital$.key(this.pkEntity + '').pipe(
+      map(ptc => values(ptc)),
+      map(ptc => ptc[0] ? ptc[0].config : undefined)
+    );
+
+
+
+    this.colToggleOptions$ = combineLatest([this.p.dat$.column$.by_fk_digital$.key(this.pkEntity), this.tableConfig$]).pipe(
+      map(([indexedCols, config]) => {
+        return { cols: values(indexedCols).map(col => col), config };
       }),
-      switchMap(cols => combineLatestOrEmpty(
-        cols.map(datColumn => this.p.dat$.text_property$.by_fk_entity__fk_system_type$
+      tap(obj => {
+        if (!this.configLoaded) this.colToggleCtrl.setValue(obj.cols.filter(col => obj.config ? obj.config.columns.some(conf => col.pk_entity === conf.fkColumn && conf.visible) : true).map(col => col.pk_entity))
+        if (obj.config) this.configLoaded = true;
+      }),
+      switchMap(obj => combineLatestOrEmpty(
+        obj.cols.map(datColumn => this.p.dat$.text_property$.by_fk_entity__fk_system_type$
           .key(datColumn.pk_entity + '_' + 3295)
           .pipe(
             map(textProp => {
@@ -223,53 +264,61 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       this.sortByIndex$.next({ colNb: -1, direction: 'ASC' })
     })
 
-
     this.columns$ = combineLatest(
       this.colToggleCtrl.valueChanges,
-      this.colToggleOptions$
+      this.colToggleOptions$,
+      this.tableConfig$
     ).pipe(
-      map(([cols, colToggleOptions]) => {
+      map(([cols, colToggleOptions, config]) => {
         const colInd = indexBy(c => c.toString(), cols);
-        if (this.currentSortIndex) {
-          this.currentSortIndex.colNb = Object.keys(colInd).findIndex(k => k === this.currentSortIndex.colName)
-          if (this.currentSortIndex.colNb !== -1) this.currentSortIndex.colNb++ // + 1 because first column is pk_row
-          else if (this.currentSortIndex.colName === 'pk_row') this.currentSortIndex.colNb = 0;
+        this.colMapping = ['pk_row'];
+        const result: {
+          display: string;
+          value: number;
+          datColumn: DatColumn;
+        }[] = []
+        for (const option of colToggleOptions) {
+          if (!!colInd[option.value]) {
+            result.push(option)
+            this.colMapping.push(option.value.toString())
+          }
         }
-        return colToggleOptions.filter(o => !!colInd[o.value])
+        // if (this.pkProject && config && config.columns.length != 0) {
+        //   config.columns.forEach(col => col.visible = result.some(r => r.datColumn.pk_entity == col.fkColumn))
+        //   this.s.modifyGvSchema(this.tableAPI.tableControllerSetTableConfig(this.pkProject, this.pkEntity, this.a.account.id, config), this.pkProject);
+        // }
+        return result
       }),
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
     // set the headers
-    this.headers$ = this.columns$.pipe(
+    this.headers$ = combineLatest([this.tableConfig$, this.columns$.pipe(
       switchMap((cols) => {
         const obs$ = cols.map(col => this.p.dat$.class_column_mapping$.by_fk_column$.key(col.datColumn.pk_entity).pipe(
-          // extract the fkClass
-          map((mappings) => {
-            const mapArr = values(mappings);
-            let toReturn: number | undefined;
-            if (mapArr.length) toReturn = mapArr[0].fk_class;
-            return toReturn;
-          }),
+          // format the mappings
+          map((indexedMappings) => values(indexedMappings)),
           // create the header for that column
-          switchMap((fkClass: number | undefined) => {
+          switchMap((mappings) => {
             const header: Header = {
               colLabel: col.display,
               comment: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
               type: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
               pk_column: col.datColumn.pk_entity,
             };
-            if (!fkClass) return of(header);
+            if (!mappings[0]) return of(header);
             // get the class and the class label
-            return combineLatest(
-              this.p.dfh$.class$.by_pk_class$.key(fkClass),
-              this.c.pipeClassLabel(fkClass)
-            ).pipe(
+            return combineLatest([
+              this.p.dfh$.class$.by_pk_class$.key(mappings[0].fk_class),
+              this.c.pipeClassLabel(mappings[0].fk_class)
+            ]).pipe(
               map(([dfhClass, classLabels]) => {
                 header.mapping = {
-                  fkClass: fkClass,
+                  fkClass: mappings[0].fk_class,
                   className: classLabels,
-                  icon: dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn'
+                  icon: dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn',
+                  pkEntity: mappings[0].pk_entity,
+                  pkColumn: col.datColumn.pk_entity
                 }
                 return header;
               }
@@ -284,11 +333,22 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         const firstHeader: Header = { colLabel: 'Row ID', comment: 'number', type: 'number' };
         return [firstHeader, ...cols]
       })
-    );
+    )]).pipe(
+      map(([config, headers]) => {
+        if (!config || config.columns.length == 0) this.tableConfig = { columns: headers.slice(1).map(h => ({ fkColumn: h.pk_column, visible: true })) }
+        else this.tableConfig = JSON.parse(JSON.stringify(config));
+
+        const headersInOrder: Array<Header> = [headers[0]];
+        this.tableConfig.columns.forEach(c => {
+          const target = headers.find(h => h.pk_column == c.fkColumn)
+          if (target) headersInOrder.push(target)
+        });
+
+        return headersInOrder;
+      })
+    )
 
     // creating the table and the data mapping
-
-
     this.table$ = combineLatest([res$, this.headers$]).pipe(
       map(([res, headers]) => {
         const colsToKeep: Array<number> = headers.slice(1).map(h => h.pk_column);
@@ -299,24 +359,27 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
         for (let i = 0; i < rows.length; i++) {
           const row = rows[i];
+          const keys = Object.keys(row);
           table[i] = [];
           this.dataMapping[i] = [];
           table[i][0] = row.pk_row.toString();
           this.dataMapping[i][0] = { pk_row: row.pk_row };
-          for (let j = 0; j < colsToKeep.length; j++) {
-            const key = colsToKeep[j];
-            if (!row[key]) continue;
+          for (let j = 0; j < keys.length; j++) {
+            const key = keys[j];
+            if (this.colMapping.indexOf(key) == -1) continue;
             const str: string = row[key].string_value ? row[key].string_value : row[key].numeric_value == 0 || row[key].numeric_value ? row[key].numeric_value : '';
-            const theCol = headers.find(h => h.pk_column == key);
-            if (!theCol.mapping) table[i].push(str);
-            else table[i].push({ text: str, pkCell: row[key].pk_cell as number });
+            const theCol = headers.filter(h => h.pk_column == parseInt(key, 10))[0];
+            const indexToPut = headers.findIndex(h => h.pk_column + '' === key);
+            if (!theCol) continue;
+            if (!theCol.mapping) table[i][indexToPut] = str;
+            else table[i][indexToPut] = { text: str, pkCell: row[key].pk_cell as number };
 
-            this.dataMapping[i].push({
+            this.dataMapping[i][indexToPut] = {
               pk_row: row.pk_row,
-              pk_col: colsToKeep[j],
+              pk_col: parseInt(res.columns[j], 10),
               pk_cell: row[key].pk_cell,
               refersTo: -1
-            })
+            }
           }
         }
         if (table.length == 0) {
@@ -344,6 +407,49 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       })
     }
 
+
+    combineLatest([this.colToggleCtrl.valueChanges, this.order$]).pipe(
+      map(([cols, order]) => {
+        if (!this.tableConfig || this.tableConfig.columns.length == 0) return;
+
+        const configBefore = JSON.stringify(this.tableConfig); // keep in memory the previous config
+
+        // first set all column to visible = false
+        this.tableConfig.columns.forEach(c => c.visible = false);
+
+        // set to visible = true the ones that are checked
+        cols.forEach(c => this.tableConfig.columns.find(tc => tc.fkColumn == c).visible = true);
+
+        // if the order changed
+        if (order.col != -1) {
+          let oldIndex = order.col - 1; // because first col is 'Row id', and has not to be moved
+
+          // correct index: there might be visible:false in between
+          let correction = 0;
+          for (let i = 0; i <= oldIndex; i++) {
+            if (!this.tableConfig.columns[i].visible) correction++;
+          }
+          oldIndex += correction;
+
+          // look around until there is a visible one
+          let newIndex = order.direction == 'right' ? oldIndex + 1 : oldIndex - 1;
+          if (order.direction === 'right') while (!this.tableConfig.columns[newIndex].visible) newIndex++;
+          else if (order.direction === 'left') while (!this.tableConfig.columns[newIndex].visible) newIndex--;
+
+          // do the switch
+          this.tableConfig.columns.splice(newIndex, 0, this.tableConfig.columns.splice(oldIndex, 1)[0]);
+
+          // avoid infinite loop: otherwise on next emission of cols, order will still be at previous one, and then starts to loop because of that
+          this.order$.next({ col: -1, direction: 'right' });
+        }
+
+        // update the db in accordance of modifications only if there is modifications
+        if (configBefore !== JSON.stringify(this.tableConfig)) {
+          this.s.modifyGvSchema(this.tableAPI.tableControllerSetTableConfig(this.pkProject, this.pkEntity, this.a.account.id, this.tableConfig), this.pkProject);
+        }
+
+      })
+    ).subscribe();
   }
 
   /**
@@ -414,4 +520,27 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.destroy$.unsubscribe();
   }
 
+  changingColumnsOrder(checked: boolean) {
+    this.changingColumns = checked;
+  }
+
+  onColumnOrderChange(change: { col: number, direction: 'right' | 'left' }) {
+    this.order$.next(change)
+
+    // let oldIndex = change.col - 1;
+
+    // let correction = 0; // correct index: there might be visible:false in between
+    // for (let i = 0; i <= oldIndex; i++) {
+    //   if (!this.tableConfig.columns[i].visible) correction++;
+    // }
+    // oldIndex += correction;
+
+    // let newIndex = change.direction == 'right' ? oldIndex + 1 : oldIndex - 1;
+    // if (change.direction === 'right') while (!this.tableConfig.columns[newIndex].visible) newIndex++;
+    // else if (change.direction === 'left') while (!this.tableConfig.columns[newIndex].visible) newIndex--;
+
+    // this.tableConfig.columns.splice(newIndex, 0, this.tableConfig.columns.splice(oldIndex, 1)[0]);
+
+    // this.s.modifyGvSchema(this.tableAPI.tableControllerSetTableConfig(this.pkProject, this.pkEntity, this.a.account.id, this.tableConfig), this.pkProject);
+  }
 }

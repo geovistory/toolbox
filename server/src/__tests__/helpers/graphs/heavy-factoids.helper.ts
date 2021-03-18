@@ -5,7 +5,6 @@ import { createSource } from '../generic/source.helper';
 import { createCell, createColumn, createColumnMapping, createFactoidMapping, createFactoidProperty, createRow, createTable, mapCell } from '../generic/table.helper';
 import { initDBWithGaetan } from './init.helper';
 import readline = require('readline');
-import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
 
 const personNb = 100;
 const colsNb = 5;

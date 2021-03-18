@@ -65,7 +65,7 @@ export async function createBunchOfSources() {
 
         await createInfStatement(InfStatementMock.DIGITAL_BIRTHDATES_IS_REPRODUCTION_OF_HABS_EMP),
         await createInfStatement(InfStatementMock.DIGITAL_RANDOM_IS_REPRODUCTION_OF_HABS_EMP),
-        
+
         await createInfStatement(InfStatementMock.NAMING_UNIONS_TO_PEIT_UNIONS),
         await createInfStatement(InfStatementMock.NAMING_UNIONS_TO_APPE_UNIONS),
         await createInfStatement(InfStatementMock.UNIONS_CARRIERS_PROVIDED_BY),

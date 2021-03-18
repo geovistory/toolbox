@@ -17,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { GvSchemaObject } from '../model/models';
+import { GvPositiveSchemaObject } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -93,9 +93,9 @@ export class RamListService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaObject>;
-    public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaObject>>;
-    public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaObject>>;
+    public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
     public ramListControllerGetRamList(pkProject: number, pkEntity: number, fkProperty: number, refersTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling ramListControllerGetRamList.');
@@ -158,7 +158,7 @@ export class RamListService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<GvSchemaObject>(`${this.configuration.basePath}/get-ram-list`,
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/get-ram-list`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

@@ -6,33 +6,30 @@
     <mat-icon>more_vert</mat-icon>
   </button>
 
+  <!-- Normal classes -->
   <mat-menu #options="matMenu" xPosition="before">
-
     <button mat-menu-item *ngIf="statement && isInProject" (click)="openEntity()">
       <mat-icon>tab</mat-icon>
       Open entity in new tab
     </button>
-
     <button mat-menu-item *ngIf="statement && !isInProject" (click)="addAndOpenEntity()">
       <mat-icon color="primary">add</mat-icon>
       Add to project and open
     </button>
-
-    <button mat-menu-item *ngIf="!statement" (click)="changeMapping('create')">
+    <button mat-menu-item *ngIf="!statement" (click)="changeMatching('create')">
       <mat-icon>add</mat-icon>
       Map an entity
     </button>
-
-    <button mat-menu-item *ngIf="statement" (click)="changeMapping('edit')">
+    <button mat-menu-item *ngIf="statement" (click)="changeMatching('edit')">
       <mat-icon>edit</mat-icon>
       Edit entity
     </button>
-
     <mat-divider></mat-divider>
     <div class="dropdown-header" *ngIf="statement">Danger Zone</div>
-    <button mat-menu-item *ngIf="statement" (click)="changeMapping('delete')">
+    <button mat-menu-item *ngIf="statement" (click)="changeMatching('delete')">
       <mat-icon color="warn">delete</mat-icon>
       <span>Remove match</span>
     </button>
   </mat-menu>
+
 </div>

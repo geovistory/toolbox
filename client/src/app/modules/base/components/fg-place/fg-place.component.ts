@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance, MatInput } from '@angular/material';
 import { InfPlace } from 'app/core';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
@@ -62,6 +62,7 @@ export class FgPlaceComponent implements OnInit, OnDestroy, AfterViewInit, FormF
       }),
       getChildNodeConfigs: (n: FgPlaceNodeConfig) => this.getChildNodeConfigs(n)
     }
+
     this.ff.create(ffConfig, this.destroy$).pipe(
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
@@ -70,6 +71,7 @@ export class FgPlaceComponent implements OnInit, OnDestroy, AfterViewInit, FormF
       // console.log(v)
     })
   }
+
   getChildNodeConfigs(n: FgPlaceNodeConfig): Observable<FgPlaceNodeConfig[]> {
     if (n.group) {
       return this.initVal$.pipe(
