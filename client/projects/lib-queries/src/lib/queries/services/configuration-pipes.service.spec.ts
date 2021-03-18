@@ -310,7 +310,7 @@ describe('ConfigurationPipeService', () => {
 
   describe('.pipeFields()', () => {
 
-    it('should return correct fields of manifestation singleton', (done) => {
+    fit('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.fieldsOfManifestationSingleton, PK_DEFAULT_CONFIG_PROJECT)

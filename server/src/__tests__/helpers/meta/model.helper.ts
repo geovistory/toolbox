@@ -51,9 +51,11 @@ export async function createLanguages(): Promise<Array<InfLanguage>> {
 export async function createClasses(): Promise<Array<DfhApiClass>> {
     return Promise.all([
         await createDfhApiClass(DfhApiClassMock.EN_365_NAMING),
+        await createDfhApiClass(DfhApiClassMock.EN_785_TEXT),
         await createDfhApiClass(DfhApiClassMock.EN_21_PERSON),
         await createDfhApiClass(DfhApiClassMock.EN_218_EXPRESSION),
         await createDfhApiClass(DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE),
+        await createDfhApiClass(DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE),
         await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH),
         await createDfhApiClass(DfhApiClassMock.EN_633_UNION),
         await createDfhApiClass(DfhApiClassMock.EN_40_APPELLATION),
@@ -87,6 +89,6 @@ export async function createProperties(): Promise<Array<DfhApiProperty>> {
         await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
         await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END),
         await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
-        await createDfhApiProperty(DfhApiPropertyMock.EN_1409_INVOLVES_PARTNER)
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER)
     ]);
 }
