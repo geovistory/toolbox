@@ -3,3 +3,4 @@ documentation
 
 # Dependency directories
 node_modules/
+dist/
