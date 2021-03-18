@@ -21,6 +21,7 @@ import { GetTablePageOptions } from '../model/models';
 import { GvPositiveSchemaObject } from '../model/models';
 import { GvSchemaModifier } from '../model/models';
 import { MapColumnBody } from '../model/models';
+import { TableConfig } from '../model/models';
 import { TablePageResponse } from '../model/models';
 import { UnMapCheckResponse } from '../model/models';
 import { UnmapColumnBody } from '../model/models';
@@ -164,6 +165,83 @@ export class TableService {
     }
 
     /**
+     * @param pkProject 
+     * @param pkDataEntity 
+     * @param accountId 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerGetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public tableControllerGetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public tableControllerGetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public tableControllerGetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerGetTableConfig.');
+        }
+        if (pkDataEntity === null || pkDataEntity === undefined) {
+            throw new Error('Required parameter pkDataEntity was null or undefined when calling tableControllerGetTableConfig.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (accountId !== undefined && accountId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>accountId, 'accountId');
+        }
+        if (pkDataEntity !== undefined && pkDataEntity !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDataEntity, 'pkDataEntity');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<GvSchemaModifier>(`${this.configuration.basePath}/get-table-config`,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Get rows (with cells) of a table according to the specified columns, limit, offset and sorting.
      * @param pkProject 
      * @param pkEntity 
@@ -270,21 +348,19 @@ export class TableService {
 
         let headers = this.defaultHeaders;
 
+        let credential: string | undefined;
         // authentication (accesstoken) required
-        if (this.configuration.apiKeys) {
-            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
-            if (key) {
-                headers = headers.set('authorization', key);
-            }
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
         }
 
         // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
         }
+
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -326,6 +402,94 @@ export class TableService {
     }
 
     /**
+     * @param pkProject 
+     * @param pkDataEntity 
+     * @param accountId 
+     * @param tableConfig 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerSetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, tableConfig?: TableConfig, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public tableControllerSetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, tableConfig?: TableConfig, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public tableControllerSetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, tableConfig?: TableConfig, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public tableControllerSetTableConfig(pkProject: number, pkDataEntity: number, accountId?: number, tableConfig?: TableConfig, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerSetTableConfig.');
+        }
+        if (pkDataEntity === null || pkDataEntity === undefined) {
+            throw new Error('Required parameter pkDataEntity was null or undefined when calling tableControllerSetTableConfig.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkDataEntity !== undefined && pkDataEntity !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDataEntity, 'pkDataEntity');
+        }
+        if (accountId !== undefined && accountId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>accountId, 'accountId');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvSchemaModifier>(`${this.configuration.basePath}/set-table-config`,
+            tableConfig,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Reset the mapping of a column
      * @param pkNamespace 
      * @param unmapColumnBody 
@@ -348,21 +512,19 @@ export class TableService {
 
         let headers = this.defaultHeaders;
 
+        let credential: string | undefined;
         // authentication (accesstoken) required
-        if (this.configuration.apiKeys) {
-            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
-            if (key) {
-                headers = headers.set('authorization', key);
-            }
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
         }
 
         // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
         }
+
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -426,21 +588,19 @@ export class TableService {
 
         let headers = this.defaultHeaders;
 
+        let credential: string | undefined;
         // authentication (accesstoken) required
-        if (this.configuration.apiKeys) {
-            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
-            if (key) {
-                headers = headers.set('authorization', key);
-            }
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
         }
 
         // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
         }
+
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header

@@ -370,7 +370,6 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
   })
-
 }
 
 

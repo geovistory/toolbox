@@ -15,6 +15,9 @@
     <!-- Filter Toggler -->
     <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
 
+    <!-- Filter Toggler -->
+    <mat-checkbox (change)="changingColumnsOrder($event.checked)">Change order</mat-checkbox>
+
     <!-- Metadata Toggler -->
     <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
   </div>
@@ -32,6 +35,7 @@
 <!--  [columnComments$]="" [loading]="" -->
 <!-- // MOVED cellMapping TO EntityMatcherComponent -->
 <gv-table [loading]="loading" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
-  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" class="gv-overflow-hidden"
-  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)">
+  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [changingColumns]="changingColumns" class="gv-overflow-hidden"
+  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)"
+  (changeColumn)="onColumnOrderChange($event)">
 </gv-table>

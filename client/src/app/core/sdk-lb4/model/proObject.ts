@@ -11,10 +11,12 @@
  */
 import { ProInfoProjRel } from './proInfoProjRel';
 import { ProAnalysis } from './proAnalysis';
+import { ProTableConfig } from './proTableConfig';
 
 
 export interface ProObject { 
     info_proj_rel?: Array<ProInfoProjRel>;
     analysis?: Array<ProAnalysis>;
+    table_config?: Array<ProTableConfig>;
 }
 

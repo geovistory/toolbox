@@ -88,6 +88,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
       }),
       getChildNodeConfigs: (n: FgLangStringNodeConfig) => this.getChildNodeConfigs(n)
     }
+
     this.ff.create(ffConfig, this.destroy$).pipe(
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
@@ -96,6 +97,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
       // console.log(v)
     })
   }
+
   getChildNodeConfigs(n: FgLangStringNodeConfig): Observable<FgLangStringNodeConfig[]> {
     if (n.group) {
       return this.initVal$.pipe(

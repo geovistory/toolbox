@@ -6,135 +6,149 @@
   </div>
 
   <!-- TABLE -->
-  <p-table [value]="table" [scrollable]="true" [resizableColumns]="true" columnResizeMode="expand"
-    class="gv-ui-table-full-height gv-ui-table-border-cells">
+  <span id="scrollAccess" style="width: 100%; height: 100%">
+    <p-table [value]="table" [scrollable]="true" [resizableColumns]="true" columnResizeMode="expand"
+      class="gv-ui-table-full-height gv-ui-table-border-cells">
 
-    <!-- Header params for prime-ng -->
-    <ng-template pTemplate="colgroup">
-      <colgroup>
-        <ng-container *ngFor="let col of headers">
-          <col style="width:150px" />
-          <col *ngIf="col.mapping" style="width:200px" />
-        </ng-container>
-      </colgroup>
-    </ng-template>
+      <!-- Header params for prime-ng -->
+      <ng-template pTemplate="colgroup">
+        <colgroup>
+          <ng-container *ngFor="let col of headers">
+            <col style="width:150px" />
+            <col *ngIf="col.mapping" style="width:200px" />
+          </ng-container>
+        </colgroup>
+      </ng-template>
 
-    <!-- HEADER -->
-    <ng-template pTemplate="header">
+      <!-- HEADER -->
+      <ng-template pTemplate="header">
 
-      <!-- TITLE ROW -->
-      <tr>
-        <ng-container *ngFor="let col of headers; let i = index">
-          <ng-container *ngIf="!col.mapping">
-            <th class="gv-pointer gv-td-col-header" colspan="1">
-              <!-- Column title-->
-              <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
-                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i" (click)="sort(i)"
-                  [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
-                </mat-icon>
-                <mat-icon></mat-icon>
-                <span (click)="sort(i)">{{col.colLabel}}</span>
-                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i"></mat-icon>
-                <mat-icon *ngIf="origin == 'importer'"></mat-icon>
-                <mat-icon *ngIf="i != 0 && origin !='importer'" svgIcon="link"
-                  (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
-                <mat-icon *ngIf="i == 0"></mat-icon>
-              </div>
-              <!-- Column comment-->
-              <div class="d-flex justify-content-center mat-caption"
-                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                {{col.comment}}
+        <!-- TITLE ROW -->
+        <tr>
+          <ng-container *ngFor="let col of headers; let i = index">
+            <ng-container *ngIf="!col.mapping">
+              <th class="gv-pointer gv-td-col-header" colspan="1">
+                <!-- Column title-->
+                <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
+                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i && !changingColumns" (click)="sort(i)"
+                    [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
+                  </mat-icon>
+                  <mat-icon *ngIf="i != 0 && i != 1 && changingColumns" (click)="changeColumnClick(i, 'left')"
+                    [svgIcon]="'arrow-left'"></mat-icon>
+                  <mat-icon></mat-icon>
+                  <span (click)="sort(i)">{{col.colLabel}}</span>
+                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i || (changingColumns && i != 1)"></mat-icon>
+                  <mat-icon *ngIf="origin == 'importer'"></mat-icon>
+                  <mat-icon *ngIf="i != 0 && origin !='importer' && !changingColumns" svgIcon="link"
+                    (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
+                  <mat-icon *ngIf="i == 0 || (changingColumns && i == headers.length - 1)"></mat-icon>
+                  <mat-icon *ngIf="i != 0 && i != headers.length - 1 && changingColumns"
+                    (click)="changeColumnClick(i, 'right')" [svgIcon]="'arrow-right'"></mat-icon>
+                </div>
+                <!-- Column comment-->
+                <div class="d-flex justify-content-center mat-caption"
+                  [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                  {{col.comment}}
+                </div>
+              </th>
+            </ng-container>
+
+            <ng-container *ngIf="col.mapping">
+              <th class="gv-pointer gv-td-col-header" colspan="2">
+                <!-- Column title-->
+                <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
+                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i && !changingColumns" (click)="sort(i)"
+                    [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
+                  </mat-icon>
+                  <mat-icon *ngIf="i != 0 && i != 1 && changingColumns" (click)="changeColumnClick(i, 'left')"
+                    [svgIcon]="'arrow-left'"></mat-icon>
+                  <mat-icon></mat-icon>
+                  <span (click)="sort(i)">{{col.colLabel}}</span>
+                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i || (changingColumns && i != 1)"></mat-icon>
+                  <mat-icon *ngIf="i != 0 && !changingColumns" svgIcon="link"
+                    (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
+                  <mat-icon *ngIf="i == 0 || (changingColumns && i == headers.length - 1)"></mat-icon>
+                  <mat-icon *ngIf="i != 0 && i != headers.length - 1 && changingColumns"
+                    (click)="changeColumnClick(i, 'right')" [svgIcon]="'arrow-right'"></mat-icon>
+                </div>
+                <!-- Column comment-->
+                <div class="d-flex justify-content-center mat-caption"
+                  [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                  {{col.comment}}
+                </div>
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+
+        <!-- MAPPING ROW -->
+        <tr *ngIf="isThereMappings$|async">
+          <ng-container *ngFor="let col of headers;">
+            <ng-container *ngIf="!col.mapping">
+              <th class="text-center mat-caption" pResizableColumn colspan="1"></th>
+            </ng-container>
+
+            <ng-container *ngIf="col.mapping">
+              <th class="text-center mat-caption" pResizableColumn colspan="1">
+                Text
+              </th>
+              <th class="text-center mat-caption" pResizableColumn colspan="1">
+                Matched
+                <span *ngIf="col.mapping.icon === 'teEn'"
+                  class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
+                <span *ngIf="col.mapping.icon === 'peIt'"
+                  class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+                {{col.mapping.className}}
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+
+        <!-- FILTERING ROW-->
+        <tr class="table-row-filter" *ngIf="filteringEnabled">
+          <ng-container *ngFor="let col of headers; let i = index">
+            <th [attr.colSpan]="col.mapping?2:1">
+              <div class="mat-elevation-z3 gv-td-filter-box p-1">
+                <gv-col-filter-text *ngIf="col.type=='string'" (filterChange)="filter(i, $event)"></gv-col-filter-text>
+                <gv-col-filter-numeric *ngIf="col.type=='number'" (filterChange)="filter(i, $event)">
+                </gv-col-filter-numeric>
               </div>
             </th>
           </ng-container>
+        </tr>
+      </ng-template>
 
-          <ng-container *ngIf="col.mapping">
-            <th class="gv-pointer gv-td-col-header" colspan="2">
-              <!-- Column title-->
-              <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
-                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i" (click)="sort(i)"
-                  [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
-                </mat-icon>
-                <mat-icon></mat-icon>
-                <span (click)="sort(i)">{{col.colLabel}}</span>
-                <mat-icon *ngIf="sortingEnabled && curSort.colNb == i"></mat-icon>
-                <mat-icon *ngIf="i != 0" svgIcon="link"
-                  (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
-                <mat-icon *ngIf="i == 0"></mat-icon>
-              </div>
-              <!-- Column comment-->
-              <div class="d-flex justify-content-center mat-caption"
-                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                {{col.comment}}
-              </div>
-            </th>
+      <!-- BODY -->
+      <ng-template pTemplate="body" let-row let-i="rowIndex" #scrollitem cdkScrollable>
+        <tr>
+          <ng-container *ngFor="let value of row; let j = index">
+            <!-- Cell content -->
+            <ng-container *ngIf="!headers[j]?.mapping">
+              <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
+                class="text-center align-self-center" pResizableColumn colspan="1">
+                {{value}}
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="headers[j]?.mapping">
+              <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
+                class="text-center align-self-center" pResizableColumn colspan="1">
+                {{value.text}}
+              </td>
+              <td *ngIf="headers[j].mapping" pResizableColumn colspan="1"
+                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
+                <gv-entity-matcher *ngIf="!isClassValueObjectType(headers[j].mapping.fkClass)"
+                  [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>
+                <gv-value-matcher *ngIf="isClassValueObjectType(headers[j].mapping.fkClass)"
+                  [vot]="getVOT(headers[j].mapping.fkClass)" [pkClass]="headers[j].mapping.fkClass"
+                  [pkCell]="value.pkCell"></gv-value-matcher>
+              </td>
+            </ng-container>
           </ng-container>
-        </ng-container>
-      </tr>
-
-      <!-- MAPPING ROW -->
-      <tr *ngIf="isThereMappings$|async">
-        <ng-container *ngFor="let col of headers;">
-          <ng-container *ngIf="!col.mapping">
-            <th class="text-center mat-caption" pResizableColumn colspan="1"></th>
-          </ng-container>
-
-          <ng-container *ngIf="col.mapping">
-            <th class="text-center mat-caption" pResizableColumn colspan="1">
-              Text
-            </th>
-            <th class="text-center mat-caption" pResizableColumn colspan="1">
-              Matched
-              <span *ngIf="col.mapping.icon === 'teEn'"
-                class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
-              <span *ngIf="col.mapping.icon === 'peIt'"
-                class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-              {{col.mapping.className}}
-            </th>
-          </ng-container>
-        </ng-container>
-      </tr>
-
-      <!-- FILTERING ROW-->
-      <tr class="table-row-filter" *ngIf="filteringEnabled">
-        <ng-container *ngFor="let col of headers; let i = index">
-          <th [attr.colSpan]="col.mapping?2:1">
-            <div class="mat-elevation-z3 gv-td-filter-box p-1">
-              <gv-col-filter-text *ngIf="col.type=='string'" (filterChange)="filter(i, $event)"></gv-col-filter-text>
-              <gv-col-filter-numeric *ngIf="col.type=='number'" (filterChange)="filter(i, $event)">
-              </gv-col-filter-numeric>
-            </div>
-          </th>
-        </ng-container>
-      </tr>
-    </ng-template>
-
-    <!-- BODY -->
-    <ng-template pTemplate="body" let-row let-i="rowIndex">
-      <tr>
-        <ng-container *ngFor="let value of row; let j = index">
-          <!-- Cell content -->
-          <ng-container *ngIf="!headers[j]?.mapping">
-            <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-              class="text-center align-self-center" pResizableColumn colspan="1">
-              {{value}}
-            </td>
-          </ng-container>
-
-          <ng-container *ngIf="headers[j]?.mapping">
-            <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-              class="text-center align-self-center" pResizableColumn colspan="1">
-              {{value.text}}
-            </td>
-            <td *ngIf="headers[j].mapping" pResizableColumn colspan="1"
-              [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
-              <gv-entity-matcher [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>
-            </td>
-          </ng-container>
-        </ng-container>
-      </tr>
-    </ng-template>
-  </p-table>
+        </tr>
+      </ng-template>
+    </p-table>
+  </span>
 </div>
 
 <ng-template #cover>

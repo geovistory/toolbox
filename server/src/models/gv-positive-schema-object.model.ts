@@ -1,9 +1,10 @@
-import {InfPersistentItem, InfTemporalEntity, InfStatement, InfPlace, InfLanguage, InfAppellation, InfTimePrimitive, InfTextProperty, InfLangString, InfDimension, ProInfoProjRel, DatDigital, WarEntityPreviewWithFulltext} from '.';
-import {property, model} from '@loopback/repository';
-import {DatTextProperty} from './dat-text-property.model';
-import {DatColumn} from './dat-column.model';
-import {DatClassColumnMapping} from './dat-class-column-mapping.model';
-import {ProAnalysis} from './pro-analysis.model';
+import { InfPersistentItem, InfTemporalEntity, InfStatement, InfPlace, InfLanguage, InfAppellation, InfTimePrimitive, InfTextProperty, InfLangString, InfDimension, ProInfoProjRel, DatDigital, WarEntityPreviewWithFulltext } from '.';
+import { property, model } from '@loopback/repository';
+import { DatTextProperty } from './dat-text-property.model';
+import { DatColumn } from './dat-column.model';
+import { DatClassColumnMapping } from './dat-class-column-mapping.model';
+import { ProAnalysis } from './pro-analysis.model';
+import { ProTableConfig } from './pro-tables-config.model';
 
 
 @model()
@@ -24,6 +25,7 @@ class InfObject {
 class ProObject {
   @property.array(ProInfoProjRel) info_proj_rel?: Partial<ProInfoProjRel>[]
   @property.array(ProAnalysis) analysis?: Partial<ProAnalysis>[]
+  @property.array(ProTableConfig) table_config?: Partial<ProTableConfig>[]
 }
 
 @model()

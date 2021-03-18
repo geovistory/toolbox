@@ -76,6 +76,7 @@ model/datDigital.ts
 model/datDigitalWithRelations.ts
 model/datNamespace.ts
 model/datNamespaceWithRelations.ts
+model/datNegativeObject.ts
 model/datObject.ts
 model/datTextProperty.ts
 model/dfhClass.ts
@@ -85,11 +86,14 @@ model/dimensionListType.ts
 model/entityLabelConfig.ts
 model/factoidEntity.ts
 model/factoidStatement.ts
+model/fkProjectFkEntity.ts
 model/geoEntityMapAndTimeCont.ts
 model/getEntityLabelConfigResponse.ts
 model/getFactoidsFromEntityResponse.ts
 model/getTablePageOptions.ts
-model/gvSchemaObject.ts
+model/gvNegativeSchemaObject.ts
+model/gvPositiveSchemaObject.ts
+model/gvSchemaModifier.ts
 model/header.ts
 model/httpErrorModel.ts
 model/httpErrorObjectModel.ts
@@ -99,6 +103,7 @@ model/infAppellation.ts
 model/infDimension.ts
 model/infLangString.ts
 model/infLanguage.ts
+model/infNegativeObject.ts
 model/infObject.ts
 model/infPersistentItem.ts
 model/infPlace.ts
@@ -112,11 +117,14 @@ model/labelPartField.ts
 model/listType.ts
 model/loginRequest.ts
 model/loginResponse.ts
+model/mapColumnBody.ts
 model/mapTemporalData.ts
 model/models.ts
 model/newProDfhClassProjRel.ts
 model/paginationObject.ts
 model/pingResponse.ts
+model/pkEntity.ts
+model/pkEntityVersion.ts
 model/proAnalysis.ts
 model/proClassFieldConfig.ts
 model/proDfhClassProjRel.ts
@@ -124,8 +132,10 @@ model/proDfhProfileProjRel.ts
 model/proEntityLabelConfig.ts
 model/proInfoProjRel.ts
 model/proInfoProjRelWithRelations.ts
+model/proNegativeObject.ts
 model/proObject.ts
 model/proProject.ts
+model/proTableConfig.ts
 model/proTextProperty.ts
 model/projectPongRequest.ts
 model/pubAccount.ts
@@ -152,6 +162,8 @@ model/tColFilterTxt.ts
 model/tColFilters.ts
 model/tabCell.ts
 model/tableCell.ts
+model/tableConfig.ts
+model/tableConfigCol.ts
 model/tablePageResponse.ts
 model/tableRow.ts
 model/timeChartContLine.ts
@@ -160,6 +172,8 @@ model/timeChartContVisualSettings.ts
 model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
 model/timePrimitiveWithCalWithRelations.ts
+model/unMapCheckResponse.ts
+model/unmapColumnBody.ts
 model/warEntityPreview.ts
 model/warEntityPreviewTimeSpan.ts
 model/warEntityPreviewTimeSpanWithRelations.ts

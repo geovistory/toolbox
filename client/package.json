@@ -46,6 +46,7 @@
     "color": "^3.1.2",
     "core-js": "^2.6.11",
     "d3": "^5.15.0",
+    "d3-dsv": "^2.0.0",
     "element-resize-detector": "^1.1.16",
     "file-saver": "^2.0.2",
     "flux-standard-action": "~2.0.1",

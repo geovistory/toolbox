@@ -3,6 +3,7 @@
 import * as XLSX from 'xlsx';
 import { sort } from 'ramda';
 import { TColFilter } from '../../../../../../server/src/lb3/server/table/interfaces';
+import * as d3 from 'd3-dsv';
 
 addEventListener('message', ({ data }) => {
     if (data.task == 'csvIntoTable') postMessage(csvIntoTable(data.params.binaries, data.params.separator));
@@ -22,10 +23,17 @@ addEventListener('message', ({ data }) => {
 function csvIntoTable(binaries: string, separator: string): string[][] {
     if (separator == 'TAB' || separator == '|') {
         if (separator == 'TAB') separator = String.fromCharCode(9);
-        return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.split(separator).map(content => removeQuotes(content)))));
+        return removeEmptyCol(removeEmptyRow(d3.dsvFormat(separator).parseRows(binaries)));
+        // const regExpLine = new RegExp('(".*?"|[^"' + separator + '\s]+)(?=\s*' + separator + '|\s*$)', 'g');
+        // const regExpLine2 = new RegExp('(".*?"|[^"\n\s]+)(?=\s*\n|\s*$)', 'g');
+        // // return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.split(separator).map(content => removeQuotes(content)))));
+        // return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').match(regExpLine2).map(row => row.split(separator).map(content => removeQuotes(content)))));
     } else {
-        const regExp = new RegExp('(".*?"|[^"' + separator + '\s]+)(?=\s*' + separator + '|\s*$)', 'g');
-        return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.match(regExp).map(content => removeQuotes(content)))));
+        return removeEmptyCol(removeEmptyRow(d3.dsvFormat(separator).parseRows(binaries)));
+        // const regExp = new RegExp('(".*?"|[^"' + separator + '\s]+)(?=\s*' + separator + '|\s*$)', 'g');
+        // const regExpLine2 = new RegExp('(".*?"|[^"\n\s]+)(?=\s*\n|\s*$)', 'g');
+        // // return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split('\n').map(row => row.match(regExp).map(content => removeQuotes(content)))));
+        // return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').match(regExpLine2).map(row => row.match(regExp).map(content => removeQuotes(content)))));
     }
 }
 

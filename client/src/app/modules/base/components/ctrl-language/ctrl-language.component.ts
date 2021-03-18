@@ -123,6 +123,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   searchTermChanged(term) {
     this.searchTerm$.next(term)
   }
+  
   displayFn(lang?: InfLanguage): string | undefined {
     return lang ? lang.notes : undefined;
   }

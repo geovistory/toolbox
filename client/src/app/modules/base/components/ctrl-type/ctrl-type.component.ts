@@ -6,7 +6,7 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from '../../../../../../node_modules/rxjs/operators';
-import { sortAbc, ActiveProjectService } from '../../../../core';
+import { sortAbc, ActiveProjectService, InfPersistentItemApi } from '../../../../core';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../../services/information-basic-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
@@ -96,6 +96,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
     private i: InformationPipesService,
     private p: ActiveProjectService,
     private b: InformationBasicPipesService,
+    private peitApi: InfPersistentItemApi
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;

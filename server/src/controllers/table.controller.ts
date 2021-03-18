@@ -12,12 +12,12 @@ import { QTableColumns } from '../components/query/q-table-columns';
 import { QTableDatColumns } from '../components/query/q-table-dat-columns';
 import { GetTablePageOptions, QTableTablePage, TablePageResponse } from '../components/query/q-table-page';
 import { Postgres1DataSource } from '../datasources';
-import { InfStatement, ProInfoProjRel } from '../models';
+import { ProTableConfig, TableConfig } from '../models';
 import { DatColumn } from '../models/dat-column.model';
 import { FkProjectFkEntity, PkEntity } from '../models/gv-negative-schema-object.model';
 import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
 import { GvSchemaModifier } from '../models/gv-schema-modifier.model';
-import { DatClassColumnMappingRepository, DatColumnRepository, DatNamespaceRepository, DfhClassRepository, ProInfoProjRelRepository } from '../repositories';
+import { DatClassColumnMappingRepository, DatColumnRepository, DatNamespaceRepository, DfhClassRepository, InfLanguageRepository, ProInfoProjRelRepository, ProTableConfigRepository, PubAccountRepository } from '../repositories';
 
 @model()
 export class MapColumnBody {
@@ -54,7 +54,10 @@ export class TableController {
     @repository(DfhClassRepository) public dfhClassRepo: DfhClassRepository,
     @repository(DatNamespaceRepository) public datNamespaceRepo: DatNamespaceRepository,
     @repository(ProInfoProjRelRepository) public proInfoProjRelRepo: ProInfoProjRelRepository,
-    @repository(DatClassColumnMappingRepository) public datClassColumnMappingRepo: DatClassColumnMappingRepository
+    @repository(DatClassColumnMappingRepository) public datClassColumnMappingRepo: DatClassColumnMappingRepository,
+    @repository(PubAccountRepository) public pubAccountRepo: PubAccountRepository,
+    @repository(ProTableConfigRepository) public proTableConfigRepo: ProTableConfigRepository,
+    @repository(InfLanguageRepository) public infLanguageRepo: InfLanguageRepository
   ) { }
 
 
@@ -139,7 +142,12 @@ export class TableController {
 
     options.limit = options.limit <= 100 ? options.limit : 100;
 
-    return new QTableTablePage(this.dataSource).query(pkProject, pkEntity, options, masterColumns, datColumns)
+    const response = await new QTableTablePage(this.dataSource).query(pkProject, pkEntity, options, masterColumns, datColumns);
+
+    //add languages to schema object
+    const pksLanguages = uniq((response.schemaObject.inf?.lang_string ?? []).map(ls => ls.fk_language));
+    if (response.schemaObject.inf) response.schemaObject.inf.language = await this.infLanguageRepo.find({ where: { or: pksLanguages.map(pk => ({ pk_languages: pk })) } })
+    return response
   }
 
 
@@ -207,7 +215,7 @@ export class TableController {
     let count = 0, statements: Array<PkEntity> = [], infoProjRels: Array<FkProjectFkEntity> = [];
     if (body.deleteAll) {
       const deletions = await request.query(pkProject, body.pkColumn);
-      console.log(JSON.stringify(deletions)); // {"infProjRel":{"fk_entity":3022,"fk_project":375232}
+      // console.log(JSON.stringify(deletions)); // {"infProjRel":{"fk_entity":3022,"fk_project":375232}
       statements = deletions.map(d => ({ pk_entity: d.pkStatement }));
       infoProjRels = deletions.map(d => d.infProjRel);
     }
@@ -281,6 +289,81 @@ export class TableController {
    */
   async getDatColumnArray(fkProject: number, pkColumns: number[]): Promise<DatColumn[]> {
     return new QTableDatColumns(this.dataSource).query(fkProject, pkColumns)
+  }
+
+
+
+
+  @authenticate('basic')
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @post('/set-table-config', {
+    responses: {
+      '200': {
+        description: 'Set the configuration of a table (for project or account scope)',
+        content: { 'application/json': { schema: { 'x-ts-type': GvSchemaModifier } } }
+      },
+    },
+  })
+  async setTableConfig(
+    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('pkDataEntity', { required: true }) pkDataEntity: number,
+    @param.query.number('accountId', { required: false }) accountId: number,
+    @requestBody() config: TableConfig,
+  ): Promise<GvSchemaModifier> {
+
+    //handle config.columns
+    if (config.columns) {
+      for (const conf of config.columns) {
+        if (isNaN(conf.fkColumn) || (conf.visible !== true && conf.visible !== false)) throw new HttpErrors.UnprocessableEntity('Column config at wrong format');
+      }
+
+      //check nb of column in config
+      const digitalColumns = await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } });
+      if (digitalColumns.length > config.columns.length) throw new HttpErrors.UnprocessableEntity('Too few columns provided for this digital');
+      else if (digitalColumns.length < config.columns.length) throw new HttpErrors.UnprocessableEntity('Too much columns provided for this digital');
+
+    }
+
+    const configRow = new ProTableConfig({ fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity, config })
+    const existing = await this.proTableConfigRepo.findOne({ where: { and: [{ fk_project: pkProject, account_id: accountId ?? null, fk_digital: pkDataEntity }] } });
+
+    let resp: ProTableConfig;
+    if (existing?.pk_entity) {
+      await this.proTableConfigRepo.updateById(existing.pk_entity as number, configRow);
+      resp = await this.proTableConfigRepo.findById(existing.pk_entity as number);
+    } else resp = await this.proTableConfigRepo.create(configRow);
+
+    return {
+      positive: { pro: { table_config: [resp] } },
+      negative: {}
+    }
+  }
+
+
+  @authenticate('basic')
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @get('/get-table-config', {
+    responses: {
+      '200': {
+        description: 'get the configuration of a table (for project or account scope)',
+        content: { 'application/json': { schema: { 'x-ts-type': GvSchemaModifier } } }
+      },
+    },
+  })
+  async getTableConfig(
+    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('accountId') accountId: number,
+    @param.query.number('pkDataEntity', { required: true }) pkDataEntity: number,
+  ): Promise<GvSchemaModifier> {
+    let result: ProTableConfig | null;
+    if (accountId) result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
+    else result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: null, fk_digital: pkDataEntity } });
+
+    if (result === null) return { positive: {}, negative: {} };
+    else return {
+      positive: { pro: { table_config: [result] } },
+      negative: {}
+    }
   }
 
 

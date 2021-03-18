@@ -8,6 +8,7 @@ import { proRoot } from './pro.config';
 import { ProInfoProjRelSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProAnalysisSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
 import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
+import { ProTableConfig } from '../sdk-lb4';
 
 type Payload = ProInfoProjRelSlice;
 
@@ -290,6 +291,41 @@ export class ProAnalysisActionFactory extends StandardActionsFactory<ProAnalysis
   }
 }
 
+// export class ProTableConfigFactory extends StandardActionsFactory<Payload, ProTableConfig> {
+
+//   // Suffixes of load action types
+//   // static readonly BY_PK = 'BY_PK';
+//   static readonly BY_FK_DIGITAL = 'BY_FK_DIGITAL';
+
+//   // loadById: (pkProject: number, pkEntity: number, version: number) => ActionResultObservable<ProTableConfig>;
+//   loadByDigital: (fkDigital: number) => ActionResultObservable<ProTableConfig>;
+
+//   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+//   createActions(): ProTableConfigFactory {
+//     Object.assign(this, this.createCrudActions(proRoot, 'table_config'))
+
+//     this.loadByDigital = (fkDigital: number) => {
+//       const addPending = U.uuid()
+//       const action: FluxStandardAction<Payload, LoadActionMeta> = {
+//         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProTableConfigFactory.BY_FK_DIGITAL,
+//         meta: {
+//           addPending,
+//           pk: fkDigital
+//         },
+//         payload: null,
+//       };
+//       this.ngRedux.dispatch(action)
+//       return {
+//         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+//         resolved$: this.ngRedux.select<SucceedActionMeta<ProTableConfig>>(['resolved', addPending]).pipe(filter(x => !!x)),
+//         key: addPending
+//       };
+//     }
+
+//     return this;
+//   }
+// }
 
 
 @Injectable()
@@ -301,6 +337,7 @@ export class ProActions {
   dfh_profile_proj_rel = new ProDfhProfileProjRelActionFactory(this.ngRedux).createActions()
   class_field_config = new ProClassFieldConfigActionFactory(this.ngRedux).createActions()
   analysis = new ProAnalysisActionFactory(this.ngRedux).createActions()
+  table_config = new StandardActionsFactory(this.ngRedux).createCrudActions(proRoot, 'table_config');
 
   constructor(public ngRedux: NgRedux<IAppState>) { }
 

@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { PkEntity } from './pkEntity';
+import { FkProjectFkEntity } from './fkProjectFkEntity';
 
 
 export interface ProNegativeObject { 
-    info_proj_rel?: Array<PkEntity>;
+    info_proj_rel?: Array<FkProjectFkEntity>;
 }
 

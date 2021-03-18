@@ -8,9 +8,9 @@ describe('EntityMatcherComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EntityMatcherComponent ]
+      declarations: [EntityMatcherComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

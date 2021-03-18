@@ -61,6 +61,8 @@ export async function createClasses(): Promise<Array<DfhApiClass>> {
         await createDfhApiClass(DfhApiClassMock.EN_54_LANGUAGE),
         await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE),
         await createDfhApiClass(DfhApiClassMock.EN_657_REFERENCE),
+        await createDfhApiClass(DfhApiClassMock.EN_690_TIME_UNIT),
+        await createDfhApiClass(DfhApiClassMock.EN_689_DURATION)
     ]);
 }
 

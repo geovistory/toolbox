@@ -44,6 +44,7 @@ export * from './pub-role.model';
 export * from './pro-entity-label-config.model';
 export * from './tab-row.model';
 export * from './inf-dimension.model';
+export * from './pro-tables-config.model';
 
 // analysis models
 export * from './analysis'

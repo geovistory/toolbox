@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProDfhProfileProjRel } from "../sdk";
+import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProTextProperty } from "../sdk";
 import { ProAnalysis } from '../sdk-lb4/model/proAnalysis';
 
 export const proRoot = 'pro';
@@ -86,5 +86,15 @@ export const proDefinitions: ReducerConfigCollection = {
       keyInStore: 'pk_entity',
       indexByFn: (item: ProAnalysis) => item.pk_entity.toString()
     }
-  }
+  },
+  table_config: {
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => item.pk_entity.toString()
+    },
+    groupBy: [{
+      keyInStore: 'fk_digital',
+      groupByFn: (item) => item.fk_digital.toString()
+    }],
+  },
 }

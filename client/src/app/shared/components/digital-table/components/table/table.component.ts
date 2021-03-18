@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { CdkScrollable } from '@angular/cdk/overlay';
+import { ElementRef, AfterViewInit, AfterContentInit } from '@angular/core';
+import { AfterViewChecked, ViewChild, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DatColumn, SysConfig } from 'app/core';
+import { DatColumn } from 'app/core';
 import { ActiveProjectService } from 'app/core/active-project';
-import { SystemConfigurationService } from 'app/core/sdk-lb4';
+import { SysConfig, SystemConfigurationService } from 'app/core/sdk-lb4';
 import { SystemSelector } from 'app/core/sys/sys.service';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { Observable, Subject, ReplaySubject } from 'rxjs';
@@ -26,12 +28,20 @@ export interface Header {
   pk_column?: number
 }
 
+export enum ValueObjectTypeName {
+  appellation = 'appellation',
+  place = 'place',
+  dimension = 'dimension',
+  timePrimitive = 'time_primitive',
+  langString = 'lang_string'
+}
+
 @Component({
   selector: 'gv-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   destroy$ = new Subject<boolean>();
 
   // mandatory inputs
@@ -45,11 +55,16 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() lineBreak = false;
   @Input() sortBy$: Observable<{ colNb: number, direction: string }>;
   @Input() origin: 'classic';
+  @Input() changingColumns = false;
 
   // outputs
   @Output() sortDemanded = new EventEmitter<{ colNb: number, direction: string }>();
   @Output() filterDemanded = new EventEmitter<Array<{ col: number, filter: TColFilter }>>();
   @Output() cellClicked = new EventEmitter<{ col: number, row: number }>();
+  @Output() changeColumn = new EventEmitter<{ col: number, direction: 'right' | 'left' }>();
+
+  // config
+  config: SysConfig;
 
   // private parameters
   isThereMappings$: Observable<boolean>;
@@ -62,6 +77,12 @@ export class TableComponent implements OnInit, OnDestroy {
   valuesObjectTypes: Array<{ pkClass: number, label: string }> = [];
   classes: Array<{ pkClass: number, label: string }> = [];
 
+  // to manage scrolling...
+  scrollTop = 0;
+  scrollLeft = 0;
+  subs = null;
+  target: any;
+  scrolling = false;
 
   constructor(
     public p: ActiveProjectService,
@@ -91,11 +112,38 @@ export class TableComponent implements OnInit, OnDestroy {
     // listen to sortBy option (from parent or from html)
     if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => this.curSort = sort);
 
+    // fetch the config
+    this.p.sys$.config$.main$.subscribe(config => this.config = config)
+  }
+
+
+  ngAfterViewChecked(): void {
+    if (!this.target) {
+      const pTableContainer = document.getElementById('scrollAccess') as HTMLElement;
+      if (!pTableContainer) return;
+      this.target = pTableContainer.getElementsByClassName('ui-table-scrollable-body')[0];
+
+      let timeout;
+      this.target.addEventListener('scroll', () => {
+        this.scrolling = true;
+        window.clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          this.scrollTop = this.target.scrollTop;
+          this.scrollLeft = this.target.scrollLeft;
+          this.scrolling = false;
+        }, 66);
+      });
+    } else if (!this.scrolling) {
+      this.target.scrollTop = this.scrollTop;
+      this.target.scrollLeft = this.scrollLeft;
+    }
   }
 
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+
+    if (this.subs) this.subs.unsubscribe();
   }
 
   sort(col: number) {
@@ -132,6 +180,27 @@ export class TableComponent implements OnInit, OnDestroy {
       width: '40%',
       data: { colLabel, pkColumn, mapping, pkCells }
     });
+  }
+
+  changeColumnClick(col: number, direction: 'right' | 'left') {
+    this.changeColumn.emit({ col, direction })
+  }
+
+  isClassValueObjectType(fkClass: number): boolean {
+    const temp = this.getVOT(fkClass)
+    const response = !!temp;
+    return response;
+  }
+
+  getVOT(fkClass: number): { type: ValueObjectTypeName, dimensionClass?: number } | undefined {
+    if (Object.keys(this.config.classes).some(k => k === fkClass + '')) {
+      if (this.config.classes[fkClass].mapsToListType.appellation) return { type: ValueObjectTypeName.appellation };
+      if (this.config.classes[fkClass].mapsToListType.place) return { type: ValueObjectTypeName.place };
+      if (this.config.classes[fkClass].mapsToListType.dimension) return { type: ValueObjectTypeName.dimension, dimensionClass: fkClass };
+      if (this.config.classes[fkClass].mapsToListType.language) return { type: ValueObjectTypeName.langString };
+      if (this.config.classes[fkClass].mapsToListType.timePrimitive) return { type: ValueObjectTypeName.timePrimitive };
+    }
+    return undefined;
   }
 
 }

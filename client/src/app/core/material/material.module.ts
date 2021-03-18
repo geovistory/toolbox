@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatTreeModule, MAT_HAMMER_OPTIONS } from '@angular/material';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const modules = [
   FormsModule,
@@ -35,6 +36,7 @@ const modules = [
   MatToolbarModule,
   MatRippleModule,
   MatGridListModule,
+  ScrollingModule
 ]
 
 @NgModule({
