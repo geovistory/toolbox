@@ -1,13 +1,15 @@
-import { Client, expect } from '@loopback/testlab';
-import { GeovistoryServer } from '../../../server';
-import { setupApplication } from '../../helpers/gv-server-helpers';
+import {Client, expect} from '@loopback/testlab';
+import {GeovistoryServer} from '../../../server';
+import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
+import {SysConfigValue} from "../../../models/sys-config/sys-config-value.model";
+import {SysConfigValueMock} from '../../helpers/data/gvDB/SysConfigValueMock';
 
 describe('SysConfigController', () => {
   let server: GeovistoryServer;
   let client: Client;
 
   before('setupApplication', async () => {
-    ({ server, client } = await setupApplication());
+    ({server, client} = await setupApplication());
   });
 
   after(async () => {
@@ -39,51 +41,20 @@ describe('SysConfigController', () => {
     it('should reject invalid body as 422 "Unprocessable Entity"', async () => {
       await client
         .post('/validate-system-config')
-        .send({ foo: 'bar' })
+        .send({foo: 'bar'})
         .expect(422);
     });
-
+    it('should validate the config schema (no api involved)', async () => {
+       await validateAgainstSchema(SysConfigValueMock.SYS_CONFIC_VALID, SysConfigValue, server)
+    })
     it('should return 200', async () => {
       await client
         .post('/validate-system-config')
-        .send({
-          "classes": {
-            "40": {
-              "mapsToListType": {
-                "appellation": "true"
-              }
-            },
-            "51": {
-              "mapsToListType": {
-                "place": "true"
-              }
-            },
-            "52": {
-              "mapsToListType": {
-                "dimension": {
-                  "measurementUnitClass": 56
-                }
-              }
-            },
-            "54": {
-              "mapsToListType": {
-                "language": "true"
-              }
-            },
-            "335": {
-              "mapsToListType": {
-                "timePrimitive": "true"
-              }
-            },
-            "657": {
-              "mapsToListType": {
-                "langString": "true"
-              }
-            }
-          }
-        })
+        .send(SysConfigValueMock.SYS_CONFIC_VALID)
         .expect(200);
     });
 
   })
 });
+
+

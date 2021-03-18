@@ -1,14 +1,16 @@
-import { InfPersistentItem, InfTemporalEntity, InfStatement, InfPlace, InfLanguage, InfAppellation, InfTimePrimitive, InfTextProperty, InfLangString, InfDimension, ProInfoProjRel, DatDigital, WarEntityPreviewWithFulltext } from '.';
-import { property, model } from '@loopback/repository';
-import { DatTextProperty } from './dat-text-property.model';
-import { DatColumn } from './dat-column.model';
-import { DatClassColumnMapping } from './dat-class-column-mapping.model';
-import { ProAnalysis } from './pro-analysis.model';
-import { ProTableConfig } from './pro-tables-config.model';
+import {model, property} from '@loopback/repository';
+import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysConfigValue, ProTableConfig} from '.';
+import {DatClassColumnMapping} from './dat-class-column-mapping.model';
+import {DatColumn} from './dat-column.model';
+import {DatTextProperty} from './dat-text-property.model';
+import {ProAnalysis} from './pro-analysis.model';
+import {ProClassFieldConfig} from './pro-class-field-config.model';
+import {ProDfhProfileProjRel} from './pro-dfh-profile-proj-rel.model';
+import {WarEntityPreview} from './war-entity-preview.model';
 
 
 @model()
-class InfObject {
+export class InfObject {
   @property.array(InfPersistentItem) persistent_item?: Partial<InfPersistentItem>[]
   @property.array(InfTemporalEntity) temporal_entity?: Partial<InfTemporalEntity>[]
   @property.array(InfStatement) statement?: Partial<InfStatement>[]
@@ -22,14 +24,19 @@ class InfObject {
 }
 
 @model()
-class ProObject {
+export class ProObject {
   @property.array(ProInfoProjRel) info_proj_rel?: Partial<ProInfoProjRel>[]
   @property.array(ProAnalysis) analysis?: Partial<ProAnalysis>[]
   @property.array(ProTableConfig) table_config?: Partial<ProTableConfig>[]
+  @property.array(ProClassFieldConfig) class_field_config?: Partial<ProClassFieldConfig>[]
+  @property.array(ProDfhClassProjRel) dfh_class_proj_rel?: Partial<ProDfhClassProjRel>[];
+  @property.array(ProTextProperty) text_property?: Partial<ProTextProperty>[];
+  @property.array(ProDfhProfileProjRel) dfh_profile_proj_rel?: Partial<ProDfhProfileProjRel>[];
+  @property.array(ProProject) project?: Partial<ProProject>[];
 }
 
 @model()
-class DatObject {
+export class DatObject {
   @property.array(DatDigital) digital?: Partial<DatDigital>[]
   @property.array(DatColumn) column?: Partial<DatColumn>[]
   @property.array(DatTextProperty) text_property?: Partial<DatTextProperty>[]
@@ -38,8 +45,23 @@ class DatObject {
 
 
 @model()
-class WarObject {
-  @property.array(WarEntityPreviewWithFulltext) entity_preview?: Partial<WarEntityPreviewWithFulltext>[]
+export class WarObject {
+  @property.array(WarEntityPreview) entity_preview?: Partial<WarEntityPreview>[]
+}
+@model()
+export class DfhObject {
+  @property.array(DfhApiProfile) profile?: DfhApiProfile[];
+  @property.array(DfhClass) klass?: DfhClass[];
+  @property.array(DfhProperty) property?: DfhProperty[];
+  @property.array(DfhLabel) label?: DfhLabel[];
+}
+
+@model()
+export class SysObject {
+  @property.array(SysConfigValue) config?: SysConfigValue[];
+  @property.array(DfhClass) klass?: DfhClass[];
+  @property.array(DfhProperty) property?: DfhProperty[];
+  @property.array(DfhLabel) label?: DfhLabel[];
 }
 
 /**
@@ -58,4 +80,6 @@ export class GvPositiveSchemaObject {
   @property() pro?: ProObject
   @property() dat?: DatObject
   @property() war?: WarObject
+  @property() dfh?: DfhObject
+  @property() sys?: SysObject
 }

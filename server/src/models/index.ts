@@ -20,6 +20,7 @@ export * from './pro-entity.model';
 export * from './sys-analysis-type.model';
 export * from './pro-analysis.model';
 export * from './pub-account.model';
+export * from './pub-credential.model';
 export * from './pro-project.model';
 export * from './pub-account-project-rel.model';
 export * from './pro-text-property.model';
@@ -43,8 +44,16 @@ export * from './pub-role-mapping.model';
 export * from './pub-role.model';
 export * from './pro-entity-label-config.model';
 export * from './tab-row.model';
+export * from './tab-cell.model';
 export * from './inf-dimension.model';
 export * from './pro-tables-config.model';
 
 // analysis models
 export * from './analysis'
+
+
+// sys-config models
+export * from './sys-config'
+
+// field models
+export * from './field'

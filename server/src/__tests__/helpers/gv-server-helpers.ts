@@ -1,9 +1,9 @@
-import {ReferenceObject, RestHttpErrors, SchemaObject, SchemasObject} from '@loopback/rest';
+import {ReferenceObject, SchemaObject, SchemasObject} from '@loopback/rest';
 import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/testlab';
 import ajv, {Ajv} from 'ajv';
+import {path} from 'ramda';
 import {GeovistoryServer} from '../../server';
 import {testdb} from './testdb';
-import {path} from 'ramda';
 const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
 
 export async function setupApplication(): Promise<AppWithClient> {

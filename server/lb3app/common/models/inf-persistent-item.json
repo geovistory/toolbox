@@ -39,12 +39,6 @@
       "model": "InfTextProperty",
       "foreignKey": "fk_concerned_entity",
       "primaryKey": "pk_entity"
-    },
-    "dfh_class": {
-      "type": "belongsTo",
-      "model": "DfhClass",
-      "foreignKey": "fk_class",
-      "primaryKey": "pk_class"
     }
   },
   "acls": [

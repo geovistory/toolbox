@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DfhApiProfile, InfLanguage } from '../../../models';
-import { createDfhApiClass, DfhApiClass } from '../atomic/dfh-api-class.helper';
-import { createDfhApiProfile } from '../atomic/dfh-api-profile.helper';
-import { createDfhApiProperty, DfhApiProperty } from '../atomic/dfh-api-property.helper';
-import { createInfLanguage } from '../atomic/inf-language.helper';
-import { createSysSystemType } from '../atomic/sys-system-type.helper';
-import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
-import { DfhApiProfileMock } from '../data/gvDB/DfhApiProfileMock';
-import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
-import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
-import { SysSystemTypeMock } from '../data/gvDB/SysSystemTypeMock';
+import {DfhApiProfile, InfLanguage} from '../../../models';
+import {createDfhApiClass} from '../atomic/dfh-api-class.helper';
+import {createDfhApiProfile} from '../atomic/dfh-api-profile.helper';
+import {createDfhApiProperty, DfhApiProperty} from '../atomic/dfh-api-property.helper';
+import {createInfLanguage} from '../atomic/inf-language.helper';
+import {createSysSystemType} from '../atomic/sys-system-type.helper';
+import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
+import {DfhApiProfileMock} from '../data/gvDB/DfhApiProfileMock';
+import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
+import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
+import { DfhApiClass } from '../data/gvDB/local-model.helpers';
+import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
 
 export async function createModel() {
     await createTypes();

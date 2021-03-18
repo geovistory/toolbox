@@ -41,13 +41,6 @@
       "model": "ProClassFieldConfig",
       "foreignKey": "fk_class_field"
     },
-    "classes": {
-      "type": "hasMany",
-      "model": "DfhClass",
-      "foreignKey": "fk_class_field",
-      "through": "ProClassFieldConfig",
-      "keyThrough": "fk_class_for_class_field"
-    },
     "class_field_property_rel": {
       "type": "hasMany",
       "model": "SysClassFieldPropertyRel",

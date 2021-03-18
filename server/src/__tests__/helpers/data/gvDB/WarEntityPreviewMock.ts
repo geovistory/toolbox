@@ -3,12 +3,15 @@
 import {WarEntityPreview, CalendarType, Granularity} from '../../../../models'
 import {ProProjectMock} from './ProProjectMock'
 import {DfhApiClassMock} from './DfhApiClassMock'
+import {InfLangStringMock} from './InfLangStringMock'
+import {OmitEntity} from './local-model.helpers'
+import {InfAppellationMock} from './InfAppellationMock'
 
 /**
- * pk_entity prefix: 100
+ * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400
  */
 export class WarEntityPreviewMock {
-    static readonly GEO_PLACE_BASEL = new WarEntityPreview({
+    static readonly GEO_PLACE_BASEL: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1000,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -18,7 +21,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly GEO_PLACE_ZURICH = new WarEntityPreview({
+    static readonly GEO_PLACE_ZURICH: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1001,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -29,7 +32,7 @@ export class WarEntityPreviewMock {
     })
 
 
-    static readonly BIRTH_OEKOLOMBAD = new WarEntityPreview({
+    static readonly BIRTH_OEKOLOMBAD: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1002,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -46,7 +49,7 @@ export class WarEntityPreviewMock {
         }
     })
 
-    static readonly BIRTH_ZWINGLI = new WarEntityPreview({
+    static readonly BIRTH_ZWINGLI: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1003,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -63,5 +66,25 @@ export class WarEntityPreviewMock {
         }
     })
 
+
+    static readonly TIME_UNIT_ONE_MONTH: OmitEntity<WarEntityPreview> = ({
+        pk_entity: 2015,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class,
+        class_label: DfhApiClassMock.EN_690_TIME_UNIT.dfh_class_label,
+        entity_label: InfLangStringMock.EN_SHORT_TITLE_MONTH.string,
+        entity_type: 'peIt',
+    })
+
+    static readonly PERSON_1: OmitEntity<WarEntityPreview> = ({
+        pk_entity: 2001,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+        class_label: DfhApiClassMock.EN_21_PERSON.dfh_class_label,
+        entity_label: InfAppellationMock.JACK_THE_FOO.string,
+        entity_type: 'peIt',
+    })
 }
 

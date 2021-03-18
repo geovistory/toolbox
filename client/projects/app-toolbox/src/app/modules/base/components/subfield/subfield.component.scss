@@ -1,0 +1,69 @@
+:host {
+  width: 100%;
+}
+.class-label {
+  white-space: nowrap;
+}
+.class-cell {
+  width: 100px;
+}
+.add-cell {
+  width: 54px;
+}
+
+.action-cell {
+  width: 40px;
+  padding-right: 0;
+  border-left: 1px solid #e0e0e0;
+}
+.mat-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  // text-overflow: ellipsis;
+  max-width: 0;
+  padding: 0 3px;
+}
+.mat-header-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  // text-overflow: ellipsis;
+  padding: 0 3px;
+}
+// .mat-header-cell:first-of-type {
+//   max-width: 0;
+// }
+
+.full-width {
+  display: flex;
+  width: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
+  min-height: 40px;
+}
+
+.left-col {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.checkbox-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 40px;
+  overflow: hidden;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right-col {
+  display: flex;
+  flex: 0 0 64px;
+  align-items: center;
+  justify-content: center;
+}

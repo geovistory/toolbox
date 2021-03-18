@@ -12,9 +12,7 @@ var include = [
   'ProDfhClassProjRel',
   'ProDfhProfileProjRel',
   'ProPropertyLabel',
-  'DfhClass',
   'DfhLabel',
-  'DfhProperty',
   'InfPersistentItem',
   'InfStatement',
   'InfAppellation',
@@ -26,7 +24,6 @@ var include = [
   'DatChunk',
   'DatDigital',
   'DatNamespace',
-  'WarEntityPreview',
 ];
 
 module.exports = function(app) {

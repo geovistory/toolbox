@@ -127,7 +127,7 @@ describe('ProjectConfigController', () => {
       expect(res.body?.config?.labelParts?.length).to.equal(2)
 
       const modified = clone(ProEntityLabelConfigMock.C633_UNION_PROJECT_1)
-      modified.config.labelParts = modified.config.labelParts?.splice(1, 1)
+      if(modified?.config) modified.config.labelParts = modified.config.labelParts?.splice(1, 1)
       res = await client
         .post('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)

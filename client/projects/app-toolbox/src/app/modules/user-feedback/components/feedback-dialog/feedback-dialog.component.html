@@ -1,0 +1,63 @@
+<h1 mat-dialog-title>Help</h1>
+<mat-dialog-content class="mat-typography">
+  <h3>Geovistory Documentation</h3>
+  <p>
+    Find texts and videos to get started with Geovistory, about
+    its guiding principles and its advanced functionalities.
+  </p>
+  <p>
+    <a (click)="onCloseClick()" mat-flat-button href="https://docs.geovistory.com/" target="_blank"
+      matTooltip="Opens a new window">
+      <mat-icon svgIcon="help-circle-outline"></mat-icon>
+      Open the documentation
+    </a>
+  </p>
+  <br>
+  <br>
+  <h3>Geovistory Help Center</h3>
+  <p>
+    Get in touch with our support team.
+  </p>
+  <p>
+    <a (click)="onCloseClick()" mat-flat-button
+      href="https://kleiolab.atlassian.net/servicedesk/customer/portal/1/group/1/create/1" target="_blank"
+      matTooltip="Opens a new window">
+      <mat-icon svgIcon="forum-outline"></mat-icon>
+      Ask a question
+    </a>
+  </p>
+  <p>
+    <a (click)="onCloseClick()" mat-flat-button
+      href="https://kleiolab.atlassian.net/servicedesk/customer/portal/1/group/1/create/8" target="_blank"
+      matTooltip="Opens a new window">
+      <mat-icon>lightbulb</mat-icon>
+      Suggest an improvement / new feature
+    </a>
+  </p>
+
+  <p>
+    <a mat-flat-button (click)="onCloseClick()"
+      href="https://kleiolab.atlassian.net/servicedesk/customer/portal/1/group/1/create/6" target="_blank"
+      matTooltip="Opens a new window">
+      <mat-icon>bug_report</mat-icon>
+      Report a bug
+    </a>
+  </p>
+
+  <!-- <p>
+    Use our Help Center to <br>
+  </p>
+  <ul>
+    <li>suggest improvements / new features*</li>
+    <li>report a bug / problem*</li>
+  </ul>
+
+  <p>
+    Thank you for your feedback!
+  </p> -->
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <p> <button mat-button mat-dialog-close>Not now</button></p>
+</mat-dialog-actions>

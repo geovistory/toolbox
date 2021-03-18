@@ -1,0 +1,96 @@
+<div class="p-2" [hidden]="!itemsCount">
+  <h4 class="mb-3">
+    We found {{itemsCount}} other {{listDefinition?.targetClassLabel}}s in the repository of Geovistory
+  </h4>
+  <div class="mb-3">
+    Select and add {{listDefinition?.targetClassLabel}}s from the list below, <br>
+    or create a new one.
+  </div>
+</div>
+<div *ngIf="loading && !itemsCount" class="d-flex justify-content-center align-items-center p-5">
+  <mat-spinner diameter=20></mat-spinner>
+</div>
+<div [hidden]="!itemsCount" class="gv-add-list-table-and-paginator-container">
+
+  <div class="gv-add-list-table-container">
+    <div *ngIf="loading" class="gv-table-spinner">
+      <mat-spinner diameter=20></mat-spinner>
+    </div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100">
+
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="checkbox">
+        <th mat-header-cell *matHeaderCellDef> Select
+          <!-- <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+        </mat-checkbox> -->
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Radio Button Column -->
+      <ng-container matColumnDef="radiobutton">
+        <th mat-header-cell *matHeaderCellDef> Select
+
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-radio-button (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)">
+          </mat-radio-button>
+        </td>
+      </ng-container>
+
+      <!-- item Column -->
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Item </th>
+        <td mat-cell *matCellDef="let item">
+          <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async">
+          </gv-onto-class-info>
+          <ng-container *ngIf="listDefinition.listType.entityPreview">
+            <gv-entity-preview *ngIf="item.preview?.fk_class" [preview]="item.preview" [dragEnabled]="false">
+            </gv-entity-preview>
+            <span *ngIf="!item.preview?.fk_class" class="mat-text-secondary">Display problem (id:
+              {{item.preview.pk_entity}})</span>
+          </ng-container>
+
+          <span
+            *ngIf="listDefinition.listType.appellation || listDefinition.listType.language || listDefinition.listType.place || listDefinition.listType.dimension">
+            {{item.label}}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- project Column -->
+      <ng-container matColumnDef="projects">
+        <th mat-header-cell *matHeaderCellDef> Used By </th>
+        <td mat-cell *matCellDef="let item">
+          {{item?.statement?.is_in_project_count}}
+          {{item?.statement?.is_in_project_count == 1 ? 'Project' : 'Projects'}}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+      </tr>
+    </table>
+
+  </div>
+
+  <mat-paginator [length]="itemsCount" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
+    [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons (page)="onPageChange($event)">
+  </mat-paginator>
+
+</div>
+
+
+<div class="my-3">
+  <button [disabled]="(selectedCount$ | async) < 1" type="submit" mat-flat-button color="primary" class="mr-2"
+    (click)="add()">Add
+    selected</button>
+  <button type="submit" mat-flat-button color="primary" class="mr-2" (click)="next.emit()">Create new</button>
+  <button type="button" mat-button (click)="close.emit()">Cancel</button>
+</div>

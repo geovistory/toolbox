@@ -1,0 +1,91 @@
+// .field-content {
+//   margin-left: 40px;
+// }
+
+.field-node {
+  // display: block;
+  background: white;
+
+  // &.expanded {
+  //   .left-col {
+  //     @extend .mat-text-primary;
+  //   }
+  // }
+  // mat-divider {
+  //   margin-top: 3px;
+  // }
+  gv-type-item {
+    display: inline-block;
+  }
+}
+
+.field-margin-left {
+  margin-left: 24px;
+}
+.field-margin-right {
+  margin-right: 24px;
+}
+
+.child-node {
+  display: block;
+  // mat-divider {
+  //   margin-top: 24px;
+  //   margin-bottom: 2px;
+  // }
+  .child-content {
+    // padding: 0 24px 0 24px;
+  }
+  .child-no-content {
+    // padding: 0 24px 0 24px;
+    > div {
+      text-align: center;
+      display: block;
+      // background: white;
+      height: 36px;
+      padding-top: 7px;
+    }
+  }
+}
+
+.full-width {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.left-col {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.right-col {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.field-onto-info {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.field-label {
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: flex-start;
+  white-space: nowrap;
+}
+
+gv-leaf-item-list,
+gv-temporal-entity-list,
+gv-time-span-list {
+  // background: white;
+}

@@ -21,6 +21,8 @@ import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+import {createInfLangString} from '../../../helpers/atomic/inf-lang-string.helper';
+import {InfLangStringMock} from '../../../helpers/data/gvDB/InfLangStringMock';
 const stubs: WarehouseStubs = {
   primaryDataServices:[REdgeService],
   aggDataServices:[]
@@ -71,6 +73,30 @@ describe('REdgeService', () => {
 
   })
 
+  it('should have short label', async () => {
+    await createInfLanguage(InfLanguageMock.GERMAN)
+    await createInfLanguage(InfLanguageMock.ENGLISH)
+    await createProProject(ProProjectMock.PROJECT_1)
+
+    await createInfPersistentItem(InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_MANIF_SINGLETON_THE_MURDERER)
+    await createInfLangString(InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER)
+    await createInfStatement(InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER)
+    const fkProperty:number = InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.fk_property
+    const id: REntityId = {
+      pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity ?? -1,
+    }
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => {
+        return val?.outgoing?.[fkProperty]?.[0].targetLabel === InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER.string
+          && val?.outgoing?.[fkProperty]?.length === 1
+      }
+    })
+
+  })
   it('should update field edges if statement is removed from project', async () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)

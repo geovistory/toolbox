@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {ColDefDefaultType, ProAnalysis} from '../../../../models';
-import {DfhApiClassMock} from './DfhApiClassMock';
-import {ProProjectMock} from './ProProjectMock';
-import {SysSystemTypeMock} from './SysSystemTypeMock';
+import { ColDefDefaultType, ProAnalysis } from '../../../../models';
+import { DfhApiClassMock } from './DfhApiClassMock';
+import { ProProjectMock } from './ProProjectMock';
+import { SysSystemTypeMock } from './SysSystemTypeMock';
 
 /**
  * pk_entity prefix: 800
@@ -10,7 +10,7 @@ import {SysSystemTypeMock} from './SysSystemTypeMock';
 export class ProAnalysisMock {
 
 
-  static readonly TABLE_GEO_PLACES = new ProAnalysis({
+  static readonly TABLE_GEO_PLACES: Partial<ProAnalysis> = ({
     pk_entity: 8001,
     name: 'My Geographical Places on a table',
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -39,7 +39,7 @@ export class ProAnalysisMock {
 
 
 
-  static readonly MAP_GEO_PLACES = new ProAnalysis({
+  static readonly MAP_GEO_PLACES: Partial<ProAnalysis> = ({
     pk_entity: 8002,
     name: 'My Geographical Places',
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -66,7 +66,7 @@ export class ProAnalysisMock {
     }
   })
 
-  static readonly TIME_BIRTHS = new ProAnalysis({
+  static readonly TIME_BIRTHS: Partial<ProAnalysis> = ({
     pk_entity: 8003,
     name: 'My births on a timeline',
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
