@@ -7,6 +7,7 @@
     "serve": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng serve",
     "start": "ng serve",
     "build": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --prod",
+    "build:all": "sh ./scripts/ng-build-all.sh",
     "build:stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "pretest": "node ../server/scripts/build-mock.js",
