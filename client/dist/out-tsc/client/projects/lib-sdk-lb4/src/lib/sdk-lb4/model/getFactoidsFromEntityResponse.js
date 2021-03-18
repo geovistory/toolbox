@@ -1,1 +1,0 @@
-//# sourceMappingURL=getFactoidsFromEntityResponse.js.map

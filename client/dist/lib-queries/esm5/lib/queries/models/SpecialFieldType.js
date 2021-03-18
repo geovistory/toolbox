@@ -1,6 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/queries/models/SpecialFieldType.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiU3BlY2lhbEZpZWxkVHlwZS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BrbGVpb2xhYi9saWItcXVlcmllcy8iLCJzb3VyY2VzIjpbImxpYi9xdWVyaWVzL21vZGVscy9TcGVjaWFsRmllbGRUeXBlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgdHlwZSBTcGVjaWFsRmllbGRUeXBlID0gJ3RpbWUtc3BhbicgfCAnaGFzLXR5cGUnIHwgZmFsc2U7XG4iXX0=

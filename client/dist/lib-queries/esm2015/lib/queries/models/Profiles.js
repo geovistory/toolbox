@@ -1,6 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * Generated from: lib/queries/models/Profiles.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUHJvZmlsZXMuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Aa2xlaW9sYWIvbGliLXF1ZXJpZXMvIiwic291cmNlcyI6WyJsaWIvcXVlcmllcy9tb2RlbHMvUHJvZmlsZXMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCB0eXBlIFByb2ZpbGVzID0ge1xuICBma19wcm9maWxlOiBudW1iZXI7XG4gIHJlbW92ZWRfZnJvbV9hcGk6IGJvb2xlYW47XG59W107XG4iXX0=
