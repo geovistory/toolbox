@@ -1,4 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
+import { MatButton } from '@angular/material';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface FeedbackDialogData {
@@ -10,6 +11,7 @@ export interface FeedbackDialogData {
   styleUrls: ['./feedback-dialog.component.scss']
 })
 export class FeedbackDialogComponent {
+  @ViewChild('btnRef', { static: true }) buttonRef: MatButton;
 
   constructor(
     public dialogRef: MatDialogRef<FeedbackDialogComponent>,
