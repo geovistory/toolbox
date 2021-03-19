@@ -301,7 +301,7 @@ export class InformationPipesService {
     )
   }
 
-  pipeSubfieldPage(page: GvFieldPage, targets: GvFieldTargets): Observable<SubfieldPage> {
+  pipeFieldPage(page: GvFieldPage, targets: GvFieldTargets): Observable<SubfieldPage> {
     if (page.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
       // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
       return this.pipeTimeSpan(page)
@@ -360,7 +360,7 @@ export class InformationPipesService {
         const trgts = {
           [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: subfType
         }
-        return this.pipeSubfieldPage(nestedPage, trgts).pipe(
+        return this.pipeFieldPage(nestedPage, trgts).pipe(
           map(({ count, statements }) => {
             const { limit, offset, ...s } = nestedPage;
             const subentitySubfieldPage: SubentitySubfieldPage = {

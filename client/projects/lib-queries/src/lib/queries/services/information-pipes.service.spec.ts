@@ -42,7 +42,7 @@ describe('InformationPipesService', () => {
     });
   })
 
-  describe('.pipeSubfieldPage()', () => {
+  describe('.pipeFieldPage()', () => {
     it('should return subfield page for subfieldType appellation', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
@@ -50,7 +50,7 @@ describe('InformationPipesService', () => {
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnHasAppe]
@@ -69,7 +69,7 @@ describe('InformationPipesService', () => {
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.madridsPresenceWasAtPlace]
@@ -88,7 +88,7 @@ describe('InformationPipesService', () => {
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.journyeHasDuration]
@@ -108,7 +108,7 @@ describe('InformationPipesService', () => {
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.manifSingletonHasShortTitleMurderer]
@@ -128,7 +128,7 @@ describe('InformationPipesService', () => {
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnUsedInLanguage]
@@ -147,7 +147,7 @@ describe('InformationPipesService', () => {
       schemaActions.loadGvPaginationObject(req)
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.shipVoyageAtSomeTimeWithin]
@@ -171,7 +171,7 @@ describe('InformationPipesService', () => {
 
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.person1HasAppeTeEn]
@@ -223,7 +223,7 @@ describe('InformationPipesService', () => {
         schemaActions.loadGvPaginationObject(req)
 
         // using pipe
-        const q$ = service.pipeSubfieldPage(req.page, req.targets).pipe(
+        const q$ = service.pipeFieldPage(req.page, req.targets).pipe(
           distinctUntilChanged((a, b) => {
             // console.log('a', JSON.stringify(a))
             // console.log('b', JSON.stringify(b))
@@ -265,7 +265,7 @@ describe('InformationPipesService', () => {
 
 
       // using pipe
-      const q$ = service.pipeSubfieldPage(req.page, req.targets)
+      const q$ = service.pipeFieldPage(req.page, req.targets)
 
       // testing pipe
       const expectedSequence: SubfieldPage[] = [SubfieldPageMock.shipVoyageHasTimeSpan]
@@ -289,7 +289,7 @@ describe('InformationPipesService', () => {
     schemaActions.loadGvPaginationObject(req)
 
     // using pipe
-    const q$ = service.pipeSubfieldPage(req.page, req.targets)
+    const q$ = service.pipeFieldPage(req.page, req.targets)
 
     // testing pipe
     const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnHasAppe]

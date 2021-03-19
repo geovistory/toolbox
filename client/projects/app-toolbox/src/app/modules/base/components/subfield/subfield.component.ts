@@ -124,7 +124,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
         }
       }),
       // Piping from store
-      switchMap(([limit, offset]) => this.i.pipeSubfieldPage(
+      switchMap(([limit, offset]) => this.i.pipeFieldPage(
         fieldToFieldPage(this.field, this.source, this.scope, limit, offset),
         fieldToGvFieldTargets(this.field)
       )),

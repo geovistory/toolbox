@@ -152,7 +152,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
             map((e) => e.entity_label)
           )
 
-          const definition$ = this.i.pipeSubfieldPage(
+          const definition$ = this.i.pipeFieldPage(
             fieldToFieldPage(appeAndDefFields.definitionField, source, scope, 1, 0),
             fieldToGvFieldTargets(appeAndDefFields.definitionField)
           )
