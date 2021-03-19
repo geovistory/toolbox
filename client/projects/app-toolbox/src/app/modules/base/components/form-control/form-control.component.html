@@ -35,33 +35,16 @@
   </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-text-property'" class="w-100"
+<!-- <mat-form-field *ngIf="config?.data.controlType === 'ctrl-text-property'" class="w-100"
   [appearance]="config.data.appearance">
-  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
   <gv-ctrl-text-property placeholder="Start typing..." [formControl]="formControlFactory.control"
     [required]="config?.required">
   </gv-ctrl-text-property>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please enter text and select a language
   </mat-error>
-  <!-- <mat-hint *ngIf="formControlFactory.config.required">
-    * Required
-  </mat-hint> -->
-</mat-form-field>
+</mat-form-field> -->
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-lang-string'" class="w-100"
-  [appearance]="config.data.appearance">
-  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
-  <gv-ctrl-lang-string placeholder="Start typing..." [formControl]="formControlFactory.control"
-    [required]="config?.required">
-  </gv-ctrl-lang-string>
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please enter text and select a language
-  </mat-error>
-  <!-- <mat-hint *ngIf="formControlFactory.config.required">
-    * Required
-  </mat-hint> -->
-</mat-form-field>
 
 <mat-form-field *ngIf="config?.data.controlType === 'ctrl-time-span'" class="w-100"
   [appearance]="config.data.appearance">

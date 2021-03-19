@@ -21,16 +21,14 @@ import { ClassesAndTypesSelectComponent } from './components/classes-and-types-s
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
-import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dialog.component';
-import { CtrlLangStringComponent } from './components/ctrl-lang-string/ctrl-lang-string.component';
 import { CtrlLanguageComponent } from './components/ctrl-language/ctrl-language.component';
-import { CtrlPlaceComponent } from './components/ctrl-place/ctrl-place.component';
 import { CtrlTextPropertyComponent } from './components/ctrl-text-property/ctrl-text-property.component';
 import { CtrlTimePrimitiveComponent } from './components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent } from './components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanComponent } from './components/ctrl-time-span/ctrl-time-span.component';
 import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existence-time-help/existence-time-help.component';
 import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
+import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dialog.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntityFieldComponent } from './components/entity-field/entity-field.component';
 import { EntityWithFieldsComponent } from './components/entity-with-fields/entity-with-fields.component';
@@ -44,17 +42,12 @@ import { FormArrayComponent } from './components/form-array/form-array.component
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
-import { LeafItemAddListComponent } from './components/leaf-item-add-list/leaf-item-add-list.component';
-import { LeafItemListComponent } from './components/leaf-item-list/leaf-item-list.component';
 import { PropertiesTreeDialogComponent } from './components/properties-tree-dialog/properties-tree-dialog.component';
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { SubfieldDialogComponent } from './components/subfield-dialog/subfield-dialog.component';
 import { SubfieldComponent } from './components/subfield/subfield.component';
-import { TemporalEntityAddListComponent } from './components/temporal-entity-add-list/temporal-entity-add-list.component';
-import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
-import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
 import { BaseModalsService } from './services/base-modals.service';
 import { PaginationService } from './services/pagination.service';
@@ -64,20 +57,13 @@ const components = [
   PropertiesTreeComponent,
   PropertiesTreeDialogComponent,
   FieldComponent,
-  TemporalEntityListComponent,
-  TemporalEntityAddListComponent,
-  TimeSpanListComponent,
-  LeafItemListComponent,
-  LeafItemAddListComponent,
   TypeItemComponent,
   CtrlAppellationComponent,
   CtrlLanguageComponent,
-  CtrlPlaceComponent,
   CtrlEntityComponent,
   CtrlValueDialogComponent,
   CtrlEntityDialogComponent,
   CtrlTextPropertyComponent,
-  CtrlLangStringComponent,
   CtrlTimeSpanComponent,
   CtrlTimeSpanDialogComponent,
   CtrlTimePrimitiveComponent,

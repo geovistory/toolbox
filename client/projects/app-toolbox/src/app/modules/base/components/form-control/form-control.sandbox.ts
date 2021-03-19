@@ -108,13 +108,6 @@ export default sandboxOf(FormControlComponent, {
 
 
             <mat-divider></mat-divider>
-            <p>Ctrl-Lang-String</p>
-
-            <mat-form-field class="w-100" appearance="fill">
-              <!-- <mat-label>{{Placeholder}}</mat-label> -->
-              <gv-ctrl-lang-string placeholder="Placeholder" [required]="true">
-              </gv-ctrl-lang-string>
-            </mat-form-field>
 
             <p>Ctrl-Text-Property</p>
             <mat-form-field class="w-100" appearance="fill">
@@ -122,14 +115,6 @@ export default sandboxOf(FormControlComponent, {
               <gv-ctrl-text-property placeholder="Placeholder" [required]="true">
               </gv-ctrl-text-property>
             </mat-form-field>
-
-            <p>Ctrl-Place</p>
-            <mat-form-field class="w-100" appearance="fill">
-              <!-- <mat-label>{{Placeholder}}</mat-label> -->
-              <gv-ctrl-place placeholder="Placeholder" [required]="true">
-              </gv-ctrl-place>
-            </mat-form-field>
-
 
         </div>
         <div style="margin: 5rem; width: 300px">

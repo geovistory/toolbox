@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
-import { ReduxModule } from '@kleiolab/lib-redux';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 // import { ClassAPIEpics } from './components/class/api/class.epics';
 // import { ClassAPIActions } from './components/class/api/class.actions';
@@ -51,7 +50,7 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
     TableModule,
     ScrollDispatchModule,
     MaterialModule,
-    ReduxModule
+    // ReduxModule
   ],
   providers: [
     // ClassAPIActions,

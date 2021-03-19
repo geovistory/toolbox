@@ -27,33 +27,66 @@ label {
 * Styles for one angular component or multiple angular components with
 * the same visual design (e.g. naming and additional info).
 */
+.gv-search-hit {
+  margin-bottom: 1.5rem;
+  .gv-search-hit-is-in-project {
+    font-size: $font-size-sm;
+    margin-left: 1rem;
+    color: theme-color("success");
+  }
+  .gv-search-hit-project-count {
+    font-size: $font-size-sm;
+    margin-left: 1rem;
+    color: theme-color("secondary");
+  }
+  .gv-search-hit-header {
+  }
+  .gv-search-hit-body {
+    font-size: $font-size-sm;
+    .gv-search-hit-property b {
+      color: theme-color("success");
+    }
+    .gv-search-hit-property:not(:first-child) {
+    }
+    .gv-search-hit-property:not(:first-child)::before {
+      content: "•";
+      margin-left: 0.4rem;
+      margin-right: 0.4rem;
+    }
+  }
+}
+gv-project-list {
+  .gv-project-language {
+    font-size: $font-size-sm;
+  }
+}
 
 // Project List
-@import "./assets/scss/components/_project_list";
+// @import "./assets/scss/components/_project_list";
 // Project Dashboard
-@import "./assets/scss/components/_project_dashboard";
+// @import "./assets/scss/components/_project_dashboard";
 // List of Names or Additional Infos
-@import "./assets/scss/components/_name_info_list";
+// @import "./assets/scss/components/_name_info_list";
 // Name / Additional Info
-@import "./assets/scss/components/_name_info";
+// @import "./assets/scss/components/_name_info";
 // Name Part / Property Alternative
-@import "./assets/scss/components/_namepart_infoproperty";
+// @import "./assets/scss/components/_namepart_infoproperty";
 // Name Parts View
-@import "./assets/scss/components/_name_parts_view";
+// @import "./assets/scss/components/_name_parts_view";
 // Name Version
-@import "./assets/scss/components/_name_version";
+// @import "./assets/scss/components/_name_version";
 // Editor
-@import "./assets/scss/components/_edit";
+// @import "./assets/scss/components/_edit";
 // Project Entities
-@import "./assets/scss/components/_project_entities";
+// @import "./assets/scss/components/_project_entities";
 // Search hit
-@import "./assets/scss/components/_search_hit";
+// @import "./assets/scss/components/_search_hit";
 // Entity Add Modal
-@import "./assets/scss/components/_entity_add_modal";
+// @import "./assets/scss/components/_entity_add_modal";
 // Entity Add Modal
-@import "./assets/scss/components/_version_modal";
+// @import "./assets/scss/components/_version_modal";
 // Entity Add Modal
-@import "./assets/scss/components/_appellation_label_editor";
+// @import "./assets/scss/components/_appellation_label_editor";
 
 /**
 * Generic stuff
@@ -2001,54 +2034,6 @@ ngx-table.sticky-header {
 
   .slider.round:before {
     border-radius: 50%;
-  }
-}
-
-/* Sizes */
-
-$switch-sm-box-border: 2px;
-$switch-sm-box-heigth: calc(
-  #{$input-height-inner-sm} + #{$input-height-border} -
-    (#{$input-padding-y-sm} * 2)
-);
-$slider-diameter: calc(
-  #{$switch-sm-box-heigth} - (#{$switch-sm-box-border} * 2)
-);
-$slide-distance: calc(
-  #{$slider-diameter} * 0.5
-); // Adjust the hight/width ratio
-$switch-sm-box-width: calc(
-  (#{$switch-sm-box-border} * 2) +
-    calc(#{$slider-diameter} + #{$slide-distance})
-);
-
-// $switch-sm-box-width: calc(#{$switch-sm-box-heigth} * 2);
-.switch.switch-sm {
-  @extend .form-control-sm;
-  margin-bottom: 0;
-  cursor: pointer;
-
-  .box {
-    height: $switch-sm-box-heigth;
-    width: $switch-sm-box-width;
-  }
-
-  .slider:before {
-    height: $slider-diameter;
-    width: $slider-diameter;
-    left: $switch-sm-box-border;
-    bottom: $switch-sm-box-border;
-  }
-
-  input:checked + .slider:before {
-    -webkit-transform: translateX($slide-distance);
-    -ms-transform: translateX($slide-distance);
-    transform: translateX($slide-distance);
-  }
-
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
   }
 }
 
