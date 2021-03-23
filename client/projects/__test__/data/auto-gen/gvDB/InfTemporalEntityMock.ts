@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb4';
-import { DfhApiClassMock } from './DfhApiClassMock';
+import {InfTemporalEntity} from '@kleiolab/lib-sdk-lb4';
+import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
 /**
@@ -82,8 +82,13 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
 
-  static readonly MADRIDS_PRESENCE: OmitEntity<InfTemporalEntity> = ({
+  static readonly VOTTABLE_NAMING: OmitEntity<InfTemporalEntity> = ({
     pk_entity: 4016,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly MADRIDS_PRESENCE: OmitEntity<InfTemporalEntity> = ({
+    pk_entity: 4017,
     fk_class: DfhApiClassMock.EN_51_PLACE.dfh_pk_class,
   })
 

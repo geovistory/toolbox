@@ -242,4 +242,11 @@ export namespace GvSchemaObjectMock {
     },
   }
 
+  export const ctrlValueDialog_appellation: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [transformDfhApiClassToDfhClass(DfhApiClassMock.EN_40_APPELLATION)],
+      label: [transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_40_APPELLATION)]
+    }
+  }
+
 }

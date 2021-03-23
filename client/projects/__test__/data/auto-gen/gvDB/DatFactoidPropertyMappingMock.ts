@@ -25,14 +25,14 @@ export class DatFactoidPropertyMappingMock {
 
     static readonly FactoidPropertyMapping_UNION_1: DatFactoidPropertyMapping = {
         pk_entity: 8002,
-        fk_property: DfhApiPropertyMock.EN_1409_INVOLVES_PARTNER.dfh_pk_property,
+        fk_property: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,
         fk_column: DatColumnMock.COL_PEOPLE.pk_entity as number,
         fk_factoid_mapping: DatFactoidMappingMock.FactoidMapping_UNIONS_PERSON.pk_entity
     }
 
     static readonly FactoidPropertyMapping_UNION_2: DatFactoidPropertyMapping = {
         pk_entity: 8003,
-        fk_property: DfhApiPropertyMock.EN_1409_INVOLVES_PARTNER.dfh_pk_property,
+        fk_property: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,
         fk_column: DatColumnMock.COL_UNION.pk_entity as number,
         fk_factoid_mapping: DatFactoidMappingMock.FactoidMapping_UNIONS_PERSON.pk_entity
     }

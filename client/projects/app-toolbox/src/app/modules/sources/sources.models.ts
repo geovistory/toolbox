@@ -1,7 +1,7 @@
 import { DatDigital } from '@kleiolab/lib-sdk-lb3';
 import { IVersion } from 'projects/app-toolbox/src/app/modules/data/components/version-picker/version-picker.component';
-import Delta from 'quill/node_modules/quill-delta';
 import { List } from 'projects/app-toolbox/src/app/shared/components/list/api/list.models';
+import Delta from 'quill-delta';
 
 
 /**

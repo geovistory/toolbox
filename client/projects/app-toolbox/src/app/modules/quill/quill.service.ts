@@ -1,10 +1,10 @@
 /// <reference types="quill" />
 
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Injectable } from '@angular/core';
+import { MatDialogConfig } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import Quill from 'quill';
-import Delta from 'quill/node_modules/quill-delta';
+import Delta from 'quill-delta';
 import { clone } from 'ramda';
 import { asapScheduler, asyncScheduler, Observable, Subject } from 'rxjs';
 import { DeltaI } from './quill.models';

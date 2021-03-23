@@ -1,12 +1,12 @@
 
 import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import Delta from 'quill/node_modules/quill-delta';
-import { clone, sum } from 'ramda';
+import Delta from 'quill-delta';
+import { clone } from 'ramda';
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QuillNodeHandler } from '../quill-node-handler';
-import { DeltaI, Ops, QuillDoc, Op } from '../quill.models';
+import { DeltaI, Op, Ops, QuillDoc } from '../quill.models';
 import { createEnterHandle } from '../quill.service';
 import { QuillEditorService } from '../services/quill-editor.service';
 

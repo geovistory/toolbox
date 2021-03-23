@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseLayerPicker, OpenStreetMapImageryProvider, NavigationHelpButton, ProviderViewModel, SceneModePicker, WebMercatorProjection, Viewer, SceneMode, UrlTemplateImageryProvider, EntityCollection, DataSource, CustomDataSource, Entity, PointPrimitive, PointGraphics, Color, ScreenSpaceEventType } from 'cesium';
+import { BaseLayerPicker, Color, CustomDataSource, Entity, NavigationHelpButton, OpenStreetMapImageryProvider, PointGraphics, PointPrimitive, ProviderViewModel, SceneMode, SceneModePicker, ScreenSpaceEventType, UrlTemplateImageryProvider } from 'cesium';
 import { clone } from 'ramda';
 
 @Injectable({
@@ -194,7 +194,7 @@ export class CesiumService {
               position: clone(primitive.position),
               point,
             })
-            highlighted.properties = clone(pickedEntity.properties || {})
+            highlighted.properties = (pickedEntity.properties ? clone(pickedEntity.properties) : {}) as any
 
             // add id of new highlighted entity to ids
             highlightedToHiddenMap.set(highlighted, pickedEntity)

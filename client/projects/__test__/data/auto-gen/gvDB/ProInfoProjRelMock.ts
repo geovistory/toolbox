@@ -283,4 +283,14 @@ export class ProInfoProjRelMock {
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
+
+
+  static readonly PROJ_1_MANIF_SINGLETON_THE_MURDERER: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2034,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
 }

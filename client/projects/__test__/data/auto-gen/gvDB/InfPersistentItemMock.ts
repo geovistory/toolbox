@@ -72,19 +72,29 @@ export class InfPersistentItemMock {
     fk_class: DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class,
   })
 
-  static readonly ACCOUNT_OF_JOURNEY: OmitEntity<InfPersistentItem> = ({
+  static readonly VOTTABLE_MANIF_PROD_TYPE: OmitEntity<InfPersistentItem> = ({
     pk_entity: 2014,
+    fk_class: DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
+  })
+
+  static readonly VOTTABLE_EXPR: OmitEntity<InfPersistentItem> = ({
+    pk_entity: 2015,
+    fk_class: DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class,
+  })
+
+  static readonly ACCOUNT_OF_JOURNEY: OmitEntity<InfPersistentItem> = ({
+    pk_entity: 2016,
     fk_class: DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY.dfh_pk_class,
   })
 
   static readonly TIME_UNIT_MONTH: OmitEntity<InfPersistentItem> = ({
-    pk_entity: 2015,
+    pk_entity: 2017,
     fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class,
   })
 
 
   static readonly MANIF_SINGLETON_THE_MURDERER: OmitEntity<InfPersistentItem> = ({
-    pk_entity: 2016,
+    pk_entity: 2018,
     fk_class: DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
   })
 }

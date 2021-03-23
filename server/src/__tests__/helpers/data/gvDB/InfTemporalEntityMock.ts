@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfTemporalEntity } from '../../../../models';
-import { DfhApiClassMock } from './DfhApiClassMock';
+import {InfTemporalEntity} from '../../../../models';
+import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
 /**
@@ -82,7 +82,7 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
 
-  static readonly VOTTABLE_NAMING = new InfTemporalEntity({
+  static readonly VOTTABLE_NAMING: OmitEntity<InfTemporalEntity> = ({
     pk_entity: 4016,
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })

@@ -1,4 +1,4 @@
-import {DfhApiClass} from "./local-model.helpers"
+import { DfhApiClass } from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -292,6 +292,107 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "F2"
   }
+  static readonly EN_657_REFERENCE: DfhApiClass = {
+    "pk_entity": 4875,
+    "dfh_pk_class": 657,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Reference",
+    "dfh_fk_namespace": 30,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "Description of the location of a segment within a larger unit, such as the page reference within a book.",
+    "tmsp_last_modification": "2020-12-21T20:44:43.625419+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C11"
+  }
+  static readonly EN_54_LANGUAGE: DfhApiClass = {
+    "pk_entity": 3729,
+    "dfh_pk_class": 54,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Language",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "This class is a specialization of E55 Type and comprises the natural languages in the sense of concepts. This type is used\n            categorically in the model without reference to instances of it, i.e. the Model does not foresee the description of instances of instances\n            of E56 Language, e.g.: “instances of Mandarin Chinese”. It is recommended that internationally or nationally agreed codes and terminology\n            are used to denote instances of E56 Language, such as those defined in ISO 639:1988. ",
+    "tmsp_last_modification": "2020-12-21T20:44:43.625419+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E56"
+  }
+  static readonly EN_52_DIMENSION: DfhApiClass = {
+    "pk_entity": 5585,
+    "dfh_pk_class": 52,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Dimension",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "This class comprises quantifiable properties that can be measured by some calibrated means and can be approximated by values, i.e.\n            points or regions in a mathematical or conceptual space, such as natural or real numbers, RGB values etc. An instance of E54 Dimension\n            represents the true quantity, independent from its numerical approximation, e.g. in inches or in cm. The properties of the class E54\n            Dimension allow for expressing the numerical approximation of the values of an instance of E54 Dimension. If the true values belong to a\n            non-discrete space, such as spatial distances, it is recommended to record them as approximations by intervals or regions of indeterminacy\n            enclosing the assumed true values. For instance, a length of 5 cm may be recorded as 4.5-5.5 cm, according to the precision of the\n            respective observation. Note, that interoperability of values described in different units depends critically on the representation as\n            value regions. Numerical approximations in archaic instances of E58 Measurement Unit used in historical records should be preserved.\n            Equivalents corresponding to current knowledge should be recorded as additional instances of E54 Dimension as appropriate. ",
+    "tmsp_last_modification": "2020-12-21T20:44:43.625419+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E54"
+  }
+  static readonly EN_51_PLACE: DfhApiClass = {
+    "pk_entity": 3728,
+    "dfh_pk_class": 51,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Place",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "This class comprises extents in space, in particular on the surface of the earth, in the pure sense of physics: independent from\r\n            temporal phenomena and matter. The instances of E53 Place are usually determined by reference to the position of “immobile” objects such\r\n            as buildings, cities, mountains, rivers, or dedicated geodetic marks. A Place can be determined by combining a frame of reference and a\r\n            location with respect to this frame. It may be identified by one or more instances of E44 Place Appellation. It is sometimes argued that\r\n            instances of E53 Place are best identified by global coordinates or absolute reference systems. However, relative references are often\r\n            more relevant in the context of cultural documentation and tend to be more precise. In particular, we are often interested in position in\r\n            relation to large, mobile objects, such as ships. For example, the Place at which Nelson died is known with reference to a large mobile\r\n            object – H.M.S Victory. A resolution of this Place in terms of absolute coordinates would require knowledge of the movements of the vessel\r\n            and the precise time of death, either of which may be revised, and the result would lack historical and cultural relevance. Any object can\r\n            serve as a frame of reference for E53 Place determination. The model foresees the notion of a \"section\" of an E19 Physical Object as a\r\n            valid E53 Place determination.",
+    "tmsp_last_modification": "2020-12-21T20:44:43.625419+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E53"
+  }
+  static readonly EN_690_TIME_UNIT: DfhApiClass = {
+    "pk_entity": 5618,
+    "dfh_pk_class": 690,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Time unit",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "A measurement unit of durations and periods of time like second, hour, day, year or century",
+    "tmsp_last_modification": "2021-02-19T09:36:18.375285+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C2"
+  }
+
   static readonly EN_244_EXPRESSION_CREATION: DfhApiClass = {
     "pk_entity": 3661,
     "dfh_pk_class": 244,
@@ -355,26 +456,6 @@ export class DfhApiClassMock {
     "dfh_class_identifier_in_namespace": "C16"
   }
 
-  static readonly EN_51_PLACE: DfhApiClass = {
-    "pk_entity": 3728,
-    "dfh_pk_class": 51,
-    "dfh_basic_type": 10,
-    "dfh_fk_profile": 5,
-    "dfh_class_label": "Place",
-    "dfh_fk_namespace": 1,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_namespace_label": "CIDOC CRM version 6.2",
-    "dfh_basic_type_label": "Region",
-    "dfh_class_scope_note": "This class comprises extents in space, in particular on the surface of the earth, in the pure sense of physics: independent from\r\n            temporal phenomena and matter. The instances of E53 Place are usually determined by reference to the position of “immobile” objects such\r\n            as buildings, cities, mountains, rivers, or dedicated geodetic marks. A Place can be determined by combining a frame of reference and a\r\n            location with respect to this frame. It may be identified by one or more instances of E44 Place Appellation. It is sometimes argued that\r\n            instances of E53 Place are best identified by global coordinates or absolute reference systems. However, relative references are often\r\n            more relevant in the context of cultural documentation and tend to be more precise. In particular, we are often interested in position in\r\n            relation to large, mobile objects, such as ships. For example, the Place at which Nelson died is known with reference to a large mobile\r\n            object – H.M.S Victory. A resolution of this Place in terms of absolute coordinates would require knowledge of the movements of the vessel\r\n            and the precise time of death, either of which may be revised, and the result would lack historical and cultural relevance. Any object can\r\n            serve as a frame of reference for E53 Place determination. The model foresees the notion of a \"section\" of an E19 Physical Object as a\r\n            valid E53 Place determination.",
-    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
-    "dfh_class_label_language": "en",
-    "dfh_profile_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": "inferred",
-    "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E53"
-  }
 
   static readonly EN_84_PRESENCE: DfhApiClass = {
     "pk_entity": 3730,
@@ -417,6 +498,7 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E52"
   }
+  
   static readonly EN_689_DURATION: DfhApiClass = {
     "pk_entity": 5617,
     "dfh_pk_class": 689,
@@ -437,26 +519,8 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C1"
   }
-  static readonly EN_690_TIME_UNIT: DfhApiClass = {
-    "pk_entity": 5618,
-    "dfh_pk_class": 690,
-    "dfh_basic_type": 30,
-    "dfh_fk_profile": 5,
-    "dfh_class_label": "Time unit",
-    "dfh_fk_namespace": 110,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
-    "dfh_basic_type_label": "Type (controlled vocabulary)",
-    "dfh_class_scope_note": "A measurement unit of durations and periods of time like second, hour, day, year or century",
-    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
-    "dfh_class_label_language": "en",
-    "dfh_profile_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": "inferred",
-    "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C2"
-  }
+  
+  
 
   static readonly EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY: DfhApiClass = {
     "pk_entity": 5567,
@@ -478,26 +542,7 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C4"
   }
-  static readonly EN_54_LANGUAGE: DfhApiClass = {
-    "pk_entity": 3729,
-    "dfh_pk_class": 54,
-    "dfh_basic_type": 30,
-    "dfh_fk_profile": 5,
-    "dfh_class_label": "Language",
-    "dfh_fk_namespace": 1,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_namespace_label": "CIDOC CRM version 6.2",
-    "dfh_basic_type_label": "Type (controlled vocabulary)",
-    "dfh_class_scope_note": "This class is a specialization of E55 Type and comprises the natural languages in the sense of concepts. This type is used\n            categorically in the model without reference to instances of it, i.e. the Model does not foresee the description of instances of instances\n            of E56 Language, e.g.: “instances of Mandarin Chinese”. It is recommended that internationally or nationally agreed codes and terminology\n            are used to denote instances of E56 Language, such as those defined in ISO 639:1988. ",
-    "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
-    "dfh_class_label_language": "en",
-    "dfh_profile_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": "inferred",
-    "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E56"
-  }
+  
 }
 
 

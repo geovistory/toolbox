@@ -72,12 +72,12 @@ export class InfPersistentItemMock {
     fk_class: DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class,
   })
 
-  static readonly VOTTABLE_MANIF_PROD_TYPE = new InfPersistentItem({
+  static readonly VOTTABLE_MANIF_PROD_TYPE: OmitEntity<InfPersistentItem> = ({
     pk_entity: 2014,
     fk_class: DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
   })
 
-  static readonly VOTTABLE_EXPR = new InfPersistentItem({
+  static readonly VOTTABLE_EXPR: OmitEntity<InfPersistentItem> = ({
     pk_entity: 2015,
     fk_class: DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class,
   })
