@@ -46,7 +46,7 @@
     "angular-split": "^3.0.2",
     "angular2-elastic-input": "^1.4.2",
     "bootstrap": "4.3.1",
-    "cesium": "^1.65.0",
+    "cesium": "1.65.0",
     "color": "^3.1.2",
     "core-js": "^2.6.11",
     "d3": "^5.15.0",
@@ -97,7 +97,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^6.14.9",
-    "@types/quill": "^2.0.3",
+    "@types/quill": "2.0.3",
     "@types/ramda": "0.25.36",
     "@types/socket.io-client": "^1.4.29",
     "angular-playground": "^6.2.0",
@@ -124,6 +124,7 @@
     "tslint": "^5.5.0",
     "typescript": "~3.5.3",
     "typings-quill-delta": "0.0.2",
-    "webpack-bundle-analyzer": "^4.4.0"
+    "webpack-bundle-analyzer": "^4.4.0",
+    "quill-delta": "3.6.2"
   }
 }
