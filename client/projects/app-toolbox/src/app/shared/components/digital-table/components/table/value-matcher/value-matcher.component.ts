@@ -3,12 +3,20 @@ import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
-import { InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
-import { Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ValueObjectTypeName } from '../table.component';
+
+export type InfValueObjectType = InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar;
+
+export interface VotType {
+  type: ValueObjectTypeName;
+  dimensionClass?: number;
+}
 
 @Component({
   selector: 'gv-value-matcher',
@@ -19,15 +27,15 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() pkClass: number;
-  @Input() vot: { type: ValueObjectTypeName, dimensionClass?: number }; // the column of the cell
+  @Input() vot: VotType; // the column of the cell
   @Input() pkCell: number; // the subject of the statement
 
   pkProject: number;
   isInProject = false;
   statement$: Observable<InfStatement>;
   statement?: InfStatement;
-  value$: Observable<InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitive>;
-  value: InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitive | undefined;
+  value$: Observable<InfValueObjectType>;
+  value: InfValueObjectType | undefined;
 
   constructor(
     private p: ActiveProjectService,
@@ -71,7 +79,17 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
           if (this.vot.type === ValueObjectTypeName.place) return this.p.inf$.place$.by_pk_entity$.key(statement.fk_object_info)
           if (this.vot.type === ValueObjectTypeName.dimension) return this.p.inf$.dimension$.by_pk_entity$.key(statement.fk_object_info)
           if (this.vot.type === ValueObjectTypeName.langString) return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.type === ValueObjectTypeName.timePrimitive) return this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.type === ValueObjectTypeName.timePrimitive) {
+            return combineLatest([
+              this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info),
+              this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(this.pkProject + '_' + statement.pk_entity)
+            ]).pipe(
+              map(([tp, ipr]) => ({
+                ...tp,
+                calendar: ipr.calendar
+              } as InfTimePrimitiveWithCalendar))
+            )
+          }
         }
       }),
       takeUntil(this.destroy$)
@@ -90,24 +108,21 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
           maxWidth: '100%',
           data: {
             vot: this.vot,
-            initVal$: this.value ? this.value$ : undefined
+            initVal$: this.value ? this.value$ : undefined,
+            pkProject: this.pkProject
           }
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
           if (!result) return;
-          const newStatement = {
+          const newStatement: InfStatement = {
             fk_subject_tables_cell: this.pkCell,
             fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
             ...result
           };
           if (mode == 'edit' && this.statement && result) {
-            if (this.vot.type == ValueObjectTypeName.timePrimitive) {
-              // transform object_time_primitive from InfTimePrimitiveWithCalendar into InfTimePrimitive
-            } else {
-              this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
-                this.inf.statement.upsert([newStatement], this.pkProject);
-              });
-            }
+            this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
+              this.inf.statement.upsert([newStatement], this.pkProject);
+            });
           } else this.inf.statement.upsert([newStatement], this.pkProject);
         });
     }
