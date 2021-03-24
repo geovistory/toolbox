@@ -2,7 +2,7 @@
 
   <gv-value-preview *ngIf="statement" [vot]="vot" [value]="value" [pkProject]="pkProject" class="left-col">
   </gv-value-preview>
-  <span *ngIf="!statement" class="left-col gv-fade">No value matched</span>
+  <span *ngIf="!statement" class="left-col mat-text-secondary">No value matched</span>
 
   <button mat-icon-button [matMenuTriggerFor]="options" class="right-col">
     <mat-icon>more_vert</mat-icon>

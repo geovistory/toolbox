@@ -1,21 +1,17 @@
 .full-width {
-    display: flex;
+  display: flex;
 }
 
 .left-col {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1 1 0;
-    overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
 }
 .right-col {
-    display: flex;
-    flex: 0 0 40px;
-    align-items: center;
-    justify-content: center;
-}
-
-.gv-fade {
-    color: rgb(150,150,150)
+  display: flex;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
 }

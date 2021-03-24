@@ -92,7 +92,7 @@
               <th class="text-center mat-caption" pResizableColumn colspan="1">
                 Text
               </th>
-              <th class="text-center mat-caption gv-bg-fade" pResizableColumn colspan="1">
+              <th class="text-center mat-caption mat-bg-grey-50" pResizableColumn colspan="1">
                 Matched
                 <span *ngIf="col.mapping.icon === 'teEn'"
                   class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
@@ -137,7 +137,7 @@
                   class="text-center align-self-center" pResizableColumn colspan="1">
                   {{value.text}}
                 </td>
-                <td *ngIf="headers[j].mapping" pResizableColumn colspan="1" class="gv-bg-fade"
+                <td *ngIf="headers[j].mapping" pResizableColumn colspan="1" class="mat-bg-grey-50"
                   [ngClass]="{'gv-white-space-nowrap': true}">
                   <gv-entity-matcher *ngIf="!isClassValueObjectType(headers[j].mapping.fkClass)"
                     [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>

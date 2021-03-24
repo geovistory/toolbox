@@ -2307,37 +2307,12 @@ $gv-mat-teal: (
     A700: $dark-primary-text,
   ),
 );
-//tag gmu
-$gv-mat-grey: (
-  50: #cccccc,
-  100: #bebebe,
-  200: #b0b0b0,
-  300: #a2a2a2,
-  400: #949494,
-  500: #868686,
-  600: #787878,
-  700: #6a6a6a,
-  800: #5c5c5c,
-  900: #4e4e4e,
-  contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $dark-primary-text,
-    400: $dark-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text
-  ),
-);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $app-primary: mat-palette($gv-mat-purple);
 $app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
-$app-fade: mat-palette($gv-mat-grey);
 // The warn palette is optional (defaults to red).
 $app-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
@@ -2443,6 +2418,8 @@ $mat-color-secondary-text: mat-color($foreground, secondary-text);
   color: $mat-color-secondary-text;
 }
 
+$backgound: map-get($app-theme, background);
+
 .mat-bg-primary {
   background-color: $mat-color-primary;
 }
@@ -2460,10 +2437,12 @@ $mat-color-secondary-text: mat-color($foreground, secondary-text);
   color: $dark-primary-text;
 }
 
-//tag gmu
-.mat-bg-faded {
-  background-color: map-get($app-fade, A700);
-  color: $dark-primary-text;
+.mat-bg-grey-50 {
+  background-color: map_get($mat-grey, 50);
+}
+
+.mat-bg-grey-100 {
+  background-color: map_get($mat-grey, 100);
 }
 
 /*
