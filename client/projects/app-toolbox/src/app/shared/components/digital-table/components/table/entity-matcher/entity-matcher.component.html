@@ -1,6 +1,6 @@
 <div class="full-width">
   <gv-entity-preview *ngIf="statement" [pkEntity]="statement.fk_object_info" class="left-col"></gv-entity-preview>
-  <span *ngIf="!statement" class="left-col">No entity mapped</span>
+  <span *ngIf="!statement" class="left-col mat-text-secondary">No entity matched</span>
 
   <button mat-icon-button [matMenuTriggerFor]="options" class="right-col">
     <mat-icon>more_vert</mat-icon>

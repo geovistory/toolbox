@@ -159,7 +159,10 @@ export class ColMappingComponent implements OnInit, OnDestroy {
               }
               const dialog2 = this.dialog.open(ConfirmDialogComponent, { data: data2 });
               dialog2.afterClosed().pipe(first()).subscribe(confirmed2 => {
-                if (confirmed2) this.deleteColumnMapping();
+                if (confirmed2) {
+                  this.deleteColumnMapping();
+                  this.createColumnMapping();
+                }
                 else this.selectedClass = this.data.mapping.fkClass;
               })
             } else this.selectedClass = this.data.mapping.fkClass;
