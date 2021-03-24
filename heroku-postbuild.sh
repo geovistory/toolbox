@@ -3,6 +3,8 @@
 echo '================ Start of heroku-postbuild.sh =============================='
 
 echo '================= Compile Client =============================='
+# install dependecies and cache them
+npm run install
 # build all angular librairies + application(s)
 cd ./client
 echo './client: npm run build:all'
