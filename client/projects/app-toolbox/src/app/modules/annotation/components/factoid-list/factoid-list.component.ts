@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { FactoidControllerService } from "@kleiolab/lib-sdk-lb4";
-import { FactoidEntity } from "@kleiolab/lib-sdk-lb4";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { FactoidControllerService, FactoidEntity } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -26,7 +25,7 @@ export class FactoidListComponent implements OnInit, OnDestroy {
   totalLength = 0;
   factoidsEntities: Array<FactoidEntity>
   pageIndex = 0;
-  pageSize = 2;
+  pageSize = 10;
   loading = false;
 
   constructor(
@@ -56,11 +55,13 @@ export class FactoidListComponent implements OnInit, OnDestroy {
   askForFactoids() {
     this.factoidsEntities = [];
     this.loading = true;
-    this.factoidService.factoidControllerFactoidsFromEntity(this.pkProject + '', this.pkEntity + '', this.pageSize + '', this.pageIndex + '')
+    this.factoidService
+      .factoidControllerFactoidsFromEntity(this.pkProject + '', this.pkEntity + '', this.pageSize + '', this.pageIndex + '')
       .pipe(first(), takeUntil(this.destroy$)).subscribe(resp => {
         this.totalLength = resp.totalLength;
         this.factoidsEntities = resp.factoidEntities;
         this.loading = false;
+        this.ref.detectChanges();
       })
   }
 
