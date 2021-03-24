@@ -97,7 +97,7 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
       }
       this.timeprimitive.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((nv: InfTimePrimitiveWithCalendar) => {
         this.newValue = nv;
-        delete this.newValue.pk_entity;
+        if (this.newValue) delete this.newValue.pk_entity;
       });
     }
   }
@@ -111,12 +111,17 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
   }
 
   validate(): void {
+    if (!this.newValue) {
+      this.dialogRef.close();
+      return;
+    }
+
     let calendar, infProjRel: ProInfoProjRel;
     if (this.data.vot.type === ValueObjectTypeName.timePrimitive) {
       calendar = (this.newValue as InfTimePrimitiveWithCalendar).calendar;
       delete (this.newValue as InfTimePrimitiveWithCalendar).calendar;
       infProjRel = { fk_project: this.data.pkProject, calendar, is_in_project: true } as ProInfoProjRel
-      (this.newValue as InfTimePrimitive).fk_class = 335;
+      (this.newValue as InfTimePrimitiveWithCalendar).fk_class = 335;
     }
 
     this.dialogRef.close({

@@ -103,8 +103,8 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
     } else {
       this.dialog.open<CtrlValueDialogComponent,
         CtrlValueDialogData, CtrlValueDialogResult>(CtrlValueDialogComponent, {
-          height: 'calc(100% - 30px)',
-          width: '980px',
+          // height: 'calc(30%)',
+          // width: '400px',
           maxWidth: '100%',
           data: {
             vot: this.vot,

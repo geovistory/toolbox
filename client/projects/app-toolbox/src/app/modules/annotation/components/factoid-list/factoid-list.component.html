@@ -53,7 +53,7 @@
                 <span class="content align-middle" style="font-size: 15px;">
                     <span class="icon fa fa-star-o align-self-center gv-icon-preview gv-entity-color"></span>
                     {{c.pipeClassLabel(factoidEntity.pkClass) | async}}
-                     - Factoid from table {{factoidEntity.pkDigital}}
+                    - Factoid from table {{factoidEntity.pkDigital}}
                 </span>
                 <!-- </div> -->
             </mat-grid-tile>
@@ -64,7 +64,9 @@
             <!-- principal property -->
             <mat-grid-tile [colspan]="3" [rowspan]="1">
                 <div class="content mat-text-secondary gv-one-liner gv-fade-out-right ">
-                    {{c.pipeLabelOfPropertyField(factoidEntity.headerStatements[0].fkProperty, factoidEntity.headerStatements[0].isOutgoing ? factoidEntity.pkClass : null, factoidEntity.headerStatements[0].isOutgoing ? null : factoidEntity.pkClass) | async}}
+                    {{c.pipeLabelOfPropertyField(factoidEntity.headerStatements[0].fkProperty,
+                    factoidEntity.headerStatements[0].isOutgoing ? factoidEntity.pkClass : null,
+                    factoidEntity.headerStatements[0].isOutgoing ? null : factoidEntity.pkClass) | async}}
                 </div>
             </mat-grid-tile>
 
@@ -111,20 +113,22 @@
 
                     <!-- header properties -->
                     <mat-grid-tile [colspan]="3" [rowspan]="1">
-                        <div class="content bold gv-one-liner gv-fade-out-right ">
-                            {{c.pipeLabelOfPropertyField(headStatement.fkProperty, headStatement.isOutgoing ? factoidEntity.pkClass : null, headStatement.isOutgoing ? null : factoidEntity.pkClass) | async}}
+                        <div class="content fade gv-one-liner gv-fade-out-right ">
+                            {{c.pipeLabelOfPropertyField(headStatement.fkProperty, headStatement.isOutgoing ?
+                            factoidEntity.pkClass : null, headStatement.isOutgoing ? null : factoidEntity.pkClass) |
+                            async}}
                         </div>
                     </mat-grid-tile>
 
                     <!-- header cells content -->
                     <mat-grid-tile [colspan]="3" [rowspan]="1">
-                        <div class="content bold italic gv-one-liner gv-fade-out-right ">{{headStatement.value}}</div>
+                        <div class="content fade italic gv-one-liner gv-fade-out-right ">{{headStatement.value}}</div>
                     </mat-grid-tile>
 
                     <!-- header entity preview -->
                     <mat-grid-tile [colspan]="3" [rowspan]="1">
 
-                        <div class="content bold">
+                        <div class="content fade">
                             <gv-entity-preview *ngIf="headStatement.pkEntity" class="gv-one-liner gv-fade-out-right"
                                 [pkEntity]="headStatement.pkEntity" class="left-col">
                             </gv-entity-preview>
@@ -133,7 +137,7 @@
 
                     <!-- header cell position-->
                     <mat-grid-tile [colspan]="2" [rowspan]="1">
-                        <div class="content bold gv-one-liner gv-fade-out-right">
+                        <div class="content fade gv-one-liner gv-fade-out-right">
                             <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
                                 [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
                             </mat-icon>
@@ -160,7 +164,8 @@
                 <!-- body properties -->
                 <mat-grid-tile [colspan]="3" [rowspan]="1">
                     <div class="content gv-one-liner gv-fade-out-right ">
-                        {{c.pipeLabelOfPropertyField(bodyStatement.fkProperty, bodyStatement.isOutgoing ? factoidEntity.pkClass : null, bodyStatement.isOutgoing ? null : factoidEntity.pkClass) | async}}
+                        {{c.pipeLabelOfPropertyField(bodyStatement.fkProperty, bodyStatement.isOutgoing ?
+                        factoidEntity.pkClass : null, bodyStatement.isOutgoing ? null : factoidEntity.pkClass) | async}}
                     </div>
                 </mat-grid-tile>
 

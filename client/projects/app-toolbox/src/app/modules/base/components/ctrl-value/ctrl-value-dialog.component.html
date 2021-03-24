@@ -4,16 +4,28 @@
 </h1>
 
 <!-- CONTENT -->
-<div mat-dialog-content style="height: 200px">
-  <gv-fg-place #place *ngIf="data.vot.type === 'place'" [initVal$]="data.initVal$"></gv-fg-place>
-  <gv-fg-lang-string #langString *ngIf="data.vot.type === 'lang_string'" [initVal$]="data.initVal$"></gv-fg-lang-string>
+<div mat-dialog-content style="display: flex; align-items: center;">
+  <!-- PLACE -->
+  <gv-fg-place #place *ngIf="data.vot.type === 'place'" [initVal$]="data.initVal$" [appearance]="'outline'">
+  </gv-fg-place>
+  <!-- LANG STRING -->
+  <gv-fg-lang-string #langString *ngIf="data.vot.type === 'lang_string'" [initVal$]="data.initVal$"
+    [appearance]="'outline'"></gv-fg-lang-string>
+  <!-- DIMENSION -->
   <gv-fg-dimension #dimension *ngIf="data.vot.type === 'dimension'" [initVal$]="data.initVal$"
-    [pkClassOfDimension]="data.vot.dimensionClass">
+    [pkClassOfDimension]="data.vot.dimensionClass" [appearance]="'outline'">
   </gv-fg-dimension>
-  <gv-ctrl-appellation *ngIf="data.vot.type === 'appellation'" [formControl]="appellation">
-  </gv-ctrl-appellation>
-  <gv-ctrl-time-primitive *ngIf="data.vot.type === 'time_primitive'" [formControl]="timeprimitive">
-  </gv-ctrl-time-primitive>
+  <!-- APPELLATION -->
+  <mat-form-field *ngIf="data.vot.type === 'appellation'" class="ctrl-text" [appearance]="'outline'">
+    <gv-ctrl-appellation [formControl]="appellation">
+    </gv-ctrl-appellation>
+  </mat-form-field>
+  <!-- TIME PRIMITIVE -->
+  <mat-form-field *ngIf="data.vot.type === 'time_primitive'" class="ctrl-text" [appearance]="'outline'">
+    <gv-ctrl-time-primitive [formControl]="timeprimitive">
+    </gv-ctrl-time-primitive>
+  </mat-form-field>
+
 </div>
 
 <!-- FOOTER -->
