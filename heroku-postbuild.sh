@@ -3,9 +3,11 @@
 echo '================ Start of heroku-postbuild.sh =============================='
 
 echo '================= Compile Client =============================='
+# build all angular librairies + application(s)
 cd ./client
 echo './client: npm run build:all'
 npm run build
+#remove extraneous packages (node_modules packages that are not a dependency anymore + devDependencies if --production)
 echo './client: npm prune --production'
 npm prune --production
 cd ..
