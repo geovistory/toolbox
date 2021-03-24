@@ -249,4 +249,28 @@ export namespace GvSchemaObjectMock {
     }
   }
 
+  export const ctrlValueDialog_dimension: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [transformDfhApiClassToDfhClass(DfhApiClassMock.EN_689_DURATION)],
+      label: [transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_689_DURATION)]
+    }
+  }
+
+  export const ctrlValueDialog_langstring: GvPositiveSchemaObject = {
+    inf: {
+      language: [
+        InfLanguageMock.GERMAN,
+        InfLanguageMock.FRENCH,
+        InfLanguageMock.ENGLISH
+      ]
+    }
+  }
+
+  export const ctrlValueDialog_timeprimitive: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [transformDfhApiClassToDfhClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE)],
+      label: [transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_335_TIME_PRIMITIVE)]
+    }
+  }
+
 }
