@@ -15,8 +15,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "playground": "node --max_old_space_size=8192 node_modules/.bin/angular-playground",
-    "compodoc": "npx compodoc -p src/tsconfig.app.json",
-    "install": "npm i --production=false"
+    "compodoc": "npx compodoc -p src/tsconfig.app.json"
   },
   "private": true,
   "dependencies": {
@@ -127,8 +126,5 @@
     "typings-quill-delta": "0.0.2",
     "webpack-bundle-analyzer": "^4.4.0",
     "quill-delta": "3.6.2"
-  },
-  "cacheDirectories": [
-    "node_modules"
-  ]
+  }
 }
