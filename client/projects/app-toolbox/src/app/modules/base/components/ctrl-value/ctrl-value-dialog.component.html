@@ -1,29 +1,34 @@
 <!-- HEADER -->
 <h1 mat-dialog-title>
-  Enter a {{getTitle()}}
+  Enter a {{c.pipeClassLabel(data.pkClass) | async}}
 </h1>
 
 <!-- CONTENT -->
 <div mat-dialog-content style="display: flex; align-items: center;">
   <!-- PLACE -->
-  <gv-fg-place #place *ngIf="data.vot.type === 'place'" [initVal$]="data.initVal$" [appearance]="'outline'">
+  <gv-fg-place #place *ngIf="data.vot.place" [initVal$]="data.initVal$" [appearance]="'outline'">
   </gv-fg-place>
   <!-- LANG STRING -->
-  <gv-fg-lang-string #langString *ngIf="data.vot.type === 'lang_string'" [initVal$]="data.initVal$"
-    [appearance]="'outline'"></gv-fg-lang-string>
+  <gv-fg-lang-string #langString *ngIf="data.vot.langString" [initVal$]="data.initVal$" [appearance]="'outline'">
+  </gv-fg-lang-string>
   <!-- DIMENSION -->
-  <gv-fg-dimension #dimension *ngIf="data.vot.type === 'dimension'" [initVal$]="data.initVal$"
-    [pkClassOfDimension]="data.vot.dimensionClass" [appearance]="'outline'">
+  <gv-fg-dimension #dimension *ngIf="data.vot.dimension" [initVal$]="data.initVal$"
+    [pkClassOfDimension]="data.vot.dimension.measurementUnitClass" [appearance]="'outline'">
   </gv-fg-dimension>
   <!-- APPELLATION -->
-  <mat-form-field *ngIf="data.vot.type === 'appellation'" class="ctrl-text" [appearance]="'outline'">
+  <mat-form-field *ngIf="data.vot.appellation" class="ctrl-text" [appearance]="'outline'">
     <gv-ctrl-appellation [formControl]="appellation">
     </gv-ctrl-appellation>
   </mat-form-field>
   <!-- TIME PRIMITIVE -->
-  <mat-form-field *ngIf="data.vot.type === 'time_primitive'" class="ctrl-text" [appearance]="'outline'">
+  <mat-form-field *ngIf="data.vot.timePrimitive" class="ctrl-text" [appearance]="'outline'">
     <gv-ctrl-time-primitive [formControl]="timeprimitive">
     </gv-ctrl-time-primitive>
+  </mat-form-field>
+  <!-- LANGUAGE -->
+  <mat-form-field *ngIf="data.vot.language" class="ctrl-text" [appearance]="'outline'">
+    <gv-ctrl-language placeholder="Placeholder" [formControl]="language">
+    </gv-ctrl-language>
   </mat-form-field>
 
 </div>

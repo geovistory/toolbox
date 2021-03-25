@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -168,13 +168,15 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   openMappingDialog(colLabel: string, pkColumn: number, mapping: ColumnMapping) {
 
     const indexOfCol = this.headers.map(h => h.pk_column).indexOf(pkColumn) - 1;
-    const pkCells: Array<number> = this.table.map(row => { if (typeof row[indexOfCol] !== 'string') return (row[indexOfCol] as any).pkCell });
+    const pkCells: Array<number> = this.table
+      .map(row => { if (typeof row[indexOfCol] !== 'string') return (row[indexOfCol] as any).pkCell });
 
-    this.dialog.open<ColMappingComponent, { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> }>(ColMappingComponent, {
-      height: 'calc(100% - 100px)',
-      width: '40%',
-      data: { colLabel, pkColumn, mapping, pkCells }
-    });
+    this.dialog.open<ColMappingComponent, { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> }>
+      (ColMappingComponent, {
+        height: 'calc(100% - 100px)',
+        width: '40%',
+        data: { colLabel, pkColumn, mapping, pkCells }
+      });
   }
 
   changeColumnClick(col: number, direction: 'right' | 'left') {
@@ -182,19 +184,12 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   isClassValueObjectType(fkClass: number): boolean {
-    const temp = this.getVOT(fkClass)
-    const response = !!temp;
-    return response;
+    return !!this.getVOT(fkClass);
   }
 
-  getVOT(fkClass: number): { type: ValueObjectTypeName, dimensionClass?: number } | undefined {
-    if (Object.keys(this.config.classes).some(k => k === fkClass + '')) {
-      if (this.config.classes[fkClass].valueObjectType.appellation) return { type: ValueObjectTypeName.appellation };
-      if (this.config.classes[fkClass].valueObjectType.place) return { type: ValueObjectTypeName.place };
-      if (this.config.classes[fkClass].valueObjectType.dimension) return { type: ValueObjectTypeName.dimension, dimensionClass: fkClass };
-      if (this.config.classes[fkClass].valueObjectType.language) return { type: ValueObjectTypeName.langString };
-      if (this.config.classes[fkClass].valueObjectType.timePrimitive) return { type: ValueObjectTypeName.timePrimitive };
-    }
+
+  getVOT(fkClass: number): SysConfigValueObjectType | undefined {
+    if (Object.keys(this.config.classes).some(k => k === fkClass + '')) return this.config.classes[fkClass].valueObjectType
     return undefined;
   }
 

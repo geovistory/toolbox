@@ -1,10 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfDimension, InfLangString, InfPlace } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { GregorianDateTime, InfTimePrimitiveWithCalendar, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { ValueObjectTypeName } from '../digital-table/components/table/table.component';
 
 @Component({
   selector: 'gv-value-preview',
@@ -14,8 +13,8 @@ import { ValueObjectTypeName } from '../digital-table/components/table/table.com
 export class ValuePreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  @Input() vot: { type: ValueObjectTypeName, dimensionClass?: number };
-  @Input() value: InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar;
+  @Input() vot: SysConfigValueObjectType;
+  @Input() value: InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage;
   @Input() pkProject: number;
 
   dimension_unit?: string;
@@ -27,14 +26,14 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if (this.vot.type == ValueObjectTypeName.dimension) {
+    if (this.vot.dimension) {
       this.ap.streamEntityPreview((this.value as InfDimension).fk_measurement_unit).pipe(
         map(ep => ep.entity_label),
         takeUntil(this.destroy$)
       ).subscribe(unitLabel => this.dimension_unit = unitLabel);
     };
 
-    if (this.vot.type == ValueObjectTypeName.langString) {
+    if (this.vot.langString) {
       this.s.inf$.language$.by_pk_entity$.key((this.value as InfLangString).fk_language)
         .subscribe(language => this.pkLanguage = language ? language.pk_language : '');
     }

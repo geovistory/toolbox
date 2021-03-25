@@ -3,20 +3,15 @@ import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
-import { InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils/public-api';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ValueObjectTypeName } from '../table.component';
 
-export type InfValueObjectType = InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar;
-
-export interface VotType {
-  type: ValueObjectTypeName;
-  dimensionClass?: number;
-}
+export type InfValueObjectType = InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage;
 
 @Component({
   selector: 'gv-value-matcher',
@@ -27,7 +22,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() pkClass: number;
-  @Input() vot: VotType; // the column of the cell
+  @Input() vot: SysConfigValueObjectType | undefined; // the column of the cell
   @Input() pkCell: number; // the subject of the statement
 
   pkProject: number;
@@ -75,11 +70,12 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
       filter(statement => !!statement),
       switchMap(statement => {
         if (statement) {
-          if (this.vot.type === ValueObjectTypeName.appellation) return this.p.inf$.appellation$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.type === ValueObjectTypeName.place) return this.p.inf$.place$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.type === ValueObjectTypeName.dimension) return this.p.inf$.dimension$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.type === ValueObjectTypeName.langString) return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.type === ValueObjectTypeName.timePrimitive) {
+          if (this.vot.appellation) return this.p.inf$.appellation$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.place) return this.p.inf$.place$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.dimension) return this.p.inf$.dimension$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.langString) return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.language) return this.p.inf$.language$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.timePrimitive) {
             return combineLatest([
               this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info),
               this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(this.pkProject + '_' + statement.pk_entity)
@@ -94,7 +90,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroy$)
     )
-    this.value$.subscribe(v => this.value = v)
+    this.value$.subscribe(vv => this.value = vv)
   }
 
   changeMatching(mode: 'create' | 'edit' | 'delete') {
@@ -108,6 +104,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
           maxWidth: '100%',
           data: {
             vot: this.vot,
+            pkClass: this.pkClass,
             initVal$: this.value ? this.value$ : undefined,
             pkProject: this.pkProject
           }

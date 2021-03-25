@@ -1,5 +1,5 @@
 <!-- PLACE -->
-<div *ngIf="vot.type == 'place'" class="display-holder">
+<div *ngIf="vot.place" class="display-holder">
     <div class="display-field">
         <div>Latitude: </div>
         <div>{{value.lat}}</div>
@@ -11,24 +11,29 @@
 </div>
 
 <!-- LANG STRING -->
-<div *ngIf="vot.type == 'lang_string'" class="display-holder">
+<div *ngIf="vot.langString" class="display-holder">
     {{getLangString(value)}}
 </div>
 
 
 <!-- APPELLATION -->
-<div *ngIf="vot.type == 'appellation'" class="display-holder">
+<div *ngIf="vot.appellation" class="display-holder">
     {{value.string}}
 </div>
 
 
 <!-- DIMENSION -->
-<div *ngIf="vot.type == 'dimension'" class="display-holder">
+<div *ngIf="vot.dimension" class="display-holder">
     {{value.numeric_value}} {{dimension_unit}}
 </div>
 
 
 <!-- TIME PRIMITIVE -->
-<div *ngIf="vot.type == 'time_primitive'" class="display-holder" >
+<div *ngIf="vot.timePrimitive" class="display-holder">
     {{stringifyJulianDate(value)}}
+</div>
+
+<!-- LANGUAGE -->
+<div *ngIf="vot.language" class="display-holder">
+    {{value.notes}}
 </div>

@@ -181,37 +181,33 @@ export async function forFeatureX() {
     const colAppellation = await createColumn(pkNamespace, digital, 'Appellation Col');
     const colPlace = await createColumn(pkNamespace, digital, 'Place Col');
     const colDimension = await createColumn(pkNamespace, digital, 'Dimension Col');
-    const colLanguage = await createColumn(pkNamespace, digital, 'Language Col');
+    const colLanguageString = await createColumn(pkNamespace, digital, 'LanguageString col');
     const colTimePrimitive = await createColumn(pkNamespace, digital, 'TimePrimitive Col');
+    const colLanguage = await createColumn(pkNamespace, digital, 'Language Col');
     //rows
     const rowVOT_1 = await createRow(digital);
     const rowVOT_2 = await createRow(digital);
-    const rowVOT_3 = await createRow(digital);
-    //cells (headers)
-    await createCell(digital, rowVOT_1, colAppellation, 'Appellation Col');
-    await createCell(digital, rowVOT_1, colPlace, 'Place Col');
-    await createCell(digital, rowVOT_1, colDimension, 'Dimension Col');
-    await createCell(digital, rowVOT_1, colLanguage, 'Language Col');
-    await createCell(digital, rowVOT_1, colTimePrimitive, 'TimePrimitive Col');
     //cells (1st line with matchings)
-    const cell_1_0 = await createCell(digital, rowVOT_2, colAppellation, 'Appellation 1');
-    const cell_1_1 = await createCell(digital, rowVOT_2, colPlace, 'Place 1');
-    const cell_1_2 = await createCell(digital, rowVOT_2, colDimension, 'Dimension 1');
-    const cell_1_3 = await createCell(digital, rowVOT_2, colLanguage, 'Language 1');
-    const cell_1_4 = await createCell(digital, rowVOT_2, colTimePrimitive, 'TimePrimitive 1');
+    const cell_1_0 = await createCell(digital, rowVOT_1, colAppellation, 'Appellation 1');
+    const cell_1_1 = await createCell(digital, rowVOT_1, colPlace, 'Place 1');
+    const cell_1_2 = await createCell(digital, rowVOT_1, colDimension, 'Dimension 1');
+    const cell_1_3 = await createCell(digital, rowVOT_1, colLanguageString, 'LanguageString 1');
+    const cell_1_4 = await createCell(digital, rowVOT_1, colTimePrimitive, 'TimePrimitive 1');
+    const cell_1_5 = await createCell(digital, rowVOT_1, colLanguage, 'Language 1');
     //cells (2nd line)
-    await createCell(digital, rowVOT_3, colAppellation, 'Appellation 2');
-    await createCell(digital, rowVOT_3, colPlace, 'Place 2');
-    await createCell(digital, rowVOT_3, colDimension, 'Dimension 2');
-    await createCell(digital, rowVOT_3, colLanguage, 'Language 2');
-    await createCell(digital, rowVOT_3, colTimePrimitive, 'TimePrimitive 2');
+    await createCell(digital, rowVOT_2, colAppellation, 'Appellation 2');
+    await createCell(digital, rowVOT_2, colPlace, 'Place 2');
+    await createCell(digital, rowVOT_2, colDimension, 'Dimension 2');
+    await createCell(digital, rowVOT_2, colLanguageString, 'LanguageString 2');
+    await createCell(digital, rowVOT_2, colTimePrimitive, 'TimePrimitive 2');
+    await createCell(digital, rowVOT_2, colLanguage, 'Language 2');
     //colMappings
     await createColumnMapping(colAppellation, 40);
     await createColumnMapping(colPlace, 51);
     await createColumnMapping(colDimension, 689);
-    // await createColumnMapping(colDimension, 52);
-    await createColumnMapping(colLanguage, 54);
+    await createColumnMapping(colLanguageString, 657);
     await createColumnMapping(colTimePrimitive, 335);
+    await createColumnMapping(colLanguage, 54)
     //type
     const timeUnitPEIT = await createInfPersistentItem({ pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class });
     const timeUnitAppellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'Time Unit label' });
@@ -224,15 +220,15 @@ export async function forFeatureX() {
     const appellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'An appellation' });
     const place = await createInfPlace({ pk_entity: getIndex(), lat: 51.5074, long: 0.1278, fk_class: 51 });
     const dimension = await createInfDimension({ pk_entity: getIndex(), fk_class: 689, fk_measurement_unit: timeUnitPEIT.pk_entity, numeric_value: 4 });
-    const language = await createInfLangString({ pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12' })
+    const languageString = await createInfLangString({ pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12' })
     const timePrimitive = await createInfTimePrimitive({ pk_entity: getIndex(), julian_day: 2431383, duration: '1 day', fk_class: 335 })
-
     //Matchings
     await mapCell(projectId, cell_1_0, appellation.pk_entity as number);
     await mapCell(projectId, cell_1_1, place.pk_entity as number);
     await mapCell(projectId, cell_1_2, dimension.pk_entity as number);
-    await mapCell(projectId, cell_1_3, language.pk_entity as number);
+    await mapCell(projectId, cell_1_3, languageString.pk_entity as number);
     await mapCell(projectId, cell_1_4, timePrimitive.pk_entity as number);
+    await mapCell(projectId, cell_1_5, InfLanguageMock.ENGLISH.pk_entity as number);
 }
 
 

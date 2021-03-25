@@ -1,12 +1,12 @@
 import { model, ModelDefinition, property } from '@loopback/repository';
 import { without } from 'ramda';
 import { Postgres1DataSource } from '../../datasources';
-import { DatColumn, InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
+import { DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
 import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import { SysConfigValue } from '../../models/sys-config';
 import { logSql } from '../../utils/helpers';
 import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 import { registerType } from '../spec-enhancer/model.spec.enhancer';
-import {SysConfigValue} from '../../models/sys-config';
 
 // Table column filter interface
 export enum SortDirection {
@@ -32,7 +32,7 @@ export class TColFilterNum {
       enum: Object.values(TColFilterOpNumeric),
     }
   }) operator: TColFilterOpNumeric;
-  @property({required: true}) value: number;
+  @property({ required: true }) value: number;
 }
 @model()
 export class TColFilterTxt {
@@ -43,7 +43,7 @@ export class TColFilterTxt {
       enum: Object.values(TColFilterOpText),
     }
   }) operator: TColFilterOpText;
-  @property({required: true}) value: string;
+  @property({ required: true }) value: string;
 }
 @model()
 export class TColFilter {
@@ -64,10 +64,10 @@ export class TColFilters {
 }
 @model()
 export class GetTablePageOptions {
-  @property({required: true}) limit: number;
-  @property({required: true}) offset: number;
+  @property({ required: true }) limit: number;
+  @property({ required: true }) offset: number;
   @property.array(String) columns: string[];
-  @property({required: true}) sortBy: string;
+  @property({ required: true }) sortBy: string;
   @property({
     type: String,
     required: true,
@@ -119,8 +119,8 @@ export class TablePageResponse {
   @property() schemaObject: GvPositiveSchemaObject
 }
 
-interface ColBatchWith {name: string, columns: string[]}
-interface TwNameColName {twName: string, colName: string, pkColumn?: number, vot?: 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive'}
+interface ColBatchWith { name: string, columns: string[] }
+interface TwNameColName { twName: string, colName: string, pkColumn?: number, vot?: 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language' }
 const PK_CELL_SUFFIX = '_pk_cell'
 const TW_JOIN_STMT = 'tw_stmt_'
 const TW_JOIN_VOT = 'tw_vot_'
@@ -244,7 +244,8 @@ export class QTableTablePage extends SqlBuilderLb4Models {
             'place', place.json,
             'dimension', dimension.json,
             'lang_string', lang_string.json,
-            'time_primitive', time_primitive.json
+            'time_primitive', time_primitive.json,
+            'language', language.json
           )),
           'pro', json_strip_nulls(json_build_object(
             'info_proj_rel', info_proj_rel.json
@@ -259,6 +260,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     LEFT JOIN dimension ON true
     LEFT JOIN lang_string ON true
     LEFT JOIN time_primitive ON true
+    LEFT JOIN language ON true
     LEFT JOIN info_proj_rel ON true;
     `
 
@@ -312,13 +314,13 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       const twName = colBatch.name;
       for (const colName of colBatch.columns) {
         if (this.colsWithMapping.includes(colName)) {
-          refersToColumns.push({twName, colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName)});
+          refersToColumns.push({ twName, colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName) });
         }
       }
     }
     for (const colName of this.masterColumns) {
       if (this.colsWithMapping.includes(colName)) {
-        refersToColumns.push({twName: 'tw1', colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName)});
+        refersToColumns.push({ twName: 'tw1', colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName) });
       }
     }
 
@@ -511,6 +513,25 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     ),`
     else sql += `time_primitive AS (SELECT '[]'::json as json),`
 
+    if (refersToColumns.some(item => item.vot === 'language'))
+      sql += `language AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfLanguage.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+          .filter(item => item.vot === 'language')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),`
+    else sql += `language AS (SELECT '[]'::json as json),`
+
     return sql.slice(0, sql.length - 1);//remove last comma
   }
 
@@ -532,6 +553,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     else if (item.vot === 'dimension') modelDef = InfDimension.definition;
     else if (item.vot === 'lang_string') modelDef = InfLangString.definition;
     else if (item.vot === 'time_primitive') modelDef = InfTimePrimitive.definition;
+    else if (item.vot === 'language') modelDef = InfLanguage.definition;
     else throw new Error('Impossible error');
 
     return `
@@ -606,7 +628,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   }
 
   private addColBatchWith(colBatchWith: string, columns: string[], pkEntity: number): string {
-    this.colBatchWiths.push({name: colBatchWith, columns})
+    this.colBatchWiths.push({ name: colBatchWith, columns })
     const sql = `
     ${colBatchWith} As (
         Select
@@ -686,14 +708,15 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     return ''
   }
 
-  private getTableFromClassVOT(fkClass: number): 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | undefined {
+  private getTableFromClassVOT(fkClass: number): 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language' | undefined {
     const theClass = this.sysconfig.classes[fkClass];
     if (!theClass || !theClass.valueObjectType) return;
     if (theClass.valueObjectType.appellation) return 'appellation';
     if (theClass.valueObjectType.place) return 'place';
     if (theClass.valueObjectType.dimension) return 'dimension';
-    if (theClass.valueObjectType.language) return 'lang_string';
+    if (theClass.valueObjectType.langString) return 'lang_string';
     if (theClass.valueObjectType.timePrimitive) return 'time_primitive';
+    if (theClass.valueObjectType.language) return 'language';
 
     // const vots = Object.keys(theClass.valueObjectType).filter((vot: keyof ListType) => theClass.valueObjectType[vot]) //==> typescript does like it
   }
