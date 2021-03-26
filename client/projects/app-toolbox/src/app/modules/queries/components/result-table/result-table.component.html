@@ -53,7 +53,7 @@
         </ng-container>
         <ng-template #values>
           <ng-container *ngIf="rowData[col.id]?.values; else entity">
-            <button *ngIf="rowData[col.id]?.entities?.length > 0" mat-raised-button
+            <button *ngIf="rowData[col.id]?.values?.length > 0" mat-raised-button
               (click)="openValuesDialog(rowData[col.id].values)">{{rowData[col.id].values?.length}}</button>
           </ng-container>
         </ng-template>

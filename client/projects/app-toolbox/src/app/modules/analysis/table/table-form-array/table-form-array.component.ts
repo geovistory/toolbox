@@ -1,13 +1,13 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
+import { ClassAndTypeSelectModel } from '@kleiolab/lib-queries';
+import { ColDef } from '@kleiolab/lib-sdk-lb4';
+import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
 import { FilterDefinition } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { Observable, of } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 import { TableFormService } from '../table-form/table-form.service';
-import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
-import { ColDef } from "@kleiolab/lib-sdk-lb4";
 
 /*
  * Returns a column type label for a ColDef
@@ -102,7 +102,10 @@ export function getLabelForDefaulType(defaultType?: ColDef.DefaultTypeEnum): str
 
     return 'Entity Preview'
   }
+  else if (defaultType === 'pk_entity') {
 
+    return 'Entity ID'
+  }
   else if (defaultType === 'class_label') {
 
     return 'Class Label'
@@ -112,7 +115,10 @@ export function getLabelForDefaulType(defaultType?: ColDef.DefaultTypeEnum): str
 
     return 'Type Label'
   }
+  else if (defaultType === 'fk_type') {
 
+    return 'Type ID'
+  }
   else if (defaultType === 'entity_label') {
 
     return 'Entity Label'

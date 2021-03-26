@@ -1,24 +1,15 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { AnalysisTableCellValue } from "@kleiolab/lib-sdk-lb4";
-import { WarStatementObjectValue } from "@kleiolab/lib-sdk-lb4";
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
-import { ColDef } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTableResponse } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTableExportRequest } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
-import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
+import { SysConfig } from '@kleiolab/lib-config';
+import { AnalysisDefinition, AnalysisTableCellValue, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { saveAs } from 'file-saver';
 import { Table } from 'primeng/table';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { EntitiesDialogData, ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
-import { ivory } from 'color-name';
-import { ValuesDialogData, ResultingValuesDialogComponent } from '../resulting-values-dialog/resulting-values-dialog.component';
+import { ResultingValuesDialogComponent, ValuesDialogData } from '../resulting-values-dialog/resulting-values-dialog.component';
 
 export interface Example {
   id: number;
@@ -69,7 +60,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     public p: ActiveProjectService,
     public a: GvAnalysisService<AnalysisTableRequest, AnalysisTableResponse>,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
   ) {
 
   }
@@ -106,9 +97,11 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
           if (inputCell.values) outputCell = this.transformValues(inputCell.values)
 
           if (inputCell.entity) outputCell = this.transformEntity(inputCell.entity)
+          if (inputCell.entityId) outputCell = this.transformLabel(inputCell.entityId)
           if (inputCell.entityLabel) outputCell = this.transformLabel(inputCell.entityLabel)
           if (inputCell.entityClassLabel) outputCell = this.transformLabel(inputCell.entityClassLabel)
           if (inputCell.entityTypeLabel) outputCell = this.transformLabel(inputCell.entityTypeLabel)
+          if (inputCell.entityTypeId) outputCell = this.transformLabel(inputCell.entityTypeId)
 
           if (inputCell.value) outputCell = this.transformValue(inputCell.value)
           outputRow[colId] = outputCell
@@ -150,7 +143,8 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   transformValue(x: AnalysisTableCellValue): ResultTableCell {
     return { value: this.transformValueToValue(x) }
   }
-  transformLabel(label: string): ResultTableCell {
+  transformLabel(label: string | number): ResultTableCell {
+    if (typeof label === 'number') return { label: label.toString() }
     return { label }
   }
 
@@ -203,18 +197,23 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     ))
       .subscribe((data) => {
+        const parts: string[] = []
+        parts.push('table')
+        if (this.a.pkEntity) parts.push(this.a.pkEntity.toString())
+        parts.push('export')
+        const filename = parts.join('-')
 
         if (fileType === 'json') {
           const blob = new Blob([data.res], {
             type: 'text/json'
           });
-          saveAs(blob, `table-export-${new Date().getTime()}.json`)
+          saveAs(blob, `${filename}.json`)
 
         } else if (fileType === 'csv') {
           const blob = new Blob([data.res], {
             type: 'text/comma-separated-values'
           });
-          saveAs(blob, `table-export-${new Date().getTime()}.csv`)
+          saveAs(blob, `${filename}.csv`)
         }
       })
   }

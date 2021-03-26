@@ -177,6 +177,12 @@ export class QAnalysisTable extends QAnalysisBase {
         'entityLabel',${leftTableAlias}.entity_label
       ) AS "${column.id}"`);
     }
+    else if (column.defaultType === 'pk_entity') {
+      this.selects.push(`
+      jsonb_build_object(
+        'entityId',${leftTableAlias}.pk_entity
+      ) AS "${column.id}"`);
+    }
     else if (column.defaultType === 'class_label') {
       this.selects.push(`
       jsonb_build_object(
@@ -187,6 +193,12 @@ export class QAnalysisTable extends QAnalysisBase {
       this.selects.push(`
       jsonb_build_object(
         'entityTypeLabel',${leftTableAlias}.type_label
+      ) AS "${column.id}"`);
+    }
+    else if (column.defaultType === 'fk_type') {
+      this.selects.push(`
+      jsonb_build_object(
+        'entityTypeId',${leftTableAlias}.fk_type
       ) AS "${column.id}"`);
     }
     else if (column.defaultType === 'entity_preview') {
