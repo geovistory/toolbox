@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {RelatedProfile} from "./related-profile";
 
 @model({
   settings: {
@@ -70,16 +71,9 @@ export class DfhProperty extends Entity {
   })
   identifier_in_namespace?: string;
 
-  @property({
-    type: 'array',
-    itemType: 'object',
-  })
-  profiles?: object[];
+  @property.array(RelatedProfile)
+  profiles?: RelatedProfile[];
 
-  @property({
-    type: 'number',
-  })
-  fk_property?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

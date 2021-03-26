@@ -1,0 +1,11 @@
+.display-holder {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+}
+
+.display-field {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

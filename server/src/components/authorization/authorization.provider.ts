@@ -1,15 +1,19 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {
   AuthorizationContext,
 
   AuthorizationDecision, AuthorizationMetadata, Authorizer
 } from '@loopback/authorization';
-import {Provider} from "@loopback/core";
-import {repository} from '@loopback/repository';
-import {RequestContext} from '@loopback/rest';
-import {isInteger} from 'lodash';
-import {DatNamespaceRepository, PubAccountProjectRelRepository} from '../../repositories';
-import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
-import {Roles} from './keys';
+import { Provider } from "@loopback/core";
+import { repository } from '@loopback/repository';
+import { RequestContext } from '@loopback/rest';
+import { isInteger } from 'lodash';
+import pkgDir from 'pkg-dir';
+import { DatDigitalRepository, DatNamespaceRepository, PubAccountProjectRelRepository } from '../../repositories';
+import { PubRoleMappingRepository } from '../../repositories/pub-role-mapping.repository';
+import { SqlBuilderBase } from '../../utils/sql-builders/sql-builder-base';
+import { testdb } from '../../__tests__/helpers/testdb';
+import { Roles } from './keys';
 
 export class AuthorizationProvider implements Provider<Authorizer> {
   /**
@@ -23,7 +27,8 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   constructor(
     @repository(PubAccountProjectRelRepository) private pubAccountProjectRelRepo: PubAccountProjectRelRepository,
     @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository,
-    @repository(DatNamespaceRepository) private datNamespaceRepository: DatNamespaceRepository
+    @repository(DatNamespaceRepository) private datNamespaceRepository: DatNamespaceRepository,
+    @repository(DatDigitalRepository) private datDigitalRepository: DatDigitalRepository
   ) { }
 
   async authorize(
@@ -47,6 +52,11 @@ export class AuthorizationProvider implements Provider<Authorizer> {
       if (decision === AuthorizationDecision.DENY) return decision;
     }
 
+    if (metadata.allowedRoles?.includes(Roles.DATAENTITY_IN_NAMESPACE)) {
+      decision = await this.authorizeDataEntityInNamespace(context);
+      if (decision === AuthorizationDecision.DENY) return decision;
+    }
+
     return decision;
   }
 
@@ -62,8 +72,8 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
-        'account_id': {eq: accountId},
-        'fk_project': {eq: pkProject}
+        'account_id': { eq: accountId },
+        'fk_project': { eq: pkProject }
       }
     })
 
@@ -82,9 +92,9 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     const adminRoleMapping = await this.pubRoleMappingRepo.findOne({
       where: {
         and: [
-          {roleid: 1}, // system admin role
-          {principalid: accountId},
-          {principaltype: 'USER'}
+          { roleid: 1 }, // system admin role
+          { principalid: accountId },
+          { principaltype: 'USER' }
         ]
       }
     })
@@ -110,6 +120,28 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     })
     if (!membership) return AuthorizationDecision.DENY;
     else return AuthorizationDecision.ALLOW;
+  }
+
+  private async authorizeDataEntityInNamespace(context: AuthorizationContext): Promise<AuthorizationDecision> {
+    const accountId = this.extractAccountId(context);
+    const pkDataEntity = this.extractPkDataEntity(context);
+
+    if (!accountId || !pkDataEntity) return AuthorizationDecision.DENY;
+    const q = new SqlBuilderBase();
+    q.sql = 'SELECT fk_namespace FROM data.entity WHERE pk_entity=' + q.addParam(pkDataEntity) + ';';
+    const fkNamespace = (await testdb.execute(q.sql, q.params))[0]?.fk_namespace;
+    if (!fkNamespace) return AuthorizationDecision.DENY;
+    const namespace = await this.datNamespaceRepository.findById(fkNamespace);
+    if (!namespace) return AuthorizationDecision.DENY;
+
+    const membership = await this.pubAccountProjectRelRepo.findOne({
+      where: {
+        and: [{ 'account_id': accountId, 'fk_project': namespace.fk_project }]
+      }
+    })
+
+    if (membership) return AuthorizationDecision.ALLOW;
+    else return AuthorizationDecision.DENY;
   }
 
 
@@ -157,5 +189,13 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     if (typeof pkNamespace === 'number') {
       if (isInteger(pkNamespace)) return pkNamespace;
     };
+  }
+
+  private extractPkDataEntity(context: AuthorizationContext) {
+    const requestContext = context.invocationContext?.parent as RequestContext;
+    const request = requestContext?.request;
+    const pkDataEntity = request?.query?.pkDataEntity ?? request?.body?.pkDataEntity;
+    if (typeof pkDataEntity === 'string') return isInteger(parseInt(pkDataEntity)) ? parseInt(pkDataEntity) : null;
+    if (typeof pkDataEntity === 'string') return parseInt(pkDataEntity);
   }
 }

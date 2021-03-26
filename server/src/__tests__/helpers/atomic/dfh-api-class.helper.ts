@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {values} from 'lodash';
 import {keys} from 'ramda';
+import { DfhApiClass, NewDfhApiClass } from '../data/gvDB/local-model.helpers';
 import { testdb } from "../testdb";
 
 /**
@@ -71,27 +72,4 @@ const templateExisting: DfhApiClass = {
   pk_entity: 0,
   tmsp_last_modification: '',
   ...templateNew,
-}
-
-interface NewDfhApiClass {
-  dfh_pk_class: number,
-  dfh_class_identifier_in_namespace: string,
-  dfh_class_label_language: string,
-  dfh_class_label: string,
-  dfh_class_scope_note_language: string,
-  dfh_class_scope_note: string,
-  dfh_basic_type: number,
-  dfh_basic_type_label: string | null,
-  dfh_fk_namespace: number,
-  dfh_namespace_label_language: string,
-  dfh_namespace_label: string,
-  dfh_namespace_uri: string | null,
-  dfh_profile_association_type: string,
-  dfh_fk_profile: number,
-  dfh_profile_label_language: string,
-  dfh_profile_label: string,
-}
-export interface DfhApiClass extends NewDfhApiClass {
-  pk_entity: number,
-  tmsp_last_modification: string
 }

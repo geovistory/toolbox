@@ -1,5 +1,5 @@
 import {Postgres1DataSource} from '../../datasources';
-import {GvSchemaObject} from '../../models/gv-schema-object.model';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {WarEntityPreviewWithFulltext, ProInfoProjRel, InfStatement, InfLangString, DatChunk, DatDigital} from '../../models';
 import {Streams} from '../../realtime/streams/streams';
@@ -184,7 +184,7 @@ export class QRamList extends SqlBuilderLb4Models {
    *                       1218 = mentions, 117 = is about, 1334 = refers to
    * @param {*} refersTo Chunk | Cell
    */
-  async query(pkEntity: number, fkProject: number, fkProperty: number, refersTo?: 'Chunk' | 'Cell'): Promise<GvSchemaObject> {
+  async query(pkEntity: number, fkProject: number, fkProperty: number, refersTo?: 'Chunk' | 'Cell'): Promise<GvPositiveSchemaObject> {
 
 
     this.sql = `
@@ -464,6 +464,6 @@ export class QRamList extends SqlBuilderLb4Models {
 
     this.getBuiltQuery()
 
-    return this.executeAndReturnFirstData<GvSchemaObject>();
+    return this.executeAndReturnFirstData<GvPositiveSchemaObject>();
   }
 }

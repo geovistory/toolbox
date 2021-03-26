@@ -1,0 +1,7 @@
+<ng-container *ngIf="!showTooltip">
+  {{label$|async}}
+</ng-container>
+
+<span *ngIf="showTooltip" [matTooltip]="label$|async">
+  {{label$|async}}
+</span>

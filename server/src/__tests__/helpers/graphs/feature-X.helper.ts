@@ -1,33 +1,48 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import {createDatChunk} from '../atomic/dat-chunk.helper';
-import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
-import {createDatColumn} from '../atomic/dat-column.helper';
-import {createDatDigital} from '../atomic/dat-digital.helper';
-import {createDatFactoidMapping, createDatFactoidPropertyMapping} from '../atomic/dat-factoid.helper';
-import {createDatTextProperty} from '../atomic/dat-text-property.helper';
-import {createInfStatement} from '../atomic/inf-statement.helper';
-import {addProfilesToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
-import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
-import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
-import {createCellTable_old, createTabCell} from '../atomic/tab-cell-X.helper';
-import {createTabRow} from '../atomic/tab-row.helper';
-import {DatChunkMock} from '../data/gvDB/DatChunkMock';
-import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
-import {DatColumnMock} from '../data/gvDB/DatColumnMock';
-import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
-import {DatFactoidMappingMock} from '../data/gvDB/DatFactoidMappingMock';
-import {DatFactoidPropertyMappingMock} from '../data/gvDB/DatFactoidPropertyMappingMock';
-import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
-import {InfStatementMock} from '../data/gvDB/InfStatementMock';
-import {ProProjectMock} from '../data/gvDB/ProProjectMock';
-import {PubAccountMock} from '../data/gvDB/PubAccountMock';
-import {TabCellXMock} from '../data/gvDB/TabCellXMock';
-import {TabRowMock} from '../data/gvDB/TabRowMock';
-import {createModel} from '../meta/model.helper';
-import {createGaetanMuck} from './account.helper';
-import {createBunchOfPersons} from './person.helper';
-import {createSandBoxProject} from './project.helper';
-import {createBunchOfSources} from './source.helper';
+import { createDatChunk } from '../atomic/dat-chunk.helper';
+import { createDatClassColumnMapping } from '../atomic/dat-class-mapping.helper';
+import { createDatColumn } from '../atomic/dat-column.helper';
+import { createDatDigital } from '../atomic/dat-digital.helper';
+import { createDatFactoidMapping, createDatFactoidPropertyMapping } from '../atomic/dat-factoid.helper';
+import { createDatTextProperty } from '../atomic/dat-text-property.helper';
+import { createInfAppellation } from '../atomic/inf-appellation.helper';
+import { createInfDimension } from '../atomic/inf-dimension.helper';
+import { createInfLangString } from '../atomic/inf-lang-string.helper';
+import { createInfPersistentItem } from '../atomic/inf-persistent-item.helper';
+import { createInfPlace } from '../atomic/inf-place.helper';
+import { createInfStatement } from '../atomic/inf-statement.helper';
+import { createInfTemporalEntity } from '../atomic/inf-temporal-entity.helper';
+import { createInfTimePrimitive } from '../atomic/inf-time-primitive.helper';
+import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper';
+import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
+import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
+import { createCellTable_old, createTabCell } from '../atomic/tab-cell-X.helper';
+import { createTabRow } from '../atomic/tab-row.helper';
+import { DatChunkMock } from '../data/gvDB/DatChunkMock';
+import { DatClassColumnMappingMock } from '../data/gvDB/DatClassColumnMappingMock';
+import { DatColumnMock } from '../data/gvDB/DatColumnMock';
+import { DatDigitalMock } from '../data/gvDB/DatDigitalMock';
+import { DatFactoidMappingMock } from '../data/gvDB/DatFactoidMappingMock';
+import { DatFactoidPropertyMappingMock } from '../data/gvDB/DatFactoidPropertyMappingMock';
+import { DatNamespaceMock } from '../data/gvDB/DatNamespaceMock';
+import { DatTextPropertyMock } from '../data/gvDB/DatTextPropertyMock';
+import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
+import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
+import { InfStatementMock } from '../data/gvDB/InfStatementMock';
+import { ProProjectMock } from '../data/gvDB/ProProjectMock';
+import { PubAccountMock } from '../data/gvDB/PubAccountMock';
+import { TabCellXMock } from '../data/gvDB/TabCellXMock';
+import { TabRowMock } from '../data/gvDB/TabRowMock';
+import { createDigital } from '../generic/digital.helper';
+import { createSource } from '../generic/source.helper';
+import { createCell, createColumn, createColumnMapping, createRow, createTable, mapCell } from '../generic/table.helper';
+import { getIndex } from '../meta/index.helper';
+import { createModel } from '../meta/model.helper';
+import { createGaetanMuck } from './account.helper';
+import { createBunchOfPersons } from './person.helper';
+import { createSandBoxProject } from './project.helper';
+import { createBunchOfSources } from './source.helper';
 
 
 export async function forFeatureX() {
@@ -41,6 +56,9 @@ export async function forFeatureX() {
 
     // add profiles to project
     await addProfilesToProject(ProProjectMock.SANDBOX_PROJECT.pk_entity, profiles.map(p => p.dfh_pk_profile))
+
+    //create out of project digital
+    await createDatDigital(DatDigitalMock.DIGITAL_OUT);
 
     //create the digital and related (mapping)
     await createDatDigital(DatDigitalMock.DIGITAL_BIRTHDATES);
@@ -57,6 +75,7 @@ export async function forFeatureX() {
     await createTabCell(TabCellXMock.FEATURE_X_2_2, row2);
     //create the related mapping
     await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON);
+    await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_BIRTHDATE_TO_CLASS_TIMEPRIMITIVE);
     const statementMapping = await createInfStatement(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF);
 
     //create the digital and related (not mapped)
@@ -143,6 +162,73 @@ export async function forFeatureX() {
     await createDatFactoidPropertyMapping(DatFactoidPropertyMappingMock.FactoidPropertyMapping_UNION_BIRTH_WHEN);
     await createDatFactoidPropertyMapping(DatFactoidPropertyMappingMock.FactoidPropertyMapping_UNION_BIRTH_BROUGHT_INTO_LIFE);
 
+
+    // // ADD table config for DatDigitalMock.DIGITAL_UNIONS
+    // const config: TableConfigCol[] = [];
+    // config.push({ fkColumn: DatColumnMock.COL_PEOPLE.pk_entity as number, visible: true } as TableConfigCol);
+    // config.push({ fkColumn: DatColumnMock.COL_BIRTHDATES2.pk_entity as number, visible: false } as TableConfigCol);
+    // config.push({ fkColumn: DatColumnMock.COL_UNION.pk_entity as number, visible: true } as TableConfigCol);
+    // await createProTableConfig(ProProjectMock.SANDBOX_PROJECT.pk_entity as number, PubAccountMock.GAETAN_VERIFIED.id, DatDigitalMock.DIGITAL_UNIONS.pk_entity as number, config);
+
+
+    // VALUE OBJECT TYPE TESTS
+    const projectId = ProProjectMock.SANDBOX_PROJECT.pk_entity as number;
+    const pkNamespace = DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity as number;
+    const VOTsource = await createSource(projectId, "VOT table");
+    const digital = await createDigital(projectId, pkNamespace, VOTsource);
+    await createTable(digital);
+    //cols
+    const colAppellation = await createColumn(pkNamespace, digital, 'Appellation Col');
+    const colPlace = await createColumn(pkNamespace, digital, 'Place Col');
+    const colDimension = await createColumn(pkNamespace, digital, 'Dimension Col');
+    const colLanguageString = await createColumn(pkNamespace, digital, 'LanguageString col');
+    const colTimePrimitive = await createColumn(pkNamespace, digital, 'TimePrimitive Col');
+    const colLanguage = await createColumn(pkNamespace, digital, 'Language Col');
+    //rows
+    const rowVOT_1 = await createRow(digital);
+    const rowVOT_2 = await createRow(digital);
+    //cells (1st line with matchings)
+    const cell_1_0 = await createCell(digital, rowVOT_1, colAppellation, 'Appellation 1');
+    const cell_1_1 = await createCell(digital, rowVOT_1, colPlace, 'Place 1');
+    const cell_1_2 = await createCell(digital, rowVOT_1, colDimension, 'Dimension 1');
+    const cell_1_3 = await createCell(digital, rowVOT_1, colLanguageString, 'LanguageString 1');
+    const cell_1_4 = await createCell(digital, rowVOT_1, colTimePrimitive, 'TimePrimitive 1');
+    const cell_1_5 = await createCell(digital, rowVOT_1, colLanguage, 'Language 1');
+    //cells (2nd line)
+    await createCell(digital, rowVOT_2, colAppellation, 'Appellation 2');
+    await createCell(digital, rowVOT_2, colPlace, 'Place 2');
+    await createCell(digital, rowVOT_2, colDimension, 'Dimension 2');
+    await createCell(digital, rowVOT_2, colLanguageString, 'LanguageString 2');
+    await createCell(digital, rowVOT_2, colTimePrimitive, 'TimePrimitive 2');
+    await createCell(digital, rowVOT_2, colLanguage, 'Language 2');
+    //colMappings
+    await createColumnMapping(colAppellation, 40);
+    await createColumnMapping(colPlace, 51);
+    await createColumnMapping(colDimension, 689);
+    await createColumnMapping(colLanguageString, 657);
+    await createColumnMapping(colTimePrimitive, 335);
+    await createColumnMapping(colLanguage, 54)
+    //type
+    const timeUnitPEIT = await createInfPersistentItem({ pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class });
+    const timeUnitAppellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'Time Unit label' });
+    const timeUnitTeEn = await createInfTemporalEntity({ pk_entity: getIndex(), fk_class: 365 });
+    const statement_refersToName = await createInfStatement({ pk_entity: getIndex(), fk_object_info: timeUnitAppellation.pk_entity, fk_property: 1113, fk_subject_info: timeUnitTeEn.pk_entity });
+    const statement_isAppelForLangOf = await createInfStatement({ pk_entity: getIndex(), fk_object_info: timeUnitPEIT.pk_entity, fk_property: 1111, fk_subject_info: timeUnitTeEn.pk_entity });
+    const statement_usedInLang = await createInfStatement({ pk_entity: getIndex(), fk_object_info: InfLanguageMock.ENGLISH.pk_entity, fk_property: 1112, fk_subject_info: timeUnitTeEn.pk_entity });
+    await addInfosToProject(projectId, [timeUnitPEIT.pk_entity, statement_refersToName.pk_entity, statement_isAppelForLangOf.pk_entity, statement_usedInLang.pk_entity]);
+    //Mappings
+    const appellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'An appellation' });
+    const place = await createInfPlace({ pk_entity: getIndex(), lat: 51.5074, long: 0.1278, fk_class: 51 });
+    const dimension = await createInfDimension({ pk_entity: getIndex(), fk_class: 689, fk_measurement_unit: timeUnitPEIT.pk_entity, numeric_value: 4 });
+    const languageString = await createInfLangString({ pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12' })
+    const timePrimitive = await createInfTimePrimitive({ pk_entity: getIndex(), julian_day: 2431383, duration: '1 day', fk_class: 335 })
+    //Matchings
+    await mapCell(projectId, cell_1_0, appellation.pk_entity as number);
+    await mapCell(projectId, cell_1_1, place.pk_entity as number);
+    await mapCell(projectId, cell_1_2, dimension.pk_entity as number);
+    await mapCell(projectId, cell_1_3, languageString.pk_entity as number);
+    await mapCell(projectId, cell_1_4, timePrimitive.pk_entity as number);
+    await mapCell(projectId, cell_1_5, InfLanguageMock.ENGLISH.pk_entity as number);
 }
 
 

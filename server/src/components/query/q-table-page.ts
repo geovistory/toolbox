@@ -1,8 +1,9 @@
-import { model, property } from '@loopback/repository';
+import { model, ModelDefinition, property } from '@loopback/repository';
 import { without } from 'ramda';
 import { Postgres1DataSource } from '../../datasources';
-import { DatColumn, InfStatement, ProInfoProjRel } from '../../models';
-import { GvSchemaObject } from '../../models/gv-schema-object.model';
+import { DatColumn, InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
+import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import { SysConfigValue } from '../../models/sys-config';
 import { logSql } from '../../utils/helpers';
 import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 import { registerType } from '../spec-enhancer/model.spec.enhancer';
@@ -58,7 +59,7 @@ export class TColFilter {
   },
 })
 export class TColFilters {
-  @property() colName1?: TColFilter
+  // @property() colName1?: TColFilter // to comment out
   [colName: string]: TColFilter | undefined
 }
 @model()
@@ -95,33 +96,23 @@ export class TableCell {
   },
 })
 export class TableRow {
-  @property() colName1?: TableCell
-  [colName: string]: TableCell | undefined
+  @property() pk_row?: number
+  // @property() colName1?: TableCell
+  [colName: string]: TableCell | number | undefined
 }
 @model()
 export class TablePageResponse {
-  // @property({
-  //   jsonSchema: {
-  //     title: 'TableRow',
-  //     type: 'array',
-  //     items: {
-  //       type: 'array',
-  //       items: {
-  //         $ref: registerType(TableCell)
-  //       },
-  //     }
-  //   }
-  // }) rows: TableCell[][];
   @property.array(TableRow) rows: TableRow[];
   @property.array(String) columns: string[];
   @property() length: number;
-  @property() schemaObject: GvSchemaObject
+  @property() schemaObject: GvPositiveSchemaObject
 }
 
 interface ColBatchWith { name: string, columns: string[] }
-interface TwNameColName { twName: string, colName: string }
+interface TwNameColName { twName: string, colName: string, pkColumn?: number, vot?: 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language' }
 const PK_CELL_SUFFIX = '_pk_cell'
 const TW_JOIN_STMT = 'tw_stmt_'
+const TW_JOIN_VOT = 'tw_vot_'
 /**
  * Class to create select queries on data tables
  */
@@ -134,6 +125,8 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   colBatchWithI = 0;
   colsWithMapping: string[];
   masterColumns: string[]
+
+  sysconfig: SysConfigValue;
 
   constructor(
     dataSource: Postgres1DataSource
@@ -157,6 +150,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     const colsForBatches = without(masterColumns, options.columns);
 
     await this.setColsWithMapping(pkEntity);
+    this.sysconfig = (await this.dataSource.execute('SELECT config FROM system.config'))[0].config
 
     this.sql = `
     -- master columns
@@ -214,11 +208,19 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     ------------------------------------
     --- join elements for schema object
     ------------------------------------
-    ${this.leftJoinStatements(this.getRefersToColumns(), fkProject)}
+    -- information.statement
+    ${this.leftJoinStatements(await this.getRefersToColumns(), fkProject)}
+
+    -- information.VOT
+    ${this.leftJoinValueObjectTables(await this.getRefersToColumns())}
     ------------------------------------
     --- group parts by model
     ------------------------------------
-    ${this.groupStatements(this.getRefersToColumns())}
+    -- group information.statement
+    ${this.groupStatements(await this.getRefersToColumns())}
+
+    -- group information.VOT TEST
+    ${this.groupVOTs(await this.getRefersToColumns())}
 
     SELECT
     json_build_object (
@@ -226,7 +228,13 @@ export class QTableTablePage extends SqlBuilderLb4Models {
         'length', tw3.length,
          'schemaObject', json_build_object (
           'inf', json_strip_nulls(json_build_object(
-            'statement', statement.json
+            'statement', statement.json,
+            'appellation', appellation.json,
+            'place', place.json,
+            'dimension', dimension.json,
+            'lang_string', lang_string.json,
+            'time_primitive', time_primitive.json,
+            'language', language.json
           )),
           'pro', json_strip_nulls(json_build_object(
             'info_proj_rel', info_proj_rel.json
@@ -236,6 +244,12 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     FROM tw4
     LEFT JOIN tw3 ON true
     LEFT JOIN statement ON true
+    LEFT JOIN appellation ON true
+    LEFT JOIN place ON true
+    LEFT JOIN dimension ON true
+    LEFT JOIN lang_string ON true
+    LEFT JOIN time_primitive ON true
+    LEFT JOIN language ON true
     LEFT JOIN info_proj_rel ON true;
     `
 
@@ -256,7 +270,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     const res = await this.executeAndReturnFirstData<{
       rows: TableRow[],
       length: number,
-      schemaObject: GvSchemaObject
+      schemaObject: GvPositiveSchemaObject
     }>()
 
     return {
@@ -280,21 +294,37 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     this.colsWithMapping = x?.[0]?.arr ?? [];
   }
 
-  private getRefersToColumns() {
+  refersToColumns: TwNameColName[];
+
+  private async getRefersToColumns() {
+    if (this.refersToColumns) return this.refersToColumns;
     const refersToColumns: TwNameColName[] = [];
     for (const colBatch of this.colBatchWiths) {
       const twName = colBatch.name;
       for (const colName of colBatch.columns) {
         if (this.colsWithMapping.includes(colName)) {
-          refersToColumns.push({ twName, colName: colName + PK_CELL_SUFFIX });
+          refersToColumns.push({ twName, colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName) });
         }
       }
     }
     for (const colName of this.masterColumns) {
       if (this.colsWithMapping.includes(colName)) {
-        refersToColumns.push({ twName: 'tw1', colName: colName + PK_CELL_SUFFIX });
+        refersToColumns.push({ twName: 'tw1', colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName) });
       }
     }
+
+    for (const item of refersToColumns) {
+      const fkClass = (await this.dataSource.execute(
+        `SELECT fk_class
+         FROM data.class_column_mapping
+         WHERE fk_column = $1
+        `,
+        [item.pkColumn]))?.[0]?.fk_class ?? [];
+
+      item.vot = this.getTableFromClassVOT(fkClass);
+    }
+
+    this.refersToColumns = refersToColumns;
     return refersToColumns
   }
 
@@ -374,7 +404,157 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   }
 
 
+  private groupVOTs(refersToColumns: TwNameColName[]) {
+    let sql = ',';
 
+    if (refersToColumns.some(item => item.vot === 'appellation'))
+      sql += `appellation AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select
+          distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', InfAppellation.definition)} as objects
+          FROM
+          (
+            ${refersToColumns
+          .filter(item => item.vot === 'appellation')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),`
+    else sql += `appellation AS (SELECT '[]'::json as json),`
+
+    if (refersToColumns.some(item => item.vot === 'place'))
+      sql += `place AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfPlace.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+          .filter(item => item.vot === 'place')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),`
+    else sql += `place AS (SELECT '[]'::json as json),`
+
+    if (refersToColumns.some(item => item.vot === 'dimension'))
+      sql += `dimension AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfDimension.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+          .filter(item => item.vot === 'dimension')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),`
+    else sql += `dimension AS (SELECT '[]'::json as json),`
+
+    if (refersToColumns.some(item => item.vot === 'lang_string'))
+      sql += `lang_string AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfLangString.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+          .filter(item => item.vot === 'lang_string')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),`
+    else sql += `lang_string AS (SELECT '[]'::json as json),`
+
+    if (refersToColumns.some(item => item.vot === 'time_primitive'))
+      sql += `time_primitive AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfTimePrimitive.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+          .filter(item => item.vot === 'time_primitive')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),`
+    else sql += `time_primitive AS (SELECT '[]'::json as json),`
+
+    if (refersToColumns.some(item => item.vot === 'language'))
+      sql += `language AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfLanguage.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+          .filter(item => item.vot === 'language')
+          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+          .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),`
+    else sql += `language AS (SELECT '[]'::json as json),`
+
+    return sql.slice(0, sql.length - 1);//remove last comma
+  }
+
+  private leftJoinValueObjectTables(refersToColumns: TwNameColName[]) {
+    if (!refersToColumns.length) return '';
+    const sqlPerCol: string[] = []
+    for (const item of refersToColumns) {
+      if (item.vot) sqlPerCol.push(this.leftJoinValueObjectTable(item))
+    }
+    if (sqlPerCol.length !== 0) return ',\n' + sqlPerCol.join(',\n')
+    else return ''
+  }
+
+
+  private leftJoinValueObjectTable(item: TwNameColName): string {
+    let modelDef: ModelDefinition;
+    if (item.vot === 'appellation') modelDef = InfAppellation.definition;
+    else if (item.vot === 'place') modelDef = InfPlace.definition;
+    else if (item.vot === 'dimension') modelDef = InfDimension.definition;
+    else if (item.vot === 'lang_string') modelDef = InfLangString.definition;
+    else if (item.vot === 'time_primitive') modelDef = InfTimePrimitive.definition;
+    else if (item.vot === 'language') modelDef = InfLanguage.definition;
+    else throw new Error('Impossible error');
+
+    return `
+    ${TW_JOIN_VOT}${item.colName} AS (
+        -- fetch the values object type for the statements
+        SELECT
+          ${this.createSelect('t1', modelDef)}
+        FROM information.${item.vot === 'place' ? 'v_place' : item.vot} t1
+        INNER JOIN ${TW_JOIN_STMT}${item.colName} ON t1.pk_entity = ${TW_JOIN_STMT}${item.colName}.fk_object_info
+      )
+    `
+  }
 
   private addColumnSelects(columns: string[]) {
     return columns.map(pk => {
@@ -516,4 +696,18 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     }
     return ''
   }
+
+  private getTableFromClassVOT(fkClass: number): 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language' | undefined {
+    const theClass = this.sysconfig.classes[fkClass];
+    if (!theClass || !theClass.valueObjectType) return;
+    if (theClass.valueObjectType.appellation) return 'appellation';
+    if (theClass.valueObjectType.place) return 'place';
+    if (theClass.valueObjectType.dimension) return 'dimension';
+    if (theClass.valueObjectType.langString) return 'lang_string';
+    if (theClass.valueObjectType.timePrimitive) return 'time_primitive';
+    if (theClass.valueObjectType.language) return 'language';
+
+    // const vots = Object.keys(theClass.valueObjectType).filter((vot: keyof ListType) => theClass.valueObjectType[vot]) //==> typescript does like it
+  }
+
 }

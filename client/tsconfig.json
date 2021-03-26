@@ -1,19 +1,20 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "importHelpers": true,
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": false,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
     "target": "es2015",
+    "module": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": false,
+    "resolveJsonModule": true,
     "types": [
       "socket.io-client",
       "jasmine"
@@ -25,7 +26,50 @@
       "es2016",
       "dom"
     ],
-    "module": "esnext",
+    "paths": {
+      "@kleiolab/lib-sdk-lb3/*": [
+        "dist/lib-sdk-lb3/*"
+      ],
+      "@kleiolab/lib-sdk-lb3": [
+        "dist/lib-sdk-lb3"
+      ],
+      "@kleiolab/lib-sdk-lb4/*": [
+        "dist/lib-sdk-lb4/*"
+      ],
+      "@kleiolab/lib-sdk-lb4": [
+        "dist/lib-sdk-lb4"
+      ],
+      "@kleiolab/lib-utils/*": [
+        "dist/lib-utils/*"
+      ],
+      "@kleiolab/lib-utils": [
+        "dist/lib-utils"
+      ],
+      "@kleiolab/lib-config/*": [
+        "dist/lib-config/*"
+      ],
+      "@kleiolab/lib-config": [
+        "dist/lib-config"
+      ],
+      "@kleiolab/lib-sockets": [
+        "dist/lib-sockets"
+      ],
+      "@kleiolab/lib-sockets/*": [
+        "dist/lib-sockets/*"
+      ],
+      "@kleiolab/lib-redux/*": [
+        "dist/lib-redux/*"
+      ],
+      "@kleiolab/lib-redux": [
+        "dist/lib-redux"
+      ],
+      "@kleiolab/lib-queries": [
+        "dist/lib-queries"
+      ],
+      "@kleiolab/lib-queries/*": [
+        "dist/lib-queries/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules",

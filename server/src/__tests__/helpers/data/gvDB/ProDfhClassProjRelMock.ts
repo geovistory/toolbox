@@ -8,14 +8,14 @@ import { ProProjectMock } from './ProProjectMock';
  */
 
 export class ProDfhClassProjRelMock {
-    static readonly SANDBOX_PERSON = new ProDfhClassProjRel({
+    static readonly SANDBOX_PERSON: Partial<ProDfhClassProjRel> = ({
         pk_entity: 7001,
         fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
         fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
         enabled_in_entities: true
     })
 
-    static readonly SANDBOX_NAMING = new ProDfhClassProjRel({
+    static readonly SANDBOX_NAMING: Partial<ProDfhClassProjRel> = ({
         pk_entity: 7002,
         fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
         fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,

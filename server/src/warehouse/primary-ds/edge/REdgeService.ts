@@ -72,7 +72,7 @@ tw1 AS (
   count(t1.fk_project) is_in_project_count,
   AVG(t1.ord_num_of_range) :: numeric(10, 2) ord_num_of_range,
   (t10.pk_entity IS NOT NULL OR t11.pk_entity IS NOT NULL ) target_is_entity,
-  COALESCE(t12.string,  t14.notes)  target_label,
+  COALESCE(t12.string,  t14.notes, t15.string)  target_label,
   t12.string appellation_str,
   t14.notes language_str,
   t13.julian_day,
@@ -90,22 +90,26 @@ tw1 AS (
   LEFT JOIN information.appellation t12 ON t12.pk_entity = t2.fk_object_info
   LEFT JOIN information.time_primitive t13 ON t13.pk_entity = t2.fk_object_info
   LEFT JOIN information.language t14 ON t14.pk_entity = t2.fk_object_info
+  LEFT JOIN information.lang_string t15 ON t15.pk_entity = t2.fk_object_info
 
    JOIN projects.info_proj_rel t1 ON t1.fk_entity = t2.pk_entity
      AND t1.is_in_project = true
 
     WHERE
+    -- subject is not null
     (
       t8.pk_entity IS NOT NULL OR
       t9.pk_entity IS NOT NULL
     )
   AND
+    -- object is not null
     (
-      t10.pk_entity IS NOT NULL
+         t10.pk_entity IS NOT NULL
       OR t11.pk_entity IS NOT NULL
-        OR t12.pk_entity IS NOT NULL
-        OR t13.pk_entity IS NOT NULL
+      OR t12.pk_entity IS NOT NULL
+      OR t13.pk_entity IS NOT NULL
       OR t14.pk_entity IS NOT NULL
+      OR t15.pk_entity IS NOT NULL
     )
   GROUP BY
     t2.pk_entity,
@@ -116,6 +120,7 @@ tw1 AS (
     t11.pk_entity,
     t12.string,
     t14.notes,
+    t15.string,
     t13.julian_day,
     t13.duration
 ),

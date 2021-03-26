@@ -129,7 +129,6 @@ WITH tw0 AS (
     -- table is implemented (below in json)
     AND t4.pk_entity IS NULL
     AND t5.pk_entity IS NULL
-    AND t7.pk_entity IS NULL
 ),
 -- outgoing
 tw2 AS (

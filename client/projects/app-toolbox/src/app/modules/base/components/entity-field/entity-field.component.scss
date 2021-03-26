@@ -1,0 +1,16 @@
+gv-field-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.main {
+  white-space: nowrap;
+  padding: 4px 0 4px 40px;
+  width: 200px;
+  overflow: hidden;
+}
+
+// .main:hover {
+//   width: auto;
+//   min-width: 200px;
+// }

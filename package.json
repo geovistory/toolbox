@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "loopack-build:watch": "cd server && npm run build:watch",
-    "install": "cd ./server && npm i --production=false",
+    "install": "cd ./server && npm i --production=false && cd ../client && npm i --production=false",
     "heroku-postbuild": "bash heroku-postbuild.sh"
   },
   "private": true,
@@ -14,6 +14,7 @@
     "npm": "6.13.2"
   },
   "cacheDirectories": [
-    "server/node_modules"
+    "server/node_modules",
+    "client/node_modules"
   ]
 }

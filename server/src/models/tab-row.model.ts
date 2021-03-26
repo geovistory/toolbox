@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
 
 @model({
     settings: {
@@ -15,12 +16,12 @@ export class TabRow extends Entity {
         generated: true,
         updateOnly: true,
     })
-    pk_row?: number;
+    pk_row: number;
 
     @property({
         type: 'number',
     })
-    fk_digital?: number;
+    fk_digital: number;
 
     // Define well-known properties here
 
@@ -38,3 +39,5 @@ export interface TabRowRelations {
 }
 
 export type TabRowWithRelations = TabRow & TabRowRelations;
+
+registerType(TabRow)

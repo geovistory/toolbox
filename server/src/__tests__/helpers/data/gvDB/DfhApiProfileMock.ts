@@ -1,7 +1,7 @@
-import {DfhApiProfile} from '../../../../models/dfh-api-profile.model'
+import { DfhApiProfile } from '../../../../models'
 
 export class DfhApiProfileMock {
-  static readonly GEOVISTORY_BASIC = new DfhApiProfile({
+  static readonly GEOVISTORY_BASIC: Partial<DfhApiProfile> = ({
     // "pk_entity": 3725,
     "dfh_pk_profile": 5,
     "removed_from_api": false,
@@ -20,7 +20,7 @@ export class DfhApiProfileMock {
     "dfh_is_ongoing_forced_publication": true
   })
 
-  static readonly MARITIME_HISTORY = new DfhApiProfile({
+  static readonly MARITIME_HISTORY: Partial<DfhApiProfile> = ({
     // "pk_entity": 3804,
     "dfh_pk_profile": 8,
     "removed_from_api": false,
@@ -39,7 +39,7 @@ export class DfhApiProfileMock {
     "dfh_is_ongoing_forced_publication": true
   });
 
-  static readonly BIOGRAPHY_AND_FAMILY = new DfhApiProfile({
+  static readonly BIOGRAPHY_AND_FAMILY: Partial<DfhApiProfile> = ({
     // "pk_entity": 3841,
     "dfh_pk_profile": 12,
     "removed_from_api": false,
@@ -58,7 +58,7 @@ export class DfhApiProfileMock {
     "dfh_is_ongoing_forced_publication": true
   });
 
-  static readonly GEOVISTORY_GENERIC_HIST = new DfhApiProfile({
+  static readonly GEOVISTORY_GENERIC_HIST: Partial<DfhApiProfile> = ({
     // "pk_entity": 3648,
     "dfh_pk_profile": 4,
     "removed_from_api": false,

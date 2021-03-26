@@ -18,10 +18,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "PaginationObject": {
-    "dataSource": "postgres1",
-    "public": true
-  },
+
   "SysClassFieldPropertyRel": {
     "dataSource": "postgres1",
     "public": true
@@ -119,14 +116,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhClass": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "DfhProperty": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "DfhLabel": {
     "dataSource": "postgres1",
     "public": true
@@ -152,10 +141,6 @@
     "public": true
   },
   "InfPlace": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "WarEntityPreview": {
     "dataSource": "postgres1",
     "public": true
   },

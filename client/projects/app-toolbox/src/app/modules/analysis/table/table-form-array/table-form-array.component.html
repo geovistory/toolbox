@@ -1,0 +1,199 @@
+<mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
+  <mat-list-item class="p-0">
+    <div class="mat-headline" mat-line> Explore your entities
+    </div>
+    <mat-menu #appMenu="matMenu" xPosition="before">
+      <button mat-menu-item [matMenuTriggerFor]="entityAttributes">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        Entity attributes
+      </button>
+      <button mat-menu-item (click)="addPathColumn()">
+        <mat-icon class="fa-rotate-90" svgIcon="transit-connection" color="primary"></mat-icon>
+        Path to related entities
+      </button>
+    </mat-menu>
+
+    <mat-menu #entityAttributes="matMenu">
+      <button mat-menu-item (click)="addDefaultColumn('entity_preview')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('entity_preview')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('pk_entity')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('pk_entity')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('entity_label')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('entity_label')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('class_label')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('class_label')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('type_label')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('type_label')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('fk_type')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('fk_type')}}
+      </button>
+    </mat-menu>
+
+
+    <button class="ml-3" mat-flat-button color="primary" [matMenuTriggerFor]="appMenu">Add</button>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+
+  <mat-list-item class="p-0 mat-text-secondary">
+    <div class="mat-text-secondary">
+      Add and configure columns of the resulting table.
+    </div>
+  </mat-list-item>
+  <mat-list-item class="p-0"
+    *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    <mat-error>
+      Please add at least one colum
+    </mat-error>
+
+  </mat-list-item>
+  <mat-list-item class="p-0"
+    *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    <mat-hint>
+      A good starting point is 'Entity Preview Column'
+    </mat-hint>
+  </mat-list-item>
+</mat-list>
+
+
+
+<ng-container *ngIf="formArrayFactory.config.data.columns">
+  <mat-accordion cdkDropList (cdkDropListDropped)="columnDropped($event)">
+    <mat-expansion-panel cdkDrag *ngFor="let child of formArrayFactory.children; let i = index;"
+      (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title cdkDragHandle>
+          <div class="d-flex align-items-center">
+            <mat-icon *ngIf="(child.valueChanges$ | async).defaultType" svgIcon="tag-outline" color="primary">
+            </mat-icon>
+            <mat-icon *ngIf="!(child.valueChanges$ | async).defaultType" class="fa-rotate-90"
+              svgIcon="transit-connection" color="primary"></mat-icon>
+
+            <div class="ml-3">
+              {{(child.valueChanges$ | async).label}}
+            </div>
+          </div>
+        </mat-panel-title>
+        <mat-panel-description>
+          <span class="mat-caption"> {{child.valueChanges$ | async | coltype}}</span>
+        </mat-panel-description>
+        <mat-panel-description *ngIf="(child.control.statusChanges | async )=== 'INVALID' && child.control.touched ">
+          <mat-error>
+            Invalid, open for details.
+          </mat-error>
+          <!-- <span class="ml-auto d-flex align-items-center">
+            <gv-geo-col-signal class="mr-2" *ngIf="(dynCtrl.meta$ | async)?.isGeo"></gv-geo-col-signal>
+            <gv-time-col-signal class="mr-2" *ngIf="(dynCtrl.meta$ | async)?.isTemporal"></gv-time-col-signal>
+            <span *ngIf="dynCtrl.ctrl?.value?.defaultType">Default Column</span>
+            <span *ngIf="!dynCtrl.ctrl?.value?.defaultType">Custom Column</span>
+          </span> -->
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      </gv-table-form-array>
+
+      <mat-action-row>
+        <button mat-button color="warn" class="ml-auto" (click)="removeColumn(i)">Remove column</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</ng-container>
+
+<ng-container *ngIf="!formArrayFactory.config.data.columns">
+  <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
+
+    <mat-list *ngIf="child.config?.data?.ctrlClasses" class="mb-4">
+      <mat-list-item class="p-0">
+        <div class="mat-headline" mat-line *ngIf="!(child.config.disabled$ | async)">
+          Choose your entities
+        </div>
+        <div class="mat-headline" mat-line *ngIf="(child.config.disabled$ | async)"
+          [ngClass]="{'mat-text-secondary': (child.config.disabled$ | async)}">
+          Chosen entities
+        </div>
+        <button class="ml-3" mat-flat-button *ngIf="(child.config.disabled$ | async)"
+          (click)="removeQueryDefinition(child)">Revert</button>
+
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.config.disabled$ | async)">
+        <div class="mat-text-secondary">
+          Select the classes and types you are interested in.
+        </div>
+      </mat-list-item> -->
+    </mat-list>
+
+    <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
+      <mat-list-item class="p-0">
+        <div class="mat-headline" mat-line> Filter your entities
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item class="p-0 mat-text-secondary">
+        <div class="mat-text-secondary">
+          Define, what conditions your entities must fulfill.
+        </div>
+      </mat-list-item>
+    </mat-list>
+
+    <div *ngIf="child.config?.data.columnLabel">
+      <mat-divider></mat-divider>
+      <p class="mt-3 mb-3">
+        Name of the column
+      </p>
+    </div>
+
+
+    <div *ngIf="child.config?.data.path">
+      <mat-divider></mat-divider>
+      <p class="mt-3 mb-3">
+        Path to the content of this column
+      </p>
+    </div>
+
+    <div class="gv-full-with" *ngIf="!formArrayFactory.config.data.columns">
+
+
+      <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      </gv-table-form-array>
+
+      <gv-table-form-control *ngIf="child.factoryType ==='control'" [formControlFactory]="child" class="left-col">
+      </gv-table-form-control>
+
+      <ng-template *ngIf="child.factoryType ==='childFactory'" [cdkPortalOutlet]="child.portal" #outlet
+        (attached)="child.attached($event, outlet)"></ng-template>
+
+    </div>
+
+    <div *ngIf="child?.config?.data?.ctrlClasses">
+      <button mat-flat-button color="primary" *ngIf="!(child?.config?.disabled$|async) && child.control.valid"
+        class="mb-4" (click)="addQueryDefinition(child)">
+        Continue
+      </button>
+    </div>
+    <mat-list-item class="p-0"
+      *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+      <mat-error>
+        Please continue
+      </mat-error>
+    </mat-list-item>
+
+  </div>
+
+</ng-container>
+
+<div *ngIf="formArrayFactory.config.data.columns" class="mb-3 mt-5">
+  <ng-content></ng-content>
+
+</div>

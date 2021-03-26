@@ -964,12 +964,14 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
     else if (hasRelatedModel(reqStatement.object_appellation)) {
       //create the object first
       return models.InfAppellation.create(reqStatement.object_appellation)
-        .then((res) => {
-          const relatedModel = helpers.toObject(res);
-          // return the foreign key and the related model
-          resolve({
-            fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { object_appellation: relatedModel },
+        .then((res1) => {
+          models.InfAppellation.findById(res1.pk_entity).then((res) => {
+            const relatedModel = helpers.toObject(res);
+            // return the foreign key and the related model
+            resolve({
+              fk: { fk_object_info: relatedModel.pk_entity },
+              relatedModel: { object_appellation: relatedModel },
+            });
           });
         })
         .catch((err) => reject(err));
@@ -979,12 +981,14 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
     else if (hasRelatedModel(reqStatement.object_lang_string)) {
       //create the object first
       return models.InfLangString.create(reqStatement.object_lang_string)
-        .then((res) => {
-          const relatedModel = helpers.toObject(res);
-          // return the foreign key and the related model
-          resolve({
-            fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { object_lang_string: relatedModel },
+        .then((res1) => {
+          models.InfLangString.findById(res1.pk_entity).then((res) => {
+            const relatedModel = helpers.toObject(res);
+            // return the foreign key and the related model
+            resolve({
+              fk: { fk_object_info: relatedModel.pk_entity },
+              relatedModel: { object_lang_string: relatedModel },
+            });
           });
         })
         .catch((err) => reject(err));

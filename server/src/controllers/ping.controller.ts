@@ -1,10 +1,14 @@
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/context';
-import {get, param, Request, ResponseObject, RestBindings, requestBody, post} from '@loopback/rest';
+import {model, property} from '@loopback/repository';
+import {get, param, post, Request, requestBody, ResponseObject, RestBindings} from '@loopback/rest';
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Roles} from '../components/authorization/keys';
-import {model, property} from '@loopback/repository';
+import {TColFilter} from '../components/query/q-table-page';
+import {GvSubentityTargetType, SysConfigFieldDisplay, SysConfigFieldsOfSourceClass} from '../models';
+import {GvTargetType} from '../models/field/gv-target-type';
+import {ClassConfig} from './sys-config-class-config';
 
 /**
  * OpenAPI response for ping()
@@ -44,7 +48,7 @@ export class PingController {
   constructor(
     @inject(RestBindings.Http.REQUEST) private req: Request,
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
-  ) {}
+  ) { }
 
   // Map to `GET /ping`
   @get('/ping', {
@@ -106,4 +110,70 @@ export class PingController {
 
 
 
+  /**
+   * HACK to register types
+   */
+  @post('/GvTargetType', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': GvTargetType}}}
+      }
+    }
+  })
+  xGvTargetType() { }
+
+  @post('/GvSubentityTargetType', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': GvSubentityTargetType}}}
+      }
+    }
+  })
+  xGvSubentityTargetType() { }
+
+  @post('/ClassConfig', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': ClassConfig}}}
+      }
+    }
+  })
+  xClassConfig() { }
+
+  @post('/TColFilter', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': TColFilter}}}
+      }
+    }
+  })
+  xTColFilter() { }
+
+  @post('/SysConfigFieldsOfSourceClass', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': SysConfigFieldsOfSourceClass}}}
+      }
+    }
+  })
+  xSysConfigFieldsOfSourceClass() { }
+
+  @post('/SysConfigFieldDisplay', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': SysConfigFieldDisplay}}}
+      }
+    }
+  })
+  xSysConfigFieldDisplay() { }
+
+
 }
+
+

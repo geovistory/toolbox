@@ -1,0 +1,79 @@
+.gv-full-with {
+  flex-wrap: wrap;
+}
+
+.left-col {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  flex: 1 1 0;
+  /* background: #6EAFF7; */
+  flex-direction: column;
+  /* overflow: hidden; */
+}
+
+.right-col {
+  margin-left: 1rem;
+
+  display: flex;
+  flex: 0 0 32px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.right-col > .mat-button,
+.right-col.mat-button {
+  padding: 0 5px;
+  min-width: 40px;
+  padding-right: 5px;
+}
+.rmv-btn {
+  margin-right: -4px;
+}
+
+.card–class-info {
+  position: absolute;
+  right: 1rem;
+}
+
+.is-ctrl-target-class {
+  padding: 0.5rem;
+}
+
+.is-field + .is-field {
+  margin-top: 0.5rem;
+  // @extend .mat-border-top;
+}
+
+.is-field {
+  // @extend .bg-gray-100;
+  padding: 0.5rem;
+}
+
+.is-list-item {
+  margin-top: 0.5rem;
+}
+
+// .is-field:nth-child(2n) {
+//   @extend .bg-gray-100;
+// }
+
+mat-card {
+  .is-field {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+.is-ctrl-target-class + :not(.hide-field-title) {
+  margin-top: 0.5rem;
+}
+.is-ctrl-target-class + .is-field.hide-field-title {
+  padding-top: 0;
+  margin-top: -0.5rem;
+}
+.is-field + .is-ctrl-target-class {
+  margin-top: 0.5rem;
+}

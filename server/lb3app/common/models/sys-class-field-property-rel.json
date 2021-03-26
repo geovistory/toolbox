@@ -40,11 +40,6 @@
             "type": "belongsTo",
             "model": "SysClassField",
             "foreignKey": "fk_class_field"
-        },
-        "property": {
-            "type": "belongsTo",
-            "model": "DfhProperty",
-            "foreignKey": "fk_property"
         }
     },
     "acls": [

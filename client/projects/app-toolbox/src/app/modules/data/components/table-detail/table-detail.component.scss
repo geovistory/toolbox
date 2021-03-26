@@ -1,0 +1,62 @@
+tr.table-row-filter {
+  height: fit-content;
+  > th {
+    padding-top: 0;
+    padding-bottom: 0.5rem;
+  }
+}
+.gv-td-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gv-td-menu-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  font-size: 12px;
+}
+
+.gv-td-menu-item {
+  flex: 0 1 auto;
+  overflow: auto;
+  display: flex;
+  align-items: baseline;
+
+  // border-top: 1px solid $mat-color-divider;
+  // border-left: 1px solid $mat-color-divider;
+  margin-top: -1px;
+  margin-left: -1px;
+
+  .gv-td-menu-label {
+    margin: 0 4px;
+  }
+
+  &.gv-td-col-toggler {
+    flex: 100 0 auto;
+    justify-content: flex-end;
+    padding: 0 1rem;
+    ::ng-deep mat-form-field {
+      margin: 6px 4px 0 4px;
+    }
+  }
+
+  &.gv-td-col-checkbox {
+    flex: 0 1 auto;
+
+    padding: 27px 1rem 0 1rem;
+    .mat-checkbox {
+      margin: 0 4px 0 4px;
+    }
+  }
+
+  &.gv-td-paginator {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  }
+}
+.gv-td-filter-box {
+  padding: 0 0.5rem;
+}
