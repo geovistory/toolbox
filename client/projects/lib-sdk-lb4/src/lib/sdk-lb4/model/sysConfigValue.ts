@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ClassesIndex } from './classesIndex';
+import { ClassConfig } from './classConfig';
 import { SysConfigSpecialFields } from './sysConfigSpecialFields';
 
 
@@ -17,7 +17,7 @@ import { SysConfigSpecialFields } from './sysConfigSpecialFields';
  * Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.dataforhistory.org/class/21) 
  */
 export interface SysConfigValue { 
-    classes: ClassesIndex;
+    classes: { [key: string]: ClassConfig; };
     specialFields: SysConfigSpecialFields;
 }
 

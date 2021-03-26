@@ -1,8 +1,9 @@
-import { Field, Subfield } from '@kleiolab/lib-queries';
+import { Field, GvFieldTargets, Subfield } from '@kleiolab/lib-queries';
 import { PaginateByParam } from '@kleiolab/lib-redux';
-import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldTargets, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageScope, GvTargetType } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
+
 
 /**
  * returns true if the subfield type is representing a value object type

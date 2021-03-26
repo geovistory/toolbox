@@ -18,18 +18,6 @@ import { auditTime, distinctUntilChanged, filter, first, map, shareReplay, switc
 import { TColFilter, TColFilters } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
-// TODO import this interface from backend
-interface TabCell {
-  pk_cell: number;
-  string_value?: string;
-  numeric_value?: number;
-}
-// TODO import this interface from backend
-// interface TableRow {
-//   pk_row: number,
-//   [key: number]: TabCell
-// }
-
 @Component({
   selector: 'gv-table-detail',
   templateUrl: './table-detail.component.html',
@@ -367,7 +355,9 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           for (let j = 0; j < keys.length; j++) {
             const key = keys[j];
             if (this.colMapping.indexOf(key) == -1) continue;
-            const str: string = row[key].string_value ? row[key].string_value : row[key].numeric_value == 0 || row[key].numeric_value ? row[key].numeric_value : '';
+            const str: string = row[key].string_value ?
+              row[key].string_value :
+              row[key].numeric_value == 0 || row[key].numeric_value ? row[key].numeric_value : '';
             const theCol = headers.filter(h => h.pk_column == parseInt(key, 10))[0];
             const indexToPut = headers.findIndex(h => h.pk_column + '' === key);
             if (!theCol) continue;

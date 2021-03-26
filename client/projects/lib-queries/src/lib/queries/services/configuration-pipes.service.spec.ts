@@ -53,7 +53,7 @@ describe('ConfigurationPipeService', () => {
       }
       schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
 
-      console.log(JSON.stringify(ngRedux.getState().pro.dfh_profile_proj_rel.by_fk_project__enabled))
+      // console.log(JSON.stringify(ngRedux.getState().pro.dfh_profile_proj_rel.by_fk_project__enabled))
       // using pipe
       const q$ = service.pipeProfilesEnabledByProject()
 
@@ -310,7 +310,7 @@ describe('ConfigurationPipeService', () => {
 
   describe('.pipeFields()', () => {
 
-    fit('should return correct fields of manifestation singleton', (done) => {
+    it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.fieldsOfManifestationSingleton, PK_DEFAULT_CONFIG_PROJECT)
@@ -520,9 +520,15 @@ describe('ConfigurationPipeService', () => {
           label: [
             transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_363_GEO_PLACE),
           ]
+        },
+        pro: {
+          dfh_profile_proj_rel: [
+            ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+          ]
         }
       }
       schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
 
 
       // using pipe
@@ -574,8 +580,15 @@ describe('ConfigurationPipeService', () => {
 
   })
 
+
 });
-function pipeClassLabelTest(dfhClass: DfhApiClass, ngRedux: NgRedux<IAppState>, schemaObjServcie: SchemaService, service: ConfigurationPipesService, done: DoneFn) {
+function pipeClassLabelTest(
+  dfhClass: DfhApiClass,
+  ngRedux: NgRedux<IAppState>,
+  schemaObjServcie: SchemaService,
+  service: ConfigurationPipesService,
+  done: DoneFn
+) {
   setAppState(ngRedux, IAppStateMock.stateProject1);
   schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT);
   schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT);

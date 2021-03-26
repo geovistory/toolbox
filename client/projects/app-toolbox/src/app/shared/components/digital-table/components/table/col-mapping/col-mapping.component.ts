@@ -12,6 +12,11 @@ import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../confirm-dialog/confirm-dialog.component';
 import { ColumnMapping } from '../table.component';
 
+interface ClassOption {
+  label: string;
+  pkClass: number;
+};
+
 @Component({
   selector: 'gv-col-mapping',
   templateUrl: './col-mapping.component.html',
@@ -24,18 +29,18 @@ export class ColMappingComponent implements OnInit, OnDestroy {
   pkNamespace: number;
 
   classes$: Observable<{
-    specialClasses: Array<{ label: string, pkClass: number }>,
-    normalClasses: Array<{ label: string, pkClass: number }>
+    specialClasses: Array<ClassOption>,
+    normalClasses: Array<ClassOption>
   }>
 
-  allClasses: Array<{ label: string, pkClass: number }>;
+  allClasses: Array<ClassOption>;
   selectedClass: number;
   selectedClassLabel: string;
 
   filter$ = new BehaviorSubject<string>('');
   filteredClasses$: Observable<{
-    specialClasses: Array<{ label: string, pkClass: number }>,
-    normalClasses: Array<{ label: string, pkClass: number }>
+    specialClasses: Array<ClassOption>,
+    normalClasses: Array<ClassOption>
   }>
 
   pkStatements: Array<number> = []
@@ -78,11 +83,12 @@ export class ColMappingComponent implements OnInit, OnDestroy {
         ))))
     ), this.sys.config$.main$]).pipe(
       map(([classes, config]) => {
-        const specialClasses: Array<{ label: string, pkClass: number }> = [];
-        const normalClasses: Array<{ label: string, pkClass: number }> = [];
+        const specialClasses: Array<ClassOption> = [];
+        const normalClasses: Array<ClassOption> = [];
         classes.forEach(c => {
-          if (config.classes[c.pkClass] && config.classes[c.pkClass].valueObjectType) specialClasses.push(c);
-          else normalClasses.push(c);
+          const configOfClass = config.classes[c.pkClass]
+          if (configOfClass && configOfClass.valueObjectType) specialClasses.push(c);
+          else if (!configOfClass || !configOfClass.excludedFromEntities) normalClasses.push(c);
         })
         normalClasses.sort((a, b) => a.label < b.label ? -1 : 1);
         specialClasses.sort((a, b) => a.label < b.label ? -1 : 1);

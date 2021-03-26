@@ -127,7 +127,8 @@ export namespace GvSchemaObjectMock {
     },
     pro: {
       dfh_profile_proj_rel: [
-        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4,
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_21,
       ]
     }
   }

@@ -11,6 +11,7 @@ export * from './models/Field';
 export * from './models/FieldBase';
 export * from './models/FieldPosition';
 export * from './models/FieldTargetClass';
+export * from './models/FieldTargets';
 export * from './models/Profiles';
 export * from './models/PropertyOption';
 export * from './models/PropertySelectModel';

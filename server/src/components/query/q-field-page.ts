@@ -110,7 +110,8 @@ export class QFieldPage extends SqlBuilderLb4Models {
         config: [],
         klass: [],
         label: [],
-        property: []
+        property: [],
+        system_relevant_class:[]
       },
       war: {
         entity_preview: [],

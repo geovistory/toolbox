@@ -16,6 +16,6 @@ export interface TableRow {
   [key: string]: TableCell | any;
 
 
-    colName1?: TableCell;
+    pk_row?: number;
 }
 

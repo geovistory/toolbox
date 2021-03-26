@@ -9,15 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SysConfigFieldsByProperty } from './sysConfigFieldsByProperty';
-import { SysConfigFieldsBySourceClass } from './sysConfigFieldsBySourceClass';
+import { SysConfigFieldsOfSourceClass } from './sysConfigFieldsOfSourceClass';
 import { SysConfigFieldDisplay } from './sysConfigFieldDisplay';
 
 
 export interface SysConfigSpecialFields { 
-    incomingProperties?: SysConfigFieldsByProperty;
-    outgoingProperties?: SysConfigFieldsByProperty;
-    bySourceClass?: SysConfigFieldsBySourceClass;
+    incomingProperties?: { [key: string]: SysConfigFieldDisplay; };
+    outgoingProperties?: { [key: string]: SysConfigFieldDisplay; };
+    bySourceClass?: { [key: string]: SysConfigFieldsOfSourceClass; };
     hasTypeSubproperties?: SysConfigFieldDisplay;
 }
 

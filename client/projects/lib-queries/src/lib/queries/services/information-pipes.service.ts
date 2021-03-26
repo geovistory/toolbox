@@ -4,15 +4,16 @@ import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPage, GvFieldTargets, GvTargetType, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvTargetType, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { cache, spyTag } from '../decorators/method-decorators';
+import { spyTag } from '../decorators/method-decorators';
 import { infTimePrimToTimePrimWithCal } from '../functions/functions';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
+import { GvFieldTargets } from '../models/FieldTargets';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
 import { StatementProjRel, StatementTarget, StatementWithTarget, SubentitySubfieldPage, SubfieldPage } from '../models/StatementWithTarget';
@@ -20,6 +21,7 @@ import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
+import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
 
@@ -44,7 +46,7 @@ import { SchemaSelectorsService } from './schema-selectors.service';
  * - repo
  *
  */
-export class InformationPipesService {
+export class InformationPipesService extends PipeCache<InformationPipesService> {
 
   infRepo: InfSelector;
 
@@ -57,6 +59,7 @@ export class InformationPipesService {
     private timeSpanPipe: TimeSpanPipe,
     ngRedux: NgRedux<IAppState>
   ) {
+    super()
     this.infRepo = new InfSelector(ngRedux, of('repo'))
   }
 
@@ -457,25 +460,27 @@ export class InformationPipesService {
   }
 
   @spyTag
-  @cache({ refCount: false })
+  // @cache({ refCount: false })
   pipeClassesAndTypes(enabledIn: 'entities' | 'sources') {
-    return this.c.pipeTypeAndTypedClasses(enabledIn).pipe(
+    const obs$ = this.c.pipeTypeAndTypedClasses(enabledIn).pipe(
       switchMap(items => this.pipeClassAndTypeNodes(items)),
     )
+    return this.cache('pipeClassesAndTypes', obs$, ...arguments)
   }
 
   @spyTag
-  @cache({ refCount: false })
+  // @cache({ refCount: false })
   pipeClassesAndTypesOfClasses(classes: number[]) {
-    return this.c.pipeTypeAndTypedClassesOfTypedClasses(classes).pipe(
+    const obs$ = this.c.pipeTypeAndTypedClassesOfTypedClasses(classes).pipe(
       switchMap(items => this.pipeClassAndTypeNodes(items)),
     )
+    return this.cache('pipeClassesAndTypesOfClasses', obs$, ...arguments)
   }
 
   @spyTag
-  @cache({ refCount: false })
+  // @cache({ refCount: false })
   pipeClassAndTypeNodes(typeAndTypedClasses: { typedClass: number; typeClass: number; }[]): Observable<ClassAndTypeNode[]> {
-    return combineLatestOrEmpty(
+    const obs$ = combineLatestOrEmpty(
       typeAndTypedClasses.map(item => this.c.pipeClassLabel(item.typedClass).pipe(
         map(label => ({
           label,
@@ -506,6 +511,8 @@ export class InformationPipesService {
     ).pipe(
       sortAbc((node) => node.label),
     )
+    return this.cache('pipeClassAndTypeNodes', obs$, ...arguments)
+
   }
 
   /**
@@ -531,9 +538,9 @@ export class InformationPipesService {
     )
   }
 
-  @cache({ refCount: false })
+  // @cache({ refCount: false })
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
-    return combineLatestOrEmpty(classes.map(pkClass => this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
+    const obs$ = combineLatestOrEmpty(classes.map(pkClass => this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       map(c => c.basic_type === 9),
       switchMap(isTeEn => this.c.pipeSpecificAndBasicFields(pkClass)
         .pipe(
@@ -577,11 +584,13 @@ export class InformationPipesService {
 
 
     )).pipe(map(y => flatten<PropertyOption>(y)));
+
+    return this.cache('pipePropertyOptionsFormClasses', obs$, ...arguments)
   }
 
-  @cache({ refCount: false })
+  // @cache({ refCount: false })
   pipePkClassesFromPropertySelectModel(model: PropertySelectModel): Observable<number[]> {
-    return combineLatestOrEmpty(
+    const obs$ = combineLatestOrEmpty(
       [
         this.c.pipeTargetClassesOfProperties(model.outgoingProperties, true),
         this.c.pipeTargetClassesOfProperties(model.ingoingProperties, false),
@@ -589,6 +598,8 @@ export class InformationPipesService {
     ).pipe(
       map(([out, ing]) => uniq([...out, ...ing]))
     )
+
+    return this.cache('pipePkClassesFromPropertySelectModel', obs$, ...arguments)
   }
 
   getPkClassesFromPropertySelectModel$(model$: Observable<PropertySelectModel>): Observable<number[]> {

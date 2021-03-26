@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TColFilters } from './tColFilters';
+import { TColFilter } from './tColFilter';
 
 
 export interface GetTablePageOptions { 
@@ -18,7 +18,7 @@ export interface GetTablePageOptions {
     columns?: Array<string>;
     sortBy: string;
     sortDirection: GetTablePageOptions.SortDirectionEnum;
-    filters?: TColFilters;
+    filters?: { [key: string]: TColFilter; };
 }
 export namespace GetTablePageOptions {
     export type SortDirectionEnum = 'ASC' | 'DESC';
