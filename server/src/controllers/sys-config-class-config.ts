@@ -8,4 +8,5 @@ import {SysConfigValueObjectType} from '../models/sys-config/sys-config-value-ob
 })
 export class ClassConfig {
   @property({type: SysConfigValueObjectType}) valueObjectType?: SysConfigValueObjectType;
+  @property() excludedFromEntities?: boolean;
 }

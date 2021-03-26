@@ -11,6 +11,7 @@
  */
 import { SysConfigValue } from './sysConfigValue';
 import { DfhClass } from './dfhClass';
+import { SysSystemRelevantClass } from './sysSystemRelevantClass';
 import { DfhProperty } from './dfhProperty';
 import { DfhLabel } from './dfhLabel';
 
@@ -20,5 +21,6 @@ export interface SysObject {
     klass?: Array<DfhClass>;
     property?: Array<DfhProperty>;
     label?: Array<DfhLabel>;
+    system_relevant_class?: Array<SysSystemRelevantClass>;
 }
 

@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvFieldTargets } from './gvFieldTargets';
+import { GvTargetType } from './gvTargetType';
 import { GvFieldPage } from './gvFieldPage';
 
 
 export interface GvFieldPageReq { 
     pkProject: number;
     page: GvFieldPage;
-    targets: GvFieldTargets;
+    targets: { [key: string]: GvTargetType; };
 }
 

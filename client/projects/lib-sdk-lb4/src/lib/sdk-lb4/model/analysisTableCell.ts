@@ -16,8 +16,10 @@ import { AnalysisTableCellValue } from './analysisTableCellValue';
 export interface AnalysisTableCell { 
     entity?: WarEntityPreview;
     entityLabel?: string;
+    entityId?: number;
     entityClassLabel?: string;
     entityTypeLabel?: string;
+    entityTypeId?: number;
     value?: AnalysisTableCellValue;
     entities?: Array<WarEntityPreview>;
     values?: Array<AnalysisTableCellValue>;

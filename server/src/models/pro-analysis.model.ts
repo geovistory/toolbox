@@ -17,9 +17,11 @@ enum SubGroupType {
 }
 export enum ColDefDefaultType {
   'entity_preview' = 'entity_preview',
+  'pk_entity' = 'pk_entity',
   'entity_label' = 'entity_label',
   'class_label' = 'class_label',
   'type_label' = 'type_label',
+  'fk_type' = 'fk_type',
   'temporal_distribution' = 'temporal_distribution',
   'space_and_time_cont' = 'space_and_time_cont'
 }

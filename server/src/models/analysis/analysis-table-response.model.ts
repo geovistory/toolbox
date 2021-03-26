@@ -22,9 +22,13 @@ export class AnalysisTableCell {
   @property()
   entityLabel?: string
   @property()
+  entityId?: number
+  @property()
   entityClassLabel?: string
   @property()
   entityTypeLabel?: string
+  @property()
+  entityTypeId?: number
   @property({type: AnalysisTableCellValue})
   value?: AnalysisTableCellValue
 

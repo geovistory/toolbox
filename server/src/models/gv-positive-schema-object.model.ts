@@ -1,12 +1,13 @@
-import {model, property} from '@loopback/repository';
-import {DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysConfigValue, ProTableConfig} from '.';
-import {DatClassColumnMapping} from './dat-class-column-mapping.model';
-import {DatColumn} from './dat-column.model';
-import {DatTextProperty} from './dat-text-property.model';
-import {ProAnalysis} from './pro-analysis.model';
-import {ProClassFieldConfig} from './pro-class-field-config.model';
-import {ProDfhProfileProjRel} from './pro-dfh-profile-proj-rel.model';
-import {WarEntityPreview} from './war-entity-preview.model';
+import { model, property } from '@loopback/repository';
+import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty, SysConfigValue } from '.';
+import { DatClassColumnMapping } from './dat-class-column-mapping.model';
+import { DatColumn } from './dat-column.model';
+import { DatTextProperty } from './dat-text-property.model';
+import { ProAnalysis } from './pro-analysis.model';
+import { ProClassFieldConfig } from './pro-class-field-config.model';
+import { ProDfhProfileProjRel } from './pro-dfh-profile-proj-rel.model';
+import { SysSystemRelevantClass } from './sys-system-relevant-class.model';
+import { WarEntityPreview } from './war-entity-preview.model';
 
 
 @model()
@@ -62,6 +63,7 @@ export class SysObject {
   @property.array(DfhClass) klass?: DfhClass[];
   @property.array(DfhProperty) property?: DfhProperty[];
   @property.array(DfhLabel) label?: DfhLabel[];
+  @property.array(SysSystemRelevantClass) system_relevant_class?: SysSystemRelevantClass[];
 }
 
 /**

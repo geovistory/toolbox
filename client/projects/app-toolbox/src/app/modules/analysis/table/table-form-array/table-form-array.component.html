@@ -18,6 +18,10 @@
         <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
         {{getLabelForDefaulType('entity_preview')}}
       </button>
+      <button mat-menu-item (click)="addDefaultColumn('pk_entity')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('pk_entity')}}
+      </button>
       <button mat-menu-item (click)="addDefaultColumn('entity_label')">
         <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
         {{getLabelForDefaulType('entity_label')}}
@@ -29,6 +33,10 @@
       <button mat-menu-item (click)="addDefaultColumn('type_label')">
         <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
         {{getLabelForDefaulType('type_label')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('fk_type')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('fk_type')}}
       </button>
     </mat-menu>
 

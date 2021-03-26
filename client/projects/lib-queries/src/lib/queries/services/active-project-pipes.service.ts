@@ -6,13 +6,13 @@ import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, first, switchMap } from 'rxjs/operators';
-import { cache } from '../decorators/method-decorators';
+import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ActiveProjectPipesService {
+export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesService> {
   public pkProject$: Observable<number>;
 
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
@@ -25,6 +25,7 @@ export class ActiveProjectPipesService {
     private schemaService: SchemaService
 
   ) {
+    super()
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project'])
       .pipe(
         filter(p => p !== undefined),
@@ -59,20 +60,26 @@ export class ActiveProjectPipesService {
     })
 
   }
-  @cache({ refCount: false }) pipeActiveProject(): Observable<ProProject> {
-    return this.pkProject$.pipe(
+  // @cache({ refCount: false })
+  pipeActiveProject(): Observable<ProProject> {
+    const obs$ = this.pkProject$.pipe(
       switchMap(pkProject => this.s.pro$.project$.by_pk_entity$.key(pkProject.toString()))
     ).pipe(filter(l => !!l))
-  }
-  @cache({ refCount: false }) pipeActiveDefaultLanguage(): Observable<InfLanguage> {
+    return this.cache('pipeActiveProject', obs$, ...arguments)
 
-    return this.pipeActiveProject().pipe(
+  }
+  // @cache({ refCount: false })
+  pipeActiveDefaultLanguage(): Observable<InfLanguage> {
+
+    const obs$ = this.pipeActiveProject().pipe(
       filter(p => !!p),
       switchMap(project => {
 
         return this.s.inf$.language$.by_pk_entity$.key(project.fk_language.toString())
       })
     ).pipe(filter(l => !!l))
+    return this.cache('pipeActiveDefaultLanguage', obs$, ...arguments)
+
   }
 
 

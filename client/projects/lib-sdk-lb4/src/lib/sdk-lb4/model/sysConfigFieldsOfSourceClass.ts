@@ -9,13 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TColFilter } from './tColFilter';
+import { SysConfigFieldDisplay } from './sysConfigFieldDisplay';
 
 
-export interface TColFilters { 
-  [key: string]: TColFilter | any;
-
-
-    colName1?: TColFilter;
+export interface SysConfigFieldsOfSourceClass { 
+    incomingProperties?: { [key: string]: SysConfigFieldDisplay; };
+    outgoingProperties?: { [key: string]: SysConfigFieldDisplay; };
 }
 

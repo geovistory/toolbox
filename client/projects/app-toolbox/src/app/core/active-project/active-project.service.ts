@@ -320,7 +320,9 @@ export class ActiveProjectService {
       showProperties: true,
       showRightArea: false,
       rightPanelTabs: [
-        'content-tree'
+        'content-tree',
+        'linked-sources',
+        'linked-digitals'
       ],
       rightPanelActiveTab: 0
     })
@@ -345,7 +347,9 @@ export class ActiveProjectService {
       showProperties: true,
       showRightArea: false,
       rightPanelTabs: [
-        'content-tree'
+        'content-tree',
+        'linked-sources',
+        'linked-digitals'
       ],
       rightPanelActiveTab: 0
     })

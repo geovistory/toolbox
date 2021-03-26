@@ -1,6 +1,5 @@
-// TODO DELETE
-import { shareReplay } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
+import { shareReplay } from 'rxjs/operators';
 
 export interface CacheOptions {
   refCount: boolean
@@ -17,7 +16,7 @@ export interface CacheOptions {
  * @options:
  */
 
-export const cache = (options?: CacheOptions) => (target, propertyKey, descriptor) => {
+export const cache = (options?: CacheOptions) => (target, propertyKey: string, descriptor: PropertyDescriptor) => {
   const o: CacheOptions = {
     // default option
     refCount: true,
@@ -27,13 +26,14 @@ export const cache = (options?: CacheOptions) => (target, propertyKey, descripto
   const c = new Map()
   const originalFunction = descriptor.value;
   descriptor.value = function (...request) {
+    // return originalFunction.bind(this)(...request)
     const uniq = JSON.stringify(request)
     if (!c.has(uniq)) {
       const boundOriginalFunction = originalFunction.bind(this)
       // const x = target, y = propertyKey;
       c.set(uniq, boundOriginalFunction(...request).pipe(
         shareReplay({ refCount: o.refCount, bufferSize: 1 }),
-        tag(`FROM-CACHE-${target.constructor.name}::${propertyKey}::${request.join(':')}`)
+        // tag(`FROM-CACHE-${target.constructor.name}::${propertyKey}::${request.join(':')}`)
       ))
     }
     return c.get(uniq)
@@ -52,3 +52,5 @@ export function spyTag(target, propertyKey, descriptor) {
   };
   return descriptor;
 }
+
+

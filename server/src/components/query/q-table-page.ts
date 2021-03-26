@@ -1,7 +1,7 @@
 import { model, ModelDefinition, property } from '@loopback/repository';
 import { without } from 'ramda';
 import { Postgres1DataSource } from '../../datasources';
-import { DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
+import { DatColumn, InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
 import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
 import { SysConfigValue } from '../../models/sys-config';
 import { logSql } from '../../utils/helpers';
@@ -59,7 +59,7 @@ export class TColFilter {
   },
 })
 export class TColFilters {
-  @property() colName1?: TColFilter
+  // @property() colName1?: TColFilter // to comment out
   [colName: string]: TColFilter | undefined
 }
 @model()
@@ -96,23 +96,12 @@ export class TableCell {
   },
 })
 export class TableRow {
-  @property() colName1?: TableCell
-  [colName: string]: TableCell | undefined
+  @property() pk_row?: number
+  // @property() colName1?: TableCell
+  [colName: string]: TableCell | number | undefined
 }
 @model()
 export class TablePageResponse {
-  // @property({
-  //   jsonSchema: {
-  //     title: 'TableRow',
-  //     type: 'array',
-  //     items: {
-  //       type: 'array',
-  //       items: {
-  //         $ref: registerType(TableCell)
-  //       },
-  //     }
-  //   }
-  // }) rows: TableCell[][];
   @property.array(TableRow) rows: TableRow[];
   @property.array(String) columns: string[];
   @property() length: number;

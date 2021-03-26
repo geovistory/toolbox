@@ -17,5 +17,6 @@ import { SysConfigValueObjectType } from './sysConfigValueObjectType';
  */
 export interface ClassConfig { 
     valueObjectType?: SysConfigValueObjectType;
+    excludedFromEntities?: boolean;
 }
 

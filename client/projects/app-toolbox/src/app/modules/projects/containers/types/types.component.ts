@@ -5,7 +5,7 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
-import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
@@ -173,7 +173,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         }
         )
       )),
-      // sortAbc(n => n.label),
+      sortAbc(n => n.label),
     )
 
 
@@ -210,16 +210,18 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
       notInProjectBtnText: 'Add',
       classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
       pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
-    }).subscribe(result => {
-      if (result.action === 'added' || result.action === 'created') {
-        this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-          this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
-          // this.inf.persistent_item.typeOfProject(pkProject, result.pkEntity)
-        })
-      } else if (result.action === 'alreadyInProjectClicked') {
-        this.edit(result.pkEntity)
-      }
     })
+
+      .subscribe(result => {
+        if (result.action === 'added' || result.action === 'created') {
+          this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+            // this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
+            this.inf.persistent_item.loadMinimal(pkProject, result.pkEntity)
+          })
+        } else if (result.action === 'alreadyInProjectClicked') {
+          this.edit(result.pkEntity)
+        }
+      })
   }
 
 

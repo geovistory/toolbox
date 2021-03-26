@@ -13,14 +13,14 @@ import {QAnalysisMap} from '../components/query/analysis/q-analysis-map';
 import {QAnalysisTable} from '../components/query/analysis/q-analysis-table';
 import {QAnalysisTime} from '../components/query/analysis/q-analysis-time';
 import {Postgres1DataSource} from '../datasources/postgres1.datasource';
-import {AnalysisTableExportRequest, AnalysisTableResponse, AnalysisTableRow, ColDef, ProAnalysis, ProAnalysisRelations, TableExportFileType} from '../models';
+import {AnalysisTableExportRequest, AnalysisTableResponse, AnalysisTableRow, ColDef, ProAnalysis, ProAnalysisRelations, TableExportFileType, WarStatementObjectValue} from '../models';
 import {AnalysisMapRequest} from '../models/analysis/analysis-map-request.model';
 import {AnalysisMapResponse} from '../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../models/analysis/analysis-table-request.model';
 import {AnalysisTimeChartRequest} from '../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse, ChartLine} from '../models/analysis/analysis-time-chart-response.model';
-import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
+import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
 import {ProAnalysisRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {SysConfigController} from './sys-config.controller';
@@ -416,13 +416,23 @@ export class AnalysisController {
               fieldObj[colLabel] = true;
             }
             else if (cell.values) {
-              flat[colLabel] = cell.values.length;
+              // add additional column with count of items
+              const countColLabel = colLabel + ' (count)';
+              flat[countColLabel] = cell.values.length;
+              fieldObj[countColLabel] = true;
+
+              // add first value
+              flat[colLabel] = cell.values.length ? this.transformValueToLabel(cell.values[0].value) : '';
               fieldObj[colLabel] = true;
             }
 
             // from root table (zero or one)
             else if (cell.entity) {
-              flat[colLabel] = [cell.entity?.class_label, cell.entity?.entity_label].filter(x => !!x).join(' ');
+              flat[colLabel] = cell.entity?.entity_label ?? '';
+              fieldObj[colLabel] = true;
+            }
+            else if (cell.entityId) {
+              flat[colLabel] = cell.entityId;
               fieldObj[colLabel] = true;
             }
             else if (cell.entityLabel) {
@@ -435,6 +445,10 @@ export class AnalysisController {
             }
             else if (cell.entityTypeLabel) {
               flat[colLabel] = cell.entityTypeLabel;
+              fieldObj[colLabel] = true;
+            }
+            else if (cell.entityTypeId) {
+              flat[colLabel] = cell.entityTypeId;
               fieldObj[colLabel] = true;
             }
             else if (cell.value) {
@@ -476,4 +490,16 @@ export class AnalysisController {
       data: flatResults,
     };
   };
+
+
+  transformValueToLabel(v: WarStatementObjectValue): string {
+    if (!v) return ''
+    else if (v.dimension) return v.dimension.numericValue.toString()
+    else if (v.geometry) return v.geometry.geoJSON.coordinates.join(', ')
+    else if (v.language) return v.language.label
+    else if (v.string) return v.string.string
+    else if (v.langString) return v.langString.string
+    else if (v.timePrimitive) return v.timePrimitive.label
+    else return ''
+  }
 }
