@@ -304,7 +304,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
                 header.mapping = {
                   fkClass: mappings[0].fk_class,
                   className: classLabels,
-                  icon: dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn',
+                  icon: dfhClass ? dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn' : 'peIt', // if there is no dfhClass, for now we display it as a PeIt later we should put a warn icon of inform the user that he has not this class in his profile
                   pkEntity: mappings[0].pk_entity,
                   pkColumn: col.datColumn.pk_entity
                 }
