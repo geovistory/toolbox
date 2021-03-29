@@ -1,8 +1,8 @@
-ng build lib-config &&
-  ng build lib-sdk-lb3 &&
-  ng build lib-sdk-lb4 &&
-  ng build lib-utils &&
-  ng build lib-redux &&
-  ng build lib-sockets &&
-  ng build lib-queries &&
-  ng build app-toolbox --prod
+node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-config &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-sdk-lb3 &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-sdk-lb4 &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-utils &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-redux &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-sockets &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build lib-queries &&
+  node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build app-toolbox --prod
