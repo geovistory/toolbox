@@ -46,49 +46,55 @@ export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
 
 const updateSql = `
 
-WITH tw0 AS (
+WITH tw AS (
     -- select affected entities
-    SELECT DISTINCT
-        t2.fk_subject_info pk_entity,
-        t1.fk_project
-    FROM
-        projects.info_proj_rel t1
-    JOIN
-        information."statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN
-        information.entity t3 ON t2.fk_subject_info = t3.pk_entity
-    WHERE
+    SELECT
+         t2.fk_subject_info pk_entity,
+         t1.fk_project
+     FROM
+         projects.info_proj_rel t1
+     JOIN
+         information."statement" t2 ON t1.fk_entity = t2.pk_entity
+     JOIN
+         information.entity t3 ON t2.fk_subject_info = t3.pk_entity
+     WHERE
         t3.table_name IN ('temporal_entity', 'persistent_item')
-    AND
-        t1.tmsp_last_modification > $1
-    UNION
-    SELECT DISTINCT
-        t2.fk_object_info pk_entity,
-        t1.fk_project
-    FROM
-        projects.info_proj_rel t1
-    JOIN
-        information."statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN
-        information.entity t3 ON t2.fk_object_info = t3.pk_entity
-    WHERE
-        t3.table_name IN ('temporal_entity', 'persistent_item')
-    AND
-        t1.tmsp_last_modification > $1
-    UNION
-    SELECT DISTINCT
-        t2.pk_entity,
-        t1.fk_project
-    FROM
-        projects.info_proj_rel t1
-    JOIN
-        information.entity t2 ON t1.fk_entity = t2.pk_entity
-    WHERE
-        t2.table_name IN ('temporal_entity', 'persistent_item')
-    AND
-        t1.tmsp_last_modification > $1
+     AND
+         t1.tmsp_last_modification > $1
+     UNION ALL
+     SELECT
+         t2.fk_object_info pk_entity,
+         t1.fk_project
+     FROM
+         projects.info_proj_rel t1
+     JOIN
+         information."statement" t2 ON t1.fk_entity = t2.pk_entity
+     JOIN
+         information.entity t3 ON t2.fk_object_info = t3.pk_entity
+     WHERE
+         t3.table_name IN ('temporal_entity', 'persistent_item')
+     AND
+         t1.tmsp_last_modification > $1
+     UNION ALL
+     SELECT
+         t2.pk_entity,
+         t1.fk_project
+     FROM
+         projects.info_proj_rel t1
+     JOIN
+         information.entity t2 ON t1.fk_entity = t2.pk_entity
+     WHERE
+         t2.table_name IN ('temporal_entity', 'persistent_item')
+     AND
+         t1.tmsp_last_modification > $1
 
-), tw1 AS (
+),
+tw0 AS (
+    SELECT fk_project, pk_entity
+    FROM tw
+    GROUP BY fk_project, pk_entity
+),
+tw1 AS (
     SELECT DISTINCT
     t1.fk_project,
     t1.ord_num_of_domain,
