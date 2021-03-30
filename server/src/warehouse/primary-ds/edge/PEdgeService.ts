@@ -4,6 +4,10 @@ import {Warehouse} from '../../Warehouse';
 import {PEntityId, pEntityKeyDefs} from '../entity/PEntityService';
 import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from './edge.commons';
 import {Injectable, Inject, forwardRef} from 'injection-js';
+import {PoolClient} from 'pg';
+import {Logger} from '../../base/classes/Logger';
+import {PgDataReplicator} from '../../base/classes/PgDataReplicator';
+import {sum} from 'lodash';
 
 interface Noun {
     table: string;
@@ -34,65 +38,120 @@ export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
     }
 
 
-    getUpdatesSql(tmsp: Date) {
-        return updateSql
-    }
+    getUpdatesSql(tmsp: Date) {return ''}
     getDeletesSql(tmsp: Date) {return ''};
 
+    async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
+
+        const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
+
+        const tmpTable = `${this.constructor.name}_update_tmp`
+
+        const stats = await new PgDataReplicator<{count: number}>(
+            {client: pool1, table: tmpTable},
+            {client: pool2, table: this.index.schemaTable},
+            [this.index.keyCols, 'val'],
+            (insertClause, fromClause) => `
+                WITH tw1 AS (
+                    ${insertClause}
+                    ${fromClause}
+                    ON CONFLICT (${this.index.keyCols}) DO UPDATE
+                    SET val = EXCLUDED.val
+                    WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
+                    RETURNING *
+                )
+                SELECT count(*)::int FROM tw1
+            `
+        ).replicateBatch(
+            date,
+            countSql,
+            updateBatchSql,
+        )
+        const upserted = sum(stats.map(s => s.rows?.[0].count))
+
+        Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
+
+        if (this.updateReplications.length > 0) {
+            const replicationRequest = this.updateReplications.map(repl => {
+                return new PgDataReplicator<{count: number}>(
+                    {client: pool1, table: tmpTable},
+                    {client: pool1, table: repl.targetTable},
+                    [this.index.keyCols, 'val'],
+                    repl.sqlFn
+                ).replicateTable()
+            })
+            await Promise.all(replicationRequest)
+        }
+
+        return upserted
+
+    }
 
 }
 
 
+const twIds = `
+    WITH tw AS (
+        -- select affected entities
+        SELECT
+            t2.fk_subject_info pk_entity,
+            t1.fk_project
+        FROM
+            projects.info_proj_rel t1
+        JOIN
+            information."statement" t2 ON t1.fk_entity = t2.pk_entity
+        JOIN
+            information.entity t3 ON t2.fk_subject_info = t3.pk_entity
+        WHERE
+            t3.table_name IN ('temporal_entity', 'persistent_item')
+        AND
+            t1.tmsp_last_modification > $1
+        UNION ALL
+        SELECT
+            t2.fk_object_info pk_entity,
+            t1.fk_project
+        FROM
+            projects.info_proj_rel t1
+        JOIN
+            information."statement" t2 ON t1.fk_entity = t2.pk_entity
+        JOIN
+            information.entity t3 ON t2.fk_object_info = t3.pk_entity
+        WHERE
+            t3.table_name IN ('temporal_entity', 'persistent_item')
+        AND
+            t1.tmsp_last_modification > $1
+        UNION ALL
+        SELECT
+            t2.pk_entity,
+            t1.fk_project
+        FROM
+            projects.info_proj_rel t1
+        JOIN
+            information.entity t2 ON t1.fk_entity = t2.pk_entity
+        WHERE
+            t2.table_name IN ('temporal_entity', 'persistent_item')
+        AND
+            t1.tmsp_last_modification > $1
 
-const updateSql = `
-
-WITH tw AS (
-    -- select affected entities
-    SELECT
-         t2.fk_subject_info pk_entity,
-         t1.fk_project
-     FROM
-         projects.info_proj_rel t1
-     JOIN
-         information."statement" t2 ON t1.fk_entity = t2.pk_entity
-     JOIN
-         information.entity t3 ON t2.fk_subject_info = t3.pk_entity
-     WHERE
-        t3.table_name IN ('temporal_entity', 'persistent_item')
-     AND
-         t1.tmsp_last_modification > $1
-     UNION ALL
-     SELECT
-         t2.fk_object_info pk_entity,
-         t1.fk_project
-     FROM
-         projects.info_proj_rel t1
-     JOIN
-         information."statement" t2 ON t1.fk_entity = t2.pk_entity
-     JOIN
-         information.entity t3 ON t2.fk_object_info = t3.pk_entity
-     WHERE
-         t3.table_name IN ('temporal_entity', 'persistent_item')
-     AND
-         t1.tmsp_last_modification > $1
-     UNION ALL
-     SELECT
-         t2.pk_entity,
-         t1.fk_project
-     FROM
-         projects.info_proj_rel t1
-     JOIN
-         information.entity t2 ON t1.fk_entity = t2.pk_entity
-     WHERE
-         t2.table_name IN ('temporal_entity', 'persistent_item')
-     AND
-         t1.tmsp_last_modification > $1
-
-),
+    )
+`
+const countSql = `
+    ${twIds},
+    tw1 AS (
+        SELECT fk_project, pk_entity
+        FROM tw
+        GROUP BY fk_project, pk_entity
+    )
+    select count(*):: integer
+    from tw1
+`
+const updateBatchSql = (limit: number, offset: number) => `
+ ${twIds},
 tw0 AS (
     SELECT fk_project, pk_entity
     FROM tw
     GROUP BY fk_project, pk_entity
+    LIMIT ${limit} OFFSET ${offset}
 ),
 tw1 AS (
     SELECT DISTINCT

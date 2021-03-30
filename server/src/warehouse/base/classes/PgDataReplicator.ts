@@ -60,6 +60,48 @@ export class PgDataReplicator<M> {
         return stats
     }
 
+    /**
+    * Loops over source table for batches of given batchSize and
+    * executes statement given by this.getInsertStatement
+    * @param batchSize max number of rows considered by one batch.
+    * @returns statitistics about batches and time (miliseconds) used per batch
+    */
+    async replicateBatch(
+        date: Date,
+        countSql: string,
+        batchSql: (limit: number, offset: number) => string,
+        batchSize = 10000
+    ) {
+        const res = await brkOnErr(this.source.client.query<{count: number}>(countSql, [date]))
+        const size = res.rows[0].count;
+        const limit = batchSize;
+        const logPrefix = `${this.constructor.name} ${this.source.table}`
+
+        const stats: {items: number, duration: number, rows: M[]}[] = []
+
+        for (let offset = 0; offset < size; offset += limit) {
+            const items = limit > size ? size % limit : limit;
+            const last = offset + items;
+
+            const logString = `replicate ${offset} - ${last} of ${size} items (${(offset / limit) + 1} /${Math.floor(size / limit) + 1} batches)`
+            const t0 = Logger.start(logPrefix, `${logString} `, 0)
+
+            const data = await this.source.client.query(
+                {
+                    text: batchSql(limit, offset),
+                    rowMode: 'array',
+                    values: [date]
+                },
+            )
+            const {sql, params} = this.convertReadResults(data)
+
+            const rows = (await this.writeToTable<M>(sql, params)).rows
+            const duration = Logger.itTook(logPrefix, t0, `to ${logString} `, 0)
+            stats.push({items, duration, rows})
+        }
+        return stats
+    }
+
     private async readFromTable(limit: number, offset: number) {
         const cols = this.columns ? this.columns.join(',') : '*'
         return this.source.client.query({
