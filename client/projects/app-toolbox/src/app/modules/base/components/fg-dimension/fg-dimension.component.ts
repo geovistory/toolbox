@@ -1,19 +1,16 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance, MatInput } from '@angular/material';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
 import { InfDimension } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
+import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
-import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
+import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
+import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil, filter } from 'rxjs/operators';
-import { CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
+import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
-import { DfhConfig } from "@kleiolab/lib-config";
 
 type FgDimensionNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgDimensionInjectData extends FormFactoryCompontentInjectData<Observable<InfDimension>> {
@@ -126,7 +123,7 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
 
           const numberCtrl: FgDimensionNodeConfig = {
             control: {
-              initValue: initVal.numeric_value,
+              initValue: initVal ? initVal.numeric_value : undefined,
               required: true,
               data: {
                 type: 'number'
@@ -138,7 +135,7 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
 
           const measurementUnitCtrl: FgDimensionNodeConfig = {
             control: {
-              initValue: initVal.fk_measurement_unit,
+              initValue: initVal ? initVal.fk_measurement_unit : undefined,
               required: true,
               data: {
                 type: 'measurementUnit'
