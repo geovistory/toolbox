@@ -1,4 +1,4 @@
-import {DfhApiProperty} from "./local-model.helpers"
+import { DfhApiProperty } from "./local-model.helpers"
 
 export class DfhApiPropertyMock {
   static readonly EN_1111_IS_APPE_OF: DfhApiProperty = {
@@ -920,6 +920,67 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P10"
+  }
+
+  static readonly EN_1617_CONCERNS: DfhApiProperty = {
+    "pk_entity": 5702,
+    "dfh_fk_profile": 15,
+    "dfh_pk_property": 1617,
+    "dfh_fk_namespace": 88,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "ANR Processetti",
+    "dfh_property_label": "concerns",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "Processetti ongoing",
+    "dfh_property_domain": 691,
+    "tmsp_last_dfh_update": "2021-03-30T04:35:08.591+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property associates to the account the concerned person. If more persons are concerned by the voyage they can all be associated to the same voyage.",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P8"
+  }
+  static readonly EN_1761_HAS_SHORT_TITLE: DfhApiProperty = {
+    "pk_entity": 7257,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 1761,
+    "dfh_fk_namespace": 30,
+    "dfh_is_inherited": true,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_property_label": "has short title",
+    "dfh_property_range": 784,
+    "requested_language": "en",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_property_domain": 219,
+    "tmsp_last_dfh_update": "2021-04-06T06:58:54.922+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "Associates to an entity an abbreviated or usual name of it. This is not a historical name but the usage should be restricted to the metadata of an entity in the information system.",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 0,
+    "dfh_domain_instances_max_quantifier": 1,
+    "dfh_domain_instances_min_quantifier": 1,
+    "dfh_property_identifier_in_namespace": "P17"
   }
 }
 /**
