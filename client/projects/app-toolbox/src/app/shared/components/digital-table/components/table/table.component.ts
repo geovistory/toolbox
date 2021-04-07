@@ -28,7 +28,8 @@ export enum ValueObjectTypeName {
   place = 'place',
   dimension = 'dimension',
   timePrimitive = 'time_primitive',
-  langString = 'lang_string'
+  langString = 'lang_string',
+  language = 'language'
 }
 
 @Component({

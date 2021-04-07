@@ -28,13 +28,17 @@ import { DatFactoidPropertyMappingMock } from '../data/gvDB/DatFactoidPropertyMa
 import { DatNamespaceMock } from '../data/gvDB/DatNamespaceMock';
 import { DatTextPropertyMock } from '../data/gvDB/DatTextPropertyMock';
 import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
+import { InfPersistentItemMock } from '../data/gvDB/InfPersistentItemMock';
 import { InfStatementMock } from '../data/gvDB/InfStatementMock';
 import { ProProjectMock } from '../data/gvDB/ProProjectMock';
 import { PubAccountMock } from '../data/gvDB/PubAccountMock';
 import { TabCellXMock } from '../data/gvDB/TabCellXMock';
 import { TabRowMock } from '../data/gvDB/TabRowMock';
 import { createDigital } from '../generic/digital.helper';
+import { createFactoid, createFactoidMapping } from '../generic/factoid.helper';
+import { createCity } from '../generic/geo-place.helper';
 import { createSource } from '../generic/source.helper';
 import { createCell, createColumn, createColumnMapping, createRow, createTable, mapCell } from '../generic/table.helper';
 import { getIndex } from '../meta/index.helper';
@@ -176,6 +180,7 @@ export async function forFeatureX() {
     const pkNamespace = DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity as number;
     const VOTsource = await createSource(projectId, "VOT table");
     const digital = await createDigital(projectId, pkNamespace, VOTsource);
+    const madrid = await createCity(projectId, 'Madrid');
     await createTable(digital);
     //cols
     const colAppellation = await createColumn(pkNamespace, digital, 'Appellation Col');
@@ -184,6 +189,8 @@ export async function forFeatureX() {
     const colLanguageString = await createColumn(pkNamespace, digital, 'LanguageString col');
     const colTimePrimitive = await createColumn(pkNamespace, digital, 'TimePrimitive Col');
     const colLanguage = await createColumn(pkNamespace, digital, 'Language Col');
+    const colPerson = await createColumn(pkNamespace, digital, 'Person');
+    const colGeoPlace = await createColumn(pkNamespace, digital, 'Geo place');
     //rows
     const rowVOT_1 = await createRow(digital);
     const rowVOT_2 = await createRow(digital);
@@ -194,6 +201,8 @@ export async function forFeatureX() {
     const cell_1_3 = await createCell(digital, rowVOT_1, colLanguageString, 'LanguageString 1');
     const cell_1_4 = await createCell(digital, rowVOT_1, colTimePrimitive, 'TimePrimitive 1');
     const cell_1_5 = await createCell(digital, rowVOT_1, colLanguage, 'Language 1');
+    const cell_1_6 = await createCell(digital, rowVOT_1, colPerson, 'Albert');
+    const cell_1_7 = await createCell(digital, rowVOT_1, colGeoPlace, 'Madrid');
     //cells (2nd line)
     await createCell(digital, rowVOT_2, colAppellation, 'Appellation 2');
     await createCell(digital, rowVOT_2, colPlace, 'Place 2');
@@ -201,13 +210,17 @@ export async function forFeatureX() {
     await createCell(digital, rowVOT_2, colLanguageString, 'LanguageString 2');
     await createCell(digital, rowVOT_2, colTimePrimitive, 'TimePrimitive 2');
     await createCell(digital, rowVOT_2, colLanguage, 'Language 2');
+    await createCell(digital, rowVOT_2, colPerson, 'Someone');
+    await createCell(digital, rowVOT_2, colGeoPlace, 'Somewhere');
     //colMappings
     await createColumnMapping(colAppellation, 40);
     await createColumnMapping(colPlace, 51);
     await createColumnMapping(colDimension, 689);
     await createColumnMapping(colLanguageString, 657);
     await createColumnMapping(colTimePrimitive, 335);
-    await createColumnMapping(colLanguage, 54)
+    await createColumnMapping(colLanguage, 54);
+    await createColumnMapping(colPerson, 21) // person
+    await createColumnMapping(colGeoPlace, 363) // geo place
     //type
     const timeUnitPEIT = await createInfPersistentItem({ pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class });
     const timeUnitAppellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'Time Unit label' });
@@ -229,6 +242,28 @@ export async function forFeatureX() {
     await mapCell(projectId, cell_1_3, languageString.pk_entity as number);
     await mapCell(projectId, cell_1_4, timePrimitive.pk_entity as number);
     await mapCell(projectId, cell_1_5, InfLanguageMock.ENGLISH.pk_entity as number);
+    await mapCell(projectId, cell_1_6, InfPersistentItemMock.ALBERT_IV.pk_entity as number);
+    await mapCell(projectId, cell_1_7, madrid as number);
+
+
+    //factoids: person is identified by (1) appellation
+    const factMap_birth = await createFactoidMapping(digital, DfhApiClassMock.EN_61_BIRTH.pk_entity);
+    await createFactoid(factMap_birth, colPerson, DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.pk_entity);
+    await createFactoid(factMap_birth, colTimePrimitive, DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN.dfh_pk_property);
+    await createFactoid(factMap_birth, colLanguageString, DfhApiPropertyMock.EN_1761_HAS_SHORT_TITLE.dfh_pk_property);
+    //factoids: geoplace was at (148) place
+    const factMap_presence = await createFactoidMapping(digital, DfhApiClassMock.EN_84_PRESENCE.pk_entity);
+    await createFactoid(factMap_presence, colGeoPlace, DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_BUILT_WORK.dfh_pk_property)
+    await createFactoid(factMap_presence, colPlace, DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property)
+    //factoids: journey has duration (1613) Duration (dimension)
+    const factMap_journey = await createFactoidMapping(digital, DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY.pk_entity);
+    await createFactoid(factMap_journey, colPerson, DfhApiPropertyMock.EN_1617_CONCERNS.dfh_pk_property)
+    await createFactoid(factMap_journey, colDimension, DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property)
+    //factoids: Naming Used in language
+    const factMap_naming = await createFactoidMapping(digital, DfhApiClassMock.EN_365_NAMING.pk_entity);
+    await createFactoid(factMap_naming, colPerson, DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property);
+    await createFactoid(factMap_naming, colLanguage, DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property);
+    await createFactoid(factMap_naming, colAppellation, DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property);
 }
 
 

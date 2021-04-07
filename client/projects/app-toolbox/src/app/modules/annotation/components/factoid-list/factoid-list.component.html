@@ -177,9 +177,15 @@
         <!-- body entity preview -->
         <mat-grid-tile [colspan]="3" [rowspan]="1">
           <div class="content">
-            <gv-entity-preview *ngIf="bodyStatement.pkEntity" class="gv-one-liner gv-fade-out-right"
-              [pkEntity]="bodyStatement.pkEntity" class="left-col" [openTabOnClick]="true">
+            <gv-entity-preview *ngIf="bodyStatement.pkEntity && bodyStatement.vot == undefined"
+              class="gv-one-liner gv-fade-out-right left-col" [pkEntity]="bodyStatement.pkEntity"
+              [openTabOnClick]="true">
             </gv-entity-preview>
+
+            <gv-value-preview *ngIf="bodyStatement.pkEntity && bodyStatement.vot != undefined"
+              class="gv-one-liner gv-fade-out-right left-col" [vot]="getVOT$(bodyStatement) | async"
+              [value]="getValueVOT$(bodyStatement) | async">
+            </gv-value-preview>
           </div>
         </mat-grid-tile>
 

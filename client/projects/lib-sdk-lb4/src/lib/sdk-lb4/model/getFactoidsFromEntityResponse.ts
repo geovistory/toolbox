@@ -10,11 +10,13 @@
  * Do not edit the class manually.
  */
 import { FactoidEntity } from './factoidEntity';
+import { GvPositiveSchemaObject } from './gvPositiveSchemaObject';
 
 
 export interface GetFactoidsFromEntityResponse { 
     pkEntity?: string;
     factoidEntities?: Array<FactoidEntity>;
     totalLength?: number;
+    schemaObject?: GvPositiveSchemaObject;
 }
 
