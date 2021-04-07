@@ -8,7 +8,7 @@ import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
 import { GvFieldProperty } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, first, map } from 'rxjs/operators';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
 import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
@@ -24,7 +24,8 @@ export interface CtrlEntityDialogData {
   hiddenProperty: GvFieldProperty
   initVal$: Observable<CtrlEntityModel>
   showAddList: boolean
-  disableIfHasStatement: DisableIfHasStatement
+  disableIfHasStatement: DisableIfHasStatement,
+  defaultSearch: string;
 }
 
 export interface ClassAndTypePk { pkClass: number, pkType: number }
@@ -62,7 +63,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   searchInput: string;
 
   // actual search str
-  searchString$ = new Subject<string>();
+  searchString$ = new BehaviorSubject<string>('');
 
   classLabel$: Observable<string>;
 
@@ -85,6 +86,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.notInProjectClickBehavior = data.notInProjectClickBehavior
 
     this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.temporal_entity || v.persistent_item : null))
+
+    if (this.data.defaultSearch) this.searchString$.next(this.data.defaultSearch);
   }
 
 
@@ -106,8 +109,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
         else return 'teEnt';
       })
     )
-
-
   }
 
   /**
@@ -181,8 +182,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
       U.recursiveMarkAsTouched(f)
     }
   }
-
-
 
   ngOnDestroy() {
     this.destroy$.next(true);

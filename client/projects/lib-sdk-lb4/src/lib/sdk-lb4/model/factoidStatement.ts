@@ -17,5 +17,7 @@ export interface FactoidStatement {
     value?: string;
     pkEntity?: number;
     pkCell?: number;
+    vot?: string;
+    pkStatement?: number;
 }
 

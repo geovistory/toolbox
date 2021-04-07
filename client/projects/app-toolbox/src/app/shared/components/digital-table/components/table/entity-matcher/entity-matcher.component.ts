@@ -21,6 +21,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
 
   @Input() pkClass: number; // the column of the cell
   @Input() pkCell: number; // the subject of the statement
+  @Input() cellContent: string; // the content of the cell (for auto search)
 
   pkProject: number;
   statement?: InfStatement;
@@ -76,7 +77,8 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
             notInProjectBtnText: 'Select',
             disableIfHasStatement: undefined,
             classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
-            pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+            pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
+            defaultSearch: this.cellContent
           }
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
@@ -106,7 +108,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
       this.inf.temporal_entity.upsert([result.temporal_entity], this.pkProject).resolved$.subscribe(result2 => {
         if (result2) this.upsertStatement(result2.items[0].pk_entity);
       });
-    } else if (result.pkEntity) {
+    } else if (result && result.pkEntity) {
       this.upsertStatement(result.pkEntity);
     }
   }

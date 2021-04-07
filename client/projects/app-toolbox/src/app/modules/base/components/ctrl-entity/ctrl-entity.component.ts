@@ -29,6 +29,60 @@ export interface CtrlEntityModel {
 export class CtrlEntityComponent implements OnDestroy,
   ControlValueAccessor,
   MatFormFieldControl<CtrlEntityModel> {
+
+  get empty() {
+    return this.model ? false : true;
+  }
+
+  get shouldLabelFloat() {
+    return this.focused || !this.empty;
+  }
+
+  @Input() get placeholder(): string {
+    return this._placeholder;
+  }
+
+  set placeholder(value: string) {
+    this._placeholder = value;
+    this.stateChanges.next();
+  }
+
+  @Input() get required(): boolean {
+    return this._required;
+  }
+
+  set required(value: boolean) {
+    this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
+  }
+
+  @Input() get disabled(): boolean {
+    return this._disabled;
+  }
+
+  set disabled(value: boolean) {
+    this._disabled = coerceBooleanProperty(value);
+
+    // TODO implement some disable state
+    // this._disabled ? this.parts.disable() : this.parts.enable();
+    this.stateChanges.next();
+  }
+
+  @Input() get value(): CtrlEntityModel | null {
+    return this.model;
+  }
+
+  set value(value: CtrlEntityModel | null) {
+
+    if (!value || (!value.pkEntity && !value.temporal_entity && !value.persistent_item)) {
+      this.model = undefined
+    } else {
+      this.model = value;
+    }
+
+    this.onChange(this.model);
+    this.value$.next(value);
+  }
   static nextId = 0;
 
   model: CtrlEntityModel;
@@ -61,6 +115,16 @@ export class CtrlEntityComponent implements OnDestroy,
   `;
   describedBy = '';
 
+  private _placeholder: string;
+
+  private _required = false;
+
+  private _disabled = false;
+
+  value$ = new BehaviorSubject<CtrlEntityModel>(null);
+
+  entityPreview$: Observable<WarEntityPreview>;
+
   onChange = (_: any) => { }
 
     ;
@@ -68,70 +132,6 @@ export class CtrlEntityComponent implements OnDestroy,
   onTouched = () => { }
 
     ;
-
-  get empty() {
-    return this.model ? false : true;
-  }
-
-  get shouldLabelFloat() {
-    return this.focused || !this.empty;
-  }
-
-  @Input() get placeholder(): string {
-    return this._placeholder;
-  }
-
-  set placeholder(value: string) {
-    this._placeholder = value;
-    this.stateChanges.next();
-  }
-
-  private _placeholder: string;
-
-  @Input() get required(): boolean {
-    return this._required;
-  }
-
-  set required(value: boolean) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
-
-  private _required = false;
-
-  @Input() get disabled(): boolean {
-    return this._disabled;
-  }
-
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-
-    // TODO implement some disable state
-    // this._disabled ? this.parts.disable() : this.parts.enable();
-    this.stateChanges.next();
-  }
-
-  private _disabled = false;
-
-  @Input() get value(): CtrlEntityModel | null {
-    return this.model;
-  }
-
-  set value(value: CtrlEntityModel | null) {
-
-    if (!value || (!value.pkEntity && !value.temporal_entity && !value.persistent_item)) {
-      this.model = undefined
-    } else {
-      this.model = value;
-    }
-
-    this.onChange(this.model);
-    this.value$.next(value);
-  }
-
-  value$ = new BehaviorSubject<CtrlEntityModel>(null);
-
-  entityPreview$: Observable<WarEntityPreview>;
 
   constructor(@Optional() @Self() public ngControl: NgControl,
     private dialog: MatDialog,
@@ -145,7 +145,7 @@ export class CtrlEntityComponent implements OnDestroy,
   }
 
   ngOnInit() {
-    if (!this.pkClass) throw new Error("pkClass is required");
+    if (!this.pkClass) throw new Error('pkClass is required');
 
     this.c.pipeClassLabel(this.pkClass)
 
@@ -206,8 +206,8 @@ export class CtrlEntityComponent implements OnDestroy,
             classAndTypePk: {
               pkClass: this.pkClass,
               pkType: undefined
-            }
-
+            },
+            defaultSearch: ''
             ,
             pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
           }

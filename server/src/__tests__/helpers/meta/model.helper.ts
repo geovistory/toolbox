@@ -67,6 +67,8 @@ export async function createClasses(): Promise<Array<DfhApiClass>> {
         await createDfhApiClass(DfhApiClassMock.EN_690_TIME_UNIT),
         await createDfhApiClass(DfhApiClassMock.EN_689_DURATION),
         await createDfhApiClass(DfhApiClassMock.EN_50_TIME_SPAN),
+        await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE),
+        await createDfhApiClass(DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY),
     ]);
 }
 
@@ -83,12 +85,17 @@ export async function createProfiles(): Promise<Array<DfhApiProfile>> {
 export async function createProperties(): Promise<Array<DfhApiProperty>> {
     return Promise.all([
         await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE),
         await createDfhApiProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
         await createDfhApiProperty(DfhApiPropertyMock.EN_979_CARRIERS_PROVIDED_BY),
         await createDfhApiProperty(DfhApiPropertyMock.EN_1206_HAS_TYPE_OF_MANIFESTATION_PRODUCT_TYPE),
         await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
         await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END),
         await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
-        await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER)
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER),
+        await createDfhApiProperty(DfhApiPropertyMock.EN_148_WAS_AT),
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1613_HAS_DURATION),
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1617_CONCERNS),
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1761_HAS_SHORT_TITLE)
     ]);
 }

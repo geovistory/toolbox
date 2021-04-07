@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { createDigital } from '../generic/digital.helper';
+import { createFactoid, createFactoidMapping } from '../generic/factoid.helper';
 import { createPerson } from '../generic/person.helper';
 import { createSource } from '../generic/source.helper';
-import { createCell, createColumn, createColumnMapping, createFactoidMapping, createFactoidProperty, createRow, createTable, mapCell } from '../generic/table.helper';
+import { createCell, createColumn, createColumnMapping, createRow, createTable, mapCell } from '../generic/table.helper';
 import { initDBWithGaetan } from './init.helper';
 import readline = require('readline');
 
@@ -72,6 +73,7 @@ export async function createHeavyFactoids() {
     //create column mappings
     process.stdout.write('Creating column mapping... ')
     await createColumnMapping(cols[0], 21); //the first column is a person: the target of the line
+    await createColumnMapping(cols[1], 335); //the first column is a time primitive
     await createColumnMapping(cols[2], 21); //the third column is a person: the mother of the target
     await createColumnMapping(cols[3], 21); //the 4th column is a person: the father of the target
     readline.cursorTo(process.stdout, 0);
@@ -102,13 +104,13 @@ export async function createHeavyFactoids() {
     //create factoids
     process.stdout.write('Creating factoids... ')
     const birth = await createFactoidMapping(digital, 61); // a birth on each row
-    await createFactoidProperty(3679, cols[0], birth); //brought into life col1
-    await createFactoidProperty(3764, cols[1], birth); //begin of the begin col1
-    await createFactoidProperty(3677, cols[2], birth); //by mother col3
-    await createFactoidProperty(3678, cols[3], birth); //from father col4
+    await createFactoid(86, cols[0], birth); //brought into life col1
+    await createFactoid(152, cols[1], birth); //begin of the begin col1
+    // await createFactoid(birth, cols[2], 84); //by mother col3
+    // await createFactoid(birth, cols[3], 85); //from father col4
     const union = await createFactoidMapping(digital, 633); //a union on each row
-    await createFactoidProperty(1409, cols[2], union);// the union involves the mother
-    await createFactoidProperty(1409, cols[3], union);// the union involves the father
+    await createFactoid(union, cols[2], 1436);// the union involves the mother
+    await createFactoid(union, cols[3], 1436);// the union involves the father
     readline.cursorTo(process.stdout, 0);
     readline.clearLine(process.stdout, 0);
     console.log('Factoids Created');

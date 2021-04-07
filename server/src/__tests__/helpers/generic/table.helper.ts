@@ -1,7 +1,6 @@
 import { createDatClassColumnMapping } from '../atomic/dat-class-mapping.helper';
 /* eslint-disable @typescript-eslint/camelcase */
 import { createDatColumn } from '../atomic/dat-column.helper';
-import { createDatFactoidMapping, createDatFactoidPropertyMapping } from '../atomic/dat-factoid.helper';
 import { createDatTextProperty } from '../atomic/dat-text-property.helper';
 import { createInfStatement } from '../atomic/inf-statement.helper';
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
@@ -71,25 +70,4 @@ export async function mapCell(project: number, cellInd: number, pkEntity: number
 
     await addInfosToProject(project, [statement]);
     return statement
-}
-
-export async function createFactoidMapping(digital: number, classNb: number): Promise<number> {
-    const index = getIndex();
-    await createDatFactoidMapping({
-        pk_entity: index,
-        fk_digital: digital,
-        fk_class: classNb
-    });
-    return index;
-}
-
-export async function createFactoidProperty(property: number, columnInd: number, factoiMappingNb: number): Promise<number> {
-    const index = getIndex();
-    await createDatFactoidPropertyMapping({
-        pk_entity: getIndex(),
-        fk_property: property,
-        fk_column: columnInd,
-        fk_factoid_mapping: factoiMappingNb
-    });
-    return index;
 }

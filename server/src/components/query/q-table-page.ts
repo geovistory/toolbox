@@ -1,7 +1,7 @@
 import { model, ModelDefinition, property } from '@loopback/repository';
 import { without } from 'ramda';
 import { Postgres1DataSource } from '../../datasources';
-import { DatColumn, InfAppellation, InfDimension, InfLangString, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
+import { DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
 import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
 import { SysConfigValue } from '../../models/sys-config';
 import { logSql } from '../../utils/helpers';
