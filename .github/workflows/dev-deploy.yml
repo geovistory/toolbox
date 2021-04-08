@@ -22,7 +22,7 @@ jobs:
           ref: dev-deploy
 
       # Step2
-      - name: Pull the new code
+      - name: Get the new code
         run: |
              git fetch origin
              git reset --hard origin/dev
@@ -45,4 +45,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git add --force ./client/dist/*
           git commit -m "dist folder"
-          git push origin dev-deploy
+          git push --force origin dev-deploy
