@@ -45,6 +45,8 @@ jobs:
       # Step5
       - name: Manual push dist folder
         run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
           git add --force ./client/dist/*
           git commit -m "dist folder"
           git push origin dev-deploy
