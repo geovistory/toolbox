@@ -1,8 +1,5 @@
-# This is a basic workflow to help you get started with Actions
+name: dev-deploy
 
-name: deploy-dev
-
-# Controls when the action will run. 
 on:
   # Triggers the workflow on push events but only for the dev branch
   push:
@@ -11,18 +8,15 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  push-to-deploy-branch:
-    # The type of runner that the job will run on
+
+  # Job 1:
+  update_dev-deploy:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    
       # Step1
-      - name: Switch branch
+      - name: Checkout dev-deploy branch
         uses: actions/checkout@v2
         with:
           ref: dev-deploy
@@ -43,7 +37,7 @@ jobs:
           cd ..
           
       # Step5
-      - name: Manual push dist folder
+      - name: Push dist folder on dev-deploy
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
