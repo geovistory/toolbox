@@ -24,8 +24,8 @@ jobs:
       # Step2
       - name: Pull the new code
         run: |
-             git config pull.rebase true
-             git pull origin dev
+             git fetch origin
+             git reset --hard origin/dev
         
       # Step3
       - name: Install npm dependencies
