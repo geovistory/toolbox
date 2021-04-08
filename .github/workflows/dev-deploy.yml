@@ -20,12 +20,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
+    
       # Step1
       - name: Switch branch
-        run: git checkout dev-deploy
+        uses: actions/checkout@v2
+        with:
+          ref: dev-deploy
 
       # Step2
       - name: Pull the new code
