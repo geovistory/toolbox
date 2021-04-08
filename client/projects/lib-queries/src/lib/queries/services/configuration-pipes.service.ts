@@ -103,7 +103,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           // }
 
           // if is temporal entity, add has time span property
-          if (sourceKlass.basic_type === 9) {
+          if (
+            sourceKlass.basic_type !== 8 && sourceKlass.basic_type !== 30
+            // sourceKlass.basic_type === 9
+          ) {
             outP.push(createHasTimeSpanProperty(pkClass))
           }
 
@@ -136,7 +139,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
               if (!uniqFields[fieldId]) {
                 let isSpecialField: SpecialFieldType = false;
                 if (s.isHasTypeField) isSpecialField = 'has-type';
-                else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
+                // else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
+                else if (s.targetClass === DfhConfig.ClASS_PK_TIME_SPAN) isSpecialField = 'time-span';
                 uniqFields[fieldId] = {
                   sourceClass: s.sourceClass,
                   sourceClassLabel: s.sourceClassLabel,

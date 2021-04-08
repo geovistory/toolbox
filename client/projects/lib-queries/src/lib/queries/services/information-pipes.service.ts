@@ -305,7 +305,8 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   }
 
   pipeFieldPage(page: GvFieldPage, targets: GvFieldTargets): Observable<SubfieldPage> {
-    if (page.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN && page.isOutgoing) {
+    if (targets[DfhConfig.ClASS_PK_TIME_SPAN] && page.isOutgoing
+    ) {
       // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
       return this.pipeTimeSpan(page)
     }
