@@ -24,10 +24,22 @@ jobs:
         run: |
              git fetch origin
              git reset --hard origin/dev
+             
+      - name: Install npm dependencies for client
+        run: |
+             cd client
+             npm run install --production=false
+             cd ..
+             
+      - name: Install npm dependencies for server
+        run: |
+             cd server
+             npm run install --production=false
+             cd ..
+             
       - name: Build client
         run: |
              cd client
-             npm install
              npm run build:all
              cd..
     
