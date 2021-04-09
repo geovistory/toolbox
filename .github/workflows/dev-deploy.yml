@@ -10,39 +10,35 @@ on:
 
 jobs:
 
-  # Job 1:
   update_dev-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step1
+    
       - name: Checkout dev-deploy branch
         uses: actions/checkout@v2
         with:
           ref: dev-deploy
 
-      # Step2
       - name: Get the new code
         run: |
              git fetch origin
              git reset --hard origin/dev
-        
-      # Step3
-      - name: Install npm dependencies
-        run: npm install
-        
-      # Step4
-      - name: Build front-end
+      - name: Build client
         run: |
-          cd client
-          npm run build:all
-          cd ..
-          
-      # Step5
-      - name: Push dist folder on dev-deploy
+             cd client
+             npm install
+             npm run build:all
+             cd..
+    
+      - name: Create warehouse compatibility list
+        run: bash deployment/create-warehouse-compat-list.sh
+        
+      - name: Push changes on dev-deploy
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
+          git add .
           git add --force ./client/dist/*
           git commit -m "dist folder"
           git push --force origin dev-deploy
