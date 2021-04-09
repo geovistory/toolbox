@@ -8,8 +8,9 @@ import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { InfValueObject } from '../../../../value-preview/value-preview.component';
 
 export type InfValueObjectType = InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage;
 
@@ -29,8 +30,8 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
   isInProject = false;
   statement$: Observable<InfStatement>;
   statement?: InfStatement;
-  value$: Observable<InfValueObjectType>;
-  value: InfValueObjectType | undefined;
+  value$: Observable<InfValueObject>;
+  value: InfValueObject | undefined;
 
   constructor(
     private p: ActiveProjectService,
@@ -70,11 +71,21 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
       filter(statement => !!statement),
       switchMap(statement => {
         if (statement) {
-          if (this.vot.appellation) return this.p.inf$.appellation$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.place) return this.p.inf$.place$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.dimension) return this.p.inf$.dimension$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.langString) return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info)
-          if (this.vot.language) return this.p.inf$.language$.by_pk_entity$.key(statement.fk_object_info)
+          if (this.vot.appellation) {
+            return this.p.inf$.appellation$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ appellation: value })))
+          }
+          if (this.vot.place) {
+            return this.p.inf$.place$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ place: value })))
+          }
+          if (this.vot.dimension) {
+            return this.p.inf$.dimension$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ dimension: value })))
+          }
+          if (this.vot.langString) {
+            return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ langString: value })))
+          }
+          if (this.vot.language) {
+            return this.p.inf$.language$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ language: value })))
+          }
           if (this.vot.timePrimitive) {
             return combineLatest([
               this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info),
@@ -83,7 +94,8 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
               map(([tp, ipr]) => ({
                 ...tp,
                 calendar: ipr.calendar
-              } as InfTimePrimitiveWithCalendar))
+              } as InfTimePrimitiveWithCalendar)),
+              switchMap(value => of({ timePrimitive: value }))
             )
           }
         }

@@ -1,9 +1,19 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace } from '@kleiolab/lib-sdk-lb3';
+import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { GregorianDateTime, InfTimePrimitiveWithCalendar, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+
+export interface InfValueObject {
+  appellation?: InfAppellation;
+  place?: InfPlace;
+  dimension?: InfDimension;
+  langString?: InfLangString;
+  timePrimitive?: InfTimePrimitiveWithCalendar;
+  language?: InfLanguage;
+}
 
 @Component({
   selector: 'gv-value-preview',
@@ -14,7 +24,7 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() vot: SysConfigValueObjectType;
-  @Input() value: InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage;
+  @Input() value: InfValueObject;
   @Input() pkProject: number;
 
   dimension_unit?: string;
@@ -27,14 +37,14 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.vot.dimension) {
-      this.ap.streamEntityPreview((this.value as InfDimension).fk_measurement_unit).pipe(
+      this.ap.streamEntityPreview((this.value.dimension).fk_measurement_unit).pipe(
         map(ep => ep.entity_label),
         takeUntil(this.destroy$)
       ).subscribe(unitLabel => this.dimension_unit = unitLabel);
     };
 
     if (this.vot.langString) {
-      this.s.inf$.language$.by_pk_entity$.key((this.value as InfLangString).fk_language)
+      this.s.inf$.language$.by_pk_entity$.key((this.value.langString).fk_language)
         .subscribe(language => this.pkLanguage = language ? language.pk_language : '');
     }
   }
@@ -48,10 +58,10 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
     return langString.string + ' [' + (this.pkLanguage ? this.pkLanguage.toUpperCase() : '??') + ']';
   }
 
-  stringifyJulianDate(value: InfTimePrimitiveWithCalendar): string {
+  stringifyJulianDate(timePrim: InfTimePrimitiveWithCalendar): string {
     let date;
-    if (value.calendar == 'julian') date = new JulianDateTime().fromJulianDay(value.julian_day);
-    else date = new GregorianDateTime().fromJulianDay(value.julian_day)
+    if (timePrim.calendar == 'julian') date = new JulianDateTime().fromJulianDay(timePrim.julian_day);
+    else date = new GregorianDateTime().fromJulianDay(timePrim.julian_day)
     let result = date.day + '';
     result += date.day === 1 ? 'st ' : date.day === 2 ? 'nd ' : date.day === 3 ? 'rd ' : 'th ';
     result += ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
