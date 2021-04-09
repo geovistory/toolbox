@@ -41,7 +41,7 @@ jobs:
         run: |
              cd client
              npm run build:all
-             cd..
+             cd ..
     
       - name: Create warehouse compatibility list
         run: bash deployment/create-warehouse-compat-list.sh
