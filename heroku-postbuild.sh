@@ -5,9 +5,6 @@ echo '================ Start of heroku-postbuild.sh ============================
 echo '================= Compile Server =============================='
 cd ./server
 
-echo './server: npm install'
-npm i
-
 echo './server: npm run build'
 npm run build
 
