@@ -24,12 +24,24 @@ jobs:
         run: |
              git fetch origin
              git reset --hard origin/dev
+             
+      - name: Install npm dependencies for client
+        run: |
+             cd client
+             npm install --production=false
+             cd ..
+             
+      - name: Install npm dependencies for server
+        run: |
+             cd server
+             npm install --production=false
+             cd ..
+             
       - name: Build client
         run: |
              cd client
-             npm install
              npm run build:all
-             cd..
+             cd ..
     
       - name: Create warehouse compatibility list
         run: bash deployment/create-warehouse-compat-list.sh
