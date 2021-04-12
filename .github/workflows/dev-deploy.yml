@@ -3,18 +3,16 @@ name: dev-deploy
 on:
   # Triggers the workflow on push events but only for the dev branch
   push:
-    branches: [ dev ]
+    branches: [dev]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-
   update_dev-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    
       - name: Checkout dev-deploy branch
         uses: actions/checkout@v2
         with:
@@ -22,30 +20,30 @@ jobs:
 
       - name: Get the new code
         run: |
-             git fetch origin
-             git reset --hard origin/dev
-             
+          git fetch origin
+          git reset --hard origin/dev
+
       - name: Install npm dependencies for client
         run: |
-             cd client
-             npm install --production=false
-             cd ..
-             
+          cd client
+          npm install --production=false
+          cd ..
+
       - name: Install npm dependencies for server
         run: |
-             cd server
-             npm install --production=false
-             cd ..
-             
+          cd server
+          npm install --production=false
+          cd ..
+
       - name: Build client
         run: |
-             cd client
-             npm run build:all
-             cd ..
-    
+          cd client
+          npm run build:all
+          cd ..
+
       - name: Create warehouse compatibility list
         run: bash deployment/create-warehouse-compat-list.sh
-        
+
       - name: Push changes on dev-deploy
         run: |
           git config --global user.email "action@github.com"
