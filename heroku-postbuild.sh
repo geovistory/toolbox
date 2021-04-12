@@ -12,4 +12,13 @@ echo './server: npm prune --production'
 npm prune --production
 
 cd ..
+
+
+
+echo '================= Seed DB if dev =============================='
+if [ $DB_ENV='dev' ]; then
+    npm run db:seed-dev
+fi
+
+
 echo '================ End of heroku-postbuild.sh ================================'
