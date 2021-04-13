@@ -13,11 +13,9 @@ npm prune --production
 
 cd ..
 
-
-
-echo '================= Seed DB if dev =============================='
-if [ $DB_ENV='dev' ]; then
-    npm run db:seed-dev
+echo '================= On dev =============================='
+if [ $DB_ENV = 'dev' ] then
+    npm i dotenv
 fi
 
 

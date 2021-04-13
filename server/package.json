@@ -36,7 +36,6 @@
     "db:md": "node ./scripts/db-migrate-down.js",
     "db:seed": "node ./scripts/db-seed.js",
     "db:restore": "node ./scripts/db-restore.js",
-    "db:seed-dev": "node ./scripts/db-seed-dev.js",
     "pret": "npm run prepare-test && npm run clean && npm run build",
     "pretwindows": "npm run prepare-test-windows && npm run clean && npm run build"
   },
