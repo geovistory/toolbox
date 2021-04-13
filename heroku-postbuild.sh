@@ -14,7 +14,7 @@ npm prune --production
 cd ..
 
 echo '================= On dev =============================='
-if [ $DB_ENV = 'dev' ] then
+if [ $DB_ENV = 'dev' ]; then
     npm i dotenv
 fi
 
