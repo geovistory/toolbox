@@ -17,7 +17,7 @@ import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 
-describe('ConfigurationPipeService', () => {
+fdescribe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: ConfigurationPipesService;
   let schemaObjServcie: SchemaService;
@@ -308,7 +308,7 @@ describe('ConfigurationPipeService', () => {
   //   });
   // })
 
-  describe('.pipeFields()', () => {
+  fdescribe('.pipeFields()', () => {
 
     it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
@@ -342,6 +342,51 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeFields(DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0].length).toEqual(6)
+          },
+          null,
+          done);
+
+    });
+
+    it('should return fields of presence', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.modelOfPresence, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeFields(DfhApiClassMock.EN_84_PRESENCE.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0].length).toEqual(3)
+          },
+          null,
+          done);
+
+    });
+
+    it('should return fields of birth', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeFields(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]

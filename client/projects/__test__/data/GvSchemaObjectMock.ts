@@ -1,5 +1,5 @@
 import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { createAppellationProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
+import { createAppellationProperty, createDefinitionProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
 import { DfhApiClassMock } from './auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from './auto-gen/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
@@ -107,7 +107,7 @@ export namespace GvSchemaObjectMock {
       property: [
         createAppellationProperty(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class),
 
-        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
+        createDefinitionProperty(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class),
 
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
@@ -119,6 +119,8 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_244_EXPRESSION_CREATION),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_450_MANIFESTATION_SINGLETON_TYPE),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_784_SHORT_TITLE),
+
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON),
@@ -143,13 +145,16 @@ export namespace GvSchemaObjectMock {
       property: [
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_148_WAS_AT),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_145_DURING),
       ],
       label: [
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_148_WAS_AT),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_145_DURING),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_84_PRESENCE),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_363_GEO_PLACE),
-        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_51_PLACE)
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_51_PLACE),
+
       ]
     },
     pro: {

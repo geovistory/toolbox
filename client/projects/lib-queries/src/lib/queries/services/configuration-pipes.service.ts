@@ -90,28 +90,28 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
         );
         const outP = outgoingProps.filter((prop) => isEnabled(prop))
-        let inP = ingoingProps.filter((prop) => isEnabled(prop))
+        const inP = ingoingProps.filter((prop) => isEnabled(prop))
 
-        if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
-          // remove the has time span property
-          inP = []
+        // if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
+        //   // remove the has time span property
+        //   inP = []
 
-        } else {
-          // // if class is not appellation for language, add appellation for language (1111) property
-          // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-          //   ingoingProps.push(createAppellationProperty(pkClass))
-          // }
+        // } else {
+        //   // // if class is not appellation for language, add appellation for language (1111) property
+        //   // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+        //   //   ingoingProps.push(createAppellationProperty(pkClass))
+        //   // }
 
-          // if is temporal entity, add has time span property
-          if (
-            sourceKlass.basic_type !== 8 && sourceKlass.basic_type !== 30
-            // sourceKlass.basic_type === 9
-          ) {
-            outP.push(createHasTimeSpanProperty(pkClass))
-          }
+        //   // if is temporal entity, add has time span property
+        //   if (
+        //     // sourceKlass.basic_type !== 8 && sourceKlass.basic_type !== 30
+        //     sourceKlass.basic_type === 9
+        //   ) {
+        //     outP.push(createHasTimeSpanProperty(pkClass))
+        //   }
 
-          outP.push(createHasDefinitionProperty(pkClass))
-        }
+        //   outP.push(createHasDefinitionProperty(pkClass))
+        // }
         return combineLatest(
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, sysConfig, noNesting),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, sysConfig, noNesting),
@@ -386,32 +386,32 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       p.domain_instances_min_quantifier :
       p.range_instances_min_quantifier;
 
-    // console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+    console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
     return combineLatest(
       this.pipeClassLabel(sourceClass).pipe(tap(x => {
-        // console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         return x
       })),
       this.pipeClassLabel(targetClass).pipe(tap(x => {
-        // console.log('pppp found targetClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        console.log('pppp found targetClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         return x
       })),
       this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, noNesting).pipe(tap(x => {
-        // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
       this.pipeFieldLabel(p.pk_property, isOutgoing ? p.has_domain : null, isOutgoing ? null : p.has_range).pipe(tap(x => {
-        // console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
     )
       .pipe(map(([sourceClassLabel, targetClassLabel, listType, label]
       ) => {
 
-        // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         const node: Subfield = {
           listType,

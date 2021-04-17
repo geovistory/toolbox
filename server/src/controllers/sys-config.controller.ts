@@ -10,7 +10,7 @@ import {Postgres1DataSource} from '../datasources/postgres1.datasource';
 import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
 export interface NumericIndex {[key: number]: true;}
 
-const SYS_CONFIG_KEY = 'SYS_CONFIG';
+export const SYS_CONFIG_KEY = 'SYS_CONFIG';
 
 @tags('system configuration')
 export class SysConfigController {

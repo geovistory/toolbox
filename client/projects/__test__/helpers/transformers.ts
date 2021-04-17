@@ -1,6 +1,7 @@
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Profiles } from '@kleiolab/lib-queries';
 import { DfhClass, DfhLabel, DfhProperty } from '@kleiolab/lib-sdk-lb4';
+import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
 import { DfhApiClass, DfhApiProperty } from '../data/auto-gen/gvDB/local-model.helpers';
 
 
@@ -70,7 +71,12 @@ export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: DfhApiProperty
   }
 }
 
-
+export function createDefinitionProperty(domainClass: number): DfhProperty {
+  return {
+    ...transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
+    has_domain: domainClass
+  }
+}
 
 export function createAppellationProperty(rangeClass: number) {
   const profiles: Profiles = [
