@@ -33,7 +33,7 @@ export class EntityFieldComponent implements OnInit {
       offset: 0,
       scope: this.scope,
     }
-    this.page$ = this.i.pipeFieldPage(page, fieldToGvFieldTargets(this.field))
+    this.page$ = this.i.pipeFieldPage(page, fieldToGvFieldTargets(this.field), this.field.isTimeSpanShortCutField)
 
   }
 

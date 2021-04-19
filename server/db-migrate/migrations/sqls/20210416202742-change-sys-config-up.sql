@@ -1,5 +1,7 @@
-UPDATE system.config t1
-SET config = '{
+UPDATE
+  system.config t1
+SET
+  config = '{
   "classes": {
     "1": {
       "excludedFromEntities": true
@@ -122,7 +124,13 @@ SET config = '{
       "1782": {
         "comment": "has identification – P18",
         "displayInBasicFields": {
-          "position": 7
+          "position": 9
+        }
+      },
+      "1499": {
+        "comment": "has to be preferred to",
+        "displayInBasicFields": {
+          "position": 11
         }
       }
     },
@@ -130,8 +138,16 @@ SET config = '{
       "4": {
         "comment": "has time-span (When)",
         "displayInBasicFields": {
-          "position": 1000
-        }
+          "position": 7
+        },
+        "isHasTimeSpanShortCut": true
+      },
+      "145": {
+        "comment": "during (When)",
+        "displayInBasicFields": {
+          "position": 8
+        },
+        "isHasTimeSpanShortCut": true
       },
       "1760": {
         "comment": "has web address (is web addess of) – P16",
@@ -155,6 +171,12 @@ SET config = '{
         "comment": "P19 has comment (is comment about)",
         "displayInBasicFields": {
           "position": 6
+        }
+      },
+      "1499": {
+        "comment": "has to be merged with",
+        "displayInBasicFields": {
+          "position": 10
         }
       }
     },
@@ -211,5 +233,8 @@ SET config = '{
       }
   ]
 }'
-FROM system.config t2
-WHERE t1.pk_entity = t2.pk_entity;
+FROM
+  system.config t2
+WHERE
+  t1.pk_entity = t2.pk_entity;
+

@@ -17,7 +17,7 @@ import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 
-fdescribe('ConfigurationPipeService', () => {
+describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: ConfigurationPipesService;
   let schemaObjServcie: SchemaService;
@@ -308,7 +308,7 @@ fdescribe('ConfigurationPipeService', () => {
   //   });
   // })
 
-  fdescribe('.pipeFields()', () => {
+  describe('.pipeFields()', () => {
 
     it('should return correct fields of manifestation singleton', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
@@ -349,7 +349,7 @@ fdescribe('ConfigurationPipeService', () => {
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence[0].length).toEqual(6)
+            expect(actualSequence[0].length).toEqual(7)
           },
           null,
           done);
@@ -382,6 +382,7 @@ fdescribe('ConfigurationPipeService', () => {
     it('should return fields of birth', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.modelOfBirth, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
 
@@ -394,7 +395,7 @@ fdescribe('ConfigurationPipeService', () => {
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence[0].length).toEqual(6)
+            expect(actualSequence[0].length).toEqual(3)
           },
           null,
           done);

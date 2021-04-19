@@ -59,7 +59,7 @@ export class InfStatementMock {
   static readonly SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1: OmitEntity<InfStatement> = ({
     pk_entity: 3006,
     fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
-    fk_property: DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT.dfh_pk_property,
+    fk_property: DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT.dfh_pk_property,
     fk_object_info: InfTimePrimitiveMock.TP_1.pk_entity,
   })
 
@@ -138,7 +138,7 @@ export class InfStatementMock {
   static readonly NAMING_1_ONGOING_THROUGHOUT_TP_1: OmitEntity<InfStatement> = ({
     pk_entity: 3017,
     fk_subject_info: InfTemporalEntityMock.NAMING_1.pk_entity,
-    fk_property: DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT.dfh_pk_property,
+    fk_property: DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT.dfh_pk_property,
     fk_object_info: InfTimePrimitiveMock.TP_1.pk_entity,
   })
 

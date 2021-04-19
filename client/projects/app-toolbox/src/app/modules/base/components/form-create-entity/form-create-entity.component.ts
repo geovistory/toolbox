@@ -6,8 +6,7 @@ import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialo
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfDimension, InfLangString, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { GvFieldProperty, GvFieldSourceEntity, GvTargetType } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
-import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
+import { combineLatestOrEmpty, InfTimePrimitiveWithCalendar, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
@@ -723,6 +722,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
       return this.typeCtrl(arrayConfig)
 
+    }
+    else if (listType.timePrimitive) {
+
+      return this.timePrimitiveCtrl(arrayConfig)
+
     } else if (arrayConfig.isList) {
       // Add a form array as object / container
       // return getContainerArrayConfig(arrayConfig)
@@ -731,21 +735,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
 
-  private appellationsHook(x: any, id: number) {
-    const statements: InfStatement[] = x.filter((i) => !!i);
-    this.searchStringParts[id] = statements
-      .map((item) => (Utils.stringFromQuillDoc(item.object_appellation.quill_doc)))
-      .join(' ');
-    return statements;
-  }
+  // private appellationsHook(x: any, id: number) {
+  //   const statements: InfStatement[] = x.filter((i) => !!i);
+  //   this.searchStringParts[id] = statements
+  //     .map((item) => (Utils.stringFromQuillDoc(item.object_appellation.quill_doc)))
+  //     .join(' ');
+  //   return statements;
+  // }
 
-  private textPropHook(x: any, id: number) {
-    const textProps: InfTextProperty[] = x.filter((i) => !!i);
-    this.searchStringParts[id] = textProps
-      .map((item) => (Utils.stringFromQuillDoc(item.quill_doc)))
-      .join(' ');
-    return textProps;
-  }
+  // private textPropHook(x: any, id: number) {
+  //   const textProps: InfTextProperty[] = x.filter((i) => !!i);
+  //   this.searchStringParts[id] = textProps
+  //     .map((item) => (Utils.stringFromQuillDoc(item.quill_doc)))
+  //     .join(' ');
+  //   return textProps;
+  // }
 
 
   private emitNewSearchString() {
@@ -1171,6 +1175,48 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     )
   }
 
+
+  private timePrimitiveCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const ctrl = arrayConfig.data.controls
+    const field = ctrl.field;
+    const targetClass = ctrl.targetClass
+    const targetClassLabel = field.targets[targetClass].targetClassLabel
+    // with [{}] we make sure at least one item is added
+    const initItems = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
+      control: {
+        initValue: initVal.object_time_primitive,
+        placeholder: field.label,
+        required: this.ctrlRequired(arrayConfig.data.controls.field),
+        validators: [],
+        data: {
+          appearance: this.appearance,
+          controlType: 'ctrl-time-primitive',
+          targetClass,
+          targetClassLabel
+        },
+        mapValue: (val: InfTimePrimitiveWithCalendar) => {
+          if (!val) return null;
+          const { calendar, ...timePrim } = val;
+          const value: InfStatement = {
+            ...{} as any,
+            entity_version_project_rels: [
+              { calendar: val.calendar }
+            ],
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            object_time_primitive: {
+              ...timePrim,
+              fk_class: arrayConfig.data.controls.targetClass,
+            },
+          };
+          return value;
+        }
+      }
+    }))
+
+    return of(controlConfigs);
+  }
 
 }
 

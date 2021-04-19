@@ -78,6 +78,14 @@ export function createDefinitionProperty(domainClass: number): DfhProperty {
   }
 }
 
+export function createHasTimeSpanProperty(domainClass: number) {
+  return {
+    ...transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
+    has_domain: domainClass
+  }
+}
+
+
 export function createAppellationProperty(rangeClass: number) {
   const profiles: Profiles = [
     {

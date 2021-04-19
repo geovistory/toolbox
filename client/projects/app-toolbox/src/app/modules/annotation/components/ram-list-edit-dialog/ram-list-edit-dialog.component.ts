@@ -30,7 +30,8 @@ const fieldBase: FieldBase = {
   targetMinQuantity: undefined,
   sourceMaxQuantity: undefined,
   sourceMinQuantity: undefined,
-  isHasTypeField: false
+  isHasTypeField: false,
+  isTimeSpanShortCutField: false
 }
 const listDef: Subfield = {
   ...fieldBase,

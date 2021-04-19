@@ -154,7 +154,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
           const definition$ = this.i.pipeFieldPage(
             fieldToFieldPage(appeAndDefFields.definitionField, source, scope, 1, 0),
-            fieldToGvFieldTargets(appeAndDefFields.definitionField)
+            fieldToGvFieldTargets(appeAndDefFields.definitionField),
+            false
           )
 
           return combineLatest(entityLabel$, definition$).pipe(

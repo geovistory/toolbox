@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { ClassConfig } from './classConfig';
+import { SysConfigAddProperty } from './sysConfigAddProperty';
 import { SysConfigSpecialFields } from './sysConfigSpecialFields';
 
 
@@ -19,5 +20,6 @@ import { SysConfigSpecialFields } from './sysConfigSpecialFields';
 export interface SysConfigValue { 
     classes: { [key: string]: ClassConfig; };
     specialFields: SysConfigSpecialFields;
+    addProperty?: Array<SysConfigAddProperty>;
 }
 

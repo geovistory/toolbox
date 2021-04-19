@@ -118,6 +118,33 @@ export default sandboxOf(FormCreateEntityComponent, {
             </div>
         </div>`
   })
+  .add('FormCreateEntityComponent | New TimeSpan', {
+    context: {
+      pkProject,
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        GvSchemaObjectMock.modelOfTimeSpan,
+        GvSchemaObjectMock.project1,
+        GvSchemaObjectMock.sysConfig,
+      ]
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-entity [pkClass]="50" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
   .add('FormCreateEntityComponent | New Birth', {
     context: {
       pkProject,

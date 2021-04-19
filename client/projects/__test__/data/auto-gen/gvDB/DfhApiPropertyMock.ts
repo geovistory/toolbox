@@ -187,7 +187,7 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": null,
     "dfh_property_identifier_in_namespace": "P81a"
   }
-  static readonly EN_71_ONGOING_THOUGHOUT: DfhApiProperty = {
+  static readonly EN_71_ONGOING_THROUGHOUT: DfhApiProperty = {
     "pk_entity": 3756,
     "dfh_fk_profile": 5,
     "dfh_pk_property": 71,
@@ -201,7 +201,7 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2020-01-27T08:03:06.045+00:00",
+    "tmsp_last_dfh_update": "2021-03-25T20:06:35.389+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property describes the minimum period of time covered by an E52 Time-Span. Since Time-Spans may not have precisely known\n            temporal extents, the CRM supports statements about the minimum and maximum temporal extents of Time-Spans. This property allows a\n            Time-Span’s minimum temporal extent (i.e. its inner boundary) to be assigned an E61 Time Primitive value. Time Primitives are treated by\n            the CRM as application or system specific date intervals, and are not further analysed. ",
@@ -211,10 +211,10 @@ export class DfhApiPropertyMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": null,
     "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": null,
-    "dfh_range_instances_min_quantifier": null,
-    "dfh_domain_instances_max_quantifier": null,
-    "dfh_domain_instances_min_quantifier": null,
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P81"
   }
   static readonly EN_72_AT_SOME_TIME_WITHIN: DfhApiProperty = {
@@ -231,7 +231,7 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2020-01-27T08:03:06.045+00:00",
+    "tmsp_last_dfh_update": "2021-03-25T20:06:35.389+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property describes the maximum period of time within which an E52 Time-Span falls. Since Time-Spans may not have precisely\n            known temporal extents, the CRM supports statements about the minimum and maximum temporal extents of Time-Spans. This property allows a\n            Time-Span’s maximum temporal extent (i.e. its outer boundary) to be assigned an E61 Time Primitive value. Time Primitives are treated by\n            the CRM as application or system specific date intervals, and are not further analysed. ",
@@ -241,10 +241,10 @@ export class DfhApiPropertyMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": null,
     "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": null,
-    "dfh_range_instances_min_quantifier": null,
-    "dfh_domain_instances_max_quantifier": null,
-    "dfh_domain_instances_min_quantifier": null,
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P82"
   }
   static readonly EN_151_BEGIN_OF_THE_END: DfhApiProperty = {
@@ -1012,6 +1012,36 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
     "dfh_property_identifier_in_namespace": "P164"
+  }
+  static readonly EN_1499_HAS_TO_BE_MERGED_WITH: DfhApiProperty = {
+    "pk_entity": 5143,
+    "dfh_fk_profile": 15,
+    "dfh_pk_property": 1499,
+    "dfh_fk_namespace": 30,
+    "dfh_is_inherited": true,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "ANR Processetti",
+    "dfh_property_label": "has to be merged with",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_property_domain": 21,
+    "tmsp_last_dfh_update": "2021-03-31T19:26:50.272+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property states that the entity in the domain position is the same as the one in the range of the property, inside the same information system. This means these entities are duplicates. The direction of the property allows to assert that the domain entity has to be deprecated and the domain entity to be preferred.",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 0,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P13"
   }
 }
 /**
