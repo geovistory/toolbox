@@ -122,6 +122,8 @@ export * from './signupResponse';
 export * from './signupValidationError';
 export * from './sysClassField';
 export * from './sysClassHasTypeProperty';
+export * from './sysConfigAddProperty';
+export * from './sysConfigAddPropertyForClass';
 export * from './sysConfigFieldDisplay';
 export * from './sysConfigFieldPosition';
 export * from './sysConfigFieldsOfSourceClass';

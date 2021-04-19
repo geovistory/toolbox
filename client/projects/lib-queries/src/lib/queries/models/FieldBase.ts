@@ -10,6 +10,8 @@ export interface FieldBase {
   property: GvFieldProperty;
   // true if the property of that field has dfh_has_type_subproperty
   isHasTypeField: boolean;
+  // true if the property has to be replaced by the 6 time-span properties
+  isTimeSpanShortCutField: boolean;
   // direction of the property in this field (true if sourceClass = property domain)
   isOutgoing: boolean;
   // the source class of the field (if is outgoing domain else range)

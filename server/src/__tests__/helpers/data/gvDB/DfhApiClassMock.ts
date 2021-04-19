@@ -1,4 +1,4 @@
-import { DfhApiClass } from "./local-model.helpers"
+import {DfhApiClass} from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -498,7 +498,7 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E52"
   }
-  
+
   static readonly EN_689_DURATION: DfhApiClass = {
     "pk_entity": 5617,
     "dfh_pk_class": 689,
@@ -519,8 +519,8 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C1"
   }
-  
-  
+
+
 
   static readonly EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY: DfhApiClass = {
     "pk_entity": 5567,
@@ -542,7 +542,28 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C4"
   }
-  
+
+  static readonly EN_2_TEMPORAL_ENTITY: DfhApiClass = {
+    "pk_entity": 4929,
+    "dfh_pk_class": 2,
+    "dfh_basic_type": 0,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Temporal Entity",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": null,
+    "dfh_class_scope_note": "This class comprises all phenomena, such as the instances of E4 Periods, E5 Events and states, which happen over a limited extent in\n            time. In some contexts, these are also called perdurants. This class is disjoint from E77 Persistent Item. This is an abstract class and\n            has no direct instances. E2 Temporal Entity is specialized into E4 Period, which applies to a particular geographic area (defined with a\n            greater or lesser degree of precision), and E3 Condition State, which applies to instances of E18 Physical Thing. ",
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E2"
+  }
+
 }
 
 

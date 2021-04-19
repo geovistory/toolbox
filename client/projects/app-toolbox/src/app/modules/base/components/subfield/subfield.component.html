@@ -144,8 +144,8 @@
                 </button>
               </mat-menu>
 
-              <span class="font-xs text-muted class-label" [matTooltip]="'Temporal Entity ' + source.fkInfo"
-                [matMenuTriggerFor]="teEnMenu">
+              <span class="font-xs text-muted class-label"
+                [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity" [matMenuTriggerFor]="teEnMenu">
                 <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                 <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
                 {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}

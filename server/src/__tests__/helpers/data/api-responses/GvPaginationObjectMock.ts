@@ -220,7 +220,7 @@ export namespace GvPaginationObjectMock {
       {
         page: createTimeSpanSubPage(
           InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
-          DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT
+          DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT
         ),
         count: 0,
         paginatedStatements: [],

@@ -15,6 +15,7 @@ import { SysConfigFieldPosition } from './sysConfigFieldPosition';
 export interface SysConfigFieldDisplay { 
     comment?: string;
     displayInBasicFields?: SysConfigFieldPosition;
+    isHasTimeSpanShortCut?: boolean;
     hidden?: boolean;
 }
 

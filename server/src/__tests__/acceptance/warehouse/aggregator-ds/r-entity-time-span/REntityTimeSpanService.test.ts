@@ -205,7 +205,7 @@ async function createProjectAndModelMock() {
     await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE);
 
     // P81 ongoing throughout
-    await createDfhApiProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT);
     // P82 at some time within
     await createDfhApiProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN);
     // P81a end of the begin

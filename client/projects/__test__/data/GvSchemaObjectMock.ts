@@ -1,5 +1,5 @@
 import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
-import { createAppellationProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
+import { createAppellationProperty, createDefinitionProperty, createHasTimeSpanProperty, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
 import { DfhApiClassMock } from './auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from './auto-gen/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
@@ -27,13 +27,14 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE),
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON),
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_50_TIME_SPAN),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_2_TEMPORAL_ENTITY),
       ],
       property: [
+        createHasTimeSpanProperty(DfhApiClassMock.EN_365_NAMING.dfh_pk_class),
+        createDefinitionProperty(DfhApiClassMock.EN_365_NAMING.dfh_pk_class),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
-        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
-        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
-        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN),
@@ -45,7 +46,7 @@ export namespace GvSchemaObjectMock {
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
-        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN),
@@ -107,7 +108,7 @@ export namespace GvSchemaObjectMock {
       property: [
         createAppellationProperty(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class),
 
-        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
+        createDefinitionProperty(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class),
 
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
@@ -119,6 +120,8 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_244_EXPRESSION_CREATION),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_450_MANIFESTATION_SINGLETON_TYPE),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_784_SHORT_TITLE),
+
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1762_HAS_DEFINITION),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON),
@@ -143,13 +146,16 @@ export namespace GvSchemaObjectMock {
       property: [
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_148_WAS_AT),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_145_DURING),
       ],
       label: [
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_148_WAS_AT),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_147_WAS_A_PRESENCE_OF_GEO_PLACE),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_145_DURING),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_84_PRESENCE),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_363_GEO_PLACE),
-        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_51_PLACE)
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_51_PLACE),
+
       ]
     },
     pro: {
@@ -167,10 +173,12 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_633_UNION),
       ],
       property: [
+        createHasTimeSpanProperty(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM),
         transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
       ],
       label: [
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1435_STEMS_FROM),
         transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE),
         transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_61_BIRTH),
@@ -210,6 +218,43 @@ export namespace GvSchemaObjectMock {
         ProDfhProfileProjRelMock.PROJ_1_PROFILE_4,
         ProDfhProfileProjRelMock.PROJ_1_PROFILE_12,
 
+      ]
+    }
+  }
+
+  // remark: this mock is for developing form to edit real time-spans!
+  export const modelOfTimeSpan: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_61_BIRTH),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_50_TIME_SPAN),
+      ],
+      property: [
+        createHasTimeSpanProperty(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END)
+      ],
+      label: [
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_4_HAS_TIME_SPAN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END),
+        transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_153_END_OF_THE_END),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_61_BIRTH),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_50_TIME_SPAN),
+
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
       ]
     }
   }

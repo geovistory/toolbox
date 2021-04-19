@@ -349,7 +349,53 @@ describe('ConfigurationPipeService', () => {
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence[0].length).toEqual(6)
+            expect(actualSequence[0].length).toEqual(7)
+          },
+          null,
+          done);
+
+    });
+
+    it('should return fields of presence', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.modelOfPresence, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeFields(DfhApiClassMock.EN_84_PRESENCE.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0].length).toEqual(3)
+          },
+          null,
+          done);
+
+    });
+
+    it('should return fields of birth', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.modelOfBirth, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeFields(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0].length).toEqual(3)
           },
           null,
           done);

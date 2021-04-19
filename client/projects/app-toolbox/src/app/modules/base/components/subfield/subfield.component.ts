@@ -126,7 +126,8 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       // Piping from store
       switchMap(([limit, offset]) => this.i.pipeFieldPage(
         fieldToFieldPage(this.field, this.source, this.scope, limit, offset),
-        fieldToGvFieldTargets(this.field)
+        fieldToGvFieldTargets(this.field),
+        this.field.isTimeSpanShortCutField
       )),
       shareReplay({ refCount: true, bufferSize: 1 }),
 

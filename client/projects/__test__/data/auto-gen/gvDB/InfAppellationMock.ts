@@ -88,6 +88,6 @@ export class InfAppellationMock {
   })
 }
 
-function createQuillDoc(string: string) {
+export function createQuillDoc(string: string) {
   return { latestId: string.length, ops: string.split('').map((char, i) => ({ insert: char, attributes: { charid: '' + (i + 1) } })) };
 }

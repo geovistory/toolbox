@@ -5,8 +5,8 @@ import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyB
 import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityTargetType, GvTargetType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { FieldPlaceOfDisplay } from '../models/FieldPosition';
 import { Profiles } from '../models/Profiles';
@@ -90,25 +90,28 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
         );
         const outP = outgoingProps.filter((prop) => isEnabled(prop))
-        let inP = ingoingProps.filter((prop) => isEnabled(prop))
+        const inP = ingoingProps.filter((prop) => isEnabled(prop))
 
-        if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
-          // remove the has time span property
-          inP = []
+        // if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
+        //   // remove the has time span property
+        //   inP = []
 
-        } else {
-          // // if class is not appellation for language, add appellation for language (1111) property
-          // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-          //   ingoingProps.push(createAppellationProperty(pkClass))
-          // }
+        // } else {
+        //   // // if class is not appellation for language, add appellation for language (1111) property
+        //   // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
+        //   //   ingoingProps.push(createAppellationProperty(pkClass))
+        //   // }
 
-          // if is temporal entity, add has time span property
-          if (sourceKlass.basic_type === 9) {
-            outP.push(createHasTimeSpanProperty(pkClass))
-          }
+        //   // if is temporal entity, add has time span property
+        //   if (
+        //     // sourceKlass.basic_type !== 8 && sourceKlass.basic_type !== 30
+        //     sourceKlass.basic_type === 9
+        //   ) {
+        //     outP.push(createHasTimeSpanProperty(pkClass))
+        //   }
 
-          outP.push(createHasDefinitionProperty(pkClass))
-        }
+        //   outP.push(createHasDefinitionProperty(pkClass))
+        // }
         return combineLatest(
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, sysConfig, noNesting),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, sysConfig, noNesting),
@@ -136,7 +139,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
               if (!uniqFields[fieldId]) {
                 let isSpecialField: SpecialFieldType = false;
                 if (s.isHasTypeField) isSpecialField = 'has-type';
-                else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
+                // TODO time span!!!
+                // else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
+                // else if (s.targetClass === DfhConfig.ClASS_PK_TIME_SPAN) isSpecialField = 'time-span';
+                else if (s.isTimeSpanShortCutField) isSpecialField = 'time-span';
                 uniqFields[fieldId] = {
                   sourceClass: s.sourceClass,
                   sourceClassLabel: s.sourceClassLabel,
@@ -146,6 +152,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   targetMaxQuantity: s.targetMaxQuantity,
                   label: s.label,
                   isHasTypeField: s.isHasTypeField,
+                  isTimeSpanShortCutField: s.isTimeSpanShortCutField,
                   property: s.property,
                   isOutgoing: s.isOutgoing,
                   identityDefiningForSource: s.identityDefiningForSource,
@@ -384,6 +391,13 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     // console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
+    const first = of('field not piped after 10s').pipe(
+      delay(1000),
+      map(_ => {
+        throw new Error(`Error: the `);
+      })
+    );
+
     return combineLatest(
       this.pipeClassLabel(sourceClass).pipe(tap(x => {
         // console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
@@ -395,7 +409,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         return x
       })),
-      this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, noNesting).pipe(tap(x => {
+      this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
         // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
@@ -421,6 +435,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           targetMaxQuantity,
           label,
           isHasTypeField: o && p.is_has_type_subproperty,
+          isTimeSpanShortCutField: listType.timeSpan ? true : false,
           property: { fkProperty: p.pk_property },
           isOutgoing: o,
           identityDefiningForSource: o ? p.identity_defining : false,
@@ -452,23 +467,31 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   // @spyTag
   // @cache({ refCount: false })
-  pipeSubfieldTypeOfClass(config: SysConfigValue, pkClass: number, targetMaxQuantity: number, parentProperty?: number, noNesting = false): Observable<GvTargetType> {
+  pipeSubfieldTypeOfClass(sysConfig: SysConfigValue, pkClass: number, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvTargetType> {
     const obs$ = this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
-      switchMap((klass) => this.pipeSubfieldType(config, klass, targetMaxQuantity, parentProperty, noNesting))
+      switchMap((klass) => this.pipeSubfieldType(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
     )
     return this.cache('pipeSubfieldTypeOfClass', obs$, ...arguments)
 
   }
 
 
-  pipeSubfieldType(config: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, parentProperty?: number, noNesting = false): Observable<GvTargetType> {
+  pipeSubfieldType(sysConfig: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvTargetType> {
 
     const res = (x: GvTargetType) => new BehaviorSubject(x)
     let classConfig: ClassConfig
-    if (config) classConfig = config.classes[klass.pk_class];
+    if (sysConfig) classConfig = sysConfig.classes[klass.pk_class];
     if (classConfig && classConfig.valueObjectType) {
       return res(classConfig.valueObjectType)
+    }
+
+    // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+    const sysConfOfProp = isOutgoing ? sysConfig.specialFields.outgoingProperties : sysConfig.specialFields.incomingProperties;
+
+    const isTimeSpanShortCutField = sysConfOfProp[pkProperty] ? sysConfOfProp[pkProperty].isHasTimeSpanShortCut : false;
+    if (isTimeSpanShortCutField) {
+      return res({ timeSpan: 'true' })
     }
 
 
@@ -476,9 +499,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       return res({ typeItem: 'true' })
     }
     // TODO add this to sysConfigValue
-    else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
-      return res({ timeSpan: 'true' })
-    }
+    // TODO time span!!!
+    // else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
+    //   return res({ timeSpan: 'true' })
+    // }
     else if (klass.basic_type === 8 || klass.basic_type === 30 || noNesting) {
       return res({ entityPreview: 'true' })
     }
@@ -505,8 +529,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             }
             let isCircular = false;
             if (
-              parentProperty &&
-              field.property.fkProperty == parentProperty &&
+              pkProperty &&
+              field.property.fkProperty == pkProperty &&
               field.targetMaxQuantity === 1
             ) {
               isCircular = true
@@ -1174,30 +1198,6 @@ function createHasDefinitionProperty(domainClass: number) {
 }
 
 
-
-export function createHasTimeSpanProperty(domainClass: number) {
-  const profiles: Profiles = [
-    {
-      removed_from_api: false,
-      fk_profile: DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
-    }
-  ]
-  const hasAppeProp: DfhProperty = {
-    has_domain: domainClass,
-    pk_property: DfhConfig.PROPERTY_PK_HAS_TIME_SPAN,
-    has_range: DfhConfig.ClASS_PK_TIME_SPAN,
-    domain_instances_max_quantifier: -1,
-    domain_instances_min_quantifier: 1,
-    range_instances_max_quantifier: 1,
-    range_instances_min_quantifier: 1,
-    identifier_in_namespace: 'P4',
-    identity_defining: false,
-    is_inherited: true,
-    is_has_type_subproperty: false,
-    profiles
-  }
-  return hasAppeProp
-}
 
 
 function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: RelatedProfile[]): boolean {

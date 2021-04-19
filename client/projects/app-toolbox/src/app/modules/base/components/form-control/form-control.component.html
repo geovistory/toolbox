@@ -44,7 +44,20 @@
     Please enter text and select a language
   </mat-error>
 </mat-form-field> -->
-
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-time-primitive'" class="w-100"
+  [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-time-primitive placeholder="Edit date..." [formControl]="formControlFactory.control"
+    [required]="config?.required">
+  </gv-ctrl-time-primitive>
+  <mat-icon matSuffix svgIcon="calendar"></mat-icon>
+  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+    Please add a date
+  </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
+</mat-form-field>
 
 <mat-form-field *ngIf="config?.data.controlType === 'ctrl-time-span'" class="w-100"
   [appearance]="config.data.appearance">

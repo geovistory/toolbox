@@ -606,7 +606,7 @@ export class MockPaginationControllerForSandboxes {
 
 
     const props = [
-      DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT,
+      DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT,
       DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN,
       DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN,
       DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN,
