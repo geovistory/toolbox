@@ -2,9 +2,10 @@ import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
+import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
@@ -15,7 +16,7 @@ import { FgPlaceComponent } from '../fg-place/fg-place.component';
 export interface CtrlValueDialogData {
   vot: SysConfigValueObjectType | undefined,
   pkClass: number,
-  initVal$: Observable<InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage> | undefined;
+  initVal$: Observable<InfValueObject> | undefined;
   pkProject: number;
 }
 
@@ -32,7 +33,7 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
 
   destroy$ = new Subject<boolean>();
 
-  newValue: InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage | undefined;
+  newValue: InfValueObject | undefined;
 
   @ViewChild('place', { static: false }) place: FgPlaceComponent;
   @ViewChild('langString', { static: false }) langString: FgLangStringComponent;
@@ -50,6 +51,8 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
   ) { }
 
   ngOnInit(): void {
+    this.newValue = {};
+
     // dimension
     if (this.data.vot.dimension) {
       this.c.pipeClassLabel(this.data.vot.dimension.measurementUnitClass)
@@ -67,27 +70,27 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
     // place
     if (this.data.vot.place) {
       this.place.formFactory$.pipe(switchMap(ff => ff.formGroupFactory.valueChanges$), takeUntil(this.destroy$))
-        .subscribe((v: InfPlace) => this.newValue = v)
+        .subscribe((v: InfPlace) => this.newValue.place = v)
     }
 
     // langstring
     if (this.data.vot.langString) {
       this.langString.formFactory$.pipe(switchMap(ff => ff.formGroupFactory.valueChanges$), takeUntil(this.destroy$))
-        .subscribe((v: InfLangString) => this.newValue = v)
+        .subscribe((v: InfLangString) => this.newValue.langString = v)
     }
 
     // dimension
     if (this.data.vot.dimension) {
       this.dimension.formFactory$.pipe(switchMap(ff => ff.formGroupFactory.valueChanges$), takeUntil(this.destroy$))
-        .subscribe((v: InfDimension) => this.newValue = v)
+        .subscribe((v: InfDimension) => this.newValue.dimension = v)
     }
 
     // appellation
     if (this.data.vot.appellation) {
       if (this.data.initVal$) this.data.initVal$.pipe(takeUntil(this.destroy$)).subscribe(initVal => this.appellation.setValue(initVal));
       this.appellation.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v: InfAppellation) => {
-        this.newValue = { ...v, fk_class: this.data.pkClass };
-        delete this.newValue.pk_entity;
+        this.newValue.appellation = { ...v, fk_class: this.data.pkClass };
+        delete this.newValue.appellation.pk_entity;
         delete (this.newValue as InfAppellation).string;
       });
     }
@@ -98,8 +101,8 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
         this.data.initVal$.pipe(takeUntil(this.destroy$)).subscribe(initVal => this.timeprimitive.setValue(initVal));
       }
       this.timeprimitive.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((nv: InfTimePrimitiveWithCalendar) => {
-        this.newValue = nv;
-        if (this.newValue) delete this.newValue.pk_entity;
+        this.newValue.timePrimitive = nv;
+        if (this.newValue) delete this.newValue.timePrimitive.pk_entity;
       });
     }
 
@@ -110,7 +113,7 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
       }
       this.language.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((nv: InfLanguage) => {
         if (nv) {
-          this.newValue = nv;
+          this.newValue.language = nv;
         }
       });
     }
@@ -125,23 +128,23 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
     // particular if TIME PRIMITIVE
     let calendar, infProjRel: ProInfoProjRel;
     if (this.data.vot.timePrimitive) {
-      calendar = (this.newValue as InfTimePrimitiveWithCalendar).calendar;
-      delete (this.newValue as InfTimePrimitiveWithCalendar).calendar;
+      calendar = this.newValue.timePrimitive.calendar;
+      delete this.newValue.timePrimitive.calendar;
       infProjRel = { fk_project: this.data.pkProject, calendar, is_in_project: true } as ProInfoProjRel
-      (this.newValue as InfTimePrimitiveWithCalendar).fk_class = this.data.pkClass;
+      this.newValue.timePrimitive.fk_class = this.data.pkClass;
     }
 
     // particular if LANG STRING
     if (this.data.vot.langString) (this.newValue as InfLangString).fk_class = this.data.pkClass;
 
     this.dialogRef.close({
-      object_place: this.data.vot.place ? this.newValue as InfPlace : undefined,
-      object_lang_string: this.data.vot.langString ? this.newValue as InfLangString : undefined,
-      object_dimension: this.data.vot.dimension ? this.newValue as InfDimension : undefined,
-      object_appellation: this.data.vot.appellation ? this.newValue as InfAppellation : undefined,
-      object_language: this.data.vot.language ? this.newValue as InfLanguage : undefined,
+      object_place: this.data.vot.place ? this.newValue.place : undefined,
+      object_lang_string: this.data.vot.langString ? this.newValue.langString : undefined,
+      object_dimension: this.data.vot.dimension ? this.newValue.dimension : undefined,
+      object_appellation: this.data.vot.appellation ? this.newValue.appellation : undefined,
+      object_language: this.data.vot.language ? this.newValue.language : undefined,
       entity_version_project_rels: this.data.vot.timePrimitive ? [infProjRel] : undefined,
-      object_time_primitive: this.data.vot.timePrimitive ? this.newValue as InfTimePrimitive : undefined,
+      object_time_primitive: this.data.vot.timePrimitive ? this.newValue.timePrimitive : undefined,
     });
   }
 

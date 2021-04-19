@@ -278,7 +278,7 @@ export class TableController {
   }
 
   async getPkProject(pkNamespace: number) {
-    const namespace = await this.datNamespaceRepo.findOne({ where: { fk_namespace: pkNamespace } });
+    const namespace = await this.datNamespaceRepo.findOne({ where: { pk_entity: pkNamespace } });
     if (!namespace) throw new HttpErrors.UnprocessableEntity('The namespace does not exists')
     return namespace.fk_project;
   }

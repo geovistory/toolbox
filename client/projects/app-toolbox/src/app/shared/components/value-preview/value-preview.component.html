@@ -2,38 +2,38 @@
 <div *ngIf="vot.place" class="display-holder">
     <div class="display-field">
         <div>Latitude: </div>
-        <div>{{value.lat}}</div>
+        <div>{{value.place.lat}}</div>
     </div>
     <div class="display-field">
         <div>Longitude: </div>
-        <div>{{value.long}}</div>
+        <div>{{value.place.long}}</div>
     </div>
 </div>
 
 <!-- LANG STRING -->
 <div *ngIf="vot.langString" class="display-holder">
-    {{getLangString(value)}}
+    {{getLangString(value.langString)}}
 </div>
 
 
 <!-- APPELLATION -->
 <div *ngIf="vot.appellation" class="display-holder">
-    {{value.string}}
+    {{value.appellation.string}}
 </div>
 
 
 <!-- DIMENSION -->
 <div *ngIf="vot.dimension" class="display-holder">
-    {{value.numeric_value}} {{dimension_unit}}
+    {{value.dimension.numeric_value}} {{dimension_unit}}
 </div>
 
 
 <!-- TIME PRIMITIVE -->
 <div *ngIf="vot.timePrimitive" class="display-holder">
-    {{stringifyJulianDate(value)}}
+    {{stringifyJulianDate(value.timePrimitive)}}
 </div>
 
 <!-- LANGUAGE -->
 <div *ngIf="vot.language" class="display-holder">
-    {{value.notes}}
+    {{value.language.notes}}
 </div>

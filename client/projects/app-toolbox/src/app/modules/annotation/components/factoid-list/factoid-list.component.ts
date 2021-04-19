@@ -5,11 +5,11 @@ import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigVal
 import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValueObjectTypeName } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
-import { InfValueObjectType } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/value-matcher/value-matcher.component';
+import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { values } from 'ramda';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -92,12 +92,22 @@ export class FactoidListComponent implements OnInit, OnDestroy {
     )
   }
 
-  getValueVOT$(bodyStatement: FactoidStatement): Observable<InfValueObjectType> {
-    if (bodyStatement.vot == ValueObjectTypeName.appellation) return this.p.inf$.appellation$.by_pk_entity$.key(bodyStatement.pkEntity)
-    if (bodyStatement.vot == ValueObjectTypeName.place) return this.p.inf$.place$.by_pk_entity$.key(bodyStatement.pkEntity)
-    if (bodyStatement.vot == ValueObjectTypeName.dimension) return this.p.inf$.dimension$.by_pk_entity$.key(bodyStatement.pkEntity)
-    if (bodyStatement.vot == ValueObjectTypeName.langString) return this.p.inf$.lang_string$.by_pk_entity$.key(bodyStatement.pkEntity)
-    if (bodyStatement.vot == ValueObjectTypeName.language) return this.p.inf$.language$.by_pk_entity$.key(bodyStatement.pkEntity)
+  getValueVOT$(bodyStatement: FactoidStatement): Observable<InfValueObject> {
+    if (bodyStatement.vot == ValueObjectTypeName.appellation) {
+      return this.p.inf$.appellation$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ appellation: value })))
+    }
+    if (bodyStatement.vot == ValueObjectTypeName.place) {
+      return this.p.inf$.place$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ place: value })))
+    }
+    if (bodyStatement.vot == ValueObjectTypeName.dimension) {
+      return this.p.inf$.dimension$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ dimension: value })))
+    }
+    if (bodyStatement.vot == ValueObjectTypeName.langString) {
+      return this.p.inf$.lang_string$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ langString: value })))
+    }
+    if (bodyStatement.vot == ValueObjectTypeName.language) {
+      return this.p.inf$.language$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ language: value })))
+    }
     if (bodyStatement.vot == ValueObjectTypeName.timePrimitive) {
       return combineLatest([
         this.p.inf$.time_primitive$.by_pk_entity$.key(bodyStatement.pkEntity),
@@ -109,8 +119,8 @@ export class FactoidListComponent implements OnInit, OnDestroy {
             ...tp,
             calendar: ipr.calendar
           } as InfTimePrimitiveWithCalendar
-        }))
+        }),
+        switchMap(value => of({ timePrimitive: value })))
     }
   }
-
 }
