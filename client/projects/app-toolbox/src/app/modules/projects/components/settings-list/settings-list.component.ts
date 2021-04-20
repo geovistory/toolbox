@@ -1,9 +1,9 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 
 @Component({
   selector: 'gv-settings-list',
@@ -82,7 +82,7 @@ export class SettingsListComponent implements OnInit {
             title: 'Team',
             items: [
               {
-                onClickFnName: 'comingSoon',
+                onClickFnName: 'teamSizeAlert',
                 label: 'Collaborators'
               }
             ]
@@ -126,6 +126,9 @@ export class SettingsListComponent implements OnInit {
 
   comingSoon() {
     alert('Coming soon.')
+  }
+  teamSizeAlert() {
+    alert('If you want to add more team members to the project, please contact us: info@kleiolab.ch')
   }
 
 }
