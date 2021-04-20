@@ -49,7 +49,7 @@ type StatementTargetMeta = {
   tableName: string,
   objectWith: string[],
 }
-type GvTargetTypeKey = keyof Omit<GvTargetType, 'timeSpan' | 'textProperty'>;
+type GvTargetTypeKey = keyof Omit<GvTargetType, 'textProperty'>;
 
 type Config = {
   [key in GvTargetTypeKey]: StatementTargetMeta
@@ -193,6 +193,15 @@ export class QFieldPage extends SqlBuilderLb4Models {
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.temporal_entity
       },
+      timeSpan: {
+        modelDefinition: InfTemporalEntity.definition,
+        modelPk: 'pk_entity',
+        statementObjectFk: 'fk_object_info',
+        statementSubjectFk: 'fk_subject_info',
+        tableName: 'information.temporal_entity',
+        classFk: 'fk_class',
+        objectWith: this.objectWiths.schemas.inf.temporal_entity
+      },
       entityPreview: {
         modelDefinition: WarEntityPreview.definition,
         modelPk: 'pk_entity',
@@ -231,6 +240,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
       langString: [this.config.langString],
       language: [this.config.language],
       temporalEntity: [this.config.temporalEntity],
+      timeSpan: [this.config.timeSpan],
       timePrimitive: [this.config.timePrimitive],
       typeItem: [
         // list all models that can be represented by typeItem
