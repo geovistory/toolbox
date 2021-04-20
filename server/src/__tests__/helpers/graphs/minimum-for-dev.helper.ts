@@ -1,26 +1,32 @@
+import {createInfAppellation} from '../atomic/inf-appellation.helper';
+import {createInfPersistentItem} from '../atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
+import {createInfTemporalEntity} from '../atomic/inf-temporal-entity.helper';
+import {createProClassFieldConfig} from '../atomic/pro-class-field-config.helper';
 import {addProfilesToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
 import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
+import {createProProject} from '../atomic/pro-project.helper';
 import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
+import {createPubRole} from '../atomic/pub-role.helper';
+import {createPubRoleMapping} from '../atomic/pub-rolemapping.helper';
+import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
+import {setSequencesToMax} from '../atomic/_sequences.helper';
+import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
+import {InfPersistentItemMock} from '../data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {InfTemporalEntityMock} from '../data/gvDB/InfTemporalEntityMock';
+import {ProClassFieldConfigMock} from '../data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../data/gvDB/ProProjectMock';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';
-import {createGaetanMuck} from './account.helper';
-import {createInfAppellation} from '../atomic/inf-appellation.helper';
-import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
-import {createInfTemporalEntity} from '../atomic/inf-temporal-entity.helper';
-import {InfTemporalEntityMock} from '../data/gvDB/InfTemporalEntityMock';
-import {createInfPersistentItem} from '../atomic/inf-persistent-item.helper';
-import {InfPersistentItemMock} from '../data/gvDB/InfPersistentItemMock';
-import {createProClassFieldConfig} from '../atomic/pro-class-field-config.helper';
-import {ProClassFieldConfigMock} from '../data/gvDB/ProClassFieldConfigMock';
-import {createProProject} from '../atomic/pro-project.helper';
+import {PubRoleMappingMock} from '../data/gvDB/PubRolemappingMock';
+import {PubRoleMock} from '../data/gvDB/PubRoleMock';
+import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
+import {createModel} from '../meta/model.helper';
 import {createSysClassFields} from '../meta/sysClassFields.helper';
-import {setSequencesToMax} from '../atomic/_sequences.helper';
-import {createTypes, createModel} from '../meta/model.helper';
+import {createGaetanMuck} from './account.helper';
+import {createTextAndAnnotation} from './feature-X.helper';
 import {createSandBoxProject} from './project.helper';
 import {createSourceHabsbourgEmpire} from './source.helper';
-import {createTextAndAnnotation} from './feature-X.helper';
 
 /**
  * This function creates mockdata useful for developing geovistory
@@ -31,6 +37,8 @@ import {createTextAndAnnotation} from './feature-X.helper';
 export async function minimumForDev() {
   const pkProject = ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1;
 
+  // create the SysConfig
+  await createSysSystemConfig(SysConfigValueMock.SYS_CONFIC_VALID)
 
   //create the model
   const {profiles} = await createModel()
@@ -43,6 +51,10 @@ export async function minimumForDev() {
   await createProProject(ProProjectMock.DEFAULT_PROJECT);
   await createGaetanMuck();
   await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.SANDBOX_PROJECT);
+
+  // make Gaetan sys admin
+  await createPubRole(PubRoleMock.SYS_ADMIN)
+  await createPubRoleMapping(PubRoleMappingMock.GAETAN_SYS_ADMIN)
 
   // add profiles to project
   await addProfilesToProject(pkProject, profiles.map(p => p.dfh_pk_profile))

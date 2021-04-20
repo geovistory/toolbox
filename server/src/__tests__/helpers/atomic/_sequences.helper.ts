@@ -43,7 +43,7 @@ interface Id {
 }
 export async function dealWithId<M extends Id>(item: M, sequence: string) {
   if (item.id) {
-    await testdb.execute(`SELECT setval('${sequence}', ${item.id - 1}, true);`);
+    await testdb.execute(`SELECT setval('${sequence}', ${item.id}, false);`);
   }
   return omit(['id'], item);
 }
