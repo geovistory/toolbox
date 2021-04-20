@@ -11,12 +11,15 @@ npm run build
 echo './server: npm prune --production'
 npm prune --production
 
-cd ..
-
 echo '================= On dev =============================='
 if [ $DB_ENV = 'dev' ]; then
-    npm i dotenv
+    echo 'touch .env'
+    touch .env
+
+    echo 'npm i --production=false'
+    npm i --production=false
 fi
 
+cd ..
 
 echo '================ End of heroku-postbuild.sh ================================'
