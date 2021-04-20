@@ -14,7 +14,7 @@ export class SysConfigAddProperty {
   @property({type: SysConfigAddPropertyForClass})
   toSourceClass?: SysConfigAddPropertyForClass;
 
-  @property()
+  @property({required: true})
   isOutgoing: boolean
 
   @property()
