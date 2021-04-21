@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
+import {DfhProperty} from '../../../models';
 import {createDfhApiClass} from '../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../helpers/atomic/inf-language.helper';
-import {addProfilesToProject} from '../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
+import {addProfilesToProject, addProfileToProject} from '../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {linkAccountToProject} from '../../helpers/atomic/pub-account_project_rel.helper';
 import {createSysSystemConfig} from '../../helpers/atomic/sys-system-config.helper';
 import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
@@ -13,7 +15,6 @@ import {createProject} from '../../helpers/generic/project.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {createProfiles, createTypes} from '../../helpers/meta/model.helper';
-import {DfhProperty} from '../../../models';
 
 
 
@@ -49,6 +50,8 @@ describe('PropertyController', () => {
 
             await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH)
             await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE)
+            await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
+
             await createSysSystemConfig({
                 classes: {},
                 specialFields: {},
@@ -63,10 +66,21 @@ describe('PropertyController', () => {
         })
         it('should return 3 properties', async () => {
 
-            await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH)
-            await createDfhApiClass(DfhApiClassMock.EN_50_TIME_SPAN)
+            // property should be selected
             await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE)
+            await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH)
+            await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
+
+            // should be generated for birth
             await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF)
+            await createDfhApiClass(DfhApiClassMock.EN_365_NAMING)
+
+            // should not get a genarated 1111 property (because basic_type = 10)
+            await createDfhApiClass(DfhApiClassMock.EN_50_TIME_SPAN)
+
+            // should be ignored, since range class (union) missing
+            await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM)
+
             await createSysSystemConfig({
                 classes: {},
                 specialFields: {},
@@ -90,11 +104,16 @@ describe('PropertyController', () => {
             expect(res.body.length).to.equal(3)
         })
 
-        it('should return 2 properties', async () => {
+        it('should return 1 property', async () => {
 
             await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH)
             await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE)
+            await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
+
+            // should not be added to birth because of basicType
             await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF)
+            await createDfhApiClass(DfhApiClassMock.EN_365_NAMING)
+
             await createSysSystemConfig({
                 classes: {},
                 specialFields: {},
@@ -115,42 +134,18 @@ describe('PropertyController', () => {
                 .set('Authorization', lb4Token)
                 .query({pkProject})
                 .send()
-            expect(res.body.length).to.equal(2)
-        })
-
-        it('should return 1 properties', async () => {
-
-            await createDfhApiClass(DfhApiClassMock.EN_365_NAMING)
-            await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF)
-            await createSysSystemConfig({
-                classes: {},
-                specialFields: {},
-                addProperty: [
-                    {
-                        wherePkProperty: 1111,
-                        whereFkDomain: 365,
-                        isOutgoing: false,
-                        toSourceClass: {
-                            wherePkClassNotIn: [365],
-                        }
-                    }
-                ]
-            })
-
-            const res = await client.get('/properties/of-project')
-                .set('Authorization', lb4Token)
-                .query({pkProject})
-                .send()
             expect(res.body.length).to.equal(1)
         })
 
 
-        it('should return 4 properties', async () => {
+
+        it('should return 3 <has definition> properties', async () => {
 
             await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
             await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE)
             await createDfhApiClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE)
             await createDfhApiProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION)
+            await createDfhApiClass(DfhApiClassMock.EN_785_TEXT)
             await createSysSystemConfig({
                 classes: {},
                 specialFields: {},
@@ -177,7 +172,11 @@ describe('PropertyController', () => {
         it('should return has to be merged with property', async () => {
 
             await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE)
-            await createDfhApiProperty(DfhApiPropertyMock.EN_1499_HAS_TO_BE_MERGED_WITH)
+            await createDfhApiProperty({
+                ...DfhApiPropertyMock.EN_1499_HAS_TO_BE_MERGED_WITH,
+                dfh_fk_profile: 5
+            })
+
             await createSysSystemConfig({
                 classes: {},
                 specialFields: {},
@@ -202,6 +201,102 @@ describe('PropertyController', () => {
             expect(prop.has_range).to.equal(363)
         })
 
+        it('should return <person -> has appellation -> appe in lang> property', async () => {
+            /**
+             * The property should only be created, if domain and range and property are
+             * in a profile activated by the project.
+             */
+            await createDfhApiClass({
+                ...DfhApiClassMock.EN_21_PERSON,
+                dfh_fk_profile: 5
+            })
+            await createDfhApiClass({
+                ...DfhApiClassMock.EN_365_NAMING,
+                dfh_fk_profile: 999 // add the target class to a fake profile
+            })
+
+            // add fake profile to project
+            await addProfileToProject(999, pkProject)
+
+            // add the teemplate property (should not be returned, since its range class is not added)
+            await createDfhApiProperty({
+                ...DfhApiPropertyMock.EN_1111_IS_APPE_OF,
+                dfh_fk_profile: 5
+            })
+
+            await createSysSystemConfig({
+                classes: {},
+                specialFields: {},
+                addProperty: [
+                    {
+
+                        wherePkProperty: 1111,
+                        whereFkDomain: 365,
+                        isOutgoing: false,
+                        toSourceClass: {
+                            wherePkClassNotIn: [365],
+                        }
+                    }
+                ]
+            })
+
+            const res = await client.get('/properties/of-project')
+                .set('Authorization', lb4Token)
+                .query({pkProject})
+                .send()
+
+            expect(res.body.length).to.equal(1)
+            const prop: DfhProperty = res.body[0]
+            expect(prop.has_domain).to.equal(365)
+            expect(prop.has_range).to.equal(21)
+        })
+        it('should NOT return <person -> has appellation -> appe in lang> property', async () => {
+            /**
+             * The property should only be created, if domain and range and property are
+             * in a profile activated by the project.
+             */
+            await createDfhApiClass({
+                ...DfhApiClassMock.EN_21_PERSON,
+                dfh_fk_profile: 5
+            })
+            await createDfhApiClass({
+                ...DfhApiClassMock.EN_365_NAMING,
+                dfh_fk_profile: 999 // add the target class to a fake profile
+            })
+
+            // here we don't add fake profile to project !
+            // await addProfileToProject(999, pkProject)
+
+            await createDfhApiProperty({
+                ...DfhApiPropertyMock.EN_1111_IS_APPE_OF,
+                dfh_fk_profile: 5
+            })
+
+
+            await createSysSystemConfig({
+                classes: {},
+                specialFields: {},
+                addProperty: [
+                    {
+
+                        wherePkProperty: 1111,
+                        whereFkDomain: 365,
+                        isOutgoing: false,
+                        toSourceClass: {
+                            wherePkClassNotIn: [365],
+                        }
+                    }
+                ]
+            })
+
+            const res = await client.get('/properties/of-project')
+                .set('Authorization', lb4Token)
+                .query({pkProject})
+                .send()
+
+            expect(res.body.length).to.equal(0)
+
+        })
     });
 
 

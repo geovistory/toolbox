@@ -56,13 +56,19 @@ export class DfhPropertyController {
           projects.dfh_profile_proj_rel
         WHERE
           fk_project = ${q.addParam(pkProject)}
+        AND
+          enabled = true
         UNION
         SELECT
           5 AS fk_profile -- GEOVISTORY BASICS
       ),
-
+		  tw1 AS (
+			  select array_agg(fk_profile) as enabled_profiles
+			  from tw0
+		  ),
       -- select all properties and generate generic properties (e.g. 1111)
-      tw1 AS (
+      tw2 AS (
+
         SELECT
           t1.dfh_pk_property,
           t1.dfh_is_inherited,
@@ -77,23 +83,34 @@ export class DfhPropertyController {
           t1.dfh_property_identifier_in_namespace,
           t1.dfh_fk_profile,
           t1.removed_from_api
-        FROM
-          data_for_history.api_property t1
+          FROM
+	          data_for_history.api_property t1,
+            data_for_history.api_class t2, -- domain class
+            data_for_history.api_class t3, -- range class
+            tw1 t4
+          -- only properties where domain, property and range is enabled by profile
+          WHERE
+            t1.dfh_property_domain = t2.dfh_pk_class
+            AND
+            t1.dfh_property_range = t3.dfh_pk_class
+          AND
+            t1.dfh_fk_profile = ANY (t4.enabled_profiles)
+          AND
+            t2.dfh_fk_profile = ANY (t4.enabled_profiles)
+          AND
+            t3.dfh_fk_profile = ANY (t4.enabled_profiles)
         ${addProperties}
       ),
 
-      -- filter properties by enabled profiles and group by domain, property, range
-      tw2 AS (
+      -- group by domain, property, range
+      tw3 AS (
         SELECT
           t1.dfh_pk_property,
           t1.dfh_property_domain,
           t1.dfh_property_range,
           jsonb_agg(DISTINCT jsonb_build_object('fk_profile', t1.dfh_fk_profile, 'removed_from_api', t1.removed_from_api)) AS profiles
         FROM
-          tw1 t1,
-          tw0 t2
-        WHERE
-          t2.fk_profile = t1.dfh_fk_profile
+          tw2 t1
         GROUP BY
           t1.dfh_pk_property,
           t1.dfh_property_domain,
@@ -101,7 +118,7 @@ export class DfhPropertyController {
       ),
 
       -- rename columns to loopback model and select distinct (DfhProperty)
-      tw3 AS (
+      tw4 AS (
         SELECT DISTINCT ON (t1.dfh_pk_property,
           t1.dfh_property_domain,
           t1.dfh_property_range)
@@ -118,8 +135,8 @@ export class DfhPropertyController {
           t1.dfh_property_identifier_in_namespace AS identifier_in_namespace,
           t2.profiles
         FROM
-          tw1 t1,
-          tw2 t2
+          tw2 t1,
+          tw3 t2
         WHERE
           t1.dfh_pk_property = t2.dfh_pk_property
           AND t1.dfh_property_domain = t2.dfh_property_domain
@@ -131,9 +148,9 @@ export class DfhPropertyController {
           t1.removed_from_api
       )
       SELECT
-        ${q.createSelect('tw3', DfhProperty.definition)}
+        ${q.createSelect('tw4', DfhProperty.definition)}
       FROM
-        tw3
+        tw4
 
       `;
     return q.execute<DfhProperty[]>()
@@ -192,8 +209,23 @@ export class DfhPropertyController {
           t1.removed_from_api
         FROM
           data_for_history.api_property t1,
-          data_for_history.api_class t2
+          data_for_history.api_class t2, -- source class
+          ${addProp.replaceTargetClassWithSourceClass ? '' : `data_for_history.api_class t3, -- target class`}
+          tw1 t4
         WHERE
+          t2.dfh_fk_profile = ANY (t4.enabled_profiles) -- profile of source class is enabled
+        AND
+          t1.dfh_fk_profile = ANY (t4.enabled_profiles) -- profile of property is enabled
+        ${ addProp.replaceTargetClassWithSourceClass ? '' :
+          `
+          AND
+            t3.dfh_pk_class = t1.${addProp.isOutgoing ? `dfh_property_range` : `dfh_property_domain`} -- join the target class
+          AND
+            t3.dfh_fk_profile = ANY (t4.enabled_profiles) -- profile of target class is enabled
+          `
+        }
+        AND
+        -- add conditions of source classes
           ${wheres.join(' \n AND ')}
 
 
