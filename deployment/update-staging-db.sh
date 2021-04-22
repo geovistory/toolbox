@@ -10,7 +10,7 @@ if [ $DB_ENV='staging' ]; then
         heroku ps:scale worker=0 -a geovistory-staging
 
         # copy production db to staging db
-        heroku pg:copy geovistory-production::DATABASE_URL DATABASE_URL -a geovistory-staging
+        heroku pg:copy geovistory-production::DATABASE_URL DATABASE_URL -a geovistory-staging --confirm
 
         # turn other workers ON
         heroku ps:scale worker=1 -a geovistory-staging
