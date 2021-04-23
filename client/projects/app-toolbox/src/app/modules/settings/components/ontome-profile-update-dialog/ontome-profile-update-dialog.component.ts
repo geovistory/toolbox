@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
-import { takeUntil, first } from 'rxjs/operators';
+import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 export interface OntomeProfileUpdateDialogData {
   profileId: number
   profileLabel: string
@@ -24,7 +24,7 @@ export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
 
   constructor(public dialogRef: MatDialogRef<OntomeProfileUpdateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OntomeProfileUpdateDialogData,
-    private dfhProfileApi: DfhProfileApi,
+    private ontomeService: OntoMeControllerService,
     private p: ActiveProjectService
   ) { }
 
@@ -33,7 +33,7 @@ export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
 
   update() {
     this.updating = true
-    this.dfhProfileApi.updateFromOntoMe(this.data.profileId, this.language)
+    this.ontomeService.ontoMeControllerUpdateProfileFromOntome(this.data.profileId, this.language)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         succes => {

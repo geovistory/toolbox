@@ -56,6 +56,7 @@ export interface DfhApiProperty {
     dfh_pk_property: number,
     dfh_property_label_language: string,
     dfh_property_label: string,
+    dfh_property_inverse_label: string,
     dfh_property_scope_note_language: string,
     dfh_property_scope_note: string,
     dfh_is_inherited: boolean,

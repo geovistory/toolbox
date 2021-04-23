@@ -18,7 +18,7 @@ export interface SysConfigAddProperty {
     whereFkDomain?: number;
     whereFkRange?: number;
     toSourceClass?: SysConfigAddPropertyForClass;
-    isOutgoing?: boolean;
+    isOutgoing: boolean;
     replaceTargetClassWithSourceClass?: boolean;
 }
 

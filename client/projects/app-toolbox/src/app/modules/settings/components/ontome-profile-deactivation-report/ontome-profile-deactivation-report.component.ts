@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { OntoMeControllerService, ProfileDeactivationReport } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
-import { DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
 import { takeUntil } from 'rxjs/operators';
-import { ProfileDeactivationReport } from '../../../../../../../../../server/src/lb3/common/interfaces/profile-deactivation-report.interface'
 
 @Component({
   selector: 'gv-ontome-profile-deactivation-report',
@@ -23,13 +22,13 @@ export class OntomeProfileDeactivationReportComponent implements OnInit, OnDestr
   propertyWarning: boolean;
 
   constructor(
-    private dfhProfApi: DfhProfileApi
+    private ontomeService: OntoMeControllerService,
   ) { }
 
   ngOnInit() {
     this.loading = true;
-    this.dfhProfApi
-      .getDeactivationReport(this.pkProject, this.profileId)
+    this.ontomeService
+      .ontoMeControllerGetDeactivationReport(this.pkProject, this.profileId)
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: ProfileDeactivationReport) => {
         this.loading = false;

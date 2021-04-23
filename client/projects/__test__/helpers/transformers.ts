@@ -70,6 +70,22 @@ export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: DfhApiProperty
     type: 'label'
   }
 }
+export function transformDfhApiPropertyToDfhInverseLabel(dfhApiProperty: DfhApiProperty): DfhLabel {
+  return {
+    fk_property: dfhApiProperty.dfh_pk_property,
+    label: dfhApiProperty.dfh_property_inverse_label,
+    language: dfhApiProperty.dfh_property_label_language,
+    type: 'inverse_label'
+  }
+}
+
+
+export function transformDfhApiPropertyToDfhLabels(dfhApiProperty: DfhApiProperty): DfhLabel[] {
+  return [
+    transformDfhApiPropertyToDfhLabel(dfhApiProperty),
+    transformDfhApiPropertyToDfhInverseLabel(dfhApiProperty),
+  ]
+}
 
 export function createDefinitionProperty(domainClass: number): DfhProperty {
   return {

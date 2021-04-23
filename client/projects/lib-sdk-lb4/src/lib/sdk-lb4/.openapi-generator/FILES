@@ -23,6 +23,7 @@ api/infPlace.service.ts
 api/infStatement.service.ts
 api/infTemporalEntity.service.ts
 api/infTextProperty.service.ts
+api/ontoMeController.service.ts
 api/pingController.service.ts
 api/proClassFieldConfig.service.ts
 api/proDfhClassProjRel.service.ts
@@ -46,6 +47,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/activationReportItem.ts
 model/analysisDefinition.ts
 model/analysisMapRequest.ts
 model/analysisMapResponse.ts
@@ -57,6 +59,11 @@ model/analysisTableRequest.ts
 model/analysisTableResponse.ts
 model/analysisTimeChartRequest.ts
 model/analysisTimeChartResponse.ts
+model/apiClassProfile.ts
+model/apiProfile.ts
+model/apiProfileProject.ts
+model/apiProfileSelectedByProjects.ts
+model/apiPropertyProfile.ts
 model/chartLine.ts
 model/chartLinePoint.ts
 model/classConfig.ts
@@ -77,6 +84,7 @@ model/datNamespaceWithRelations.ts
 model/datNegativeObject.ts
 model/datObject.ts
 model/datTextProperty.ts
+model/deactivationReportItem.ts
 model/dfhApiProfile.ts
 model/dfhClass.ts
 model/dfhLabel.ts
@@ -152,6 +160,8 @@ model/proObject.ts
 model/proProject.ts
 model/proTableConfig.ts
 model/proTextProperty.ts
+model/profileActivationReport.ts
+model/profileDeactivationReport.ts
 model/projectPongRequest.ts
 model/pubAccount.ts
 model/queryDefinition.ts

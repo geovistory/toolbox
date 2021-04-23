@@ -15,9 +15,7 @@ export class FieldLabelComponent implements OnInit {
   constructor(private c: ConfigurationPipesService) { }
 
   ngOnInit() {
-    const domain = this.isOutgoing ? this.fkSourceClass : null
-    const range = this.isOutgoing ? null : this.fkSourceClass
-    this.label$ = this.c.pipeFieldLabel(this.fkProperty, domain, range)
+    this.label$ = this.c.pipeFieldLabel(this.fkSourceClass, this.isOutgoing, this.fkProperty)
   }
 
 }
