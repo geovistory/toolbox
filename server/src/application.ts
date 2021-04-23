@@ -31,6 +31,8 @@ export class GeovistoryApplication extends BootMixin(
 
   constructor(options: ApplicationConfig = {}) {
     super(options);
+    this.bind('app').toClass(GeovistoryApplication)
+
 
     this.bind('APP_EMAIL_SERVICE').toClass(EmailService)
     this.bind('APP_ACCOUNT_SERVICE').toClass(AccountService)
@@ -111,6 +113,7 @@ export class GeovistoryApplication extends BootMixin(
       options: {
         path: process.env.LOG_PATH ?? path.join(__dirname, '../../logs'),
         level: process.env.LOG_LEVEL ?? LOGGER_LEVEL.INFO,
+        // eslint-disable-next-line @typescript-eslint/camelcase
         stack_trace: process.env.NODE_ENV === NodeENV.DEVELOPMENT
       },
       invoke: [InvokeFactory.createConsole],

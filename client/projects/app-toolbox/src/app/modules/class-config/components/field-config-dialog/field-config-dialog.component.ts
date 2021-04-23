@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export interface FieldConfigDialogData {
   fkProject: number,
@@ -14,9 +14,14 @@ export interface FieldConfigDialogData {
 })
 export class FieldConfigDialogComponent implements OnInit {
 
+  isOutgoing: boolean
+  fkSource: number
   constructor(public dialogRef: MatDialogRef<FieldConfigDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: FieldConfigDialogData,
-  ) { }
+  ) {
+    this.isOutgoing = !!data.fkPropertyDomain
+    this.fkSource = this.isOutgoing ? data.fkPropertyDomain : data.fkPropertyRange
+  }
 
   ngOnInit() {
   }

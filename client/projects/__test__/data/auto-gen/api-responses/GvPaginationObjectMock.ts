@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { GvFieldPage, GvPaginationObject } from '@kleiolab/lib-sdk-lb4';
-import { GvFieldPageReqMock } from '../api-requests/GvFieldPageReq';
-import { DfhApiPropertyMock } from '../gvDB/DfhApiPropertyMock';
-import { InfAppellationMock } from '../gvDB/InfAppellationMock';
-import { InfDimensionMock } from '../gvDB/InfDimensionMock';
-import { InfLangStringMock } from '../gvDB/InfLangStringMock';
-import { InfLanguageMock } from '../gvDB/InfLanguageMock';
-import { InfPersistentItemMock } from '../gvDB/InfPersistentItemMock';
-import { InfPlaceMock } from '../gvDB/InfPlaceMock';
-import { InfStatementMock } from '../gvDB/InfStatementMock';
-import { InfTemporalEntityMock } from '../gvDB/InfTemporalEntityMock';
-import { InfTimePrimitiveMock } from '../gvDB/InfTimePrimitiveMock';
-import { DfhApiProperty } from '../gvDB/local-model.helpers';
-import { ProInfoProjRelMock } from '../gvDB/ProInfoProjRelMock';
-import { ProProjectMock } from '../gvDB/ProProjectMock';
-import { WarEntityPreviewMock } from '../gvDB/WarEntityPreviewMock';
+import {GvFieldPage, GvPaginationObject} from '@kleiolab/lib-sdk-lb4';
+import {GvFieldPageReqMock} from '../api-requests/GvFieldPageReq'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {InfAppellationMock} from '../gvDB/InfAppellationMock'
+import {InfDimensionMock} from '../gvDB/InfDimensionMock'
+import {InfLangStringMock} from '../gvDB/InfLangStringMock'
+import {InfLanguageMock} from '../gvDB/InfLanguageMock'
+import {InfPersistentItemMock} from '../gvDB/InfPersistentItemMock'
+import {InfPlaceMock} from '../gvDB/InfPlaceMock'
+import {InfStatementMock} from '../gvDB/InfStatementMock'
+import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
+import {InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
+import {DfhApiProperty} from '../gvDB/local-model.helpers'
+import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
+import {ProProjectMock} from '../gvDB/ProProjectMock'
+import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
 
 export namespace GvPaginationObjectMock {
   export const appeTeEnHasAppeVt: GvPaginationObject = {
@@ -301,7 +301,7 @@ export namespace GvPaginationObjectMock {
         ],
       },
       {
-        page: { ...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1 },
+        page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
         count: 1,
         paginatedStatements: [
           InfStatementMock.NAME_1_TO_APPE.pk_entity
@@ -337,11 +337,11 @@ export namespace GvPaginationObjectMock {
 
 export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPage {
   return {
-    source: { fkInfo: sourceEntity },
-    property: { fkProperty: property.dfh_pk_property },
+    source: {fkInfo: sourceEntity},
+    property: {fkProperty: property.dfh_pk_property},
     isOutgoing: true,
     // targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
-    scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
+    scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
     limit: 1,
     offset: 0
   }

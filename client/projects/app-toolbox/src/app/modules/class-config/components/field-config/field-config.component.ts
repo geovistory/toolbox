@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { Observable } from 'rxjs';
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-field-config',
@@ -10,6 +10,8 @@ import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 export class FieldConfigComponent implements OnInit {
   @Input() fkProject: number
 
+  @Input() fkSourceClass: number
+  @Input() isOutgoing: boolean
   @Input() fkProperty: number
   @Input() fkPropertyDomain?: number
   @Input() fkPropertyRange?: number
@@ -21,7 +23,7 @@ export class FieldConfigComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.fieldLabel$ = this.c.pipeFieldLabel(this.fkProperty, this.fkPropertyDomain, this.fkPropertyRange)
+    this.fieldLabel$ = this.c.pipeFieldLabel(this.fkSourceClass, this.isOutgoing, this.fkProperty)
 
   }
 

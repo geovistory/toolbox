@@ -1,8 +1,10 @@
-<h1 mat-dialog-title>Configure Field '{{c.fieldLabel$|async}}'</h1>
+<h1 mat-dialog-title>Configure Field <gv-field-label [fkProperty]="data.fkProperty" [fkSourceClass]="fkSource"
+    [isOutgoing]="isOutgoing" [showTooltip]="false"></gv-field-label>
+</h1>
 
 <mat-dialog-content class="pb-1">
-  <gv-field-config [fkProject]="data.fkProject" [fkProperty]="data.fkProperty" #c
-    [fkPropertyDomain]="data.fkPropertyDomain" [fkPropertyRange]="data.fkPropertyRange">
+  <gv-field-config [fkProject]="data.fkProject" [isOutgoing]="isOutgoing" [fkSourceClass]="fkSource"
+    [fkProperty]="data.fkProperty" [fkPropertyDomain]="data.fkPropertyDomain" [fkPropertyRange]="data.fkPropertyRange">
   </gv-field-config>
 </mat-dialog-content>
 

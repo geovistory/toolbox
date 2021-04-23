@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfStatement } from '@kleiolab/lib-sdk-lb4';
-import { DatChunkMock } from './DatChunkMock';
-import { DatDigitalMock } from './DatDigitalMock';
-import { DfhApiPropertyMock } from './DfhApiPropertyMock';
-import { InfAppellationMock } from './InfAppellationMock';
-import { InfDimensionMock } from './InfDimensionMock';
-import { InfLangStringMock } from './InfLangStringMock';
-import { InfLanguageMock } from './InfLanguageMock';
-import { InfPersistentItemMock } from './InfPersistentItemMock';
-import { InfPlaceMock } from './InfPlaceMock';
-import { InfTemporalEntityMock } from './InfTemporalEntityMock';
-import { InfTimePrimitiveMock } from './InfTimePrimitiveMock';
-import { OmitEntity } from './local-model.helpers';
-import { TabCellXMock } from './TabCellXMock';
+import {InfStatement} from '@kleiolab/lib-sdk-lb4';
+import {DatChunkMock} from './DatChunkMock';
+import {DatDigitalMock} from './DatDigitalMock';
+import {DfhApiPropertyMock} from './DfhApiPropertyMock';
+import {InfAppellationMock} from './InfAppellationMock';
+import {InfDimensionMock} from './InfDimensionMock';
+import {InfLangStringMock} from './InfLangStringMock';
+import {InfLanguageMock} from './InfLanguageMock';
+import {InfPersistentItemMock} from './InfPersistentItemMock';
+import {InfPlaceMock} from './InfPlaceMock';
+import {InfTemporalEntityMock} from './InfTemporalEntityMock';
+import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
+import {OmitEntity} from './local-model.helpers';
+import {TabCellXMock} from './TabCellXMock';
 
 /**
  * pk_entity prefix: 300

@@ -1,10 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { SysConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { Observable } from 'rxjs';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { map, switchMap } from 'rxjs/operators';
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 @Component({
   selector: 'gv-labels',
@@ -17,6 +15,7 @@ export class LabelsComponent implements OnInit {
 
   @Input() fkClass: number
   @Input() fkProperty: number
+  @Input() isOutgoing: boolean
   @Input() fkPropertyDomain: number
   @Input() fkPropertyRange: number
 
@@ -56,7 +55,7 @@ export class LabelsComponent implements OnInit {
         fkPropertyRange: this.fkPropertyRange,
         fkProject: this.fkProject,
         language,
-        type: 'label'
+        type: this.isOutgoing === false ? 'inverse_label' : 'label'
       }))
     )
     this.labels$ = textProperties$.pipe(

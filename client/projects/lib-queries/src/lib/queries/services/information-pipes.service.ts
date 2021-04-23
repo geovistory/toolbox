@@ -548,8 +548,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
             .filter(f => !!f.property.fkProperty)
             .map(f => ({
               isOutgoing: f.isOutgoing,
-              fkPropertyDomain: f.isOutgoing ? f.sourceClass : null,
-              fkPropertyRange: f.isOutgoing ? null : f.sourceClass,
+              sourceClass: f.sourceClass,
               pkProperty: f.property.fkProperty
             }))),
           switchMap(items => {
@@ -558,17 +557,16 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
               DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(pkProperty => {
                 items.push({
                   pkProperty,
-                  fkPropertyDomain: pkClass,
-                  fkPropertyRange: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+                  sourceClass: pkClass,
                   isOutgoing: true
                 })
               })
             }
 
             return combineLatestOrEmpty(items.map(item => this.c.pipeFieldLabel(
+              item.sourceClass,
+              item.isOutgoing,
               item.pkProperty,
-              item.fkPropertyDomain,
-              item.fkPropertyRange,
             ).pipe(map(label => {
               const isOutgoing = item.isOutgoing;
               const o: PropertyOption = {

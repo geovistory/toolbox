@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { DfhProfileApi } from '@kleiolab/lib-sdk-lb3';
+import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 export interface OntomeProfileActivationReportDialogData {
@@ -24,7 +24,7 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
 
   constructor(public dialogRef: MatDialogRef<OntomeProfileActivationReportDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OntomeProfileActivationReportDialogData,
-    private dfhProfileApi: DfhProfileApi,
+    private ontomeService: OntoMeControllerService,
     private p: ActiveProjectService
   ) { }
 
@@ -33,7 +33,7 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
 
   activate() {
     this.activating = true
-    this.dfhProfileApi.updateAndAddToProject(this.data.pkProject, this.data.profileId)
+    this.ontomeService.ontoMeControllerUpdateAndAddToProject(this.data.pkProject, this.data.profileId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         succes => {

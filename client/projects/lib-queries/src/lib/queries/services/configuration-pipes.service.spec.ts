@@ -112,10 +112,12 @@ describe('ConfigurationPipeService', () => {
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
+      const isOutgoing = true
+
       const q$ = service.pipeFieldLabel(
-        DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
         DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_property_domain,
-        DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_property_range,
+        isOutgoing,
+        DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
       )
 
       // testing pipe
@@ -136,10 +138,11 @@ describe('ConfigurationPipeService', () => {
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
+      const isOutgoing = true
       const q$ = service.pipeFieldLabel(
-        DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_pk_property,
         DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_property_domain,
-        DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_property_range,
+        isOutgoing,
+        DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_pk_property,
       )
 
       // testing pipe
@@ -149,6 +152,31 @@ describe('ConfigurationPipeService', () => {
         .subscribe(
           actualSequence => {
             expect(actualSequence[0]).toEqual(DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_property_label)
+          },
+          null,
+          done);
+
+    });
+    it('should return inverse label for 1762_HAS_DEFINITION', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const isOutgoing = false
+      const q$ = service.pipeFieldLabel(
+        DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_property_range,
+        isOutgoing,
+        DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_pk_property,
+      )
+
+      // testing pipe
+      const expectedSequence: string[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            expect(actualSequence[0]).toEqual(DfhApiPropertyMock.EN_1762_HAS_DEFINITION.dfh_property_inverse_label)
           },
           null,
           done);
@@ -497,11 +525,11 @@ describe('ConfigurationPipeService', () => {
 
             expect(fs[0].placeOfDisplay.basicFields.position).toEqual(1)
             expect(fs[0].label).toEqual('has short title')
-            expect(fs[1].label).toEqual('* reverse of: is appellation for language of*')
+            expect(fs[1].label).toEqual('has appellation for language')
             expect(fs[2].label).toEqual('has manifestation singleton type')
             expect(fs[3].label).toEqual('has definition')
             expect(fs[4].label).toEqual('is representative manifestation singleton for')
-            expect(fs[5].label).toEqual('* reverse of: created*')
+            expect(fs[5].label).toEqual('[inverse property label missing for 992]')
           },
           null,
           done);

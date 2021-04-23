@@ -413,7 +413,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
-      this.pipeFieldLabel(p.pk_property, isOutgoing ? p.has_domain : null, isOutgoing ? null : p.has_range).pipe(tap(x => {
+      this.pipeFieldLabel(sourceClass, isOutgoing, p.pk_property).pipe(tap(x => {
         // console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
@@ -636,7 +636,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @cache({ refCount: false })
   pipeLabels(d: {
     fkProject: number,
-    type: 'label' | 'definition' | 'scopeNote',
+    type: 'label' | 'inverse_label' | 'definition' | 'scope_note',
     language: InfLanguage,
     pkClass?: number,
     fkProperty?: number,
@@ -661,6 +661,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     else if (d.fkProperty) {
       switch (d.type) {
         case 'label':
+        case 'inverse_label':
           fk_system_type = SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL
           break;
         default:
@@ -719,7 +720,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // label from ontome in default language of project
       this.pipeDfhLabel({
         language: d.language.iso6391.trim(),
-        type: 'label',
+        type: d.type,
         fk_class: d.pkClass,
         fk_property: d.fkProperty
       }).pipe(map((item) => {
@@ -731,7 +732,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // label from ontome in english
       this.pipeDfhLabel({
         language: 'en',
-        type: 'label',
+        type: d.type,
         fk_class: d.pkClass,
         fk_property: d.fkProperty
       }).pipe(map((item) => {
@@ -768,7 +769,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeDfhLabel(d: {
-    type: 'label' | 'definition' | 'scopeNote',
+    type: 'label' | 'inverse_label' | 'definition' | 'scope_note',
     language: string,
     fk_class?: number,
     fk_profile?: number,
@@ -784,10 +785,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   */
   // @spyTag
   // @cache({ refCount: false })
-  pipeFieldLabel(fkProperty: number, fkPropertyDomain: number, fkPropertyRange: number): Observable<string> {
-    const isOutgoing = !!fkPropertyDomain;
-    // const system_type = isOutgoing ? (singular ? 180 : 181) : (singular ? 182 : 183)
-
+  pipeFieldLabel(fkSource: number, isOutgoing: boolean, fkProperty: number): Observable<string> {
+    const fkPropertyDomain = isOutgoing ? fkSource : undefined;
+    const fkPropertyRange = isOutgoing ? undefined : fkSource;
+    const type = isOutgoing ? 'label' : 'inverse_label'
     const obs$ = combineLatest(
       this.a.pkProject$,
       this.a.pipeActiveDefaultLanguage()
@@ -795,7 +796,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       switchMap(([fkProject, language]) => this.pipeLabels(
         {
           fkProject,
-          type: 'label',
+          type,
           language,
           fkProperty,
           fkPropertyDomain,
@@ -804,31 +805,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       )
         .pipe(
           map(items => {
-            let label = `* no label (id: ${fkProperty}) *`;
-            items.some((item) => {
-              if (
-                item &&
-                (
-                  item.origin === 'of project in project lang' ||
-                  item.origin === 'of default project in project lang' ||
-                  item.origin === 'of default project in english'
-                )
-              ) {
-                label = item.text
-                return true
-              }
-              else if (
-                item &&
-                (
-                  item.origin === 'of ontome in project lang' ||
-                  item.origin === 'of ontome in english'
-                )
-              ) {
-                label = isOutgoing ? item.text : '* reverse of: ' + item.text + '*'
-                return true
-              }
-            })
-            return label
+            const item = items.find((i) => (i && i.text))
+            return (item && item.text) ? item.text : `[${isOutgoing ? '' : 'inverse '}property label missing for ${fkProperty}]`;
           })
         ))
     )
