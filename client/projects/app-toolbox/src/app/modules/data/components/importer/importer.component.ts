@@ -2,10 +2,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { Header, ImportTable, ImportTableControllerService, ImportTableResponse } from "@kleiolab/lib-sdk-lb4";
+import { Header, ImportTable, ImportTableControllerService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
+import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { ImportTableSocket } from "@kleiolab/lib-sockets";
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
@@ -458,7 +458,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
  */
 function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: string): 'number' | 'string' {
   // We suppose that the table has the same number of col for each rows
-  let isNumber = false;
+  let isNumber = true;
   for (let i = 0; i < table.length; i++) {
     let content = table[i][colNb];
     if (content === undefined) continue;

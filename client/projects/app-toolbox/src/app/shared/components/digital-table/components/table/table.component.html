@@ -37,9 +37,9 @@
                     [svgIcon]="'arrow-left'"></mat-icon>
                   <mat-icon></mat-icon>
                   <span (click)="sort(i)" style="display: flex; overflow: hidden;"
-                    class="gv-fade-out-right">{{col.colLabel}}</span>
+                    class="gv-fade-out-right">HELLO{{col.colLabel}}</span>
                   <mat-icon *ngIf="sortingEnabled && curSort.colNb == i || (changingColumns && i != 1)"></mat-icon>
-                  <mat-icon *ngIf="origin == 'importer'"></mat-icon>
+                  <mat-icon *ngIf="i != 0 && origin == 'importer'"></mat-icon>
                   <mat-icon *ngIf="i != 0 && origin !='importer' && !changingColumns" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
                   <mat-icon *ngIf="i == 0 || (changingColumns && i == headers.length - 1)"></mat-icon>
