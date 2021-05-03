@@ -2,7 +2,7 @@ if [[ "$DB_ENV" == "staging" ]]; then
     # get day of week (1: Monday, 7: sunday)
     day=$(date +"%u")
 
-    if [[ "$day" == "5" ]]; then
+    if [[ "$day" == "2" ]]; then
         # maintenante mode on stagin ON
         heroku maintenance:on -a geovistory-staging
 
