@@ -1,8 +1,9 @@
-if [ $DB_ENV -eq 'temp' ]; then
+echo $DB_ENV
+if [[ "$DB_ENV" == "temp" ]]; then
     # get day of week (1: Monday, 7: sunday)
     day=$(date +"%u")
 
-    if [ $day -eq '1' ]; then
+    if [[ "$day" == "1" ]]; then
         # maintenante mode on stagin ON
         heroku maintenance:on -a geovistory-temp
 
