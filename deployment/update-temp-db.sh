@@ -1,4 +1,4 @@
-if [ $DB_ENV -eq 'staging' ]; then
+if [ $DB_ENV -eq 'temp' ]; then
     # get day of week (1: Monday, 7: sunday)
     day=$(date +"%u")
 
