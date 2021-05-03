@@ -30,9 +30,6 @@ if [ $DB_ENV='staging' ]; then
 fi
 
 if [ $DB_ENV='temp' ]; then
-    # get day of week (1: Monday, 7: sunday)
-    day=$(date +"%u")
-
     # maintenante mode on stagin ON
     heroku maintenance:on -a geovistory-temp
 
