@@ -1,8 +1,12 @@
+# command to execute on heroku scheduler:
+# bash deployment/update-staging-db.sh
+
 if [[ "$DB_ENV" == "staging" ]]; then
-    # get day of week (1: Monday, 7: sunday)
+    # get day of week (1: Monday, ..., 7: sunday)
     day=$(date +"%u")
 
-    if [[ "$day" == "2" ]]; then
+    if [[ "$day" == "5" ]]; then # on fridays
+
         # maintenante mode on stagin ON
         heroku maintenance:on -a geovistory-staging
 
