@@ -232,15 +232,15 @@ export class InfStatementActionFactory extends InfActionFactory<Payload, InfStat
 
   // Suffixes of load action types
   // static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
-  static readonly ALTERNATIVES_INGOING = 'ALTERNATIVES_INGOING';
+  // static readonly ALTERNATIVES_INGOING = 'ALTERNATIVES_INGOING';
   // static readonly ADD_TO_PROJECT_WITH_TE_EN = 'ADD_TO_PROJECT_WITH_TE_EN';
   static readonly PAGINATED_LIST = 'PAGINATED_LIST';
   static readonly CONTENT_TREE = 'CONTENT_TREE';
   static readonly SOURCES_AND_DIGITALS_OF_ENTITY = 'SOURCES_AND_DIGITALS_OF_ENTITY';
   static readonly BY_PARAMS = 'BY_PARAMS';
 
-  loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfStatement>;
-  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedStatementList>;
+  // loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfStatement>;
+  // loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedStatementList>;
 
   // contentTree: (pkProject: number, pkExpressionEntity: number) => void;
   sourcesAndDigitalsOfEntity: (ofProject: boolean, pkProject: number, pkEntity: number) => ActionResultObservable<SourcesAndDigitalsOfEntityResult>;
@@ -283,51 +283,51 @@ export class InfStatementActionFactory extends InfActionFactory<Payload, InfStat
     }
 
 
-    this.loadIngoingAlternatives = (pkEntity: number, pkProperty: number, pkProject: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadIngoingAlternativeStatements> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.ALTERNATIVES_INGOING,
-        meta: {
-          addPending,
-          pk: pkProject,
-          pkEntity,
-          pkProperty,
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfStatement>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
+    // this.loadIngoingAlternatives = (pkEntity: number, pkProperty: number, pkProject: number) => {
+    //   const addPending = U.uuid()
+    //   const action: FluxStandardAction<Payload, LoadIngoingAlternativeStatements> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.ALTERNATIVES_INGOING,
+    //     meta: {
+    //       addPending,
+    //       pk: pkProject,
+    //       pkEntity,
+    //       pkProperty,
+    //     },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    //   return {
+    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+    //     resolved$: this.ngRedux.select<SucceedActionMeta<InfStatement>>(['resolved', addPending]).pipe(filter(x => !!x)),
+    //     key: addPending
+    //   };
+    // }
 
 
-    this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadPaginatedStatementListMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.PAGINATED_LIST,
-        meta: {
-          addPending,
-          pk: pkProject,
-          pkSourceEntity,
-          fkTargetClass,
-          pkProperty,
-          isOutgoing,
-          limit,
-          offset,
-          alternatives: false
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedStatementList>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
+    // this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
+    //   const addPending = U.uuid()
+    //   const action: FluxStandardAction<Payload, LoadPaginatedStatementListMeta> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.PAGINATED_LIST,
+    //     meta: {
+    //       addPending,
+    //       pk: pkProject,
+    //       pkSourceEntity,
+    //       fkTargetClass,
+    //       pkProperty,
+    //       isOutgoing,
+    //       limit,
+    //       offset,
+    //       alternatives: false
+    //     },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    //   return {
+    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+    //     resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedStatementList>>(['resolved', addPending]).pipe(filter(x => !!x)),
+    //     key: addPending
+    //   };
+    // }
 
 
     /**

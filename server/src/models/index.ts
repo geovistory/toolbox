@@ -32,13 +32,11 @@ export * from './pro-dfh-profile-proj-rel.model';
 export * from './inf-entity.interface';
 export * from './inf-appellation.model';
 export * from './inf-lang-string.model';
-export * from './inf-temporal-entity.model';
+export * from './inf-resource.model';
 export * from './inf-statement.model';
 export * from './inf-language.model';
-export * from './inf-persistent-item.model';
 export * from './inf-time-primitive.model';
 export * from './inf-place.model';
-export * from './inf-text-property.model';
 export * from './sys-system-type.model';
 export * from './pub-role-mapping.model';
 export * from './pub-role.model';
@@ -57,3 +55,6 @@ export * from './sys-config'
 
 // field models
 export * from './field'
+
+// statement models
+export * from './statement'

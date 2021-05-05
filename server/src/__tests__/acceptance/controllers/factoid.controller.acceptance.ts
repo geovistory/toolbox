@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Client, expect } from '@loopback/testlab';
 import { GeovistoryServer } from '../../../server';
-import { InfPersistentItemMock } from '../../helpers/data/gvDB/InfPersistentItemMock';
+import { InfResourceMock } from '../../helpers/data/gvDB/InfResourceMock';
 import { ProProjectMock } from '../../helpers/data/gvDB/ProProjectMock';
 import { PubAccountMock } from '../../helpers/data/gvDB/PubAccountMock';
 import { PubCredentialMock } from '../../helpers/data/gvDB/PubCredentialMock';
@@ -35,20 +35,20 @@ describe('FactoidController', () => {
         })
 
         it('should reject the request because the user is not authenticated', async () => {
-            const res = await client.get('/get-factoids-from-entity').query( {pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity });
+            const res = await client.get('/get-factoids-from-entity').query( {pkEntity: InfResourceMock.ALBERT_IV.pk_entity });
             expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
         })
 
         it('should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
-            const res = await client.get('/get-factoids-from-entity').set('Authorization', randomJWT).query( {pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity });
+            const res = await client.get('/get-factoids-from-entity').set('Authorization', randomJWT).query( {pkEntity: InfResourceMock.ALBERT_IV.pk_entity });
             expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
         })
 
         it('should reject the request because the user is not in the project', async () => {
             const jwt = (await client.post('/login').send({ email: accountOutOfProject.email, password: pwdOut })).body.lb4Token;
             const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt)
-                .query({ pkProject: ProProjectMock.PROJECT_1.pk_entity, pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity, factoidNumber:0, page:0 });
+                .query({ pkProject: ProProjectMock.PROJECT_1.pk_entity, pkEntity: InfResourceMock.ALBERT_IV.pk_entity, factoidNumber:0, page:0 });
             expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
         });
 
@@ -60,7 +60,7 @@ describe('FactoidController', () => {
 
         it('should reject the request because pkProject is not provided', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdIn })).body.lb4Token;
-            const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt).query({ pkEntity: InfPersistentItemMock.RUDOLF.pk_entity });
+            const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt).query({ pkEntity: InfResourceMock.RUDOLF.pk_entity });
             expect(res.body.error).to.containEql({ message: "Required parameter pkProject is missing!" });
         });
 
@@ -73,16 +73,16 @@ describe('FactoidController', () => {
         it('should return an empty array, because albert has no factoid', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdIn })).body.lb4Token;
             const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt)
-                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity, factoidNumber: 10, page: 0 });
-            expect(res.body).to.containEql({ pkEntity: InfPersistentItemMock.ALBERT_IV.pk_entity + '', factoidEntities: [], totalLength: '0' });
+                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfResourceMock.ALBERT_IV.pk_entity, factoidNumber: 10, page: 0 });
+            expect(res.body).to.containEql({ pkEntity: InfResourceMock.ALBERT_IV.pk_entity + '', factoidEntities: [], totalLength: '0' });
         });
 
         it('should return an array of factoids', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdIn })).body.lb4Token;
             const res = await client.get('/get-factoids-from-entity').set('Authorization', jwt)
-                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfPersistentItemMock.RUDOLF.pk_entity, factoidNumber: 10, page: 0 });
+                .query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkEntity: InfResourceMock.RUDOLF.pk_entity, factoidNumber: 10, page: 0 });
 
-            expect(res.body.pkEntity).to.be.equal(InfPersistentItemMock.RUDOLF.pk_entity + '');
+            expect(res.body.pkEntity).to.be.equal(InfResourceMock.RUDOLF.pk_entity + '');
             expect(res.body.factoidEntities[0].pkClass).to.be.equal(61);
             expect(res.body.factoidEntities[0].pkRow).to.be.equal(1000);
             expect(res.body.factoidEntities[0].pkFactoidMapping).to.be.equal(7000);

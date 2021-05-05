@@ -6,15 +6,15 @@ import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {REntityService} from '../../../../warehouse/primary-ds/entity/REntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
+import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {searchForEntityPreview, searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../helpers/warehouse-helpers';
+import {createInfResource, updateInfResource} from '../../../helpers/atomic/inf-resource.helper';
 const stubs: WarehouseStubs = {
   primaryDataServices: [REntityService],
   aggDataServices: []
@@ -42,7 +42,7 @@ describe('REntityService', () => {
 
 
   it('should have entity preview', async () => {
-    const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    const entity = await createInfResource(InfResourceMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
@@ -56,7 +56,7 @@ describe('REntityService', () => {
   })
 
   it('should update entity if class changed', async () => {
-    const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    const entity = await createInfResource(InfResourceMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
@@ -67,10 +67,10 @@ describe('REntityService', () => {
     ])
     expect(result?.fk_class).to.equal(entity?.fk_class)
 
-    await updateInfPersistentItem(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+    await updateInfResource(
+      InfResourceMock.PERSON_1.pk_entity ?? -1,
       {
-        ...InfPersistentItemMock.PERSON_1,
+        ...InfResourceMock.PERSON_1,
         fk_class: 987654321
       }
     )
@@ -85,7 +85,7 @@ describe('REntityService', () => {
   })
 
   it('should have correct isInProjectCount before and after removed from project', async () => {
-    const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    const entity = await createInfResource(InfResourceMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)

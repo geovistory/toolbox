@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { createInfAppellation } from "../atomic/inf-appellation.helper";
-import { createInfPersistentItem } from "../atomic/inf-persistent-item.helper";
 import { createInfStatement } from "../atomic/inf-statement.helper";
-import { createInfTemporalEntity } from "../atomic/inf-temporal-entity.helper";
+import { createInfResource } from "../atomic/inf-resource.helper";
 import { addInfosToProject } from "../atomic/pro-info-proj-rel.helper";
 import { DfhApiClassMock } from "../data/gvDB/DfhApiClassMock";
 import { DfhApiPropertyMock } from "../data/gvDB/DfhApiPropertyMock";
@@ -16,12 +15,12 @@ export async function createJourney(project: number, name: string): Promise<numb
         quill_doc: createQuillDoc(name)
     })).pk_entit;
 
-    const naming = (await createInfTemporalEntity({
+    const naming = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: DfhApiClassMock.EN_365_NAMING.pk_entity,
     })).pk_entity;
 
-    const journey = (await createInfPersistentItem({
+    const journey = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY.dfh_pk_class,
     })).pk_entity as number

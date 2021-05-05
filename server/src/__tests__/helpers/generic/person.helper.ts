@@ -1,7 +1,6 @@
 import { createInfAppellation } from '../atomic/inf-appellation.helper';
-import { createInfPersistentItem } from '../atomic/inf-persistent-item.helper';
 import { createInfStatement } from '../atomic/inf-statement.helper';
-import { createInfTemporalEntity } from '../atomic/inf-temporal-entity.helper';
+import { createInfResource } from '../atomic/inf-resource.helper';
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
 /* eslint-disable @typescript-eslint/camelcase */
 
@@ -14,12 +13,12 @@ export async function createPerson(project: number, name: string): Promise<numbe
         string: name
     })).pk_entity;
 
-    const naming = (await createInfTemporalEntity({
+    const naming = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: 365,
     })).pk_entity as number;
 
-    const person = (await createInfPersistentItem({
+    const person = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: 21,
     })).pk_entity as number;

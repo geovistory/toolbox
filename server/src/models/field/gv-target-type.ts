@@ -12,6 +12,6 @@ import {GvSubentityTargetType} from './gv-subentity-target-type';
 export class GvTargetType extends GvSubentityTargetType {
 
   @property.array(GvSubentitFieldPageReq)
-  temporalEntity?: GvSubentitFieldPageReq[];
+  nestedResource?: GvSubentitFieldPageReq[];
 
 }

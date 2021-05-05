@@ -1,21 +1,17 @@
 import { Injectable } from '@angular/core';
 import { InfPersistentItem, InfPersistentItemApi, InfStatement, InfStatementApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPage, GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
-import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
-import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
-import { FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeStatements, LoadPaginatedStatementListMeta, PaginatedStatementList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from '../actions/inf.actions';
+import { FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
 import { InfPersistentItemSlice, InfStatementSlice, InfTemporalEntitySlice, InfTextPropertySlice } from '../models/inf.models';
 import { infRoot } from '../reducer-configs/inf.config';
 import { SchemaService } from '../services/schema.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
 import { InfEpicsFactory } from '../_helpers/inf-epic-factory';
-import { FluxActionObservable, ModifyActionMeta } from '../_helpers/schema-actions-factory';
+import { ModifyActionMeta } from '../_helpers/schema-actions-factory';
 
 @Injectable({
   providedIn: 'root'
@@ -113,55 +109,48 @@ export class InfEpics {
       /**
        * Epic to load paginated Temporal Entity List
        */
-      (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
-        ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
-        mergeMap(action => new Observable<Action>((globalActions) => {
-          const meta = action.meta;
-          const apiCal$ = this.teEnApi.temporalEntityList(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
-          )
-          const pkProject = meta.pk;
-          this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
-        }))
-      ),
-      /**
-       * Epic to load paginated Alternative Temporal Entity List
-       */
-      (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
-        ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)),
-        mergeMap(action => new Observable<Action>((globalActions) => {
-          const meta = action.meta;
-          const apiCal$ = this.teEnApi.alternativeTemporalEntityList(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
-          )
-          const pkProject = null;
-          this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
-        }))
-      ),
-      infTemporalEntityEpicsFactory.createUpsertEpic<ModifyActionMeta<InfTemporalEntity>>((meta) => this.teEnApi
-        .findOrCreateInfTemporalEntities(meta.pk, meta.items),
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.temporal_entity.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
-      infTemporalEntityEpicsFactory.createRemoveEpic(),
+      // (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
+      //   ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
+      //   mergeMap(action => new Observable<Action>((globalActions) => {
+      //     const meta = action.meta;
+      //     const apiCal$ = this.teEnApi.temporalEntityList(
+      //       meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
+      //     )
+      //     const pkProject = meta.pk;
+      //     this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+      //   }))
+      // ),
+      // /**
+      //  * Epic to load paginated Alternative Temporal Entity List
+      //  */
+      // (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
+      //   ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)),
+      //   mergeMap(action => new Observable<Action>((globalActions) => {
+      //     const meta = action.meta;
+      //     const apiCal$ = this.teEnApi.alternativeTemporalEntityList(
+      //       meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
+      //     )
+      //     const pkProject = null;
+      //     this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+      //   }))
+      // ),
+
+      // infTemporalEntityEpicsFactory.createRemoveEpic(),
 
 
       /**
        * Statement
        *
        */
-      infStatementEpicsFactory.createLoadEpic<LoadIngoingAlternativeStatements>(
-        (meta) => this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk),
-        InfStatementActionFactory.ALTERNATIVES_INGOING,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.statement.flatten(results);
-          storeFlattened(flattener.getFlattened(), null);
-        }
-      ),
+      // infStatementEpicsFactory.createLoadEpic<LoadIngoingAlternativeStatements>(
+      //   (meta) => this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk),
+      //   InfStatementActionFactory.ALTERNATIVES_INGOING,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.statement.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), null);
+      //   }
+      // ),
       infStatementEpicsFactory.createUpsertEpic<ModifyActionMeta<InfStatement>>((meta) => this.statementApi
         .findOrCreateInfStatements(meta.pk, meta.items),
         (results, pk) => {
@@ -171,17 +160,17 @@ export class InfEpics {
         }
       ),
 
-      (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
-        ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
-        mergeMap(action => new Observable<Action>((globalActions) => {
-          const meta = action.meta;
-          const apiCal$ = this.statementApi.paginatedListTargetingEntityPreviews(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
-          )
-          const pkProject = meta.pk;
-          this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
-        }))
-      ),
+      // (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
+      //   ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
+      //   mergeMap(action => new Observable<Action>((globalActions) => {
+      //     const meta = action.meta;
+      //     const apiCal$ = this.statementApi.paginatedListTargetingEntityPreviews(
+      //       meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
+      //     )
+      //     const pkProject = meta.pk;
+      //     this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
+      //   }))
+      // ),
 
       infStatementEpicsFactory.createRemoveEpic(),
 
@@ -242,43 +231,43 @@ export class InfEpics {
   }
 
 
-  /**
-   * handles the update of store for paginated temporal entity lists.
-   * @param pkProject if null, list is handled as 'repo' list
-   *
-   * TODO remove
-   */
-  private handleTemporalEntityListAction<M>(
-    action,
-    epicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity> | InfEpicsFactory<InfStatementSlice, InfStatement>,
-    globalActions,
-    apiCall$: Observable<any>,
-    pkProject) {
-    const meta: LoadPaginatedStatementListMeta = action.meta;
-    const scope: GvFieldPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
-    const req: GvFieldPage = {
-      source: { fkInfo: meta.pkSourceEntity },
-      property: { fkProperty: meta.pkProperty },
-      isOutgoing: meta.isOutgoing,
-      limit: meta.limit,
-      offset: meta.offset,
-      scope,
-    }
-    const pendingKey = meta.addPending;
+  // /**
+  //  * handles the update of store for paginated temporal entity lists.
+  //  * @param pkProject if null, list is handled as 'repo' list
+  //  *
+  //  * TODO remove
+  //  */
+  // private handleTemporalEntityListAction<M>(
+  //   action,
+  //   epicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity> | InfEpicsFactory<InfStatementSlice, InfStatement>,
+  //   globalActions,
+  //   apiCall$: Observable<any>,
+  //   pkProject) {
+  //   const meta: LoadPaginatedStatementListMeta = action.meta;
+  //   const scope: GvFieldPageScope = meta.alternatives ? { notInProject: pkProject } : { inProject: pkProject }
+  //   const req: GvFieldPage = {
+  //     source: { fkInfo: meta.pkSourceEntity },
+  //     property: { fkProperty: meta.pkProperty },
+  //     isOutgoing: meta.isOutgoing,
+  //     limit: meta.limit,
+  //     offset: meta.offset,
+  //     scope,
+  //   }
+  //   const pendingKey = meta.addPending;
 
-    // call action to set pagination loading on true
-    this.infActions.statement.loadPage(req, pkProject);
-    // call api to load data
-    apiCall$.subscribe((data: PaginatedStatementList) => {
-      // call action to store records
-      this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
-      // call action to store pagination
-      this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, req, pkProject);
-      // call action to conclude the pending request
-      epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
-    }, error => {
-      // call action to handle error
-      epicsFactory.onError(globalActions, error, pendingKey, pkProject);
-    });
-  }
+  //   // call action to set pagination loading on true
+  //   this.infActions.statement.loadPage(req, pkProject);
+  //   // call api to load data
+  //   apiCall$.subscribe((data: PaginatedStatementList) => {
+  //     // call action to store records
+  //     this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
+  //     // call action to store pagination
+  //     this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, req, pkProject);
+  //     // call action to conclude the pending request
+  //     epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
+  //   }, error => {
+  //     // call action to handle error
+  //     epicsFactory.onError(globalActions, error, pendingKey, pkProject);
+  //   });
+  // }
 }

@@ -343,33 +343,22 @@ export class OntoMeController {
           SELECT 'maintained' status, pk_class
           FROM ctw6
         ),
-        -- left join the number of entities in given project for each class of given profile
+        -- left join the number of resources in given project for each class of given profile
         ctw8 AS (
+
           SELECT t1.status, t1.pk_class, t2.pk_entity
           FROM
             ctw7 t1
           LEFT JOIN LATERAL (
             SELECT t2.pk_entity
-            FROM information.temporal_entity t2,
+            FROM information.resource t2,
               projects.info_proj_rel t3
             WHERE t1.pk_class = t2.fk_class
             AND t2.pk_entity = t3.fk_entity
             AND t3.fk_project = $1
             AND t3.is_in_project = true
           ) t2 ON TRUE
-          UNION ALL
-            SELECT t1.status, t1.pk_class, t2.pk_entity
-          FROM
-            ctw7 t1
-          LEFT JOIN LATERAL (
-            SELECT t2.pk_entity
-            FROM information.persistent_item t2,
-              projects.info_proj_rel t3
-            WHERE t1.pk_class = t2.fk_class
-            AND t2.pk_entity = t3.fk_entity
-            AND t3.fk_project = $1
-            AND t3.is_in_project = true
-          ) t2 ON TRUE
+
         ),
         ctw9 AS (
           SELECT status, pk_class, count(pk_entity) number_of_instances

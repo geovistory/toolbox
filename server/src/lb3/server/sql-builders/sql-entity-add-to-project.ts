@@ -60,12 +60,10 @@ export class SqlEntityAddToProject extends SqlBuilderLbModels {
           -- Filter the pk_related pointing to a PeIt or TeEn
             SELECT *
           FROM tw1
-          LEFT JOIN information.persistent_item t2
+          LEFT JOIN information.resource t2
             ON tw1.pk_related = t2.pk_entity
-          LEFT JOIN information.temporal_entity t3
-            ON tw1.pk_related = t3.pk_entity
           WHERE tw1.pk_related IS NOT NULL
-          AND (t2.pk_entity IS NOT NULL OR t3.pk_entity IS NOT NULL)
+          AND t2.pk_entity IS NOT NULL
         )
 
         -- the entity itself
@@ -92,13 +90,6 @@ export class SqlEntityAddToProject extends SqlBuilderLbModels {
         WHERE tw.pk_related = t1.fk_object_info
         AND t1.fk_property = 1111
         AND t1.is_in_project_count > 0
-
-        UNION ALL
-
-        -- the text properties
-        SELECT t2.pk_entity, null::int, null::calendar_type
-        FROM information.text_property t2, tw
-        WHERE tw.pk_related = t2.fk_concerned_entity
       )t
 
     ),

@@ -6,16 +6,14 @@ import {PStatementId, PStatementService} from '../../../../warehouse/primary-ds/
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../helpers/atomic/inf-temporal-entity.helper';
+import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {InfAppellationMock} from '../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
@@ -47,14 +45,14 @@ describe('PStatementService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
 
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1)
+    await createInfResource(InfResourceMock.NAMING_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createInfResource(InfResourceMock.PERSON_1)
     const id: PStatementId = {
       pkEntity: InfStatementMock.NAME_1_TO_PERSON.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -72,14 +70,14 @@ describe('PStatementService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
 
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1)
+    await createInfResource(InfResourceMock.NAMING_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createInfResource(InfResourceMock.PERSON_1)
 
     const id: PStatementId = {
       pkEntity: InfStatementMock.NAME_1_TO_PERSON.pk_entity ?? -1,

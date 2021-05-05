@@ -121,8 +121,6 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
       combineLatest(
         this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
         this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
-        // this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
-        // this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
       ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
         this.t.setTabLoading(false)
       })

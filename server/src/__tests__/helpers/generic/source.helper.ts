@@ -1,7 +1,6 @@
 import { createInfAppellation } from '../atomic/inf-appellation.helper';
-import { createInfPersistentItem } from '../atomic/inf-persistent-item.helper';
 import { createInfStatement } from '../atomic/inf-statement.helper';
-import { createInfTemporalEntity } from '../atomic/inf-temporal-entity.helper';
+import { createInfResource } from '../atomic/inf-resource.helper';
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
 /* eslint-disable @typescript-eslint/camelcase */
 
@@ -21,22 +20,22 @@ export async function createSource(project: number, name: string): Promise<numbe
         string: name + ' - Expression'
     })).pk_entity;
 
-    const namingManif = (await createInfTemporalEntity({
+    const namingManif = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: 365,
     })).pk_entity as number;
 
-    const namingExpr = (await createInfTemporalEntity({
+    const namingExpr = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: 365,
     })).pk_entity as number;
 
-    const manifProdType = (await createInfPersistentItem({
+    const manifProdType = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: 219,
     })).pk_entity as number;
 
-    const expression = (await createInfPersistentItem({
+    const expression = (await createInfResource({
         pk_entity: getIndex(),
         fk_class: 218,
     })).pk_entity as number;

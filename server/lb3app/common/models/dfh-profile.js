@@ -5,56 +5,56 @@ var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-
 const OntoMe = require('../../../dist/lb3/server/ontome/ontome').OntoMe;
 
 module.exports = function(DfhProfile) {
-  DfhProfile.updateFromOntoMe = function(fkProfile, requestedLanguage, cb) {
-    return new OntoMe(cb, DfhProfile.dataSource.connector).updateProfileData(
-      fkProfile,
-      requestedLanguage
-    );
-  };
+  // DfhProfile.updateFromOntoMe = function(fkProfile, requestedLanguage, cb) {
+  //   return new OntoMe(cb, DfhProfile.dataSource.connector).updateProfileData(
+  //     fkProfile,
+  //     requestedLanguage
+  //   );
+  // };
 
-  DfhProfile.updateAndAddToProject = function(
-    fkProject,
-    fkProfile,
-    requestedLanguage,
-    cb
-  ) {
-    return new OntoMe(cb, DfhProfile.dataSource.connector).addProfileToProject(
-      fkProject,
-      fkProfile,
-      requestedLanguage
-    );
-  };
+  // DfhProfile.updateAndAddToProject = function(
+  //   fkProject,
+  //   fkProfile,
+  //   requestedLanguage,
+  //   cb
+  // ) {
+  //   return new OntoMe(cb, DfhProfile.dataSource.connector).addProfileToProject(
+  //     fkProject,
+  //     fkProfile,
+  //     requestedLanguage
+  //   );
+  // };
 
-  DfhProfile.deactivateProfileForProject = function(fkProject, fkProfile, cb) {
-    return new OntoMe(
-      cb,
-      DfhProfile.dataSource.connector
-    ).deactivateProfileForProject(fkProject, fkProfile);
-  };
+  // DfhProfile.deactivateProfileForProject = function(fkProject, fkProfile, cb) {
+  //   return new OntoMe(
+  //     cb,
+  //     DfhProfile.dataSource.connector
+  //   ).deactivateProfileForProject(fkProject, fkProfile);
+  // };
 
-  DfhProfile.getActivationReport = function(
-    geovistoryProjectId,
-    ontomeProfileId,
-    requestedLanguage,
-    cb
-  ) {
-    return new OntoMe(cb, DfhProfile.dataSource.connector).getActivationReport(
-      geovistoryProjectId,
-      ontomeProfileId,
-      requestedLanguage
-    );
-  };
+  // DfhProfile.getActivationReport = function(
+  //   geovistoryProjectId,
+  //   ontomeProfileId,
+  //   requestedLanguage,
+  //   cb
+  // ) {
+  //   return new OntoMe(cb, DfhProfile.dataSource.connector).getActivationReport(
+  //     geovistoryProjectId,
+  //     ontomeProfileId,
+  //     requestedLanguage
+  //   );
+  // };
 
-  DfhProfile.getDeactivationReport = function(
-    geovistoryProjectId,
-    ontomeProfileId,
-    cb
-  ) {
-    return new OntoMe(
-      cb,
-      DfhProfile.dataSource.connector
-    ).getDeactivationReport(geovistoryProjectId, ontomeProfileId);
-  };
+  // DfhProfile.getDeactivationReport = function(
+  //   geovistoryProjectId,
+  //   ontomeProfileId,
+  //   cb
+  // ) {
+  //   return new OntoMe(
+  //     cb,
+  //     DfhProfile.dataSource.connector
+  //   ).getDeactivationReport(geovistoryProjectId, ontomeProfileId);
+  // };
 
   /**
    * Query classes

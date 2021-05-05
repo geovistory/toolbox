@@ -5,17 +5,17 @@ import {expect} from '@loopback/testlab';
 import {PEntityId, PEntityService} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {getWarEntityPreview} from '../../../helpers/atomic/war-entity-preview.helper';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
+import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
+import {createInfResource, updateInfResource} from '../../../helpers/atomic/inf-resource.helper';
 const stubs: WarehouseStubs = {
   primaryDataServices:[PEntityService],
   aggDataServices:[]
@@ -39,7 +39,7 @@ describe('PEntityService', () => {
     await stopWarehouse(wh)
   })
   it('should have entity in index()', async () => {
-    const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    const entity = await createInfResource(InfResourceMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
@@ -47,7 +47,7 @@ describe('PEntityService', () => {
     await waitUntilNext(s.afterChange$)
 
     const result = await s.index.getFromIdx({
-      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      pkEntity: InfResourceMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
     })
     expect(result?.fkClass).to.equal(entity?.fk_class)
@@ -55,7 +55,7 @@ describe('PEntityService', () => {
   })
 
   it('should update entity if class changed', async () => {
-    const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    const entity = await createInfResource(InfResourceMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
@@ -63,15 +63,15 @@ describe('PEntityService', () => {
     await waitUntilNext(s.afterChange$)
 
     const id = {
-      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      pkEntity: InfResourceMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
     }
     const result1 = await s.index.getFromIdxWithTmsps(id)
     expect(result1?.val?.fkClass).to.equal(entity?.fk_class)
-    await updateInfPersistentItem(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+    await updateInfResource(
+      InfResourceMock.PERSON_1.pk_entity ?? -1,
       {
-        ...InfPersistentItemMock.PERSON_1,
+        ...InfResourceMock.PERSON_1,
         fk_class: 987654321
       }
     )
@@ -86,7 +86,7 @@ describe('PEntityService', () => {
   })
 
   it('should delete entity if removed from project', async () => {
-    const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    const entity = await createInfResource(InfResourceMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
@@ -94,7 +94,7 @@ describe('PEntityService', () => {
     await waitUntilNext(s.afterChange$)
 
     const id = {
-      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      pkEntity: InfResourceMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
     }
     const result = await s.index.getFromIdxWithTmsps(id)
@@ -123,7 +123,7 @@ describe('PEntityService', () => {
 
   it('should add entity preview with fk_class after entity is added', async () => {
     const entities = await getWarEntityPreview(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      InfResourceMock.PERSON_1.pk_entity ?? -1,
       ProProjectMock.PROJECT_1.pk_entity ?? -1
     )
     expect(entities.length).to.equal(0);
@@ -131,16 +131,16 @@ describe('PEntityService', () => {
 
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createInfResource(InfResourceMock.PERSON_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
     const id: PEntityId = {
-      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      pkEntity: InfResourceMock.PERSON_1.pk_entity ?? -1,
       fkProject: ProProjectMock.PROJECT_1.pk_entity ?? -1
     }
     const e = await waitForEntityPreview(wh, [
       {pk_entity: {eq: id.pkEntity}},
       {fk_project: {eq: id.fkProject}},
-      {fk_class: {eq: InfPersistentItemMock.PERSON_1.fk_class}},
+      {fk_class: {eq: InfResourceMock.PERSON_1.fk_class}},
     ])
     expect(e).not.to.be.undefined();
 

@@ -86,6 +86,7 @@ export * from './infPlace';
 export * from './infStatement';
 export * from './infStatementWithRelations';
 export * from './infTemporalEntity';
+export * from './infTemporalEntityWithRelations';
 export * from './infTextProperty';
 export * from './infTimePrimitive';
 export * from './labelPart';

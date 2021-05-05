@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {StatementItemToIndexate} from "../../../../warehouse/primary-ds/edge/edge.commons";
 import { EntityMock } from './EntityMock';
 /**
@@ -14,7 +15,7 @@ export class EdgeMock {
         pk_statement: 1234,
         fk_property: 1113,
         fk_subject_info: EntityMock.NAME_1_ID.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: 999,
         object_table: 'appellation',
         appellation: 'Jack the Foo',
@@ -28,9 +29,9 @@ export class EdgeMock {
         pk_statement: 2345,
         fk_property: 1111,
         fk_subject_info: EntityMock.NAME_1_ID.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.PERS_1_ID.pkEntity,
-        object_table: 'persistent_item',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null
@@ -45,7 +46,7 @@ export class EdgeMock {
         pk_statement: 3456,
         fk_property: 1113,
         fk_subject_info: EntityMock.NAME_2_ID.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: 999,
         object_table: 'appellation',
         appellation: 'Jack',
@@ -60,9 +61,9 @@ export class EdgeMock {
         pk_statement: 4567,
         fk_property: 1111,
         fk_subject_info: EntityMock.NAME_2_ID.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.PERS_1_ID.pkEntity,
-        object_table: 'persistent_item',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null
@@ -74,7 +75,7 @@ export class EdgeMock {
         pk_statement: 3345,
         fk_property: 1113,
         fk_subject_info: EntityMock.NAME_3_ID.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: 999,
         object_table: 'appellation',
         appellation: 'Kiddy',
@@ -89,9 +90,9 @@ export class EdgeMock {
         pk_statement: 3346,
         fk_property: 1111, // is appellation of
         fk_subject_info: EntityMock.NAME_3_ID.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.PERS_3_ID.pkEntity,
-        object_table: 'persistent_item',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null
@@ -104,9 +105,9 @@ export class EdgeMock {
         pk_statement: 5678,
         fk_property: 41, // brought into life
         fk_subject_info: EntityMock.BIRTH_1.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.PERS_3.pkEntity,
-        object_table: 'persistent_item',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null
@@ -118,9 +119,9 @@ export class EdgeMock {
         pk_statement: 5679,
         fk_property: 42, // stems from
         fk_subject_info: EntityMock.BIRTH_1.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.UNION_1.pkEntity,
-        object_table: 'temporal_entity',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null
@@ -133,9 +134,9 @@ export class EdgeMock {
         pk_statement: 6790,
         fk_property: 52, // has partner
         fk_subject_info: EntityMock.UNION_1.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.PERS_1.pkEntity,
-        object_table: 'persistent_item',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null
@@ -148,9 +149,9 @@ export class EdgeMock {
         pk_statement: 6791,
         fk_property: 52, // has partner
         fk_subject_info: EntityMock.UNION_1.pkEntity,
-        subject_table: 'temporal_entity',
+        subject_table: 'resource',
         fk_object_info: EntityMock.PERS_2.pkEntity,
-        object_table: 'persistent_item',
+        object_table: 'resource',
         appellation: null,
         language: null,
         lang_string: null

@@ -13,17 +13,15 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import {createInfResource} from '../../../../helpers/atomic/inf-resource.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {InfResourceMock} from '../../../../helpers/data/gvDB/InfResourceMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
@@ -226,7 +224,7 @@ export namespace PEntityLabel {
 
     export async function createPersonMock() {
         await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
-        const person = await createInfPersistentItem(InfPersistentItemMock.PERSON_1);
+        const person = await createInfResource(InfResourceMock.PERSON_1);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1);
         return person;
     }
@@ -242,7 +240,7 @@ export namespace PEntityLabel {
         await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
 
         // TeEn
-        const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
+        const naming = await createInfResource(InfResourceMock.NAMING_1);
         const namingProRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1);
 
         const appellation = await createInfAppellation(InfAppellationMock.JACK_THE_FOO);

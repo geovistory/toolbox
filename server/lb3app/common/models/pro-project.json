@@ -43,13 +43,6 @@
       "foreignKey": "fk_project",
       "primaryKey": "pk_entity"
     },
-    "persistent_items": {
-      "type": "hasMany",
-      "model": "InfPersistentItem",
-      "foreignKey": "fk_project",
-      "keyThrough": "fk_entity",
-      "through": "ProInfoProjRel"
-    },
     "entity_version_project_rels": {
       "type": "hasMany",
       "model": "ProInfoProjRel",

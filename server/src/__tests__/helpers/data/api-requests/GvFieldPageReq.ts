@@ -1,10 +1,9 @@
 import {GvFieldPageReq, TrueEnum} from '../../../../models'
 import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
-import {InfPersistentItemMock} from '../gvDB/InfPersistentItemMock'
+import {InfResourceMock} from '../gvDB/InfResourceMock'
 import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
 
 export namespace GvFieldPageReqMock {
@@ -23,7 +22,7 @@ export namespace GvFieldPageReqMock {
     },
     targets: {
       [DfhApiClassMock.EN_365_NAMING.dfh_pk_class]: {
-        temporalEntity: [
+        nestedResource: [
           {
             ...GvSubentityFieldPageReqMock.appeTeEnRefersToName,
             page: {
@@ -77,7 +76,7 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity},
+      source: {fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity},
       property: {fkProperty: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -97,7 +96,7 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfPersistentItemMock.ACCOUNT_OF_JOURNEY.pk_entity},
+      source: {fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity},
       property: {fkProperty: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -113,7 +112,7 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity},
+      source: {fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity},
       property: {fkProperty: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -131,7 +130,7 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity},
+      source: {fkInfo: InfResourceMock.NAMING_1.pk_entity},
       property: {fkProperty: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -149,7 +148,7 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity},
+      source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
       property: {fkProperty: DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -166,7 +165,7 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity},
+      source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
       property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},

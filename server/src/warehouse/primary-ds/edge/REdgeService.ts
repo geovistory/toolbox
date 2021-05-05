@@ -38,29 +38,26 @@ WITH tw0 AS (
   FROM
     projects.info_proj_rel t1
     JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN information.entity t3 ON t2.fk_subject_info = t3.pk_entity
+    JOIN information.resource t3 ON t2.fk_subject_info = t3.pk_entity
   WHERE
     t1.tmsp_last_modification >= $1
-    AND t3.table_name IN ('temporal_entity', 'persistent_item')
   UNION
   SELECT
     DISTINCT t2.fk_object_info pk_entity
   FROM
     projects.info_proj_rel t1
     JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN information.entity t3 ON t2.fk_object_info = t3.pk_entity
+    JOIN information.resource t3 ON t2.fk_object_info = t3.pk_entity
   WHERE
     t1.tmsp_last_modification >= $1
-    AND t3.table_name IN ('temporal_entity', 'persistent_item')
   UNION
   SELECT
     DISTINCT t2.pk_entity
   FROM
     projects.info_proj_rel t1
-    JOIN information.entity t2 ON t1.fk_entity = t2.pk_entity
+    JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity
   WHERE
-    t2.table_name IN ('temporal_entity', 'persistent_item')
-    AND t1.tmsp_last_modification >= $1
+    t1.tmsp_last_modification >= $1
   ),
 
 tw1 AS (
@@ -82,11 +79,9 @@ tw1 AS (
   tw0 t0
   JOIN information."statement" t2 ON t2.fk_subject_info = t0.pk_entity
 
-  LEFT JOIN information.persistent_item t8 ON t8.pk_entity =  t2.fk_subject_info
-  LEFT JOIN information.temporal_entity t9 ON t9.pk_entity =  t2.fk_subject_info
+  LEFT JOIN information.resource t8 ON t8.pk_entity =  t2.fk_subject_info
 
-  LEFT JOIN information.persistent_item t10 ON t10.pk_entity =  t2.fk_object_info
-  LEFT JOIN information.temporal_entity t11 ON t11.pk_entity =  t2.fk_object_info
+  LEFT JOIN information.resource t10 ON t10.pk_entity =  t2.fk_object_info
   LEFT JOIN information.appellation t12 ON t12.pk_entity = t2.fk_object_info
   LEFT JOIN information.time_primitive t13 ON t13.pk_entity = t2.fk_object_info
   LEFT JOIN information.language t14 ON t14.pk_entity = t2.fk_object_info
@@ -97,15 +92,11 @@ tw1 AS (
 
     WHERE
     -- subject is not null
-    (
-      t8.pk_entity IS NOT NULL OR
-      t9.pk_entity IS NOT NULL
-    )
+      t8.pk_entity IS NOT NULL
   AND
     -- object is not null
     (
          t10.pk_entity IS NOT NULL
-      OR t11.pk_entity IS NOT NULL
       OR t12.pk_entity IS NOT NULL
       OR t13.pk_entity IS NOT NULL
       OR t14.pk_entity IS NOT NULL
@@ -117,7 +108,6 @@ tw1 AS (
     t2.fk_subject_info,
     t2.fk_object_info,
     t10.pk_entity,
-    t11.pk_entity,
     t12.string,
     t14.notes,
     t15.string,
@@ -182,32 +172,23 @@ tw3 AS (
   tw0 t0
   JOIN information."statement" t2 ON t2.fk_object_info = t0.pk_entity
 
-  LEFT JOIN information.persistent_item t8 ON t8.pk_entity =  t2.fk_object_info
-  LEFT JOIN information.temporal_entity t9 ON t9.pk_entity =  t2.fk_object_info
+  LEFT JOIN information.resource t8 ON t8.pk_entity =  t2.fk_object_info
 
-  LEFT JOIN information.persistent_item t10 ON t10.pk_entity =  t2.fk_subject_info
-  LEFT JOIN information.temporal_entity t11 ON t11.pk_entity =  t2.fk_subject_info
+  LEFT JOIN information.resource t10 ON t10.pk_entity =  t2.fk_subject_info
 
   JOIN projects.info_proj_rel t1 ON t1.fk_entity = t2.pk_entity
      AND t1.is_in_project = true
 
     WHERE
-    (
-      t8.pk_entity IS NOT NULL OR
-      t9.pk_entity IS NOT NULL
-    )
+      t8.pk_entity IS NOT NULL
   AND
-    (
       t10.pk_entity IS NOT NULL
-      OR t11.pk_entity IS NOT NULL
-    )
   GROUP BY
     t2.pk_entity,
     t2.fk_property,
     t2.fk_subject_info,
     t2.fk_object_info,
-    t10.pk_entity,
-    t11.pk_entity
+    t10.pk_entity
 ),
 tw4 AS (
 

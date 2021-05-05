@@ -1,119 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Field, InfSelector, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
-import { ActionResultObservable, GvSchemaActions, PaginatedStatementList, PaginatedStatements, subfieldIdToString, SucceedActionMeta } from '@kleiolab/lib-redux';
-import { GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { Field, InfSelector, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { GvSchemaActions, PaginatedStatements, subfieldIdToString } from '@kleiolab/lib-redux';
+import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { fieldToFieldId, fieldToGvFieldTargets } from '../base.helpers';
 
-
-class StatementPageLoader {
-  private paginationTriggers = new Map<string, Observable<any>>()
-  private pageLoaders = new Map<string, {
-    refCount: number,
-    until$: Subject<any>,
-    loadEvent$: Subject<any>
-  }>()
-  constructor(
-    private p: ActiveProjectService,
-    private loadNeededFn: (subfieldId: GvFieldId, trigger$?: Observable<any>) => Observable<boolean>,
-    private loadFn: (pkProject: number,
-      pkEntity: number,
-      pkProperty: number,
-      targetClass: number,
-      isOutgoing: boolean,
-      limit: number,
-      offset: number) => ActionResultObservable<PaginatedStatementList>
-  ) { }
-
-  public addPageLoader(pkProject: number, l: Subfield, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
-    const subfieldId = fieldToFieldId(l as unknown as Field, { fkInfo: pkEntity }, { inProject: pkProject })
-    const subfieldIdString = subfieldIdToString(subfieldId)
-
-    const trigger$ = this.getTrigger(subfieldIdString, l, pkEntity, alternatives);
-
-    const pageIdString = subfieldIdString + '_' + limit + '_' + offset;
-
-    if (!this.pageLoaders.has(pageIdString)) {
-
-      // emits when load function has been called
-      const loadEvent$ = new Subject<SucceedActionMeta<PaginatedStatementList>>()
-
-      const until$ = new Subject<void>()
-
-      this.pageLoaders.set(pageIdString, {
-        refCount: 1,
-        until$,
-        loadEvent$
-      })
-
-
-      this.loadNeededFn(subfieldId, trigger$).pipe(
-        filter(loadNeeded => loadNeeded === true),
-        takeUntil(until$)
-      ).subscribe(() => {
-        this.loadFn(pkProject,
-          pkEntity,
-          l.property.fkProperty,
-          l.targetClass,
-          l.isOutgoing,
-          limit,
-          offset).resolved$.pipe(first(res => !!res)).subscribe((res) => {
-            loadEvent$.next(res)
-          })
-      })
-
-    } else {
-      const loader = this.pageLoaders.get(pageIdString)
-      this.pageLoaders.set(pageIdString, {
-        until$: loader.until$,
-        loadEvent$: loader.loadEvent$,
-        refCount: loader.refCount + 1
-      })
-    }
-
-    const sub = takeUntil$.subscribe(() => {
-      const loader = this.pageLoaders.get(pageIdString)
-      if (loader.refCount === 1) {
-        loader.until$.next();
-
-        this.pageLoaders.delete(pageIdString)
-      } else {
-        this.pageLoaders.set(pageIdString, {
-          until$: loader.until$,
-          loadEvent$: loader.loadEvent$,
-          refCount: loader.refCount - 1
-        })
-      }
-      sub.unsubscribe()
-    })
-
-
-    return this.pageLoaders.get(pageIdString)
-
-  }
-
-  private getTrigger(subfieldId: string, l: Subfield, pkEntity: number, alternatives: boolean) {
-    if (!this.paginationTriggers.has(subfieldId)) {
-      const ofProject = !alternatives;
-      const t = combineLatest([
-        this.p.inf$.statement$.by_object_and_property_indexed$({
-          fk_property: l.property.fkProperty,
-          fk_object_info: pkEntity
-        }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
-        this.p.inf$.statement$.by_subject_and_property_indexed$({
-          fk_property: l.property.fkProperty,
-          fk_subject_info: pkEntity
-        }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
-      ]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
-      this.paginationTriggers.set(subfieldId, t);
-    }
-    return this.paginationTriggers.get(subfieldId);
-  }
-}
 
 export interface PaginatedStatementList2 {
   count: number;
@@ -252,21 +147,6 @@ class StatementPageLoader2 {
 })
 export class PaginationService {
 
-  temporalEntity = new StatementPageLoader(
-    this.p,
-    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
-    this.p.inf.temporal_entity.loadPaginatedList)
-
-  temporalEntityAlternative = new StatementPageLoader(
-    this.p,
-    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
-    this.p.inf.temporal_entity.loadPaginatedAlternativeList)
-
-  statements = new StatementPageLoader(
-    this.p,
-    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
-    this.p.inf.statement.loadPaginatedList
-  )
 
   subfield = new StatementPageLoader2(
     this.schemaSelctors.inf$,

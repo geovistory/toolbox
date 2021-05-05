@@ -123,9 +123,9 @@ export async function cleanDb() {
     await testdb.execute('DELETE FROM information.dimension');
     await testdb.execute('ALTER TABLE information.dimension ENABLE TRIGGER versioning_trigger');
 
-    await testdb.execute('ALTER TABLE information.persistent_item DISABLE TRIGGER versioning_trigger');
-    await testdb.execute('DELETE FROM information.persistent_item');
-    await testdb.execute('ALTER TABLE information.persistent_item ENABLE TRIGGER versioning_trigger');
+    await testdb.execute('ALTER TABLE information.resource DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.resource');
+    await testdb.execute('ALTER TABLE information.resource ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE information.place DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.place');
@@ -134,10 +134,6 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE information.statement DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.statement');
     await testdb.execute('ALTER TABLE information.statement ENABLE TRIGGER versioning_trigger');
-
-    await testdb.execute('ALTER TABLE information.temporal_entity DISABLE TRIGGER versioning_trigger');
-    await testdb.execute('DELETE FROM information.temporal_entity');
-    await testdb.execute('ALTER TABLE information.temporal_entity ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE information.text_property DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.text_property');

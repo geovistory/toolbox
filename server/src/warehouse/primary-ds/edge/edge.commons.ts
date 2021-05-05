@@ -104,7 +104,7 @@ export const buildOutgoingEdges = `json_build_object(
     'fkSource', t1.fk_subject_info,
     'fkTarget', t1.fk_object_info,
     'ordNumWithinField', t1.ord_num_of_range,
-    'targetIsEntity', t1.object_table IN ('temporal_entity', 'persistent_item'),
+    'targetIsEntity', t1.object_table IN ('resource'),
     ${edgeSqlTargetLabel},
     ${edgeSqlTargetValue}
 )`
@@ -116,7 +116,7 @@ export const buildIncomingEdges = `json_build_object(
     'fkSource', t1.fk_object_info,
     'fkTarget', t1.fk_subject_info,
     'ordNumWithinField', t1.ord_num_of_domain,
-    'targetIsEntity', t1.subject_table IN ('temporal_entity', 'persistent_item'),
+    'targetIsEntity', t1.subject_table IN ('resource'),
     ${edgeSqlTargetLabel},
     ${edgeSqlTargetValue}
 )`

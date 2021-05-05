@@ -2,7 +2,6 @@ import {Postgres1DataSource} from '../../datasources';
 import {DatDigital} from '../../models/dat-digital.model';
 import {InfLanguage} from '../../models/inf-language.model';
 import {InfStatement} from '../../models/inf-statement.model';
-import {InfTextProperty} from '../../models/inf-text-property.model';
 import {ProInfoProjRel} from '../../models/pro-info-proj-rel.model';
 import {WarEntityPreview} from '../../models/war-entity-preview.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
@@ -88,31 +87,6 @@ export class QContentTree extends SqlBuilderLb4Models {
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
       ),
-      -- text_properties
-      tw3 AS (
-        SELECT
-          ${this.createSelect('t1', InfTextProperty.definition)},
-          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
-        FROM
-          tw1
-        CROSS JOIN
-          information.v_text_property t1,
-          projects.info_proj_rel t2
-        WHERE t1.fk_concerned_entity = tw1.pk_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
-      fkProject
-    )}
-      ),
-      -- language
-      tw4 AS (
-        SELECT
-          ${this.createSelect('t1', InfLanguage.definition)}
-        FROM
-          tw3
-        CROSS JOIN
-          information.v_language t1
-        WHERE t1.pk_entity = tw3.fk_language
-      ),
       -- has type statement
       tw5 AS (
         SELECT
@@ -170,8 +144,6 @@ export class QContentTree extends SqlBuilderLb4Models {
             UNION ALL
             SELECT proj_rel FROM tw2
             UNION ALL
-            SELECT proj_rel FROM tw3
-            UNION ALL
             SELECT proj_rel FROM tw5
             UNION ALL
             SELECT proj_rel FROM tw6
@@ -186,28 +158,6 @@ export class QContentTree extends SqlBuilderLb4Models {
           ${this.createBuildObject('t1', WarEntityPreview.definition)} as objects
           FROM (
             SELECT * FROM tw1
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      text_property AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', InfTextProperty.definition)} as objects
-          FROM (
-            SELECT * FROM tw3
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      language AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', InfLanguage.definition)} as objects
-          FROM (
-            SELECT * FROM tw4
           ) AS t1
         ) as t1
         GROUP BY true
@@ -241,9 +191,7 @@ export class QContentTree extends SqlBuilderLb4Models {
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
-          'statement', statement.json,
-          'text_property', text_property.json,
-          'language', language.json
+          'statement', statement.json
         )),
         'pro', json_strip_nulls(json_build_object(
           'info_proj_rel', info_proj_rel.json
@@ -258,8 +206,6 @@ export class QContentTree extends SqlBuilderLb4Models {
       FROM
       (select 0 ) as one_row
       LEFT JOIN entity_preview ON true
-      LEFT JOIN text_property ON true
-      LEFT JOIN language ON true
       LEFT JOIN statement ON true
       LEFT JOIN digital ON true
       LEFT JOIN info_proj_rel ON true

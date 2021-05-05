@@ -5,14 +5,13 @@ import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/e
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
+import {InfResourceMock} from '../../../../helpers/data/gvDB/InfResourceMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
@@ -25,6 +24,7 @@ import {PClassService} from '../../../../../warehouse/primary-ds/class/PClassSer
 import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
 import {ProClassLabelService} from '../../../../../warehouse/primary-ds/ProClassLabelService';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import {createInfResource} from '../../../../helpers/atomic/inf-resource.helper';
 
 const pEntityClassLabelStub: WarehouseStubs = {
     primaryDataServices: [
@@ -101,7 +101,7 @@ export namespace PEntityClassLabel {
         await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
         const cla = await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
         // PERSON
-        const pers = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+        const pers = await createInfResource(InfResourceMock.PERSON_1)
         const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
         return {prel, pers, cla}
     }

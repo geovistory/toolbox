@@ -1,13 +1,12 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
-import {InfEntity, ProInfoProjRel} from '.';
+import {InfDimension, InfEntity, ProInfoProjRel} from '.';
 import {DatChunk} from './dat-chunk.model';
 import {DatDigital} from './dat-digital.model';
 import {InfAppellation} from './inf-appellation.model';
 import {InfLangString} from './inf-lang-string.model';
 import {InfLanguage} from './inf-language.model';
-import {InfPersistentItem} from './inf-persistent-item.model';
 import {InfPlace} from './inf-place.model';
-import {InfTemporalEntity} from './inf-temporal-entity.model';
+import {InfResource} from './inf-resource.model';
 import {InfTimePrimitive} from './inf-time-primitive.model';
 
 @model({
@@ -107,9 +106,10 @@ export class InfStatement extends Entity implements InfEntity {
 
   // Define well-known properties here
 
+
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<InfStatement>) {
     super(data);
@@ -117,19 +117,18 @@ export class InfStatement extends Entity implements InfEntity {
 }
 
 export interface InfStatementRelations {
-  subject_persistent_item?: InfPersistentItem;
-  subject_temporal_entity?: InfTemporalEntity;
+  subject_resource?: InfResource;
   subject_digital?: DatDigital;
   subject_chunk?: DatChunk;
   subject_statement?: InfStatement;
-  object_persistent_item?: InfPersistentItem;
-  object_temporal_entity?: InfTemporalEntity;
+  object_resource?: InfResource;
   object_appellation?: InfAppellation;
+  object_time_primitive?: InfTimePrimitive;
   object_language?: InfLanguage;
   object_lang_string?: InfLangString;
-  object_time_primitive?: InfTimePrimitive;
+  object_dimension?: InfDimension;
   object_place?: InfPlace;
   object_chunk?: DatChunk;
 }
 
-export type InfStatementWithRelations = InfStatement & InfStatementRelations;
+

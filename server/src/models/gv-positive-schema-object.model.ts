@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty, SysConfigValue } from '.';
+import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage,  InfPlace, InfStatement, InfResource,  InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty, SysConfigValue } from '.';
 import { DatClassColumnMapping } from './dat-class-column-mapping.model';
 import { DatColumn } from './dat-column.model';
 import { DatTextProperty } from './dat-text-property.model';
@@ -12,14 +12,12 @@ import { WarEntityPreview } from './war-entity-preview.model';
 
 @model()
 export class InfObject {
-  @property.array(InfPersistentItem) persistent_item?: Partial<InfPersistentItem>[]
-  @property.array(InfTemporalEntity) temporal_entity?: Partial<InfTemporalEntity>[]
+  @property.array(InfResource) resource?: Partial<InfResource>[]
   @property.array(InfStatement) statement?: Partial<InfStatement>[]
   @property.array(InfPlace) place?: Partial<InfPlace>[]
   @property.array(InfLanguage) language?: Partial<InfLanguage>[]
   @property.array(InfAppellation) appellation?: Partial<InfAppellation>[]
   @property.array(InfTimePrimitive) time_primitive?: Partial<InfTimePrimitive>[]
-  @property.array(InfTextProperty) text_property?: Partial<InfTextProperty>[]
   @property.array(InfLangString) lang_string?: Partial<InfLangString>[]
   @property.array(InfDimension) dimension?: Partial<InfDimension>[]
 }

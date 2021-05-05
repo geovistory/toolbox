@@ -1,11 +1,9 @@
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
-import {createInfPersistentItem} from '../atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../atomic/inf-temporal-entity.helper';
+import {createInfResource} from '../atomic/inf-resource.helper';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
-import {InfPersistentItemMock} from '../data/gvDB/InfPersistentItemMock';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../data/gvDB/InfTemporalEntityMock';
 
 export async function createAlbertAndRudolf() {
     //create appellation
@@ -16,14 +14,14 @@ export async function createAlbertAndRudolf() {
 
     //create entities - teen
     const teens = await Promise.all([
-        await createInfTemporalEntity(InfTemporalEntityMock.ALBERT_IV_NAMING),
-        await createInfTemporalEntity(InfTemporalEntityMock.RUDOLF_NAMING)
+        await createInfResource(InfResourceMock.ALBERT_IV_NAMING),
+        await createInfResource(InfResourceMock.RUDOLF_NAMING)
     ])
 
     //create entities - peit
     const peits = await Promise.all([
-        await createInfPersistentItem(InfPersistentItemMock.ALBERT_IV),
-        await createInfPersistentItem(InfPersistentItemMock.RUDOLF)
+        await createInfResource(InfResourceMock.ALBERT_IV),
+        await createInfResource(InfResourceMock.RUDOLF)
     ])
 
     //statements between appellation and naming
@@ -47,27 +45,27 @@ export async function createBunchOfPersons() {
             await createInfAppellation(InfAppellationMock.PIERRE),
             await createInfAppellation(InfAppellationMock.ANGELA)
         ])
-    
+
         //create entities - teen
         const teens = await Promise.all([
-            await createInfTemporalEntity(InfTemporalEntityMock.ALBERT_IV_NAMING),
-            await createInfTemporalEntity(InfTemporalEntityMock.RUDOLF_NAMING),
-            await createInfTemporalEntity(InfTemporalEntityMock.JEAN_NAMING),
-            await createInfTemporalEntity(InfTemporalEntityMock.HANS_NAMING),
-            await createInfTemporalEntity(InfTemporalEntityMock.PIERRE_NAMING),
-            await createInfTemporalEntity(InfTemporalEntityMock.ANGELA_NAMING),
+            await createInfResource(InfResourceMock.ALBERT_IV_NAMING),
+            await createInfResource(InfResourceMock.RUDOLF_NAMING),
+            await createInfResource(InfResourceMock.JEAN_NAMING),
+            await createInfResource(InfResourceMock.HANS_NAMING),
+            await createInfResource(InfResourceMock.PIERRE_NAMING),
+            await createInfResource(InfResourceMock.ANGELA_NAMING),
         ])
-    
+
         //create entities - peit
         const peits = await Promise.all([
-            await createInfPersistentItem(InfPersistentItemMock.ALBERT_IV),
-            await createInfPersistentItem(InfPersistentItemMock.RUDOLF),
-            await createInfPersistentItem(InfPersistentItemMock.JEAN),
-            await createInfPersistentItem(InfPersistentItemMock.HANS),
-            await createInfPersistentItem(InfPersistentItemMock.PIERRE),
-            await createInfPersistentItem(InfPersistentItemMock.ANGELA),
+            await createInfResource(InfResourceMock.ALBERT_IV),
+            await createInfResource(InfResourceMock.RUDOLF),
+            await createInfResource(InfResourceMock.JEAN),
+            await createInfResource(InfResourceMock.HANS),
+            await createInfResource(InfResourceMock.PIERRE),
+            await createInfResource(InfResourceMock.ANGELA),
         ])
-    
+
         //statements between appellation and naming
         const stmts = await Promise.all([
             await createInfStatement(InfStatementMock.NAMING_ALBERT_TO_PEIT_ALBERT),
@@ -83,6 +81,6 @@ export async function createBunchOfPersons() {
             await createInfStatement(InfStatementMock.NAMING_ANGELA_TO_PEIT_ANGELA),
             await createInfStatement(InfStatementMock.NAMING_ANGELA_TO_APPE_ANGELA),
         ])
-    
+
         return {appes, teens, peits, stmts}
 }

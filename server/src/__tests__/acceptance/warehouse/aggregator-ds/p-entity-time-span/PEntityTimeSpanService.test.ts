@@ -13,7 +13,7 @@ import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import {createInfResource} from '../../../../helpers/atomic/inf-resource.helper';
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
@@ -21,7 +21,7 @@ import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {InfResourceMock} from '../../../../helpers/data/gvDB/InfResourceMock';
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
@@ -129,7 +129,7 @@ describe('PEntityTimeSpanService', function () {
         const project = await PEntityTimeSpanMock.createProjectAndModelMock();
 
         // - shipVoyage
-        const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+        const shipVoyage = await createInfResource(InfResourceMock.SHIP_VOYAGE);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
         await searchUntilSatisfy({
             notifier$: s.afterChange$,
@@ -143,7 +143,7 @@ describe('PEntityTimeSpanService', function () {
 
     it('should delete entity time span from index when entity is removed from project', async () => {
         await PEntityTimeSpanMock.createProjectAndModelMock();
-        const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+        const shipVoyage = await createInfResource(InfResourceMock.SHIP_VOYAGE);
         const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
         await searchUntilSatisfy({
@@ -174,7 +174,7 @@ export namespace PEntityTimeSpanMock {
         const project = await createProjectAndModelMock();
 
         // - shipVoyage
-        const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+        const shipVoyage = await createInfResource(InfResourceMock.SHIP_VOYAGE);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
         // TimePrimitive 1

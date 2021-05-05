@@ -132,38 +132,8 @@
         "path": "/add-entity-to-project",
         "verb": "get"
       }
-    },
-    "typeOfProject": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": true,
-          "description": "Pk of the project.",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pkType",
-          "type": "number",
-          "required": true,
-          "description": "Pk of the type.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "InfPersistentItem",
-        "root": true
-      },
-      "description": "Get a object containing apllations and definition of a type (project variant).",
-      "http": {
-        "path": "/type-of-project",
-        "verb": "get"
-      }
     }
+
+
   }
 }

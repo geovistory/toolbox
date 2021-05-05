@@ -1,6 +1,6 @@
 import {LabelPart} from '../../../models';
-import {createInfTemporalEntity} from '../../../__tests__/helpers/atomic/inf-temporal-entity.helper';
-import {InfTemporalEntityMock} from '../../../__tests__/helpers/data/gvDB/InfTemporalEntityMock';
+import {createInfResource} from '../../../__tests__/helpers/atomic/inf-resource.helper';
+import {InfResourceMock} from '../../../__tests__/helpers/data/gvDB/InfResourceMock';
 import {createProInfoProjRel} from '../../../__tests__/helpers/atomic/pro-info-proj-rel.helper';
 import {ProInfoProjRelMock} from '../../../__tests__/helpers/data/gvDB/ProInfoProjRelMock';
 import {createInfStatement} from '../../../__tests__/helpers/atomic/inf-statement.helper';
@@ -53,7 +53,7 @@ export const ENTITY_LABEL_MAX_LENGTH = 311;
 export namespace EntityLabel {
     export async function createInfinitLabel() {
         // TeEn
-        const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
+        const birth = await createInfResource(InfResourceMock.BIRTH_1);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
 
         // Stmts

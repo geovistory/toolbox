@@ -53,7 +53,6 @@ describe('ConfigurationPipeService', () => {
       }
       schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
 
-      // console.log(JSON.stringify(ngRedux.getState().pro.dfh_profile_proj_rel.by_fk_project__enabled))
       // using pipe
       const q$ = service.pipeProfilesEnabledByProject()
 

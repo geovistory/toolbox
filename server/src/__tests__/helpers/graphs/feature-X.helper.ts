@@ -9,10 +9,9 @@ import { createDatTextProperty } from '../atomic/dat-text-property.helper';
 import { createInfAppellation } from '../atomic/inf-appellation.helper';
 import { createInfDimension } from '../atomic/inf-dimension.helper';
 import { createInfLangString } from '../atomic/inf-lang-string.helper';
-import { createInfPersistentItem } from '../atomic/inf-persistent-item.helper';
 import { createInfPlace } from '../atomic/inf-place.helper';
 import { createInfStatement } from '../atomic/inf-statement.helper';
-import { createInfTemporalEntity } from '../atomic/inf-temporal-entity.helper';
+import { createInfResource } from '../atomic/inf-resource.helper';
 import { createInfTimePrimitive } from '../atomic/inf-time-primitive.helper';
 import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper';
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
@@ -30,7 +29,7 @@ import { DatTextPropertyMock } from '../data/gvDB/DatTextPropertyMock';
 import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
-import { InfPersistentItemMock } from '../data/gvDB/InfPersistentItemMock';
+import { InfResourceMock } from '../data/gvDB/InfResourceMock';
 import { InfStatementMock } from '../data/gvDB/InfStatementMock';
 import { ProProjectMock } from '../data/gvDB/ProProjectMock';
 import { PubAccountMock } from '../data/gvDB/PubAccountMock';
@@ -222,9 +221,9 @@ export async function forFeatureX() {
     await createColumnMapping(colPerson, 21) // person
     await createColumnMapping(colGeoPlace, 363) // geo place
     //type
-    const timeUnitPEIT = await createInfPersistentItem({ pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class });
+    const timeUnitPEIT = await createInfResource({ pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class });
     const timeUnitAppellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'Time Unit label' });
-    const timeUnitTeEn = await createInfTemporalEntity({ pk_entity: getIndex(), fk_class: 365 });
+    const timeUnitTeEn = await createInfResource({ pk_entity: getIndex(), fk_class: 365 });
     const statement_refersToName = await createInfStatement({ pk_entity: getIndex(), fk_object_info: timeUnitAppellation.pk_entity, fk_property: 1113, fk_subject_info: timeUnitTeEn.pk_entity });
     const statement_isAppelForLangOf = await createInfStatement({ pk_entity: getIndex(), fk_object_info: timeUnitPEIT.pk_entity, fk_property: 1111, fk_subject_info: timeUnitTeEn.pk_entity });
     const statement_usedInLang = await createInfStatement({ pk_entity: getIndex(), fk_object_info: InfLanguageMock.ENGLISH.pk_entity, fk_property: 1112, fk_subject_info: timeUnitTeEn.pk_entity });
@@ -242,7 +241,7 @@ export async function forFeatureX() {
     await mapCell(projectId, cell_1_3, languageString.pk_entity as number);
     await mapCell(projectId, cell_1_4, timePrimitive.pk_entity as number);
     await mapCell(projectId, cell_1_5, InfLanguageMock.ENGLISH.pk_entity as number);
-    await mapCell(projectId, cell_1_6, InfPersistentItemMock.ALBERT_IV.pk_entity as number);
+    await mapCell(projectId, cell_1_6, InfResourceMock.ALBERT_IV.pk_entity as number);
     await mapCell(projectId, cell_1_7, madrid as number);
 
 

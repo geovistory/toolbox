@@ -63,14 +63,14 @@ export class SubfieldPageController {
     const results: GvPaginationObject[] = []
     const res = await new QFieldPage(this.datasource).query(req)
 
-    if (res.schemas.inf?.temporal_entity?.length) {
+    if (res.schemas.inf?.resource?.length) {
       const subPageQueries: Promise<GvPaginationObject[]>[] = []
-      res.schemas.inf?.temporal_entity.forEach(e => {
+      res.schemas.inf?.resource.forEach(e => {
         const source: GvFieldSourceEntity = {fkInfo: e.pk_entity as number};
         const fkClass = e.fk_class as number;
         const targetType = req.targets[fkClass]
-        if (targetType?.temporalEntity?.length) {
-          const subreqs = targetType.temporalEntity as GvSubentitFieldPageReq[]
+        if (targetType?.nestedResource?.length) {
+          const subreqs = targetType.nestedResource as GvSubentitFieldPageReq[]
           const scope = req.page.scope.notInProject ? {inRepo: true} : req.page.scope
           subPageQueries.push(this.querySubfields(
             req.pkProject,
