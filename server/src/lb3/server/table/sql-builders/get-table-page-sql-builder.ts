@@ -1,7 +1,7 @@
 import { without } from 'ramda';
 import { logSql } from '../../utils';
 import { SqlBuilderBase } from '../../utils/sql-builder-base';
-import { GetTablePageOptions, DatColumn, TColFilters } from '../interfaces';
+import { DatColumn, GetTablePageOptions, TColFilters } from '../interfaces';
 
 
 
@@ -36,7 +36,7 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       ),
       t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
-      From  tables.row t1
+      From  tables.row_` + pkEntity + ` t1
       JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
       JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
       ${this.addColumnFroms(masterColumns, pkEntity)}
@@ -67,7 +67,7 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
     tw3 AS (
       Select
         count(t1.pk_row) as length
-      From  tables.row t1
+      From  tables.row_` + pkEntity + ` t1
         JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
         JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
         ${this.addColumnFroms(masterColumns, pkEntity)}
@@ -172,16 +172,14 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
   private joinColBatchWiths(masterColumns: string[]) {
     return `
         Select
-      ${
-      [
+      ${[
         ...['pk_row', ...masterColumns].map(colName => `tw1."${colName}"`),
         ...this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n'))
       ].join(',\n')
       }
         From
           ${['tw1', ...this.colBatchWiths.map(w => w.name)].join(',\n')}
-          ${
-      this.colBatchWiths.length < 1 ? '' :
+          ${this.colBatchWiths.length < 1 ? '' :
         `Where
             ${this.colBatchWiths
           .map((w) => `tw1.pk_row = ${w.name}.pk_row`)
@@ -207,10 +205,9 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
         }
         else if (filter.text) {
           const o = filter.text.operator
-          sql = `${sql} AND ${tableAlias}.string_value::text ${
-            o == '%iLike%' ?
-              `iLike '%${filter.text.value}%'` :
-              `iLike '%${filter.text.value}%'` // Default
+          sql = `${sql} AND ${tableAlias}.string_value::text ${o == '%iLike%' ?
+            `iLike '%${filter.text.value}%'` :
+            `iLike '%${filter.text.value}%'` // Default
             }`
 
         }

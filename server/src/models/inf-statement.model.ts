@@ -1,20 +1,20 @@
-import {Entity, hasMany, model, property} from '@loopback/repository';
-import {InfEntity, ProInfoProjRel} from '.';
-import {DatChunk} from './dat-chunk.model';
-import {DatDigital} from './dat-digital.model';
-import {InfAppellation} from './inf-appellation.model';
-import {InfLangString} from './inf-lang-string.model';
-import {InfLanguage} from './inf-language.model';
-import {InfPersistentItem} from './inf-persistent-item.model';
-import {InfPlace} from './inf-place.model';
-import {InfTemporalEntity} from './inf-temporal-entity.model';
-import {InfTimePrimitive} from './inf-time-primitive.model';
+import { Entity, hasMany, model, property } from '@loopback/repository';
+import { InfEntity, ProInfoProjRel } from '.';
+import { DatChunk } from './dat-chunk.model';
+import { DatDigital } from './dat-digital.model';
+import { InfAppellation } from './inf-appellation.model';
+import { InfLangString } from './inf-lang-string.model';
+import { InfLanguage } from './inf-language.model';
+import { InfPersistentItem } from './inf-persistent-item.model';
+import { InfPlace } from './inf-place.model';
+import { InfTemporalEntity } from './inf-temporal-entity.model';
+import { InfTimePrimitive } from './inf-time-primitive.model';
 
 @model({
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'v_statement'}
+    postgresql: { schema: 'information', table: 'v_statement' }
   }
 })
 export class InfStatement extends Entity implements InfEntity {
@@ -102,14 +102,14 @@ export class InfStatement extends Entity implements InfEntity {
   })
   community_favorite_calendar?: string;
 
-  @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
+  @hasMany(() => ProInfoProjRel, { keyTo: 'fk_entity' })
   entity_version_project_rels?: ProInfoProjRel[];
 
   // Define well-known properties here
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<InfStatement>) {
     super(data);

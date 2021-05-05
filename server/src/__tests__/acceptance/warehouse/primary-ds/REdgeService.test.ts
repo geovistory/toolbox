@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'reflect-metadata';
-import {REdgeService} from '../../../../warehouse/primary-ds/edge/REdgeService';
-import {REntityId} from '../../../../warehouse/primary-ds/entity/REntityService';
-import {Warehouse} from '../../../../warehouse/Warehouse';
-import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
-import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
-import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
-import {createProProject} from '../../../helpers/atomic/pro-project.helper';
-import {InfAppellationMock} from '../../../helpers/data/gvDB/InfAppellationMock';
-import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
-import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
-import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
-import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
-import {cleanDb} from '../../../helpers/meta/clean-db.helper';
-import {createInfLangString} from '../../../helpers/atomic/inf-lang-string.helper';
-import {InfLangStringMock} from '../../../helpers/data/gvDB/InfLangStringMock';
+import { WarehouseStubs } from '../../../../warehouse/createWarehouse';
+import { REdgeService } from '../../../../warehouse/primary-ds/edge/REdgeService';
+import { REntityId } from '../../../../warehouse/primary-ds/entity/REntityService';
+import { Warehouse } from '../../../../warehouse/Warehouse';
+import { createInfAppellation } from '../../../helpers/atomic/inf-appellation.helper';
+import { createInfLangString } from '../../../helpers/atomic/inf-lang-string.helper';
+import { createInfLanguage } from '../../../helpers/atomic/inf-language.helper';
+import { createInfPersistentItem } from '../../../helpers/atomic/inf-persistent-item.helper';
+import { createInfStatement } from '../../../helpers/atomic/inf-statement.helper';
+import { createInfTemporalEntity } from '../../../helpers/atomic/inf-temporal-entity.helper';
+import { createProInfoProjRel, updateProInfoProjRel } from '../../../helpers/atomic/pro-info-proj-rel.helper';
+import { createProProject } from '../../../helpers/atomic/pro-project.helper';
+import { InfAppellationMock } from '../../../helpers/data/gvDB/InfAppellationMock';
+import { InfLangStringMock } from '../../../helpers/data/gvDB/InfLangStringMock';
+import { InfLanguageMock } from '../../../helpers/data/gvDB/InfLanguageMock';
+import { InfPersistentItemMock } from '../../../helpers/data/gvDB/InfPersistentItemMock';
+import { InfStatementMock } from '../../../helpers/data/gvDB/InfStatementMock';
+import { InfTemporalEntityMock } from '../../../helpers/data/gvDB/InfTemporalEntityMock';
+import { ProInfoProjRelMock } from '../../../helpers/data/gvDB/ProInfoProjRelMock';
+import { ProProjectMock } from '../../../helpers/data/gvDB/ProProjectMock';
+import { cleanDb } from '../../../helpers/meta/clean-db.helper';
+import { searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables } from '../../../helpers/warehouse-helpers';
 const stubs: WarehouseStubs = {
-  primaryDataServices:[REdgeService],
-  aggDataServices:[]
+  primaryDataServices: [REdgeService],
+  aggDataServices: []
 }
 describe('REdgeService', () => {
 
@@ -83,7 +83,7 @@ describe('REdgeService', () => {
     await createInfLangString(InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER)
     await createInfStatement(InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER)
-    const fkProperty:number = InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.fk_property
+    const fkProperty: number = InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.fk_property ?? -1
     const id: REntityId = {
       pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity ?? -1,
     }

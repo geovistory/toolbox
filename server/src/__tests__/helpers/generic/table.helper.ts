@@ -5,12 +5,13 @@ import { createDatTextProperty } from '../atomic/dat-text-property.helper';
 import { createInfStatement } from '../atomic/inf-statement.helper';
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
 import { createCellTable, createTabCell } from '../atomic/tab-cell-X.helper';
-import { createTabRow } from '../atomic/tab-row.helper';
+import { createRowTable, createTabRow } from '../atomic/tab-row.helper';
 import { SysSystemTypeMock } from '../data/gvDB/SysSystemTypeMock';
 import { getIndex } from '../meta/index.helper';
 
 export async function createTable(digital: number): Promise<void> {
-    createCellTable(digital);
+    await createRowTable(digital);
+    await createCellTable(digital);
 }
 
 export async function createColumn(namespace: number, digital: number, name: string): Promise<number> {
@@ -34,10 +35,13 @@ export async function createColumn(namespace: number, digital: number, name: str
 }
 
 export async function createRow(digital: number): Promise<number> {
-    return (await createTabRow({
-        pk_row: getIndex(),
-        fk_digital: digital
-    })).pk_row as number;
+    const index = getIndex();
+    await createTabRow({
+        pk_row: index,
+        fk_digital: digital,
+        position: index
+    });
+    return index;
 }
 
 export async function createCell(digital: number, rowInd: number, colInd: number, content: string): Promise<number> {

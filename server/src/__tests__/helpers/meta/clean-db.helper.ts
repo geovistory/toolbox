@@ -1,5 +1,4 @@
-import { InfAppellation } from '../../../models';
-import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, ProTableConfigRepository, WarStatementRepository, InfAppellationRepository, InfStatementRepository, ProInfoProjRelRepository } from '../../../repositories';
+import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTableConfigRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, WarStatementRepository } from '../../../repositories';
 import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
 import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
 import { PubRoleRepository } from '../../../repositories/pub-role.repository';
@@ -22,6 +21,13 @@ export async function cleanDb() {
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE 'cell_%'`);
     cellTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name) });
+
+    //delete all row partitionned table
+    const rowTables = await testdb.execute(`
+    SELECT table_schema || '.' || table_name as name
+    FROM information_schema."tables"
+    WHERE table_type = 'BASE TABLE' AND table_name LIKE 'row_%'`);
+    rowTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.row_vt') await testdb.execute('DELETE FROM ' + t.name) });
 
     const proTableConfig = new ProTableConfigRepository(testdb);
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
@@ -82,10 +88,6 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE data.factoid_mapping DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM data.factoid_mapping');
     await testdb.execute('ALTER TABLE data.factoid_mapping ENABLE TRIGGER versioning_trigger');
-
-    await testdb.execute('ALTER TABLE tables.row DISABLE TRIGGER versioning_trigger');
-    await testdb.execute('DELETE FROM tables.row');
-    await testdb.execute('ALTER TABLE tables.row ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE tables.quill_doc_cell DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM tables.quill_doc_cell');

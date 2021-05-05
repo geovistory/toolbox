@@ -212,13 +212,13 @@ async function createTextProperty(digital: number, datasource: Postgres1DataSour
 async function createRows(datasource: Postgres1DataSource, fkDigital: number, rowsNb: number): Promise<Array<number>> {
   feedBacks[fkDigital].next({ id: fkDigital, advancement: 0, infos: '[4/6] Rows creation ...' });
   let q = new SqlBuilderBase();
-  q.sql = 'INSERT INTO tables.row (fk_digital) VALUES ';
+  q.sql = 'INSERT INTO tables.row_' + fkDigital + ' (fk_digital) VALUES ';
   const temp = "(" + q.addParam(fkDigital) + "),";
   for (let i = 0; i < rowsNb; i++) q.sql += temp; //perf are ok: on my pc (average) 1 million actions like this took 102 ms
   await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 
   q = new SqlBuilderBase();
-  q.sql = "SELECT pk_row FROM tables.row WHERE fk_digital = " + q.addParam(fkDigital) + " ORDER BY pk_row ASC";
+  q.sql = 'SELECT pk_row FROM tables.row_' + fkDigital + ' WHERE fk_digital = ' + q.addParam(fkDigital) + ' ORDER BY pk_row ASC';
   const result = await datasource.execute(q.sql, q.params);
   feedBacks[fkDigital].next({ id: fkDigital, advancement: 0, infos: '[4/6] Rows creation ... Done' });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

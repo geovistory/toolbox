@@ -1,11 +1,11 @@
-import {Entity, model, property} from '@loopback/repository';
-import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
+import { Entity, model, property } from '@loopback/repository';
+import { registerType } from '../components/spec-enhancer/model.spec.enhancer';
 
 @model({
     settings: {
         strict: true,
         idInjection: false,
-        postgresql: {schema: 'tables', table: 'row'}
+        postgresql: { schema: 'tables', table: 'row' }
     }
 })
 export class TabRow extends Entity {
@@ -23,11 +23,17 @@ export class TabRow extends Entity {
     })
     fk_digital: number;
 
+    @property({
+        type: 'number',
+        required: true,
+    })
+    position: number;
+
     // Define well-known properties here
 
     // Indexer property to allow additional data
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [prop: string]: any;
+    // [prop: string]: any;
 
     constructor(data?: Partial<TabRow>) {
         super(data);

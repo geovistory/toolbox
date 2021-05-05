@@ -161,7 +161,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       ),
       t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
-      From  tables.row t1
+      From  tables.row_` + pkEntity + ` t1
       JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
       JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
       ${this.addColumnFroms(masterColumns, pkEntity)}
@@ -192,7 +192,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     tw3 AS (
       Select
         count(t1.pk_row) as length
-      From  tables.row t1
+        From  tables.row_` + pkEntity + ` t1
         JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
         JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
         ${this.addColumnFroms(masterColumns, pkEntity)}
@@ -254,8 +254,8 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     `
 
 
-    // console.log(this.sql)
-    // console.log(this.params)
+    console.log(this.sql)
+    console.log(this.params)
     // console.log(this.leftJoinStatements(this.getRefersToColumns(), fkProject));
     // console.log(this.groupStatements(this.getRefersToColumns()))
 

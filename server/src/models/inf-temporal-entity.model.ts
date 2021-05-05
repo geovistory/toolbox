@@ -1,13 +1,13 @@
-import {model, property, Entity, hasMany} from '@loopback/repository';
-import {InfEntity, ProInfoProjRel} from '.';
-import {InfStatement} from './inf-statement.model';
-import {InfTextProperty} from './inf-text-property.model';
+import { Entity, hasMany, model, property } from '@loopback/repository';
+import { InfEntity, ProInfoProjRel } from '.';
+import { InfStatement } from './inf-statement.model';
+import { InfTextProperty } from './inf-text-property.model';
 
 @model({
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'temporal_entity'}
+    postgresql: { schema: 'information', table: 'temporal_entity' }
   }
 })
 export class InfTemporalEntity extends Entity implements InfEntity {
@@ -26,8 +26,8 @@ export class InfTemporalEntity extends Entity implements InfEntity {
   })
   fk_class: number;
 
-  @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
-  entity_version_project_rels: ProInfoProjRel[];
+  @hasMany(() => ProInfoProjRel, { keyTo: 'fk_entity' })
+  entity_version_project_rels?: ProInfoProjRel[];
 
   // @property({
   //   type: 'number',
@@ -39,21 +39,21 @@ export class InfTemporalEntity extends Entity implements InfEntity {
   // })
   // fk_object_info?: number;
 
-  @hasMany(() => InfStatement, {keyTo: 'fk_subject_info'})
-  outgoing_statements: InfStatement[];
+  @hasMany(() => InfStatement, { keyTo: 'fk_subject_info' })
+  outgoing_statements?: InfStatement[];
 
-  @hasMany(() => InfStatement, {keyTo: 'fk_object_info'})
-  incoming_statements: InfStatement[];
+  @hasMany(() => InfStatement, { keyTo: 'fk_object_info' })
+  incoming_statements?: InfStatement[];
 
-  @hasMany(() => InfTextProperty, {keyTo: 'fk_concerned_entity'})
-  text_properties: InfTextProperty[];
+  @hasMany(() => InfTextProperty, { keyTo: 'fk_concerned_entity' })
+  text_properties?: InfTextProperty[];
 
 
   // Define well-known properties here
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  //[prop: string]: any;
 
   constructor(data?: Partial<InfTemporalEntity>) {
     super(data);

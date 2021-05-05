@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {InfTemporalEntity} from '../../../../models';
-import {DfhApiClassMock} from './DfhApiClassMock';
-import {OmitEntity} from './local-model.helpers';
+import { InfTemporalEntity } from '../../../../models';
+import { DfhApiClassMock } from './DfhApiClassMock';
+import { OmitEntity } from './local-model.helpers';
 
 /**
  * pk_entity prefix: 400
