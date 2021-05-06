@@ -1,36 +1,22 @@
+import { InfDimension, InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { U } from '@kleiolab/lib-utils';
 import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 
-import { InfStatement, InfTextProperty, InfDimension } from '@kleiolab/lib-sdk-lb3';
-import { U } from '@kleiolab/lib-utils';
 
 export const infRoot = 'inf';
 
 export const infDefinitions: ReducerConfigCollection = {
-  persistent_item: {
+  resource: {
     indexBy: {
       keyInStore: 'pk_entity',
-      indexByFn: (item) => {
+      indexByFn: (item: InfResource) => {
         return item.pk_entity.toString()
       }
     },
     groupBy: [
       {
         keyInStore: 'fk_class',
-        groupByFn: (d): string => d.fk_class.toString()
-      }
-    ]
-  },
-  temporal_entity: {
-    indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item) => {
-        return item.pk_entity.toString()
-      }
-    },
-    groupBy: [
-      {
-        keyInStore: 'fk_class',
-        groupByFn: (d): string => d.fk_class.toString()
+        groupByFn: (d: InfResource): string => d.fk_class.toString()
       }
     ]
   },
@@ -66,24 +52,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
 
-  text_property: {
-    indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item) => {
-        return item.pk_entity.toString()
-      }
-    },
-    groupBy: [
-      {
-        keyInStore: 'fk_concerned_entity__fk_class_field',
-        groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity + '_' + d.fk_class_field
-      },
-      {
-        keyInStore: 'fk_concerned_entity',
-        groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity.toString()
-      },
-    ]
-  },
+
   lang_string: {
     indexBy: {
       keyInStore: 'pk_entity',

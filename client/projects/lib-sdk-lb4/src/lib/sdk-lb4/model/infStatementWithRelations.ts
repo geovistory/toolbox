@@ -9,12 +9,19 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
+import { InfResource } from './infResource';
+import { InfTimePrimitive } from './infTimePrimitive';
+import { ProInfoProjRel } from './proInfoProjRel';
+import { InfAppellation } from './infAppellation';
+import { InfStatement } from './infStatement';
+import { DatDigital } from './datDigital';
+import { InfDimension } from './infDimension';
+import { DatChunk } from './datChunk';
+import { InfLangString } from './infLangString';
+import { InfPlace } from './infPlace';
+import { InfLanguage } from './infLanguage';
 
 
-/**
- * (tsType: InfStatementWithRelations, schemaOptions: { includeRelations: true })
- */
 export interface InfStatementWithRelations { 
     pk_entity?: number;
     fk_subject_info?: number;
@@ -30,6 +37,18 @@ export interface InfStatementWithRelations {
     is_in_project_count?: number;
     is_standard_in_project_count?: number;
     community_favorite_calendar?: string;
-    entity_version_project_rels?: Array<ProInfoProjRelWithRelations>;
+    entity_version_project_rels?: Array<ProInfoProjRel>;
+    subject_resource?: InfResource;
+    subject_chunk?: DatChunk;
+    subject_statement?: InfStatement;
+    subject_digital?: DatDigital;
+    object_resource?: InfResource;
+    object_appellation?: InfAppellation;
+    object_time_primitive?: InfTimePrimitive;
+    object_language?: InfLanguage;
+    object_lang_string?: InfLangString;
+    object_dimension?: InfDimension;
+    object_place?: InfPlace;
+    object_chunk?: DatChunk;
 }
 

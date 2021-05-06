@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
+import { DatChunk, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ListType, Panel, PanelTab, ProjectDetail, ProjectPreview, TypePeIt } from '../models/active-project.models';
+import { ListType, Panel, PanelTab, ProjectDetail, ProjectPreview } from '../models/active-project.models';
 
 export interface ActiveProjectMeta {
 
@@ -11,14 +11,14 @@ export interface ActiveProjectMeta {
   pk_entity?: number;
   pk_entities?: number[];
   pk_classes?: number[]
-  pk_ui_context?: number;
+  // pk_ui_context?: number;
   entity_version?: number;
 
 
   chunk?: DatChunk
-  teEnGraphs?: InfTemporalEntity[]
-  peItGraphs?: InfPersistentItem[]
-  types?: TypePeIt[]
+  // teEnGraphs?: InfResource[]
+  // peItGraphs?: InfResource[]
+  // types?: TypePeIt[]
 
   // CRM and Config
   projRel?: ProDfhClassProjRel;
@@ -380,7 +380,7 @@ export class ActiveProjectActions {
   //   }
   // }
 
-  // loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
+  // loadPeItGraphsSucceeded(peItGraphs: InfResource[]): ActiveProjectAction {
   //   return {
   //     type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
   //     payload: null,
@@ -414,7 +414,7 @@ export class ActiveProjectActions {
   //   }
   // }
 
-  // loadTeEnGraphsSucceeded(teEnGraphs: InfTemporalEntity[]): ActiveProjectAction {
+  // loadTeEnGraphsSucceeded(teEnGraphs: InfResource[]): ActiveProjectAction {
   //   return {
   //     type: ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED,
   //     payload: null,

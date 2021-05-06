@@ -17,7 +17,6 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { InfPersistentItem } from '../model/models';
 import { SchemaObject } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -228,83 +227,6 @@ export class SchemaObjectService {
         }
 
         return this.httpClient.get<Array<SchemaObject>>(`${this.configuration.basePath}/lb3-api/SchemaObjects/remove-entity-from-project`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Get a object containing apllations and definition of a type (project variant).
-     * @param pkProject Pk of the project.
-     * @param pkType Pk of the type.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public schemaObjectTypeOfProject(pkProject: number, pkType: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<InfPersistentItem>;
-    public schemaObjectTypeOfProject(pkProject: number, pkType: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<InfPersistentItem>>;
-    public schemaObjectTypeOfProject(pkProject: number, pkType: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<InfPersistentItem>>;
-    public schemaObjectTypeOfProject(pkProject: number, pkType: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (pkProject === null || pkProject === undefined) {
-            throw new Error('Required parameter pkProject was null or undefined when calling schemaObjectTypeOfProject.');
-        }
-        if (pkType === null || pkType === undefined) {
-            throw new Error('Required parameter pkType was null or undefined when calling schemaObjectTypeOfProject.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkProject !== undefined && pkProject !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkProject, 'pkProject');
-        }
-        if (pkType !== undefined && pkType !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkType, 'pkType');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
-        // authentication (jwt) required
-        credential = this.configuration.lookupCredential('jwt');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.get<InfPersistentItem>(`${this.configuration.basePath}/lb3-api/SchemaObjects/type-of-project`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

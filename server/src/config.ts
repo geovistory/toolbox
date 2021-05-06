@@ -1,3 +1,4 @@
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_PROPERTY_HAS_TIME_SPAN = 4;
+export const PK_PROPERTY_REFERS_TO = 1334;
 

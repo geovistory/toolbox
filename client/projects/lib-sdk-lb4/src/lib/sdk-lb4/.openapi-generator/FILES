@@ -18,11 +18,8 @@ api/dfhPropertyController.service.ts
 api/factoidController.service.ts
 api/importTableController.service.ts
 api/infLanguage.service.ts
-api/infPersistentItem.service.ts
 api/infPlace.service.ts
 api/infStatement.service.ts
-api/infTemporalEntity.service.ts
-api/infTextProperty.service.ts
 api/ontoMeController.service.ts
 api/pingController.service.ts
 api/proClassFieldConfig.service.ts
@@ -131,13 +128,11 @@ model/infLangString.ts
 model/infLanguage.ts
 model/infNegativeObject.ts
 model/infObject.ts
-model/infPersistentItem.ts
 model/infPlace.ts
+model/infResource.ts
+model/infResourceWithRelations.ts
 model/infStatement.ts
 model/infStatementWithRelations.ts
-model/infTemporalEntity.ts
-model/infTemporalEntityWithRelations.ts
-model/infTextProperty.ts
 model/infTimePrimitive.ts
 model/labelPart.ts
 model/labelPartField.ts

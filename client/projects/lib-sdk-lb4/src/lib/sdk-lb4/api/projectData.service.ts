@@ -17,7 +17,8 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { InfTemporalEntityWithRelations } from '../model/models';
+import { GvPositiveSchemaObject } from '../model/models';
+import { InfResourceWithRelations } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -86,14 +87,132 @@ export class ProjectDataService {
 
     /**
      * @param pkProject 
-     * @param infTemporalEntityWithRelations 
+     * @param pkEntity 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public projectDataControllerCreate(pkProject: number, infTemporalEntityWithRelations?: Array<InfTemporalEntityWithRelations>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public projectDataControllerCreate(pkProject: number, infTemporalEntityWithRelations?: Array<InfTemporalEntityWithRelations>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public projectDataControllerCreate(pkProject: number, infTemporalEntityWithRelations?: Array<InfTemporalEntityWithRelations>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public projectDataControllerCreate(pkProject: number, infTemporalEntityWithRelations?: Array<InfTemporalEntityWithRelations>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public createProjectDataControllerGetResource(pkProject: number, pkEntity: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<GvPositiveSchemaObject>>;
+    public createProjectDataControllerGetResource(pkProject: number, pkEntity: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<GvPositiveSchemaObject>>>;
+    public createProjectDataControllerGetResource(pkProject: number, pkEntity: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<GvPositiveSchemaObject>>>;
+    public createProjectDataControllerGetResource(pkProject: number, pkEntity: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling createProjectDataControllerGetResource.');
+        }
+        if (pkEntity === null || pkEntity === undefined) {
+            throw new Error('Required parameter pkEntity was null or undefined when calling createProjectDataControllerGetResource.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<Array<GvPositiveSchemaObject>>(`${this.configuration.basePath}/project-data/get-resource`,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public createProjectDataControllerGetTypesOfProject(pkProject: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public createProjectDataControllerGetTypesOfProject(pkProject: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public createProjectDataControllerGetTypesOfProject(pkProject: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
+    public createProjectDataControllerGetTypesOfProject(pkProject: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling createProjectDataControllerGetTypesOfProject.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/project-data/get-types-of-project`,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param infResourceWithRelations 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public projectDataControllerCreate(pkProject: number, infResourceWithRelations?: Array<InfResourceWithRelations>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<InfResourceWithRelations>>;
+    public projectDataControllerCreate(pkProject: number, infResourceWithRelations?: Array<InfResourceWithRelations>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<InfResourceWithRelations>>>;
+    public projectDataControllerCreate(pkProject: number, infResourceWithRelations?: Array<InfResourceWithRelations>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<InfResourceWithRelations>>>;
+    public projectDataControllerCreate(pkProject: number, infResourceWithRelations?: Array<InfResourceWithRelations>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling projectDataControllerCreate.');
         }
@@ -117,6 +236,7 @@ export class ProjectDataService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -139,8 +259,8 @@ export class ProjectDataService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<any>(`${this.configuration.basePath}/project-data/upsert-entities`,
-            infTemporalEntityWithRelations,
+        return this.httpClient.post<Array<InfResourceWithRelations>>(`${this.configuration.basePath}/project-data/upsert-entities`,
+            infResourceWithRelations,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,

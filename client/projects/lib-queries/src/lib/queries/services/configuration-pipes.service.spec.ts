@@ -476,7 +476,7 @@ describe('ConfigurationPipeService', () => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
             expect(fs[0].property.fkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
-            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.temporalEntity[0].page.isCircular).toEqual(true)
+            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.nestedResource[0].page.isCircular).toEqual(true)
           },
           null,
           done);
@@ -498,7 +498,7 @@ describe('ConfigurationPipeService', () => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
             expect(fs[0].property.fkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
-            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.temporalEntity[3].page.isCircular).toEqual(false)
+            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.nestedResource[3].page.isCircular).toEqual(false)
           },
           null,
           done);

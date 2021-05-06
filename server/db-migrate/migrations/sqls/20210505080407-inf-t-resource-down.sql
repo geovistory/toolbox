@@ -1,6 +1,33 @@
 /* Replace with your SQL commands */
--- 7
+-- 9
+
+ALTER TABLE information.dimension DROP CONSTRAINT dimension_fk_measurement_unit_fkey;
+
+ALTER TABLE information.dimension
+    ADD CONSTRAINT dimension_fk_measurement_unit_fkey FOREIGN KEY (fk_measurement_unit)
+    REFERENCES information.persistent_item_backup (pk_entity) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+ALTER TABLE projects.argument DROP CONSTRAINT assertion_fk_assertion_method_type_fkey;
+
+ALTER TABLE projects.argument
+    ADD CONSTRAINT assertion_fk_assertion_method_type_fkey FOREIGN KEY (fk_argument_method_type)
+    REFERENCES information.persistent_item_backup (pk_entity) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+ALTER TABLE system.system_relevant_type DROP CONSTRAINT system_relevant_type_fk_type_fkey;
+
+ALTER TABLE system.system_relevant_type
+    ADD CONSTRAINT system_relevant_type_fk_type_fkey FOREIGN KEY (fk_type)
+    REFERENCES information.persistent_item_backup (pk_entity) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+-- 8
 DROP TABLE information.resource_vt;
+-- 7
 
 ALTER TABLE information.resource NO INHERIT information.entity;
 

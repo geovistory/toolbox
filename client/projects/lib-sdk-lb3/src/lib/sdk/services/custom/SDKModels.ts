@@ -13,11 +13,8 @@ import { InfAppellation } from '../../models/InfAppellation';
 import { InfDimension } from '../../models/InfDimension';
 import { InfLangString } from '../../models/InfLangString';
 import { InfLanguage } from '../../models/InfLanguage';
-import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfPlace } from '../../models/InfPlace';
 import { InfStatement } from '../../models/InfStatement';
-import { InfTemporalEntity } from '../../models/InfTemporalEntity';
-import { InfTextProperty } from '../../models/InfTextProperty';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
@@ -65,14 +62,11 @@ export class SDKModels {
     InfAppellation: InfAppellation,
     InfLangString: InfLangString,
     InfDimension: InfDimension,
-    InfTemporalEntity: InfTemporalEntity,
     InfStatement: InfStatement,
     InfLanguage: InfLanguage,
-    InfPersistentItem: InfPersistentItem,
     InfTimePrimitive: InfTimePrimitive,
     InfPlace: InfPlace,
     DatNamespace: DatNamespace,
-    InfTextProperty: InfTextProperty,
     SysSystemType: SysSystemType,
 
   };

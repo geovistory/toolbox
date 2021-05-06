@@ -140,7 +140,7 @@ describe('InformationPipesService', () => {
           null,
           done);
     });
-    it('should return subfield page for subfieldType timePrimitive', async (done) => {
+    fit('should return subfield page for subfieldType timePrimitive', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.shipVoyageAtSomeTimeWithin
@@ -160,7 +160,7 @@ describe('InformationPipesService', () => {
           done);
     });
 
-    it('should return subfield page for subfieldType temporalEntity', async (done) => {
+    fit('should return subfield page for subfieldType temporalEntity', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.person1HasAppeTeEn

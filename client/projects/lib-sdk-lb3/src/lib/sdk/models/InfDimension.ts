@@ -1,9 +1,5 @@
 /* tslint:disable */
-import {
-  ProInfoProjRel,
-  InfStatement,
-  InfPersistentItem
-} from '../index';
+import { InfStatement, ProInfoProjRel } from '../index';
 
 declare var Object: any;
 export interface InfDimensionInterface {
@@ -13,7 +9,6 @@ export interface InfDimensionInterface {
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
   incoming_statements?: InfStatement[];
-  measurement_unit?: InfPersistentItem;
 }
 
 export class InfDimension implements InfDimensionInterface {
@@ -23,7 +18,6 @@ export class InfDimension implements InfDimensionInterface {
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
   incoming_statements?: InfStatement[];
-  measurement_unit?: InfPersistentItem;
   constructor(data?: InfDimensionInterface) {
     Object.assign(this, data);
   }
@@ -40,7 +34,7 @@ export class InfDimension implements InfDimensionInterface {
   * @license MIT
   * This method creates an instance of InfDimension for dynamic purposes.
   **/
-  public static factory(data: InfDimensionInterface): InfDimension{
+  public static factory(data: InfDimensionInterface): InfDimension {
     return new InfDimension(data);
   }
   /**
@@ -80,7 +74,7 @@ export class InfDimension implements InfDimensionInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         incoming_statements: {
@@ -88,7 +82,7 @@ export class InfDimension implements InfDimensionInterface {
           type: 'InfStatement[]',
           model: 'InfStatement',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_object_info'
         },
         measurement_unit: {
@@ -96,7 +90,7 @@ export class InfDimension implements InfDimensionInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_measurement_unit',
+          keyFrom: 'fk_measurement_unit',
           keyTo: 'pk_entity'
         },
       }

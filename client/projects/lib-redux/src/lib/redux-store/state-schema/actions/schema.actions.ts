@@ -4,6 +4,7 @@ import { GvFieldPageReq, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { LoadActionMeta } from '../_helpers/schema-actions-factory';
 
@@ -35,14 +36,16 @@ export class GvSchemaActions {
    */
   loadGvSchemaObject(
     apiCall$: Observable<GvPositiveSchemaObject>
-  ): void {
+  ) {
     const addPending = U.uuid()
+    const $ = apiCall$.pipe(shareReplay())
     const action: GvSchemaObjectAction = {
       type: GvSchemaActions.GV_SCHEMA_OBJECT_LOAD,
       meta: { addPending },
-      payload: apiCall$,
+      payload: $,
     };
     this.ngRedux.dispatch(action)
+    return $
   }
 
   /**

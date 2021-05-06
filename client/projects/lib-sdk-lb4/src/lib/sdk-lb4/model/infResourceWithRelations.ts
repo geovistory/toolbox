@@ -9,10 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfStatementWithRelations } from './infStatementWithRelations';
 
 
-export interface InfTemporalEntity { 
-    fk_class: number;
+export interface InfResourceWithRelations { 
     pk_entity?: number;
+    fk_class: number;
+    outgoing_statements?: Array<InfStatementWithRelations>;
+    incoming_statements?: Array<InfStatementWithRelations>;
 }
 

@@ -520,8 +520,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             for (const key in field.targets) {
               if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
                 const listType = field.targets[key].listType;
-                // put temporalEntity to entityPreview
-                const subTargetType: GvSubentityTargetType = listType.temporalEntity ?
+                const subTargetType: GvSubentityTargetType = listType.nestedResource ?
                   { entityPreview: 'true' } :
                   listType
                 nestedTargets[key] = subTargetType
@@ -547,7 +546,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             }
             subentitySubfieldPage.push(nestedPage)
           }
-          return { temporalEntity: subentitySubfieldPage }
+          return { nestedResource: subentitySubfieldPage }
         }),
 
       )

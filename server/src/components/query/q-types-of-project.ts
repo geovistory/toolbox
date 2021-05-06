@@ -4,7 +4,7 @@ import {InfResource, ProInfoProjRel} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 
 
-export class SqlTypesOfProject extends SqlBuilderLb4Models {
+export class QTypesOfProject extends SqlBuilderLb4Models {
 
   constructor(
     dataSource: Postgres1DataSource

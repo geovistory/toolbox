@@ -1,5 +1,5 @@
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
+import { InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../root/models/model';
 
 interface PaginationInfo {
@@ -11,17 +11,12 @@ interface PaginationInfo {
     [key: string]: number
   }
 }
-export class InfPersistentItemSlice {
-  by_pk_entity?: ByPk<InfPersistentItem>;
-  by_fk_class?: ByPk<ByPk<InfPersistentItem>>;
+export class InfResourceSlice {
+  by_pk_entity?: ByPk<InfResource>;
+  by_fk_class?: ByPk<ByPk<InfResource>>;
   loading?: boolean
 }
 
-export class InfTemporalEntitySlice {
-  by_pk_entity?: ByPk<InfTemporalEntity>;
-  by_fk_class?: ByPk<ByPk<InfPersistentItem>>;
-  loading?: boolean
-}
 
 export class InfStatementSlice {
   by_pk_entity?: ByPk<InfStatement>;
@@ -66,17 +61,12 @@ export class InfDimensionSlice {
   loading?: boolean
 }
 
-export class InfTextPropertySlice {
-  by_pk_entity?: ByPk<InfTextProperty>;
-  by_fk_concerned_entity__fk_class_field?: ByPk<ByPk<InfTextProperty>>;
-  by_fk_concerned_entity?: ByPk<ByPk<InfTextProperty>>;
-  loading?: boolean
-}
+
 
 
 export interface Inf {
-  persistent_item?: InfPersistentItemSlice;
-  temporal_entity?: InfTemporalEntitySlice;
+  persistent_item?: InfResourceSlice;
+  temporal_entity?: InfResourceSlice;
   statement?: InfStatementSlice;
   place?: InfPlaceSlice;
   time_primitive?: InfTimePrimitiveSlice;
@@ -84,7 +74,6 @@ export interface Inf {
   appellation?: InfAppellationSlice;
   lang_string?: InfLangStringSlice;
   dimension?: InfDimensionSlice;
-  text_property?: InfTextPropertySlice;
 
   pkEntityModelMap?: ByPk<{ modelName: string }>
 }

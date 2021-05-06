@@ -9,27 +9,23 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfResource } from './infResource';
 import { InfTimePrimitive } from './infTimePrimitive';
-import { InfPersistentItem } from './infPersistentItem';
 import { InfAppellation } from './infAppellation';
 import { InfStatement } from './infStatement';
 import { InfDimension } from './infDimension';
 import { InfLangString } from './infLangString';
-import { InfTemporalEntity } from './infTemporalEntity';
 import { InfPlace } from './infPlace';
-import { InfTextProperty } from './infTextProperty';
 import { InfLanguage } from './infLanguage';
 
 
 export interface InfObject { 
-    persistent_item?: Array<InfPersistentItem>;
-    temporal_entity?: Array<InfTemporalEntity>;
+    resource?: Array<InfResource>;
     statement?: Array<InfStatement>;
     place?: Array<InfPlace>;
     language?: Array<InfLanguage>;
     appellation?: Array<InfAppellation>;
     time_primitive?: Array<InfTimePrimitive>;
-    text_property?: Array<InfTextProperty>;
     lang_string?: Array<InfLangString>;
     dimension?: Array<InfDimension>;
 }

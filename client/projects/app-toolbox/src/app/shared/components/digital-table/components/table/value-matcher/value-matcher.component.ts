@@ -107,7 +107,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
 
   changeMatching(mode: 'create' | 'edit' | 'delete') {
     if (mode == 'delete') {
-      if (this.statement) this.inf.statement.remove([this.statement], this.pkProject);
+      if (this.statement) this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject);
     } else {
       this.dialog.open<CtrlValueDialogComponent,
         CtrlValueDialogData, CtrlValueDialogResult>(CtrlValueDialogComponent, {
@@ -129,7 +129,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
             ...result
           };
           if (mode == 'edit' && this.statement && result) {
-            this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
+            this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject).subscribe(result2 => {
               this.inf.statement.upsert([newStatement], this.pkProject);
             });
           } else this.inf.statement.upsert([newStatement], this.pkProject);

@@ -60,7 +60,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
 
   changeMatching(mode: 'create' | 'edit' | 'delete') {
     if (mode == 'delete') {
-      if (this.statement) this.inf.statement.remove([this.statement], this.pkProject);
+      if (this.statement) this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject);
     } else {
       this.dialog.open<CtrlEntityDialogComponent,
         CtrlEntityDialogData,
@@ -83,7 +83,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
           if (mode == 'edit' && this.statement && result) {
-            this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
+            this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject).subscribe(result2 => {
               if (result2) this.handleDialogResponse(result);
             });
           } else this.handleDialogResponse(result);

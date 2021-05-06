@@ -11,8 +11,8 @@
  */
 
 
-export interface InfPersistentItem { 
-    fk_class: number;
+export interface InfResource { 
     pk_entity?: number;
+    fk_class: number;
 }
 

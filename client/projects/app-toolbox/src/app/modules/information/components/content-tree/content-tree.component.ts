@@ -441,7 +441,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
             // A: Yes. different parent. change the parent (and the order)
 
             // remove the current statement from project
-            this.inf.statement.remove([this.dragNode.statement], pkProject)
+            this.inf.removeEntitiesFromProject([this.dragNode.statement.pk_entity], pkProject)
 
             // find or create a new statement bewteen the dragged and the new parent
             this.inf.statement.upsert([this.prepareNewEntityAssociatoin(dropNode, this.dragNode, pkExpression)], pkProject)
@@ -666,7 +666,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
             this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
               // remove the current statement from project
-              this.inf.statement.remove([node.statement], pkProject)
+              this.inf.removeEntitiesFromProject([node.statement.pk_entity], pkProject)
 
             })
           }

@@ -2,6 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ProProject, ProProjectApi, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { ProjectDataService } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { Action } from 'redux';
@@ -16,6 +17,7 @@ import { DatActions } from '../../state-schema/actions/dat.actions';
 import { DfhActions } from '../../state-schema/actions/dfh.actions';
 import { InfActions } from '../../state-schema/actions/inf.actions';
 import { ProActions } from '../../state-schema/actions/pro.actions';
+import { GvSchemaActions } from '../../state-schema/actions/schema.actions';
 import { SysActions } from '../../state-schema/actions/sys.actions';
 import { SchemaService } from '../../state-schema/services/schema.service';
 import { ProjectPreview } from '../models/active-project.models';
@@ -46,6 +48,8 @@ export class ActiveProjectEpics {
     private dfh: DfhActions,
     private pro: ProActions,
     private inf: InfActions,
+    private schemaActions: GvSchemaActions,
+    private projectData: ProjectDataService,
     private projectApi: ProProjectApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
@@ -138,8 +142,7 @@ export class ActiveProjectEpics {
           this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
           this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
           this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-
-          this.inf.persistent_item.typesOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x))
+          this.schemaActions.loadGvSchemaObject(this.projectData.createProjectDataControllerGetTypesOfProject(action.meta.pk_project))
         )
           .pipe(filter((res: any[]) => !res.includes(undefined)))
           .subscribe((res) => {

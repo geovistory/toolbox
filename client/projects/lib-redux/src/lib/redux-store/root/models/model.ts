@@ -1,5 +1,4 @@
-import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, ProProject } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { IAccount } from '../../state-gui/models/account.model';
 import { ProjectDetail } from '../../state-gui/models/active-project.models';
 import { Information } from '../../state-gui/models/entity-list.models';
@@ -16,14 +15,12 @@ import { War } from '../../state-schema/models/war.models';
 
 
 export interface InfObject {
-  persistent_item?: InfPersistentItem[]
-  temporal_entity?: InfTemporalEntity[]
+  resource?: InfResource[]
   statement?: InfStatement[]
   place?: InfPlace[]
   language?: InfLanguage[]
   appellation?: InfAppellation[]
   time_primitive?: InfTimePrimitive[]
-  text_property?: InfTextProperty[]
   lang_string?: InfLangString[]
   dimension?: InfDimension[]
 }

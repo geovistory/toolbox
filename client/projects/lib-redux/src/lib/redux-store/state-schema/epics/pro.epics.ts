@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ProClassFieldConfig, ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi, ProInfoProjRel, ProInfoProjRelApi, ProProject, ProProjectApi, ProTextProperty, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
+import { ProClassFieldConfig, ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi, ProInfoProjRel, ProInfoProjRelApi, ProProjectApi, ProTextProperty, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
 import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
 import { InfActions } from '../actions/inf.actions';
-import { MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProProjectActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
-import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../models/pro.models';
+import { MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
+import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
 import { SchemaService } from '../services/schema.service';
 import { Flattener, storeFlattened } from '../_helpers/flattener';
@@ -36,8 +36,8 @@ export class ProEpics {
   ) { }
 
   public createEpics(): Epic {
-    const proProjectEpicsFactory = new SchemaEpicsFactory<ProProjectSlice, ProProject>
-      (proRoot, 'project', this.proActions.project, this.notification);
+    // const proProjectEpicsFactory = new SchemaEpicsFactory<ProProjectSlice, ProProject>
+    //   (proRoot, 'project', this.proActions.project, this.notification);
 
     const proInfoProjRelEpicsFactory = new SchemaEpicsFactory<ProInfoProjRelSlice, ProInfoProjRel>
       (proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
@@ -63,24 +63,24 @@ export class ProEpics {
       /**
       * ProProject
       */
-      proProjectEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.projectApi
-        .ofAccount(meta.pk),
-        ProProjectActionFactory.OF_ACCOUNT,
-        (results) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.pro_project.flatten(results);
-          storeFlattened(flattener.getFlattened());
-        }
-      ),
-      proProjectEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.projectApi
-        .getBasics(meta.pk),
-        ProProjectActionFactory.LOAD_BASICS,
-        (results) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.pro_project.flatten(results);
-          storeFlattened(flattener.getFlattened());
-        }
-      ),
+      // proProjectEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.projectApi
+      //   .ofAccount(meta.pk),
+      //   ProProjectActionFactory.OF_ACCOUNT,
+      //   (results) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.pro_project.flatten(results);
+      //     storeFlattened(flattener.getFlattened());
+      //   }
+      // ),
+      // proProjectEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.projectApi
+      //   .getBasics(meta.pk),
+      //   ProProjectActionFactory.LOAD_BASICS,
+      //   (results) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.pro_project.flatten(results);
+      //     storeFlattened(flattener.getFlattened());
+      //   }
+      // ),
       /**
        * ProInfoProjRel
        */

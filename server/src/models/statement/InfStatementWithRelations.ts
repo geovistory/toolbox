@@ -1,5 +1,7 @@
 import {model, property} from '@loopback/repository';
-import {DatChunk, DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfResource, InfPlace, InfStatement,  InfTimePrimitive, ProInfoProjRel} from '..';
+import {DatChunk, DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive} from '..';
+import {ProInfoProjRelNew} from '../pro-info-proj-rel-new.model';
+import {InfResourceWithRelations} from '../inf-resource-with-relations.model';
 
 @model()
 export class InfStatementWithRelations
@@ -90,8 +92,8 @@ export class InfStatementWithRelations
   community_favorite_calendar?: string;
 
 
-  @property.array(ProInfoProjRel)
-  entity_version_project_rels?: ProInfoProjRel[];
+  @property.array(ProInfoProjRelNew)
+  entity_version_project_rels?: ProInfoProjRelNew[];
 
 
   @property({type: InfResource})

@@ -50,7 +50,7 @@ export class InfResource extends Entity implements InfEntity {
   }
 }
 
-export interface InfTemporalEntityRelations {
+export interface InfResourceRelations {
   // describe navigational properties here
 }
 

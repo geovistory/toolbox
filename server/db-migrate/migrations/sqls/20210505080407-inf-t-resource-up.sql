@@ -47,3 +47,29 @@ CREATE TRIGGER notify_modification
     FOR EACH STATEMENT
     EXECUTE PROCEDURE commons.notify_modification_trigger();
 
+-- 9 redirect foreign keys to new table
+ALTER TABLE information.dimension DROP CONSTRAINT dimension_fk_measurement_unit_fkey;
+
+ALTER TABLE information.dimension
+    ADD CONSTRAINT dimension_fk_measurement_unit_fkey FOREIGN KEY (fk_measurement_unit)
+    REFERENCES information.resource (pk_entity) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE projects.argument DROP CONSTRAINT assertion_fk_assertion_method_type_fkey;
+
+ALTER TABLE projects.argument
+    ADD CONSTRAINT assertion_fk_assertion_method_type_fkey FOREIGN KEY (fk_argument_method_type)
+    REFERENCES information.resource (pk_entity) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE system.system_relevant_type DROP CONSTRAINT system_relevant_type_fk_type_fkey;
+
+ALTER TABLE system.system_relevant_type
+    ADD CONSTRAINT system_relevant_type_fk_type_fkey FOREIGN KEY (fk_type)
+    REFERENCES information.resource (pk_entity) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;

@@ -8,6 +8,7 @@ import { ProClassFieldConfig } from './pro-class-field-config.model';
 import { ProDfhProfileProjRel } from './pro-dfh-profile-proj-rel.model';
 import { SysSystemRelevantClass } from './sys-system-relevant-class.model';
 import { WarEntityPreview } from './war-entity-preview.model';
+import {DatChunk} from './dat-chunk.model';
 
 
 @model()
@@ -37,6 +38,7 @@ export class ProObject {
 @model()
 export class DatObject {
   @property.array(DatDigital) digital?: Partial<DatDigital>[]
+  @property.array(DatDigital) chunk?: Partial<DatChunk>[]
   @property.array(DatColumn) column?: Partial<DatColumn>[]
   @property.array(DatTextProperty) text_property?: Partial<DatTextProperty>[]
   @property.array(DatClassColumnMapping) class_column_mapping?: Partial<DatClassColumnMapping>[]

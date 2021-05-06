@@ -17,11 +17,8 @@ import { DfhPropertyControllerService } from './api/dfhPropertyController.servic
 import { FactoidControllerService } from './api/factoidController.service';
 import { ImportTableControllerService } from './api/importTableController.service';
 import { InfLanguageService } from './api/infLanguage.service';
-import { InfPersistentItemService } from './api/infPersistentItem.service';
 import { InfPlaceService } from './api/infPlace.service';
 import { InfStatementService } from './api/infStatement.service';
-import { InfTemporalEntityService } from './api/infTemporalEntity.service';
-import { InfTextPropertyService } from './api/infTextProperty.service';
 import { OntoMeControllerService } from './api/ontoMeController.service';
 import { PingControllerService } from './api/pingController.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';

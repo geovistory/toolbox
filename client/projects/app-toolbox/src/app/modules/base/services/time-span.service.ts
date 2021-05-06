@@ -76,7 +76,7 @@ export class TimeSpanService {
 
         return combineLatest(
           toUpsert.length > 0 ? this.inf.statement.upsert(toUpsert, pkProject).resolved$ : of(true),
-          toDelete.length > 0 ? this.inf.statement.remove(toDelete, pkProject).resolved$ : of(true)
+          toDelete.length > 0 ? this.inf.removeEntitiesFromProject(toDelete.map(i => i.pk_entity), pkProject) : of(true)
         )
 
       }),

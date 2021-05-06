@@ -85,6 +85,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
       dat: {
         class_column_mapping: [],
         text_property: [],
+        chunk: [],
         column: [],
         digital: []
       },

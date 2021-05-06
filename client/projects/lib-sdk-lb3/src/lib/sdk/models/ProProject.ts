@@ -1,12 +1,5 @@
 /* tslint:disable */
-import {
-  PubAccount,
-  ProTextProperty,
-  ProInfoProjRel,
-  InfLanguage,
-  InfPersistentItem,
-  DatNamespace
-} from '../index';
+import { DatNamespace, InfLanguage, ProInfoProjRel, ProTextProperty, PubAccount } from '../index';
 
 declare var Object: any;
 export interface ProProjectInterface {
@@ -16,7 +9,6 @@ export interface ProProjectInterface {
   text_properties?: ProTextProperty[];
   entity_version_project_rels?: ProInfoProjRel[];
   default_language?: InfLanguage;
-  persistent_items?: InfPersistentItem[];
   namespaces?: DatNamespace[];
 }
 
@@ -27,7 +19,6 @@ export class ProProject implements ProProjectInterface {
   text_properties?: ProTextProperty[];
   entity_version_project_rels?: ProInfoProjRel[];
   default_language?: InfLanguage;
-  persistent_items?: InfPersistentItem[];
   namespaces?: DatNamespace[];
   constructor(data?: ProProjectInterface) {
     Object.assign(this, data);
@@ -45,7 +36,7 @@ export class ProProject implements ProProjectInterface {
   * @license MIT
   * This method creates an instance of ProProject for dynamic purposes.
   **/
-  public static factory(data: ProProjectInterface): ProProject{
+  public static factory(data: ProProjectInterface): ProProject {
     return new ProProject(data);
   }
   /**
@@ -87,7 +78,7 @@ export class ProProject implements ProProjectInterface {
           type: 'ProTextProperty[]',
           model: 'ProTextProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
         entity_version_project_rels: {
@@ -95,7 +86,7 @@ export class ProProject implements ProProjectInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
         default_language: {
@@ -103,25 +94,15 @@ export class ProProject implements ProProjectInterface {
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
+          keyFrom: 'fk_language',
           keyTo: 'pk_entity'
-        },
-        persistent_items: {
-          name: 'persistent_items',
-          type: 'InfPersistentItem[]',
-          model: 'InfPersistentItem',
-          relationType: 'hasMany',
-          modelThrough: 'ProInfoProjRel',
-          keyThrough: 'fk_entity',
-          keyFrom: 'pk_entity',
-          keyTo: 'fk_project'
         },
         namespaces: {
           name: 'namespaces',
           type: 'DatNamespace[]',
           model: 'DatNamespace',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
       }

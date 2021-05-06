@@ -1,20 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {GvFieldPage, GvPaginationObject} from '@kleiolab/lib-sdk-lb4';
-import {GvFieldPageReqMock} from '../api-requests/GvFieldPageReq'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
-import {InfAppellationMock} from '../gvDB/InfAppellationMock'
-import {InfDimensionMock} from '../gvDB/InfDimensionMock'
-import {InfLangStringMock} from '../gvDB/InfLangStringMock'
-import {InfLanguageMock} from '../gvDB/InfLanguageMock'
-import {InfPersistentItemMock} from '../gvDB/InfPersistentItemMock'
-import {InfPlaceMock} from '../gvDB/InfPlaceMock'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {InfTemporalEntityMock} from '../gvDB/InfTemporalEntityMock'
-import {InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
-import {DfhApiProperty} from '../gvDB/local-model.helpers'
-import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
-import {ProProjectMock} from '../gvDB/ProProjectMock'
-import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
+import { GvFieldPage, GvPaginationObject } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReqMock } from '../api-requests/GvFieldPageReq';
+import { DfhApiPropertyMock } from '../gvDB/DfhApiPropertyMock';
+import { InfAppellationMock } from '../gvDB/InfAppellationMock';
+import { InfDimensionMock } from '../gvDB/InfDimensionMock';
+import { InfLangStringMock } from '../gvDB/InfLangStringMock';
+import { InfLanguageMock } from '../gvDB/InfLanguageMock';
+import { InfPlaceMock } from '../gvDB/InfPlaceMock';
+import { InfResourceMock } from '../gvDB/InfResourceMock';
+import { InfStatementMock } from '../gvDB/InfStatementMock';
+import { InfTimePrimitiveMock } from '../gvDB/InfTimePrimitiveMock';
+import { DfhApiProperty } from '../gvDB/local-model.helpers';
+import { ProInfoProjRelMock } from '../gvDB/ProInfoProjRelMock';
+import { ProProjectMock } from '../gvDB/ProProjectMock';
+import { WarEntityPreviewMock } from '../gvDB/WarEntityPreviewMock';
 
 export namespace GvPaginationObjectMock {
   export const appeTeEnHasAppeVt: GvPaginationObject = {
@@ -23,7 +22,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.appeTeEnRefersToName.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.NAME_1_TO_APPE.pk_entity
+          InfStatementMock.NAME_1_TO_APPE.pk_entity as number
         ],
       }
     ],
@@ -49,7 +48,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.appeTeEnUsedInLanguage.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.NAME_1_TO_LANG.pk_entity
+          InfStatementMock.NAME_1_TO_LANG.pk_entity as number
         ],
       }
     ],
@@ -75,7 +74,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.appeTeEnIsAppeOfPerson.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.NAME_1_TO_PERSON.pk_entity
+          InfStatementMock.NAME_1_TO_PERSON.pk_entity as number
         ],
       }
     ],
@@ -84,8 +83,8 @@ export namespace GvPaginationObjectMock {
         statement: [
           InfStatementMock.NAME_1_TO_PERSON
         ],
-        persistent_item: [
-          InfPersistentItemMock.PERSON_1
+        resource: [
+          InfResourceMock.PERSON_1
         ]
       },
       war: {
@@ -106,7 +105,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.madridsPresenceWasAtPlace.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123.pk_entity
+          InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123.pk_entity as number
         ],
       }
     ],
@@ -132,7 +131,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.journyeHasDuration.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION.pk_entity
+          InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION.pk_entity as number
         ],
       }
     ],
@@ -163,7 +162,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.manifSingletonHasShortTitleMurderer.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.pk_entity
+          InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.pk_entity as number
         ],
       }
     ],
@@ -194,7 +193,7 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.shipVoyageAtSomeTimeWithin.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.pk_entity
+          InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.pk_entity as number
         ],
       }
     ],
@@ -219,7 +218,7 @@ export namespace GvPaginationObjectMock {
     subfieldPages: [
       {
         page: createTimeSpanSubPage(
-          InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
           DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT
         ),
         count: 0,
@@ -227,7 +226,7 @@ export namespace GvPaginationObjectMock {
       },
       {
         page: createTimeSpanSubPage(
-          InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
           DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN
         ),
         count: 0,
@@ -235,17 +234,17 @@ export namespace GvPaginationObjectMock {
       },
       {
         page: createTimeSpanSubPage(
-          InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
           DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN
         ),
         count: 1,
         paginatedStatements: [
-          InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.pk_entity
+          InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.pk_entity as number
         ],
       },
       {
         page: createTimeSpanSubPage(
-          InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
           DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN
         ),
         count: 0,
@@ -253,17 +252,17 @@ export namespace GvPaginationObjectMock {
       },
       {
         page: createTimeSpanSubPage(
-          InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
           DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END
         ),
         count: 1,
         paginatedStatements: [
-          InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.pk_entity
+          InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.pk_entity as number
         ],
       },
       {
         page: createTimeSpanSubPage(
-          InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
           DfhApiPropertyMock.EN_153_END_OF_THE_END
         ),
         count: 0,
@@ -297,24 +296,21 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.person1HasAppeTeEn.page,
         count: 1,
         paginatedStatements: [
-          InfStatementMock.NAME_1_TO_PERSON.pk_entity
+          InfStatementMock.NAME_1_TO_PERSON.pk_entity as number
         ],
       },
       {
-        page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
+        page: { ...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1 },
         count: 1,
         paginatedStatements: [
-          InfStatementMock.NAME_1_TO_APPE.pk_entity
+          InfStatementMock.NAME_1_TO_APPE.pk_entity as number
         ],
       },
     ],
     schemas: {
       inf: {
-        // persistent_item: [
-        //   InfPersistentItemMock.PERSON_1
-        // ],
-        temporal_entity: [
-          InfTemporalEntityMock.NAMING_1
+        resource: [
+          InfResourceMock.NAMING_1
         ],
         statement: [
           InfStatementMock.NAME_1_TO_PERSON,
@@ -337,11 +333,11 @@ export namespace GvPaginationObjectMock {
 
 export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPage {
   return {
-    source: {fkInfo: sourceEntity},
-    property: {fkProperty: property.dfh_pk_property},
+    source: { fkInfo: sourceEntity },
+    property: { fkProperty: property.dfh_pk_property },
     isOutgoing: true,
     // targetClass: DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class,
-    scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+    scope: { inProject: ProProjectMock.PROJECT_1.pk_entity as number },
     limit: 1,
     offset: 0
   }

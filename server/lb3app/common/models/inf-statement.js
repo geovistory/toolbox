@@ -292,63 +292,63 @@ module.exports = function (InfStatement) {
     });
   };
 
-  /**
-   * Get an nested object with everything needed to display the
-   * links made from an entity towards sources and digitals.
-   */
-  InfStatement.sourcesAndDigitalsOfEntity = function (
-    ofProject,
-    pkProject,
-    pkEntity,
-    cb
-  ) {
-    const joinThisProject = InfStatement.app.models.ProInfoProjRel.getJoinObject(
-      ofProject,
-      pkProject
-    );
+  // /**
+  //  * Get an nested object with everything needed to display the
+  //  * links made from an entity towards sources and digitals.
+  //  */
+  // InfStatement.sourcesAndDigitalsOfEntity = function (
+  //   ofProject,
+  //   pkProject,
+  //   pkEntity,
+  //   cb
+  // ) {
+  //   const joinThisProject = InfStatement.app.models.ProInfoProjRel.getJoinObject(
+  //     ofProject,
+  //     pkProject
+  //   );
 
-    const filter = {
-      where: ['fk_entity', '=', pkEntity],
-      include: {
-        entity_version_project_rels: joinThisProject,
-        subject_chunk: {
-          $relation: {
-            name: 'subject_chunk',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-      },
-    };
+  //   const filter = {
+  //     where: ['fk_entity', '=', pkEntity],
+  //     include: {
+  //       entity_version_project_rels: joinThisProject,
+  //       subject_chunk: {
+  //         $relation: {
+  //           name: 'subject_chunk',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   };
 
-    return InfStatement.findComplex(filter, (err, statements) => {
-      if (err) return cb(err);
+  //   return InfStatement.findComplex(filter, (err, statements) => {
+  //     if (err) return cb(err);
 
-      const textPks = _.uniq(
-        statements
-          .filter((statement) => statement.subject_chunk)
-          .map((statement) => statement.subject_chunk.fk_text)
-      );
+  //     const textPks = _.uniq(
+  //       statements
+  //         .filter((statement) => statement.subject_chunk)
+  //         .map((statement) => statement.subject_chunk.fk_text)
+  //     );
 
-      if (!textPks.length) return cb(null, statements);
+  //     if (!textPks.length) return cb(null, statements);
 
-      InfStatement.app.models.DatDigital.findComplex(
-        {
-          where: ['pk_text', 'IN', textPks],
-        },
-        (err2, digitals) => {
-          if (err2) return cb(err2);
+  //     InfStatement.app.models.DatDigital.findComplex(
+  //       {
+  //         where: ['pk_text', 'IN', textPks],
+  //       },
+  //       (err2, digitals) => {
+  //         if (err2) return cb(err2);
 
-          cb(null, {
-            statements,
-            digitals,
-          });
-        }
-      );
-    });
-  };
+  //         cb(null, {
+  //           statements,
+  //           digitals,
+  //         });
+  //       }
+  //     );
+  //   });
+  // };
 };

@@ -71,7 +71,9 @@ export class SchemaEpics {
               this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
               // call action to store page informations
               for (const subfieldPage of data.subfieldPages) {
-                this.infActions.statement.loadPageSucceeded(subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject);
+                this.infActions.statement.loadPageSucceeded(
+                  subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject
+                );
               }
               // call action to complete loading bar
               actionEmitter.next(this.loadingBarActions.completeLoading());

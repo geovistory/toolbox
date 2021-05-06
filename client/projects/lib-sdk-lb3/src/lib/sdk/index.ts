@@ -52,11 +52,8 @@ import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfDimensionApi } from './services/custom/InfDimension';
 import { InfLangStringApi } from './services/custom/InfLangString';
 import { InfLanguageApi } from './services/custom/InfLanguage';
-import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { InfPlaceApi } from './services/custom/InfPlace';
 import { InfStatementApi } from './services/custom/InfStatement';
-import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
-import { InfTextPropertyApi } from './services/custom/InfTextProperty';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
 import { LoggerService } from './services/custom/logger.service';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
@@ -135,14 +132,11 @@ export class SdkLb3Module {
         InfAppellationApi,
         InfLangStringApi,
         InfDimensionApi,
-        InfTemporalEntityApi,
         InfStatementApi,
         InfLanguageApi,
-        InfPersistentItemApi,
         InfTimePrimitiveApi,
         InfPlaceApi,
         DatNamespaceApi,
-        InfTextPropertyApi,
         SysSystemTypeApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },

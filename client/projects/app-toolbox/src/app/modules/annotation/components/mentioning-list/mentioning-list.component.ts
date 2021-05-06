@@ -2,23 +2,18 @@ import { NgRedux } from '@angular-redux/store';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSort, MatTableDataSource } from '@angular/material';
-import { latestVersion } from "@kleiolab/lib-utils";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfActions } from "@kleiolab/lib-redux";
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
-import { SchemaSelectorsService } from "@kleiolab/lib-queries";
-import { RootEpics } from "@kleiolab/lib-redux";
-import { ByPk } from "@kleiolab/lib-redux";
-import { IAppState } from "@kleiolab/lib-redux";
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ByPk, IAppState, InfActions, RootEpics } from '@kleiolab/lib-redux';
 import { DatChunk, DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
-import { DfhConfig } from "@kleiolab/lib-config";
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { flatten, indexBy, values } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
 
@@ -230,40 +225,40 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
         })
 
       }
-      else if (this.listOf.type === 'entity') {
+      // else if (this.listOf.type === 'entity') {
 
-        this.displayedColumns = ['digital', 'domainLabel', 'actions'];
+      //   this.displayedColumns = ['digital', 'domainLabel', 'actions'];
 
-        this.inf.statement.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
+      //   this.inf.statement.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
 
-        const rows$ = this.s.inf$.statement$.by_object$({ fk_object_info: this.listOf.pkEntity })
-          .pipe(
-            switchMap((statements) => combineLatestOrEmpty(
-              statements.filter(statement => statement.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
-                .map(statement => this.s.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
-                  .pipe(
-                    filter(item => !!item),
-                    switchMap(domainChunk => this.s.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
-                      filter(item => !!item),
-                      map(texts => latestVersion(texts)),
-                      map(digital => ({
-                        statement: statement,
-                        domainChunk,
-                        domainLabel: this.getStringFromChunk(domainChunk),
-                        digital,
-                        digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
-                      } as Row))))
-                  )
-                )))
-          )
+      //   const rows$ = this.s.inf$.statement$.by_object$({ fk_object_info: this.listOf.pkEntity })
+      //     .pipe(
+      //       switchMap((statements) => combineLatestOrEmpty(
+      //         statements.filter(statement => statement.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
+      //           .map(statement => this.s.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
+      //             .pipe(
+      //               filter(item => !!item),
+      //               switchMap(domainChunk => this.s.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+      //                 filter(item => !!item),
+      //                 map(texts => latestVersion(texts)),
+      //                 map(digital => ({
+      //                   statement: statement,
+      //                   domainChunk,
+      //                   domainLabel: this.getStringFromChunk(domainChunk),
+      //                   digital,
+      //                   digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
+      //                 } as Row))))
+      //             )
+      //           )))
+      //     )
 
-        this.data$ = rows$;
+      //   this.data$ = rows$;
 
-        this.data$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-          this.dataSource.data = data
-          this.dataChange.emit(data)
-        })
-      }
+      //   this.data$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      //     this.dataSource.data = data
+      //     this.dataChange.emit(data)
+      //   })
+      // }
 
     })
 
@@ -293,7 +288,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
   private getStringFromChunk(chunk: DatChunk): string {
     if (chunk) {
-      return "« " + (chunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('') + " »";
+      return '« ' + (chunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('') + ' »';
     }
   }
 
@@ -326,7 +321,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
       .subscribe(confirmed => {
         if (confirmed) {
           this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-            this.inf.statement.remove([row.statement], pkProject)
+            this.inf.removeEntitiesFromProject([row.statement.pk_entity], pkProject)
           })
         }
       })

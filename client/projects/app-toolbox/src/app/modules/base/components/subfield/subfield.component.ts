@@ -214,7 +214,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       this.ap.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
 
         const statement = item.statement;
-        this.inf.statement.remove([statement], pkProject)
+        this.inf.removeEntitiesFromProject([statement.pk_entity], pkProject)
 
       })
     }
@@ -317,7 +317,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       // remove the related temporal entity
       this.p.removeEntityFromProject(item.target.entity.pkEntity, () => {
         // remove the statement
-        this.inf.statement.remove([item.statement], pkProject)
+        this.inf.removeEntitiesFromProject([item.statement.pk_entity], pkProject)
       })
     })
 

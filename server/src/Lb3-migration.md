@@ -280,26 +280,11 @@ Get e schema object of own properties of the temporal entity in project version.
 
 InfStatement
 
-GET
-​/lb3-api​/InfStatements​/paginated-list-targeting-entity-previews
-Get a flat object of entity previews, that are target of a list.
-`DELETE`
 
 POST
 ​/lb3-api​/InfStatements​/find-or-create-many
 Find or create information statement.
 `--> ProjectData`
-
-
-GET
-​/lb3-api​/InfStatements​/sources-and-digitals-of-entity
-Get an nested object of statement with everything needed to display the links made from an entity towards sources and digitals.
-`--> ProjectData` (used by mentioning-list)
-
-GET
-​/lb3-api​/InfStatements​/find-by-params
-Find statements by params.
-`--> ProjectData` (used by type-item and content-tree)
 
 
 InfLanguage

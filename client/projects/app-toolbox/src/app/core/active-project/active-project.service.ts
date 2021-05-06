@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, SchemaObject, SchemaService, TypesByPk } from '@kleiolab/lib-redux';
+import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, SchemaObject, SchemaService } from '@kleiolab/lib-redux';
 import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
@@ -33,7 +33,7 @@ export class ActiveProjectService {
   public focusedPanel$: Observable<number>;
   public list$: Observable<ListType>; // type of list displayed in left panel
   public creatingMentioning$: Observable<boolean>;
-  public typesByPk$: Observable<TypesByPk>
+  // public typesByPk$: Observable<TypesByPk>
   public datNamespaces$: Observable<DatNamespace[]>
   public initializingProject$: Observable<boolean>;
 
@@ -101,7 +101,7 @@ export class ActiveProjectService {
     this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
     this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
-    this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
+    // this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
 

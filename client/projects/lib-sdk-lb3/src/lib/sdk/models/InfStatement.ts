@@ -1,17 +1,5 @@
 /* tslint:disable */
-import {
-  ProInfoProjRel,
-  InfTemporalEntity,
-  DatDigital,
-  DatChunk,
-  InfAppellation,
-  InfLangString,
-  InfDimension,
-  InfLanguage,
-  InfPersistentItem,
-  InfTimePrimitive,
-  InfPlace
-} from '../index';
+import { DatChunk, DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive, ProInfoProjRel } from '../index';
 
 declare var Object: any;
 export interface InfStatementInterface {
@@ -30,18 +18,14 @@ export interface InfStatementInterface {
   "community_favorite_calendar"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  subject_temporal_entity?: InfTemporalEntity;
   subject_digital?: DatDigital;
   subject_chunk?: DatChunk;
   subject_statement?: InfStatement;
-  object_temporal_entity?: InfTemporalEntity;
   object_appellation?: InfAppellation;
   object_lang_string?: InfLangString;
   object_chunk?: DatChunk;
   object_dimension?: InfDimension;
   object_language?: InfLanguage;
-  subject_persistent_item?: InfPersistentItem;
-  object_persistent_item?: InfPersistentItem;
   object_time_primitive?: InfTimePrimitive;
   object_place?: InfPlace;
 }
@@ -62,18 +46,14 @@ export class InfStatement implements InfStatementInterface {
   "community_favorite_calendar"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  subject_temporal_entity?: InfTemporalEntity;
   subject_digital?: DatDigital;
   subject_chunk?: DatChunk;
   subject_statement?: InfStatement;
-  object_temporal_entity?: InfTemporalEntity;
   object_appellation?: InfAppellation;
   object_lang_string?: InfLangString;
   object_chunk?: DatChunk;
   object_dimension?: InfDimension;
   object_language?: InfLanguage;
-  subject_persistent_item?: InfPersistentItem;
-  object_persistent_item?: InfPersistentItem;
   object_time_primitive?: InfTimePrimitive;
   object_place?: InfPlace;
   constructor(data?: InfStatementInterface) {
@@ -185,14 +165,6 @@ export class InfStatement implements InfStatementInterface {
           keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        subject_temporal_entity: {
-          name: 'subject_temporal_entity',
-          type: 'InfTemporalEntity',
-          model: 'InfTemporalEntity',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_subject_info',
-          keyTo: 'pk_entity'
-        },
         subject_digital: {
           name: 'subject_digital',
           type: 'DatDigital',
@@ -215,14 +187,6 @@ export class InfStatement implements InfStatementInterface {
           model: 'InfStatement',
           relationType: 'belongsTo',
           keyFrom: 'fk_subject_info',
-          keyTo: 'pk_entity'
-        },
-        object_temporal_entity: {
-          name: 'object_temporal_entity',
-          type: 'InfTemporalEntity',
-          model: 'InfTemporalEntity',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_appellation: {
@@ -261,22 +225,6 @@ export class InfStatement implements InfStatementInterface {
           name: 'object_language',
           type: 'InfLanguage',
           model: 'InfLanguage',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_object_info',
-          keyTo: 'pk_entity'
-        },
-        subject_persistent_item: {
-          name: 'subject_persistent_item',
-          type: 'InfPersistentItem',
-          model: 'InfPersistentItem',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_subject_info',
-          keyTo: 'pk_entity'
-        },
-        object_persistent_item: {
-          name: 'object_persistent_item',
-          type: 'InfPersistentItem',
-          model: 'InfPersistentItem',
           relationType: 'belongsTo',
           keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'

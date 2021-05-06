@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace } from '@kleiolab/lib-sdk-lb3';
-import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { GregorianDateTime, InfTimePrimitiveWithCalendar, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';

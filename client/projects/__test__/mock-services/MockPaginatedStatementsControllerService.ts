@@ -10,7 +10,7 @@ export class MockPaginatedStatementsControllerService {
     else if (values(gvLoadSubfieldPageReq.targets)[0].place) {
       return new BehaviorSubject(GvPaginationObjectMock.madridsPresenceWasAtPlace);
     }
-    else if (values(gvLoadSubfieldPageReq.targets)[0].temporalEntity) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].nestedResource) {
       return new BehaviorSubject(GvPaginationObjectMock.personHasAppeTeEn);
     }
 

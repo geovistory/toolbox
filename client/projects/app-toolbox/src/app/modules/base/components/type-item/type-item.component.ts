@@ -112,7 +112,7 @@ export class TypeItemComponent implements OnInit {
               is_in_project: false
             } as ProInfoProjRel]
           })
-          const call$ = this.inf.statement.remove([oldStatement], fk_project).resolved$
+          const call$ = this.inf.removeEntitiesFromProject([oldStatement.pk_entity], fk_project)
           calls$.push(call$);
         }
 

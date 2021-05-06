@@ -1,11 +1,10 @@
 import {Postgres1DataSource} from '../../datasources';
 import {DatDigital} from '../../models/dat-digital.model';
-import {InfLanguage} from '../../models/inf-language.model';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {InfStatement} from '../../models/inf-statement.model';
 import {ProInfoProjRel} from '../../models/pro-info-proj-rel.model';
 import {WarEntityPreview} from '../../models/war-entity-preview.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 
 export class QContentTree extends SqlBuilderLb4Models {
 
