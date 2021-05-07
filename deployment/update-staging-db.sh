@@ -23,7 +23,7 @@ if [[ "$DB_ENV" == "staging" ]]; then
         heroku pg:psql -a geovistory-staging -c "DROP SCHEMA IF EXISTS ${name} CASCADE;" WH_DATABASE_URL
 
         # copy production db to staging db
-        heroku pg:copy geovistory-production::DATABASE_URL DATABASE_URL -a geovistory-staging --confirm=confirm
+        heroku pg:copy geovistory-production::DATABASE_URL DATABASE_URL -a geovistory-staging --confirm=geovistory-staging
 
         # turn other workers ON
         heroku ps:scale worker=1 -a geovistory-staging
