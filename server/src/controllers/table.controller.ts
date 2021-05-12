@@ -139,7 +139,7 @@ export class TableController {
     let masterColumns: string[] = [];
 
     // add sort-by column
-    if (options.sortBy && options.sortBy !== 'pk_row') {
+    if (options.sortBy && options.sortBy !== 'index') {
       masterColumns = [options.sortBy]
     }
 
@@ -149,7 +149,7 @@ export class TableController {
     if (options.filters && filterCols.length > 0) {
       masterColumns = [
         ...masterColumns,
-        ...filterCols.filter(col => col !== 'pk_row').map(col => col.toString())
+        ...filterCols.filter(col => col !== 'index').map(col => col.toString())
       ]
     }
 
@@ -379,8 +379,21 @@ export class TableController {
     if (accountId) result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
     else result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: null, fk_digital: pkDataEntity } });
 
-    if (result === null) return { positive: {}, negative: {} };
-    else return {
+    // if the table has not yet a config, we create one
+    if (result === null) {
+      // get all columns of the table
+      const cols = (await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } })).sort((a, b) => (a.pk_entity as number) - (b.pk_entity as number))
+      const config = new TableConfig();
+      config.columns = cols.map(c => ({ fkColumn: c.pk_entity as number, visible: true }))
+
+      // create the TableConfig
+      await this.setTableConfig(pkProject, pkDataEntity, accountId, config);
+
+      return {
+        positive: { pro: { table_config: [config] } },
+        negative: {}
+      }
+    } else return {
       positive: { pro: { table_config: [result] } },
       negative: {}
     }

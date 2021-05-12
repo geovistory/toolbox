@@ -4,19 +4,24 @@
     <div class="gv-td-menu-label mat-text-secondary">
       Columns:
     </div>
-    <!-- Column Toggler -->
+    <!-- Column Toggler
     <mat-select-autocomplete [placeholder]="'Columns'" [options]="colToggleOptions$ | async" [multiple]='true'
       [formControl]="colToggleCtrl" ngDefaultControl name="colToggleCtrl">
-    </mat-select-autocomplete>
+    </mat-select-autocomplete> -->
+
+    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary" (click)="tableConfiguration()">
+      Table config
+    </button>
 
   </div>
   <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-checkbox orange">
 
-    <!-- Filter Toggler -->
-    <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
+
+    <!-- Edit mode -->
+    <mat-checkbox (change)="changeTableMode($event.checked)">Edit mode</mat-checkbox>
 
     <!-- Filter Toggler -->
-    <mat-checkbox (change)="changingColumnsOrder($event.checked)">Change order</mat-checkbox>
+    <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
 
     <!-- Metadata Toggler -->
     <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
@@ -34,8 +39,8 @@
 
 <!--  [columnComments$]="" [loading]="" -->
 <!-- // MOVED cellMapping TO EntityMatcherComponent -->
-<gv-table [loading]="loading" [sortBy$]="sortByIndex$" [headers$]="headers$" [table$]="table$"
-  [filteringEnabled]="colFiltersEnabled" [sortingEnabled]="true" [lineBreak]="lineBrakeInCells"
-  [changingColumns]="changingColumns" class="gv-overflow-hidden" (sortDemanded)="onSortChangesort($event)"
-  (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)" (changeColumn)="onColumnOrderChange($event)">
+<gv-table [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading" [sortBy$]="sortByIndex$"
+  [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled" [sortingEnabled]="true"
+  [lineBreak]="lineBrakeInCells" [mode]="tableMode" class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)"
+  (filterDemanded)="onFilterChange($event)">
 </gv-table>

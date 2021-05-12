@@ -1,16 +1,21 @@
-import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue, SysConfigValueObjectType, TabCell, TableService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../../../../server/src/lb3/server/table/interfaces';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
 
+export enum TableMode {
+  edit = 'edit',
+  view = 'view',
+}
+
 export interface ColumnMapping {
   fkClass: number,
-  className: string,
-  icon: 'teEn' | 'peIt',
+  className: Observable<string>,
+  icon: Observable<'teEn' | 'peIt'>,
   pkEntity?: number,
   pkColumn?: number
 }
@@ -19,8 +24,8 @@ export interface Header {
   colLabel: string,
   comment: string,
   type: 'number' | 'string',
-  mapping?: ColumnMapping,
   pk_column?: number
+  mapping?: ColumnMapping,
 }
 
 export enum ValueObjectTypeName {
@@ -32,6 +37,13 @@ export enum ValueObjectTypeName {
   language = 'language'
 }
 
+export interface Cell {
+  text: string;
+  pkCell: number;
+  pkRow: number;
+  pkColumn: number;
+}
+
 @Component({
   selector: 'gv-table',
   templateUrl: './table.component.html',
@@ -41,23 +53,25 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   destroy$ = new Subject<boolean>();
 
   // mandatory inputs
+  @Input() pkProject: number;
+  @Input() pkDigital: number;
   @Input() loading = false;
   @Input() headers$: Observable<Header[]>;
-  @Input() table$: Observable<Array<Array<string | { text: string, pkCell: number }>>>;
+  @Input() table$: Observable<Array<Array<Cell>>>;
 
   // optionnal inputs
   @Input() filteringEnabled = false;
   @Input() sortingEnabled = false;
   @Input() lineBreak = false;
-  @Input() sortBy$: Observable<{ colNb: number, direction: string }>;
+  @Input() sortBy$: Observable<{ pkColumn: number, direction: string }>;
   @Input() origin: 'classic';
-  @Input() changingColumns = false;
+  @Input() mode: TableMode = TableMode.view;
 
   // outputs
-  @Output() sortDemanded = new EventEmitter<{ colNb: number, direction: string }>();
-  @Output() filterDemanded = new EventEmitter<Array<{ col: number, filter: TColFilter }>>();
-  @Output() cellClicked = new EventEmitter<{ col: number, row: number }>();
-  @Output() changeColumn = new EventEmitter<{ col: number, direction: 'right' | 'left' }>();
+  @Output() sortDemanded = new EventEmitter<{ pkColumn: number, direction: string }>();
+  @Output() filterDemanded = new EventEmitter<Array<{ pkColumn: number, filter: TColFilter }>>();
+  @Output() cellClicked = new EventEmitter<{ pkColumn: number, pkRow: number }>();
+  @Output() changeColumn = new EventEmitter<{ pkColumn: number, direction: 'right' | 'left' }>();
 
   // config
   config: SysConfigValue;
@@ -65,9 +79,9 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   // private parameters
   isThereMappings$: Observable<boolean>;
   headers: Header[];
-  table: Array<Array<string | { text: string, pkCell: number }>>;
-  curSort: { colNb: number, direction: string };
-  filters: Array<{ col: number, value: string }>;
+  table: Array<Array<{ text: string, pkCell: number, pkRow: number, pkColumn: number }>>;
+  curSort: { pkColumn: number, direction: string };
+  filters: Array<{ pkColumn: number, value: string }>;
 
   // mapping options
   valuesObjectTypes: Array<{ pkClass: number, label: string }> = [];
@@ -80,15 +94,21 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   target: any;
   scrolling = false;
 
+  // edit variables
+  precCellValue = '';
+
+  @ViewChildren('cells') cells: QueryList<Input>;
+
   constructor(
     public p: ActiveProjectService,
     private dialog: MatDialog,
+    private tableAPI: TableService,
   ) { }
 
   ngOnInit() {
     this.headers = [];
     this.table = [];
-    this.curSort = { colNb: -1, direction: '' };
+    this.curSort = { pkColumn: -1, direction: '' };
     this.filters = [];
 
     // listen to input headers (from parent)
@@ -145,25 +165,29 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   sort(col: number) {
     if (!this.sortingEnabled) return;
 
-    if (col == this.curSort.colNb) this.curSort.direction = this.curSort.direction == 'ASC' ? 'DESC' : 'ASC'
-    else this.curSort = { colNb: col, direction: 'ASC' }
+    const pkCol = col != 0 ? this.headers[col].pk_column : -1;
+    if (pkCol == this.curSort.pkColumn) this.curSort.direction = this.curSort.direction == 'ASC' ? 'DESC' : 'ASC'
+    else this.curSort = { pkColumn: pkCol, direction: 'ASC' }
 
     this.sortDemanded.emit(this.curSort);
   }
 
-  filter(col: number, event: any) {
-    if (!this.filteringEnabled) return;
+  filter(pkColumn: number, event: any) {
+    if (!this.filteringEnabled) {
+      this.filterDemanded.emit([]);
+      return;
+    }
 
     if (event) {
       if (event.numeric) event.numeric.value = parseFloat(event.numeric.value);
-      this.filters[col + ''] = { col: col, filter: event };
-    } else this.filters.splice(col, 1);
+      this.filters[pkColumn + ''] = { pkColumn, filter: event };
+    } else this.filters.splice(pkColumn, 1);
 
     this.filterDemanded.emit(Object.keys(this.filters).map(f => this.filters[f]));
   }
 
-  cellClick(row: number, col: number) {
-    this.cellClicked.emit({ col, row });
+  cellClick(pkRow: number, pkColumn: number) {
+    this.cellClicked.emit({ pkColumn, pkRow });
   }
 
   openMappingDialog(colLabel: string, pkColumn: number, mapping: ColumnMapping) {
@@ -180,18 +204,36 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
       });
   }
 
-  changeColumnClick(col: number, direction: 'right' | 'left') {
-    this.changeColumn.emit({ col, direction })
-  }
-
   isClassValueObjectType(fkClass: number): boolean {
     return !!this.getVOT(fkClass);
   }
-
 
   getVOT(fkClass: number): SysConfigValueObjectType | undefined {
     if (Object.keys(this.config.classes).some(k => k === fkClass + '')) return this.config.classes[fkClass].valueObjectType
     return undefined;
   }
 
+  // to keep in cache the precedent value of the cell (in case parsing goes wrong)
+  focusCell(precValue: string) {
+    this.precCellValue = precValue + '';
+  }
+
+  cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string) {
+    const header = this.headers.find(h => h.pk_column == pkColumn);
+    const content = header.type == 'number' ? parseFloat(newContent) : newContent;
+    const cell: TabCell = {
+      pk_cell: pkCell,
+      fk_digital: this.pkDigital,
+      fk_row: pkRow,
+      fk_column: pkColumn
+    }
+    if (header.type == 'number') cell.numeric_value = content as number;
+    else cell.string_value = content + '';
+
+    this.table[i][j].text = content + '';
+    if (this.precCellValue !== content + '') {
+      this.tableAPI.tableControllerInsertOrUpdateCells(this.pkProject, this.pkDigital, { cells: [cell] })
+        .subscribe(nv => this.table[i][j].text = header.type == 'number' ? nv.cells[0].numeric_value + '' : nv.cells[0].string_value);
+    }
+  }
 }

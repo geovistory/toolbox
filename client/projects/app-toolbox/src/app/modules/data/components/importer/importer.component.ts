@@ -44,7 +44,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
   table: string[][]; // the full table
   filteredTable: string[][]; // the full table filtered and sorted
   headers$: ReplaySubject<Header[]>; // the headers to display
-  previewTable$: ReplaySubject<string[][]>; // the data to display
+  previewTable$: ReplaySubject<{ text: string }[][]>; // the data to display
 
   // file options CSV
   separators = [';', ',', '|', 'TAB'];
@@ -244,7 +244,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Parse the binaries of the file into the workbook format. Uses the WWW.
-   * Making the Step to first parse into workbook allow us to avoid to reparse everything if is was not the first Excel Sheet that the user wanted to import
+   * Making the Step to first parse into workbook allow us to avoid
+   * to reparse everything if is was not the first Excel Sheet that the user wanted to import
    */
   parseWorkbook() {
     this.worker.work('parseWorkbook', { binaries: this.binaries })
@@ -343,7 +344,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
     // if there is no sort
     if (this.curSort.colNb == -1) {
-      this.previewTable$.next(this.filteredTable.slice(0, this.getRowsNb())); // put header back
+      const stringTable = this.filteredTable.slice(0, this.getRowsNb());
+      this.previewTable$.next(stringTable.map(row => row.map(cell => ({ text: cell })))); // put header back
       this.mode = 'preview';
       return;
     }
@@ -417,7 +419,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
                 this.mode = 'preview';
                 this.loaded('Import error', 'The table has not been imported: ' + response.error)
               };
-              // else this.loaded('Table uploaded', 'Your table is saved in our database, we are right now creating it. It may take a few moments, based on your table. To know when it will be finished, keep the importer open.');
+              // else this.loaded('Table uploaded', 'Your table is saved in our database, we are right now creating it.
+              // It may take a few moments, based on your table. To know when it will be finished, keep the importer open.');
             });
         }
       })
