@@ -1,0 +1,63 @@
+<div mat-dialog-title>
+    <h2>Table configuration <small>({{data.pkDigital}})</small></h2>
+    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <mat-form-field [ngStyle]="{'width': '70%'}" appearance="outline" dense>
+            <input matInput autocomplete="off" (keyup)="filter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert"
+            (click)="createNewColumn()">New column</button>
+    </div>
+    <p *ngIf="filterIsOn">
+        <small>Be carefull! When filter is activated, moving column can lead to an unwanted order, check
+            it with no filter afterwards</small>
+    </p>
+</div>
+
+<mat-dialog-content #scrollContainer>
+    <div cdkDropList class="drag-and-drop-list" (cdkDropListDropped)="move($event.previousIndex, $event.currentIndex)">
+        <div class="drag-and-drop-box" *ngFor="let col of aggregated; let i = index" cdkDrag>
+            <div class="drag-and-drop-placeholder" *cdkDragPlaceholder></div>
+
+            <div *ngIf="editColumn != col.pkColumn" style="display: flex; width: 75%; justify-content: space-between;">
+                <div style="display: flex;">
+                    <mat-checkbox [checked]="col.visible" (change)="showHide(col.pkColumn, $event.checked)">
+                    </mat-checkbox>
+                    <div (click)="editColumn = col.pkColumn" style="margin-left: 2em;">{{col.name}}</div>
+                </div>
+                <!-- <mat-radio-group aria-labelledby="view-mode" [(ngModel)]="col.type">
+                    <mat-radio-button value="string" class="mat-caption" style="margin-left: 10px;"> String
+                    </mat-radio-button>
+                    <mat-radio-button value="number" class="mat-caption" style="margin-left: 10px;"> Number
+                    </mat-radio-button>
+                </mat-radio-group> -->
+            </div>
+            <div *ngIf="editColumn == col.pkColumn">
+                <mat-form-field appearance="outline" style="width: 90%;">
+                    <mat-label>Column name</mat-label>
+                    <input matInput [ngModel]="col.name" (blur)="changeColumnName(col.pkColumn, $event.target.value)"
+                        (keydown.enter)="changeColumnName(col.pkColumn, $event.target.value)">
+                    <span matSuffix>[{{defaultLanguage.pk_language.toUpperCase()}}]</span>
+                </mat-form-field>
+                <mat-radio-group aria-labelledby="view-mode" [(ngModel)]="col.type" *ngIf="col.pkColumn < 0">
+                    <mat-radio-button value="string" class="mat-caption" style="margin-left: 10px;"> String
+                    </mat-radio-button>
+                    <mat-radio-button value="number" class="mat-caption" style="margin-left: 10px;"> Number
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="on-right">
+                <mat-icon svgIcon="arrow-collapse-up" color="primary" (click)="move(i, 0)"></mat-icon>
+                <mat-icon svgIcon="arrow-collapse-down" color="primary" (click)="move(i, aggregated.length - 1)">
+                </mat-icon>
+            </div>
+
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="btn btn-secondary mt-1" [mat-dialog-close]="return()">Cancel</button>
+    <button class="btn btn-primary ml-2 mt-1" *ngIf="updates.length != 0" [mat-dialog-close]="return()">
+        Validate
+    </button>
+</mat-dialog-actions>

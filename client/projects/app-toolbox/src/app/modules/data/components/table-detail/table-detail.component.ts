@@ -5,7 +5,7 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
-import { TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { InfLanguage, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
@@ -65,7 +65,11 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   sortByIndex$ = new BehaviorSubject({ pkColumn: -1, direction: 'ASC' });
   currentSortIndex: { colNb: number, direction: string, colName: string };
 
+  // for tableConfig
+  defaultLanguage: InfLanguage;
+
   pkProject: number;
+  accountId: number;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -94,7 +98,9 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       map(ptc => values(ptc)),
       map(ptc => ptc[0] ? ptc[0].config : undefined)
     );
-    this.tableConfig$.subscribe(config => this.tableConfig = config);
+    this.tableConfig$.subscribe(config => {
+      this.tableConfig = config
+    });
 
     // witness any change of the table
     const settings$ = combineLatest([
@@ -221,6 +227,9 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         return table;
       })
     );
+
+    // get the default language
+    this.p.defaultLanguage$.subscribe(lang => this.defaultLanguage = lang);
   }
 
   ngOnDestroy() {
@@ -255,14 +264,17 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       TableConfigDialogData, TableConfigDialogResult>(TableConfigDialogComponent, {
         height: 'calc(80% - 30px)',
         width: '500px',
-        maxWidth: '100%',
         data: {
-          title: 'Table ' + this.pkEntity,
-          config: this.tableConfig
+          pkDigital: this.pkEntity
         }
       })
       .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
         if (!result) return;
+        this.s.modifyGvSchema(this.tableAPI.tableControllerSetTableConfig(this.pkProject, this.pkEntity, this.a.account.id, result.config)
+          , this.pkProject);
+        this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumnNames(
+          this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_language, result.cols)
+          , this.pkProject);
       });
   }
 }

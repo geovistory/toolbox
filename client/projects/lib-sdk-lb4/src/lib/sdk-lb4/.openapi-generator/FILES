@@ -68,6 +68,8 @@ model/chartLine.ts
 model/chartLinePoint.ts
 model/classConfig.ts
 model/colDef.ts
+model/columnName.ts
+model/columnNames.ts
 model/czmlSpatialValue.ts
 model/datChunk.ts
 model/datChunkFields.ts
@@ -196,6 +198,7 @@ model/tColFilter.ts
 model/tColFilterNum.ts
 model/tColFilterTxt.ts
 model/tabCell.ts
+model/tabCells.ts
 model/tabRow.ts
 model/tableCell.ts
 model/tableConfig.ts

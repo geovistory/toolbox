@@ -9,11 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ColumnName } from './columnName';
 
 
-export interface TabRow { 
-    pk_row?: number;
-    fk_digital?: number;
-    position: number;
+export interface ColumnNames { 
+    names?: Array<ColumnName>;
 }
 

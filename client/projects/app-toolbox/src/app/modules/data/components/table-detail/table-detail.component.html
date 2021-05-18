@@ -1,21 +1,12 @@
 <div class="gv-td-menu-container">
 
   <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
-    <div class="gv-td-menu-label mat-text-secondary">
-      Columns:
-    </div>
-    <!-- Column Toggler
-    <mat-select-autocomplete [placeholder]="'Columns'" [options]="colToggleOptions$ | async" [multiple]='true'
-      [formControl]="colToggleCtrl" ngDefaultControl name="colToggleCtrl">
-    </mat-select-autocomplete> -->
-
-    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary" (click)="tableConfiguration()">
+    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert"
+      (click)="tableConfiguration()">
       Table config
     </button>
-
   </div>
   <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-checkbox orange">
-
 
     <!-- Edit mode -->
     <mat-checkbox (change)="changeTableMode($event.checked)">Edit mode</mat-checkbox>

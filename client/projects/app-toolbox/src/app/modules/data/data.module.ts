@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +35,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     DigitalTableModule,
     NgxFileDropModule,
     BaseModule,
+    DragDropModule
   ],
   providers: [],
   declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent],

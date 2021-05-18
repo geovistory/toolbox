@@ -9,11 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TabCell } from './tabCell';
 
 
-export interface TabRow { 
-    pk_row?: number;
-    fk_digital?: number;
-    position: number;
+export interface TabCells { 
+    cells?: Array<TabCell>;
 }
 

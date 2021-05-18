@@ -11,9 +11,11 @@
  */
 
 
-export interface TabRow { 
-    pk_row?: number;
-    fk_digital?: number;
-    position: number;
+export interface ColumnName { 
+    pkColumn?: number;
+    visible?: boolean;
+    name?: string;
+    type?: string;
+    position?: number;
 }
 
