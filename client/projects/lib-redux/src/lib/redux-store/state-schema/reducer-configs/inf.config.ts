@@ -123,16 +123,17 @@ export const infDefinitions: ReducerConfigCollection = {
  * Use this function to index groups of statements with the same subject
  * or to retrieve statements from such a group index
  */
-export function indexStatementBySubject(fks: IndexStatementBySubject = {}): string {
+export function indexStatementBySubject(fks: InfStatementSubjectFks = {}): string {
   return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`
 }
-export interface IndexStatementBySubject {
-  fk_subject_info?: number;
-  fk_subject_data?: number;
-  fk_subject_tables_row?: number;
-  fk_subject_tables_cell?: number;
-};
 
+
+export type InfStatementSubjectFks = Pick<InfStatement,
+  'fk_subject_info' |
+  'fk_subject_data' |
+  'fk_subject_tables_cell' |
+  'fk_subject_tables_row'
+>;
 
 /**
  * This function creates a key for the given statement by
@@ -144,15 +145,16 @@ export interface IndexStatementBySubject {
  * Use this function to index groups of statements with the same object
  * or to retrieve statements from such a group index
  */
-export function indexStatementByObject(fks: IndexStatementByObject = {}): string {
+export function indexStatementByObject(fks: InfStatementObjectFks = {}): string {
   return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`
 }
-export interface IndexStatementByObject {
-  fk_object_info?: number;
-  fk_object_data?: number;
-  fk_object_tables_row?: number;
-  fk_object_tables_cell?: number;
-};
+
+export type InfStatementObjectFks = Pick<InfStatement,
+  'fk_object_info' |
+  'fk_object_data' |
+  'fk_object_tables_cell' |
+  'fk_object_tables_row'
+>;
 
 
 /**
@@ -166,17 +168,16 @@ export interface IndexStatementByObject {
  * Use this function to index groups of statements with the same subject + property
  * or to retrieve statements from such a group index
  */
-export function indexStatementBySubjectProperty(fks: IndexStatementBySubjectProperty = {}): string {
+export function indexStatementBySubjectProperty(fks: InfStatementSubjectAndProperyFks = {}): string {
   return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
-export interface IndexStatementBySubjectProperty {
-  fk_subject_info?: number;
-  fk_subject_data?: number;
-  fk_subject_tables_row?: number;
-  fk_subject_tables_cell?: number;
-  fk_property?: number;
-  fk_property_of_property?: number;
-}
+
+export type InfStatementProperyFks = Pick<InfStatement,
+  'fk_property' |
+  'fk_property_of_property'
+>;
+export type InfStatementSubjectAndProperyFks = InfStatementSubjectFks & InfStatementProperyFks
+
 
 
 /**
@@ -190,15 +191,8 @@ export interface IndexStatementBySubjectProperty {
  * Use this function to index groups of statements with the same object + property
  * or to retrieve statements from such a group index
  */
-export function indexStatementByObjectProperty(fks: IndexStatementByObjectProperty = {}): string {
+export function indexStatementByObjectProperty(fks: InfStatementObjectAndProperyFks = {}): string {
   return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
-export interface IndexStatementByObjectProperty {
-  fk_object_info?: number;
-  fk_object_data?: number;
-  fk_object_tables_row?: number;
-  fk_object_tables_cell?: number;
-  fk_property?: number;
-  fk_property_of_property?: number;
-}
+export type InfStatementObjectAndProperyFks = InfStatementObjectFks & InfStatementProperyFks
 

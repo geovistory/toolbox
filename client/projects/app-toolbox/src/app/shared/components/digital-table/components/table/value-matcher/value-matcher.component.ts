@@ -2,9 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfActions } from '@kleiolab/lib-redux';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
@@ -40,6 +39,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
     public c: ConfigurationPipesService,
     private s: SchemaSelectorsService,
     private ap: ActiveProjectPipesService,
+    private dataService: ReduxMainService,
   ) { }
 
   ngOnDestroy() {
@@ -107,7 +107,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
 
   changeMatching(mode: 'create' | 'edit' | 'delete') {
     if (mode == 'delete') {
-      if (this.statement) this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject);
+      if (this.statement) this.dataService.removeInfEntitiesFromProject([this.statement.pk_entity], this.pkProject);
     } else {
       this.dialog.open<CtrlValueDialogComponent,
         CtrlValueDialogData, CtrlValueDialogResult>(CtrlValueDialogComponent, {
@@ -129,10 +129,10 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
             ...result
           };
           if (mode == 'edit' && this.statement && result) {
-            this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject).subscribe(result2 => {
-              this.inf.statement.upsert([newStatement], this.pkProject);
+            this.dataService.removeInfEntitiesFromProject([this.statement.pk_entity], this.pkProject).subscribe(result2 => {
+              this.dataService.upsertInfStatementsWithRelations(this.pkProject, [newStatement]);
             });
-          } else this.inf.statement.upsert([newStatement], this.pkProject);
+          } else this.dataService.upsertInfStatementsWithRelations(this.pkProject, [newStatement]);
         });
     }
   }

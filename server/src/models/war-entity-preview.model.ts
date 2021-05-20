@@ -149,35 +149,4 @@ export class WarEntityPreview extends Entity {
     super(data);
   }
 }
-@model({
-  settings: {
-    forceId: false,
-    id: ['pk_entity', 'fk_project'],
-    postgresql: {schema: 'war', table: 'entity_preview'},
-    validateUpsert: true,
-    idInjection: false
-  }
-})
-export class WarEntityPreviewWithFulltext extends WarEntityPreview {
 
-  @property({
-    type: 'string',
-  })
-  full_text?: string;
-
-  @property({
-    type: 'string',
-  })
-  ts_vector?: string;
-
-
-  constructor(data?: Partial<WarEntityPreviewWithFulltext>) {
-    super(data);
-  }
-}
-
-export interface WarEntityPreviewRelations {
-  // describe navigational properties here
-}
-
-export type WarEntityPreviewWithRelations = WarEntityPreviewWithFulltext & WarEntityPreviewRelations;

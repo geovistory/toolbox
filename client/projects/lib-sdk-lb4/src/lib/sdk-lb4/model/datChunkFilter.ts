@@ -9,7 +9,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DatChunkFields } from './datChunkFields';
 import { DatChunkIncludeFilterItems } from './datChunkIncludeFilterItems';
 
 
@@ -18,7 +17,7 @@ export interface DatChunkFilter {
     limit?: number;
     skip?: number;
     order?: string | Array<string>;
-    fields?: DatChunkFields;
-    include?: Array<DatChunkIncludeFilterItems>;
+    fields?: object | Set<string>;
+    include?: Array<DatChunkIncludeFilterItems | string>;
 }
 

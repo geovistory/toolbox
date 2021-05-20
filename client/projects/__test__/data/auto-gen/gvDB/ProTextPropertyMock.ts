@@ -96,6 +96,7 @@ export class ProTextPropertyMock {
   static readonly SANDBOX_PROJECT_NAME: Partial<ProTextProperty> = ({
     pk_entity: 5009,
     fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+    fk_pro_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
     fk_language: InfLanguageMock.ENGLISH.pk_entity,
     fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
     string: 'Sandbox Project'

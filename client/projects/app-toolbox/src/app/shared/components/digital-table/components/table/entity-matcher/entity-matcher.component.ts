@@ -2,11 +2,11 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfActions } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity.component';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
     private ap: ActiveProjectPipesService,
     private s: SchemaSelectorsService,
     private dialog: MatDialog,
-    private inf: InfActions
+    private dataService: ReduxMainService,
   ) { }
 
   ngOnDestroy() {
@@ -60,7 +60,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
 
   changeMatching(mode: 'create' | 'edit' | 'delete') {
     if (mode == 'delete') {
-      if (this.statement) this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject);
+      if (this.statement) this.dataService.removeInfEntitiesFromProject([this.statement.pk_entity], this.pkProject);
     } else {
       this.dialog.open<CtrlEntityDialogComponent,
         CtrlEntityDialogData,
@@ -83,7 +83,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
           if (mode == 'edit' && this.statement && result) {
-            this.inf.removeEntitiesFromProject([this.statement.pk_entity], this.pkProject).subscribe(result2 => {
+            this.dataService.removeInfEntitiesFromProject([this.statement.pk_entity], this.pkProject).subscribe(result2 => {
               if (result2) this.handleDialogResponse(result);
             });
           } else this.handleDialogResponse(result);
@@ -100,25 +100,26 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
   }
 
   private handleDialogResponse(result: CtrlEntityModel) {
-    if (result && result.persistent_item) {
-      this.inf.persistent_item.upsert([result.persistent_item], this.pkProject).resolved$.subscribe(result2 => {
-        if (result2) this.upsertStatement(result2.items[0].pk_entity);
+    if (result && result.resource) {
+      this.dataService.upsertInfResourcesWithRelations(this.pkProject, [result.resource]).subscribe(result2 => {
+        try {
+          if (result2) this.upsertStatement(result2.positive.inf.resource[0].pk_entity);
+        } catch (error) {
+          console.warn(`error when trying to upsert statement with fk_object_info from result2.positive.inf.resource[0].pk_entity`)
+        }
       });
-    } else if (result && result.temporal_entity) {
-      this.inf.temporal_entity.upsert([result.temporal_entity], this.pkProject).resolved$.subscribe(result2 => {
-        if (result2) this.upsertStatement(result2.items[0].pk_entity);
-      });
-    } else if (result && result.pkEntity) {
+    }
+    else if (result && result.pkEntity) {
       this.upsertStatement(result.pkEntity);
     }
   }
 
   private upsertStatement(pkEntity: number) {
-    this.inf.statement.upsert([{
+    this.dataService.upsertInfStatementsWithRelations(this.pkProject, [{
       fk_subject_tables_cell: this.pkCell,
       fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
       fk_object_info: pkEntity
-    } as InfStatement], this.pkProject);
+    }])
   }
 
 }

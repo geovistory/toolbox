@@ -2,12 +2,12 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState } from '@kleiolab/lib-redux';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { InfSelector } from '../selectors/inf.service';
 import { DatSelector } from '../selectors/dat.service';
-import { TabSelector } from '../selectors/tab.service';
-import { ProSelector } from '../selectors/pro.service';
 import { DfhSelector } from '../selectors/dfh.service';
+import { InfSelector } from '../selectors/inf.service';
+import { ProSelector } from '../selectors/pro.service';
 import { SysSelector } from '../selectors/sys.service';
+import { TabSelector } from '../selectors/tab.service';
 
 /**
  * This class provides access to the part of the redux store

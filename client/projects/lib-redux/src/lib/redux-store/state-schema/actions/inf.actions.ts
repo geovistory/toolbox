@@ -1,14 +1,11 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { DatDigital, GvPositiveSchemaObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
-import { Observable } from 'rxjs';
+import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
 import { IAppState, SchemaObject } from '../../root/models/model';
 import { InfDimensionSlice, InfResourceSlice } from '../models/inf.models';
 import { infRoot } from '../reducer-configs/inf.config';
 import { LoadActionMeta, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
-import { GvSchemaActions } from './schema.actions';
 
 
 
@@ -208,18 +205,8 @@ export class InfActions {
 
   constructor(
     public ngRedux: NgRedux<IAppState>,
-    private schemaActions: GvSchemaActions,
-    private proInfoProjRelApi: ProInfoProjRelApi
   ) { }
 
-  removeEntitiesFromProject(pkEntities: number[], pkProject: number): Observable<GvPositiveSchemaObject> {
-    return this.schemaActions.loadGvSchemaObject(this.proInfoProjRelApi.bulkUpdateEprAttributes(
-      pkProject,
-      pkEntities.map((pk) => ({
-        fk_entity: pk,
-        is_in_project: false
-      }))
-    ))
-  }
+
 
 }

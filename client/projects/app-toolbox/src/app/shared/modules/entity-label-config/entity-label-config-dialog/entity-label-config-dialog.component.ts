@@ -78,7 +78,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
 
   loadConfig() {
     this.loading = true
-    this.projectConfigApi.projectConfigControllerGetEntityLabelConfig(
+    this.projectConfigApi.createProjectConfigControllerGetEntityLabelConfig(
       this.data.fkProject,
       this.data.fkClass
     )
@@ -169,7 +169,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   }
 
   private deleteCustomConfig() {
-    this.projectConfigApi.projectConfigControllerDeleteEntityLabelConfig(
+    this.projectConfigApi.createProjectConfigControllerDeleteEntityLabelConfig(
       this.data.fkProject,
       this.data.fkClass,
     )
@@ -193,7 +193,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   }
 
   private upsertCustomConfig(result: ProEntityLabelConfig) {
-    this.projectConfigApi.projectConfigControllerPostEntityLabelConfig(result)
+    this.projectConfigApi.createProjectConfigControllerPostEntityLabelConfig(result)
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         this.classLabel$.pipe(first()).subscribe(classLabel => {

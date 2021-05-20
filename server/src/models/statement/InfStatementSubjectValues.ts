@@ -1,8 +1,8 @@
-import {InfStatementWithRelations} from "./InfStatementWithRelations";
+import {InfStatement} from '../inf-statement.model';
 
 
 export type InfStatementSubjectValues = Pick<
-  InfStatementWithRelations,
+  InfStatement,
   "subject_resource" |
   "subject_chunk" |
   "subject_statement" |

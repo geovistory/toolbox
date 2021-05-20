@@ -1,5 +1,6 @@
 export * from './war-statement.model';
 export * from './war-entity-preview.model';
+export * from './war-entity-preview-with-full-text.model';
 export * from './war-class-preview.model';
 export * from './dat-chunk.model';
 export * from './dat-entity.interface';

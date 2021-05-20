@@ -68,7 +68,7 @@ tw1 AS (
   t2.fk_object_info,
   count(t1.fk_project) is_in_project_count,
   AVG(t1.ord_num_of_range) :: numeric(10, 2) ord_num_of_range,
-  (t10.pk_entity IS NOT NULL OR t11.pk_entity IS NOT NULL ) target_is_entity,
+  (t10.pk_entity IS NOT NULL) target_is_entity,
   COALESCE(t12.string,  t14.notes, t15.string)  target_label,
   t12.string appellation_str,
   t14.notes language_str,
@@ -167,7 +167,7 @@ tw3 AS (
   t2.fk_object_info,
   count(t1.fk_project) is_in_project_count,
   AVG(t1.ord_num_of_domain) :: numeric(10, 2) ord_num_of_domain,
-  (t10.pk_entity IS NOT NULL OR t11.pk_entity IS NOT NULL ) target_is_entity
+  (t10.pk_entity IS NOT NULL) target_is_entity
   FROM
   tw0 t0
   JOIN information."statement" t2 ON t2.fk_object_info = t0.pk_entity
@@ -198,7 +198,7 @@ tw4 AS (
     json_agg(
       json_build_object(
       'fkProperty', t1.fk_property,
-      'isOutgoing', true,
+      'isOutgoing', false,
       'fkStatement', t1.pk_statement,
       'fkSource', t1.fk_object_info,
       'fkTarget', t1.fk_subject_info,

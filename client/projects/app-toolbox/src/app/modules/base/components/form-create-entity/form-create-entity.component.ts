@@ -4,8 +4,8 @@ import { MatFormFieldAppearance } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { InfDimension, InfLangString, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldProperty, GvFieldSourceEntity, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { InfDimension, InfLangString, InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, GvTargetType, InfResource, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, InfTimePrimitiveWithCalendar, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -15,6 +15,7 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { equals, flatten, groupBy, keys, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -23,8 +24,7 @@ import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
-import { FgTextPropertyInjectData } from '../fg-text-property/fg-text-property.component';
-type EntityModel = 'persistent_item' | 'temporal_entity'
+type EntityModel = 'resource'
 export interface FormArrayData {
   pkClass: number
   customCtrlLabel?: string
@@ -82,7 +82,7 @@ export interface FormControlData {
 
 export interface FormChildData {
   place?: FgPlaceInjectData
-  textProperty?: FgTextPropertyInjectData
+  // textProperty?: FgTextPropertyInjectData
   langString?: FgLangStringInjectData
   dimension?: FgDimensionInjectData
 }
@@ -111,13 +111,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   @Input() hideButtons: boolean;
   @Input() hideTitle: boolean;
 
-  @Input() initVal$: Observable<InfPersistentItem | InfTemporalEntity | undefined>;
+  @Input() initVal$: Observable<InfResourceWithRelations | undefined>;
 
   @Input() hiddenProperty: GvFieldProperty;
 
   @Output() cancel = new EventEmitter<void>()
   @Output() searchString = new EventEmitter<string>()
-  @Output() saved = new EventEmitter<InfPersistentItem | InfTemporalEntity | InfStatement | InfTextProperty>()
+  @Output() saved = new EventEmitter<InfResource | InfStatement>()
 
   appearance: MatFormFieldAppearance = 'outline';
 
@@ -129,11 +129,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   searchStringPartId = 0;
   searchStringParts: { [key: number]: string } = {}
 
-  temporalEntitiesToAdd: InfTemporalEntity[] = []
+  resourcesToAdd: InfResource[] = []
   constructor(
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
     private inf: InfActions,
+    private dataService: ReduxMainService,
     private ss: SchemaSelectorsService,
     public ap: ActiveProjectPipesService,
     public s: SchemaService
@@ -240,7 +241,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             hideFieldTitle: false,
             pkClass: null
           },
-          mapValue: (items: CtrlEntityModel[] | InfTextProperty[] | InfStatement[]): { statement?: Partial<InfStatement>, text_property?: Partial<InfTextProperty> } => {
+          mapValue: (items: CtrlEntityModel[] | InfStatement[]): {
+            statement?: Partial<InfStatementWithRelations>
+          } => {
 
             const isInfStatement = (obj: any): obj is InfStatement => {
               return !!obj && (
@@ -255,8 +258,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
             const isCtrlEntityModel = (obj: any): obj is CtrlEntityModel => {
               return !!obj && (
-                !!obj.persistent_item ||
-                !!obj.temporal_entity ||
+                !!obj.resource ||
                 !!obj.pkEntity
               )
             }
@@ -264,7 +266,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
             const item = items[0]
 
-            const statement: Partial<InfStatement> = {
+            const statement: Partial<InfStatementWithRelations> = {
               fk_property: data.field.property.fkProperty,
               fk_property_of_property: data.field.property.fkPropertyOfProperty,
             }
@@ -278,11 +280,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               statement.fk_subject_tables_row = this.source.fkTablesRow;
 
               // assign object
-              if (isCtrlEntityModel(item) && item.persistent_item) {
-                statement.object_persistent_item = item.persistent_item
-              }
-              else if (isCtrlEntityModel(item) && item.temporal_entity) {
-                statement.object_temporal_entity = item.temporal_entity
+              if (isCtrlEntityModel(item) && item.resource) {
+                statement.object_resource = item.resource
               }
               else if (isInfStatement(item)) {
                 statement.object_lang_string = item.object_lang_string;
@@ -301,11 +300,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               statement.fk_object_tables_row = this.source.fkTablesRow;
 
               // assign subject
-              if (isCtrlEntityModel(item) && item.persistent_item) {
-                statement.subject_persistent_item = item.persistent_item
-              }
-              else if (isCtrlEntityModel(item) && item.temporal_entity) {
-                statement.subject_temporal_entity = item.temporal_entity
+              if (isCtrlEntityModel(item) && item.resource) {
+                statement.subject_resource = item.resource
               }
 
             }
@@ -325,10 +321,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       this.c.pipeTableNameOfClass(pkTargetClass),
       this.c.pipeClassLabel(pkTargetClass)
     ).pipe(auditTime(10), map(([parentModel, label]) => {
-      const mapValue = (items: InfTemporalEntity[] | InfPersistentItem[]): CtrlEntityModel => {
+      const mapValue = (items: InfResource[]): CtrlEntityModel => {
         this.emitNewSearchString();
 
-        const result = {} as InfTemporalEntity | InfPersistentItem;
+        const result = {} as InfResource;
         items.forEach(item => {
           for (const key in item) {
             if (item.hasOwnProperty(key) && item[key].length > 0) {
@@ -337,20 +333,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           }
         })
         result.fk_class = pkTargetClass
-        if (parentModel == 'persistent_item') {
+        if (parentModel == 'resource') {
           return {
-            persistent_item: result
-          }
-        } else if (parentModel == 'temporal_entity') {
-          return {
-            temporal_entity: result
+            resource: result
           }
         } else {
           console.error('this parent model is unsupported:', parentModel)
         }
 
       }
-      if (parentModel === 'temporal_entity' || parentModel === 'persistent_item') {
+      if (parentModel === 'resource') {
         const n: LocalNodeConfig = {
           array: {
             isList: false,
@@ -393,19 +385,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     )
       .pipe(
         filter(([klass]) => !!klass),
-        switchMap(([dfhClass, initValEntity]) => {
+        switchMap(([dfhClass, initResource]) => {
 
           let fields$: Observable<Field[]>;
-          let initPeIt: InfPersistentItem;
-          let initTeEn: InfTemporalEntity;
-
-          if (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) {
+          const isPersistentItem = (dfhClass.basic_type === 8 || dfhClass.basic_type === 30);
+          if (isPersistentItem) {
             fields$ = this.c.pipeBasicFieldsOfClass(arrayConfig.data.pkClass)
-            initPeIt = initValEntity
           } else {
             // For temporal_entity
             fields$ = this.c.pipeFieldsForTeEnForm(arrayConfig.data.pkClass)
-            initTeEn = initValEntity;
           }
 
           return fields$.pipe(
@@ -428,7 +416,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               return combineLatestOrEmpty(fieldDefs.map(fDef => {
 
                 // make one definition required for each persistent item
-                if (parentModel === 'persistent_item' && fDef.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+                if (isPersistentItem && fDef.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
                   fDef.targetMinQuantity = 1;
                   fDef.identityDefiningForSource = true;
                 }
@@ -438,7 +426,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                 const n: LocalNodeConfig = {
                   array: {
-                    initValue: this.getInitValueForFieldNode(fDef, { initTeEn, initPeIt }),
+                    initValue: this.getInitValueForFieldNode(fDef, { initResource }),
                     placeholder: fDef.label,
                     required: this.ctrlRequired(fDef),
                     validators: [
@@ -484,11 +472,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
   getListNodes(arrayConfig: FormArrayConfig<FormArrayData>, field: Field): Observable<LocalNodeConfig[]> {
     const initialValue = arrayConfig.initValue || [];
-    const textProps: InfTextProperty[] = initialValue.filter((v) => !!v.fk_class_field)
-    const statements: InfStatement[] = initialValue.filter((v) => !v.fk_class_field)
+    const statements: InfStatementWithRelations[] = initialValue.filter((v) => !v.fk_class_field)
     const targetClasses = field.targetClasses;
-    const parentModel = arrayConfig.data.lists.parentModel;
-    // const listDefIdx = indexBy((lDef) => (lDef.targetClass || 0).toString(), targetClasses)
     const isOutgoing = arrayConfig.data.lists.fieldDefinition.isOutgoing
 
     if (field.isSpecialField === 'time-span') {
@@ -503,7 +488,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     // get the target class for each initial statement
     const o$ = statements.map((s) => {
       // -> for each initVal
-      const relObj = s.object_appellation || s.object_language || s.object_place || s.object_lang_string || s.subject_temporal_entity || s.object_persistent_item || s.object_dimension;
+      const relObj = s.object_appellation ||
+        s.object_language ||
+        s.object_place ||
+        s.object_lang_string ||
+        s.subject_resource ||
+        s.object_dimension;
       if (relObj) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language, .dimension
         return of({ fk_class: relObj.fk_class, statement: s })
@@ -535,75 +525,27 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     )
     return listNodes$
   }
-  // /**
-  //   * gets the init value for the ctrl target class that is shown when
-  //   * FieldDefinition has multiple target classes
-  //   */
-  // getInitValueForTargetClassCtrl(fDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): Observable<Subfield> {
-
-  //   if (fDef.isSpecialField == 'time-span') {
-  //     return;
-  //   }
-  //   else if (initVal.initTeEn) {
-  //     if (fDef.isOutgoing && initVal.initTeEn.outgoing_statements) {
-  //       return this.getInitListDef(fDef, initVal.initTeEn.outgoing_statements);
-  //     }
-  //     else if (!fDef.isOutgoing && initVal.initTeEn.incoming_statements) {
-  //       return this.getInitListDef(fDef, initVal.initTeEn.incoming_statements);
-  //     }
-  //   }
-  //   else if (initVal.initPeIt) {
-  //     if (fDef.isOutgoing && initVal.initPeIt.outgoing_statements) {
-  //       return this.getInitListDef(fDef, initVal.initPeIt.outgoing_statements);
-  //     }
-  //     else if (!fDef.isOutgoing && initVal.initPeIt.incoming_statements) {
-  //       return this.getInitListDef(fDef, initVal.initPeIt.incoming_statements);
-  //     }
-  //   }
-  //   return;
-  // }
-
-
-
-  // private getInitListDef(field: Field, statements: InfStatement[]): Observable<Subfield> {
-  //   const statement = statements.find(r => this.sameProperty(r, field) && !!((r.fk_subject_info || r.fk_object_info)))
-  //   if (!statement) return of(undefined);
-
-  //   return this.ap.streamEntityPreview(statement.fk_subject_info || statement.fk_object_info).pipe(
-  //     map(entity => {
-  //       const lDef = field.listDefinitions.find(ld => ld.targetClass === entity.fk_class);
-  //       return lDef;
-  //     })
-  //   )
-
-  // };
 
 
   /**
    * gets the init value for the field definition out of the initial entity value
    */
-  getInitValueForFieldNode(lDef: Field, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfStatement[] {
+  getInitValueForFieldNode(lDef: Field, initVal: { initResource: InfResourceWithRelations }): InfStatementWithRelations[] {
     if (lDef.isSpecialField == 'time-span') {
-      if (initVal.initTeEn && initVal.initTeEn.outgoing_statements) {
-        return initVal.initTeEn.outgoing_statements.filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
+      if (initVal.initResource && initVal.initResource.outgoing_statements) {
+        return initVal.initResource.outgoing_statements
+          .filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
       }
     }
-    else if (initVal.initTeEn) {
-      if (lDef.isOutgoing && initVal.initTeEn.outgoing_statements) {
-        return initVal.initTeEn.outgoing_statements.filter(r => this.sameProperty(r, lDef))
+    else if (initVal.initResource) {
+      if (lDef.isOutgoing && initVal.initResource.outgoing_statements) {
+        return initVal.initResource.outgoing_statements.filter(r => this.sameProperty(r, lDef))
       }
-      else if (!lDef.isOutgoing && initVal.initTeEn.incoming_statements) {
-        return initVal.initTeEn.incoming_statements.filter(r => this.sameProperty(r, lDef))
-      }
-    }
-    else if (initVal.initPeIt) {
-      if (lDef.isOutgoing && initVal.initPeIt.outgoing_statements) {
-        return initVal.initPeIt.outgoing_statements.filter(r => this.sameProperty(r, lDef))
-      }
-      else if (!lDef.isOutgoing && initVal.initPeIt.incoming_statements) {
-        return initVal.initPeIt.incoming_statements.filter(r => this.sameProperty(r, lDef))
+      else if (!lDef.isOutgoing && initVal.initResource.incoming_statements) {
+        return initVal.initResource.incoming_statements.filter(r => this.sameProperty(r, lDef))
       }
     }
+
     return undefined;
   }
 
@@ -612,7 +554,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * @param r
    * @param field
    */
-  sameProperty(r: InfStatement, field: Field): boolean {
+  sameProperty(r: InfStatementWithRelations, field: Field): boolean {
     return r.fk_property ?
       r.fk_property === field.property.fkProperty :
       r.fk_property_of_property ? r.fk_property_of_property === field.property.fkPropertyOfProperty : false
@@ -651,7 +593,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       maxLength = 1;
       addOnInit = 1;
     }
-    if (childListType.temporalEntity && !field.identityDefiningForTarget) {
+    if (childListType.nestedResource && !field.identityDefiningForTarget) {
       childListType = { entityPreview: 'true' };
     }
 
@@ -694,7 +636,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
       return this.placeCtrl(arrayConfig)
 
-    } else if (listType.entityPreview || listType.temporalEntity) {
+    } else if (listType.entityPreview || listType.nestedResource) {
 
       return this.entityCtrl(arrayConfig)
 
@@ -735,21 +677,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
 
-  // private appellationsHook(x: any, id: number) {
-  //   const statements: InfStatement[] = x.filter((i) => !!i);
-  //   this.searchStringParts[id] = statements
-  //     .map((item) => (Utils.stringFromQuillDoc(item.object_appellation.quill_doc)))
-  //     .join(' ');
-  //   return statements;
-  // }
-
-  // private textPropHook(x: any, id: number) {
-  //   const textProps: InfTextProperty[] = x.filter((i) => !!i);
-  //   this.searchStringParts[id] = textProps
-  //     .map((item) => (Utils.stringFromQuillDoc(item.quill_doc)))
-  //     .join(' ');
-  //   return textProps;
-  // }
 
 
   private emitNewSearchString() {
@@ -771,37 +698,35 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   save() {
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s.api.addEntityToProject(pkProject, pkEntity))
       const value = this.formFactory.formGroupFactory.valueChanges$.value
-      const obs$ = []
-      if (value.persistent_item) {
-        obs$.push(this.inf.persistent_item.upsert([value.persistent_item], pkProject).resolved$.pipe(filter(x => !!x)))
-      }
-      else if (value.temporal_entity) {
-        obs$.push(this.inf.temporal_entity.upsert([value.temporal_entity], pkProject).resolved$.pipe(filter(x => !!x)))
+      let upsert$: Observable<GvSchemaModifier>;
+      if (value.resource) {
+        upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
       }
       else if (value.statement) {
-        obs$.push(this.inf.statement.upsert([value.statement], pkProject).resolved$.pipe(filter(x => !!x)))
-      }
-      else if (value.text_property) {
-        obs$.push(this.inf.text_property.upsert([value.text_property], pkProject).resolved$.pipe(filter(x => !!x)))
+        upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
       }
       else {
         throw new Error(`Submitting ${value} is not implemented`);
       }
 
-      uniq(this.temporalEntitiesToAdd).forEach(pkEntity => {
-        obs$.push(this.s.api.addEntityToProject(pkProject, pkEntity))
-      })
 
-      combineLatest(obs$).pipe(takeUntil(this.destroy$)).subscribe(([res]: [any]) => {
-        if (res) {
-          if (!res.items || !res.items.length) {
-            throw new Error('bad result')
+      combineLatest([upsert$, ...addEntities$])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(([res]: [GvSchemaModifier]) => {
+          if (res) {
+            if (value.resource) {
+              if (!res.positive.inf.resource.length) throw new Error('bad result')
+              this.saved.emit(res.positive.inf.resource[0])
+            }
+            if (value.statement) {
+              if (!res.positive.inf.statement.length) throw new Error('bad result')
+              this.saved.emit(res.positive.inf.statement[0])
+            }
+            this.saving = false;
           }
-          this.saved.emit(res.items[0])
-          this.saving = false;
-        }
-      })
+        })
     })
   }
 
@@ -1109,23 +1034,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return this.c.pipeTableNameOfClass(arrayConfig.data.controls.targetClass).pipe(
       map(basicModel => {
 
-        const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {
+        const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatementWithRelations) => {
           let initValue: CtrlEntityModel = {}
 
           if (field.isOutgoing) {
             // assign the object as init value for ctrl-entity
-            if (initVal.object_persistent_item) initValue.persistent_item = initVal.object_persistent_item
-            else if (initVal.object_temporal_entity) initValue.temporal_entity = initVal.object_temporal_entity
+            if (initVal.object_resource) initValue.resource = initVal.object_resource
             else if (initVal.fk_object_info) initValue.pkEntity = initVal.fk_object_info
           } else {
             // assign the subject as init value for ctrl-entity
-            if (initVal.subject_persistent_item) initValue.persistent_item = initVal.subject_persistent_item
-            else if (initVal.subject_temporal_entity) initValue.temporal_entity = initVal.subject_temporal_entity
+            if (initVal.subject_resource) initValue.resource = initVal.subject_resource
             else if (initVal.fk_subject_info) initValue.pkEntity = initVal.fk_subject_info
           }
 
 
-          initValue = (!initValue.pkEntity && !initValue.temporal_entity && !initValue.persistent_item) ? null : initValue;
+          initValue = (!initValue.pkEntity && !initValue.resource) ? null : initValue;
 
           const c: LocalNodeConfig = {
             control: {
@@ -1143,9 +1066,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 }
               },
               mapValue: (val: CtrlEntityModel) => {
-                if (!val || (!val.pkEntity && !val.temporal_entity && !val.persistent_item)) return null;
+                if (!val || (!val.pkEntity && !val.resource)) return null;
 
-                const statement: InfStatement = {
+                const statement: InfStatementWithRelations = {
                   ...{} as any,
                   fk_property: field.property.fkProperty,
                   fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -1154,14 +1077,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 if (field.isOutgoing) {
                   // assign object
                   if (val.pkEntity) statement.fk_object_info = val.pkEntity;
-                  else if (val.persistent_item) statement.object_persistent_item = val.persistent_item
-                  else if (val.temporal_entity) statement.object_temporal_entity = val.temporal_entity
+                  else if (val.resource) statement.object_resource = val.resource
 
                 } else {
                   // assign subject
                   if (val.pkEntity) statement.fk_subject_info = val.pkEntity;
-                  else if (val.persistent_item) statement.subject_persistent_item = val.persistent_item
-                  else if (val.temporal_entity) statement.subject_temporal_entity = val.temporal_entity
+                  else if (val.resource) statement.subject_resource = val.resource
                 }
 
                 return statement;
@@ -1221,12 +1142,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 }
 
 function getStatementKey(m: EntityModel, isOutgoing: boolean) {
-  if (m === 'temporal_entity') {
-    return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
-  }
-  else if (m === 'persistent_item') {
-    return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
-  }
+  return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
 }
 
 // export interface MapValueItem { key: string, value: any }

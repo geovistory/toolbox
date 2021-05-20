@@ -1,16 +1,14 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, HostBinding, Inject, OnDestroy, OnInit, Output } from '@angular/core';
-import { EntityDetail } from "@kleiolab/lib-redux";
-import { InfPersistentItem } from '@kleiolab/lib-sdk-lb3';
-import { RootEpics } from "@kleiolab/lib-redux";
-import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
-import { Observable, Subject } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { EntityDetail, IAppState, RootEpics } from '@kleiolab/lib-redux';
+import { InfResource } from '@kleiolab/lib-sdk-lb4/public-api';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { Observable, Subject } from 'rxjs';
 import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';
 import { TypeEditForm } from './api/type-edit-form.models';
 import { typeEditFormReducer } from './api/type-edit-form.reducer';
-import { IAppState } from "@kleiolab/lib-redux";
 
 export interface TypeEditFormData {
   basePath: string[];
@@ -38,7 +36,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
 
 
   // select observables of substore properties
-  @select() peItDetail$: Observable<InfPersistentItem>;
+  @select() peItDetail$: Observable<InfResource>;
 
   // the state object of the child components
   peItDetail: EntityDetail;

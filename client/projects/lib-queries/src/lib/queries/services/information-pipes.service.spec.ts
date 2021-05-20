@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { GvSchemaActions, IAppState, SchemaService } from '@kleiolab/lib-redux';
+import { GvSchemaActions, IAppState, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
@@ -19,7 +19,7 @@ import { InformationPipesService } from './information-pipes.service';
 describe('InformationPipesService', () => {
   let ngRedux: NgRedux<IAppState>;
   let service: InformationPipesService;
-  let schemaActions: GvSchemaActions;
+  let dataService: ReduxMainService;
   let schemaService: SchemaService
 
   beforeEach(() => {
@@ -30,7 +30,7 @@ describe('InformationPipesService', () => {
       ]
     });
     service = TestBed.get(InformationPipesService);
-    schemaActions = TestBed.get(GvSchemaActions);
+    dataService = TestBed.get(ReduxMainService);
     schemaService = TestBed.get(SchemaService);
     ngRedux = TestBed.get(NgRedux);
   });
@@ -47,7 +47,7 @@ describe('InformationPipesService', () => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.appeTeEnRefersToName
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -66,7 +66,7 @@ describe('InformationPipesService', () => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.madridsPresenceWasAtPlace
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -85,7 +85,7 @@ describe('InformationPipesService', () => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.journyeHasDuration
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -105,7 +105,7 @@ describe('InformationPipesService', () => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.manifSingletonHasShortTitleMurderer
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -125,7 +125,7 @@ describe('InformationPipesService', () => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.appeTeEnUsedInLanguage
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -140,11 +140,11 @@ describe('InformationPipesService', () => {
           null,
           done);
     });
-    fit('should return subfield page for subfieldType timePrimitive', async (done) => {
+    it('should return subfield page for subfieldType timePrimitive', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.shipVoyageAtSomeTimeWithin
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -160,11 +160,11 @@ describe('InformationPipesService', () => {
           done);
     });
 
-    fit('should return subfield page for subfieldType temporalEntity', async (done) => {
+    it('should return subfield page for subfieldType temporalEntity', async (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.person1HasAppeTeEn
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, 0)
@@ -195,7 +195,7 @@ describe('InformationPipesService', () => {
         ]
       });
       service = TestBed.get(InformationPipesService);
-      schemaActions = TestBed.get(GvSchemaActions);
+      dataService = TestBed.get(GvSchemaActions);
       schemaService = TestBed.get(SchemaService);
       ngRedux = TestBed.get(NgRedux);
 
@@ -220,7 +220,7 @@ describe('InformationPipesService', () => {
             ...pages[i]
           }
         }
-        schemaActions.loadGvPaginationObject(req)
+        dataService.loadFieldPage(req)
 
         // using pipe
         const q$ = service.pipeFieldPage(req.page, req.targets, false).pipe(
@@ -257,7 +257,7 @@ describe('InformationPipesService', () => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.shipVoyageHasTimeSpan
-      schemaActions.loadGvPaginationObject(req)
+      dataService.loadFieldPage(req)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.modelOfShipVoyage, 0)
       schemaService.storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
@@ -286,7 +286,7 @@ describe('InformationPipesService', () => {
     // seeding data
     setAppState(ngRedux, IAppStateMock.stateProject1)
     const req = GvFieldPageReqMock.appeTeEnRefersToName
-    schemaActions.loadGvPaginationObject(req)
+    dataService.loadFieldPage(req)
 
     // using pipe
     const q$ = service.pipeFieldPage(req.page, req.targets, false)

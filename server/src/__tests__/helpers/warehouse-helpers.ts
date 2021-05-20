@@ -55,7 +55,7 @@ export async function stopWarehouse(wh: Warehouse) {
  * Returns a Promise that resolves after given miliseconds
  * @param ms
  */
-export async function wait(ms: number) {
+export async function wait(ms: number):Promise<void> {
     return new Promise(res => {setTimeout(() => res(), ms)})
 }
 

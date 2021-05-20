@@ -1,13 +1,10 @@
 'use strict';
 const _ = require('lodash');
 const Promise = require('bluebird');
-const helpers = require('../helpers');
-var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
-  .SqlBuilderLbModels;
+
 const models = require('../../server/server').models;
 
-var SqlEntityPreviewList = require('../../../dist/lb3/server/sql-builders/sql-entity-preview-list')
-  .SqlEntityPreviewList;
+
 
 module.exports = function (InfStatement) {
   InfStatement.findOrCreateInfStatements = function (

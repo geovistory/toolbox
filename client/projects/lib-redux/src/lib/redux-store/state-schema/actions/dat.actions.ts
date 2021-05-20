@@ -124,6 +124,7 @@ export class DatActions {
   digital = new DigitalActionsFactory(this.ngRedux).createActions();
 
   // chunk = new ChunkActionsFactory(this.ngRedux).createActions()
+  chunk = new SchemaActionsFactory<NamespaceSlice, DatNamespace>(this.ngRedux).createCrudActions(datRoot, 'chunk')
 
   column = new ColumnActionsFactory(this.ngRedux).createActions()
 

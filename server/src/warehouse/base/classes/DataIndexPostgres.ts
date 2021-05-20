@@ -180,10 +180,10 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
     }
 
     async getFromIdxWithTmsps(keyModel: KeyModel): Promise<{
-        val: ValueModel,
-        lastModification: Date | undefined,
-        deleted: Date | undefined
-    } | undefined> {
+        val?: ValueModel,
+        lastModification?: Date,
+        deleted?: Date
+    } > {
         return new Promise((res, rej) => {
             const sql = `
                 SELECT val, tmsp_last_modification, tmsp_deleted
@@ -199,7 +199,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             }>(sql, params)
                 .then(results => {
                     const row = results?.rows?.[0]
-                    if (!row) res();
+                    if (!row) res({});
                     res({
                         val: row?.val,
                         lastModification: row.tmsp_last_modification ? new Date(row.tmsp_last_modification) : undefined,

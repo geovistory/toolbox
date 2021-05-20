@@ -6,7 +6,7 @@ import { SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, DatSelector, InformationPipesService } from '@kleiolab/lib-queries';
 import { ByPk, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { ContentTreeService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
+import { ContentTreeService, GvFieldPageReq, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -14,9 +14,11 @@ import { RepoService } from 'projects/app-toolbox/src/app/core/repo/repo.service
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/app/modules/data/components/importer/importer.component';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { PaginationService } from '../../../base/services/pagination.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 
@@ -135,7 +137,9 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     private i: InformationPipesService,
     private dialog: MatDialog,
-    private m: BaseModalsService
+    private m: BaseModalsService,
+    private pag: PaginationService,
+    private dataService: ReduxMainService
   ) { }
 
   ngOnInit() {
@@ -158,7 +162,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   /**
    * Loads the entity that is the root of the content tree
    */
-  loadRootEntity(pkEntity: number, fkClass: number, pkProject) {
+  loadRootEntity(pkEntity: number, fkClass: number, pkProject: number) {
 
     // if we start from a source like class
     // load the statement that associates source --> expression
@@ -168,10 +172,10 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       this.sourceIsDomain = this.isSourceDomain(fkClass);
 
       if (this.sourceIsDomain) {
-        this.pkExpression$ = this.getExpressionWhereSourceIsDomain(pkEntity);
+        this.pkExpression$ = this.getExpressionWhereSourceIsDomain(pkEntity, pkProject);
       }
       else {
-        this.pkExpression$ = this.getExpressionWhereSourceIsRange(pkEntity);
+        this.pkExpression$ = this.getExpressionWhereSourceIsRange(pkEntity, pkProject);
       }
       this.pkRoot$ = this.pkExpression$;
     }
@@ -304,8 +308,9 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   /**
    * Returns an observable number with the
    */
-  private getExpressionWhereSourceIsRange(pkEntity: number): Observable<number> {
-    this.inf.statement.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
+  private getExpressionWhereSourceIsRange(pkEntity: number, pkProject: number): Observable<number> {
+    // this.inf.statement.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
+    this.loadStatementToExpression(pkProject, pkEntity, false);
     return this.r.inf$.statement$
       .by_object_and_property$(
         {
@@ -323,8 +328,25 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       );
   }
 
-  private getExpressionWhereSourceIsDomain(pkEntity: number): Observable<number> {
-    this.inf.statement.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
+  private loadStatementToExpression(pkProject: number, pkEntity: number, isOutgoing: boolean) {
+    const fieldPage: GvFieldPageReq = {
+      pkProject,
+      page: {
+        isOutgoing,
+        property: { fkProperty: this.fkPropertyFromSource },
+        scope: { inProject: pkProject },
+        source: { fkInfo: pkEntity },
+        limit: 1,
+        offset: 0
+      },
+      targets: { [DfhConfig.CLASS_PK_EXPRESSION]: { entityPreview: 'true' } }
+    }
+    this.pag.addPageLoader(fieldPage, this.destroy$);
+  }
+
+  private getExpressionWhereSourceIsDomain(pkEntity: number, pkProject: number): Observable<number> {
+    this.loadStatementToExpression(pkProject, pkEntity, true);
+    // this.inf.statement.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
     return this.r.inf$.statement$
       .by_subject_and_property$(
         {
@@ -441,10 +463,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
             // A: Yes. different parent. change the parent (and the order)
 
             // remove the current statement from project
-            this.inf.removeEntitiesFromProject([this.dragNode.statement.pk_entity], pkProject)
+            this.dataService.removeInfEntitiesFromProject([this.dragNode.statement.pk_entity], pkProject)
 
             // find or create a new statement bewteen the dragged and the new parent
-            this.inf.statement.upsert([this.prepareNewEntityAssociatoin(dropNode, this.dragNode, pkExpression)], pkProject)
+            this.dataService.upsertInfStatementsWithRelations(pkProject,
+              [this.prepareNewEntityAssociatoin(dropNode, this.dragNode, pkExpression)])
 
           }
 
@@ -555,11 +578,14 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (resolved) {
             // resolved.items[0].pk_entity
 
-            this.inf.statement.upsert([{
-              fk_subject_data: resolved.items[0].pk_entity,
-              fk_object_info: pkParent,
-              fk_property: this.isReproProp(parentIsF2Expression)
-            } as InfStatement], pkProject)
+            this.dataService.upsertInfStatementsWithRelations(
+              pkProject,
+              [{
+                fk_subject_data: resolved.items[0].pk_entity,
+                fk_object_info: pkParent,
+                fk_property: this.isReproProp(parentIsF2Expression)
+              } as InfStatement]
+            )
 
           }
         })
@@ -583,14 +609,15 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
       }).subscribe((result) => {
 
-        // TODO: Integrate this in the create or add entity component
-        this.inf.persistent_item.loadMinimal(pkProject, result.pkEntity)
+        this.dataService.loadInfResource(result.pkEntity, pkProject)
 
-        this.inf.statement.upsert([{
-          fk_subject_info: result.pkEntity,
-          fk_object_info: pkParent,
-          fk_property: this.isPartOfProp(parentIsF2Expression)
-        } as InfStatement], pkProject)
+        this.dataService.upsertInfStatementsWithRelations(
+          pkProject,
+          [{
+            fk_subject_info: result.pkEntity,
+            fk_object_info: pkParent,
+            fk_property: this.isPartOfProp(parentIsF2Expression)
+          } as InfStatement])
 
       })
     })
@@ -600,11 +627,14 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       const apiCall = (response: ImportTableResponse) => {
-        const a$ = this.inf.statement.upsert([{
-          fk_subject_data: response.fk_digital,
-          fk_object_info: pkParent,
-          fk_property: this.isReproProp(parentIsF2Expression)
-        } as InfStatement], pkProject).resolved$.pipe(map(r => r ? response : undefined));
+        const a$ = this.dataService.upsertInfStatementsWithRelations(
+          pkProject,
+          [{
+            fk_subject_data: response.fk_digital,
+            fk_object_info: pkParent,
+            fk_property: this.isReproProp(parentIsF2Expression)
+          } as InfStatement]
+        ).pipe(map(r => r ? response : undefined));
 
         const b$ = this.dat.digital.loadVersion(response.fk_digital).resolved$;
 
@@ -666,7 +696,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
             this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
               // remove the current statement from project
-              this.inf.removeEntitiesFromProject([node.statement.pk_entity], pkProject)
+              this.dataService.removeInfEntitiesFromProject([node.statement.pk_entity], pkProject)
 
             })
           }

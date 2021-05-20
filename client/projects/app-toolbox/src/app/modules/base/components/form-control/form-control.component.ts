@@ -45,31 +45,31 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.configureEntityCtrl();
 
-      this.syncTeEnToAdd();
+      this.syncResourceToAdd();
     }
 
 
   }
 
 
-  private syncTeEnToAdd() {
-    let pkTeEnToAdd;
+  private syncResourceToAdd() {
+    let pkResourceToAdd;
     this.formControlFactory.control.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((val: CtrlEntityModel) => {
-        if (pkTeEnToAdd) {
-          const i = this.createForm.temporalEntitiesToAdd.indexOf(pkTeEnToAdd);
-          this.createForm.temporalEntitiesToAdd.splice(i, 1);
+        if (pkResourceToAdd) {
+          const i = this.createForm.resourcesToAdd.indexOf(pkResourceToAdd);
+          this.createForm.resourcesToAdd.splice(i, 1);
         }
-        if (this.config.data.ctrlEntity.model === 'temporal_entity' && val.pkEntity) {
-          pkTeEnToAdd = val.pkEntity;
-          this.createForm.temporalEntitiesToAdd.push(pkTeEnToAdd);
+        if (this.config.data.ctrlEntity.model === 'resource' && val.pkEntity) {
+          pkResourceToAdd = val.pkEntity;
+          this.createForm.resourcesToAdd.push(pkResourceToAdd);
         }
       });
     this.destroy$.subscribe(() => {
-      if (pkTeEnToAdd) {
-        const i = this.createForm.temporalEntitiesToAdd.indexOf(pkTeEnToAdd);
-        this.createForm.temporalEntitiesToAdd.splice(i, 1);
+      if (pkResourceToAdd) {
+        const i = this.createForm.resourcesToAdd.indexOf(pkResourceToAdd);
+        this.createForm.resourcesToAdd.splice(i, 1);
       }
     });
   }

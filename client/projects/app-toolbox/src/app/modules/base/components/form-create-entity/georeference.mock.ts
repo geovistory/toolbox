@@ -1,6 +1,6 @@
-import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
+import { InfResource } from '@kleiolab/lib-sdk-lb4';
 
-export const mockGeoreference: InfTemporalEntity = {
+export const mockGeoreference: InfResource = {
   outgoing_statements: [
     {
       fk_property: 148,

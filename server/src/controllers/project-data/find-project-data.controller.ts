@@ -28,10 +28,7 @@ export class FindProjectDataController {
         content: {
           'application/json': {
             schema: {
-              type: 'array',
-              items: {
-                'x-ts-type': GvPositiveSchemaObject
-              },
+              'x-ts-type': GvPositiveSchemaObject
             }
           }
         }

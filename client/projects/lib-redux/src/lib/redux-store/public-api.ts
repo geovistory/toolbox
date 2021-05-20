@@ -48,6 +48,7 @@ export * from './state-schema/reducers/pro.reducer';
 export * from './state-schema/reducers/sys.reducer';
 export * from './state-schema/reducers/tab.reducer';
 export * from './state-schema/reducers/war.reducer';
+export * from './state-schema/services/reduxMain.service';
 export * from './state-schema/services/schema.service';
 export * from './state-schema/_helpers/flattener';
 export * from './state-schema/_helpers/inf-action-factory';

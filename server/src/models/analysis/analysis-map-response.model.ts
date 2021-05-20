@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository'
-import {WarEntityPreviewWithFulltext} from '../war-entity-preview.model'
+import {WarEntityPreviewWithFulltext} from '../war-entity-preview-with-full-text.model';
 import {ChartLinePoint} from './analysis-time-chart-response.model';
 
 

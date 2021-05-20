@@ -62,10 +62,12 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
       })
   }
 
+  trackBy(_, f: Field) {
+    return [f.sourceClass, f.property.fkProperty, f.property.fkPropertyOfProperty, f.isOutgoing].join('-')
+  }
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
 
 }

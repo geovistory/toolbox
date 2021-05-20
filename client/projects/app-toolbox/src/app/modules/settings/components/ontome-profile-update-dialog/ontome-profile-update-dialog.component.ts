@@ -1,5 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
@@ -25,6 +26,7 @@ export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
   constructor(public dialogRef: MatDialogRef<OntomeProfileUpdateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OntomeProfileUpdateDialogData,
     private ontomeService: OntoMeControllerService,
+    private dataService: ReduxMainService,
     private p: ActiveProjectService
   ) { }
 
@@ -40,10 +42,10 @@ export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
           this.updating = false
           this.updated = true
           this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-            this.p.dfh$.profile.loadOfProject(pkProject);
-            this.p.dfh$.klass.loadOfProject(pkProject);
-            this.p.dfh$.property.loadOfProject(pkProject);
-            this.p.dfh$.label.loadOfProject(pkProject);
+            this.dataService.loadDfhProfilesOfProject(pkProject);
+            this.dataService.loadDfhPropertiesOfProject(pkProject);
+            this.dataService.loadDfhClassesOfProject(pkProject);
+            this.dataService.loadDfhLabelsOfProject(pkProject);
           })
 
         },

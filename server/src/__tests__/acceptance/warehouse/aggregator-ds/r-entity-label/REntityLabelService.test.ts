@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/camelcase */
 import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
@@ -178,7 +179,8 @@ describe('REntityLabelService', function () {
         expect(result)
     })
 
-    it('should create entity label of birth infinit label', async () => {
+    it('should create entity label of birth infinit label', async function() {
+        this.timeout(15000); // A very long environment setup.
         await createProject();
         await createNamingMock();
         await createPersonMock();
@@ -188,8 +190,6 @@ describe('REntityLabelService', function () {
             notifier$: s.afterChange$,
             getFn: () => s.index.getFromIdx({pkEntity: birth.pk_entity ?? -1}),
             compare: (item) => {
-                console.log(item?.entityLabel)
-                console.log(item?.entityLabel?.length)
                 return item?.entityLabel?.length === ENTITY_LABEL_MAX_LENGTH
             }
         })
@@ -357,6 +357,8 @@ export async function createUnion2Mock() {
     // MODEL + LABELS
     await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
     await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
+    await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
 
     // TeEn
     const union = await createInfResource(InfResourceMock.UNION_1);

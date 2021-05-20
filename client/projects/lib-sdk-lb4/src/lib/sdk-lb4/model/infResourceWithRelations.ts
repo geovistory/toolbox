@@ -10,11 +10,16 @@
  * Do not edit the class manually.
  */
 import { InfStatementWithRelations } from './infStatementWithRelations';
+import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
 
 
+/**
+ * (tsType: InfResourceWithRelations, schemaOptions: { includeRelations: true })
+ */
 export interface InfResourceWithRelations { 
     pk_entity?: number;
     fk_class: number;
+    entity_version_project_rels?: Array<ProInfoProjRelWithRelations>;
     outgoing_statements?: Array<InfStatementWithRelations>;
     incoming_statements?: Array<InfStatementWithRelations>;
 }

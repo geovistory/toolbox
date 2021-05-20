@@ -7,6 +7,10 @@ import {createInfStatement} from '../../../__tests__/helpers/atomic/inf-statemen
 import {InfStatementMock} from '../../../__tests__/helpers/data/gvDB/InfStatementMock';
 import {createProEntityLabelConfig} from '../../../__tests__/helpers/atomic/pro-entity-label-config.helper';
 import {ProEntityLabelConfigMock} from '../../../__tests__/helpers/data/gvDB/ProEntityLabelConfigMock';
+import {createDfhApiClass} from '../../../__tests__/helpers/atomic/dfh-api-class.helper';
+import {createDfhApiProperty} from '../../../__tests__/helpers/atomic/dfh-api-property.helper';
+import {DfhApiClassMock} from '../../../__tests__/helpers/data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../../../__tests__/helpers/data/gvDB/DfhApiPropertyMock';
 
 export interface EntityLabelVal {
     entityLabel?: string;
@@ -52,6 +56,8 @@ export const ENTITY_LABEL_MAX_LENGTH = 311;
 
 export namespace EntityLabel {
     export async function createInfinitLabel() {
+        await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
+        await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
         // TeEn
         const birth = await createInfResource(InfResourceMock.BIRTH_1);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);

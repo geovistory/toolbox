@@ -1,5 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
@@ -25,6 +26,7 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
   constructor(public dialogRef: MatDialogRef<OntomeProfileActivationReportDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OntomeProfileActivationReportDialogData,
     private ontomeService: OntoMeControllerService,
+    private dataService: ReduxMainService,
     private p: ActiveProjectService
   ) { }
 
@@ -40,10 +42,10 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
           this.activating = false
           this.activated = true
 
-          this.p.dfh$.profile.loadOfProject(this.data.pkProject);
-          this.p.dfh$.klass.loadOfProject(this.data.pkProject);
-          this.p.dfh$.property.loadOfProject(this.data.pkProject);
-          this.p.dfh$.label.loadOfProject(this.data.pkProject);
+          this.dataService.loadDfhProfilesOfProject(this.data.pkProject);
+          this.dataService.loadDfhPropertiesOfProject(this.data.pkProject);
+          this.dataService.loadDfhClassesOfProject(this.data.pkProject);
+          this.dataService.loadDfhLabelsOfProject(this.data.pkProject);
           this.p.pro$.dfh_class_proj_rel.loadOfProject(this.data.pkProject);
           this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.data.pkProject);
         },

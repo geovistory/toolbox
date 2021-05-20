@@ -1,6 +1,8 @@
 import {existsSync, mkdirSync, writeFileSync} from 'fs';
 import sqlFormatter from 'sql-formatter';
 import {QueryResult} from 'pg';
+import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
+import {concat, mergeDeepWith} from 'ramda';
 
 export const logSql = (sql: string, params: any[]) => {
 
@@ -31,7 +33,7 @@ export const logSql = (sql: string, params: any[]) => {
  * Returns a Promise that resolves after given miliseconds
  * @param ms
  */
-export async function wait(ms: number) {
+export async function wait(ms: number): Promise<void> {
   return new Promise(res => {setTimeout(() => res(), ms)})
 }
 
@@ -138,4 +140,13 @@ export function parsePGError(err: any, sqlString: string) {
       console.log("nUnknown Postgres error:", err)
     }
   }
+}
+
+
+/**
+ * Deep merges the two given objects and returns a clone with the result
+ * @param new
+ */
+export function mergeSchemaModifier(old: GvSchemaModifier, _new: Partial<GvSchemaModifier>) {
+ return mergeDeepWith(concat, old, _new)
 }

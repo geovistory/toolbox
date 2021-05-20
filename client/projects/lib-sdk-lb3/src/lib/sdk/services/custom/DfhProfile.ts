@@ -1,8 +1,6 @@
 /* tslint:disable */
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Observable } from 'rxjs';
-import { LoopBackConfig } from '../../lb.config';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { LoopBackAuth } from '../core/auth.service';
 import { BaseLoopBackApi } from '../core/base.service';
@@ -40,17 +38,17 @@ export class DfhProfileApi extends BaseLoopBackApi {
    * This usually means the response is a `DfhProfile` object.)
    * </em>
    */
-  public ofProject(pkProject: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/DfhProfiles/of-project";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
+  // public ofProject(pkProject: any = {}, customHeaders?: Function): Observable<any> {
+  //   let _method: string = "GET";
+  //   let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+  //     "/DfhProfiles/of-project";
+  //   let _routeParams: any = {};
+  //   let _postBody: any = {};
+  //   let _urlParams: any = {};
+  //   if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+  //   let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+  //   return result;
+  // }
 
   // /**
   //  * Pulls profile data including classes and properties from OntoMe and updates profile data in geovistory.

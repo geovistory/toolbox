@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, SchemaObject, SchemaService } from '@kleiolab/lib-redux';
+import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService, SchemaObject, SchemaService } from '@kleiolab/lib-redux';
 import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
@@ -83,6 +83,7 @@ export class ActiveProjectService {
     public inf: InfActions,
     public shouldPause: ShouldPauseService,
     private s: SchemaService,
+    private dataService: ReduxMainService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -160,7 +161,8 @@ export class ActiveProjectService {
   initProjectConfigData(id) {
     const state = this.ngRedux.getState();
     if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.configDataInitialized) {
-      this.ngRedux.dispatch(this.actions.loadProjectConfig(id))
+      this.dataService.loadProjectConfiguration(id)
+      // this.ngRedux.dispatch(this.actions.loadProjectConfig(id))
     }
   }
 

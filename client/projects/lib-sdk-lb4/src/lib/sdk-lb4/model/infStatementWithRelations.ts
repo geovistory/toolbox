@@ -9,25 +9,27 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { InfResource } from './infResource';
-import { InfTimePrimitive } from './infTimePrimitive';
-import { ProInfoProjRel } from './proInfoProjRel';
-import { InfAppellation } from './infAppellation';
-import { InfStatement } from './infStatement';
-import { DatDigital } from './datDigital';
-import { InfDimension } from './infDimension';
-import { DatChunk } from './datChunk';
-import { InfLangString } from './infLangString';
-import { InfPlace } from './infPlace';
-import { InfLanguage } from './infLanguage';
+import { InfLangStringWithRelations } from './infLangStringWithRelations';
+import { InfAppellationWithRelations } from './infAppellationWithRelations';
+import { InfResourceWithRelations } from './infResourceWithRelations';
+import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
+import { InfPlaceWithRelations } from './infPlaceWithRelations';
+import { DatDigitalWithRelations } from './datDigitalWithRelations';
+import { InfTimePrimitiveWithRelations } from './infTimePrimitiveWithRelations';
+import { InfDimensionWithRelations } from './infDimensionWithRelations';
+import { InfLanguageWithRelations } from './infLanguageWithRelations';
+import { DatChunkWithRelations } from './datChunkWithRelations';
 
 
+/**
+ * (tsType: InfStatementWithRelations, schemaOptions: { includeRelations: true })
+ */
 export interface InfStatementWithRelations { 
     pk_entity?: number;
     fk_subject_info?: number;
     fk_subject_data?: number;
     fk_subject_tables_cell?: number;
-    fk_subject_tables_row?: string;
+    fk_subject_tables_row?: number;
     fk_property?: number;
     fk_property_of_property?: number;
     fk_object_info?: number;
@@ -37,18 +39,18 @@ export interface InfStatementWithRelations {
     is_in_project_count?: number;
     is_standard_in_project_count?: number;
     community_favorite_calendar?: string;
-    entity_version_project_rels?: Array<ProInfoProjRel>;
-    subject_resource?: InfResource;
-    subject_chunk?: DatChunk;
-    subject_statement?: InfStatement;
-    subject_digital?: DatDigital;
-    object_resource?: InfResource;
-    object_appellation?: InfAppellation;
-    object_time_primitive?: InfTimePrimitive;
-    object_language?: InfLanguage;
-    object_lang_string?: InfLangString;
-    object_dimension?: InfDimension;
-    object_place?: InfPlace;
-    object_chunk?: DatChunk;
+    entity_version_project_rels?: Array<ProInfoProjRelWithRelations>;
+    subject_resource?: InfResourceWithRelations;
+    subject_chunk?: DatChunkWithRelations;
+    subject_statement?: InfStatementWithRelations;
+    subject_digital?: DatDigitalWithRelations;
+    object_resource?: InfResourceWithRelations;
+    object_appellation?: InfAppellationWithRelations;
+    object_time_primitive?: InfTimePrimitiveWithRelations;
+    object_language?: InfLanguageWithRelations;
+    object_lang_string?: InfLangStringWithRelations;
+    object_dimension?: InfDimensionWithRelations;
+    object_place?: InfPlaceWithRelations;
+    object_chunk?: DatChunkWithRelations;
 }
 

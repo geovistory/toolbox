@@ -587,7 +587,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
       // is this a new character with invalid charid ?
       else if (op.insert !== '\n' &&
         (
-          !op.attributes || !op.attributes.charid || op.attributes.charid < this.quillEditorService.latestId
+          !op.attributes || !op.attributes.charid // || op.attributes.charid < this.quillEditorService.latestId
         )
       ) {
         d.retain(1, { charid: ++this.quillEditorService.latestId })

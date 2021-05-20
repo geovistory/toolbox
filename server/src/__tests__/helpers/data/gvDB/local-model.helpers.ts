@@ -6,6 +6,7 @@ declare abstract class Entity {
     getIdObject(): Object;
     toJSON(): Object;
     toObject(): Object;
+    toDataObject(): Object;
 }
 
 // use this generic type to omit the properties from a model that extends Entity

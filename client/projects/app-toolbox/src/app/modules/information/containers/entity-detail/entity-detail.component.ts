@@ -9,6 +9,7 @@ import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic
 import { MentioningListOf } from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
@@ -95,7 +96,8 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     private b: InformationBasicPipesService,
     private inf: InfActions,
     private truncatePipe: TruncatePipe,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dataService: ReduxMainService
 
   ) {
 
@@ -117,13 +119,10 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      // TODO merge persistent_item and temporal_entity tables
-      combineLatest(
-        this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
-        this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
-      ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
-        this.t.setTabLoading(false)
-      })
+      this.dataService.loadInfResource(this.pkEntity, pkProject)
+        .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
+          this.t.setTabLoading(false)
+        })
 
     })
 

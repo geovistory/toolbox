@@ -62,8 +62,8 @@ export class ActiveProjectActions {
   static LOAD_PROJECT_BASICS = 'ActiveProject::LOAD_PROJECT_BASICS';
   static LOAD_PROJECT_BASICS_FAILED = 'ActiveProject::LOAD_PROJECT_BASICS_FAILED';
   static LOAD_PROJECT_BASICS_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_BASICS_SUCCEEDED';
-  static LOAD_PROJECT_CONFIG = 'ActiveProject::LOAD_PROJECT_CONFIG';
-  static LOAD_PROJECT_CONFIG_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_CONFIG_SUCCEEDED';
+  // static LOAD_PROJECT_CONFIG = 'ActiveProject::LOAD_PROJECT_CONFIG';
+  // static LOAD_PROJECT_CONFIG_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_CONFIG_SUCCEEDED';
 
 
   loadProjectBasics(pk_project: number): ActiveProjectAction {
@@ -84,25 +84,25 @@ export class ActiveProjectActions {
     }
   }
 
-  loadProjectConfig(pk_project: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PROJECT_CONFIG,
-      payload: null,
-      meta: {
-        pk_project
-      },
-    }
-  }
+  // loadProjectConfig(pk_project: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_PROJECT_CONFIG,
+  //     payload: null,
+  //     meta: {
+  //       pk_project
+  //     },
+  //   }
+  // }
 
-  loadProjectConfigSucceeded(): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED,
-      payload: {
-        // crm
-      },
-      meta: null,
-    }
-  }
+  // loadProjectConfigSucceeded(): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED,
+  //     payload: {
+  //       // crm
+  //     },
+  //     meta: null,
+  //   }
+  // }
 
   /************************************************************************************
    * Layout -- Tabs

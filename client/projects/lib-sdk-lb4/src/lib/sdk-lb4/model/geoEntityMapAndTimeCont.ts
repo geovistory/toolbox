@@ -9,14 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { WarEntityPreviewWithFulltext } from './warEntityPreviewWithFulltext';
+import { WarEntityPreview } from './warEntityPreview';
 import { CzmlSpatialValue } from './czmlSpatialValue';
 import { MapTemporalData } from './mapTemporalData';
 
 
 export interface GeoEntityMapAndTimeCont { 
     geo_entity_pk: number;
-    geo_entity_preview: WarEntityPreviewWithFulltext;
+    geo_entity_preview: WarEntityPreview;
     geo_positions: Array<CzmlSpatialValue>;
     pk_entities: Array<number>;
     temporal_data: MapTemporalData;

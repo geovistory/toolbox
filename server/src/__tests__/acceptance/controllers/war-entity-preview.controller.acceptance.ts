@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/camelcase */
 // Copyright IBM Corp. 2018. All Rights Reserved.
 // Node module: @loopback/example-shopping
 // This file is licensed under the MIT License.
@@ -7,12 +6,12 @@
 
 import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
-import {WarEntityPreviewWithFulltext} from '../../../models';
 import {GeovistoryServer} from '../../../server';
 import {createWarEntityPreview, deleteWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {wait} from '../../helpers/warehouse-helpers';
+import {WarEntityPreviewWithFulltext} from "../../../models/war-entity-preview-with-full-text.model";
 
 const pEvent = require('p-event');
 
@@ -33,6 +32,8 @@ describe('WarEntityPreviewController', () => {
         entityPreview = await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: 4,
           fk_project: 8,
+          project: 8,
+          fk_class: 21,
           entity_label: 'foo',
         }));
 
@@ -111,12 +112,16 @@ describe('WarEntityPreviewController', () => {
           pk_entity: pkEntity1,
           fk_project: undefined,
           entity_label: 'foo repo',
+          project: 0,
+          fk_class: 21,
         }))
         // add project variant
         await createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: pkProject,
           entity_label: 'foo',
+          project: pkProject,
+          fk_class: 21,
         }))
 
         // check the entity preview
@@ -151,6 +156,8 @@ describe('WarEntityPreviewController', () => {
           pk_entity: pkEntity1,
           fk_project: undefined,
           entity_label: 'foo repo',
+          project: 0,
+          fk_class: 21,
         }))
 
         // check the entity preview
@@ -162,6 +169,8 @@ describe('WarEntityPreviewController', () => {
           pk_entity: pkEntity1,
           fk_project: pkProject,
           entity_label: 'foo',
+          project: pkProject,
+          fk_class: 21,
         }))
 
         // check the entity preview

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
 import 'reflect-metadata';
@@ -139,7 +140,8 @@ describe('PEntityLabelService', function () {
         expect(result)
     })
 
-    it('should create entity label of birth infinit label', async () => {
+    it('should create entity label of birth infinit label', async function () {
+        this.timeout(15000)
         const project = await PEntityLabel.createProject();
         await PEntityLabel.createNamingMock();
         await PEntityLabel.createPersonMock();
@@ -149,8 +151,8 @@ describe('PEntityLabelService', function () {
             notifier$: s.afterChange$,
             getFn: () => s.index.getFromIdx({pkEntity: birth.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
             compare: (item) => {
-                console.log(item?.entityLabel)
-                console.log(item?.entityLabel?.length)
+                // console.log(item?.entityLabel)
+                // console.log(item?.entityLabel?.length)
                 return item?.entityLabel?.length === ENTITY_LABEL_MAX_LENGTH
             }
         })

@@ -5,19 +5,17 @@ import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
 import {DataObject, repository} from '@loopback/repository';
-import {HttpErrors, param, post, requestBody} from '@loopback/rest';
+import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
 import {Roles} from '../../components/authorization';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {InfStatement, ProInfoProjRel} from '../../models';
+import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
-import {InfResourceWithRelations} from '../../models/inf-resource-with-relations.model';
 import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFks';
 import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
 import {InfStatementSubjectFks} from '../../models/statement/InfStatementSubjectFks';
 import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubjectValues';
-import {InfStatementWithRelations} from '../../models/statement/InfStatementWithRelations';
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
 
 @tags('project data')
@@ -57,7 +55,7 @@ export class CreateProjectDataController {
   @post('project-data/upsert-resources', {
     responses: {
       '200': {
-        description: 'InfResourceWithRelations model instances',
+        description: 'Upserted resources and returned a GvSchemaModifier',
         content: {
           'application/json': {
             schema: {
@@ -70,16 +68,14 @@ export class CreateProjectDataController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
-  async create(
+  async upsertResources(
     @param.query.number('pkProject') pkProject: number,
     @requestBody({
       content: {
         'application/json': {
           schema: {
             type: 'array',
-            items: {
-              'x-ts-type': InfResourceWithRelations
-            },
+            items: getModelSchemaRef(InfResource, {includeRelations: true}),
           }
         }
       },
@@ -92,6 +88,40 @@ export class CreateProjectDataController {
   }
 
 
+  @post('project-data/upsert-statements', {
+    responses: {
+      '200': {
+        description: 'Upserted resources and returned a GvSchemaModifier',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaModifier
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async upsertStatements(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(InfStatement, {includeRelations: true}),
+          }
+        }
+      },
+    }) statements: InfStatementWithRelations[]
+  ): Promise<GvSchemaModifier> {
+
+    const promisedStmts = statements.map(stmt => this.findOrCreateStatementWithRelations(stmt, pkProject))
+    await Promise.all(promisedStmts)
+    return this.schemaModifier
+  }
 
 
 
@@ -110,13 +140,13 @@ export class CreateProjectDataController {
     if (resource.outgoing_statements) {
       for (const statement of resource.outgoing_statements) {
         statement.fk_subject_info = returnedResource.pk_entity;
-        await this.findOrCreateStatement(statement, project);
+        await this.findOrCreateStatementWithRelations(statement, project);
       }
     }
     if (resource.incoming_statements) {
       for (const statement of resource.incoming_statements) {
         statement.fk_object_info = returnedResource.pk_entity;
-        await this.findOrCreateStatement(statement, project);
+        await this.findOrCreateStatementWithRelations(statement, project);
       }
     }
 
@@ -186,7 +216,7 @@ export class CreateProjectDataController {
       fk_project: fkProject,
     }
     let projRel: ProInfoProjRel;
-    const existing = await this.proInfoProjRelRepository.findOne({where: {fk_entity: dataObject.pk_entity, fk_project: dataObject.fk_project}})
+    const existing = await this.proInfoProjRelRepository.findOne({where: {fk_entity: fkEntity, fk_project: dataObject.fk_project}})
     if (existing) {
       await this.proInfoProjRelRepository.updateById(existing.pk_entity, dataObject);
       projRel = await this.proInfoProjRelRepository.findById(existing.pk_entity);
@@ -202,7 +232,7 @@ export class CreateProjectDataController {
     })
   }
 
-  async findOrCreateStatement(statementWithRels: InfStatementWithRelations, project: number) {
+  async findOrCreateStatementWithRelations(statementWithRels: InfStatementWithRelations, project: number) {
     const subject = await this.getStatementSubject(project, statementWithRels);
     const object = await this.getStatementObject(project, statementWithRels);
     const dataObject = this.cloneInfStatementWithoutRelations({
@@ -265,18 +295,20 @@ export class CreateProjectDataController {
      ******************************************************/
 
     else if (stmt.subject_resource && !isEmpty(stmt.subject_resource)) {
-      stmtSubVal.subject_resource = await this.createResourceAndProjectRel(stmt.subject_resource, pkProject)
+      stmtSubVal.subject_resource = await this.findOrCreateResourceWithRelations(stmt.subject_resource, pkProject)
       stmtSubFk.fk_subject_info = stmtSubVal.subject_resource.pk_entity
     }
 
     else if (stmt.subject_chunk && !isEmpty(stmt.subject_chunk)) {
-      stmtSubVal.subject_chunk = await this.datChunkRepo.create(stmt.subject_chunk)
+      const created = await this.datChunkRepo.create(stmt.subject_chunk)
+      stmtSubVal.subject_chunk = await this.datChunkRepo.findById(created.pk_entity)
+      this.mergeSchemaModifier({positive: {dat: {chunk: [stmtSubVal.subject_chunk]}}})
       stmtSubFk.fk_subject_data = stmtSubVal.subject_chunk.pk_entity
     }
 
     // if subject is a inf statement (we have a statement of statement)
     else if (stmt.subject_statement && !isEmpty(stmt.subject_statement)) {
-      stmtSubVal.subject_statement = await this.infStatementRepo.create(stmt.subject_statement)
+      stmtSubVal.subject_statement = await this.findOrCreateStatementWithRelations(stmt.subject_statement, pkProject)
       stmtSubFk.fk_subject_info = stmtSubVal.subject_statement.pk_entity
     }
     else {
@@ -330,7 +362,7 @@ export class CreateProjectDataController {
      ******************************************************/
 
     else if (stmt.object_resource && !isEmpty(stmt.object_resource)) {
-      stmtObVal.object_resource = await this.createResourceAndProjectRel(stmt.object_resource, pkProject)
+      stmtObVal.object_resource = await this.findOrCreateResourceWithRelations(stmt.object_resource, pkProject)
       stmtObFk.fk_object_info = stmtObVal.object_resource.pk_entity
 
     }
@@ -348,13 +380,16 @@ export class CreateProjectDataController {
     }
 
     else if (stmt.object_appellation && !isEmpty(stmt.object_appellation)) {
-      stmtObVal.object_appellation = await this.infAppellationRepo.create(stmt.object_appellation)
+      const created =  await this.infAppellationRepo.create(stmt.object_appellation)
+      stmtObVal.object_appellation = await this.infAppellationRepo.findById(created.pk_entity)
       this.mergeSchemaModifier({positive: {inf: {appellation: [stmtObVal.object_appellation]}}})
       stmtObFk.fk_object_info = stmtObVal.object_appellation.pk_entity
     }
 
     else if (stmt.object_lang_string && !isEmpty(stmt.object_lang_string)) {
-      stmtObVal.object_lang_string = await this.infLangStringRepo.create(stmt.object_lang_string)
+      const dataObject = new InfLangString(stmt.object_lang_string).toDataObject()
+      const created = await this.infLangStringRepo.create(dataObject)
+      stmtObVal.object_lang_string = await this.infLangStringRepo.findById(created.pk_entity)
       this.mergeSchemaModifier({positive: {inf: {lang_string: [stmtObVal.object_lang_string]}}})
 
       stmtObFk.fk_object_info = stmtObVal.object_lang_string.pk_entity
@@ -386,7 +421,7 @@ export class CreateProjectDataController {
   }
 
 
-  cloneInfStatementWithoutRelations(statementWithRels: InfStatementWithRelations): DataObject<InfStatement> {
+  cloneInfStatementWithoutRelations(statementWithRels: DataObject<InfStatementWithRelations>): DataObject<InfStatement> {
 
     const {
       pk_entity, fk_subject_info, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_object_info, fk_object_data, fk_object_tables_cell, fk_object_tables_row, is_in_project_count, is_standard_in_project_count, community_favorite_calendar

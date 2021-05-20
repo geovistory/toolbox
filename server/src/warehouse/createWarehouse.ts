@@ -36,6 +36,7 @@ import {ProProjectService} from './primary-ds/ProProjectService';
 import {ProPropertyLabelService} from './primary-ds/ProPropertyLabelService';
 import {AGG_DS, APP_CONFIG, PRIMARY_DS, Warehouse, WarehouseConfig} from './Warehouse';
 import {PStatementService} from './primary-ds/statement/PStatementService';
+import {PFieldChangeService} from './primary-ds/PFieldChangeService';
 
 export interface WarehouseStubs {
   primaryDataServices: Provider[];
@@ -90,6 +91,7 @@ const defaultPrimaryDataServices = [
   PEdgeService,
   PEntityService,
   PStatementService,
+  PFieldChangeService,
 
   RClassService,
   RPropertyService,

@@ -1,8 +1,8 @@
-import {InfStatementWithRelations} from "./InfStatementWithRelations";
+import {InfStatement} from '../inf-statement.model';
 
 
 export type InfStatementObjectValues = Pick<
-  InfStatementWithRelations,
+  InfStatement,
   "object_resource" |
   "object_appellation" |
   "object_time_primitive" |

@@ -2,23 +2,16 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ProProject, ProProjectApi, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ProjectDataService } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
-import { combineLatest, Observable } from 'rxjs';
-import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actions/active-project.action';
 import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { DatActions } from '../../state-schema/actions/dat.actions';
-import { DfhActions } from '../../state-schema/actions/dfh.actions';
-import { InfActions } from '../../state-schema/actions/inf.actions';
-import { ProActions } from '../../state-schema/actions/pro.actions';
-import { GvSchemaActions } from '../../state-schema/actions/schema.actions';
-import { SysActions } from '../../state-schema/actions/sys.actions';
 import { SchemaService } from '../../state-schema/services/schema.service';
 import { ProjectPreview } from '../models/active-project.models';
 
@@ -43,13 +36,6 @@ function proProjectToProjectPreview(project: ProProject): ProjectPreview {
 })
 export class ActiveProjectEpics {
   constructor(
-    private sys: SysActions,
-    private dat: DatActions,
-    private dfh: DfhActions,
-    private pro: ProActions,
-    private inf: InfActions,
-    private schemaActions: GvSchemaActions,
-    private projectData: ProjectDataService,
     private projectApi: ProProjectApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
@@ -61,7 +47,7 @@ export class ActiveProjectEpics {
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return combineEpics(
       this.createLoadProjectBasicsEpic(),
-      this.createLoadProjectConfigEpic(),
+      // this.createLoadProjectConfigEpic(),
       this.createLoadProjectUpdatedEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
@@ -120,44 +106,44 @@ export class ActiveProjectEpics {
     )
   }
 
-  private createLoadProjectConfigEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
-    return (action$, store) => action$.pipe(
+  // private createLoadProjectConfigEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  //   return (action$, store) => action$.pipe(
 
-      ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG),
-      switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-        globalStore.next(this.loadingBarActions.startLoading());
+  //     ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG),
+  //     switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //       globalStore.next(this.loadingBarActions.startLoading());
 
-        combineLatest(
-          this.dfh.profile.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //       combineLatest(
+  //         this.dataService.loadDfhProfilesOfProject(action.meta.pk_project),
 
-          this.dfh.klass.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.dfh.property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.dfh.label.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //         this.dataService.loadDfhClassesOfProject(action.meta.pk_project),
+  //         this.dataService.loadDfhPropertiesOfProject(action.meta.pk_project),
+  //         this.dataService.loadDfhLabelsOfProject(action.meta.pk_project),
 
-          this.sys.system_relevant_class.load().resolved$.pipe(filter(x => !!x)),
-          this.sys.config.load().resolved$.pipe(filter(x => !!x)),
-          this.dat.namespace.load('', action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //         this.sys.system_relevant_class.load().resolved$.pipe(filter(x => !!x)),
+  //         this.sys.config.load().resolved$.pipe(filter(x => !!x)),
+  //         this.dat.namespace.load('', action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
 
-          this.pro.text_property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
-          this.schemaActions.loadGvSchemaObject(this.projectData.createProjectDataControllerGetTypesOfProject(action.meta.pk_project))
-        )
-          .pipe(filter((res: any[]) => !res.includes(undefined)))
-          .subscribe((res) => {
+  //         this.pro.text_property.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //         this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //         this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //         this.pro.class_field_config.loadOfProject(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
+  //         this.schemaActions.loadGvSchemaObject(this.projectData.findProjectDataControllerGetTypesOfProject(action.meta.pk_project))
+  //       )
+  //         .pipe(filter((res: any[]) => !res.includes(undefined)))
+  //         .subscribe((res) => {
 
-            globalStore.next(this.actions.loadProjectConfigSucceeded());
-            globalStore.next(this.loadingBarActions.completeLoading());
+  //           globalStore.next(this.actions.loadProjectConfigSucceeded());
+  //           globalStore.next(this.loadingBarActions.completeLoading());
 
-          }, error => {
-            // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-          });
+  //         }, error => {
+  //           // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+  //         });
 
-      }))
+  //     }))
 
-    )
-  }
+  //   )
+  // }
 
 
   /**

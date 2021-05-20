@@ -539,33 +539,33 @@ export class RamListComponent implements OnInit, OnDestroy {
 
     return [pathCol, actionsCol]
   }
-  /**
-   *
-   * @param pkEntity Persistent item/temporal entity that is mentionned i.e. CRM Entity
-   */
-  getMentions(pkEntity: number) {
-    const fakeStatements: InfStatement[] = [
-      {
-        pk_entity: 789,
-        fk_subject_info: 737367, // subject (F2 Expression) !!
-        fk_property: 1218, // predicate (geovP2 mentions)
-        fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfStatement,
-      {
-        pk_entity: 790,
-        fk_subject_info: 737367, // subject (F2 Expression) !!
-        fk_property: 1316, // predicate (geovP5 carrier provided by)
-        fk_object_info: 737365, // object (F5 Item / e.g. Copy of a book)
-      } as InfStatement,
-      {
-        pk_entity: 791,
-        fk_subject_info: 747097, // subject (geovC5 Expression Portion) !!
-        fk_property: 1218, // predicate (geovP2 mentions)
-        fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfStatement
-    ];
-    this.inf.statement.loadSucceeded(fakeStatements, '', 591);
-  }
+  // /**
+  //  *
+  //  * @param pkEntity Persistent item/temporal entity that is mentionned i.e. CRM Entity
+  //  */
+  // getMentions(pkEntity: number) {
+  //   const fakeStatements: InfStatement[] = [
+  //     {
+  //       pk_entity: 789,
+  //       fk_subject_info: 737367, // subject (F2 Expression) !!
+  //       fk_property: 1218, // predicate (geovP2 mentions)
+  //       fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
+  //     } as InfStatement,
+  //     {
+  //       pk_entity: 790,
+  //       fk_subject_info: 737367, // subject (F2 Expression) !!
+  //       fk_property: 1316, // predicate (geovP5 carrier provided by)
+  //       fk_object_info: 737365, // object (F5 Item / e.g. Copy of a book)
+  //     } as InfStatement,
+  //     {
+  //       pk_entity: 791,
+  //       fk_subject_info: 747097, // subject (geovC5 Expression Portion) !!
+  //       fk_property: 1218, // predicate (geovP2 mentions)
+  //       fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
+  //     } as InfStatement
+  //   ];
+  //   this.inf.statement.loadSucceeded(fakeStatements, '', 591);
+  // }
 
   /**
    * When user clicks add

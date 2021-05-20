@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSort, MatTableDataSource } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
@@ -11,10 +11,10 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-import { flatten, indexBy, values } from 'ramda';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
+import { values } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
-import { QuillDoc } from '../../../quill';
+import { filter, first, map, mergeMap, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
 
 
@@ -48,7 +48,8 @@ export interface MentioningListOf {
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',
   styleUrls: ['./mentioning-list.component.scss'],
-  providers: [QuillOpsToStrPipe]
+  providers: [QuillOpsToStrPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -147,7 +148,8 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
     private s: SchemaSelectorsService,
     private inf: InfActions,
     fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dataService: ReduxMainService
   ) {
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
     this.formGroup = fb.group({ 'mentioningCreateCtrl': this.mentioningCreateCtrl })
@@ -163,61 +165,142 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.displayedColumns = ['domainLabel', 'propertyLabel', 'rangeInfoEntity', 'actions'];
 
-        this.s.dat$.chunk.loadChunksOfDigital(this.listOf.pkEntity, pkProject)
+        this.dataService.loadDatChunksOfDigital(this.listOf.pkEntity, pkProject)
 
-        const chunks$ = this.s.dat$.digital$.by_pk_entity$.key(this.listOf.pkEntity).pipe(
-          filter(digitalVersions => !!digitalVersions && Object.keys(digitalVersions).length > 0),
-          map(digitalVersions => values(digitalVersions)[0].pk_text),
-          mergeMap(pkText => this.s.dat$.chunk$.by_fk_text$.key(pkText)),
-          map(chunksByPk => values(chunksByPk)),
+        const chunks$ = this.s.dat$.digital$.by_pk_entity$.key(this.listOf.pkEntity)
+          .pipe(
+            filter(digitalVersions => !!digitalVersions && Object.keys(digitalVersions).length > 0),
+            map(digitalVersions => values(digitalVersions)[0].pk_text),
+            switchMap(pkText => this.s.dat$.chunk$.by_fk_text$.key(pkText)),
+            map(chunksByPk => values(chunksByPk)),
+            // tap(c => {
+            //   console.log('1', c)
+            // })
+          )
+
+
+
+
+        const rows$ = chunks$.pipe(
+          // tap(c => {
+          //   console.log('1.5', c)
+          // }),
+          mergeMap((chunks) => combineLatestOrEmpty(
+            chunks.map(chunk => this.s.inf$.statement$
+              .by_subject_and_property$({
+                fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
+                fk_subject_data: chunk.pk_entity
+              })
+              .pipe(
+                // tap(c => {
+                //   console.log('2', c)
+                // }),
+                mergeMap(stmts => combineLatestOrEmpty(
+                  stmts.map(statement => this.p.streamEntityPreview(statement.fk_object_info).pipe(
+                    map(entityPreview => ({ chunk, statement, entityPreview })),
+                  ))
+                )),
+                // tap(c => {
+                //   console.log('3', c)
+                // }),
+                // switchMap((stmtsOfChunk => this.chunksToHighligt$.pipe(
+                //   map(chunksToHi => {
+                //     const partialRows = stmtsOfChunk.map(statement => ({
+                //       statement: statement,
+                //       domainChunk: chunk,
+                //       highlight: !chunksToHi ? false : chunksToHi.includes(chunk.pk_entity)
+                //     } as Row))
+                //     return partialRows;
+                //   })
+                // ))
+                // )
+              )
+            )),
+          ),
+          // tap(c => {
+          //   console.log('4', c)
+          // }),
+          map((item) => {
+            const r: Row[] = []
+            item.forEach(i => {
+              i.forEach(s => {
+                r.push({
+                  domainChunk: s.chunk,
+                  domainLabel: '« ' + s.chunk.string + ' »',
+                  statement: s.statement,
+                  rangeInfoEntity: s.entityPreview,
+                  rangeLabel: s.entityPreview.entity_label,
+                  digital: undefined,
+                  digitalLabel: undefined,
+                  domainInfoEntity: undefined,
+                  highlight: false,
+                  propertyLabel: 'refers to'
+                })
+              })
+            })
+            return r
+          })
         )
 
-        const addDomain$ = chunks$.pipe(
-          mergeMap(chunks => combineLatest(
-            this.s.inf$.statement$.by_fk_subject_data$.all$,
-            this.chunksToHighligt$
-          )
-            .pipe(
-              map(([easByDataDomain, chunksToHi]) => chunks
-                .map(chunk => {
-                  const easOfChunk = values(easByDataDomain[chunk.pk_entity]);
-                  const partialRows = easOfChunk.map(statement => ({
-                    statement: statement,
-                    domainChunk: chunk,
-                    highlight: !chunksToHi ? false : chunksToHi.includes(chunk.pk_entity)
-                  } as Row))
+        // switchMap(stmts => combineLatest(
+        //   this.s.inf$.statement$.by_fk_subject_data$.all$,
+        //   this.chunksToHighligt$
+        // )
+        //   .pipe(
+        //     map(([easByDataDomain, chunksToHi]) => chunks
+        //       .map(chunk => {
+        //         const easOfChunk = values(easByDataDomain[chunk.pk_entity]);
+        //         const partialRows = easOfChunk.map(statement => ({
+        //           statement: statement,
+        //           domainChunk: chunk,
+        //           highlight: !chunksToHi ? false : chunksToHi.includes(chunk.pk_entity)
+        //         } as Row))
 
-                  return partialRows;
-                })
-              ),
-              map(rowsNested => (
-                flatten(rowsNested) as any as Row[])
-                .filter(row => row.statement)
-              )
-            )
-          ))
+        //         return partialRows;
+        //       })
+        //     ),
+        //     map(rowsNested => (
+        //       flatten(rowsNested) as any as Row[])
+        //       .filter(row => row.statement)
+        //     )
+        //   )
+        // )
 
-        const addRange$ = addDomain$.pipe(
-          mergeMap((rows) => {
-            const ranges = rows.map(row => row.statement.fk_object_info)
-            const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
-            return combineLatestOrEmpty(pks.map(pk => this.p.streamEntityPreview(pk)))
-              .pipe(
-                map(previews => {
-                  const prevs = indexBy((i) => i.pk_entity.toString(), previews)
-                  rows = rows.map(row => ({
-                    ...row,
-                    rangeInfoEntity: prevs[row.statement.fk_object_info],
-                    domainLabel: this.getDomainLabel(row),
-                    rangeLabel: this.getRangeLabel(prevs, row),
-                    propertyLabel: this.getPropertyLabel(row)
-                  }))
-                  return rows;
-                })
-              )
-          }))
+        // const addRange$ = addDomain$.pipe(
+        //   switchMap((rows) => {
+        //     const ranges = rows.map(row => row.statement.fk_object_info)
+        //     const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
+        //     return combineLatestOrEmpty(pks.map(pk => this.p.streamEntityPreview(pk)))
+        //       .pipe(
+        //         map(previews => {
+        //           const prevs = indexBy((i) => i.pk_entity.toString(), previews)
+        //           rows = rows.map(row => ({
+        //             ...row,
+        //             rangeInfoEntity: prevs[row.statement.fk_object_info],
+        //             domainLabel: this.getDomainLabel(row),
+        //             rangeLabel: this.getRangeLabel(prevs, row),
+        //             propertyLabel: this.getPropertyLabel(row)
+        //           }))
+        //           return rows;
+        //         })
+        //       )
+        //   }))
+        // setTimeout(() => {
+        //   rows$.subscribe((r) => { console.log(r) })
+        // }, 2000)
 
-        this.data$ = addRange$;
+        this.data$ = combineLatest([this.chunksToHighligt$, rows$]).pipe(
+          // tap(c => {
+          //   console.log('5', c)
+          // }),
+          map(([hi, rows]) => {
+            return rows.map(r => ({
+              ...r,
+              highlight: hi.includes(r.domainChunk.pk_entity)
+            }))
+          }),
+          shareReplay()
+        );
 
         this.data$.pipe(takeUntil(this.destroy$)).subscribe(data => {
           this.dataSource.data = data
@@ -288,7 +371,10 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
   private getStringFromChunk(chunk: DatChunk): string {
     if (chunk) {
-      return '« ' + (chunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('') + ' »';
+      return '« ' +
+        // (chunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('')
+        chunk.string
+        + ' »';
     }
   }
 
@@ -296,7 +382,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.formGroup.valid) {
       this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
         const statement: InfStatement = this.mentioningCreateCtrl.value;
-        this.inf.statement.upsert([statement], pkProject).resolved$
+        this.dataService.upsertInfStatementsWithRelations(pkProject, [statement])
           .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
             // this.create$.next(false)
           })
@@ -321,7 +407,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
       .subscribe(confirmed => {
         if (confirmed) {
           this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-            this.inf.removeEntitiesFromProject([row.statement.pk_entity], pkProject)
+            this.dataService.removeInfEntitiesFromProject([row.statement.pk_entity], pkProject)
           })
         }
       })

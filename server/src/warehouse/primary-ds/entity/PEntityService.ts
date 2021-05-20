@@ -82,7 +82,7 @@ WITH tw1 AS (
         t2.pk_entity,
         t2.fk_class,
 		CASE WHEN  t3.basic_type IN (8,30) THEN 'peIt'
-		ELSE 'teEn'END as "entity_type"
+		ELSE 'teEn' END as "entity_type"
     FROM
     projects.info_proj_rel t1
     JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity
@@ -97,7 +97,7 @@ WITH tw1 AS (
         t2.pk_entity,
         t2.fk_class,
 		CASE WHEN  t3.basic_type IN (8,30) THEN 'peIt'
-		ELSE 'teEn'END as "entity_type"
+		ELSE 'teEn' END as "entity_type"
     FROM
     projects.info_proj_rel t1
     JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity

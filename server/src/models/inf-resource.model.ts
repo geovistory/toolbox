@@ -51,7 +51,9 @@ export class InfResource extends Entity implements InfEntity {
 }
 
 export interface InfResourceRelations {
-  // describe navigational properties here
+  outgoing_statements?: InfStatementWithRelations[];
+  incoming_statements?: InfStatementWithRelations[];
 }
 
 
+export type InfResourceWithRelations = InfResource & InfResourceRelations;

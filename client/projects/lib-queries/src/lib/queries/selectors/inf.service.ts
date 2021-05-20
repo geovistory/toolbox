@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
-import { ByPk, EntityModelAndClass, getFromTo, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
+import { ByPk, EntityModelAndClass, getFromTo, IAppState, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
 import { GvFieldId, GvFieldPage, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { equals } from 'ramda';
 import { Observable, of, pipe } from 'rxjs';
-import { filter, first, map, switchMap, throttleTime } from 'rxjs/operators';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 
 class Selector {
@@ -113,7 +113,7 @@ class Selector {
               }
             }
             return combineLatestOrEmpty(proRelsAndKey$).pipe(
-              throttleTime(0),
+              // throttleTime(0),
               map(proRels => {
                 const itemsInProject: ByPk<M> = {};
                 for (let i = 0; i < proRels.length; i++) {
@@ -202,7 +202,7 @@ class InfStatementSelections extends Selector {
     return selection$
   }
 
-  by_subject$(foreignKeys: IndexStatementBySubject, ofProject = true): Observable<InfStatement[]> {
+  by_subject$(foreignKeys: InfStatementSubjectFks, ofProject = true): Observable<InfStatement[]> {
     const key = indexStatementBySubject(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_subject').key(key)
     if (ofProject) {
@@ -216,12 +216,12 @@ class InfStatementSelections extends Selector {
     );
   }
 
-  by_subject_and_property$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<InfStatement[]> {
+  by_subject_and_property$(foreignKeys: InfStatementSubjectAndProperyFks, ofProject = true): Observable<InfStatement[]> {
     return this.by_subject_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(statementIdx => values(statementIdx))
     )
   }
-  by_subject_and_property_indexed$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+  by_subject_and_property_indexed$(foreignKeys: InfStatementSubjectAndProperyFks, ofProject = true): Observable<ByPk<InfStatement>> {
     const key = indexStatementBySubjectProperty(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_subject+property').key(key)
     if (ofProject) {
@@ -230,7 +230,7 @@ class InfStatementSelections extends Selector {
     return selection$
   }
 
-  by_object$(foreignKeys: IndexStatementByObject, ofProject = true): Observable<InfStatement[]> {
+  by_object$(foreignKeys: InfStatementObjectFks, ofProject = true): Observable<InfStatement[]> {
     const key = indexStatementByObject(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_object').key(key)
     if (ofProject) {
@@ -244,13 +244,13 @@ class InfStatementSelections extends Selector {
     );
   }
 
-  by_object_and_property$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<InfStatement[]> {
+  by_object_and_property$(foreignKeys: InfStatementObjectAndProperyFks, ofProject = true): Observable<InfStatement[]> {
     return this.by_object_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(statementIdx => values(statementIdx))
     )
   }
 
-  by_object_and_property_indexed$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+  by_object_and_property_indexed$(foreignKeys: InfStatementObjectAndProperyFks, ofProject = true): Observable<ByPk<InfStatement>> {
     const key = indexStatementByObjectProperty(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_object+property').key(key)
     if (ofProject) {

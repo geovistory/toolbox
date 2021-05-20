@@ -20,7 +20,7 @@ export class ProInfoProjRel  extends Entity implements ProEntity {
 
   @property({
     type: 'number',
-    required: true,
+    // required: true,
   })
   fk_project: number;
 
@@ -78,7 +78,7 @@ export class ProInfoProjRel  extends Entity implements ProEntity {
 
   @property({
     type: 'number',
-    required: true,
+    // required: true,
   })
   fk_last_modifier: number;
 

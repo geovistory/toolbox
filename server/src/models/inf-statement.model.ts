@@ -1,4 +1,4 @@
-import {Entity, hasMany, model, property} from '@loopback/repository';
+import {Entity, hasMany, hasOne, model, property} from '@loopback/repository';
 import {InfDimension, InfEntity, ProInfoProjRel} from '.';
 import {DatChunk} from './dat-chunk.model';
 import {DatDigital} from './dat-digital.model';
@@ -45,10 +45,10 @@ export class InfStatement extends Entity implements InfEntity {
   fk_subject_tables_cell?: number;
 
   @property({
-    type: 'string',
+    type: 'number',
     default: 0,
   })
-  fk_subject_tables_row?: string;
+  fk_subject_tables_row?: number;
 
   @property({
     type: 'number',
@@ -104,6 +104,61 @@ export class InfStatement extends Entity implements InfEntity {
   @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
   entity_version_project_rels?: ProInfoProjRel[];
 
+  @hasOne(()=> InfResource)
+  subject_resource?: InfResource;
+
+
+  @hasOne(()=> DatChunk)
+  subject_chunk?: DatChunk;
+
+
+  @hasOne(()=> InfStatement)
+  subject_statement?: InfStatement;
+
+
+  @hasOne(()=> DatDigital)
+  subject_digital?: DatDigital;
+
+
+  /**
+ * Objects value objects
+ */
+
+
+  @hasOne(()=> InfResource)
+  object_resource?: InfResource;
+
+  @hasOne(()=> InfAppellation)
+  object_appellation?: InfAppellation;
+
+
+  @hasOne(()=> InfTimePrimitive)
+  object_time_primitive?: InfTimePrimitive;
+
+
+  @hasOne(()=> InfLanguage)
+  object_language?: InfLanguage;
+
+
+  @hasOne(()=> InfLangString)
+  object_lang_string?: InfLangString;
+
+
+  @hasOne(()=> InfDimension)
+  object_dimension?: InfDimension;
+
+
+  @hasOne(()=> InfPlace)
+  object_place?: InfPlace;
+
+
+  @hasOne(()=> DatChunk)
+  object_chunk?: DatChunk;
+
+
+
+
+
   // Define well-known properties here
 
 
@@ -117,6 +172,7 @@ export class InfStatement extends Entity implements InfEntity {
 }
 
 export interface InfStatementRelations {
+  entity_version_project_rels?: ProInfoProjRel[];
   subject_resource?: InfResource;
   subject_digital?: DatDigital;
   subject_chunk?: DatChunk;
@@ -132,3 +188,5 @@ export interface InfStatementRelations {
 }
 
 
+
+export type InfStatementWithRelations = InfStatement & InfStatementRelations;

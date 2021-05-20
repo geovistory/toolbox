@@ -14,65 +14,7 @@ import { ActionResultObservable, LoadActionMeta, LoadByPkAndVersionActionMeta, S
 
 type Payload = ProInfoProjRelSlice;
 
-// export class ProProjectActionFactory extends SchemaActionsFactory<Payload, ProProject> {
 
-//   // Suffixes of load action types
-//   // static readonly OF_ACCOUNT = 'OF_ACCOUNT';
-//   // static readonly LOAD_BASICS = 'LOAD_BASICS';
-
-//   // loadOfAccount: (pkProject) => ActionResultObservable<ProProject>;
-
-//   // /**
-//   //  * loads the ProProject and the default InfLanguage
-//   //  */
-//   // loadBasics: (pkProject) => ActionResultObservable<ProProject>;
-
-//   // constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
-
-//   // createActions(): ProProjectActionFactory {
-//   //   Object.assign(this, this.createCrudActions(proRoot, 'project'))
-
-//   //   this.loadOfAccount = (pkProject: number) => {
-//   //     const addPending = U.uuid()
-//   //     const action: FluxStandardAction<Payload, LoadActionMeta> = {
-//   //       type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProProjectActionFactory.OF_ACCOUNT,
-//   //       meta: {
-//   //         addPending,
-//   //         pk: pkProject
-//   //       },
-//   //       payload: null,
-//   //     };
-//   //     this.ngRedux.dispatch(action)
-//   //     return {
-//   //       pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-//   //       resolved$: this.ngRedux.select<SucceedActionMeta<ProProject>>(['resolved', addPending]).pipe(filter(x => !!x)),
-//   //       key: addPending
-//   //     };
-//   //   }
-
-
-//   //   this.loadBasics = (pkProject: number) => {
-//   //     const addPending = U.uuid()
-//   //     const action: FluxStandardAction<Payload, LoadActionMeta> = {
-//   //       type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProProjectActionFactory.LOAD_BASICS,
-//   //       meta: {
-//   //         addPending,
-//   //         pk: pkProject
-//   //       },
-//   //       payload: null,
-//   //     };
-//   //     this.ngRedux.dispatch(action)
-//   //     return {
-//   //       pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-//   //       resolved$: this.ngRedux.select<SucceedActionMeta<ProProject>>(['resolved', addPending]).pipe(filter(x => !!x)),
-//   //       key: addPending
-//   //     };
-//   //   }
-
-
-//   //   return this;
-//   // }
-// }
 
 export interface MarkStatementAsFavoriteActionMeta {
   addPending: string,

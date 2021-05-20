@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {ModelDefinition} from '@loopback/repository';
 import {keys} from 'lodash';
 import {equals, groupBy, uniq} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
-import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfResource, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
+import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
 import {GvFieldTargets} from '../../models/field/gv-field-targets';
 import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-positive-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
@@ -58,7 +57,6 @@ type Config = {
 type ModelToFindClassConfig = {
   [key in GvTargetTypeKey]: StatementTargetMeta[]
 }
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 // type GvFieldPageWithoutFkSource = PartialBy<GvFieldPage, 'source'>
 export class QFieldPage extends SqlBuilderLb4Models {
@@ -83,6 +81,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         resource: [],
       },
       dat: {
+        namespace:[],
         class_column_mapping: [],
         text_property: [],
         chunk: [],
@@ -222,15 +221,15 @@ export class QFieldPage extends SqlBuilderLb4Models {
         objectWith: this.objectWiths.schemas.war.entity_preview
       },
     }
-    const configResource: StatementTargetMeta = {
-      modelDefinition: InfResource.definition,
-      modelPk: 'pk_entity',
-      statementObjectFk: 'fk_object_info',
-      statementSubjectFk: 'fk_subject_info',
-      tableName: 'information.resource',
-      classFk: 'fk_class',
-      objectWith: this.objectWiths.schemas.inf.resource
-    }
+    // const configResource: StatementTargetMeta = {
+    //   modelDefinition: InfResource.definition,
+    //   modelPk: 'pk_entity',
+    //   statementObjectFk: 'fk_object_info',
+    //   statementSubjectFk: 'fk_subject_info',
+    //   tableName: 'information.resource',
+    //   classFk: 'fk_class',
+    //   objectWith: this.objectWiths.schemas.inf.resource
+    // }
 
     this.tableToFindOriginalItems = {
       appellation: [this.config.appellation],
@@ -243,12 +242,13 @@ export class QFieldPage extends SqlBuilderLb4Models {
       timePrimitive: [this.config.timePrimitive],
       typeItem: [
         // list all models that can be represented by typeItem
-        configResource
+        this.config.nestedResource,
+        // configResource
       ],
       entityPreview: [
         // list all models that can be represented by entityPreview
         this.config.nestedResource,
-        configResource
+        // configResource
       ],
     }
   }
@@ -532,6 +532,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         -- GvSubfieldPageInfo as objects
         ${twSubfieldPages}  AS (
           SELECT jsonb_build_object (
+            'validFor', now(),
             'page', '${JSON.stringify(page)}'::json,
             'count', COALESCE(count.count,0),
             'paginatedStatements', COALESCE(paginatedStatements.obj, '[]'::json)

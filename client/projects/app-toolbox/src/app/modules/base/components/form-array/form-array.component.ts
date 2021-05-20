@@ -4,9 +4,9 @@ import { Field } from '@kleiolab/lib-queries';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
+import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
-import { FgTextPropertyComponent } from '../fg-text-property/fg-text-property.component';
 import { ChildComponents } from '../form-control/form-control.component';
 import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormChildFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
 
@@ -220,12 +220,12 @@ export class FormArrayComponent implements OnInit, OnDestroy {
       (childFactory as LocalFormChildFactory).childComponent$
         .pipe(first())
         .subscribe((childComponent) => {
-          if (childComponent.FgTextPropertyComponent) {
-            (childComponent.FgTextPropertyComponent as FgTextPropertyComponent).focusOnCtrlText()
-          } else if (childComponent.FgPlaceComponent) {
+          if (childComponent.FgPlaceComponent) {
             (childComponent.FgPlaceComponent as FgPlaceComponent).focusOnCtrlLat()
           } else if (childComponent.FgLangStringComponent) {
             (childComponent.FgLangStringComponent as FgLangStringComponent).focusOnCtrlText()
+          } else if (childComponent.FgDimensionComponent) {
+            (childComponent.FgDimensionComponent as FgDimensionComponent).focusOnCtrlNumber()
           }
         })
     }
