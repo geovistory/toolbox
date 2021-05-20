@@ -18,6 +18,7 @@ import { FactoidControllerService } from './api/factoidController.service';
 import { ImportTableControllerService } from './api/importTableController.service';
 import { InfLanguageService } from './api/infLanguage.service';
 import { InfPlaceService } from './api/infPlace.service';
+import { LanguagesService } from './api/languages.service';
 import { OntoMeControllerService } from './api/ontoMeController.service';
 import { PingControllerService } from './api/pingController.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';

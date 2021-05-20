@@ -1,19 +1,20 @@
 'use strict';
 
 module.exports = function(InfLanguage) {
-  InfLanguage.queryByString = function(searchstring, cb) {
-    let sql_stmt;
-    let params = [];
+    // Todo remove
+    InfLanguage.queryByString = function(searchstring, cb) {
+        let sql_stmt;
+        let params = [];
 
-    if (!searchstring) {
-      sql_stmt = `
+        if (!searchstring) {
+            sql_stmt = `
         select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
         FROM information."language"
         WHERE iso6391 IN ('en','de','fr','nl','it','es')
         ORDER BY POSITION(iso6391 IN 'en, de, fr, nl, it, es');
         `;
-    } else {
-      sql_stmt = `
+        } else {
+            sql_stmt = `
       select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
       from (
         SELECT
@@ -27,23 +28,23 @@ module.exports = function(InfLanguage) {
         LIMIT 6;
         `;
 
-      params.push(searchstring + ':*');
-    }
+            params.push(searchstring + ':*');
+        }
 
-    const connector = InfLanguage.dataSource.connector;
+        const connector = InfLanguage.dataSource.connector;
 
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      // console.log(resultObjects);
-      var languages = [];
+        connector.execute(sql_stmt, params, (err, resultObjects) => {
+            // console.log(resultObjects);
+            var languages = [];
 
-      if (resultObjects) {
-        languages = resultObjects.map(languageRaw => {
-          const languageData = connector.fromRow('InfLanguage', languageRaw);
-          return new InfLanguage(languageData);
+            if (resultObjects) {
+                languages = resultObjects.map((languageRaw) => {
+                    const languageData = connector.fromRow('InfLanguage', languageRaw);
+                    return new InfLanguage(languageData);
+                });
+            }
+
+            cb(null, languages);
         });
-      }
-
-      cb(null, languages);
-    });
-  };
+    };
 };

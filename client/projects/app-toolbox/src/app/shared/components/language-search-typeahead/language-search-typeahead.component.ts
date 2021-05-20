@@ -1,9 +1,8 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { InfLanguageApi } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap, catchError, mergeMap, merge } from 'rxjs/operators';
+import { InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, merge, switchMap, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -20,7 +19,7 @@ import { debounceTime, distinctUntilChanged, tap, switchMap, catchError, mergeMa
 })
 export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAccessor {
 
-  //Language search
+  // Language search
   public languageSearch: any;
   searching = false;
   searchFailed = false;
@@ -44,7 +43,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
   constructor(
     private fb: FormBuilder,
-    private languageApi: InfLanguageApi
+    private languageApi: LanguagesService
   ) {
     function validateLanguage(c: FormControl) {
 
@@ -95,7 +94,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
       distinctUntilChanged(),
       tap(() => this.searching = true),
       switchMap(term =>
-        this.languageApi.queryByString(term).pipe(
+        this.languageApi.findLanguagesControllerSearchInLanguages(term).pipe(
           tap(() => this.searchFailed = false),
           catchError(() => {
             this.searchFailed = true;
@@ -110,8 +109,8 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
   private validateAndEmit() {
     if (this.onChangeRegistered) {
       if (this.formGroup.valid) {
-        this.languageChange.emit(new InfLanguage(this.formGroup.value.language));
-        this.onChange(new InfLanguage(this.formGroup.value.language));
+        this.languageChange.emit(this.formGroup.value.language);
+        this.onChange(this.formGroup.value.language);
       } else {
         this.languageChange.emit();
         this.onChange(null);

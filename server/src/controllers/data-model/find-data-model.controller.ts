@@ -8,7 +8,7 @@ import {Roles} from '../../components/authorization';
 import {QDfhLabelsOfProject} from '../../components/query/q-dfh-labels-of-project';
 import {QDfhProfilesOfProject} from '../../components/query/q-dfh-profiles-of-project';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {DfhClass, DfhProperty} from '../../models';
+import {DfhClass} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {SysConfigController} from '../sys-config.controller';

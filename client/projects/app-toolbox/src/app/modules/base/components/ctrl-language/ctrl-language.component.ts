@@ -1,12 +1,11 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild, ElementRef } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { MatAutocompleteTrigger, MatInput } from '@angular/material';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { Subject, BehaviorSubject, of, Observable } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguageApi } from '@kleiolab/lib-sdk-lb3';
-import { MatInput, MatAutocompleteTrigger } from '@angular/material';
+import { InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 export type CtrlLanguageModel = InfLanguage;
 
@@ -17,6 +16,50 @@ export type CtrlLanguageModel = InfLanguage;
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlLanguageComponent }],
 })
 export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlLanguageModel> {
+
+  get empty() {
+    return this.model ? false : true;
+  }
+
+  get shouldLabelFloat() { return this.focused || !this.empty; }
+
+  @Input()
+  get placeholder(): string { return this._placeholder; }
+  set placeholder(value: string) {
+    this._placeholder = value;
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value: boolean) {
+    this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value: boolean) {
+    this._disabled = coerceBooleanProperty(value);
+
+    // TODO implement some disable state
+    // this._disabled ? this.parts.disable() : this.parts.enable();
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get value(): CtrlLanguageModel | null {
+    return this.model;
+  }
+  set value(value: CtrlLanguageModel | null) {
+    if (!value || !value.pk_entity) {
+      this.model = undefined
+    } else {
+      this.model = value;
+    }
+
+    this.onChange(this.model)
+  }
   static nextId = 0;
 
   model: CtrlLanguageModel;
@@ -35,55 +78,9 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   controlType = 'ctrl-language';
   id = `ctrl-language-${CtrlLanguageComponent.nextId++}`;
   describedBy = '';
-  onChange = (_: any) => { };
-  onTouched = () => { };
-
-  get empty() {
-    return this.model ? false : true;
-  }
-
-  get shouldLabelFloat() { return this.focused || !this.empty; }
-
-  @Input()
-  get placeholder(): string { return this._placeholder; }
-  set placeholder(value: string) {
-    this._placeholder = value;
-    this.stateChanges.next();
-  }
   private _placeholder: string;
-
-  @Input()
-  get required(): boolean { return this._required; }
-  set required(value: boolean) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
   private _required = false;
-
-  @Input()
-  get disabled(): boolean { return this._disabled; }
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-
-    // TODO implement some disable state
-    // this._disabled ? this.parts.disable() : this.parts.enable();
-    this.stateChanges.next();
-  }
   private _disabled = false;
-
-  @Input()
-  get value(): CtrlLanguageModel | null {
-    return this.model;
-  }
-  set value(value: CtrlLanguageModel | null) {
-    if (!value || !value.pk_entity) {
-      this.model = undefined
-    } else {
-      this.model = value;
-    }
-
-    this.onChange(this.model)
-  }
 
 
   formControl = new FormControl(null);
@@ -91,10 +88,12 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   searching = false;
   searchFailed = false
   options$: Observable<InfLanguage[]>
+  onChange = (_: any) => { };
+  onTouched = () => { };
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    private languageApi: InfLanguageApi
+    private languageApi: LanguagesService,
 
   ) {
     if (this.ngControl != null) {
@@ -110,7 +109,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
       distinctUntilChanged(),
       tap(() => this.searching = true),
       switchMap(term =>
-        this.languageApi.queryByString(term).pipe(
+        this.languageApi.findLanguagesControllerSearchInLanguages(term).pipe(
           tap(() => this.searchFailed = false),
           catchError(() => {
             this.searchFailed = true;
@@ -124,7 +123,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   searchTermChanged(term) {
     this.searchTerm$.next(term)
   }
-  
+
   displayFn(lang?: InfLanguage): string | undefined {
     return lang ? lang.notes : undefined;
   }
