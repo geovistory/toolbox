@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
@@ -95,8 +94,6 @@ export class FindProjectDataController {
 
     return new QChunksOfDigital(this.datasource).query(pkProject, pkDigital)
   }
-
-
 
 
 

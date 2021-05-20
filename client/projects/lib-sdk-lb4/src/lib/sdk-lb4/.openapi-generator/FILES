@@ -19,6 +19,7 @@ api/factoidController.service.ts
 api/importTableController.service.ts
 api/infLanguage.service.ts
 api/infPlace.service.ts
+api/languages.service.ts
 api/ontoMeController.service.ts
 api/pingController.service.ts
 api/proClassFieldConfig.service.ts
