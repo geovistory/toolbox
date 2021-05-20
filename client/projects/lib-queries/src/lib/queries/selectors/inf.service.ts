@@ -1,12 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
-import { ByPk, EntityModelAndClass, getFromTo, IAppState, IndexStatementByObject, indexStatementByObject, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, infDefinitions, infRoot, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldId, GvFieldPage } from '@kleiolab/lib-sdk-lb4';
+import { ByPk, EntityModelAndClass, getFromTo, IAppState, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
+import { GvFieldId, GvFieldPage, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { equals } from 'ramda';
 import { Observable, of, pipe } from 'rxjs';
-import { filter, first, map, switchMap, throttleTime } from 'rxjs/operators';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 
 class Selector {
@@ -106,13 +105,15 @@ class Selector {
               if (items.hasOwnProperty(k)) {
                 const item = items[k];
                 proRelsAndKey$.push(
-                  this.ngRedux.select<ProInfoProjRel>(['pro', 'info_proj_rel', 'by_fk_project__fk_entity', pkProject + '_' + getFkEntity(item)])
+                  this.ngRedux.select<ProInfoProjRel>(
+                    ['pro', 'info_proj_rel', 'by_fk_project__fk_entity', pkProject + '_' + getFkEntity(item)]
+                  )
                     .pipe(map(rel => ({ key: k, rel })))
                 )
               }
             }
             return combineLatestOrEmpty(proRelsAndKey$).pipe(
-              throttleTime(0),
+              // throttleTime(0),
               map(proRels => {
                 const itemsInProject: ByPk<M> = {};
                 for (let i = 0; i < proRels.length; i++) {
@@ -138,7 +139,9 @@ class Selector {
         if (!item) return of(undefined);
         return pkProject$.pipe(
           switchMap(pkProject => {
-            const proRel$ = this.ngRedux.select<ProInfoProjRel>(['pro', 'info_proj_rel', 'by_fk_project__fk_entity', pkProject + '_' + getFkEntity(item)])
+            const proRel$ = this.ngRedux.select<ProInfoProjRel>(
+              ['pro', 'info_proj_rel', 'by_fk_project__fk_entity', pkProject + '_' + getFkEntity(item)]
+            )
             return proRel$.pipe(
               // filter(proRel => proRel.is_in_project == true),
               map((proRel) => proRel && proRel.is_in_project == true ? item : undefined)
@@ -150,9 +153,9 @@ class Selector {
   }
 }
 
-class InfPersistentItemSelections extends Selector {
-  private _by_pk_entity$ = this.selector<InfPersistentItem>('by_pk_entity')
-  private _by_fk_class$ = this.selector<ByPk<InfPersistentItem>>('by_fk_class')
+class InfResourceSelections extends Selector {
+  _by_pk_entity$ = this.selector<InfResource>('by_pk_entity')
+  _by_fk_class$ = this.selector<ByPk<InfResource>>('by_fk_class')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,
@@ -178,24 +181,6 @@ class InfPersistentItemSelections extends Selector {
   }
 }
 
-class InfTemporalEntitySelections extends Selector {
-  _by_pk_entity$ = this.selector<InfTemporalEntity>('by_pk_entity')
-  // public by_fk_class$ = this.selector<ByPk<InfTemporalEntity>>('by_fk_class')
-
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public pkProject$: Observable<number | string>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, pkProject$, configs, model) }
-
-  by_pk_entity_key$(key: string | number, ofProject = true) {
-    const selection$ = this._by_pk_entity$.key(key)
-    if (ofProject) return selection$.pipe(this.pipeItemInProject(this.pkProject$, (i) => i.pk_entity))
-    return selection$
-  }
-}
-
 
 class InfStatementSelections extends Selector {
 
@@ -217,7 +202,7 @@ class InfStatementSelections extends Selector {
     return selection$
   }
 
-  by_subject$(foreignKeys: IndexStatementBySubject, ofProject = true): Observable<InfStatement[]> {
+  by_subject$(foreignKeys: InfStatementSubjectFks, ofProject = true): Observable<InfStatement[]> {
     const key = indexStatementBySubject(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_subject').key(key)
     if (ofProject) {
@@ -231,12 +216,12 @@ class InfStatementSelections extends Selector {
     );
   }
 
-  by_subject_and_property$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<InfStatement[]> {
+  by_subject_and_property$(foreignKeys: InfStatementSubjectAndProperyFks, ofProject = true): Observable<InfStatement[]> {
     return this.by_subject_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(statementIdx => values(statementIdx))
     )
   }
-  by_subject_and_property_indexed$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+  by_subject_and_property_indexed$(foreignKeys: InfStatementSubjectAndProperyFks, ofProject = true): Observable<ByPk<InfStatement>> {
     const key = indexStatementBySubjectProperty(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_subject+property').key(key)
     if (ofProject) {
@@ -245,7 +230,7 @@ class InfStatementSelections extends Selector {
     return selection$
   }
 
-  by_object$(foreignKeys: IndexStatementByObject, ofProject = true): Observable<InfStatement[]> {
+  by_object$(foreignKeys: InfStatementObjectFks, ofProject = true): Observable<InfStatement[]> {
     const key = indexStatementByObject(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_object').key(key)
     if (ofProject) {
@@ -259,13 +244,13 @@ class InfStatementSelections extends Selector {
     );
   }
 
-  by_object_and_property$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<InfStatement[]> {
+  by_object_and_property$(foreignKeys: InfStatementObjectAndProperyFks, ofProject = true): Observable<InfStatement[]> {
     return this.by_object_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(statementIdx => values(statementIdx))
     )
   }
 
-  by_object_and_property_indexed$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+  by_object_and_property_indexed$(foreignKeys: InfStatementObjectAndProperyFks, ofProject = true): Observable<ByPk<InfStatement>> {
     const key = indexStatementByObjectProperty(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_object+property').key(key)
     if (ofProject) {
@@ -279,46 +264,6 @@ class InfStatementSelections extends Selector {
 }
 
 
-class InfTextPropertySelections extends Selector {
-  private _by_pk_entity$ = this.selector<InfTextProperty>('by_pk_entity')
-  private _by_fk_concerned_entity__fk_class_field$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity__fk_class_field')
-  private _by_fk_concerned_entity$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity')
-
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public pkProject$: Observable<number | string>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, pkProject$, configs, model) }
-
-  by_pk_entity_key$(key: string | number, ofProject = true) {
-    const selection$ = this._by_pk_entity$.key(key)
-    if (ofProject) return selection$.pipe(this.pipeItemInProject(this.pkProject$, (i) => i.pk_entity))
-    return selection$
-  }
-
-  by_fk_concerned_entity__fk_class_field_indexed$(key: string, ofProject = true): Observable<ByPk<InfTextProperty>> {
-    const selection$ = this._by_fk_concerned_entity__fk_class_field$.key(key)
-    if (ofProject) {
-      return selection$.pipe(
-        this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
-      )
-    }
-    return selection$
-  }
-
-
-  by_fk_concerned_entity_indexed$(key: string | number, ofProject = true): Observable<ByPk<InfTextProperty>> {
-    const selection$ = this._by_fk_concerned_entity$.key(key)
-    if (ofProject) {
-      return selection$.pipe(
-        this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
-      )
-    }
-    return selection$
-  }
-
-}
 
 
 class InfAppellationSelections extends Selector {
@@ -389,12 +334,10 @@ class InfDimensionSelections extends Selector {
 
 export class InfSelector {
 
-  persistent_item$ = new InfPersistentItemSelections(this.ngRedux, this.pkProject$, infDefinitions, 'persistent_item');
-  temporal_entity$ = new InfTemporalEntitySelections(this.ngRedux, this.pkProject$, infDefinitions, 'temporal_entity');
+  resource$ = new InfResourceSelections(this.ngRedux, this.pkProject$, infDefinitions, 'resource');
   statement$ = new InfStatementSelections(this.ngRedux, this.pkProject$, infDefinitions, 'statement');
   appellation$ = new InfAppellationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'appellation');
   place$ = new InfPlaceSelections(this.ngRedux, this.pkProject$, infDefinitions, 'place');
-  text_property$ = new InfTextPropertySelections(this.ngRedux, this.pkProject$, infDefinitions, 'text_property');
   lang_string$ = new InfLangStringSelections(this.ngRedux, this.pkProject$, infDefinitions, 'lang_string');
   time_primitive$ = new InfTimePrimitiveSelections(this.ngRedux, this.pkProject$, infDefinitions, 'time_primitive');
   language$ = new InfLanguageSelections(this.ngRedux, this.pkProject$, infDefinitions, 'language');

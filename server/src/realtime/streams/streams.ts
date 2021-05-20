@@ -1,5 +1,5 @@
 import {BehaviorSubject, Subject} from 'rxjs';
-import {StreamedEntityPreviews} from '../../controllers';
+import {WarFieldChange} from '../../models/war-field-change.model';
 
 /**
  * This class initializes streams
@@ -15,9 +15,15 @@ export class Streams {
   warEntityPreviewModificationTmsp$ = new Subject<string>()
 
   /**
-   * caches the streamed entity previews per project
+   * Observable of WarFieldChanges
    */
-  streamedEntityPreviews: {[pkProject: number]: StreamedEntityPreviews} = {}
+  warFieldChanges$ = new Subject<WarFieldChange>()
+
+
+  // /**
+  //  * caches the streamed entity previews per project
+  //  */
+  // streamedEntityPreviews: {[pkProject: number]: StreamedItems} = {}
 
   warehouseInitializing$ = new BehaviorSubject(false)
 

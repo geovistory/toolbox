@@ -4,8 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaObject } from '@kleiolab/lib-redux';
-import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldProperty } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, InfResource } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -69,7 +68,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
   classType$: Observable<string>;
 
-  initVal$: Observable<InfTemporalEntity | InfPersistentItem>
+  initVal$: Observable<InfResource>
 
   @ViewChild(FormCreateEntityComponent, { static: true }) createEntity: FormCreateEntityComponent;
 
@@ -85,7 +84,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.notInProjectBtnText = data.notInProjectBtnText
     this.notInProjectClickBehavior = data.notInProjectClickBehavior
 
-    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.temporal_entity || v.persistent_item : null))
+    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.resource : null))
 
     if (this.data.defaultSearch) this.searchString$.next(this.data.defaultSearch);
   }
@@ -149,7 +148,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onCreated(entity: InfPersistentItem | InfTemporalEntity) {
+  onCreated(entity: InfResource) {
     this.onCreateOrAdd({
       action: 'created',
       pkEntity: entity.pk_entity,

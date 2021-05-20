@@ -3,7 +3,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ClassAndTypePk, SysSelector } from '@kleiolab/lib-queries';
-import { IAppState, ProjectCrm, RootEpics } from '@kleiolab/lib-redux';
+import { IAppState, RootEpics } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -45,7 +45,6 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   selectedEntity$ = new BehaviorSubject<WarEntityPreview>(undefined);
 
   pkUiContextCreate = SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
-  crm$: Observable<ProjectCrm>;
   params$: Observable<Params>;
   pkClassesOfAddBtn$: Observable<number[]>
 

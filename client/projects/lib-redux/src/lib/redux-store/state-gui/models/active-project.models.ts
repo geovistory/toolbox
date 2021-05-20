@@ -1,10 +1,10 @@
-import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
-import { DfhProperty, InfLanguage, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { DatChunk, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
+import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { Types } from './active-project/types.models';
 import { EntityDetail } from './active-project/entity-detail';
-import { TabBase } from './active-project/tab-layout.models';
 import { ProjectSettingsData } from './active-project/project-settings-data.models';
+import { TabBase } from './active-project/tab-layout.models';
+import { Types } from './active-project/types.models';
 
 
 export interface ProjectPreview {
@@ -27,17 +27,14 @@ export interface EntityVersionsByPk<T> {
   [pk_entity: number]: VersionEntity<T>
 }
 
-export interface ChunkList { [pk_entity: number]: DatChunk }
-export interface PeItList { [pk_entity: number]: InfPersistentItem }
-export interface TeEnList { [pk_entity: number]: InfTemporalEntity }
-export interface PropertyList { [pk_entity: string]: DfhProperty; }
-export interface TypePeIt extends InfPersistentItem { fk_typed_class: number; } // TODO remove if replaced by TypePreview
-export interface TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
-export interface TypesByPk { [pk_entity: string]: TypePeIt; }
+// export interface PropertyList { [pk_entity: string]: DfhProperty; }
+// export interface TypePeIt extends InfResource { fk_typed_class: number; } // TODO remove if replaced by TypePreview
+// export interface TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
+// export interface TypesByPk { [pk_entity: string]: TypePeIt; }
 
-export interface TypePreview extends WarEntityPreview { fk_typed_class: number; }
-export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
-export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
+// export interface TypePreview extends WarEntityPreview { fk_typed_class: number; }
+// export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
+// export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
 // export interface ComQueryByPk { [key: string]: ProQuery }
 
 // export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
@@ -124,40 +121,6 @@ export interface ProjectDetail extends ProjectPreview {
    * Information Cache
    */
 
-  // inf?: Inf;
-
-  // // data unit previews
-  // entityPreviews?: EntityPreviewList;
-
-  // // types by pk class
-  // typesByClass?: TypesByClass;
-
-  // // types by pk_entity
-  // typesByPk?: TypesByPk;
-
-  // // data unit details for display in modal
-  // peItModals?: PeItDetailList;
-
-  // // chunk List
-  // chunks?: ChunkList;
-
-  // // InfPersistentItems with statements by pk_entity
-  // peItGraphs?: PeItList;
-
-  // // InfPersistentItems with statements by pk_entity
-  // teEnGraphs?: TeEnList;
-
-  // // ComQuery list by pk_entity
-  // comQueryVersionsByPk?: EntityVersionsByPk<ProQuery>;
-  // comQueryLoading?: boolean;
-  // comQueryVersionLoading?: { [key: string]: boolean };
-
-  // // ComVisual list by pk_entity
-  // comVisualVersionsByPk?: EntityVersionsByPk<ProVisual>;
-  // comVisualLoading?: boolean;
-  // comVisualVersionLoading?: boolean;
-
-
   /******************************************************************
    * Layout – Tabs
    */
@@ -235,10 +198,6 @@ export interface ProjectDetail extends ProjectPreview {
 
 }
 
-export interface ProjectCrm {
-  classes?: ClassConfigList;
-  properties?: PropertyList
-}
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig }
 

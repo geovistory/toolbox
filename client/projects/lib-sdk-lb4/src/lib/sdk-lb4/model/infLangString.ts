@@ -9,12 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { QuillDoc } from './quillDoc';
 
 
 export interface InfLangString { 
     pk_entity?: number;
     fk_class: number;
-    quill_doc?: object;
+    quill_doc?: QuillDoc;
     string?: string;
     fk_language?: number;
 }

@@ -2,10 +2,9 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { ClassAndTypePk } from "@kleiolab/lib-queries";
+import { ClassAndTypePk, ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaObject } from '@kleiolab/lib-redux';
-import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
+import { InfResource } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -134,7 +133,7 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onCreated(entity: InfPersistentItem | InfTemporalEntity) {
+  onCreated(entity: InfResource) {
     this.onCreateOrAdd({
       action: 'created',
       pkEntity: entity.pk_entity,

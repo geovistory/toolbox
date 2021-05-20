@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {ProInfoProjRel} from '@kleiolab/lib-sdk-lb4';
-import {InfPersistentItemMock} from './InfPersistentItemMock';
+import {InfResourceMock} from './InfResourceMock';
 import {InfStatementMock} from './InfStatementMock';
-import {InfTemporalEntityMock} from './InfTemporalEntityMock';
 import {ProProjectMock} from './ProProjectMock';
 import {PubAccountMock} from './PubAccountMock';
 import {OmitEntity} from './local-model.helpers';
@@ -15,7 +14,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_PERSON_1: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2001,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfPersistentItemMock.PERSON_1.pk_entity,
+    fk_entity: InfResourceMock.PERSON_1.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -23,7 +22,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_NAMING_1: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2002,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfTemporalEntityMock.NAMING_1.pk_entity,
+    fk_entity: InfResourceMock.NAMING_1.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -47,7 +46,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_MADRID: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2005,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfPersistentItemMock.GEO_PLACE_MADRID.pk_entity,
+    fk_entity: InfResourceMock.GEO_PLACE_MADRID.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -55,7 +54,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_CITY_TYPE: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2006,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
+    fk_entity: InfResourceMock.GEO_PLACE_TYPE_CITY.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -63,7 +62,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_NAMING_CITY: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2007,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfTemporalEntityMock.NAMING_1_CITY.pk_entity,
+    fk_entity: InfResourceMock.NAMING_1_CITY.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -95,7 +94,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_SHIP_VOYAGE: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2011,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_entity: InfResourceMock.SHIP_VOYAGE.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -172,7 +171,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_BIRTH: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2020,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfTemporalEntityMock.BIRTH_1.pk_entity,
+    fk_entity: InfResourceMock.BIRTH_1.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -180,7 +179,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_UNION_1: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2021,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfTemporalEntityMock.UNION_1.pk_entity,
+    fk_entity: InfResourceMock.UNION_1.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -197,7 +196,7 @@ export class ProInfoProjRelMock {
   static readonly SANDBOX_ALBERT_IV: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2023,
     fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
-    fk_entity: InfPersistentItemMock.ALBERT_IV.pk_entity,
+    fk_entity: InfResourceMock.ALBERT_IV.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -213,7 +212,7 @@ export class ProInfoProjRelMock {
   static readonly SANDBOX_RUDOLF: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2025,
     fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
-    fk_entity: InfPersistentItemMock.RUDOLF.pk_entity,
+    fk_entity: InfResourceMock.RUDOLF.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -238,7 +237,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_ALBERT_IV: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2028,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfPersistentItemMock.ALBERT_IV.pk_entity,
+    fk_entity: InfResourceMock.ALBERT_IV.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
@@ -288,7 +287,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_MANIF_SINGLETON_THE_MURDERER: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2034,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
+    fk_entity: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })

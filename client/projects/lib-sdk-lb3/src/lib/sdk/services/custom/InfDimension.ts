@@ -1,19 +1,11 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
-import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { InfDimension } from '../../models/InfDimension';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Optional } from '@angular/core';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { InfStatement } from '../../models/InfStatement';
-import { InfPersistentItem } from '../../models/InfPersistentItem';
+import { LoopBackAuth } from '../core/auth.service';
+import { BaseLoopBackApi } from '../core/base.service';
+import { ErrorHandler } from '../core/error.service';
+import { SDKModels } from './SDKModels';
 
 
 /**
@@ -29,7 +21,7 @@ export class InfDimensionApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**

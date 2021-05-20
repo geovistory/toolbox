@@ -140,7 +140,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     public p: ActiveProjectService,
     private activatedRoute: ActivatedRoute,
     private sdkStorage: SDKStorage,
-    private basic: BasicService // this initiates the question if geolocalization is allowed
+    private basic: BasicService, // this initiates the question if geolocalization is allowed
   ) {
 
     const id = this.activatedRoute.snapshot.params['pkActiveProject'];
@@ -203,7 +203,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     // DEV: For development of a component in a specific Tab uncomment and modify the following
     // this.p.addTableTab(2001)
     // this.p.addTableTab(100011)
-    //test
+    // test
   }
 
   trackByFn(index, item) {

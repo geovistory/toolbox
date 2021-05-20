@@ -9,7 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfLangStringWithRelations } from './infLangStringWithRelations';
+import { InfAppellationWithRelations } from './infAppellationWithRelations';
+import { InfResourceWithRelations } from './infResourceWithRelations';
 import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
+import { InfPlaceWithRelations } from './infPlaceWithRelations';
+import { DatDigitalWithRelations } from './datDigitalWithRelations';
+import { InfTimePrimitiveWithRelations } from './infTimePrimitiveWithRelations';
+import { InfDimensionWithRelations } from './infDimensionWithRelations';
+import { InfLanguageWithRelations } from './infLanguageWithRelations';
+import { DatChunkWithRelations } from './datChunkWithRelations';
 
 
 /**
@@ -20,7 +29,7 @@ export interface InfStatementWithRelations {
     fk_subject_info?: number;
     fk_subject_data?: number;
     fk_subject_tables_cell?: number;
-    fk_subject_tables_row?: string;
+    fk_subject_tables_row?: number;
     fk_property?: number;
     fk_property_of_property?: number;
     fk_object_info?: number;
@@ -31,5 +40,17 @@ export interface InfStatementWithRelations {
     is_standard_in_project_count?: number;
     community_favorite_calendar?: string;
     entity_version_project_rels?: Array<ProInfoProjRelWithRelations>;
+    subject_resource?: InfResourceWithRelations;
+    subject_chunk?: DatChunkWithRelations;
+    subject_statement?: InfStatementWithRelations;
+    subject_digital?: DatDigitalWithRelations;
+    object_resource?: InfResourceWithRelations;
+    object_appellation?: InfAppellationWithRelations;
+    object_time_primitive?: InfTimePrimitiveWithRelations;
+    object_language?: InfLanguageWithRelations;
+    object_lang_string?: InfLangStringWithRelations;
+    object_dimension?: InfDimensionWithRelations;
+    object_place?: InfPlaceWithRelations;
+    object_chunk?: DatChunkWithRelations;
 }
 

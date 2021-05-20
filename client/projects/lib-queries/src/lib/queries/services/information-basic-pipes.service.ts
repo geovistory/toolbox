@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IconType } from '@kleiolab/lib-redux';
-import { InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { InfStatement, InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { CalendarType, Granularity, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, merge, Observable, pipe } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
@@ -117,11 +116,11 @@ export class InformationBasicPipesService {
    */
   pipeClassOfEntity(pkEntity: number): Observable<number> {
     return merge(
-      this.s.inf$.persistent_item$.by_pk_entity_key$(pkEntity).pipe(
+      this.s.inf$.resource$.by_pk_entity_key$(pkEntity).pipe(
         filter(e => !!e),
         map(e => e.fk_class)
       ),
-      this.s.inf$.temporal_entity$.by_pk_entity_key$(pkEntity).pipe(
+      this.s.inf$.resource$.by_pk_entity_key$(pkEntity).pipe(
         filter(e => !!e),
         map(e => e.fk_class)
       )
@@ -132,7 +131,7 @@ export class InformationBasicPipesService {
    * Pipes distinct fk_classes of the given persistent items
    */
   pipeClassesOfPersistentItems(pkEntities: number[]): Observable<number[]> {
-    return this.s.inf$.persistent_item$.by_pk_entity_all$().pipe(
+    return this.s.inf$.resource$.by_pk_entity_all$().pipe(
       map((peIts) => {
         if (!pkEntities || pkEntities.length === 0) {
           return []
@@ -160,7 +159,7 @@ export class InformationBasicPipesService {
    * get array of pks of persistent items of a specific class
    */
   pipePersistentItemPksByClass(pkClass): Observable<number[]> {
-    return this.s.inf$.persistent_item$.by_fk_class_key$(pkClass).pipe(
+    return this.s.inf$.resource$.by_fk_class_key$(pkClass).pipe(
       map(ob => {
         if (ob) return Object.keys(ob).map(k => parseInt(k, 10));
         return []

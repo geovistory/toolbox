@@ -1,7 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ClassAndTypePk, ConfigurationPipesService, Field, FieldTargetClass } from '@kleiolab/lib-queries';
-import { InfStatement, InfTemporalEntityApi } from '@kleiolab/lib-sdk-lb3';
+import { ReduxMainService } from '@kleiolab/lib-redux';
+import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -51,8 +52,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<AddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddDialogData,
-    public teEnApi: InfTemporalEntityApi,
-    public paginationApi: SubfieldPageControllerService
+    public paginationApi: SubfieldPageControllerService,
+    private dataService: ReduxMainService
   ) {
 
     this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
@@ -141,9 +142,9 @@ export class AddDialogComponent implements OnInit, OnDestroy {
       .subscribe(([pkProject, model]) => {
 
         // create api call for upserting the statement
-        const obs$: Observable<any>[] = [this.p.inf.statement.upsert([r], pkProject).resolved$.pipe(first(x => !!x))]
+        const obs$: Observable<any>[] = [this.dataService.upsertInfStatementsWithRelations(pkProject, [r])]
 
-        if (!isInProject && model == 'temporal_entity') {
+        if (!isInProject && model == 'resource') {
           // crate api call for adding teEnToProject
 
 

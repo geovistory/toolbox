@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -14,65 +14,7 @@ import { ActionResultObservable, LoadActionMeta, LoadByPkAndVersionActionMeta, S
 
 type Payload = ProInfoProjRelSlice;
 
-export class ProProjectActionFactory extends SchemaActionsFactory<Payload, ProProject> {
 
-  // Suffixes of load action types
-  static readonly OF_ACCOUNT = 'OF_ACCOUNT';
-  static readonly LOAD_BASICS = 'LOAD_BASICS';
-
-  loadOfAccount: (pkProject) => ActionResultObservable<ProProject>;
-
-  /**
-   * loads the ProProject and the default InfLanguage
-   */
-  loadBasics: (pkProject) => ActionResultObservable<ProProject>;
-
-  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
-
-  createActions(): ProProjectActionFactory {
-    Object.assign(this, this.createCrudActions(proRoot, 'project'))
-
-    this.loadOfAccount = (pkProject: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProProjectActionFactory.OF_ACCOUNT,
-        meta: {
-          addPending,
-          pk: pkProject
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<ProProject>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
-
-
-    this.loadBasics = (pkProject: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProProjectActionFactory.LOAD_BASICS,
-        meta: {
-          addPending,
-          pk: pkProject
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<ProProject>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
-
-
-    return this;
-  }
-}
 
 export interface MarkStatementAsFavoriteActionMeta {
   addPending: string,
@@ -290,48 +232,14 @@ export class ProAnalysisActionFactory extends SchemaActionsFactory<ProAnalysisSl
   }
 }
 
-// export class ProTableConfigFactory extends StandardActionsFactory<Payload, ProTableConfig> {
-
-//   // Suffixes of load action types
-//   // static readonly BY_PK = 'BY_PK';
-//   static readonly BY_FK_DIGITAL = 'BY_FK_DIGITAL';
-
-//   // loadById: (pkProject: number, pkEntity: number, version: number) => ActionResultObservable<ProTableConfig>;
-//   loadByDigital: (fkDigital: number) => ActionResultObservable<ProTableConfig>;
-
-//   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
-
-//   createActions(): ProTableConfigFactory {
-//     Object.assign(this, this.createCrudActions(proRoot, 'table_config'))
-
-//     this.loadByDigital = (fkDigital: number) => {
-//       const addPending = U.uuid()
-//       const action: FluxStandardAction<Payload, LoadActionMeta> = {
-//         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProTableConfigFactory.BY_FK_DIGITAL,
-//         meta: {
-//           addPending,
-//           pk: fkDigital
-//         },
-//         payload: null,
-//       };
-//       this.ngRedux.dispatch(action)
-//       return {
-//         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-//         resolved$: this.ngRedux.select<SucceedActionMeta<ProTableConfig>>(['resolved', addPending]).pipe(filter(x => !!x)),
-//         key: addPending
-//       };
-//     }
-
-//     return this;
-//   }
-// }
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProActions {
-  project = new ProProjectActionFactory(this.ngRedux).createActions()
+  // project = new ProProjectActionFactory(this.ngRedux).createActions()
+  project = new SchemaActionsFactory(this.ngRedux).createCrudActions(proRoot, 'project')
   info_proj_rel = new ProInfoProjRelActionFactory(this.ngRedux).createActions()
   text_property = new ProTextPropertyActionFactory(this.ngRedux).createActions()
   dfh_class_proj_rel = new ProDfhClassProjRelActionFactory(this.ngRedux).createActions()

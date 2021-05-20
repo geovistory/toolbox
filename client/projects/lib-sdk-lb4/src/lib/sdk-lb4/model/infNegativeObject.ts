@@ -13,8 +13,7 @@ import { PkEntity } from './pkEntity';
 
 
 export interface InfNegativeObject { 
-    persistent_item?: Array<PkEntity>;
-    temporal_entity?: Array<PkEntity>;
+    resource?: Array<PkEntity>;
     statement?: Array<PkEntity>;
     place?: Array<PkEntity>;
     language?: Array<PkEntity>;

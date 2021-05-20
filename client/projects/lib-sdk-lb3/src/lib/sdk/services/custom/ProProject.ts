@@ -1,23 +1,13 @@
 /* tslint:disable */
-import { Injectable, Inject, Optional } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SDKModels } from './SDKModels';
-import { BaseLoopBackApi } from '../core/base.service';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { Observable } from 'rxjs';
 import { LoopBackConfig } from '../../lb.config';
-import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
-import { ErrorHandler } from '../core/error.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ProProject } from '../../models/ProProject';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
-import { PubAccount } from '../../models/PubAccount';
-import { ProTextProperty } from '../../models/ProTextProperty';
-import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { InfLanguage } from '../../models/InfLanguage';
-import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { DatNamespace } from '../../models/DatNamespace';
+import { LoopBackAuth } from '../core/auth.service';
+import { BaseLoopBackApi } from '../core/base.service';
+import { ErrorHandler } from '../core/error.service';
+import { SDKModels } from './SDKModels';
 
 
 /**
@@ -33,7 +23,7 @@ export class ProProjectApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**
@@ -53,7 +43,7 @@ export class ProProjectApi extends BaseLoopBackApi {
   public ofAccount(accountId: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProProjects/of-account";
+      "/ProProjects/of-account";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -89,7 +79,7 @@ export class ProProjectApi extends BaseLoopBackApi {
   public createWithLabelAndDescription(accountId: any, pkLanguage: any, label: any, textProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProProjects/create-with-label-and-description";
+      "/ProProjects/create-with-label-and-description";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -118,7 +108,7 @@ export class ProProjectApi extends BaseLoopBackApi {
   public getBasics(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProProjects/get-basics";
+      "/ProProjects/get-basics";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

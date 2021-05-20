@@ -1,4 +1,4 @@
-import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
+import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
@@ -7,16 +7,14 @@ import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
-import { Types } from './api/types.models';
-import { typesReducer } from './api/types.reducer';
 
 interface TypeItem {
   pkEntity: number
@@ -25,23 +23,23 @@ interface TypeItem {
   definition?: string
 }
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: typesReducer
-})
+// @WithSubStore({
+//   basePathMethodName: 'getBasePath',
+//   localReducer: typesReducer
+// })
 @Component({
   selector: 'gv-types',
   templateUrl: './types.component.html',
   styleUrls: ['./types.component.css']
 })
-export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
+export class TypesComponent implements OnInit, OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // local store of this component
-  localStore: ObservableStore<Types>;
+  // localStore: ObservableStore<Types>;
 
   // path to the substore
   @Input() basePath;
@@ -69,7 +67,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     public i: InformationPipesService,
     private pag: PaginationService,
     public s: SchemaService,
-    private m: BaseModalsService
+    private m: BaseModalsService,
+    private dataService: ReduxMainService
   ) {
   }
 
@@ -79,7 +78,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   }
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
+    // this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
@@ -126,18 +125,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         typePks.map(pkEntity => {
           const scope: GvFieldPageScope = { inProject: pkProject };
           const source: GvFieldSourceEntity = { fkInfo: pkEntity }
-          // // load appellation
-          // this.pag.subfield.addPageLoader(
-          //   pkProject,
-          //   appeAndDefFields.appeField,
-          //   pkEntity,
-          //   1,
-          //   0,
-          //   this.destroy$,
-          //   scope
-          // )
-          // load definition
-          this.pag.subfield.addPageLoader(
+
+          this.pag.addPageLoaderFromField(
             pkProject,
             appeAndDefFields.definitionField,
             source,
@@ -217,7 +206,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         if (result.action === 'added' || result.action === 'created') {
           this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
             // this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
-            this.inf.persistent_item.loadMinimal(pkProject, result.pkEntity)
+            this.dataService.loadInfResource(result.pkEntity, pkProject)
           })
         } else if (result.action === 'alreadyInProjectClicked') {
           this.edit(result.pkEntity)

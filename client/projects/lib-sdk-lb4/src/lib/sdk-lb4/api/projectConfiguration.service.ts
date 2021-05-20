@@ -18,6 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { GetEntityLabelConfigResponse } from '../model/models';
+import { GvSchemaModifier } from '../model/models';
 import { ProEntityLabelConfig } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -92,10 +93,10 @@ export class ProjectConfigurationService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public projectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public projectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public projectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public projectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public createProjectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public createProjectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public createProjectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public createProjectConfigControllerDeleteEntityLabelConfig(pkProject?: number, fkClass?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (pkProject !== undefined && pkProject !== null) {
@@ -158,10 +159,10 @@ export class ProjectConfigurationService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public projectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GetEntityLabelConfigResponse>;
-    public projectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GetEntityLabelConfigResponse>>;
-    public projectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GetEntityLabelConfigResponse>>;
-    public projectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public createProjectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GetEntityLabelConfigResponse>;
+    public createProjectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GetEntityLabelConfigResponse>>;
+    public createProjectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GetEntityLabelConfigResponse>>;
+    public createProjectConfigControllerGetEntityLabelConfig(pkProject?: number, fkClass?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (pkProject !== undefined && pkProject !== null) {
@@ -224,10 +225,10 @@ export class ProjectConfigurationService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public projectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ProEntityLabelConfig>;
-    public projectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ProEntityLabelConfig>>;
-    public projectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ProEntityLabelConfig>>;
-    public projectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public createProjectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ProEntityLabelConfig>;
+    public createProjectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ProEntityLabelConfig>>;
+    public createProjectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ProEntityLabelConfig>>;
+    public createProjectConfigControllerPostEntityLabelConfig(proEntityLabelConfig?: ProEntityLabelConfig, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -274,6 +275,67 @@ export class ProjectConfigurationService {
         return this.httpClient.post<ProEntityLabelConfig>(`${this.configuration.basePath}/entity-label-config`,
             proEntityLabelConfig,
             {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public findProjectConfigControllerGetAllConfigsOfProject(pkProject?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public findProjectConfigControllerGetAllConfigsOfProject(pkProject?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public findProjectConfigControllerGetAllConfigsOfProject(pkProject?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public findProjectConfigControllerGetAllConfigsOfProject(pkProject?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<GvSchemaModifier>(`${this.configuration.basePath}/project-config/of-project`,
+            {
+                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

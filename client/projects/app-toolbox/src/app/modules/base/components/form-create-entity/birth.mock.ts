@@ -1,6 +1,6 @@
-import { InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
+import { InfResource } from '@kleiolab/lib-sdk-lb4/public-api';
 
-export const mockBirth: InfTemporalEntity = {
+export const mockBirth: InfResource = {
   outgoing_statements: [
     {
       'fk_property': 86,

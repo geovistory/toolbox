@@ -1,12 +1,12 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
-import { Subfield } from "@kleiolab/lib-queries";
-import { Field } from "@kleiolab/lib-queries";
-import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DfhConfig } from '@kleiolab/lib-config';
+import { Field } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
+import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 export interface RamListRemoveDialogData {
@@ -33,6 +33,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
   constructor(
     public t: PropertiesTreeService,
     public p: ActiveProjectService,
+    private dataService: ReduxMainService,
     public dialogRef: MatDialogRef<RamListRemoveDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RamListRemoveDialogData,
   ) {
@@ -51,7 +52,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
       this.p.pkProject$
     ).pipe(first()).subscribe(([references, pkProject]) => {
 
-      this.p.inf.statement.remove([this.data.statement, ...references], pkProject).resolved$
+      this.dataService.removeInfEntitiesFromProject([this.data.statement.pk_entity, ...references.map(r => r.pk_entity)], pkProject)
         .pipe(takeUntil(this.destroy$)).subscribe(
           res => {
             if (res) this.dialogRef.close()

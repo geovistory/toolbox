@@ -30,22 +30,17 @@ import { SourcesModule } from '../sources';
 import { ProjectsActions } from './api/projects.actions';
 import { RamFormComponent } from './components/ram-form/ram-form.component';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
-// import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
 import { ProjectDashboardComponent } from './containers/project-dashboard/project-dashboard.component';
 import { ProjectEditPanelComponent } from './containers/project-edit-panel/project-edit-panel.component';
 import { OnActivateTabDirective, ProjectEditComponent, TabBodyComponent } from './containers/project-edit/project-edit.component';
 import { ProjectListComponent } from './containers/project-list/project-list.component';
-// import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataAPIActions } from './containers/project-settings-data/api/project-settings-data.actions';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
-// import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
-import { TypesAPIActions } from './containers/types/api/types.actions';
-import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
@@ -113,8 +108,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectsActions,
     // ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
-    TypesAPIActions,
-    TypesAPIEpics,
     TypeEditFormAPIActions,
     TypeEditFormAPIEpics
   ],

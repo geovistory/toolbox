@@ -1,14 +1,21 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
 import { QuillDoc } from '../../../quill';
-import { takeUntil, filter, distinctUntilChanged, debounceTime, map, tap } from 'rxjs/operators';
 
-type CtrlModel = InfTextProperty
+interface CtrlModel {
+  fk_class?: number
+  pk_entity?: number
+  fk_concerned_entity?: number
+  fk_language?: number
+  quill_doc?: QuillDoc,
+  fk_class_field?: number
+  language?: InfLanguage
+}
 
 @Component({
   selector: 'gv-ctrl-text-property',
@@ -17,30 +24,10 @@ type CtrlModel = InfTextProperty
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTextPropertyComponent }],
 })
 export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
-  static nextId = 0;
-
-  model: CtrlModel;
-
-  @Output() blur = new EventEmitter<void>();
-  @Output() focus = new EventEmitter<void>();
-
-  autofilled?: boolean;
-  // emits true on destroy of this component
-  destroy$ = new Subject<boolean>();
-  stateChanges = new Subject<void>();
-  focused = false;
-  errorState = false;
-  controlType = 'ctrl-text-property';
-  id = `ctrl-text-property-${CtrlTextPropertyComponent.nextId++}`;
-  describedBy = '';
-  onChange = (_: any) => { };
-  onTouched = () => { };
 
   get empty() {
     return this.model ? false : true;
   }
-
-  shouldLabelFloat: boolean;
 
   @Input()
   get placeholder(): string { return this._placeholder; }
@@ -48,7 +35,6 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
     this._placeholder = value;
     this.stateChanges.next();
   }
-  private _placeholder: string;
 
   @Input()
   get required(): boolean { return this._required; }
@@ -56,7 +42,6 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
     this._required = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
-  private _required = false;
 
   @Input()
   get disabled(): boolean { return this._disabled; }
@@ -67,7 +52,6 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
     // this._disabled ? this.parts.disable() : this.parts.enable();
     this.stateChanges.next();
   }
-  private _disabled = false;
 
   @Input()
   get value(): CtrlModel | null {
@@ -89,6 +73,27 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
     this.value$.next(value)
 
   }
+  static nextId = 0;
+
+  model: CtrlModel;
+
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
+
+  autofilled?: boolean;
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+  stateChanges = new Subject<void>();
+  focused = false;
+  errorState = false;
+  controlType = 'ctrl-text-property';
+  id = `ctrl-text-property-${CtrlTextPropertyComponent.nextId++}`;
+  describedBy = '';
+
+  shouldLabelFloat: boolean;
+  private _placeholder: string;
+  private _required = false;
+  private _disabled = false;
 
 
   focused$ = new BehaviorSubject(null);
@@ -101,6 +106,8 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
   fkEntity: number
 
   langCtrl = new FormControl()
+  onChange = (_: any) => { };
+  onTouched = () => { };
 
   constructor(
     @Optional() @Self() public ngControl: NgControl

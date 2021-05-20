@@ -8,7 +8,7 @@ import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-requ
 import {AnalysisTableCell, AnalysisTableResponse} from '../../../models/analysis/analysis-table-response.model';
 import {AnalysisTimeChartRequest} from '../../../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse} from '../../../models/analysis/analysis-time-chart-response.model';
-import { GvPositiveSchemaObject } from '../../../models/gv-positive-schema-object.model';
+import {GvPositiveSchemaObject} from '../../../models/gv-positive-schema-object.model';
 import {GeovistoryServer} from '../../../server';
 import {createProAnalysis, createProAnalysisRepo} from '../../helpers/atomic/pro-analysis.helper';
 import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
@@ -49,7 +49,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
-            const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
+            const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition);
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req: AnalysisTableRequest = {
                 fkProject: pkProject,
@@ -259,7 +259,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
-            const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
+            const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition);
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req = {
                 fkProject: pkProject,
@@ -291,7 +291,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.MAP_GEO_PLACES;
-            const corruptAnalysisDefinition = clone(queryGeoPlaces.analysis_definition);
+            const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition);
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req = {
                 fkProject: pkProject,
@@ -324,7 +324,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const proAnalysis = ProAnalysisMock.TIME_BIRTHS;
-            const corruptAnalysisDefinition = clone(proAnalysis.analysis_definition);
+            const corruptAnalysisDefinition: any = clone(proAnalysis.analysis_definition);
             delete corruptAnalysisDefinition?.lines?.[0]?.queryDefinition.filter;
             const req: AnalysisTimeChartRequest = {
                 fkProject: pkProject,

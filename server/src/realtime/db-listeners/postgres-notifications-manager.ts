@@ -1,6 +1,7 @@
 import {Client, ClientConfig} from 'pg';
 import {parse} from 'pg-connection-string';
 import {GeovistoryApplication} from '../../application';
+import {WarFieldChange} from '../../models/war-field-change.model';
 import {getGvDatabaseUrl, getPgSslForPg8} from '../../utils/databaseUrl';
 
 /**
@@ -53,6 +54,16 @@ export class PostgresNotificationsManager {
             this.lb4App.streams.warehouseInitializing$.next(msg.payload === 'true');
           }
           break;
+        case 'field_change':
+          try {
+            if (msg.payload) {
+              const fieldChange: WarFieldChange = JSON.parse(msg.payload)
+              this.lb4App.streams.warFieldChanges$.next(fieldChange);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+          break;
         default:
           break;
       }
@@ -66,6 +77,7 @@ export class PostgresNotificationsManager {
   async listenToPgNotifyChannels() {
     await this.client.query('LISTEN entity_previews_updated');
     await this.client.query('LISTEN warehouse_initializing');
+    await this.client.query('LISTEN field_change');
   }
 
   /**

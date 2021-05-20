@@ -7,8 +7,8 @@ import { InfDimensionMock } from './auto-gen/gvDB/InfDimensionMock';
 import { InfLangStringMock } from './auto-gen/gvDB/InfLangStringMock';
 import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
 import { InfPlaceMock } from './auto-gen/gvDB/InfPlaceMock';
+import { InfResourceMock } from './auto-gen/gvDB/InfResourceMock';
 import { InfStatementMock } from './auto-gen/gvDB/InfStatementMock';
-import { InfTemporalEntityMock } from './auto-gen/gvDB/InfTemporalEntityMock';
 import { InfTimePrimitiveMock } from './auto-gen/gvDB/InfTimePrimitiveMock';
 import { ProInfoProjRelMock } from './auto-gen/gvDB/ProInfoProjRelMock';
 import { WarEntityPreviewMock } from './auto-gen/gvDB/WarEntityPreviewMock';
@@ -42,11 +42,11 @@ export namespace StatementWithTargetMock {
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON.ord_num_of_domain,
     isOutgoing: false,
     targetLabel: '',
-    targetClass: InfTemporalEntityMock.NAMING_1.fk_class,
+    targetClass: InfResourceMock.NAMING_1.fk_class,
     target: {
       entity: {
-        pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity,
-        fkClass: InfTemporalEntityMock.NAMING_1.fk_class,
+        pkEntity: InfResourceMock.NAMING_1.pk_entity,
+        fkClass: InfResourceMock.NAMING_1.fk_class,
       }
     }
   }
@@ -128,7 +128,7 @@ export namespace StatementWithTargetMock {
   }
 
   export const shipVoyageHasTimeSpan: StatementWithTarget = {
-    statement: { fk_object_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity }, // InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
+    statement: { fk_object_info: InfResourceMock.SHIP_VOYAGE.pk_entity }, // InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
     projRel: undefined, // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
     ordNum: undefined, // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.ord_num_of_range,
     isOutgoing: true,

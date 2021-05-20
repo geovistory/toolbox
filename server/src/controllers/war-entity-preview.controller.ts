@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {inject, Subscription} from '@loopback/core';
 import {Fields} from '@loopback/filter';
 import {model, property, repository} from '@loopback/repository';
@@ -11,26 +10,12 @@ import {Postgres1DataSource} from '../datasources';
 import {ws} from '../decorators/websocket.decorator';
 import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations} from '../models';
 import {Streams} from '../realtime/streams/streams';
+import {AddToStreamMsg, WebsocketControllerBase} from '../realtime/websockets/websocker-controller-base';
 import {WarEntityPreviewRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {EntitySearchHit} from './EntitySearchHit';
 
-/**
- * TODO-LB3-LB4
- *
- * methods
-     'project_member'
-        "search",
-        "searchExisting",
-        "searchExistingWithRelatedStatement",
-        "paginatedListByPks",
-        "paginatedList"
-      'system_admin
-        "createAll"
- */
 
-
-const log = true;
 
 // Fields to include in streamed WarEntityPreviews
 // see about Lb4 filters: https://loopback.io/doc/en/lb4/Fields-filter.html
@@ -45,14 +30,8 @@ const includeFieldsForSteam: Fields<WarEntityPreviewWithFulltext> = {
   fk_type: true,
 }
 
-export interface StreamedEntityPreviews {
-  currentProjectPk: string | undefined,
-  streamedPks: {[key: string]: boolean}
-}
-interface AddToStreamMsg {
-  pkProject: number;
-  pks: (number | string)[];
-}
+
+
 
 @model() export class WareEntityPreviewPage {
   @property() totalCount: number
@@ -84,17 +63,11 @@ interface AddToStreamMsg {
  * Handlentity_typees also websockets
  */
 @ws('/WarEntityPreview')
-export class WarEntityPreviewController {
+export class WarEntityPreviewController extends WebsocketControllerBase {
 
-  // Websockets Connection Cache
-  cache: StreamedEntityPreviews = {
-    currentProjectPk: undefined, // the gevistory project
-    streamedPks: {}, // the entityPreviews streamed
-  };
 
   streamSub: Subscription;
 
-  private socket: Socket;
 
   constructor(
     @repository(WarEntityPreviewRepository)
@@ -103,7 +76,7 @@ export class WarEntityPreviewController {
     @inject('streams')
     private streams: Streams
   ) {
-
+    super()
   }
 
   /************************ WEBSOCKET ****************************/
@@ -118,7 +91,7 @@ export class WarEntityPreviewController {
 
     this.socket = socket;
 
-    if (log) this.log('Client connected to ws: %s', this.socket.id);
+    if (this.logs) this.log('Client connected to ws: %s', this.socket.id);
 
     // Subscribe to stream of timestamps emitted when warehouse updated
     this.streamSub = this.streams.warEntityPreviewModificationTmsp$.subscribe(
@@ -147,7 +120,7 @@ export class WarEntityPreviewController {
     const result: WarEntityPreviewWithRelations[] = [];
 
     if (this.cache.currentProjectPk) {
-      const entityPks = Object.keys(this.cache.streamedPks).map(pk => parseInt(pk, 10));
+      const entityPks = Object.keys(this.cache.streamedIds).map(pk => parseInt(pk, 10));
       if (entityPks?.length) {
         const pkProject = parseInt(this.cache.currentProjectPk, 10)
 
@@ -176,7 +149,6 @@ export class WarEntityPreviewController {
 
   /**
  * The method is invoked when a client disconnects from the server
- * @param socket
  */
   @ws.disconnect()
   disconnect() {
@@ -195,10 +167,12 @@ export class WarEntityPreviewController {
    */
   @ws.subscribe('addToStream')
   async handleAddToStream(data: AddToStreamMsg) {
-    const {pkProject, sanitizedPks} = this.extendStream(data)
+
+    const {pkProject, ids} = this.handleExtendStream(data)
+    const pks = ids.map(id => parseInt(id))
     // Query and emit requested previews
-    const projectItems = await this.findByProjectAndEntityPks(pkProject, sanitizedPks)
-    const allItems = await this.completeProjectWithRepoPreviews(projectItems, sanitizedPks);
+    const projectItems = await this.findByProjectAndEntityPks(pkProject, pks)
+    const allItems = await this.completeProjectWithRepoPreviews(projectItems, pks);
     this.emitEntityPreviews(allItems);
   }
 
@@ -211,56 +185,42 @@ export class WarEntityPreviewController {
   */
   @ws.subscribe('extendStream')
   handleExtendStream(data: AddToStreamMsg) {
-    return this.extendStream(data);
-  }
-
-  private extendStream(data: AddToStreamMsg) {
-    const pkProject = data.pkProject;
-    const pks = data.pks;
-    let sanitizedPks: number[] = [];
-
-    if (pkProject) {
-      // verify that the socket is in the right room
-      this.safeJoin(pkProject);
-
-      // sanitize the pks
-      sanitizedPks = this.sanitizeNumberArray(pks);
-
-      if (sanitizedPks?.length) {
-        // extend cache of streamedPks
-        sanitizedPks.forEach((pk) => this.extendStreamedPks(pk.toString()));
-
-        if (log) {
-          this.log(
-            'request for EntityPreviews ' +
-            JSON.stringify(sanitizedPks) +
-            ' by project ' +
-            this.cache.currentProjectPk
-          );
-        }
-      }
-    }
-    else {
-      this.warn('Please provide a pkProject');
-    }
-    return {pkProject, sanitizedPks};
+    const {pkProject, ids} = this.sanitizeAddToStreamMsg(data);
+    return this.extendStream(pkProject, ids);
   }
 
   /**
-   * takes any[] and returns number[]
+   * Register a handler for 'leaveProjectRoom' events
+   * @param msg
+   */
+  @ws.subscribe('leaveProjectRoom')
+  handleLeaveProjectRoom() {
+    this.saveLeave();
+  }
+
+  private sanitizeAddToStreamMsg(data: AddToStreamMsg): {pkProject: number, ids: string[]} {
+    return {
+      pkProject: data.pkProject,
+      ids: this.sanitizeNumberArray(data.pks)
+    };
+  }
+
+
+  /**
+   * takes any[] and returns string[]
    * All items that are not parsable to an integer are omitted (e.g. 'foo');
    * @param pks
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private sanitizeNumberArray(pks: any[]) {
-    const sanitizedPks: number[] = [];
+  private sanitizeNumberArray(pks: any[]): string[] {
+    const sanitizedPks: string[] = [];
 
     for (const pk of pks) {
       if (typeof pk === 'number') {
-        sanitizedPks.push(pk);
+        sanitizedPks.push(pk.toString());
       }
       else if (typeof pk === 'string' && !isNaN(parseInt(pk, 10))) {
-        sanitizedPks.push(parseInt(pk, 10));
+        sanitizedPks.push(pk);
       }
       else {
         this.warn('Please provide a proper pk_entity');
@@ -369,56 +329,12 @@ export class WarEntityPreviewController {
 
 
 
-  /**
-   * Register a handler for 'leaveProjectRoom' events
-   * @param msg
-   */
-  @ws.subscribe('leaveProjectRoom')
-  handleLeaveProjectRoom() {
-    // leave the room
-    if (this.cache.currentProjectPk) this.socket.leave(this.cache.currentProjectPk);
-
-    if (log) {this.log(this.socket.id + ' left project ' + this.cache.currentProjectPk);}
-
-    // reset cache
-    this.cache.currentProjectPk = undefined;
-    this.cache.streamedPks = {}
-  }
 
 
 
 
-  // Reset the set of streamed pks
-  resetStreamedPks() {
-    this.cache.streamedPks = {};
-  };
 
-  // Extend the set of streamed pks
-  extendStreamedPks(pkEntity: string) {
-    this.cache.streamedPks[pkEntity] = true;
-  };
 
-  // Manage the room (project) of the socket
-  safeJoin(newProjPk: number) {
-    const newProjectPk = newProjPk.toString();
-    if (newProjectPk !== this.cache.currentProjectPk) {
-      if (this.cache.currentProjectPk) {
-        this.socket.leave(this.cache.currentProjectPk);
-      }
-
-      if (log) {this.log(this.socket.id + ' left project ' + this.cache.currentProjectPk);}
-
-      this.socket.join(newProjectPk);
-
-      if (log) this.log(this.socket.id + ' joined project ' + newProjectPk);
-
-      this.resetStreamedPks();
-      this.cache.currentProjectPk = newProjectPk;
-
-      // make this cache available on app scope
-      this.streams.streamedEntityPreviews[newProjPk] = this.cache;
-    }
-  };
 
   // emit entity preview
   emitPreview(entityPreview: WarEntityPreviewWithRelations) {
@@ -475,21 +391,18 @@ export class WarEntityPreviewController {
           from war.entity_preview t1,
           to_tsquery(${q.addParam(tsSearchString)}) q
           WHERE 1=1
-          ${
-      tsSearchString
+          ${tsSearchString
         ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
           req.searchString
         )})`
         : ''
       }
-          ${
-      req.projectId
+          ${req.projectId
         ? `AND fk_project = ${q.addParam(req.projectId)}`
         : `AND fk_project IS NULL`
       }
           ${req.entityType ? `AND entity_type = ${q.addParam(req.entityType)}` : ''}
-          ${
-      req.pkClasses?.length
+          ${req.pkClasses?.length
         ? `AND fk_class IN (${q.addParams(req.pkClasses)})`
         : ''
       }
@@ -628,17 +541,6 @@ export class WarEntityPreviewController {
     return {tsSearchString, offset, limit};
   }
 
-  /************************ Generics ****************************/
-
-  private log(msg: string, ...params: string[]) {
-    if (process.env.NO_LOGS === 'true') return;
-    console.log(msg, ...params)
-  }
-
-  private warn(msg: string, ...params: string[]) {
-    if (process.env.NO_LOGS === 'true') return;
-    console.warn(msg, ...params)
-  }
 
 
 }

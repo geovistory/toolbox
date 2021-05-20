@@ -1,7 +1,8 @@
-import { testdb } from "../testdb";
-import { InfAppellation } from '../../../models';
-import { InfAppellationRepository, InfStatementRepository, ProInfoProjRelRepository } from '../../../repositories';
-import { dealWithPkEntity } from './_sequences.helper';
+import {testdb} from "../testdb";
+import {InfAppellation} from '../../../models';
+import {InfAppellationRepository, InfStatementRepository, ProInfoProjRelRepository} from '../../../repositories';
+import {dealWithPkEntity} from './_sequences.helper';
+import {clone} from 'ramda';
 
 function createInfAppellationRepo() {
   let infStatementRepo: InfStatementRepository;
@@ -14,5 +15,10 @@ function createInfAppellationRepo() {
 }
 
 export async function createInfAppellation(item: Partial<InfAppellation>) {
-  return createInfAppellationRepo().create(await dealWithPkEntity(item, 'information'));
+  const i = clone(item);
+  // make sure only quill_doc or string is provided.
+  if (item.quill_doc && item.string) {
+    i.quill_doc = undefined;
+  }
+  return createInfAppellationRepo().create(await dealWithPkEntity(i, 'information'));
 }

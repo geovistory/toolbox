@@ -2,7 +2,7 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-queries';
-import { InfAppellation, InfLangString, InfPlace, InfStatement, InfTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { InfAppellation, InfLangString, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
@@ -251,7 +251,7 @@ export class FormPart {
       return value;
     }
     else if (
-      this.fieldTarget.listType.temporalEntity
+      this.fieldTarget.listType.nestedResource
       || this.fieldTarget.listType.entityPreview
       || this.fieldTarget.listType.typeItem
     ) {
@@ -311,11 +311,6 @@ export interface FormPartInitValueStatement {
   targetClass: number
   fkProperty: number
   value: number | InfAppellation | InfPlace | InfLanguage | InfLangString
-}
-
-export interface FormPartInitValueTextProperty {
-  fkClassField: number
-  value: InfTextProperty
 }
 
 

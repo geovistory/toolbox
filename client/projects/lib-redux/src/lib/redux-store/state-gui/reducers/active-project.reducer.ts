@@ -1,6 +1,6 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { omit } from 'ramda';
-import { ActiveProjectActions, ActiveProjectAction } from '../../state-gui/actions/active-project.action';
+import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actions/active-project.action';
 import { ProjectDetail } from '../models/active-project.models';
 
 
@@ -24,20 +24,20 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
         ...action.meta.projectPreview
       };
       break;
-    case ActiveProjectActions.LOAD_PROJECT_CONFIG:
-      state = {
-        ...state,
-        loadingConfigData: true
-      }
-      break;
-    case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
-      state = {
-        ...state,
-        // crm: action.payload.crm,
-        configDataInitialized: true,
-        loadingConfigData: false
-      }
-      break;
+    // case ActiveProjectActions.LOAD_PROJECT_CONFIG:
+    //   state = {
+    //     ...state,
+    //     loadingConfigData: true
+    //   }
+    //   break;
+    // case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     // crm: action.payload.crm,
+    //     configDataInitialized: true,
+    //     loadingConfigData: false
+    //   }
+    //   break;
 
     /************************************************************************************
      * Layout -- Tabs

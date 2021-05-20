@@ -1,11 +1,11 @@
-import { GvFieldPage, GvFieldPageReq, GvPaginationObject, GvSubfieldPageInfo, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTemporalEntity, InfTimePrimitive, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldPageReq, GvPaginationObject, GvSubfieldPageInfo, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { concat, mergeDeepWith, values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { DfhApiClassMock } from '../data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from '../data/auto-gen/gvDB/InfLanguageMock';
-import { InfPersistentItemMock } from '../data/auto-gen/gvDB/InfPersistentItemMock';
+import { InfResourceMock } from '../data/auto-gen/gvDB/InfResourceMock';
 import { InfTimePrimitiveMock } from '../data/auto-gen/gvDB/InfTimePrimitiveMock';
 import { OmitEntity } from '../data/auto-gen/gvDB/local-model.helpers';
 import { ProProjectMock } from '../data/auto-gen/gvDB/ProProjectMock';
@@ -72,7 +72,7 @@ export class MockPaginationControllerForSandboxes {
     else if (values(gvLoadSubfieldPageReq.targets)[0].language) {
       return this.generateDataForLanguage(gvLoadSubfieldPageReq.page);
     }
-    else if (values(gvLoadSubfieldPageReq.targets)[0].temporalEntity) {
+    else if (values(gvLoadSubfieldPageReq.targets)[0].nestedResource) {
       return this.generateDataForTemporalEntity(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].entityPreview) {
@@ -225,7 +225,7 @@ export class MockPaginationControllerForSandboxes {
         pk_entity: this.infDimensionSerial + i,
         fk_class: DfhApiClassMock.EN_689_DURATION.dfh_pk_class,
         numeric_value: i + 1,
-        fk_measurement_unit: InfPersistentItemMock.TIME_UNIT_MONTH.pk_entity
+        fk_measurement_unit: InfResourceMock.TIME_UNIT_MONTH.pk_entity
       }
       dimensions.push(dimension)
 
@@ -418,7 +418,7 @@ export class MockPaginationControllerForSandboxes {
     const count = 46;
     const paginatedStatements: number[] = []
     const statements: OmitEntity<InfStatement>[] = []
-    const temporalEntitys: OmitEntity<InfTemporalEntity>[] = []
+    const resource: OmitEntity<InfResource>[] = []
     const projRels: OmitEntity<ProInfoProjRel>[] = []
     const subfieldPages: GvSubfieldPageInfo[] = [
       {
@@ -433,7 +433,7 @@ export class MockPaginationControllerForSandboxes {
       schemas: {
         inf: {
           statement: statements,
-          temporal_entity: temporalEntitys,
+          resource: resource,
           language: [
             InfLanguageMock.GERMAN
           ]
@@ -460,11 +460,11 @@ export class MockPaginationControllerForSandboxes {
     }
 
     for (let i = offset; i < (offset + limit); i++) {
-      const temporalEntity: OmitEntity<InfTemporalEntity> = {
+      const temporalEntity: OmitEntity<InfResource> = {
         pk_entity: this.infTemporalEntitySerial + i,
         fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
       }
-      temporalEntitys.push(temporalEntity)
+      resource.push(temporalEntity)
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
@@ -487,8 +487,8 @@ export class MockPaginationControllerForSandboxes {
     }
 
     // Do the subfields
-    for (const temporalEntity of temporalEntitys) {
-      for (const teEnSubfield of mainReq.targets[temporalEntity.fk_class].temporalEntity) {
+    for (const temporalEntity of resource) {
+      for (const teEnSubfield of mainReq.targets[temporalEntity.fk_class].nestedResource) {
         // increase the id base for subfields
         this.increaseIdBase(100000 + offset)
 

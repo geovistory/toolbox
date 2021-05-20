@@ -5,8 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfPersistentItem, InfTemporalEntity } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldProperty, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
@@ -14,8 +13,7 @@ import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-d
 
 export interface CtrlEntityModel {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side
-  persistent_item?: InfPersistentItem, // if persistent_item || temporal_entity the output is just created
-  temporal_entity?: InfTemporalEntity
+  resource?: InfResource, // if resource, the output is just created
 }
 
 @Component({
@@ -74,7 +72,7 @@ export class CtrlEntityComponent implements OnDestroy,
 
   set value(value: CtrlEntityModel | null) {
 
-    if (!value || (!value.pkEntity && !value.temporal_entity && !value.persistent_item)) {
+    if (!value || (!value.pkEntity && !value.resource)) {
       this.model = undefined
     } else {
       this.model = value;
@@ -152,7 +150,7 @@ export class CtrlEntityComponent implements OnDestroy,
     this.entityPreview$ = this.value$.pipe(switchMap(val => {
 
       if (val && val.pkEntity) return this.ap.streamEntityPreview(val.pkEntity)
-      else if (val && (val.persistent_item || val.temporal_entity)) {
+      else if (val && (val.resource)) {
         return combineLatest(
           this.s.dfh$.class$.by_pk_class$.key(this.pkClass),
           this.c.pipeClassLabel(this.pkClass)

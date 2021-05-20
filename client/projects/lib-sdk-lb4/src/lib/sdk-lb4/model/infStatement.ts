@@ -12,6 +12,7 @@
 
 
 export interface InfStatement { 
+    pk_entity?: number;
     fk_subject_info?: number;
     fk_subject_data?: number;
     fk_subject_tables_cell?: number;
@@ -25,6 +26,5 @@ export interface InfStatement {
     is_in_project_count?: number;
     is_standard_in_project_count?: number;
     community_favorite_calendar?: string;
-    pk_entity?: number;
 }
 

@@ -92,19 +92,11 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InfTemporalEntity": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "InfStatement": {
     "dataSource": "postgres1",
     "public": true
   },
   "InfLanguage": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "InfPersistentItem": {
     "dataSource": "postgres1",
     "public": true
   },
@@ -161,10 +153,6 @@
     "public": true
   },
   "DatNamespace": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "InfTextProperty": {
     "dataSource": "postgres1",
     "public": true
   },

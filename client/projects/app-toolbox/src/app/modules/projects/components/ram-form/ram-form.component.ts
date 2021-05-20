@@ -1,15 +1,12 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { InfTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { InfLangString } from '@kleiolab/lib-sdk-lb3';
-import { DatChunk } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { DfhConfig } from "@kleiolab/lib-config";
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
+import { DatChunk, InfLangString, InfStatement, InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectPipesService } from "@kleiolab/lib-queries";
 
 
 /**
@@ -42,6 +39,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
     public p: ActiveProjectService,
     public ap: ActiveProjectPipesService,
     public ref: ChangeDetectorRef,
+    private dataService: ReduxMainService
   ) { }
 
   ngOnInit() {
@@ -82,7 +80,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
       this.p.ramSource$,
       this.p.ramProperty$,
       this.p.ramTarget$,
-      this.referenceCtrl.valueChanges as Observable<InfTextProperty>
+      this.referenceCtrl.valueChanges as Observable<any>
     ).pipe(
       map(([s, p, t, r]) => {
         // Validate source
@@ -97,7 +95,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
         const object = t;
 
         // create statement
-        const statement: InfStatement = {
+        const statement: InfStatementWithRelations = {
           pk_entity: undefined,
 
           // subject
@@ -136,7 +134,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
             fk_language: r.fk_language
           }
 
-          const statementOfStatement: InfStatement = {
+          const statementOfStatement: InfStatementWithRelations = {
             pk_entity: undefined,
 
             // subject
@@ -182,7 +180,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
         ([pkProject, val]) => {
           this.saving = true;
           if (!!val) {
-            this.p.inf.statement.upsert([val], pkProject).resolved$
+            this.dataService.upsertInfStatementsWithRelations(pkProject, [val])
               .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
                 success => {
                   this.saving = false;

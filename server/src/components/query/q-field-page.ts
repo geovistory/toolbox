@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {ModelDefinition} from '@loopback/repository';
 import {keys} from 'lodash';
 import {equals, groupBy, uniq} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
-import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
+import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
 import {GvFieldTargets} from '../../models/field/gv-field-targets';
 import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-positive-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
@@ -58,7 +57,6 @@ type Config = {
 type ModelToFindClassConfig = {
   [key in GvTargetTypeKey]: StatementTargetMeta[]
 }
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 // type GvFieldPageWithoutFkSource = PartialBy<GvFieldPage, 'source'>
 export class QFieldPage extends SqlBuilderLb4Models {
@@ -72,7 +70,6 @@ export class QFieldPage extends SqlBuilderLb4Models {
   objectWiths: ObjectWiths = {
     schemas: {
       inf: {
-        text_property: [],
         statement: [],
         appellation: [],
         lang_string: [],
@@ -81,12 +78,13 @@ export class QFieldPage extends SqlBuilderLb4Models {
         place: [],
         dimension: [],
 
-        temporal_entity: [],
-        persistent_item: [],
+        resource: [],
       },
       dat: {
+        namespace:[],
         class_column_mapping: [],
         text_property: [],
+        chunk: [],
         column: [],
         digital: []
       },
@@ -111,7 +109,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         klass: [],
         label: [],
         property: [],
-        system_relevant_class:[]
+        system_relevant_class: []
       },
       war: {
         entity_preview: [],
@@ -184,23 +182,23 @@ export class QFieldPage extends SqlBuilderLb4Models {
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.time_primitive
       },
-      temporalEntity: {
-        modelDefinition: InfTemporalEntity.definition,
+      nestedResource: {
+        modelDefinition: InfResource.definition,
         modelPk: 'pk_entity',
         statementObjectFk: 'fk_object_info',
         statementSubjectFk: 'fk_subject_info',
-        tableName: 'information.temporal_entity',
+        tableName: 'information.resource',
         classFk: 'fk_class',
-        objectWith: this.objectWiths.schemas.inf.temporal_entity
+        objectWith: this.objectWiths.schemas.inf.resource
       },
       timeSpan: {
-        modelDefinition: InfTemporalEntity.definition,
+        modelDefinition: InfResource.definition,
         modelPk: 'pk_entity',
         statementObjectFk: 'fk_object_info',
         statementSubjectFk: 'fk_subject_info',
-        tableName: 'information.temporal_entity',
+        tableName: 'information.resource',
         classFk: 'fk_class',
-        objectWith: this.objectWiths.schemas.inf.temporal_entity
+        objectWith: this.objectWiths.schemas.inf.resource
       },
       entityPreview: {
         modelDefinition: WarEntityPreview.definition,
@@ -223,15 +221,15 @@ export class QFieldPage extends SqlBuilderLb4Models {
         objectWith: this.objectWiths.schemas.war.entity_preview
       },
     }
-    const configPersistentItem: StatementTargetMeta = {
-      modelDefinition: InfPersistentItem.definition,
-      modelPk: 'pk_entity',
-      statementObjectFk: 'fk_object_info',
-      statementSubjectFk: 'fk_subject_info',
-      tableName: 'information.persistent_item',
-      classFk: 'fk_class',
-      objectWith: this.objectWiths.schemas.inf.persistent_item
-    }
+    // const configResource: StatementTargetMeta = {
+    //   modelDefinition: InfResource.definition,
+    //   modelPk: 'pk_entity',
+    //   statementObjectFk: 'fk_object_info',
+    //   statementSubjectFk: 'fk_subject_info',
+    //   tableName: 'information.resource',
+    //   classFk: 'fk_class',
+    //   objectWith: this.objectWiths.schemas.inf.resource
+    // }
 
     this.tableToFindOriginalItems = {
       appellation: [this.config.appellation],
@@ -239,18 +237,18 @@ export class QFieldPage extends SqlBuilderLb4Models {
       dimension: [this.config.dimension],
       langString: [this.config.langString],
       language: [this.config.language],
-      temporalEntity: [this.config.temporalEntity],
+      nestedResource: [this.config.nestedResource],
       timeSpan: [this.config.timeSpan],
       timePrimitive: [this.config.timePrimitive],
       typeItem: [
         // list all models that can be represented by typeItem
-        // this.config.temporalEntity,
-        configPersistentItem
+        this.config.nestedResource,
+        // configResource
       ],
       entityPreview: [
         // list all models that can be represented by entityPreview
-        this.config.temporalEntity,
-        configPersistentItem
+        this.config.nestedResource,
+        // configResource
       ],
     }
   }
@@ -534,6 +532,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         -- GvSubfieldPageInfo as objects
         ${twSubfieldPages}  AS (
           SELECT jsonb_build_object (
+            'validFor', now(),
             'page', '${JSON.stringify(page)}'::json,
             'count', COALESCE(count.count,0),
             'paginatedStatements', COALESCE(paginatedStatements.obj, '[]'::json)
@@ -568,7 +567,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
       if (targetType === 'dimension') sqls.push(this.joinMeasurementUnit(x.tw));
       else if (targetType === 'langString') sqls.push(this.joinLanguage(x.tw));
-      else if (targetType === 'temporalEntity' && page.scope.inProject) sqls.push(this.joinProjRel(page.scope, x.tw))
+      else if (targetType === 'nestedResource' && page.scope.inProject) sqls.push(this.joinProjRel(page.scope, x.tw))
 
       if (config.modelDefinition === WarEntityPreview.definition) sqls.push(this.joinOriginOfEntityPreview(page.isOutgoing, twStatements, targetType, page.scope))
     }
@@ -634,8 +633,8 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
   /**
    * joins the original item represented by the entity preview.
-   * E.g.: if the entityPreview is from a temporal_entity,
-   * it joins the temporal_entity.
+   * E.g.: if the entityPreview is from a resource,
+   * it joins the resource.
    *
    * This may is handy, because the entityPreview may be missing for two reasons:
    * - the entityPreview not yet generated by the warehous at time of querying
@@ -657,72 +656,6 @@ export class QFieldPage extends SqlBuilderLb4Models {
     ).join(',\n')
   }
 
-  // private joinSubentity(
-  //   parentSubfieldType: GvSubfieldType,
-  //   parentScope: GvSubfieldPageScope,
-  //   twTarget: string,
-  // ) {
-  //   const sqls = []
-
-  //   if (parentSubfieldType.temporalEntity?.length) {
-
-
-  //     /**
-  //      * selects the twInfoProjRelObjects
-  //      * only if scope.inProject (!)
-  //      */
-  //     if (parentScope.inProject) {
-  //       const twInfoProjRelObjects = this.nextWith;
-  //       const sqlInfoProjRelsObjects = `
-  //         -- info_proj_rel as objects
-  //         ${twInfoProjRelObjects} AS (
-  //           SELECT
-  //           ${this.createBuildObject('t1', ProInfoProjRel.definition)} objects
-  //           FROM
-  //           projects.info_proj_rel t1,
-  //           ${twTarget} t2
-  //           WHERE
-  //           t1.fk_entity = t2.pk
-  //           AND
-  //           t1.fk_project = ${this.addParam(parentScope.inProject)}
-  //       )`;
-  //       sqls.push(sqlInfoProjRelsObjects);
-  //       this.objectWiths.info_proj_rel.push(twInfoProjRelObjects);
-  //     }
-
-
-  //     const subReqs = parentSubfieldType.temporalEntity;
-  //     /**
-  //      * generate the scope of the subpages
-  //      */
-  //     let scope: GvSubfieldPageScope;
-  //     if (parentScope.notInProject)
-  //       scope = {inRepo: true};
-  //     else
-  //       scope = parentScope;
-
-  //     for (const subReq of subReqs) {
-  //       /**
-  //        * convert GvLoadSubentitySubfieldPageReq to GvLoadSubfieldPageReq
-  //        */
-  //       const page: GvSubfieldPageWithoutFkSource = {...subReq.page, scope};
-  //       const subfieldType = subReq.subfieldType;
-  //       let subentityFieldsSql: string;
-  //       if (subfieldType.timeSpan) {
-  //         subentityFieldsSql = this.createTimeSpanSubFieldRequests(page).map(item => {
-  //           return this.joinSubentityPage(item.page, scope, twTarget, item.subfieldType);
-  //         }).join(',\n');
-  //       }
-  //       else {
-  //         subentityFieldsSql = this.joinSubentityPage(page, scope, twTarget, subfieldType);
-  //       }
-
-  //       sqls.push(subentityFieldsSql);
-  //     }
-  //   }
-
-  //   return sqls.join(',\n')
-  // }
 
   private joinMeasurementUnit(leftTw: string) {
     const {tableName, modelDefinition, modelPk, objectWith} = this.config.entityPreview as StatementTargetMeta

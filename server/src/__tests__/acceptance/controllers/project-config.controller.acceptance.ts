@@ -2,7 +2,7 @@
 import { Client, expect } from '@loopback/testlab';
 import { clone } from 'ramda';
 import { LoginResponse } from '../../../controllers/account.controller';
-import { GetEntityLabelConfigResponse } from '../../../controllers/project-config.controller';
+import { GetEntityLabelConfigResponse } from '../../../controllers/project-config/create-project-config.controller';
 import { ProEntityLabelConfig } from '../../../models';
 import { GeovistoryServer } from '../../../server';
 import { createProEntityLabelConfig } from '../../helpers/atomic/pro-entity-label-config.helper';

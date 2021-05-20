@@ -6,16 +6,14 @@ import {REntityId} from '../../../../warehouse/primary-ds/entity/REntityService'
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../helpers/atomic/inf-temporal-entity.helper';
+import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {InfAppellationMock} from '../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
+import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
@@ -24,8 +22,8 @@ import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {createInfLangString} from '../../../helpers/atomic/inf-lang-string.helper';
 import {InfLangStringMock} from '../../../helpers/data/gvDB/InfLangStringMock';
 const stubs: WarehouseStubs = {
-  primaryDataServices:[REdgeService],
-  aggDataServices:[]
+  primaryDataServices: [REdgeService],
+  aggDataServices: []
 }
 describe('REdgeService', () => {
 
@@ -49,16 +47,16 @@ describe('REdgeService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
 
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1)
+    await createInfResource(InfResourceMock.NAMING_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createInfResource(InfResourceMock.PERSON_1)
     const id: REntityId = {
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
+      pkEntity: InfResourceMock.NAMING_1.pk_entity ?? -1,
     }
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
@@ -78,14 +76,14 @@ describe('REdgeService', () => {
     await createInfLanguage(InfLanguageMock.ENGLISH)
     await createProProject(ProProjectMock.PROJECT_1)
 
-    await createInfPersistentItem(InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER)
+    await createInfResource(InfResourceMock.MANIF_SINGLETON_THE_MURDERER)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_MANIF_SINGLETON_THE_MURDERER)
     await createInfLangString(InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER)
     await createInfStatement(InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER)
-    const fkProperty:number = InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.fk_property
+    const fkProperty: number = InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER.fk_property ?? -1
     const id: REntityId = {
-      pkEntity: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity ?? -1,
+      pkEntity: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity ?? -1,
     }
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
@@ -101,18 +99,18 @@ describe('REdgeService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
 
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1)
+    await createInfResource(InfResourceMock.NAMING_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createInfResource(InfResourceMock.PERSON_1)
 
 
     const id: REntityId = {
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
+      pkEntity: InfResourceMock.NAMING_1.pk_entity ?? -1,
     }
 
     await searchUntilSatisfy({

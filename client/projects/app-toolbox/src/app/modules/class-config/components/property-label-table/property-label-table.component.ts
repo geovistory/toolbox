@@ -1,16 +1,14 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, mergeMap, takeUntil, filter } from 'rxjs/operators';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { ProActions } from "@kleiolab/lib-redux";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { InfActions, ProActions } from '@kleiolab/lib-redux';
+import { InfLanguage, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
-import { InfActions } from "@kleiolab/lib-redux";
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 
 interface Row {
 
@@ -134,7 +132,7 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
   delete(r: Row) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      this.pro.text_property.delete([r.textProperty], pkProject)
+      this.pro.text_property.delete([r.textProperty as any], pkProject)
     })
   }
   edit(r: Row) {

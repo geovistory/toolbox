@@ -9,10 +9,8 @@ import {createGaetanMuck} from './account.helper';
 
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
-import {createInfTemporalEntity} from '../atomic/inf-temporal-entity.helper';
-import {InfTemporalEntityMock} from '../data/gvDB/InfTemporalEntityMock';
-import {createInfPersistentItem} from '../atomic/inf-persistent-item.helper';
-import {InfPersistentItemMock} from '../data/gvDB/InfPersistentItemMock';
+import {createInfResource} from '../atomic/inf-resource.helper';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {createProClassFieldConfig} from '../atomic/pro-class-field-config.helper';
 import {ProClassFieldConfigMock} from '../data/gvDB/ProClassFieldConfigMock';
 import {createProProject} from '../atomic/pro-project.helper';
@@ -72,15 +70,15 @@ export async function createAlbertAndRudolf() {
 
     //create entities - teen
     const teens = await Promise.all([
-        await createInfTemporalEntity(InfTemporalEntityMock.ALBERT_IV_NAMING),
-        await createInfTemporalEntity(InfTemporalEntityMock.ALBERT_IV_NAMING_2),
-        await createInfTemporalEntity(InfTemporalEntityMock.RUDOLF_NAMING)
+        await createInfResource(InfResourceMock.ALBERT_IV_NAMING),
+        await createInfResource(InfResourceMock.ALBERT_IV_NAMING_2),
+        await createInfResource(InfResourceMock.RUDOLF_NAMING)
     ])
 
     //create entities - peit
     const peits = await Promise.all([
-        await createInfPersistentItem(InfPersistentItemMock.ALBERT_IV),
-        await createInfPersistentItem(InfPersistentItemMock.RUDOLF)
+        await createInfResource(InfResourceMock.ALBERT_IV),
+        await createInfResource(InfResourceMock.RUDOLF)
     ])
 
     //statements between appellation and naming

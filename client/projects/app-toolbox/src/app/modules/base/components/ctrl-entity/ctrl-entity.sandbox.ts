@@ -1,13 +1,13 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../base.module';
 import { CtrlEntityComponent, CtrlEntityModel } from './ctrl-entity.component';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 
 const initVal1: CtrlEntityModel = { pkEntity: 767402 }
 const initVal2: CtrlEntityModel = {
-  'persistent_item': {
+  'resource': {
     pk_entity: undefined,
     'incoming_statements': [
       {

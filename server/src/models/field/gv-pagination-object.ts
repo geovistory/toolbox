@@ -7,6 +7,7 @@ export class GvSubfieldPageInfo {
   @property({required: true}) page: GvFieldPage
   @property({required: true}) count: number
   @property.array(Number, {required: true}) paginatedStatements: number[]
+  @property() validFor?: Date
 }
 
 @model()

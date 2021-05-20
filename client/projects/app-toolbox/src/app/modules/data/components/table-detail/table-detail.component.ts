@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { DatColumn, DatDigitalApi } from '@kleiolab/lib-sdk-lb3';
+import { SchemaService } from '@kleiolab/lib-redux';
+import { DatColumn } from '@kleiolab/lib-sdk-lb3';
 import { TableConfig, TableRow, TableService } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
@@ -16,7 +16,6 @@ import { equals, indexBy, values, without } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TColFilter, TColFilters } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
-import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 @Component({
   selector: 'gv-table-detail',
@@ -113,13 +112,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   constructor(
     public ref: ChangeDetectorRef,
-    private digitalApi: DatDigitalApi,
     private p: ActiveProjectService,
-    private worker: WorkerWrapperService,
     private tableAPI: TableService,
     private s: SchemaService,
     private c: ConfigurationPipesService,
-    private inf: InfActions,
     private a: ActiveAccountService,
   ) { }
 

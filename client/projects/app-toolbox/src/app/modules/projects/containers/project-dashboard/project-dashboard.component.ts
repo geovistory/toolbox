@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { IAppState, ProjectCrm, ProjectDetail } from '@kleiolab/lib-redux';
+import { IAppState, ProjectDetail } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -61,15 +61,15 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     this.startLoading();
 
     // listen to the crm and add extract the classes ready to add.
-    this.ngRedux.select<ProjectCrm>(['activeProject', 'crm']).pipe(
+    this.ngRedux.select(['activeProject', 'crm']).pipe(
       first(d => !!d),
       takeUntil(this.destroy$)).subscribe(crm => {
         const pkClassesInProject = [];
-        for (const key in crm.classes) {
-          if (crm.classes[key] && crm.classes[key].isInProject) {
-            pkClassesInProject.push(crm.classes[key].dfh_pk_class);
-          }
-        }
+        // for (const key in crm.classes) {
+        //   if (crm.classes[key] && crm.classes[key].isInProject) {
+        //     pkClassesInProject.push(crm.classes[key].dfh_pk_class);
+        //   }
+        // }
 
         // this.entityPreviewApi.search(this.id, '', pkClassesInProject, null, 1, 1)
         //   .subscribe(

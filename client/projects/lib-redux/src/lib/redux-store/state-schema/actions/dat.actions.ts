@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatChunk, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { IAppState } from '../../root/models/model';
-import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models/dat.models';
+import { ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from '../models/dat.models';
 import { datRoot } from '../reducer-configs/dat.config';
 import { ActionResultObservable, LoadActionMeta, LoadVersionAction, SchemaActionsFactory, SucceedActionMeta } from '../_helpers/schema-actions-factory';
 
@@ -46,39 +46,39 @@ export class DigitalActionsFactory extends SchemaActionsFactory<DigitalSlice, Da
 
 export interface LoadChunksOfDigitalAction extends LoadActionMeta { pkDigital: number }
 
-export class ChunkActionsFactory extends SchemaActionsFactory<ChunkSlice, DatChunk> {
+// export class ChunkActionsFactory extends SchemaActionsFactory<ChunkSlice, DatChunk> {
 
-  // Suffixes of load action types
-  static readonly CHUNKS_OF_DIGITAL = 'CHUNKS_OF_DIGITAL';
+//   // Suffixes of load action types
+//   static readonly CHUNKS_OF_DIGITAL = 'CHUNKS_OF_DIGITAL';
 
-  /**
-   * Load a version. if entityVersion omitted, latest version is returned.
-   */
-  loadChunksOfDigital: (pkDigital: number, pk: number) => ActionResultObservable<DatChunk>;
+//   /**
+//    * Load a version. if entityVersion omitted, latest version is returned.
+//    */
+//   loadChunksOfDigital: (pkDigital: number, pk: number) => ActionResultObservable<DatChunk>;
 
-  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+//   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
-  createActions(): ChunkActionsFactory {
-    Object.assign(this, this.createCrudActions(datRoot, 'chunk'))
+//   createActions(): ChunkActionsFactory {
+//     Object.assign(this, this.createCrudActions(datRoot, 'chunk'))
 
-    this.loadChunksOfDigital = (pkDigital: number, pk: number) => {
-      const addPending = U.uuid()
+//     this.loadChunksOfDigital = (pkDigital: number, pk: number) => {
+//       const addPending = U.uuid()
 
-      const action: FluxStandardAction<ChunkSlice, LoadChunksOfDigitalAction> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ChunkActionsFactory.CHUNKS_OF_DIGITAL,
-        meta: { addPending, pkDigital, pk },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<DatChunk>>(['resolved', addPending]),
-        key: addPending
-      };
-    }
-    return this;
-  }
-}
+//       const action: FluxStandardAction<ChunkSlice, LoadChunksOfDigitalAction> = {
+//         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ChunkActionsFactory.CHUNKS_OF_DIGITAL,
+//         meta: { addPending, pkDigital, pk },
+//         payload: null,
+//       };
+//       this.ngRedux.dispatch(action)
+//       return {
+//         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+//         resolved$: this.ngRedux.select<SucceedActionMeta<DatChunk>>(['resolved', addPending]),
+//         key: addPending
+//       };
+//     }
+//     return this;
+//   }
+// }
 
 export interface LoadColumnsOfTableAction extends LoadActionMeta { pkDigital: number }
 
@@ -123,7 +123,8 @@ export class DatActions {
 
   digital = new DigitalActionsFactory(this.ngRedux).createActions();
 
-  chunk = new ChunkActionsFactory(this.ngRedux).createActions()
+  // chunk = new ChunkActionsFactory(this.ngRedux).createActions()
+  chunk = new SchemaActionsFactory<NamespaceSlice, DatNamespace>(this.ngRedux).createCrudActions(datRoot, 'chunk')
 
   column = new ColumnActionsFactory(this.ngRedux).createActions()
 

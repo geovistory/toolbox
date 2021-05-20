@@ -38,10 +38,10 @@ export class InfAppellation extends Entity implements InfEntity {
   string?: string;
 
   @hasMany(() => InfStatement, {keyTo: 'fk_object_info'})
-  incoming_statements: InfStatement[];
+  incoming_statements?: InfStatement[];
 
   @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
-  entity_version_project_rels: ProInfoProjRel[]
+  entity_version_project_rels?: ProInfoProjRel[]
 
   // Define well-known properties here
 

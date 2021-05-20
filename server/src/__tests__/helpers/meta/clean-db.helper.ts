@@ -1,9 +1,9 @@
-import { InfAppellation } from '../../../models';
-import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, ProTableConfigRepository, WarStatementRepository, InfAppellationRepository, InfStatementRepository, ProInfoProjRelRepository } from '../../../repositories';
-import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
-import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
-import { PubRoleRepository } from '../../../repositories/pub-role.repository';
-import { testdb } from "../testdb";
+import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTableConfigRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, WarStatementRepository} from '../../../repositories';
+import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
+import {PubRoleRepository} from '../../../repositories/pub-role.repository';
+import {WarFieldChangeRepository} from '../../../repositories/war-field-change.repository';
+import {testdb} from "../testdb";
 
 export async function cleanDb() {
     //because we update it to create an information.language
@@ -47,6 +47,7 @@ export async function cleanDb() {
     const sysSystemRelevantClassRepository = new SysSystemRelevantClassRepository(testdb);
     const sysSystemTypeRepository = new SysSystemTypeRepository(testdb);
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
+    const warFieldChangeRepository = new WarFieldChangeRepository(testdb);
     const warClassPreviewRepository = new WarClassPreviewRepository(testdb);
     const warStatementRepository = new WarStatementRepository(testdb);
 
@@ -123,9 +124,9 @@ export async function cleanDb() {
     await testdb.execute('DELETE FROM information.dimension');
     await testdb.execute('ALTER TABLE information.dimension ENABLE TRIGGER versioning_trigger');
 
-    await testdb.execute('ALTER TABLE information.persistent_item DISABLE TRIGGER versioning_trigger');
-    await testdb.execute('DELETE FROM information.persistent_item');
-    await testdb.execute('ALTER TABLE information.persistent_item ENABLE TRIGGER versioning_trigger');
+    await testdb.execute('ALTER TABLE information.resource DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM information.resource');
+    await testdb.execute('ALTER TABLE information.resource ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE information.place DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.place');
@@ -134,10 +135,6 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE information.statement DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.statement');
     await testdb.execute('ALTER TABLE information.statement ENABLE TRIGGER versioning_trigger');
-
-    await testdb.execute('ALTER TABLE information.temporal_entity DISABLE TRIGGER versioning_trigger');
-    await testdb.execute('DELETE FROM information.temporal_entity');
-    await testdb.execute('ALTER TABLE information.temporal_entity ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE information.text_property DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.text_property');
@@ -238,6 +235,7 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE system.system_type ENABLE TRIGGER versioning_trigger');
 
     await warEntityPreviewRepository.deleteAll();
+    await warFieldChangeRepository.deleteAll();
     await warClassPreviewRepository.deleteAll();
     await warStatementRepository.deleteAll();
 

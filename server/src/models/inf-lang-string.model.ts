@@ -2,6 +2,8 @@ import {model, property, Entity, hasMany, belongsTo} from '@loopback/repository'
 import {InfEntity} from '.';
 import {InfStatement} from './inf-statement.model';
 import {InfLanguage} from './inf-language.model';
+import {QuillDoc} from './quill-doc/quill-doc.model';
+import {GvLoopbackEntity} from '../utils/GvLoopbackEntity';
 
 @model({
   settings: {
@@ -10,7 +12,7 @@ import {InfLanguage} from './inf-language.model';
     postgresql: {schema: 'information', table: 'v_lang_string'}
   }
 })
-export class InfLangString extends Entity implements InfEntity {
+export class InfLangString extends GvLoopbackEntity implements InfEntity {
 
   @property({
     type: 'number',
@@ -25,10 +27,8 @@ export class InfLangString extends Entity implements InfEntity {
     required: true,
   })
   fk_class: number;
-  @property({
-    type: 'object',
-  })
-  quill_doc?: object;
+  @property()
+  quill_doc?: QuillDoc;
 
   @property({
     type: 'string',
@@ -36,7 +36,7 @@ export class InfLangString extends Entity implements InfEntity {
   string?: string;
 
   @hasMany(() => InfStatement, {keyTo: 'fk_object_info'})
-  incoming_statements: InfStatement[];
+  incoming_statements?: InfStatement[];
 
   @belongsTo(() => InfLanguage, {name: 'language'})
   fk_language: number;
@@ -46,7 +46,7 @@ export class InfLangString extends Entity implements InfEntity {
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<InfLangString>) {
     super(data);

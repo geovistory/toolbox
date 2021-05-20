@@ -18,18 +18,16 @@ import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
-import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
-import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import {createInfResource} from '../../../../helpers/atomic/inf-resource.helper';
 import {addInfosToProject, createProInfoProjRel, removeEntityFromProject, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
-import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {InfResourceMock} from '../../../../helpers/data/gvDB/InfResourceMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType} from '../../../../helpers/graphs/cityType.helper';
@@ -233,11 +231,11 @@ export namespace PEntityTypeMock {
         await createDfhApiProperty(DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE);
 
         // - peIt (Geo Place (Madrid))
-        const madrid = await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_MADRID);
+        const madrid = await createInfResource(InfResourceMock.GEO_PLACE_MADRID);
         const madridProjRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_MADRID);
 
         // - peIt (Geo Place Type X)
-        await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_TYPE_CITY);
+        await createInfResource(InfResourceMock.GEO_PLACE_TYPE_CITY);
         const cityTypeProjRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_CITY_TYPE);
 
         // - stmt (has geo. place type, (Madrid has type 'City'))
@@ -248,7 +246,7 @@ export namespace PEntityTypeMock {
         const cityTypeAppe = await createInfAppellation(InfAppellationMock.CITY)
 
         // - teEn Y (Naming of peIt X = 'City')
-        await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
+        await createInfResource(InfResourceMock.NAMING_1_CITY);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_CITY);
 
         // - stmt (Y refers to Name appe 'City')

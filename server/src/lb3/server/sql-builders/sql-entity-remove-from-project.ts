@@ -72,12 +72,10 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
           -- Filter the pk_related pointing to a PeIt or TeEn
             SELECT *
           FROM tw1
-          LEFT JOIN information.persistent_item t2
+          LEFT JOIN information.resource t2
             ON tw1.pk_related = t2.pk_entity
-          LEFT JOIN information.temporal_entity t3
-            ON tw1.pk_related = t3.pk_entity
           WHERE tw1.pk_related IS NOT NULL
-          AND (t2.pk_entity IS NOT NULL OR t3.pk_entity IS NOT NULL)
+          AND (t2.pk_entity IS NOT NULL)
         )
 
         -- the entity itself
@@ -104,17 +102,6 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
           projects.info_proj_rel t2
         WHERE tw.pk_related = t1.fk_object_info
         AND t1.fk_property = 1111
-        AND t1.pk_entity = t2.fk_entity
-        AND t2.fk_project = ${this.addParam(fkProject)}
-        AND t2.is_in_project = true
-
-        UNION ALL
-
-        -- the text properties
-        SELECT t1.pk_entity, null::int
-        FROM information.text_property t1, tw,
-          projects.info_proj_rel t2
-        WHERE tw.pk_related = t1.fk_concerned_entity
         AND t1.pk_entity = t2.fk_entity
         AND t2.fk_project = ${this.addParam(fkProject)}
         AND t2.is_in_project = true

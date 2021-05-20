@@ -27,7 +27,7 @@ export interface GvTargetType {
     typeItem?: GvTargetType.TypeItemEnum;
     timeSpan?: GvTargetType.TimeSpanEnum;
     textProperty?: GvTargetType.TextPropertyEnum;
-    temporalEntity?: Array<GvSubentitFieldPageReq>;
+    nestedResource?: Array<GvSubentitFieldPageReq>;
 }
 export namespace GvTargetType {
     export type AppellationEnum = 'true';

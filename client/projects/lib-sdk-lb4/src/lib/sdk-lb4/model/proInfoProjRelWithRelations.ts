@@ -16,7 +16,7 @@
  */
 export interface ProInfoProjRelWithRelations { 
     pk_entity?: number;
-    fk_project: number;
+    fk_project?: number;
     fk_entity?: number;
     fk_entity_version?: string;
     fk_entity_version_concat?: string;
@@ -27,6 +27,6 @@ export interface ProInfoProjRelWithRelations {
     ord_num_of_range?: number;
     ord_num_of_text_property?: number;
     fk_creator?: number;
-    fk_last_modifier: number;
+    fk_last_modifier?: number;
 }
 

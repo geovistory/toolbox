@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService, StatementTargetTimeSpan } from '@kleiolab/lib-queries';
-import { InfActions } from '@kleiolab/lib-redux';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
+import { InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
@@ -20,7 +20,8 @@ export class TimeSpanService {
     public p: ActiveProjectService,
     public t: InformationPipesService,
     private dialog: MatDialog,
-    private inf: InfActions
+    private inf: InfActions,
+    private dataService: ReduxMainService,
   ) { }
 
   openModal(item: StatementTargetTimeSpan, fkTeEn: number) {
@@ -75,8 +76,8 @@ export class TimeSpanService {
         })
 
         return combineLatest(
-          toUpsert.length > 0 ? this.inf.statement.upsert(toUpsert, pkProject).resolved$ : of(true),
-          toDelete.length > 0 ? this.inf.statement.remove(toDelete, pkProject).resolved$ : of(true)
+          toUpsert.length > 0 ? this.dataService.upsertInfStatementsWithRelations(pkProject, toUpsert) : of(true),
+          toDelete.length > 0 ? this.dataService.removeInfEntitiesFromProject(toDelete.map(i => i.pk_entity), pkProject) : of(true)
         )
 
       }),
@@ -84,15 +85,16 @@ export class TimeSpanService {
     )
   }
 
-  convertToStatement(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatement {
-    const statement: InfStatement = {
+  convertToStatement(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatementWithRelations {
+    const statement: InfStatementWithRelations = {
       fk_subject_info: fkTeEn,
       fk_property: parseInt(key),
       entity_version_project_rels: [{
         calendar: t.calendar
       }],
       object_time_primitive: {
-        ...t,
+        duration: t.duration,
+        julian_day: t.julian_day,
         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
       },
       ...{} as any

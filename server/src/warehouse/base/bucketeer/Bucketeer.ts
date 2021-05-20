@@ -126,7 +126,7 @@ export class Bucketeer {
 
       this.s3.getObject(params).createReadStream()
         .on('end', () => {
-          return res();
+          return res(params);
         })
         .on('error', (err) => {
           return rej(err);

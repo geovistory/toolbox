@@ -3,9 +3,9 @@ import * as readline from 'readline'
 
 export class Logger {
     static err(slug: string, msg: string, intendation = 1) {
-        if (process.env.LOGS === 'OFF') return
-
-        Logger.log(Logger.slug(slug) + Logger.ind(intendation) + 'ERR: ' + msg);
+        // if (process.env.LOGS === 'OFF') return
+        process.stdout.write(Logger.slug(slug) + Logger.ind(intendation) + 'ERR: ' + msg);
+        Logger.endLine()
     }
     static msg(slug: string, msg: string, intendation = 1) {
         if (process.env.LOGS === 'OFF') return

@@ -9,14 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DfhApiProfile } from './dfhApiProfile';
 import { DfhClass } from './dfhClass';
+import { DfhProfile } from './dfhProfile';
 import { DfhProperty } from './dfhProperty';
 import { DfhLabel } from './dfhLabel';
 
 
 export interface DfhObject { 
-    profile?: Array<DfhApiProfile>;
+    profile?: Array<DfhProfile>;
     klass?: Array<DfhClass>;
     property?: Array<DfhProperty>;
     label?: Array<DfhLabel>;

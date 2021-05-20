@@ -32,8 +32,7 @@ class DatNegativeObject {
 
 @model()
 class InfNegativeObject {
-  @property.array(PkEntity) persistent_item?: PkEntity[]
-  @property.array(PkEntity) temporal_entity?: PkEntity[]
+  @property.array(PkEntity) resource?: PkEntity[]
   @property.array(PkEntity) statement?: PkEntity[]
   @property.array(PkEntity) place?: PkEntity[]
   @property.array(PkEntity) language?: PkEntity[]

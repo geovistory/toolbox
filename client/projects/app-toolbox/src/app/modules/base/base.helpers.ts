@@ -1,5 +1,4 @@
-import { Field, GvFieldTargets, Subfield } from '@kleiolab/lib-queries';
-import { PaginateByParam } from '@kleiolab/lib-redux';
+import { Field, GvFieldTargets } from '@kleiolab/lib-queries';
 import { GvFieldId, GvFieldPage, GvFieldPageScope, GvTargetType } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
@@ -33,16 +32,6 @@ export function isLeafItemSubfield(subfieldType: GvTargetType): boolean {
   return false
 }
 
-
-// TODO delete if not needed
-export function createPaginateBy(subfield: Subfield, pkEntity: number, alternatives = false): PaginateByParam[] {
-  return [
-    { fk_property: subfield.property.fkProperty },
-    { fk_target_class: subfield.targetClass },
-    { [subfield.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
-    { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
-  ]
-}
 
 export function fieldToFieldPage(subfield: Field, source: GvFieldSourceEntity, scope: GvFieldPageScope, limit: number, offset: number): GvFieldPage {
   return {

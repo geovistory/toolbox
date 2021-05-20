@@ -18,10 +18,8 @@ import {createInfLangString} from '../atomic/inf-lang-string.helper';
 import {InfLangStringMock} from '../data/gvDB/InfLangStringMock';
 import {InfTimePrimitiveMock} from '../data/gvDB/InfTimePrimitiveMock';
 import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
-import {createInfPersistentItem} from '../atomic/inf-persistent-item.helper';
-import {createInfTemporalEntity} from '../atomic/inf-temporal-entity.helper';
-import {InfTemporalEntityMock} from '../data/gvDB/InfTemporalEntityMock';
-import {InfPersistentItemMock} from '../data/gvDB/InfPersistentItemMock';
+import {createInfResource} from '../atomic/inf-resource.helper';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 
 /**
  * mock data for testing subgield page queries
@@ -44,7 +42,7 @@ export namespace SubfieldHelper {
   // Data to test subfield-page-query for AppeTeEn->is appe. for lang. of->Person
   export async function appeTeEnIsAppeOfPerson() {
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createInfResource(InfResourceMock.PERSON_1)
     await createWarEntityPreview(WarEntityPreviewMock.PERSON_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
   }
@@ -60,7 +58,7 @@ export namespace SubfieldHelper {
   // Data to test subfield-page-query for Journey->has duration->Duration
   export async function journeyHasDuration() {
     await createInfStatement(InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION)
-    await createInfPersistentItem(InfPersistentItemMock.TIME_UNIT_MONTH)
+    await createInfResource(InfResourceMock.TIME_UNIT_MONTH)
     await createInfDimension(InfDimensionMock.ONE_MONTH)
     await createWarEntityPreview(WarEntityPreviewMock.TIME_UNIT_ONE_MONTH)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION)
@@ -97,8 +95,8 @@ export namespace SubfieldHelper {
   export async function personHasAppeTeEn() {
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1)
+    await createInfResource(InfResourceMock.PERSON_1)
+    await createInfResource(InfResourceMock.NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)

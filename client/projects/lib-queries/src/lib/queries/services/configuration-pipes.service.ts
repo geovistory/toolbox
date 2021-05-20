@@ -18,7 +18,7 @@ import { SchemaSelectorsService } from './schema-selectors.service';
 
 
 // this is the
-export type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'persistent_item' | 'temporal_entity'
+export type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'resource'
 
 export interface DfhPropertyStatus extends DfhProperty {
   // true, if removed from all profiles of the current project
@@ -261,7 +261,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           // filter fields that are displayd in specific fields and not removed from all profiles
           .filter(field => (field.placeOfDisplay.specificFields && field.allSubfieldsRemovedFromAllProfiles === false))
           // sort fields by the position defined in the specific fields
-          .sort((a, b) => a.placeOfDisplay.specificFields.position - a.placeOfDisplay.specificFields.position)
+          .sort((a, b) => a.placeOfDisplay.specificFields.position - b.placeOfDisplay.specificFields.position)
 
         const whenField = allFields.find(field => field.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
         if (whenField) fields.push(whenField)
@@ -520,8 +520,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             for (const key in field.targets) {
               if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
                 const listType = field.targets[key].listType;
-                // put temporalEntity to entityPreview
-                const subTargetType: GvSubentityTargetType = listType.temporalEntity ?
+                const subTargetType: GvSubentityTargetType = listType.nestedResource ?
                   { entityPreview: 'true' } :
                   listType
                 nestedTargets[key] = subTargetType
@@ -547,7 +546,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             }
             subentitySubfieldPage.push(nestedPage)
           }
-          return { temporalEntity: subentitySubfieldPage }
+          return { nestedResource: subentitySubfieldPage }
         }),
 
       )
@@ -845,11 +844,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             console.warn('unsupported list type')
           }
         }
-        else if (klass.basic_type === 8 || klass.basic_type === 30) {
-          return 'persistent_item'
-        }
+
         else {
-          return 'temporal_entity'
+          return 'resource'
         }
       })
     )

@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty, SysConfigValue } from '.';
+import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage,  InfPlace, InfStatement, InfResource,  InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty, SysConfigValue, DfhProfile } from '.';
 import { DatClassColumnMapping } from './dat-class-column-mapping.model';
 import { DatColumn } from './dat-column.model';
 import { DatTextProperty } from './dat-text-property.model';
@@ -8,18 +8,18 @@ import { ProClassFieldConfig } from './pro-class-field-config.model';
 import { ProDfhProfileProjRel } from './pro-dfh-profile-proj-rel.model';
 import { SysSystemRelevantClass } from './sys-system-relevant-class.model';
 import { WarEntityPreview } from './war-entity-preview.model';
+import {DatChunk} from './dat-chunk.model';
+import {DatNamespace} from './dat-namespace.model';
 
 
 @model()
 export class InfObject {
-  @property.array(InfPersistentItem) persistent_item?: Partial<InfPersistentItem>[]
-  @property.array(InfTemporalEntity) temporal_entity?: Partial<InfTemporalEntity>[]
+  @property.array(InfResource) resource?: Partial<InfResource>[]
   @property.array(InfStatement) statement?: Partial<InfStatement>[]
   @property.array(InfPlace) place?: Partial<InfPlace>[]
   @property.array(InfLanguage) language?: Partial<InfLanguage>[]
   @property.array(InfAppellation) appellation?: Partial<InfAppellation>[]
   @property.array(InfTimePrimitive) time_primitive?: Partial<InfTimePrimitive>[]
-  @property.array(InfTextProperty) text_property?: Partial<InfTextProperty>[]
   @property.array(InfLangString) lang_string?: Partial<InfLangString>[]
   @property.array(InfDimension) dimension?: Partial<InfDimension>[]
 }
@@ -39,9 +39,11 @@ export class ProObject {
 @model()
 export class DatObject {
   @property.array(DatDigital) digital?: Partial<DatDigital>[]
+  @property.array(DatDigital) chunk?: Partial<DatChunk>[]
   @property.array(DatColumn) column?: Partial<DatColumn>[]
   @property.array(DatTextProperty) text_property?: Partial<DatTextProperty>[]
   @property.array(DatClassColumnMapping) class_column_mapping?: Partial<DatClassColumnMapping>[]
+  @property.array(DatNamespace) namespace?: Partial<DatNamespace>[]
 }
 
 
@@ -51,7 +53,7 @@ export class WarObject {
 }
 @model()
 export class DfhObject {
-  @property.array(DfhApiProfile) profile?: DfhApiProfile[];
+  @property.array(DfhProfile) profile?: DfhProfile[];
   @property.array(DfhClass) klass?: DfhClass[];
   @property.array(DfhProperty) property?: DfhProperty[];
   @property.array(DfhLabel) label?: DfhLabel[];

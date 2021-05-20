@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { DatNamespace } from './datNamespace';
 import { DatTextProperty } from './datTextProperty';
 import { DatDigital } from './datDigital';
 import { DatClassColumnMapping } from './datClassColumnMapping';
@@ -17,8 +18,10 @@ import { DatColumn } from './datColumn';
 
 export interface DatObject { 
     digital?: Array<DatDigital>;
+    chunk?: Array<DatDigital>;
     column?: Array<DatColumn>;
     text_property?: Array<DatTextProperty>;
     class_column_mapping?: Array<DatClassColumnMapping>;
+    namespace?: Array<DatNamespace>;
 }
 

@@ -101,10 +101,8 @@ const twIds = `
         JOIN
             information."statement" t2 ON t1.fk_entity = t2.pk_entity
         JOIN
-            information.entity t3 ON t2.fk_subject_info = t3.pk_entity
+            information.resource t3 ON t2.fk_subject_info = t3.pk_entity
         WHERE
-            t3.table_name IN ('temporal_entity', 'persistent_item')
-        AND
             t1.tmsp_last_modification > $1
         UNION ALL
         SELECT
@@ -115,10 +113,8 @@ const twIds = `
         JOIN
             information."statement" t2 ON t1.fk_entity = t2.pk_entity
         JOIN
-            information.entity t3 ON t2.fk_object_info = t3.pk_entity
+            information.resource t3 ON t2.fk_object_info = t3.pk_entity
         WHERE
-            t3.table_name IN ('temporal_entity', 'persistent_item')
-        AND
             t1.tmsp_last_modification > $1
         UNION ALL
         SELECT
@@ -127,10 +123,8 @@ const twIds = `
         FROM
             projects.info_proj_rel t1
         JOIN
-            information.entity t2 ON t1.fk_entity = t2.pk_entity
+            information.resource t2 ON t1.fk_entity = t2.pk_entity
         WHERE
-            t2.table_name IN ('temporal_entity', 'persistent_item')
-        AND
             t1.tmsp_last_modification > $1
 
     )
@@ -206,7 +200,7 @@ tw2 AS (
             ORDER BY t1.ord_num_of_range ASC
         ) outgoing
     FROM tw1 t1
-    WHERE t1.subject_table IN ('temporal_entity', 'persistent_item')
+    WHERE t1.subject_table IN ('resource')
     GROUP BY fk_project, fk_property, fk_subject_info
     ORDER BY fk_project, fk_property, fk_subject_info
 ),
@@ -221,7 +215,7 @@ tw3 AS (
              ORDER BY t1.ord_num_of_domain ASC
         ) incoming
     FROM tw1 t1
-    WHERE t1.object_table IN ('temporal_entity', 'persistent_item')
+    WHERE t1.object_table IN ('resource')
     GROUP BY fk_project, fk_property, fk_object_info
     ORDER BY fk_project, fk_property, fk_object_info
 ),

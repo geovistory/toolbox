@@ -1,11 +1,10 @@
-import {DefaultCrudRepository, repository, HasManyRepositoryFactory} from '@loopback/repository';
-import {DfhClass, DfhClassRelations, ProDfhClassProjRel, DfhProperty, ProClassFieldConfig, InfPersistentItem} from '../models';
+import {Getter, inject} from '@loopback/core';
+import {DefaultCrudRepository, HasManyRepositoryFactory, repository} from '@loopback/repository';
 import {Postgres1DataSource} from '../datasources';
-import {inject, Getter} from '@loopback/core';
-import {ProDfhClassProjRelRepository} from './pro-dfh-class-proj-rel.repository';
+import {DfhClass, DfhClassRelations, DfhProperty, ProClassFieldConfig, ProDfhClassProjRel} from '../models';
 import {DfhPropertyRepository} from './dfh-property.repository';
 import {ProClassFieldConfigRepository} from './pro-class-field-config.repository';
-import {InfPersistentItemRepository} from './inf-persistent-item.repository';
+import {ProDfhClassProjRelRepository} from './pro-dfh-class-proj-rel.repository';
 
 export class DfhClassRepository extends DefaultCrudRepository<
   DfhClass,

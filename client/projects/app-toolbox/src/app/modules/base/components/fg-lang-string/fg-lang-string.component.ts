@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
-import { InfAppellation, InfLangString, InfLanguage } from '@kleiolab/lib-sdk-lb3';
+import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
@@ -27,7 +27,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
   destroy$ = new Subject<boolean>();
   afterViewInit$ = new BehaviorSubject(false);
 
-  @Input() initVal$: Observable<InfLangString>
+  @Input() initVal$: Observable<InfLangStringWithRelations>
   @Input() appearance: MatFormFieldAppearance
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
@@ -113,7 +113,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
               },
               placeholder: '',
               mapValue: (x: [QuillDoc, InfLanguage]) => {
-                const value: InfLangString = {
+                const value: InfLangStringWithRelations = {
                   fk_class: initVal.fk_class,
                   fk_language: x[1] ? x[1].pk_entity : undefined,
                   language: x[1],

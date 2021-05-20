@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { MatDialog } from '@angular/material';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService, StatementTargetEntity, StatementTargetTimeSpan, StatementWithTarget } from '@kleiolab/lib-queries';
-import { InfActions, SchemaService } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService, Field, InformationPipesService, StatementTargetEntity, StatementTargetTimeSpan, StatementWithTarget } from '@kleiolab/lib-queries';
+import { InfActions, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -68,7 +68,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     private i: InformationPipesService,
     private timeSpan: TimeSpanService,
     private s: SchemaService,
-    private c: ConfigurationPipesService,
+    private dataService: ReduxMainService,
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -120,7 +120,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
           )
         }
         for (const field of fields) {
-          this.pag.subfield.addPageLoader(pkProject, field, this.source, limit, offset, until$, this.scope);
+          this.pag.addPageLoaderFromField(pkProject, field, this.source, limit, offset, until$, this.scope);
         }
       }),
       // Piping from store
@@ -214,7 +214,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       this.ap.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
 
         const statement = item.statement;
-        this.inf.statement.remove([statement], pkProject)
+        this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject)
 
       })
     }
@@ -317,7 +317,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       // remove the related temporal entity
       this.p.removeEntityFromProject(item.target.entity.pkEntity, () => {
         // remove the statement
-        this.inf.statement.remove([item.statement], pkProject)
+        this.dataService.removeInfEntitiesFromProject([item.statement.pk_entity], pkProject)
       })
     })
 

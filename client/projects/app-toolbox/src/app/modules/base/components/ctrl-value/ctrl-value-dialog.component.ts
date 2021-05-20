@@ -2,8 +2,7 @@ import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations, ProInfoProjRel, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { Observable, Subject } from 'rxjs';
@@ -20,7 +19,7 @@ export interface CtrlValueDialogData {
   pkProject: number;
 }
 
-export type CtrlValueDialogResult = Partial<InfStatement>
+export type CtrlValueDialogResult = Partial<InfStatementWithRelations>
 
 export interface ClassAndTypePk { pkClass: number, pkType: number };
 

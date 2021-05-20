@@ -16,5 +16,6 @@ export interface GvSubfieldPageInfo {
     page: GvFieldPage;
     count: number;
     paginatedStatements: Array<number>;
+    validFor?: string;
 }
 

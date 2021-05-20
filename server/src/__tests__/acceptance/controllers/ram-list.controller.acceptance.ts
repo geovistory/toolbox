@@ -4,7 +4,7 @@ import {PubAccount} from '../../../models';
 import {GeovistoryServer} from '../../../server';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {DatChunkMock} from '../../helpers/data/gvDB/DatChunkMock';
-import {InfPersistentItemMock} from '../../helpers/data/gvDB/InfPersistentItemMock';
+import {InfResourceMock} from '../../helpers/data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';
 import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
 import {PubAccountMock} from '../../helpers/data/gvDB/PubAccountMock';
@@ -25,7 +25,7 @@ describe('RamListController', () => {
         const pwd = PubCredentialMock.GAETAN_PASSWORD.password;
         const project = ProProjectMock.SANDBOX_PROJECT;
         const accountInProject = PubAccountMock.GAETAN_VERIFIED
-        const entity = InfPersistentItemMock.RUDOLF
+        const entity = InfResourceMock.RUDOLF
 
         const cell = TabCellXMock.FEATURE_X_2_1;
         const cellRefersToRudolf = InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF

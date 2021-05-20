@@ -3,8 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPage, GvTargetType, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvTargetType, InfStatement, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -222,9 +221,9 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
           )
         }
 
-        else if (subfieldType.temporalEntity) {
+        else if (subfieldType.nestedResource) {
 
-          return this.s.inf$.temporal_entity$._by_pk_entity$.key(targetInfo).pipe(
+          return this.s.inf$.resource$._by_pk_entity$.key(targetInfo).pipe(
             filter(x => !!x),
             map(temporalEntity => {
               const stmtTarget: StatementTarget = {
