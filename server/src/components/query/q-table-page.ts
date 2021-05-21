@@ -183,7 +183,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
 
     -- rows
     tw2 AS (
-      ${this.joinColBatchWiths(masterColumns)}
+      ${this.joinColBatchWiths(masterColumns, options.sortBy, options.sortDirection)}
 
     ),
 
@@ -618,7 +618,10 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     return sql
   }
 
-  private joinColBatchWiths(masterColumns: string[]) {
+  private joinColBatchWiths(masterColumns: string[], sortBy: string, sortDirection: string) {
+    let direction = 'ASC';
+    if(sortBy === 'index') direction = sortDirection;
+
     return `
         Select
       ${[
@@ -635,7 +638,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
           .join(' AND \n')}
         `
       }
-      order by tw1.index
+      order by tw1.index ${direction}
     `
   }
 
@@ -672,7 +675,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   private addOrderBy(options: GetTablePageOptions, colMeta: DatColumn[]): string {
     if (options.sortBy) {
       if (options.sortBy === 'index') {
-        return `ORDER BY position ${options.sortDirection}`
+        return `ORDER BY index ${options.sortDirection}`
       }
       else {
         const pkCol = options.sortBy

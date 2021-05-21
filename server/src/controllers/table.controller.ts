@@ -384,21 +384,9 @@ export class TableController {
     if (accountId) result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
     else result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: null, fk_digital: pkDataEntity } });
 
-    // if the table has not yet a config, we create one
-    if (result === null) {
-      // get all columns of the table
-      const cols = (await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } })).sort((a, b) => (a.pk_entity as number) - (b.pk_entity as number))
-      const config = new TableConfig();
-      config.columns = cols.map(c => ({ fkColumn: c.pk_entity as number, visible: true }))
+    if (result === null) throw new HttpErrors.UnprocessableEntity('Impossible error: table should have a table config at this point');
 
-      // create the TableConfig
-      await this.setTableConfig(pkProject, pkDataEntity, accountId, config);
-
-      return {
-        positive: { pro: { table_config: [config] } },
-        negative: {}
-      }
-    } else return {
+    return {
       positive: { pro: { table_config: [result] } },
       negative: {}
     }
@@ -406,7 +394,7 @@ export class TableController {
 
   @authenticate('basic')
   @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
-  @post('/update-columns-names', {
+  @post('/update-columns', {
     responses: {
       '200': {
         description: 'Update the name of columns',
@@ -414,44 +402,60 @@ export class TableController {
       },
     },
   })
-  async updateColumnNames(
+  async updateColumn(
     @param.query.number('pkProject', { required: true }) pkProject: number,
     @param.query.number('pkDigital', { required: true }) pkDigital: number,
     @param.query.number('accountId') accountId: number,
-    @param.query.string('fkLanguage') fkLanguage: string,
+    @param.query.number('fkLanguage') fkLanguage: number,
     @requestBody() body: ColumnNames
   ): Promise<GvSchemaModifier> {
 
-    const newColumns = body.names.filter(c => c.pkColumn < 0);
-    for (const col of newColumns) {
-      if (!col.type) throw new HttpErrors.UnprocessableEntity('Column has no type');
-      //create the column
-      const datCol = await this.datColumnRepo.create({ fk_digital: pkDigital, fk_data_type: col.type === 'string' ? 3292 : 3293, fk_column_content_type: 3291 })
-      await this.datTextPropertyRepo.create({ fk_entity: datCol.pk_entity, string: col.name, fk_system_type: 3295, fk_language: fkLanguage });
-      // put it at correct index
-      const config = (await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDigital } }))?.config
-      config?.columns?.push({ fkColumn: col.pkColumn, visible: col.visible })
-      if (config?.columns && col.position) config.columns.splice(col.position, 0, config.columns.splice(config?.columns?.length - 1, 1)[0])
-    }
+    const tableConfig = (await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDigital } }))?.config;
+    if (!tableConfig) throw new HttpErrors.UnprocessableEntity('Table config does not exists for this table (impossible error)');
 
-    const existingColumns = body.names.filter(c => c.pkColumn >= 0);
-    //before updating anything in db, check if the columns are in the digital
-    for (const col of existingColumns) {
-      const datCol = await this.datColumnRepo.findOne({ where: { pk_entity: col.pkColumn } })
-      if (datCol?.fk_digital && datCol.fk_digital !== pkDigital) throw new HttpErrors.UnprocessableEntity('Column is not in the digital');
-    }
+    for (const col of body.names) {
+      if (col.pkColumn < 0) {//the column is new:
+        if (!col.type) throw new HttpErrors.UnprocessableEntity('New column has no type');
+        const datNamespace = await this.datNamespaceRepo.findOne({ where: { fk_project: pkProject } })
+        if (!datNamespace) throw new HttpErrors.UnprocessableEntity('Namespace does not exists for this digital');
+        //create the column
+        const datCol = await this.datColumnRepo.create({ fk_digital: pkDigital, fk_data_type: col.type === 'string' ? 3292 : 3293, fk_column_content_type: 3291, fk_namespace: datNamespace.pk_entity })
+        await this.datTextPropertyRepo.create({ fk_entity: datCol.pk_entity, string: col.name, fk_system_type: 3295, fk_language: fkLanguage, fk_namespace: datNamespace.pk_entity });
+        if (!datCol.pk_entity) throw new HttpErrors.UnprocessableEntity('Column creation failed (impossible error)');
+        // put it at correct index
+        tableConfig?.columns?.push({ fkColumn: datCol.pk_entity, visible: col.visible })
+        if (tableConfig?.columns && col.position) tableConfig.columns.splice(col.position, 0, tableConfig.columns.splice(tableConfig?.columns?.length - 1, 1)[0])
 
-    for (const col of existingColumns) {
-      const tp = await this.datTextPropertyRepo.findOne({ where: { fk_entity: col.pkColumn } });
-      if (!tp) throw new HttpErrors.UnprocessableEntity('Unknown column');
-      if (tp.string !== col.name) {
-        tp.string = col.name;
-        await this.datTextPropertyRepo.updateById(tp.pk_entity, tp);
+      } else { // the column already exists
+        const datCol = await this.datColumnRepo.findOne({ where: { pk_entity: col.pkColumn } })
+        if (datCol?.fk_digital && datCol.fk_digital !== pkDigital) throw new HttpErrors.UnprocessableEntity('Column is not in the digital');
+        const tp = await this.datTextPropertyRepo.findOne({ where: { fk_entity: col.pkColumn } });
+        if (!tp) throw new HttpErrors.UnprocessableEntity('Unknown column');
+
+        if (tp.string !== col.name) { // the column label has changed
+          tp.string = col.name;
+          await this.datTextPropertyRepo.updateById(tp.pk_entity, tp);
+        }
+
+        if (col.position === undefined || isNaN(col.position)) continue;
+        if (!tableConfig || !tableConfig.columns) continue;
+        if (col.position >= tableConfig?.columns?.length) throw new HttpErrors.UnprocessableEntity('Position is not valid: too high');
+
+        const oldIndex = tableConfig?.columns?.findIndex(c => c.fkColumn === col.pkColumn)
+        if (oldIndex !== col.position) { // the column has moved
+          [tableConfig.columns[col.position], tableConfig.columns[oldIndex]] = [tableConfig.columns[oldIndex], tableConfig.columns[col.position]]; // exchange new position and old position
+        }
+        tableConfig.columns[col.position].visible = col.visible;
       }
     }
 
+    await this.setTableConfig(pkProject, pkDigital, accountId, tableConfig)
+
+    const newConfig = (await this.getTableConfig(pkProject, accountId, pkDigital)).positive;
+    const newColumns = await this.getTableColumns(pkProject, pkDigital);
+
     return {
-      positive: await this.getTableColumns(pkProject, pkDigital),
+      positive: { ...newConfig, ...newColumns },
       negative: {}
     }
   }
@@ -524,7 +528,8 @@ export class TableController {
       },
     },
   })
-  async newRow(@param.query.number('pkProject', { required: true }) pkProject: number,
+  async newRow(
+    @param.query.number('pkProject', { required: true }) pkProject: number,
     @param.query.number('pkDigital', { required: true }) pkDigital: number,
     @param.query.number('index', { required: true }) index: number,
   ): Promise<TabRow> {
@@ -546,7 +551,8 @@ export class TableController {
       },
     },
   })
-  async moveRow(@param.query.number('pkProject', { required: true }) pkProject: number,
+  async moveRow(
+    @param.query.number('pkProject', { required: true }) pkProject: number,
     @param.query.number('pkDigital', { required: true }) pkDigital: number,
     @param.query.number('pkRow', { required: true }) pkRow: number,
     @param.query.number('index', { required: true }) index: number

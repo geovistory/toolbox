@@ -1,5 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3/models';
 import { ColumnNames, TableConfig, TableConfigCol } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -11,7 +11,6 @@ export interface TableConfigDialogData {
   pkDigital: number
 }
 export interface TableConfigDialogResult {
-  config: TableConfig,
   cols: ColumnNames
 }
 
@@ -53,6 +52,7 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: TableConfigDialogData,
+    private dialogRef: MatDialogRef<TableConfigDialogComponent>,
     private p: ActiveProjectService,
   ) { }
 
@@ -129,8 +129,8 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
     this.filter(this.filter$.value);
   }
 
-  changeColumnName(pkColumn: number, name: string) {
-    this.editColumn = undefined;
+  changeColumnName(pkColumn: number, name: string, keepEdit?: boolean) {
+    if (!keepEdit) this.editColumn = undefined;
     const updated = this.getUpdated(pkColumn);
 
     if (updated) this.setUpdated({ ...updated, name });
@@ -149,6 +149,12 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
     this.putAtBottom = true;
   }
 
+  changeColumnType(pkColumn: number, type: 'string' | 'number') {
+    this.editColumn = pkColumn;
+    const updated = this.getUpdated(pkColumn);
+    this.setUpdated({ ...updated, type });
+  }
+
   getUpdated(pkColumn: number) {
     return this.updates.find(c => c.pkColumn == pkColumn);
   }
@@ -159,7 +165,7 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
     else this.updates[idx] = column;
   }
 
-  return(): TableConfigDialogResult {
+  onClose(): void {
     const config: Array<TableConfigCol> = this.tableConfig.columns
 
     this.updates.forEach(update => {
@@ -172,10 +178,7 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
       }
     })
 
-    return {
-      config: { columns: config },
-      cols: { names: this.updates },
-    }
+    this.dialogRef.close({ cols: { names: this.updates } })
   }
 
 }

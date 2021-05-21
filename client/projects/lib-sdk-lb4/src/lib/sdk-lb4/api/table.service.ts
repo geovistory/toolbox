@@ -987,15 +987,15 @@ export class TableService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tableControllerUpdateColumnNames(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: string, columnNames?: ColumnNames, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
-    public tableControllerUpdateColumnNames(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: string, columnNames?: ColumnNames, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
-    public tableControllerUpdateColumnNames(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: string, columnNames?: ColumnNames, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
-    public tableControllerUpdateColumnNames(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: string, columnNames?: ColumnNames, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
-            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerUpdateColumnNames.');
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerUpdateColumn.');
         }
         if (pkDigital === null || pkDigital === undefined) {
-            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerUpdateColumnNames.');
+            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerUpdateColumn.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -1058,7 +1058,7 @@ export class TableService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<GvSchemaModifier>(`${this.configuration.basePath}/update-columns-names`,
+        return this.httpClient.post<GvSchemaModifier>(`${this.configuration.basePath}/update-columns`,
             columnNames,
             {
                 params: queryParameters,

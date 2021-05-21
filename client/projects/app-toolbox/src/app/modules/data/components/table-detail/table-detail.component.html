@@ -32,6 +32,9 @@
 <!-- // MOVED cellMapping TO EntityMatcherComponent -->
 <gv-table [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading" [sortBy$]="sortByIndex$"
   [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled" [sortingEnabled]="true"
-  [lineBreak]="lineBrakeInCells" [mode]="tableMode" class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)"
-  (filterDemanded)="onFilterChange($event)">
+  [lineBreak]="lineBrakeInCells" [mode]="tableMode" [newRow]="newRowTemp" class="gv-overflow-hidden"
+  (sortDemanded)="onSortChange($event)" (filterDemanded)="onFilterChange($event)"
+  (createRowDemanded)="preNewRow($event.position)" (deleteRowDemanded)="deleteRow($event.pkRow)"
+  (moveRowDemanded)="moveRow($event.pkRow, $event.position)" (validateNewRowDemanded)="newRow($event)"
+  (cancelNewRowDemanded)="cancelNewRow()">
 </gv-table>

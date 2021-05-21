@@ -5,6 +5,7 @@ import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
 import { Header, ImportTable, ImportTableControllerService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { values } from 'ramda';
@@ -69,12 +70,12 @@ export class ImporterComponent implements OnInit, OnDestroy {
   namespace: any;
   languages = [];
   language: InfLanguage;
+  pkProject: number;
 
   // formControls
   tableNameCtrl = new FormControl('', [Validators.required]);
   namespaceCtrl = new FormControl('', [Validators.required]);
   languageCtrl = new FormControl('', [Validators.required]);
-
 
   tableForm = new FormGroup({
     tableNameCtrl: this.tableNameCtrl,
@@ -89,6 +90,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     private worker: WorkerWrapperService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
+    private a: ActiveAccountService,
     private apiImporter: ImportTableControllerService,
     @Inject(MAT_DIALOG_DATA) public data: ImporterDialogData
   ) {
@@ -107,6 +109,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.reset();
     this.importTableSocket.cleanConnect();
+
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => this.pkProject = pkProject);
   }
 
   /**
@@ -388,7 +392,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
             rows: this.table,
           };
 
-          this.apiImporter.importTableControllerImportTable(this.namespaceCtrl.value, importTable)
+          this.apiImporter.importTableControllerImportTable(this.pkProject, this.namespaceCtrl.value, this.a.account.id, importTable)
             .pipe(switchMap(response => {
 
               this.fkDigital = response.fk_digital;

@@ -1,5 +1,5 @@
 import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProTableConfig } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../root/models/model';
 
 export interface ProProjectSlice {
@@ -36,6 +36,11 @@ export interface ProAnalysisSlice {
   by_pk_entity?: ProAnalysis;
 }
 
+export interface ProTableConfigSlice {
+  by_pk_entity?: ProTableConfig;
+  by_fk_digital?: ByPk<ProTableConfig>;
+}
+
 export interface Pro {
   info_proj_rel?: ProInfoProjRelSlice;
   dfh_profile_proj_rel?: ProDfhProfileProjRelSlice;
@@ -43,6 +48,7 @@ export interface Pro {
   class_field_config?: ProClassFieldConfigSlice;
   text_property?: ProTextPropertySlice;
   analysis?: ProAnalysisSlice;
+  table_config?: ProTableConfigSlice;
 }
 
 

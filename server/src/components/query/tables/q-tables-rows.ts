@@ -8,7 +8,7 @@ export class TabRowExtended extends TabRow {
 
 export class QTablesRow extends SqlBuilderLb4Models {
 
-    repositionThreshold = 0.00000001;
+    repositionThreshold = 0.001;
     multiplier = 1000000;
 
 
@@ -46,6 +46,7 @@ export class QTablesRow extends SqlBuilderLb4Models {
         const pkRow = (await this.execute<Array<TabRow>>())[0].pk_row;
         this.rowNb = -1;
 
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         if (range < this.repositionThreshold) this.repositioning(fkDigital); //async
         return this.getRow(fkDigital, pkRow)
     }
@@ -68,6 +69,7 @@ export class QTablesRow extends SqlBuilderLb4Models {
         row.position = position;
         const newRow = await this.updateRow(fkDigital, row);
 
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         if (range < this.repositionThreshold) this.repositioning(fkDigital); //async
         return newRow;
     }
@@ -104,7 +106,7 @@ export class QTablesRow extends SqlBuilderLb4Models {
         if (this.rowNb === -1) {
             this.sql = `SELECT COUNT(*) FROM tables.row_` + fkDigital + `;`
             this.getBuiltQuery();
-            this.rowNb = (await this.execute<Array<{ count: number }>>())[0].count
+            this.rowNb = parseInt((await this.execute<Array<{ count: number }>>())[0].count + '', 10)
         }
         return this.rowNb;
     }
@@ -116,7 +118,7 @@ export class QTablesRow extends SqlBuilderLb4Models {
         index = Math.max(Math.round(index), 0);
         const precIndex = Math.min(index - 1, this.rowNb); // should be positive and below last row
         const prec = precIndex > 0 ? parseFloat((await this.getRowAtIndex(fkDigital, precIndex))?.position + '') : undefined;
-        const suiv = index >= 0 ? parseFloat((await this.getRowAtIndex(fkDigital, index))?.position + '') : undefined;
+        const suiv = index >= 0 && index <= this.rowNb ? parseFloat((await this.getRowAtIndex(fkDigital, index))?.position + '') : undefined;
 
         let position: number;
         let range: number;

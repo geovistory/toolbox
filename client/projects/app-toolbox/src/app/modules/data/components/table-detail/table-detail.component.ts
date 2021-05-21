@@ -5,11 +5,11 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
-import { Cell, Header, TableMode } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
+import { Cell, Header, Row, TableMode } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -54,6 +54,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   // for table config
   tableConfig$: Observable<TableConfig>;
   tableConfig: TableConfig = { columns: [] };
+  defaultLanguage: InfLanguage;
 
   // for table.component:
   loading = true;
@@ -65,8 +66,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   sortByIndex$ = new BehaviorSubject({ pkColumn: -1, direction: 'ASC' });
   currentSortIndex: { colNb: number, direction: string, colName: string };
 
-  // for tableConfig
-  defaultLanguage: InfLanguage;
+  // for creating new rows
+  reload$ = new BehaviorSubject<number>(0);
+  newRowTemp: Row = { position: -1, cells: [] };
+  headers: Array<Header>;
 
   pkProject: number;
   accountId: number;
@@ -111,6 +114,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       this.sortDirection$,
       this.filters$,
       this.tableConfig$,
+      this.reload$
     ]).pipe(shareReplay({ refCount: true, bufferSize: 1 }))
 
     // get the table according to the settings
@@ -124,7 +128,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         sortBy,
         sortDirection,
         filters,
-        config
+        config,
+        reload
       ]) => this.tableAPI.tableControllerGetTablePage(pkProject, this.pkEntity, {
         limit: pageSize,
         offset: pageSize * pageIndex,
@@ -193,6 +198,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
           return header
         }))
+        this.headers = headers;
         return headers;
       })
     )
@@ -205,7 +211,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           const row = res.rows[i];
           const keys = Object.keys(row);
           table[i] = [];
-          table[i][0] = { text: row.index.toString(), pkCell: -1, pkColumn: -1, pkRow: -1 };
+          table[i][0] = { text: row.index.toString(), pkCell: -1, pkColumn: -1, pkRow: row.pk_row };
           for (let j = 0; j < keys.length; j++) {
             const key = keys[j];
             const str: string = row[key].string_value ?
@@ -270,11 +276,62 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       })
       .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
         if (!result) return;
-        this.s.modifyGvSchema(this.tableAPI.tableControllerSetTableConfig(this.pkProject, this.pkEntity, this.a.account.id, result.config)
-          , this.pkProject);
-        this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumnNames(
-          this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_language, result.cols)
+        this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumn(
+          this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
           , this.pkProject);
       });
   }
+
+  preNewRow(newPosition: number) {
+    this.newRowTemp.position = newPosition;
+    this.newRowTemp.cells = this.headers.map(h => ({ text: '', pkCell: -1, pkRow: -1, pkColumn: h.pk_column }))
+    this.newRowTemp.cells[0].text = newPosition + '';
+  }
+
+  newRow(row: Row) {
+    this.tableAPI.tableControllerNewRow(this.pkProject, this.pkEntity, row.position).subscribe(newRow => {
+      const cells = row.cells
+        .slice(1)
+        .filter(cell => cell.text != '')
+        .map(cell => {
+          const toReturn: TabCell = {
+            fk_digital: this.pkEntity,
+            fk_row: parseInt(newRow.pk_row + '', 10),
+            fk_column: cell.pkColumn
+          }
+          const type = this.headers.find(h => h.pk_column == cell.pkColumn).type;
+          if (type == 'number') toReturn.numeric_value = parseFloat(cell.text);
+          else toReturn.string_value = cell.text;
+          return toReturn;
+        })
+        .filter(c => c.string_value != undefined || !isNaN(c.numeric_value))
+
+
+      this.createCells(cells).subscribe(newCells => {
+        this.newRowTemp = { position: -1, cells: [] };
+        this.reload$.next(this.reload$.value + 1) // trick to reload the content
+      })
+    })
+  }
+
+  cancelNewRow() {
+    this.newRowTemp = { position: -1, cells: [] };
+  }
+
+  createCells(cells: Array<TabCell>): Observable<TabCells> {
+    return this.tableAPI.tableControllerInsertOrUpdateCells(this.pkProject, this.pkEntity, { cells })
+  }
+
+  deleteRow(pkRow: number) {
+    this.tableAPI.tableControllerDeleteRow(this.pkProject, this.pkEntity, pkRow).subscribe(x => {
+      this.reload$.next(this.reload$.value + 1);
+    })
+  }
+
+  moveRow(pkRow: number, newPosition: number) {
+    this.tableAPI.tableControllerMoveRow(this.pkProject, this.pkEntity, pkRow, newPosition).subscribe(x => {
+      this.reload$.next(this.reload$.value + 1);
+    })
+  }
+
 }

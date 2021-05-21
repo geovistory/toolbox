@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { authenticate } from '@loopback/authentication';
 import { authorize } from '@loopback/authorization';
 import { inject } from '@loopback/context';
-import { model, property } from '@loopback/repository';
+import { model, property, repository } from '@loopback/repository';
 import { param, post, requestBody } from '@loopback/rest';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Socket } from 'socket.io';
 import { Roles } from '../components/authorization';
 import { Postgres1DataSource } from '../datasources';
 import { ws } from '../decorators/websocket.decorator';
+import { ProTableConfig } from '../models';
 import { Header } from '../models/import-table-header.model';
 import { ImportTable } from '../models/import-table.model';
+import { ProTableConfigRepository } from '../repositories';
 import { SqlBuilderBase } from '../utils/sql-builders/sql-builder-base';
 
 enum DataType {
@@ -42,6 +45,7 @@ export class ImportTableController {
   constructor(
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
+    @repository(ProTableConfigRepository) public proTableConfigRepo: ProTableConfigRepository,
   ) { }
 
 
@@ -57,8 +61,9 @@ export class ImportTableController {
   })
   async importTable(
     @param.query.number('pkNamespace') pkNamespace: number,
-    @requestBody()
-    table: ImportTable
+    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('accountId', { required: false }) accountId: number,
+    @requestBody() table: ImportTable
   ): Promise<ImportTableResponse> {
 
     ////// CHECKINGS //////
@@ -120,6 +125,12 @@ export class ImportTableController {
       delete feedBacks[digital];
 
     })(this, digital)
+
+    // create a table configuration
+    const config = { columns: keysColumns.map(pkCol => ({ fkColumn: pkCol, visible: true })) }
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    const configRow = new ProTableConfig({ fk_project: pkProject, account_id: accountId, fk_digital: digital, config })
+    await this.proTableConfigRepo.create(configRow);
 
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -214,7 +225,7 @@ async function createRows(datasource: Postgres1DataSource, fkDigital: number, ro
   let q = new SqlBuilderBase();
   q.sql = 'INSERT INTO tables.row_' + fkDigital + ' (fk_digital, position) VALUES ';
   for (let i = 0; i < rowsNb; i++) {
-    q.sql += '(' + fkDigital + ', ' + i + '),'
+    q.sql += '(' + fkDigital + ', ' + (i+1) + '),'
   } //perf are ok: on my pc (average) 1 million actions like this took 102 ms
   await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 

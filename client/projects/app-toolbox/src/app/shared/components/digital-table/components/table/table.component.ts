@@ -5,6 +5,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../../../../server/src/lb3/server/table/interfaces';
+import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../../../number-dialog/number-dialog.component';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
 
 export enum TableMode {
@@ -44,10 +45,15 @@ export interface Cell {
   pkColumn: number;
 }
 
+export interface Row { // used to make the new temp row
+  position: number,
+  cells: Array<Cell>
+}
+
 @Component({
   selector: 'gv-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+  styleUrls: ['./table.component.scss'],
 })
 export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   destroy$ = new Subject<boolean>();
@@ -66,12 +72,18 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() sortBy$: Observable<{ pkColumn: number, direction: string }>;
   @Input() origin: 'classic';
   @Input() mode: TableMode = TableMode.view;
+  @Input() newRow: Row;
 
   // outputs
   @Output() sortDemanded = new EventEmitter<{ pkColumn: number, direction: string }>();
   @Output() filterDemanded = new EventEmitter<Array<{ pkColumn: number, filter: TColFilter }>>();
   @Output() cellClicked = new EventEmitter<{ pkColumn: number, pkRow: number }>();
   @Output() changeColumn = new EventEmitter<{ pkColumn: number, direction: 'right' | 'left' }>();
+  @Output() createRowDemanded = new EventEmitter<{ position: number }>();
+  @Output() moveRowDemanded = new EventEmitter<{ pkRow: number, position: number }>();
+  @Output() deleteRowDemanded = new EventEmitter<{ pkRow: number }>();
+  @Output() validateNewRowDemanded = new EventEmitter<Row>();
+  @Output() cancelNewRowDemanded = new EventEmitter<void>();
 
   // config
   config: SysConfigValue;
@@ -222,11 +234,11 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     const header = this.headers.find(h => h.pk_column == pkColumn);
     const content = header.type == 'number' ? parseFloat(newContent) : newContent;
     const cell: TabCell = {
-      pk_cell: pkCell,
       fk_digital: this.pkDigital,
       fk_row: pkRow,
       fk_column: pkColumn
     }
+    if (pkCell) cell.pk_cell = pkCell; // only if it exists, else it send pkCell = null to the server
     if (header.type == 'number') cell.numeric_value = content as number;
     else cell.string_value = content + '';
 
@@ -235,5 +247,26 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.tableAPI.tableControllerInsertOrUpdateCells(this.pkProject, this.pkDigital, { cells: [cell] })
         .subscribe(nv => this.table[i][j].text = header.type == 'number' ? nv.cells[0].numeric_value + '' : nv.cells[0].string_value);
     }
+  }
+
+  createRow(cell: Cell) {
+    this.createRowDemanded.emit({ position: parseInt(cell.text, 10) })
+  }
+
+  moveToIndex(cell: Cell) {
+    this.dialog.open<NumberDialogComponent,
+      NumberDialogData, NumberDialogReturn>(NumberDialogComponent, {
+        data: { title: 'Where do you want to put the actual row ' + cell.text + '?' }
+      })
+      .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+        if (result == undefined) return;
+        this.moveRowDemanded.emit({ pkRow: cell.pkRow, position: result })
+        console.log({ pkRow: cell.pkRow, position: result })
+
+      })
+  }
+
+  deleteRow(cell: Cell) {
+    this.deleteRowDemanded.emit({ pkRow: cell.pkRow });
   }
 }
