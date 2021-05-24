@@ -8,7 +8,7 @@
             (click)="createNewColumn()">New column</button>
     </div>
     <p *ngIf="filterIsOn">
-        <small>Be carefull! When filter is activated, moving column can lead to an unwanted order, check
+        <small>Be carefull! When filter is activated, moving columns can lead to an unwanted order, check
             it with no filter afterwards</small>
     </p>
 </div>
@@ -47,9 +47,9 @@
                 </mat-radio-group>
             </div>
             <div class="on-right">
-                <mat-icon svgIcon="arrow-collapse-up" color="primary" (click)="move(i, 0)" style="cursor: pointer;">
+                <mat-icon svgIcon="arrow-collapse-up" color="primary" (click)="moveAtTop()" style="cursor: pointer;">
                 </mat-icon>
-                <mat-icon svgIcon="arrow-collapse-down" color="primary" (click)="move(i, aggregated.length - 1)"
+                <mat-icon svgIcon="arrow-collapse-down" color="primary" (click)="moveAtBottom(i)"
                     style="cursor: pointer;">
                 </mat-icon>
             </div>

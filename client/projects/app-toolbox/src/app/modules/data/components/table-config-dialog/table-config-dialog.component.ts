@@ -50,6 +50,9 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
   aggregated$: Observable<Array<DisplayColumn>>;
   aggregated: Array<DisplayColumn>;
 
+  // all columns
+  columns: Array<DisplayColumn>;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: TableConfigDialogData,
     private dialogRef: MatDialogRef<TableConfigDialogComponent>,
@@ -78,19 +81,21 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
       this.p.dat$.text_property$.by_pk_entity$.all$.pipe(map(textPropByPk => values(textPropByPk))),
       this.p.dat$.column$.by_pk_entity$.all$.pipe(map(columnByPk => values(columnByPk)))
     ]).pipe(
-      map(([aFilter, config, textProperties, columns]) => config.columns.map((col, i) => {
-        const updated = this.getUpdated(col.fkColumn);
-        return {
-          pkColumn: col.fkColumn,
-          visible: updated ? updated.visible : col.visible,
-          name: updated ? updated.name : textProperties.find(tp => tp.fk_entity == col.fkColumn).string,
-          type: updated ? updated.type : columns.find(c => c.pk_entity == col.fkColumn).fk_data_type == 3292 ? 'string' : 'number' as 'string' | 'number',
-          position: updated ? updated.position : i
-        }
-      }).filter(column => column.name.indexOf(aFilter) != -1)
-        .concat(this.updates.filter(c => c.pkColumn < 0))
-        .sort((a, b) => a.position - b.position)
-      ),
+      map(([aFilter, config, textProperties, columns]) => {
+        this.columns = config.columns.map((col, i) => {
+          const updated = this.getUpdated(col.fkColumn);
+          return {
+            pkColumn: col.fkColumn,
+            visible: updated ? updated.visible : col.visible,
+            name: updated ? updated.name : textProperties.find(tp => tp.fk_entity == col.fkColumn).string,
+            type: updated ? updated.type : columns.find(c => c.pk_entity == col.fkColumn).fk_data_type == 3292 ? 'string' : 'number' as 'string' | 'number',
+            position: updated ? updated.position : i
+          }
+        }).filter(column => column.name.indexOf(aFilter) != -1)
+          .concat(this.updates.filter(c => c.pkColumn < 0 && c.name.indexOf(aFilter) != -1))
+          .sort((a, b) => a.position - b.position);
+        return this.columns;
+      }),
       takeUntil(this.destroy$),
     );
     this.aggregated$.subscribe(agg => this.aggregated = agg);
@@ -117,16 +122,87 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
     this.filter$.next(this.filter$.value);
   }
 
-  move(oldPosition: number, newPosition: number) {
+  move(oldIndex: number, newIndex: number) {
     this.editColumn = undefined;
 
+
+    // const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
+    // const oldPosition = tempTable[oldIndex].position;
+    // const newPosition = tempTable[newIndex].position;
+
+    // if (oldPosition < newPosition) {
+    //   this.columns.filter(col => oldPosition < col.position && col.position <= newPosition).forEach(col => {
+    //     this.setUpdated({ ...col, position: col.position - 1 });
+    //   })
+    // } else if (newPosition < oldPosition) {
+    //   this.columns.filter(col => newPosition <= col.position && col.position < oldPosition).forEach(col => {
+    //     this.setUpdated({ ...col, position: col.position + 1 });
+    //   })
+    // }
+
+
+    // const oldCol = this.columns.find(col => col.position == oldPosition);
+    // const newCol = this.columns.find(col => col.position == newPosition);
+    // oldCol.position = newPosition;
+    // newCol.position = oldPosition;
+    // this.columns = this.columns.sort((a, b) => a.position - b.position);
+    // this.columns.forEach((col, i) => {
+    //   if (col.position != i) this.setUpdated({ ...col, position: i });
+    // })
+
+
     const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
-    tempTable.splice(newPosition, 0, tempTable.splice(oldPosition, 1)[0])
+    tempTable.splice(newIndex, 0, tempTable.splice(oldIndex, 1)[0])
     tempTable.forEach((col, i) => {
       if (col.position != i) this.setUpdated({ ...col, position: i });
     })
+    // update the position attribute
+    // const tempPos = tempTable[newIndex].position;
+    // tempTable[newIndex].position = tempTable[oldIndex].position;
+    // tempTable[oldIndex].position = tempPos;
+    // update the place in table
+    this.setUpdated(tempTable[newIndex]);
+    this.setUpdated(tempTable[oldIndex]);
 
     this.filter(this.filter$.value);
+  }
+
+  /*
+- Child gender reveal
+- Visiting Zurich
+- Code refactoring
+
+
+- Branding meetings
+
+
+-
+  */
+
+  moveAtBottom(filteredIndex: number) {
+    const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
+    const position = tempTable[filteredIndex].position;
+
+    this.columns.filter(col => col.position > position).forEach(col => {
+      this.setUpdated({ ...col, position: col.position - 1 })
+    });
+
+    this.setUpdated({ ...this.columns.find(col => col.position == position), position: this.columns.length - 1 });
+
+    this.filter$.next(this.filter$.value);
+  }
+
+  moveAtTop(filteredIndex: number) {
+    const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
+    const position = tempTable[filteredIndex].position;
+
+    this.columns.filter(col => col.position < position).forEach(col => {
+      this.setUpdated({ ...col, position: col.position + 1 })
+    });
+
+    this.setUpdated({ ...this.columns.find(col => col.position == position), position: this.columns.length - 1 });
+
+    this.filter$.next(this.filter$.value);
   }
 
   changeColumnName(pkColumn: number, name: string, keepEdit?: boolean) {

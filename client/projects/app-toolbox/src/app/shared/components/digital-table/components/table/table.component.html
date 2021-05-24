@@ -112,7 +112,7 @@
 
 
         <!-- NEW TEMPROW for creating a new one -->
-        <tr *ngIf="newRow.position >= 0" style="color:mat-color($primary)">
+        <tr *ngIf="origin !='importer' && newRow.position >= 0" style="color:mat-color($primary)">
           <ng-container *ngFor="let value of newRow.cells; let j = index">
             <td *ngIf="j != 0">
               <div style="display: flex; justify-content: center;">
