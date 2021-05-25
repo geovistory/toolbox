@@ -29,10 +29,9 @@
             </div>
             <div *ngIf="editColumn == col.pkColumn">
                 <mat-form-field appearance="outline" style="width: 90%;">
-                    <mat-label>Column name</mat-label>
-                    <input matInput [ngModel]="col.name"
-                        (blur)="changeColumnName(col.pkColumn, $event.target.value, true)"
-                        (keydown.enter)="changeColumnName(col.pkColumn, $event.target.value)">
+                    <mat-label>Column name Hello</mat-label>
+                    <input matInput [ngModel]="col.name" (keyup)="changeColumnName(col.pkColumn, $event.target.value)">
+                    <!-- (blur)="this.editColumn = undefined" -->
                     <span matSuffix>[{{defaultLanguage.pk_language.toUpperCase()}}]</span>
                 </mat-form-field>
                 <mat-radio-group aria-labelledby="view-mode" [(ngModel)]="col.type" *ngIf="col.pkColumn < 0">
@@ -47,10 +46,11 @@
                 </mat-radio-group>
             </div>
             <div class="on-right">
-                <mat-icon svgIcon="arrow-collapse-up" color="primary" (click)="moveAtTop()" style="cursor: pointer;">
+                <mat-icon svgIcon="arrow-collapse-up" color="primary" (click)="move(i, 0)" style="cursor: pointer;"
+                    matTooltip="Move to top">
                 </mat-icon>
-                <mat-icon svgIcon="arrow-collapse-down" color="primary" (click)="moveAtBottom(i)"
-                    style="cursor: pointer;">
+                <mat-icon svgIcon="arrow-collapse-down" color="primary" (click)="move(i, columns.length - 1)"
+                    matTooltip="Move to bottom" style="cursor: pointer;">
                 </mat-icon>
             </div>
 

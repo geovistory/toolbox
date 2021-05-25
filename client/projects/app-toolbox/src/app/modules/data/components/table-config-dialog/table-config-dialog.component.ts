@@ -125,94 +125,37 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
   move(oldIndex: number, newIndex: number) {
     this.editColumn = undefined;
 
-
-    // const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
-    // const oldPosition = tempTable[oldIndex].position;
-    // const newPosition = tempTable[newIndex].position;
-
-    // if (oldPosition < newPosition) {
-    //   this.columns.filter(col => oldPosition < col.position && col.position <= newPosition).forEach(col => {
-    //     this.setUpdated({ ...col, position: col.position - 1 });
-    //   })
-    // } else if (newPosition < oldPosition) {
-    //   this.columns.filter(col => newPosition <= col.position && col.position < oldPosition).forEach(col => {
-    //     this.setUpdated({ ...col, position: col.position + 1 });
-    //   })
-    // }
-
-
-    // const oldCol = this.columns.find(col => col.position == oldPosition);
-    // const newCol = this.columns.find(col => col.position == newPosition);
-    // oldCol.position = newPosition;
-    // newCol.position = oldPosition;
-    // this.columns = this.columns.sort((a, b) => a.position - b.position);
-    // this.columns.forEach((col, i) => {
-    //   if (col.position != i) this.setUpdated({ ...col, position: i });
-    // })
-
-
     const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
-    tempTable.splice(newIndex, 0, tempTable.splice(oldIndex, 1)[0])
-    tempTable.forEach((col, i) => {
-      if (col.position != i) this.setUpdated({ ...col, position: i });
-    })
-    // update the position attribute
-    // const tempPos = tempTable[newIndex].position;
-    // tempTable[newIndex].position = tempTable[oldIndex].position;
-    // tempTable[oldIndex].position = tempPos;
-    // update the place in table
-    this.setUpdated(tempTable[newIndex]);
-    this.setUpdated(tempTable[oldIndex]);
+    const oldPosition = tempTable[oldIndex].position;
+    const newPosition = tempTable[newIndex].position;
+
+    const target = this.columns.find(c => oldPosition == c.position);
+    if (oldIndex < newIndex) { // ie: move below
+      this.columns
+        .filter(c => oldPosition < c.position && c.position <= newPosition)
+        .forEach(col => {
+          col.position = col.position - 1
+          this.setUpdated(col);
+        });
+    } else { // ie: move above
+      this.columns
+        .filter(c => oldPosition > c.position && c.position >= newPosition)
+        .forEach(col => {
+          col.position = col.position + 1;
+          this.setUpdated(col);
+        });
+    }
+    target.position = newPosition;
+    this.setUpdated(target);
 
     this.filter(this.filter$.value);
   }
 
-  /*
-- Child gender reveal
-- Visiting Zurich
-- Code refactoring
-
-
-- Branding meetings
-
-
--
-  */
-
-  moveAtBottom(filteredIndex: number) {
-    const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
-    const position = tempTable[filteredIndex].position;
-
-    this.columns.filter(col => col.position > position).forEach(col => {
-      this.setUpdated({ ...col, position: col.position - 1 })
-    });
-
-    this.setUpdated({ ...this.columns.find(col => col.position == position), position: this.columns.length - 1 });
-
-    this.filter$.next(this.filter$.value);
-  }
-
-  moveAtTop(filteredIndex: number) {
-    const tempTable = this.aggregated.sort((a, b) => a.position - b.position);
-    const position = tempTable[filteredIndex].position;
-
-    this.columns.filter(col => col.position < position).forEach(col => {
-      this.setUpdated({ ...col, position: col.position + 1 })
-    });
-
-    this.setUpdated({ ...this.columns.find(col => col.position == position), position: this.columns.length - 1 });
-
-    this.filter$.next(this.filter$.value);
-  }
-
   changeColumnName(pkColumn: number, name: string, keepEdit?: boolean) {
-    if (!keepEdit) this.editColumn = undefined;
     const updated = this.getUpdated(pkColumn);
 
     if (updated) this.setUpdated({ ...updated, name });
     else this.setUpdated({ ...this.aggregated.find(c => c.pkColumn == pkColumn), name });
-
-    this.filter$.next(this.filter$.value);
   }
 
   createNewColumn() {
