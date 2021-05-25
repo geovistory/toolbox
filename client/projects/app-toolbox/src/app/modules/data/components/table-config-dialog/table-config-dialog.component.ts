@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3/models';
 import { ColumnNames, TableConfig, TableConfigCol } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { values } from 'ramda';
+import { clone, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
@@ -73,7 +73,8 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
       map(ptc => values(ptc)),
       map(ptc => ptc[0] ? ptc[0].config : undefined)
     );
-    this.tableConfig$.subscribe(ntc => this.tableConfig = ntc);
+    // IMPORTANT: clone tableConfig before modifying, otherwise modifications will affect state object directly (state must be immutable) !
+    this.tableConfig$.subscribe(ntc => this.tableConfig = clone(ntc));
 
     this.aggregated$ = combineLatest([
       this.filter$,
