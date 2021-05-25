@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {InfPersistentItem} from '@kleiolab/lib-sdk-lb4';
-import {DfhApiClassMock} from './DfhApiClassMock';
-import {OmitEntity} from './local-model.helpers';
+import { InfPersistentItem } from '@kleiolab/lib-sdk-lb4';
+import { DfhApiClassMock } from './DfhApiClassMock';
+import { OmitEntity } from './local-model.helpers';
 
 /**
  * pk_entity prefix: 200

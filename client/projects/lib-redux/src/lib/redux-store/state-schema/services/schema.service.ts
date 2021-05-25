@@ -8,6 +8,7 @@ import { DatActions } from '../actions/dat.actions';
 import { DfhActions } from '../actions/dfh.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
+import { GvSchemaActions } from '../actions/schema.actions';
 import { SysActions } from '../actions/sys.actions';
 import { TabActions } from '../actions/tab.actions';
 import { WarActions } from '../actions/war.actions';
@@ -31,6 +32,7 @@ export class SchemaService {
     public tabActions: TabActions,
     public dfhActions: DfhActions,
     public sysActions: SysActions,
+    public schemaActions: GvSchemaActions,
     public notifications: NotificationsAPIActions,
   ) { }
 
@@ -173,24 +175,26 @@ export class SchemaService {
    * @param pkProject primary key of project or null, if repo versions
    */
   storeSchemaObjectGv(object: GvPositiveSchemaObject, pkProject: number | null) {
-    if (object && Object.keys(object).length > 0) {
-      Object.keys(object).forEach(schema => {
-        let actions;
-        if (schema === 'inf') actions = this.infActions;
-        else if (schema === 'pro') actions = this.proActions;
-        else if (schema === 'dat') actions = this.datActions;
-        else if (schema === 'war') actions = this.warActions;
-        else if (schema === 'tab') actions = this.tabActions;
-        else if (schema === 'dfh') actions = this.dfhActions;
-        else if (schema === 'sys') actions = this.sysActions;
-        if (actions) {
-          Object.keys(object[schema]).forEach(model => {
-            actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
-          });
-        }
-      });
-      this.schemaObjectStored$.next(object)
-    }
+
+    this.schemaActions.storeGvSchemaModifier({ positive: object })
+    // if (object && Object.keys(object).length > 0) {
+    //   Object.keys(object).forEach(schema => {
+    //     let actions;
+    //     if (schema === 'inf') actions = this.infActions;
+    //     else if (schema === 'pro') actions = this.proActions;
+    //     else if (schema === 'dat') actions = this.datActions;
+    //     else if (schema === 'war') actions = this.warActions;
+    //     else if (schema === 'tab') actions = this.tabActions;
+    //     else if (schema === 'dfh') actions = this.dfhActions;
+    //     else if (schema === 'sys') actions = this.sysActions;
+    //     if (actions) {
+    //       Object.keys(object[schema]).forEach(model => {
+    //         actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
+    //       });
+    //     }
+    //   });
+    //   this.schemaObjectStored$.next(object)
+    // }
   }
 
   /**

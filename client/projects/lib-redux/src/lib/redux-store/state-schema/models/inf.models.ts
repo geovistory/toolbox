@@ -86,7 +86,7 @@ export interface Inf {
   dimension?: InfDimensionSlice;
   text_property?: InfTextPropertySlice;
 
-  pkEntityModelMap?: ByPk<{ modelName: string }>
+  pkEntityModelMap?: ByPk<{ modelName: string, fkClass: number }>
 }
 
 

@@ -68,7 +68,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
       console.log('TRIGGER pro', 'table_config', 'by_fk_digital');
       console.log(elt)
     })
-
+    this.ngRedux.select(['pro', 'table_config', 'by_pk_entity', '5091', 'config', 'columns', '1', 'visible']).subscribe(elt => {
+      console.log('TRIGGER pro', 'table_config', 'by_pk_entity', '5091', 'config', 'columns', '1', 'visible');
+      console.log(elt)
+    })
   }
 
   ngOnDestroy(): void {
