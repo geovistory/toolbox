@@ -174,7 +174,8 @@
                 <ng-container *ngIf="mode === 'edit' && j != 0">
                   <p-cellEditor id="cells_{{i}}_{{j}}">
                     <ng-template pTemplate="input">
-                      <input pInputText type="text" [(ngModel)]="value.text" (focus)="focusCell(value.text)"
+                      <input pInputText type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
+                        (focus)="focusCell(value.text)"
                         (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
                         (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)">
                     </ng-template>

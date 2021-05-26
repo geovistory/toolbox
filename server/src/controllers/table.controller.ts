@@ -342,12 +342,6 @@ export class TableController {
 
       //check nb of column in config
       const digitalColumns = await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } });
-      console.log('digitalColumns.length', digitalColumns.length)
-      console.log('config.columns.length', config.columns.length)
-      console.log('digitalColumns')
-      console.log(digitalColumns.map(col => col.pk_entity));
-      console.log('config.columns')
-      console.log(config.columns.map(col => col.fkColumn));
       if (digitalColumns.length > config.columns.length) throw new HttpErrors.UnprocessableEntity('Too few columns provided for this digital');
       else if (digitalColumns.length < config.columns.length) throw new HttpErrors.UnprocessableEntity('Too much columns provided for this digital');
 

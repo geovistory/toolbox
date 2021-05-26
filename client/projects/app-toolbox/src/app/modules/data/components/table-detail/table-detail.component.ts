@@ -152,6 +152,13 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       this.tableConfig$,
       this.p.dat$.column$.by_pk_entity$.all$
     ]).pipe(
+      // only forward if we have the datColumns AND the config
+      // (avoid timing issue when first this.columns$ fires and not yet textProperties)
+      filter(([config, datColumns]) => {
+        const cols1 = config.columns.filter(col => col.visible).map(col => col.fkColumn);
+        const cols2 = values(datColumns).map(col => col.pk_entity);
+        return !cols1.some(pk1 => !cols2.some(pk2 => pk2 === pk1)); // Do we have at least one pk that misses in one of the two tables?
+      }),
       map(([config, datColumns]) => {
         const toKeep = config.columns.filter(col => col.visible).map(col => col.fkColumn);
         return toKeep.map(pkCol => values(datColumns).find(datCol => datCol.pk_entity === pkCol))
@@ -165,6 +172,12 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       this.p.dat$.text_property$.by_fk_entity__fk_system_type$.all$,
       this.p.dat$.class_column_mapping$.by_fk_column$.all$,
     ]).pipe(
+      // only forward if we have the textproperty of all columns
+      // (avoid timing issue when first this.columns$ fires and not yet textProperties)
+      filter(([cols, textProperties, classColumnMappings]) => {
+        const pks = cols.map(c => c.pk_entity);
+        return !pks.some(pk => textProperties[pk + '_' + 3295] == undefined)
+      }),
       map(([cols, textProperties, classColumnMappings]) => {
         const headers: Array<Header> = [{ colLabel: 'Index', comment: 'number', type: 'number', pk_column: -1 }];
         const classColMap = values(classColumnMappings);

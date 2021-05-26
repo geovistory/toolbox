@@ -232,7 +232,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string) {
     const header = this.headers.find(h => h.pk_column == pkColumn);
-    const content = header.type == 'number' ? parseFloat(newContent) : newContent;
+    const content = header.type == 'number' ? parseFloat(newContent) : newContent.trimEnd();
     const cell: TabCell = {
       fk_digital: this.pkDigital,
       fk_row: pkRow,
@@ -269,4 +269,10 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   deleteRow(cell: Cell) {
     this.deleteRowDemanded.emit({ pkRow: cell.pkRow });
   }
+
+  getTypeOfColumn(index: number) {
+    return this.headers[index].type == 'number' ? 'number' : 'text';
+  }
+
 }
+
