@@ -6,12 +6,13 @@ import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
 import { InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { Cell, Header, Row, TableMode } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
-import { equals, values } from 'ramda';
+import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TColFilters } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
@@ -150,70 +151,64 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     // get only the DatColumn that will be displayed (in the right order)
     this.columns$ = combineLatest([
       this.tableConfig$,
-      this.p.dat$.column$.by_pk_entity$.all$
+      this.p.dat$.column$.by_fk_digital$.key(this.pkEntity)
     ]).pipe(
       // only forward if we have the datColumns AND the config
       // (avoid timing issue when first this.columns$ fires and not yet textProperties)
-      filter(([config, datColumns]) => {
-        const cols1 = config.columns.filter(col => col.visible).map(col => col.fkColumn);
-        const cols2 = values(datColumns).map(col => col.pk_entity);
-        return !cols1.some(pk1 => !cols2.some(pk2 => pk2 === pk1)); // Do we have at least one pk that misses in one of the two tables?
-      }),
+      // filter(([config, datColumns]) => {
+      //   const cols1 = config.columns.filter(col => col.visible).map(col => col.fkColumn);
+      //   const cols2 = values(datColumns).map(col => col.pk_entity);
+      //   return !cols1.some(pk1 => !cols2.some(pk2 => pk2 === pk1)); // Do we have at least one pk that misses in one of the two tables?
+      // }),
       map(([config, datColumns]) => {
-        const toKeep = config.columns.filter(col => col.visible).map(col => col.fkColumn);
-        return toKeep.map(pkCol => values(datColumns).find(datCol => datCol.pk_entity === pkCol))
+        const datColsByPk = indexBy(col => col.pk_entity.toString(), values(datColumns))
+        return config.columns.filter(col => col.visible && datColsByPk[col.fkColumn]).map(col => datColsByPk[col.fkColumn]);
       })
     )
     this.columns$.subscribe(c => this.columns = c);
 
     // set the headers: for table.component
-    this.headers$ = combineLatest([
-      this.columns$,
-      this.p.dat$.text_property$.by_fk_entity__fk_system_type$.all$,
-      this.p.dat$.class_column_mapping$.by_fk_column$.all$,
-    ]).pipe(
-      // only forward if we have the textproperty of all columns
-      // (avoid timing issue when first this.columns$ fires and not yet textProperties)
-      filter(([cols, textProperties, classColumnMappings]) => {
-        const pks = cols.map(c => c.pk_entity);
-        return !pks.some(pk => textProperties[pk + '_' + 3295] == undefined)
-      }),
-      map(([cols, textProperties, classColumnMappings]) => {
-        const headers: Array<Header> = [{ colLabel: 'Index', comment: 'number', type: 'number', pk_column: -1 }];
-        const classColMap = values(classColumnMappings);
-        headers.push(...cols.map(col => {
-          const label = values(textProperties[col.pk_entity + '_' + 3295])[0].string ?
-            values(textProperties[col.pk_entity + '_' + 3295])[0].string : '';
-          const header: Header = {
-            colLabel: label,
-            comment: col.fk_data_type == this.dtText ? 'string' : 'number',
-            type: col.fk_data_type == this.dtText ? 'string' : 'number',
-            pk_column: col.pk_entity,
-          }
-          const mapping = classColMap[col.pk_entity] ? classColMap[col.pk_entity][0] : undefined
+    this.headers$ = this.columns$.pipe(
+      switchMap(columns => combineLatestOrEmpty(
+        columns.map(
+          col => combineLatest([
+            this.p.dat$.text_property$.by_fk_entity__fk_system_type$.key(col.pk_entity + '_' + 3295),
+            this.p.dat$.class_column_mapping$.by_fk_column$.key(col.pk_entity),
+          ]).pipe(
+            map(([textProperties, classColumnMappings]) => {
+              const textProps = values(textProperties)
+              const label = textProps.length ? textProps[0].string || '' : '';
+              const header: Header = {
+                colLabel: label,
+                comment: col.fk_data_type == this.dtText ? 'string' : 'number',
+                type: col.fk_data_type == this.dtText ? 'string' : 'number',
+                pk_column: col.pk_entity,
+              }
+              const mappings = values(classColumnMappings)
+              const mapping = mappings.length ? mappings[0] : undefined
 
-          // if the column is mapped to a class:
-          if (mapping) {
-            header.mapping = {
-              fkClass: mapping.fk_class,
-              className: this.c.pipeClassLabel(mapping.fk_class),
-              icon: this.p.dfh$.class$.by_pk_class$.key(mapping.fk_class).pipe(
-                map(dfhClass => dfhClass ?
-                  dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn'
-                  : 'peIt')
-                // if there is no dfhClass, for now we display it as a PeIt later we should
-                // put a warn icon of inform the user that he has not this class in his profile
-              ),
-              pkEntity: mapping.pk_entity,
-              pkColumn: col.pk_entity
-            }
-          }
+              // if the column is mapped to a class:
+              if (mapping) {
+                header.mapping = {
+                  fkClass: mapping.fk_class,
+                  className: this.c.pipeClassLabel(mapping.fk_class),
+                  icon: this.p.dfh$.class$.by_pk_class$.key(mapping.fk_class).pipe(
+                    map(dfhClass => dfhClass ?
+                      dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn'
+                      : 'peIt')
+                    // if there is no dfhClass, for now we display it as a PeIt later we should
+                    // put a warn icon of inform the user that he has not this class in his profile
+                  ),
+                  pkEntity: mapping.pk_entity,
+                  pkColumn: col.pk_entity
+                }
+              }
 
-          return header
-        }))
-        this.headers = headers;
-        return headers;
-      })
+              return header
+            })
+          )
+        ))
+      )
     )
 
     // set the table: for table.component
