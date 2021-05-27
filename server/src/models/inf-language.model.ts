@@ -30,31 +30,37 @@ export class InfLanguage extends Entity implements InfEntity {
   pk_language?: string;
 
   @property({
+    jsonSchema: {nullable: true},
     type: 'string',
   })
   lang_type?: string;
 
   @property({
+    jsonSchema: {nullable: true},
     type: 'string',
   })
   scope?: string;
 
   @property({
+    jsonSchema: {nullable: true},
     type: 'string',
   })
   iso6392b?: string;
 
   @property({
+    jsonSchema: {nullable: true},
     type: 'string',
   })
   iso6392t?: string;
 
   @property({
+    jsonSchema: {nullable: true},
     type: 'string',
   })
   iso6391?: string;
 
   @property({
+    jsonSchema: {nullable: true},
     type: 'string',
   })
   notes?: string;

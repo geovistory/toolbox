@@ -1,5 +1,5 @@
 import { Field, GvFieldTargets } from '@kleiolab/lib-queries';
-import { GvFieldId, GvFieldPage, GvFieldPageScope, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageScope, GvTargetType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
 
@@ -59,6 +59,16 @@ export function fieldToGvFieldTargets(field: Field): GvFieldTargets {
   })
   return res
 }
+export function fieldToWarFieldChangeId(pkProject: number, fkInfo: number, field: Field): WarFieldChangeId {
+  return {
+    fk_project: pkProject,
+    fk_source_info: fkInfo,
+    fk_property: field.property.fkProperty,
+    fk_property_of_property: field.property.fkPropertyOfProperty,
+    is_outgoing: field.isOutgoing
+  };
+}
+
 
 
 export const temporalEntityListDefaultLimit = 5;

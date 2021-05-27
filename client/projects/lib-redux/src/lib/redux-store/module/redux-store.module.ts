@@ -131,7 +131,7 @@ export class ReduxModule {
         dynamicMiddlewares,
       ],
       // Enhancers
-      devTools.isEnabled() ? [devTools.enhancer()] : []
+      devTools.isEnabled() ? [devTools.enhancer({ trace: true })] : []
     );
 
     // Apply rootEpic

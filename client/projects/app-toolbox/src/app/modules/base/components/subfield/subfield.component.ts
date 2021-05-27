@@ -136,6 +136,11 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     this.items$ = page$.pipe(map(page => page.statements))
     this.itemsCount$ = page$.pipe(map(page => page.count))
 
+    // if after removing an item, we are on the last page with no items, move one page back
+    combineLatest([this.itemsCount$, this.limit$, this.pageIndex$])
+      .pipe(takeUntil(this.destroy$)).subscribe(([count, limit, pageIdx]) => {
+        if (pageIdx > 0 && count <= (limit * pageIdx)) this.pageIndex$.next(pageIdx - 1)
+      })
 
     this.allowMultiSelect = this.field.targetMaxQuantity === 1 ? false : true;
 

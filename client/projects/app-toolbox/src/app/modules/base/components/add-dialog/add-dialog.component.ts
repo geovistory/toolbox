@@ -3,11 +3,12 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ClassAndTypePk, ConfigurationPipesService, Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { fieldToFieldPage, fieldToGvFieldTargets, isValueObjectSubfield } from '../../base.helpers';
+import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, isValueObjectSubfield } from '../../base.helpers';
+import { PaginationService } from '../../services/pagination.service';
 import { NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
@@ -53,7 +54,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<AddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddDialogData,
     public paginationApi: SubfieldPageControllerService,
-    private dataService: ReduxMainService
+    private dataService: ReduxMainService,
+    private paginationService: PaginationService
   ) {
 
     this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
@@ -98,7 +100,15 @@ export class AddDialogComponent implements OnInit, OnDestroy {
       if (count === 0) this.onNext()
     })
   }
+  onSaved() {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      const fkInfo = this.data.source.fkInfo;
+      const field = this.data.field;
+      this.triggerPageReloads(pkProject, fkInfo, field);
+    })
 
+    this.dialogRef.close()
+  }
   onClose() {
     this.dialogRef.close()
   }
@@ -151,12 +161,20 @@ export class AddDialogComponent implements OnInit, OnDestroy {
           const apiCall = this.p.addEntityToProject(pkEntity)
           obs$.push(apiCall)
         }
-
-        combineLatest(obs$).subscribe(x => {
-          this.dialogRef.close()
-        });
+        combineLatest(obs$)
+          .subscribe(x => {
+            const fkInfo = this.data.source.fkInfo;
+            const field = this.data.field;
+            this.triggerPageReloads(pkProject, fkInfo, field);
+            this.dialogRef.close()
+          });
       })
 
+  }
+
+  private triggerPageReloads(pkProject: number, fkInfo: number, field: Field) {
+    const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, fkInfo, field);
+    this.paginationService.reloadPagesOfField(fieldId);
   }
 
   /**

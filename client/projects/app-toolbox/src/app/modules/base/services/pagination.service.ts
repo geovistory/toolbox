@@ -51,25 +51,8 @@ export class PaginationService {
 
         // is there a fieldChangeListener for the current fieldChange?
         const fcId = this.fieldChangeToStringId(fieldChange);
-        const fcListener = this.fieldChangeListeners.get(fcId)
-        if (fcListener && fcListener.pageIds.length) {
-          // iterate over all pageLoaders that are affected by the fieldChange
-          fcListener.pageIds.forEach(pageLoaderId => {
-            const pl = this.pageLoaders.get(pageLoaderId)
-
-            if (
-              pl && (
-                // is the date of that page loader older than the fieldChange?
-                !pl.isUpToDateUntil ||
-                pl.isUpToDateUntil < new Date(fieldChange.tmsp_last_modification)
-              )
-            ) {
-              // load page
-              this.loadPage(pageLoaderId)
-            }
-          })
-
-        }
+        const fieldChangedDate = new Date(fieldChange.tmsp_last_modification)
+        this._reloadPagesOfField(fcId, fieldChangedDate);
       });
 
     // get all FieldChangeIds and send them to the
@@ -89,7 +72,34 @@ export class PaginationService {
     })
   }
 
+  reloadPagesOfField(id: WarFieldChangeId, fieldChangedDate?: Date) {
+    this._reloadPagesOfField(this.fieldChangeToStringId(id), fieldChangedDate)
+  }
 
+  /**
+   *
+   * @param fieldChangeId string identifying the field
+   * @param fieldChangedDate
+   */
+  private _reloadPagesOfField(fieldChangeId: string, fieldChangedDate?: Date) {
+    const fcListener = this.fieldChangeListeners.get(fieldChangeId)
+    if (fcListener && fcListener.pageIds.length) {
+      // iterate over all pageLoaders that are affected by the fieldChangeDate
+      fcListener.pageIds.forEach(pageLoaderId => {
+        const pl = this.pageLoaders.get(pageLoaderId);
+        if (pl && (
+          // is there no date on the page loader, or
+          !pl.isUpToDateUntil ||
+          // is ther no fieldChangeDate, or
+          !fieldChangedDate ||
+          // is the date of the page loader older than the fieldChangeDate?
+          pl.isUpToDateUntil < fieldChangedDate)) {
+          // load page
+          this.loadPage(pageLoaderId);
+        }
+      });
+    }
+  }
 
   /**
    *
