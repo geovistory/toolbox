@@ -4,9 +4,11 @@
     "outDir": "../../out-tsc/app",
     "types": []
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts",
-    "**/*.worker.ts"
+  "files": [
+    "main.playground.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "projects/app-toolbox/src/**/*.d.ts"
   ]
 }

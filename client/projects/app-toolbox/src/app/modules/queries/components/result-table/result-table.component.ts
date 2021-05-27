@@ -35,7 +35,7 @@ interface ResultTableRow {
 export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject();
   @Input() definition$: Observable<QueryDefinition>;
-  @ViewChild('table', { static: false }) table: Table;
+  @ViewChild('table') table: Table;
 
   displayedColumns$: Observable<string[]>;
 

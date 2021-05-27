@@ -34,7 +34,7 @@ export interface Version {
 export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(QuillEditComponent, { static: false }) quillEdit: QuillEditComponent;
+  @ViewChild(QuillEditComponent) quillEdit: QuillEditComponent;
   // @ViewChild(MentioningListComponent, { static: true }) mentioningList: MentioningListComponent;
 
 

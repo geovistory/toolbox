@@ -29,10 +29,10 @@ export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
   @Input() data$: Observable<MapLayers>
   @Input() julianSecondOfCursor$: Observable<number>
 
-  @ViewChild('cesiumContainer', { static: false }) cesiumContainer: ElementRef
-  @ViewChild('baseLayerPickerContainer', { static: false }) baseLayerPickerContainer: ElementRef
-  @ViewChild('sceneModePickerContainer', { static: false }) sceneModePickerContainer: ElementRef
-  @ViewChild('navigationHelpButtonContainer', { static: false }) navigationHelpButtonContainer: ElementRef
+  @ViewChild('cesiumContainer') cesiumContainer: ElementRef
+  @ViewChild('baseLayerPickerContainer') baseLayerPickerContainer: ElementRef
+  @ViewChild('sceneModePickerContainer') sceneModePickerContainer: ElementRef
+  @ViewChild('navigationHelpButtonContainer') navigationHelpButtonContainer: ElementRef
 
   @Output() objectClicked = new EventEmitter()
 

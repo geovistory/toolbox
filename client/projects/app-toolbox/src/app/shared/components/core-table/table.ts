@@ -1,13 +1,5 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import {
-  AfterViewInit,
-  Input,
-  OnInit,
-  Output,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-} from '@angular/core';
+import { AfterViewInit, Input, OnInit, Output, QueryList, ViewChild, ViewChildren, Directive } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Subject } from 'rxjs';
@@ -16,6 +8,7 @@ import { CoreTableDataSource } from './data-source';
 import { CoreTableFilterComponent } from './filter/filter.component';
 import { CoreTableMenuComponent } from './menu/menu.component';
 
+@Directive()
 export class CoreTable<T> implements AfterViewInit, OnInit {
   @Input()
   get pending(): boolean {
@@ -28,10 +21,10 @@ export class CoreTable<T> implements AfterViewInit, OnInit {
 
   @Output() select = new Subject<T[]>();
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(CdkVirtualScrollViewport, /* TODO: check static flag */ { static: true }) viewport: CdkVirtualScrollViewport;
-  @ViewChild(CoreTableMenuComponent, { static: false }) tableMenu: CoreTableMenuComponent;
+  @ViewChild(CoreTableMenuComponent) tableMenu: CoreTableMenuComponent;
   @ViewChildren(CoreTableFilterComponent) filters: QueryList<CoreTableFilterComponent>;
 
   dataSource: CoreTableDataSource<T>;

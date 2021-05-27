@@ -89,7 +89,7 @@ export function apiConfigFactory(): Configuration {
   ]
 })
 export class ReduxModule {
-  public static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders<ReduxModule> {
     return {
       ngModule: ReduxModule,
       providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]

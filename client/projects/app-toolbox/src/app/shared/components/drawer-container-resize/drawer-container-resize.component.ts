@@ -22,7 +22,7 @@ export class DrawerContainerResizeComponent implements AfterViewInit, OnDestroy 
   parentOffsetLeft;
 
   @ViewChild('sliderWrapper', { static: true }) sliderWrapper: ElementRef;
-  @ContentChild(MatDrawer, /* TODO: check static flag */ { static: false }) drawer: MatDrawer;
+  @ContentChild(MatDrawer) drawer: MatDrawer;
 
   showSlider$ = new BehaviorSubject(false);
   initSliderVal;

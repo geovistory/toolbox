@@ -12,7 +12,6 @@
     ]
   },
   "angularCompilerOptions": {
-    "annotateForClosureCompiler": false, // false to ignore warnings about {number} anntotations
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,

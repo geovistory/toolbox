@@ -34,9 +34,9 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
 
   newValue: InfValueObject | undefined;
 
-  @ViewChild('place', { static: false }) place: FgPlaceComponent;
-  @ViewChild('langString', { static: false }) langString: FgLangStringComponent;
-  @ViewChild('dimension', { static: false }) dimension: FgDimensionComponent;
+  @ViewChild('place') place: FgPlaceComponent;
+  @ViewChild('langString') langString: FgLangStringComponent;
+  @ViewChild('dimension') dimension: FgDimensionComponent;
   dimension_label?: string;
   appellation = new FormControl('');
   timeprimitive = new FormControl('');

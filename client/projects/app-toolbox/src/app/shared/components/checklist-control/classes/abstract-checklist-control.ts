@@ -1,10 +1,11 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Input, OnInit, Optional, Self } from '@angular/core';
+import { Input, OnInit, Optional, Self, Directive } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Observable, Subject } from 'rxjs';
 import { ChecklistControlService, NestedNode } from '../services/checklist-control.service';
 
+@Directive()
 export abstract class AbstractChecklistControl<NodeData, ControlModel>
   implements OnInit, MatFormFieldControl<ControlModel> {
   static nextId = 0;

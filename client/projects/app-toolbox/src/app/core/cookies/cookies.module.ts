@@ -26,7 +26,7 @@ export class CookiesModule {
   static forRoot(internalStorageProvider: any = {
     provide: GvInternalStorage,
     useClass: GvCookieBrowser
-  }): ModuleWithProviders {
+  }): ModuleWithProviders<CookiesModule> {
     return {
       ngModule: CookiesModule,
       providers: [

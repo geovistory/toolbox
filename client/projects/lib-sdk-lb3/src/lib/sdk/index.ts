@@ -100,7 +100,7 @@ export class SdkLb3Module {
   static forRoot(internalStorageProvider: any = {
     provide: InternalStorage,
     useClass: CookieBrowser
-  }): ModuleWithProviders {
+  }): ModuleWithProviders<SdkLb3Module> {
     return {
       ngModule: SdkLb3Module,
       providers: [

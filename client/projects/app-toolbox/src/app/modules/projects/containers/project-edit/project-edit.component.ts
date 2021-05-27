@@ -59,7 +59,7 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
 
   @ViewChild(CdkPortal, { static: true }) portal: CdkPortal;
-  @ContentChild(OnActivateTabDirective, /* TODO: check correctness of static flag */ { static: false }) child: OnActivateTabDirective;
+  @ContentChild(OnActivateTabDirective) child: OnActivateTabDirective;
 
   private host: PanelBodyDirective;
 

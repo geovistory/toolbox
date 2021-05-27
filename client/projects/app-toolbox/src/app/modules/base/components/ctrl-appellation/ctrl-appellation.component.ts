@@ -24,7 +24,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
 
-  @ViewChild(QuillEditComponent, { static: false }) quillEditComponent: QuillEditComponent;
+  @ViewChild(QuillEditComponent) quillEditComponent: QuillEditComponent;
 
   autofilled?: boolean;
   // emits true on destroy of this component

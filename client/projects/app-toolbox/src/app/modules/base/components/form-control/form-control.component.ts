@@ -25,9 +25,9 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() formControlFactory: FormControlFactory<FormControlData>
 
-  @ViewChild(CtrlEntityComponent, { static: false }) ctrlEntity: CtrlEntityComponent;
-  @ViewChild(CtrlTypeComponent, { static: false }) ctrlType: CtrlTypeComponent;
-  @ViewChild(CtrlTimeSpanComponent, { static: false }) ctrlTimeSpan: CtrlTimeSpanComponent;
+  @ViewChild(CtrlEntityComponent) ctrlEntity: CtrlEntityComponent;
+  @ViewChild(CtrlTypeComponent) ctrlType: CtrlTypeComponent;
+  @ViewChild(CtrlTimeSpanComponent) ctrlTimeSpan: CtrlTimeSpanComponent;
 
   public config: FormControlConfig<FormControlData>
 

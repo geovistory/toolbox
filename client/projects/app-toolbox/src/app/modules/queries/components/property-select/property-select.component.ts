@@ -38,6 +38,7 @@ export class PropertiesRequiredValidatorDirective implements Validator {
 
 
 // tslint:disable: member-ordering
+@Directive()
 class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<PropertySelectModel> {
   value: PropertySelectModel;
   static nextId = 0;

@@ -63,8 +63,8 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   static nextId = 0;
 
   model: CtrlLanguageModel;
-  @ViewChild(MatInput, { static: false }) matInput: MatInput;
-  @ViewChild(MatAutocompleteTrigger, { static: false }) matAutocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatInput) matInput: MatInput;
+  @ViewChild(MatAutocompleteTrigger) matAutocompleteTrigger: MatAutocompleteTrigger;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
