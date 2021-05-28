@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { SignupValidationError } from "@kleiolab/lib-sdk-lb4";
-import { SignupRequest } from "@kleiolab/lib-sdk-lb4";
-import { PubAccount } from "@kleiolab/lib-sdk-lb4";
-import { AccountService } from "@kleiolab/lib-sdk-lb4";
-import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
+import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
+import { AccountService, SignupRequest, SignupValidationError } from '@kleiolab/lib-sdk-lb4';
+import { environment } from 'projects/app-toolbox/src/environments/environment';
 
 
 
@@ -21,11 +16,14 @@ export class RegistrationComponent {
 
   model: any = {};
   loading = false;
-  errorMessages: Object;
+  errorMessages: {
+    password?: string[],
+    password2?: string[]
+  };
   validationError: SignupValidationError
 
   confirm = false; // if true, form is hidden and confirmation shown.
-  confirmEmail = ''; //email to inform user
+  confirmEmail = ''; // email to inform user
 
   constructor(
     private accountApi: AccountService,

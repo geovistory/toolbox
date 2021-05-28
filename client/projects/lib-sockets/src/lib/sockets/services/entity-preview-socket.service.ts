@@ -1,17 +1,18 @@
-import { Injectable, Optional } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { SocketsConfig } from "../models/SocketsConfig";
+import { Injectable } from '@angular/core';
 import { WarActions } from '@kleiolab/lib-redux';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { Socket } from 'ngx-socket-io';
+import { ConfigService } from './config.service';
 @Injectable()
 export class EntityPreviewSocket extends Socket {
 
   constructor(
     warActions: WarActions,
-    @Optional() config?: SocketsConfig
+    c: ConfigService,
+    // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
 
-    super({ url: config.baseUrl + '/WarEntityPreview' });
+    super({ url: c.config.baseUrl + '/WarEntityPreview' });
 
     // dispatch a method to put the EntityPreview to the store
     this.fromEvent<WarEntityPreview>('entityPreview').subscribe(data => {

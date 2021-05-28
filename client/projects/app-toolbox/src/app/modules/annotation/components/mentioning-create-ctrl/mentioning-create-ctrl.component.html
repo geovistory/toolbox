@@ -4,7 +4,7 @@
     <!-- Domain info entity  -->
     <div *ngIf="domainInfoEntity">
       {{(domainInfoEntity?.type_label || domainInfoEntity?.class_label)}} {{domainInfoEntity?.entity_label}}
-      <button class="btn btn-link-white" *ngIf="!domainInfoEntityFixed" (click)="resetSourceEntity()">
+      <button class="btn btn-link-white" *ngIf="!domainInfoEntityFixed" (click)="resetDomainInfoEntity()">
         <i class="fa fa-pencil"></i>
       </button>
     </div>

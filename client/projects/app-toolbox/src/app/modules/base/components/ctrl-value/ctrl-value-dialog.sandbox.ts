@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InfValueObjectType } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/value-matcher/value-matcher.component';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
+import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfDimensionMock } from 'projects/__test__/data/auto-gen/gvDB/InfDimensionMock';
 import { InfLangStringMock } from 'projects/__test__/data/auto-gen/gvDB/InfLangStringMock';
@@ -24,7 +24,7 @@ export class SandBoxButtonComponent {
 
   @Input() vot: SysConfigValueObjectType;
   @Input() pkClass: number;
-  @Input() value: InfValueObjectType;
+  @Input() value: InfValueObject;
   @Input() pkProject: number;
 
   constructor(

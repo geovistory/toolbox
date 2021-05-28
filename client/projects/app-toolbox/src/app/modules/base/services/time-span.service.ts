@@ -3,8 +3,7 @@ import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService, StatementTargetTimeSpan } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
-import { InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
+import { InfStatement, InfStatementWithRelations, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
 import { combineLatest, of } from 'rxjs';
@@ -85,7 +84,7 @@ export class TimeSpanService {
     )
   }
 
-  convertToStatement(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatementWithRelations {
+  convertToStatement(key, t: TimePrimitiveWithCal, fkTeEn: number): InfStatementWithRelations {
     const statement: InfStatementWithRelations = {
       fk_subject_info: fkTeEn,
       fk_property: parseInt(key),
@@ -94,7 +93,7 @@ export class TimeSpanService {
       }],
       object_time_primitive: {
         duration: t.duration,
-        julian_day: t.julian_day,
+        julian_day: t.julianDay,
         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
       },
       ...{} as any
@@ -116,7 +115,7 @@ export class TimeSpanService {
           calendar: i.calendar,
           duration: i.duration,
           julian_day: i.julianDay
-        } as InfTimePrimitiveWithCalendar
+        }
       }
     }
 
@@ -125,7 +124,7 @@ export class TimeSpanService {
   createOldData(item: StatementTargetTimeSpan) {
     const old: {
       [key: string]: {
-        tp: InfTimePrimitiveWithCalendar,
+        tp: TimePrimitiveWithCal,
         r: InfStatement,
       }
     } = {}
@@ -138,8 +137,8 @@ export class TimeSpanService {
           tp: {
             calendar: i.calendar,
             duration: i.duration,
-            julian_day: i.julianDay
-          } as InfTimePrimitiveWithCalendar,
+            julianDay: i.julianDay
+          },
           r
         }
       }

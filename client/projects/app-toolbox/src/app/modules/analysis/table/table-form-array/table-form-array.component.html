@@ -67,20 +67,19 @@
 
 
 
-<ng-container *ngIf="formArrayFactory.config.data.columns">
+<ng-container *ngIf="formArrayFactory?.config?.data.columns">
   <mat-accordion cdkDropList (cdkDropListDropped)="columnDropped($event)">
-    <mat-expansion-panel cdkDrag *ngFor="let child of formArrayFactory.children; let i = index;"
-      (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <mat-expansion-panel cdkDrag *ngFor="let child of formArrayFactory.children; let i = index;">
       <mat-expansion-panel-header>
         <mat-panel-title cdkDragHandle>
           <div class="d-flex align-items-center">
-            <mat-icon *ngIf="(child.valueChanges$ | async).defaultType" svgIcon="tag-outline" color="primary">
+            <mat-icon *ngIf="(child.valueChanges$ | async)?.defaultType" svgIcon="tag-outline" color="primary">
             </mat-icon>
-            <mat-icon *ngIf="!(child.valueChanges$ | async).defaultType" class="fa-rotate-90"
+            <mat-icon *ngIf="!(child.valueChanges$ | async)?.defaultType" class="fa-rotate-90"
               svgIcon="transit-connection" color="primary"></mat-icon>
 
             <div class="ml-3">
-              {{(child.valueChanges$ | async).label}}
+              {{(child.valueChanges$ | async)?.label}}
             </div>
           </div>
         </mat-panel-title>
@@ -110,20 +109,20 @@
 
 </ng-container>
 
-<ng-container *ngIf="!formArrayFactory.config.data.columns">
+<ng-container *ngIf="!formArrayFactory?.config?.data?.columns">
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
 
-    <mat-list *ngIf="child.config?.data?.ctrlClasses" class="mb-4">
+    <mat-list *ngIf="child.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline" mat-line *ngIf="!(child.config.disabled$ | async)">
+        <div class="mat-headline" mat-line *ngIf="!(child.controlFactory.config.disabled$ | async)">
           Choose your entities
         </div>
-        <div class="mat-headline" mat-line *ngIf="(child.config.disabled$ | async)"
-          [ngClass]="{'mat-text-secondary': (child.config.disabled$ | async)}">
+        <div class="mat-headline" mat-line *ngIf="(child.controlFactory.config.disabled$ | async)"
+          [ngClass]="{'mat-text-secondary': (child.controlFactory.config.disabled$ | async)}">
           Chosen entities
         </div>
-        <button class="ml-3" mat-flat-button *ngIf="(child.config.disabled$ | async)"
-          (click)="removeQueryDefinition(child)">Revert</button>
+        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory.config.disabled$ | async)"
+          (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
 
       </mat-list-item>
       <mat-divider></mat-divider>
@@ -134,7 +133,7 @@
       </mat-list-item> -->
     </mat-list>
 
-    <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
+    <mat-list *ngIf="child?.childFactory?.config?.data?.filter" class="mb-4">
       <mat-list-item class="p-0">
         <div class="mat-headline" mat-line> Filter your entities
         </div>
@@ -147,7 +146,7 @@
       </mat-list-item>
     </mat-list>
 
-    <div *ngIf="child.config?.data.columnLabel">
+    <div *ngIf="child?.controlFactory?.config?.data?.columnLabel">
       <mat-divider></mat-divider>
       <p class="mt-3 mb-3">
         Name of the column
@@ -155,7 +154,7 @@
     </div>
 
 
-    <div *ngIf="child.config?.data.path">
+    <div *ngIf="child?.childFactory?.config?.data.path">
       <mat-divider></mat-divider>
       <p class="mt-3 mb-3">
         Path to the content of this column
@@ -165,20 +164,21 @@
     <div class="gv-full-with" *ngIf="!formArrayFactory.config.data.columns">
 
 
-      <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      <gv-table-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" class="left-col">
       </gv-table-form-array>
 
-      <gv-table-form-control *ngIf="child.factoryType ==='control'" [formControlFactory]="child" class="left-col">
+      <gv-table-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
       </gv-table-form-control>
 
-      <ng-template *ngIf="child.factoryType ==='childFactory'" [cdkPortalOutlet]="child.portal" #outlet
-        (attached)="child.attached($event, outlet)"></ng-template>
+      <ng-template *ngIf="child.childFactory" [cdkPortalOutlet]="child.childFactory.portal" #outlet
+        (attached)="child.childFactory.attached($event, outlet)"></ng-template>
 
     </div>
 
-    <div *ngIf="child?.config?.data?.ctrlClasses">
-      <button mat-flat-button color="primary" *ngIf="!(child?.config?.disabled$|async) && child.control.valid"
-        class="mb-4" (click)="addQueryDefinition(child)">
+    <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
+      <button mat-flat-button color="primary"
+        *ngIf="!(child.controlFactory.config?.disabled$|async) && child.control.valid" class="mb-4"
+        (click)="addQueryDefinition(child)">
         Continue
       </button>
     </div>
@@ -193,7 +193,7 @@
 
 </ng-container>
 
-<div *ngIf="formArrayFactory.config.data.columns" class="mb-3 mt-5">
+<div *ngIf="formArrayFactory?.config?.data?.columns" class="mb-3 mt-5">
   <ng-content></ng-content>
 
 </div>

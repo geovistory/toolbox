@@ -3,15 +3,14 @@ import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
-import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
+import { InfStatement, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InfValueObject } from '../../../../value-preview/value-preview.component';
 
-export type InfValueObjectType = InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage;
+// export type InfValueObjectType = InfAppellation | InfPlace | InfDimension | InfLangString | InfTimePrimitiveWithCalendar | InfLanguage;
 
 @Component({
   selector: 'gv-value-matcher',
@@ -91,12 +90,15 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
               this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info),
               this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(this.pkProject + '_' + statement.pk_entity)
             ]).pipe(
-              map(([tp, ipr]) => ({
-                ...tp,
-                calendar: ipr.calendar
-              } as InfTimePrimitiveWithCalendar)),
-              switchMap(value => of({ timePrimitive: value }))
-            )
+              map(([tp, ipr]) => {
+                const t: TimePrimitiveWithCal = {
+                  julianDay: tp.julian_day,
+                  duration: tp.duration as TimePrimitiveWithCal.DurationEnum,
+                  calendar: ipr?.calendar as TimePrimitiveWithCal.CalendarEnum,
+                }
+                return t
+              }),
+              switchMap(value => of({ timePrimitive: value })))
           }
         }
       }),

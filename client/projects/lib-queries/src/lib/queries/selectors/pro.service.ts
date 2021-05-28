@@ -1,8 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ByPk, IAppState, ProActions, proDefinitions, proRoot, ReducerConfigCollection } from '@kleiolab/lib-redux';
-import { ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ProAnalysis, ProClassFieldConfig, ProProject, ProTableConfig } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { toString } from 'ramda';
 import { Observable } from 'rxjs';
 

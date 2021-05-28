@@ -1,13 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { ErrorHandler } from '@kleiolab/lib-sdk-lb3';
-import { ResetPasswordRequest } from "@kleiolab/lib-sdk-lb4";
-import { AccountService } from "@kleiolab/lib-sdk-lb4";
+import { ErrorHandler, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
+import { AccountService, ResetPasswordRequest } from '@kleiolab/lib-sdk-lb4';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 
 
@@ -24,7 +22,10 @@ export class ResetPasswordComponent implements OnInit {
   confirm = false; // if true, form is hidden and confirmation shown.
   returnUrl: string;
   access_token: string;
-  errorMessages: {};
+  errorMessages: {
+    password?: string,
+    password2?: string
+  };
   undefinedError: boolean;
 
   constructor(

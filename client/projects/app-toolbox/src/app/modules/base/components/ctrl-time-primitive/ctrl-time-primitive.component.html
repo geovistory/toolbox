@@ -1,9 +1,9 @@
 <div *ngIf="!shouldLabelFloat" class="click-container" (click)="openMenu()"></div>
 
 <div class="gv-cursor-text" [hidden]="!shouldLabelFloat" [ngClass]="{'d-flex': shouldLabelFloat}">
-  <div class="d-flex align-items-center" *ngIf="value?.julian_day && value?.duration && value?.calendar"
+  <div class="d-flex align-items-center" *ngIf="value?.julianDay && value?.duration && value?.calendar"
     (click)="openMenu()">
-    {{{julianDay:value.julian_day, duration:value.duration, calendar:value.calendar} | timePrimitive}}</div>
+    {{value | timePrimitive}}</div>
 
   <div class="ml-auto">
     <button mat-icon-button (click)="clearForm(); $event.stopPropagation()">
@@ -67,7 +67,7 @@
 
           <input type="number" class="form-control" formControlName="hours" placeholder="0-23" />
           <div class="input-group-append" *ngIf="removeTimeBtnVisible">
-            <button class="btn btn-outline-secondary" (click)="hideTimeInputs()">
+            <button class="btn btn-outline-secondary">
               <i class="fa fa-close"></i>
             </button>
           </div>
@@ -93,8 +93,8 @@
         <label class="sr-only">Calendar</label>
 
         <span *ngIf="!editingCalendar">
-          <i class="font-sm"
-            [ngClass]="{'text-muted' : form?.controls.calendar.pristine}">{{calendar === 'gregorian'?'Gregorian':'Julian'}}
+          <i class="font-sm" [ngClass]="{'text-muted' : form?.controls.calendar.pristine}">{{calendar ===
+            'gregorian'?'Gregorian':'Julian'}}
             calendar</i>
           <a *ngIf="editCalBtnVisible" href="" class="gv-passive-link ml-1" (click)="editingCalendar = true">edit</a>
         </span>

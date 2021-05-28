@@ -1,9 +1,10 @@
 <!-- CLASSES -->
 <div *ngIf="isArrayClasses" class="qf-arr-classes">
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
-    <gv-qf-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col">
+    <gv-qf-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" class="left-col">
     </gv-qf-form-array>
-    <gv-qf-form-control *ngIf="isFormControl(child)" [formControlFactory]="child" class="gv-condition-block left-col">
+    <gv-qf-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory"
+      class="gv-condition-block left-col">
     </gv-qf-form-control>
   </div>
   <div class="gv-qf-button-absolute-2">
@@ -19,14 +20,15 @@
 
   <div class="gv-condition-block">
     <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
-      <gv-qf-form-control *ngIf="isFormControl(child)" [formControlFactory]="child" class="left-col">
+      <gv-qf-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
       </gv-qf-form-control>
     </div>
   </div>
 
   <div class="qf-prop-subgroups">
     <div *ngFor="let child of formArrayFactory.children; let i=index">
-      <gv-qf-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col"></gv-qf-form-array>
+      <gv-qf-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" class="left-col">
+      </gv-qf-form-array>
     </div>
   </div>
   <div class="gv-qf-button-absolute-2">
@@ -86,8 +88,8 @@
     <div class="sub-query-item" *ngFor="let child of formArrayFactory.children; let i=index">
       <div class="subquery-left">
         <!-- <div class="horizontal-line" *ngIf="!parentIsArraySubgroup"></div> -->
-        <div class="horizontal-line" *ngIf="isFormArray(child)" [ngClass]="{
-          'is-subgroup': childIsArraySubgroup(child)
+        <div class="horizontal-line" *ngIf="child.arrayFactory" [ngClass]="{
+          'is-subgroup': childIsArraySubgroup(child.arrayFactory)
         }"></div>
         <!-- Split button to create Subgruop -->
         <!-- <button class="add-subgroup-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button
@@ -96,20 +98,20 @@
           <mat-icon class="rotate-90">call_split</mat-icon>
         </button> -->
       </div>
-      <gv-qf-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child"
-        [ngClass]="{'is-subgroup': childIsArraySubgroup(child)}"></gv-qf-form-array>
+      <gv-qf-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory"
+        [ngClass]="{'is-subgroup': childIsArraySubgroup(child.arrayFactory)}"></gv-qf-form-array>
 
-      <div *ngIf="isFormArray(child) && !childIsArraySubgroup(child)" class="gv-qf-button-absolute-1">
+      <div *ngIf="child.arrayFactory && !childIsArraySubgroup(child.arrayFactory)" class="gv-qf-button-absolute-1">
         <button mat-icon-button (click)="removeSubfilter(i)" matTooltip="Remove"
           class="gv-mat-icon-button-sm gv-btn-danger">
           <mat-icon>remove</mat-icon>
         </button>
       </div>
-      <div *ngIf="isFormArray(child) &&
+      <div *ngIf="child.arrayFactory &&
       formArrayFactory.children.length > 2 &&
       formArrayFactory?.control?.valid &&
-      !childIsArraySubgroup(child)" class="gv-qf-button-absolute-3">
-        <button mat-icon-button (click)="splitSubfilter(i, child)" matTooltip="Split"
+      !childIsArraySubgroup(child.arrayFactory)" class="gv-qf-button-absolute-3">
+        <button mat-icon-button (click)="splitSubfilter(i, child.arrayFactory)" matTooltip="Split"
           class="gv-mat-icon-button-sm gv-btn-success">
           <mat-icon class="rotate-90">call_split</mat-icon>
         </button>

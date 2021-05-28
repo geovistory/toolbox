@@ -14,7 +14,7 @@ import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
 import { LoopBackConfig, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { SocketsConfig, SocketsModule } from '@kleiolab/lib-sockets';
+import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
@@ -23,7 +23,6 @@ import 'hammerjs';
 import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-import { TreeviewModule } from 'ngx-treeview';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { AuthGuard } from 'projects/app-toolbox/src/app/core/auth/auth-guard.service';
 import { GvAuthService } from 'projects/app-toolbox/src/app/core/auth/auth.service';
@@ -74,25 +73,24 @@ export const APP_MODULE_DECORATOR = {
     // other thid party modules
     NgReduxRouterModule,
     NgReduxModule,
-    NgbModule.forRoot(),
+    NgbModule,
     AngularCesiumModule.forRoot(),
     ElasticInputModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
     DndModule.forRoot(),
-    TreeviewModule.forRoot(),
     AngularSplitModule.forRoot(),
     MccColorPickerModule.forRoot({}),
     CookiesModule.forRoot(),
 
 
     // ??
-    SocketsModule.forRoot(socketsConfig),
+    SocketsModule,
     SocketIoModule.forRoot(socketIoConfig),
 
     // @kleiolab/lib-* modules
-    SdkLb3Module.forRoot(),
+    SdkLb3Module, // .forRoot(),
     SdkLb4Module,
-    ReduxModule.forRoot(),
+    ReduxModule, // .forRoot(),
     ReduxQueriesModule,
     NotificationsModule,
 
@@ -116,7 +114,12 @@ export const APP_MODULE_DECORATOR = {
     AuthGuard,
     GvAuthService,
     SystemAdminGuard,
+
     { provide: LOCALE_ID, useValue: 'en-US' },
+    {
+      provide: SOCKETS_CONFIG,
+      useValue: socketsConfig
+    },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance
@@ -132,7 +135,83 @@ export const APP_MODULE_DECORATOR = {
 
 // Third party imports
 // Own imports
-@NgModule(APP_MODULE_DECORATOR)
+@NgModule({
+  declarations: [
+    AppComponent,
+  ],
+  imports: [
+    // angular modules
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    MaterialModule,
+
+
+
+    // other thid party modules
+    NgReduxRouterModule,
+    NgReduxModule,
+    NgbModule,
+    AngularCesiumModule.forRoot(),
+    ElasticInputModule.forRoot(),
+    SlimLoadingBarModule.forRoot(),
+    DndModule.forRoot(),
+    AngularSplitModule.forRoot(),
+    MccColorPickerModule.forRoot({}),
+    CookiesModule.forRoot(),
+
+
+    // ??
+    SocketsModule,
+    SocketIoModule.forRoot(socketIoConfig),
+
+    // @kleiolab/lib-* modules
+    SdkLb3Module, // .forRoot(),
+    SdkLb4Module,
+    ReduxModule, // .forRoot(),
+    ReduxQueriesModule,
+    NotificationsModule,
+
+    // own modules (@kleiolab/app-toolbox)
+    AppRoutingModule,
+    BasicModule,
+    RepoModule,
+    ProjectsModule,
+    BackofficeModule,
+    PassiveLinkModule,
+    ControlMessagesModule,
+    LanguageSearchTypeaheadModule,
+    KeysModule,
+    AccountModule,
+    ValidationDirectivesModule,
+    UserFeedbackModule,
+
+  ],
+  providers: [
+    ActiveAccountService,
+    AuthGuard,
+    GvAuthService,
+    SystemAdminGuard,
+
+    { provide: LOCALE_ID, useValue: 'en-US' },
+    {
+      provide: SOCKETS_CONFIG,
+      useValue: socketsConfig
+    },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: appearance
+    },
+    lb4SdkConfigurationProvider
+  ],
+  entryComponents: [
+    AppComponent
+  ],
+  bootstrap: [AppComponent]
+})
 export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.baseUrl + '/assets/mdi/mdi.svg'));

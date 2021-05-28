@@ -59,8 +59,8 @@
                     <mat-label>Search</mat-label>
                     <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async" (keyup)="searchStringChange($event.target.value)">
                 </mat-form-field>
-                <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$" [disableIfHasStatement]="data.disableIfHasStatement"
-                    (onAddExisting)="onSelected($event, false)" (onOpenExisting)="onSelected($event, true)">
+                <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$" (onAddExisting)="onSelected($event, false)"
+                    (onOpenExisting)="onSelected($event, true)">
                 </gv-search-existing-entity>
             </div>
 

@@ -4,9 +4,8 @@ import { MatFormFieldAppearance } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { InfDimension, InfLangString, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, GvTargetType, InfResource, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty, InfTimePrimitiveWithCalendar, U } from '@kleiolab/lib-utils';
+import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
@@ -241,7 +240,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             hideFieldTitle: false,
             pkClass: null
           },
-          mapValue: (items: CtrlEntityModel[] | InfStatement[]): {
+          mapValue: (items: CtrlEntityModel[] | InfStatementWithRelations[]): {
             statement?: Partial<InfStatementWithRelations>
           } => {
 
@@ -736,7 +735,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
 
   private timeSpanCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const initStatements: InfStatement[] = arrayConfig.initValue || [];
+    const initStatements: InfStatementWithRelations[] = arrayConfig.initValue || [];
     const initValue: CtrlTimeSpanModel = {}
     for (let i = 0; i < initStatements.length; i++) {
       const element = initStatements[i];
@@ -760,9 +759,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
-          const value: InfStatement[] = keys(v).map(key => {
-            const timePrim = v[key]
-            const statement: InfStatement = {
+          const value: InfStatementWithRelations[] = keys(v).map(key => {
+            const timePrim: TimePrimitiveWithCal = v[key]
+            const statement: InfStatementWithRelations = {
               entity_version_project_rels: [
                 {
                   is_in_project: true,
@@ -771,10 +770,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               ],
               fk_property: key,
               object_time_primitive: {
-                ...timePrim,
+                julian_day: timePrim.julianDay,
+                duration: timePrim.duration,
                 fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-              },
-              ...{} as any
+              }
             }
             return statement
           });
@@ -794,7 +793,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       const targetClassLabel = field.targets[targetClass].targetClassLabel
       // with [{}] we make sure at least one item is added
       const initItems = arrayConfig.initValue || [{}];
-      const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
+      const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatementWithRelations) => ({
         control: {
           placeholder: field.label,
           required: this.ctrlRequired(arrayConfig.data.controls.field),
@@ -805,10 +804,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             targetClassLabel
           },
           initValue: initVal.object_language || defaultLanguage,
-          mapValue: (val) => {
+          mapValue: (val: InfLanguage) => {
             if (!val) return null;
-            const value: InfStatement = {
-              ...{} as any,
+            const value: InfStatementWithRelations = {
               fk_object_info: undefined,
               fk_property: field.property.fkProperty,
               object_language: {
@@ -848,11 +846,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             targetClass,
             targetClassLabel
           },
-          mapValue: (val) => {
+          mapValue: (val: number) => {
             if (!val) return null;
 
-            let value: InfStatement = {
-              ...{} as any,
+            let value: InfStatementWithRelations = {
               fk_property: field.property.fkProperty,
             };
 
@@ -878,7 +875,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatementWithRelations) => ({
       control: {
         initValue: initVal.object_appellation,
         placeholder: field.label,
@@ -890,10 +887,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           targetClass,
           targetClassLabel
         },
-        mapValue: (val) => {
+        mapValue: (val: InfAppellation) => {
           if (!val) return null;
-          const value: InfStatement = {
-            ...{} as any,
+          const value: InfStatementWithRelations = {
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
             object_appellation: {
@@ -913,8 +909,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private placeCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const field = arrayConfig.data.controls.field;
     // with [{}] we make sure at least one item is added
-    const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
+    const initItems: InfStatementWithRelations[] = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal) => ({
       childFactory: {
         component: FgPlaceComponent,
         getInjectData: (d) => {
@@ -927,10 +923,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             initVal$: of(initVal.object_place)
           }
         },
-        mapValue: (val) => {
+        mapValue: (val: InfPlace) => {
           if (!val) return null;
-          const value: InfStatement = {
-            ...{} as any,
+          const value: InfStatementWithRelations = {
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
             object_place: {
@@ -952,8 +947,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const field = arrayConfig.data.controls.field;
 
     // with [{}] we make sure at least one item is added
-    const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((stmt: InfStatement) => ({
+    const initItems: InfStatementWithRelations[] = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((stmt) => ({
       childFactory: {
         component: FgLangStringComponent,
         getInjectData: (d) => {
@@ -967,8 +962,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           }
         },
         mapValue: (val: InfLangString) => {
-          const value: InfStatement = {
-            ...{} as any,
+          const value: InfStatementWithRelations = {
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
             fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -989,9 +983,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const field = arrayConfig.data.controls.field;
 
     // with [{}] we make sure at least one item is added
-    const initItems = arrayConfig.initValue || [{}];
+    const initItems: InfStatementWithRelations[] = arrayConfig.initValue || [{}];
 
-    const controlConfigs: LocalNodeConfig[] = initItems.map((stmt: InfStatement) => ({
+    const controlConfigs: LocalNodeConfig[] = initItems.map((stmt) => ({
       childFactory: {
         component: FgDimensionComponent,
         getInjectData: (d) => {
@@ -1006,8 +1000,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           }
         },
         mapValue: (val: InfDimension) => {
-          const value: InfStatement = {
-            ...{} as any,
+          const value: InfStatementWithRelations = {
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
             fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -1069,7 +1062,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 if (!val || (!val.pkEntity && !val.resource)) return null;
 
                 const statement: InfStatementWithRelations = {
-                  ...{} as any,
                   fk_property: field.property.fkProperty,
                   fk_property_of_property: field.property.fkPropertyOfProperty,
                 };
@@ -1103,8 +1095,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const targetClass = ctrl.targetClass
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     // with [{}] we make sure at least one item is added
-    const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
+    const initItems: InfStatementWithRelations[] = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal) => ({
       control: {
         initValue: initVal.object_time_primitive,
         placeholder: field.label,
@@ -1116,18 +1108,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           targetClass,
           targetClassLabel
         },
-        mapValue: (val: InfTimePrimitiveWithCalendar) => {
+        mapValue: (val: TimePrimitiveWithCal) => {
           if (!val) return null;
           const { calendar, ...timePrim } = val;
-          const value: InfStatement = {
-            ...{} as any,
+          const value: InfStatementWithRelations = {
             entity_version_project_rels: [
               { calendar: val.calendar }
             ],
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
             object_time_primitive: {
-              ...timePrim,
+              julian_day: timePrim.julianDay,
+              duration: timePrim.duration,
               fk_class: arrayConfig.data.controls.targetClass,
             },
           };

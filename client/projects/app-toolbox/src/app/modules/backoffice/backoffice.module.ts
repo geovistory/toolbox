@@ -8,7 +8,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 // import { ClassAPIActions } from './components/class/api/class.actions';
 import { DndModule } from 'ng2-dnd';
 // import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
-import { TableModule } from 'ngx-easy-table';
+// import { TableModule } from 'ngx-easy-table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { KeysModule } from '../../shared/pipes/keys.module';
 import { BackofficeRoutingModule } from './backoffice-routing.module';
@@ -47,7 +47,7 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
     DndModule,
     FormsModule,
     ReactiveFormsModule,
-    TableModule,
+    // TableModule,
     ScrollDispatchModule,
     MaterialModule,
     // ReduxModule

@@ -93,7 +93,47 @@ import { InternalStorage, SDKStorage } from './storage/storage.swaps';
   exports: [],
   providers: [
     ErrorHandler,
-    SocketConnection
+    SocketConnection,
+    LoopBackAuth,
+    LoggerService,
+    SDKModels,
+    RealTime,
+    SchemaObjectApi,
+    SysClassFieldPropertyRelApi,
+    SysClassFieldApi,
+    SysClassHasTypePropertyApi,
+    SysSystemRelevantClassApi,
+    PubAccountApi,
+    EmailApi,
+    ProProjectApi,
+    PubAccountProjectRelApi,
+    ProTextPropertyApi,
+    ProInfoProjRelApi,
+    DfhProfileApi,
+    DfhLabelApi,
+    DatChunkApi,
+    DatColumnApi,
+    DatTextPropertyApi,
+    DatDigitalApi,
+    SysAppContextApi,
+    ProClassFieldConfigApi,
+    ProDfhClassProjRelApi,
+    ProDfhProfileProjRelApi,
+    InfAppellationApi,
+    InfLangStringApi,
+    InfDimensionApi,
+    InfStatementApi,
+    InfLanguageApi,
+    InfTimePrimitiveApi,
+    InfPlaceApi,
+    DatNamespaceApi,
+    SysSystemTypeApi,
+    {
+      provide: InternalStorage,
+      useClass: CookieBrowser
+    },
+    { provide: SDKStorage, useClass: StorageBrowser },
+    { provide: SocketDriver, useClass: SocketBrowser }
   ]
 })
 export class SdkLb3Module {

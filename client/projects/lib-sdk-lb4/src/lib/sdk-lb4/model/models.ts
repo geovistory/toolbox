@@ -120,6 +120,7 @@ export * from './queryFilter';
 export * from './queryFilterData';
 export * from './queryPathSegment';
 export * from './queryPathSegmentData';
+export * from './quillAttributes';
 export * from './quillDoc';
 export * from './quillDocWithRelations';
 export * from './quillOperation';

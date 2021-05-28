@@ -1,5 +1,6 @@
 import {model, property, Entity} from '@loopback/repository';
 import {ProEntity} from '.';
+import {CalendarType} from '../warehouse/primary-ds/edge/edge.commons';
 
 @model({
   settings: {
@@ -54,7 +55,7 @@ export class ProInfoProjRel  extends Entity implements ProEntity {
   @property({
     type: 'string',
   })
-  calendar?: string;
+  calendar?: CalendarType;
 
   @property({
     type: 'number',

@@ -7,7 +7,6 @@
   </mat-error>
 </mat-form-field>
 
-
 <mat-form-field *ngIf="formControlFactory.config?.data.ctrlClasses" class="w-100" appearance="legacy">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
   <gv-class-and-type-select [formControl]="formControlFactory.control"

@@ -1,14 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArrayConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { InformationBasicPipesService } from "@kleiolab/lib-queries";
-import { InformationPipesService } from "@kleiolab/lib-queries";
+import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from '@kleiolab/lib-queries';
+import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
-import { PropertySelectModel } from "@kleiolab/lib-queries";
-import { PropertyOption } from "@kleiolab/lib-queries";
 import { QfArraySubgroupInitVal, QfFormArrayData, QfFormArrayFactory, QfFormControlData, QfFormControlFactory, QfFormNodeConfig } from '../query-filter/query-filter.component';
 import { QueryFilterService } from '../query-filter/query-filter.service';
 

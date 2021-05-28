@@ -9,11 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { QuillDoc } from './quillDoc';
 
 
 export interface InfAppellation { 
     pk_entity?: number;
-    quill_doc?: object;
+    quill_doc?: QuillDoc;
     fk_class: number;
     string?: string;
 }

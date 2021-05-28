@@ -10,8 +10,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
 import { DndModule } from 'ng2-dnd';
-import { TableModule } from 'ngx-easy-table';
-import { TreeviewModule } from 'ngx-treeview';
 import { TimelineModule } from 'projects/app-toolbox/src/app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
@@ -58,8 +56,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     FilterByKeyModule,
     HighlightModule,
     DndModule,
-    TreeviewModule,
-    TableModule,
     DateTimeModule,
     DragDropModule,
     CdkTreeModule,

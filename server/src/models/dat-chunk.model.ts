@@ -2,6 +2,7 @@ import {Entity, hasMany, model, property, belongsTo} from '@loopback/repository'
 import {DatEntity, DatNamespace} from '.';
 import {InfStatement} from './inf-statement.model';
 import {DatDigital} from './dat-digital.model';
+import {QuillDoc} from './quill-doc/quill-doc.model';
 
 @model({
   settings: {
@@ -20,10 +21,8 @@ export class DatChunk extends Entity implements DatEntity {
   })
   pk_entity?: number;
 
-  @property({
-    type: 'object',
-  })
-  quill_doc?: object;
+  @property()
+  quill_doc?: QuillDoc;
 
   @property({
     type: 'string',

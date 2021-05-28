@@ -1,32 +1,32 @@
 <form [formGroup]="form" (submit)="save()">
 
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 w-100">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 w-100">
 
-    <!-- label Column -->
-    <ng-container matColumnDef="label">
-      <th mat-header-cell *matHeaderCellDef> Label </th>
-      <td mat-cell class="mat-editable-cell" *matCellDef="let element">
-        <span *ngIf="!element.editMode" class="mat-body-strong">
+        <!-- label Column -->
+        <ng-container matColumnDef="label">
+            <th mat-header-cell *matHeaderCellDef> Label </th>
+            <td mat-cell class="mat-editable-cell" *matCellDef="let element">
+                <span *ngIf="!element.editMode" class="mat-body-strong">
           {{element.label}}
         </span>
-        <span *ngIf="element.editMode">
+                <span *ngIf="element.editMode">
           <mat-form-field>
             <mat-label>Label</mat-label>
             <input matInput placeholder="Label" [formControl]="labelCtrl">
             <mat-error *ngIf="labelCtrl.invalid && form.touched">You must enter a value</mat-error>
           </mat-form-field>
         </span>
-      </td>
-    </ng-container>
+            </td>
+        </ng-container>
 
-    <!-- language Column -->
-    <ng-container matColumnDef="language">
-      <th mat-header-cell *matHeaderCellDef> Language </th>
-      <td mat-cell class="mat-editable-cell" *matCellDef="let element">
-        <span *ngIf="!element.editMode">
+        <!-- language Column -->
+        <ng-container matColumnDef="language">
+            <th mat-header-cell *matHeaderCellDef> Language </th>
+            <td mat-cell class="mat-editable-cell" *matCellDef="let element">
+                <span *ngIf="!element.editMode">
           {{element.languageLabel}}
         </span>
-        <span *ngIf="element.editMode">
+                <span *ngIf="element.editMode">
           <mat-form-field>
             <mat-label>Language</mat-label>
             <gv-ctrl-language [formControl]="languageCtrl"></gv-ctrl-language>
@@ -34,11 +34,11 @@
           </mat-form-field>
           <!-- <gv-language-search-typeahead [formControl]="languageCtrl"></gv-language-search-typeahead> -->
         </span>
-      </td>
-    </ng-container>
+            </td>
+        </ng-container>
 
-    <!-- type Column -->
-    <!-- <ng-container matColumnDef="type">
+        <!-- type Column -->
+        <!-- <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef> Type </th>
       <td mat-cell class="mat-editable-cell" *matCellDef="let element">
         <span *ngIf="!element.editMode">
@@ -56,16 +56,15 @@
       </td>
     </ng-container> -->
 
-    <!-- actions Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef class="action-col">
-        <button mat-icon-button [disabled]="(saving$ |async) || (editing$ | async)" matTooltip="Create new Label"
-          (click)="add()">
+        <!-- actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="action-col">
+                <button mat-icon-button [disabled]="(saving$ |async) || (editing$ | async)" matTooltip="Create new Label" (click)="add()">
           <mat-icon>add</mat-icon>
         </button>
-      </th>
-      <td mat-cell *matCellDef="let element" class="action-col">
-        <span *ngIf="!element.editMode">
+            </th>
+            <td mat-cell *matCellDef="let element" class="action-col">
+                <span *ngIf="!element.editMode">
           <button mat-icon-button matTooltip="Delete" [disabled]="(saving$ |async) || (editing$ | async)"
             (click)="delete(element)">
             <mat-icon>delete</mat-icon>
@@ -75,19 +74,19 @@
             <mat-icon>edit</mat-icon>
           </button>
         </span>
-        <span *ngIf="element.editMode && !element.saving">
-          <button mat-icon-button matTooltip="Cancel" [disabled]="(saving$ |async)" (click)="cancel(element)">
+                <span *ngIf="element.editMode && !element.saving">
+          <button mat-icon-button matTooltip="Cancel" [disabled]="(saving$ |async)" (click)="cancel()">
             <mat-icon>close</mat-icon>
           </button>
           <button mat-icon-button matTooltip="Save" [disabled]="(saving$ |async)" type="submit">
             <mat-icon>done</mat-icon>
           </button>
         </span>
-        <mat-spinner *ngIf="element.saving" diameter="20" color="primary"></mat-spinner>
-      </td>
-    </ng-container>
+                <mat-spinner *ngIf="element.saving" diameter="20" color="primary"></mat-spinner>
+            </td>
+        </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
 </form>

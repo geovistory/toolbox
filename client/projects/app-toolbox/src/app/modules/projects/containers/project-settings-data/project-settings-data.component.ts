@@ -8,7 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntityType, IAppState, ProjectSettingsData, RootEpics } from '@kleiolab/lib-redux';
-import { ProDfhClassProjRel, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
+import { ProDfhClassProjRel, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
@@ -459,12 +459,12 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   private toggleClass(classItem: ClassItem, enabledInEntities: boolean) {
     this.p.changingClassProjRel[classItem.pkClass] = true;
 
-    const projRel = new ProDfhClassProjRel({
+    const projRel: ProDfhClassProjRel = {
       pk_entity: (classItem.projRel || { pk_entity: undefined }).pk_entity,
       fk_class: classItem.pkClass,
       fk_project: this.p.state.pk_project,
       enabled_in_entities: enabledInEntities
-    })
+    }
 
     this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
       .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {

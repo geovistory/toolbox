@@ -9,12 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { QuillAttributes } from './quillAttributes';
 
 
 export interface QuillOperation { 
     insert?: string;
     _delete?: number;
     retain?: number;
-    attributes?: { [key: string]: object; };
+    attributes?: QuillAttributes;
 }
 

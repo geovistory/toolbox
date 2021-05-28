@@ -50,7 +50,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() sortingEnabled = false;
   @Input() lineBreak = false;
   @Input() sortBy$: Observable<{ colNb: number, direction: string }>;
-  @Input() origin: 'classic';
+  @Input() origin = 'classic';
   @Input() changingColumns = false;
 
   // outputs

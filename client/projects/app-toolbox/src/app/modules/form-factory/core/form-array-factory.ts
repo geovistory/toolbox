@@ -1,16 +1,20 @@
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormArray, FormGroup } from '@angular/forms';
-import { clone } from 'ramda';
-import { BehaviorSubject, Observable, merge, combineLatest, of } from 'rxjs';
-import { first, map, switchMap, takeUntil, startWith } from 'rxjs/operators';
-import { FormFactoryGlobal } from "../services/FormFactoryGlobal";
-import { FormNodeConfig } from "../services/FormNodeConfig";
-import { FormArrayConfig } from "../services/FormArrayConfig";
+import { BehaviorSubject, combineLatest, merge, Observable, of } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { FormArrayConfig } from '../services/FormArrayConfig';
+import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
+import { FormNodeConfig } from '../services/FormNodeConfig';
+import { FormChildFactory } from './form-child-factory';
 import { FormControlFactory } from './form-control-factory';
 import { AbstractControlFactory, combineLatestOrEmpty, FactoryType, StatusChange } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';
-import { FormChildFactory } from './form-child-factory';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
 
+export interface FormArrayChild<C, A, Ch> extends AbstractControlFactory {
+  controlFactory?: FormControlFactory<C>,
+  arrayFactory?: FormArrayFactory<C, A, Ch>,
+  childFactory?: FormChildFactory<Ch>
+}
 /**
  * Factory for a formArray, being an intermediate node of the nested form
  *
@@ -19,7 +23,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
   factoryType: FactoryType = 'array';
   control: FormArray
-  children: (FormControlFactory<C> | FormArrayFactory<C, A, Ch> | FormChildFactory<Ch>)[] = []
+  children: FormArrayChild<C, A, Ch>[] = []
 
   childConfigs: FormNodeConfig<any, any, any, any>[] = []
   // this is only needed if this is a list Factory (having only one type of children)
@@ -151,10 +155,24 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
 
 
-  private create(i: FormNodeConfig<any, any, any, any>): FormControlFactory<C> | FormArrayFactory<C, A, Ch> | FormChildFactory<Ch> {
-    if (i.array) return new FormArrayFactory(this.globalConfig, i.array, this.level + 1, this)
-    if (i.control) return new FormControlFactory(this.globalConfig, i.control, this.level + 1, this)
-    if (i.childFactory) return new FormChildFactory(this.globalConfig, i.childFactory, this.level + 1, this)
+  private create(i: FormNodeConfig<any, any, any, any>): FormArrayChild<C, A, Ch> {
+    let controlFactory: FormControlFactory<C>;
+    let arrayFactory: FormArrayFactory<C, A, Ch>;
+    let portalFactory: FormChildFactory<Ch>;
+    if (i.array) arrayFactory = new FormArrayFactory(this.globalConfig, i.array, this.level + 1, this)
+    if (i.control) controlFactory = new FormControlFactory(this.globalConfig, i.control, this.level + 1, this)
+    if (i.childFactory) portalFactory = new FormChildFactory(this.globalConfig, i.childFactory, this.level + 1, this)
+    const factory = controlFactory ?? arrayFactory ?? portalFactory
+    return {
+      childFactory: portalFactory,
+      controlFactory,
+      arrayFactory,
+      statusChanges$: factory.statusChanges$,
+      valueChanges$: factory.valueChanges$,
+      factoryType: factory.factoryType,
+      markAllAsTouched: factory.markAllAsTouched,
+      control: factory.control
+    }
   }
 
   add(i: number, c: FormNodeConfig<any, any, any, any>) {
@@ -164,18 +182,20 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     this.children.splice(i, 0, f)
 
     // add child control
-    if (f.factoryType !== 'childFactory') {
+    if (f.controlFactory || f.arrayFactory) {
       this.control.insert(i, f.control)
     }
-    else {
-      const childF = f as FormChildFactory<Ch>;
+    else if (f.childFactory) {
       const count = 0;
-      childF.control$.pipe(takeUntil(this.globalConfig.destroy$))
-        .subscribe((c: FormGroup) => {
+      f.childFactory.control$.pipe(takeUntil(this.globalConfig.destroy$))
+        .subscribe((portalControl: FormGroup) => {
           count === 0 ?
-            this.control.insert(i, c) :
-            this.control.setControl(i, c)
+            this.control.insert(i, portalControl) :
+            this.control.setControl(i, portalControl)
         })
+    }
+    else {
+      throw new Error(`No FormArrayChild created for i: ${i}, FormNodeConfig: ${JSON.stringify(c, null, 2)}`);
     }
 
     // add child config

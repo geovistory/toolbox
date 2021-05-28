@@ -3,7 +3,7 @@
 // extensions that sync form and route location state between
 // our store and Angular.
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
-import { Inject, InjectionToken, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { Inject, InjectionToken, NgModule, Optional, SkipSelf } from '@angular/core';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ToastyModule } from '@cime/ngx-toasty';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
@@ -89,12 +89,12 @@ export function apiConfigFactory(): Configuration {
   ]
 })
 export class ReduxModule {
-  public static forRoot(): ModuleWithProviders<ReduxModule> {
-    return {
-      ngModule: ReduxModule,
-      providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]
-    };
-  }
+  // public static forRoot(): ModuleWithProviders<ReduxModule> {
+  //   return {
+  //     ngModule: ReduxModule,
+  //     providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]
+  //   };
+  // }
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

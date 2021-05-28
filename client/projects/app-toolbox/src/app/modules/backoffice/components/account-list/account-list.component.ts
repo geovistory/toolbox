@@ -1,17 +1,16 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
-import { RootEpics } from "@kleiolab/lib-redux";
-import { AccountList, BoAccount, BoAccounts } from './api/account-list.models';
-import { AccountListAPIEpics } from './api/account-list.epics';
-import { AccountListAPIActions } from './api/account-list.actions';
-import { accountListReducer } from './api/account-list.reducer';
-import { Config } from 'protractor';
-import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { IAppState, RootEpics } from '@kleiolab/lib-redux';
+// import { Columns } from 'ngx-easy-table';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { KeysPipe } from 'projects/app-toolbox/src/app/shared/pipes/keys.pipe';
+import { Config } from 'protractor';
+import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { IAppState } from "@kleiolab/lib-redux";
+import { AccountListAPIActions } from './api/account-list.actions';
+import { AccountListAPIEpics } from './api/account-list.epics';
+import { AccountList, BoAccounts } from './api/account-list.models';
+import { accountListReducer } from './api/account-list.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -76,14 +75,14 @@ export class AccountListComponent extends AccountListAPIActions implements OnIni
     }
   };
 
-  columns: Columns[] = [
-    { key: 'id', title: 'Account ID' },
-    { key: 'username', title: 'Username' },
-    { key: 'email', title: 'Email' },
-    { key: 'emailverified', title: 'Email is verified' },
-    { key: 'roles', title: 'Roles', searchEnabled: false, orderEnabled: false },
-    { key: 'projectrels', title: 'Projects', searchEnabled: false, orderEnabled: false },
-  ];
+  // columns: Columns[] = [
+  //   { key: 'id', title: 'Account ID' },
+  //   { key: 'username', title: 'Username' },
+  //   { key: 'email', title: 'Email' },
+  //   { key: 'emailverified', title: 'Email is verified' },
+  //   { key: 'roles', title: 'Roles', searchEnabled: false, orderEnabled: false },
+  //   { key: 'projectrels', title: 'Projects', searchEnabled: false, orderEnabled: false },
+  // ];
 
   data = [];
 

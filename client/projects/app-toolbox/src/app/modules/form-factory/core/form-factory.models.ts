@@ -1,7 +1,7 @@
-import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs'
-import { map } from 'rxjs/operators'
-import { AbstractControl, ValidationErrors } from "@angular/forms";
-import { FormFactory } from "./form-factory";
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FormFactory } from './form-factory';
 
 export type FactoryType = 'array' | 'control' | 'group' | 'childFactory'
 
@@ -10,6 +10,7 @@ export interface StatusChange {
   errors?: ValidationErrors
   children?: StatusChange[]
 }
+
 
 export abstract class AbstractControlFactory {
   factoryType: FactoryType

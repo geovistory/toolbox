@@ -132,7 +132,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
     const hasOnly = (key: number[], d: CtrlTimeSpanDialogResult): boolean => {
       const others = omit(key.map(k => k.toString()), d)
       for (const i of values(others)) {
-        if (i.julian_day) return false
+        if (i.julianDay) return false
       }
       return true
     }
@@ -267,7 +267,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
     return this.formGroup.get(this.cName[key]);
   }
 
-  onSubmit(pkEntity: number) {
+  onSubmit() {
     if (this.formGroup.valid) {
 
       const result: CtrlTimeSpanDialogResult = {}

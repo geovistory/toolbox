@@ -7,6 +7,8 @@
 <h1 mat-dialog-title *ngIf="error">Crap, something went wrong...</h1>
 
 <mat-dialog-content class="pb-1 mat-typography">
+  <p *ngIf="error">Please write a bug report using the Help button.</p>
+
   <gv-ontome-profile-deactivation-report [hidden]="deactivating || error || deactivated" #c [profileId]="data.profileId"
     [pkProject]="data.pkProject">
   </gv-ontome-profile-deactivation-report>

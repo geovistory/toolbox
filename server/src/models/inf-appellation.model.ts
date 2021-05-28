@@ -2,6 +2,7 @@ import {Entity, hasMany, model, property} from '@loopback/repository';
 import {InfEntity} from '.';
 import {InfStatement} from './inf-statement.model';
 import {ProInfoProjRel} from './pro-info-proj-rel.model';
+import {QuillDoc} from './quill-doc/quill-doc.model';
 
 @model({
   settings: {
@@ -20,11 +21,8 @@ export class InfAppellation extends Entity implements InfEntity {
   })
   pk_entity?: number;
 
-  @property({
-    type: 'object',
-    // required: true,
-  })
-  quill_doc?: object;
+  @property()
+  quill_doc?: QuillDoc;
 
   @property({
     type: 'number',

@@ -180,8 +180,8 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
     // try to find the existing child FormArray containing the controls
     let childList = this.formArrayFactory.children.find(c => {
-      if (c.factoryType == 'array') {
-        const d = c.config.data as FormArrayData;
+      if (c.arrayFactory) {
+        const d = c.arrayFactory.config.data;
         return equals({ field: d.controls.field, targetClass: d.controls.targetClass }, { field, targetClass })
       }
       return false

@@ -1,9 +1,9 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { CtrlTimePrimitiveComponent } from './ctrl-time-primitive.component';
-import { InfTimePrimitiveWithCalendar } from "@kleiolab/lib-utils";
 import { BaseModule } from '../../base.module';
+import { CtrlTimePrimitiveComponent } from './ctrl-time-primitive.component';
 
 
 
@@ -51,10 +51,10 @@ export default sandboxOf(CtrlTimePrimitiveComponent, {
   .add('CtrlTimePrimitive | Existing ', {
     context: {
       model: {
-        julian_day: 2433454,
+        julianDay: 2433454,
         duration: "1 day",
         calendar: "gregorian"
-      } as InfTimePrimitiveWithCalendar,
+      } as TimePrimitiveWithCal,
       parentPath: ''
     },
     template: `

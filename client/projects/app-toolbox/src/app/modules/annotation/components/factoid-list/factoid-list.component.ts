@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
-import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
-import { InfTimePrimitiveWithCalendar } from '@kleiolab/lib-utils';
+import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValueObjectTypeName } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
@@ -114,11 +113,12 @@ export class FactoidListComponent implements OnInit, OnDestroy {
         this.sss.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(this.pkProject + '_' + bodyStatement.pkStatement)
       ]).pipe(
         map(([tp, ipr]) => {
-          if (!ipr) return {} as InfTimePrimitiveWithCalendar
-          return {
-            ...tp,
-            calendar: ipr.calendar
-          } as InfTimePrimitiveWithCalendar
+          const t: TimePrimitiveWithCal = {
+            julianDay: tp.julian_day,
+            duration: tp.duration as TimePrimitiveWithCal.DurationEnum,
+            calendar: ipr?.calendar as TimePrimitiveWithCal.CalendarEnum,
+          }
+          return t
         }),
         switchMap(value => of({ timePrimitive: value })))
     }

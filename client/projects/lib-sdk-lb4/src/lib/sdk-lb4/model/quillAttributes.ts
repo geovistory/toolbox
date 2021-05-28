@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { QuillAttributes } from './quillAttributes';
 
 
-export interface QuillOperationWithRelations { 
-    insert?: string;
-    _delete?: number;
-    retain?: number;
-    attributes?: QuillAttributes;
+export interface QuillAttributes { 
+  [key: string]: object | any;
+
+
+    charid?: string;
+    blockid?: string;
 }
 

@@ -3,12 +3,13 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output
 import { ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { CalendarType, Granularity, GregorianDateTime, InfTimePrimitiveWithCalendar, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { CalendarType, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-type CtrlModel = InfTimePrimitiveWithCalendar;
+type CtrlModel = TimePrimitiveWithCal;
 
 @Component({
   selector: 'gv-ctrl-time-primitive',
@@ -18,6 +19,81 @@ type CtrlModel = InfTimePrimitiveWithCalendar;
 
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+
+  get empty() {
+    return this.model ? false : true;
+  }
+
+  get shouldLabelFloat() { return this.focused || !this.empty; }
+
+  @Input()
+  get placeholder(): string { return this._placeholder; }
+  set placeholder(value: string) {
+    this._placeholder = value;
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value: boolean) {
+    this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value: boolean) {
+    this._disabled = coerceBooleanProperty(value);
+
+    // TODO implement some disable state
+    // this._disabled ? this.parts.disable() : this.parts.enable();
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get value(): CtrlModel | null {
+    return this.model;
+  }
+  set value(value: CtrlModel | null) {
+    if (!value || !value.calendar || !value.julianDay || !value.duration) {
+      this.model = undefined
+    }
+    else {
+      this.model = value;
+    }
+
+    this.onChange(this.model)
+  }
+
+  get monthVisible(): boolean {
+    return this.fieldIsVisible('month');
+  }
+  get dayVisible(): boolean {
+    return this.fieldIsVisible('day');
+  }
+  get addTimeBtnVisible(): boolean {
+    return (this.fieldIsVisible('hours') && !this.timeInputsVisible);
+  }
+  get removeTimeBtnVisible(): boolean {
+    return (this.hoursVisible && !this.fieldIsVisible('minutes'));
+  }
+  get hoursVisible(): boolean {
+    return (this.fieldIsVisible('hours') && this.timeInputsVisible);
+  }
+  get minutesVisible(): boolean {
+    return (this.fieldIsVisible('minutes') && this.timeInputsVisible);
+  }
+  get secondsVisible(): boolean {
+    return (this.fieldIsVisible('seconds') && this.timeInputsVisible);
+  }
+  get editCalBtnVisible(): boolean {
+    // show btn only if both cals are possible (first condition)
+    // or if the control was already changed by user (second condition)
+    if (this.julianDay >= 2299161
+      || this.form.controls.calendar.hasError('beforeGregorian')
+    ) return true;
+    return false;
+  }
   static nextId = 0;
 
   model: CtrlModel;
@@ -38,58 +114,34 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   controlType = 'ctrl-time-primitive';
   id = `ctrl-time-primitive-${CtrlTimePrimitiveComponent.nextId++}`;
   describedBy = '';
-  onChange = (_: any) => { };
-  onTouched = () => { };
 
   @Input() autofocus: boolean;
-
-  get empty() {
-    return this.model ? false : true;
-  }
-
-  get shouldLabelFloat() { return this.focused || !this.empty; }
-
-  @Input()
-  get placeholder(): string { return this._placeholder; }
-  set placeholder(value: string) {
-    this._placeholder = value;
-    this.stateChanges.next();
-  }
   private _placeholder: string;
-
-  @Input()
-  get required(): boolean { return this._required; }
-  set required(value: boolean) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
   private _required = false;
-
-  @Input()
-  get disabled(): boolean { return this._disabled; }
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-
-    // TODO implement some disable state
-    // this._disabled ? this.parts.disable() : this.parts.enable();
-    this.stateChanges.next();
-  }
   private _disabled = false;
 
-  @Input()
-  get value(): CtrlModel | null {
-    return this.model;
-  }
-  set value(value: CtrlModel | null) {
-    if (!value || !value.calendar || !value.julian_day || !value.duration) {
-      this.model = undefined
-    }
-    else {
-      this.model = value;
-    }
 
-    this.onChange(this.model)
-  }
+
+  /**
+ * Custom class variables
+ */
+  // value properties
+  julianDay: number
+  duration: Granularity;
+  calendar: CalendarType = 'julian'
+
+  // custom logic
+  gregorianDateTime = new GregorianDateTime();
+  julianDateTime = new JulianDateTime();
+
+  fieldNames = ['year', 'month', 'day', 'hours', 'minutes', 'seconds'];
+  editingCalendar = false;
+  timeInputsVisible = false;
+  calendarGivenByWriteValue: boolean
+
+  form: FormGroup;
+  onChange = (_: any) => { };
+  onTouched = () => { };
 
 
 
@@ -133,7 +185,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
 
         this.value = {
           ...this.value,
-          julian_day: this.julianDay,
+          julianDay: this.julianDay,
           duration: this.duration,
           calendar: this.calendar
         }
@@ -171,14 +223,15 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
 
   writeValue(value: CtrlModel | null): void {
-    this.value = value;
+    const { calendar, duration, julianDay } = value
+    this.value = { calendar, duration, julianDay };
     if (value) {
       if (value.calendar) {
         this.calendar = value.calendar;
         this.calendarGivenByWriteValue = true;
       }
       if (value.duration) this.duration = value.duration as Granularity;
-      if (value.julian_day) this.julianDay = value.julian_day;
+      if (value.julianDay) this.julianDay = value.julianDay;
 
       const timePrimitive = new TimePrimitive({
         calendar: this.calendar,
@@ -230,27 +283,6 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
 
 
-
-  /**
- * Custom class variables
- */
-  // value properties
-  julianDay: number
-  duration: Granularity;
-  calendar: CalendarType = 'julian'
-
-  // custom logic
-  gregorianDateTime = new GregorianDateTime();
-  julianDateTime = new JulianDateTime();
-
-  fieldNames = ['year', 'month', 'day', 'hours', 'minutes', 'seconds'];
-  editingCalendar = false;
-  timeInputsVisible = false;
-  calendarGivenByWriteValue: boolean
-
-  form: FormGroup;
-
-
   /**
    * Custom functions
    */
@@ -280,36 +312,6 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
   fieldIsVisible(field) {
     return (this.hasValueImmediatelyBefore(field) || this.hasValue(field) || this.hasValueAfter(field));
-  }
-
-  get monthVisible(): boolean {
-    return this.fieldIsVisible('month');
-  }
-  get dayVisible(): boolean {
-    return this.fieldIsVisible('day');
-  }
-  get addTimeBtnVisible(): boolean {
-    return (this.fieldIsVisible('hours') && !this.timeInputsVisible);
-  }
-  get removeTimeBtnVisible(): boolean {
-    return (this.hoursVisible && !this.fieldIsVisible('minutes'));
-  }
-  get hoursVisible(): boolean {
-    return (this.fieldIsVisible('hours') && this.timeInputsVisible);
-  }
-  get minutesVisible(): boolean {
-    return (this.fieldIsVisible('minutes') && this.timeInputsVisible);
-  }
-  get secondsVisible(): boolean {
-    return (this.fieldIsVisible('seconds') && this.timeInputsVisible);
-  }
-  get editCalBtnVisible(): boolean {
-    // show btn only if both cals are possible (first condition)
-    // or if the control was already changed by user (second condition)
-    if (this.julianDay >= 2299161
-      || this.form.controls.calendar.hasError('beforeGregorian')
-    ) return true;
-    return false;
   }
 
   setFormValue(year = null, month = null, day = null, hours = null, minutes = null, seconds = null) {

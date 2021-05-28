@@ -12,8 +12,7 @@
 <span class="wrapper-block gv-fade-out-right gv-white-space-nowrap" *ngIf="mode =='small'">
   <ng-container *ngFor="let item of data; let i = index">
     <ng-container *ngIf="item.entity">
-      <ng-container
-        *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (mode =='full' || i == data.length-1)}">
+      <ng-container *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (i == data.length-1)}">
       </ng-container>
 
     </ng-container>
@@ -28,8 +27,7 @@
 <span class="wrapper-inline" *ngIf="mode =='full'">
   <ng-container *ngFor="let item of data; let i = index">
     <ng-container *ngIf="item.entity">
-      <ng-container
-        *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (mode =='full' || i == data.length-1)}">
+      <ng-container *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (i == data.length-1)}">
       </ng-container>
 
     </ng-container>
@@ -75,7 +73,7 @@
   <mat-menu #appMenu="matMenu">
     <button *ngIf="entity.preview" mat-menu-item (click)="openEntityInNewTab(entity.preview)">
       <mat-icon>tab</mat-icon>
-      Open '{{entity.preview?.entity_label | truncate:[10]}}' in new tab
+      Open '{{entity.preview?.entity_label | truncate:['10']}}' in new tab
     </button>
     <button *ngIf="entity.isDigitalText" mat-menu-item (click)="openTextInNewTab(entity.pkEntity)">
       <mat-icon>tab</mat-icon>

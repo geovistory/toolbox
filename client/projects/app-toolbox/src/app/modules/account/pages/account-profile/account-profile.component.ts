@@ -8,7 +8,7 @@ import { LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
 })
 export class AccountProfileComponent implements OnInit {
   model: Account;
-  edit: boolean = false;
+  edit = false;
 
   constructor(
     private authService: LoopBackAuth

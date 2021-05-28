@@ -1,15 +1,16 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { SocketsConfig } from '../models/SocketsConfig';
+import { ConfigService } from './config.service';
 @Injectable()
 export class ImportTableSocket extends Socket {
   connected = false;
 
   constructor(
-    @Optional() config?: SocketsConfig
+    c: ConfigService,
+    // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
 
-    super({ url: config.baseUrl + '/ImportTable' });
+    super({ url: c.config.baseUrl + '/ImportTable' });
 
     this.connected = true;
 

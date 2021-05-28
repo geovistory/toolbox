@@ -168,6 +168,7 @@ model/queryFilter.ts
 model/queryFilterData.ts
 model/queryPathSegment.ts
 model/queryPathSegmentData.ts
+model/quillAttributes.ts
 model/quillDoc.ts
 model/quillDocWithRelations.ts
 model/quillOperation.ts

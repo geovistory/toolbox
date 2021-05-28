@@ -9,13 +9,14 @@ import { InfStatementMock } from 'projects/__test__/data/auto-gen/gvDB/InfStatem
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { BehaviorSubject } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { IAppState, ReduxModule } from '../../public-api';
+import { IAppState, ReduxMainService, ReduxModule } from '../../public-api';
 import { subfieldIdToString } from '../_helpers/subfieldIdToString';
 import { GvSchemaActions } from './schema.actions';
 
 
 describe('GvSchemaActions', () => {
   let actions: GvSchemaActions;
+  let main: ReduxMainService;
   let ngRedux: NgRedux<IAppState>;
 
   beforeEach(() => {
@@ -29,8 +30,9 @@ describe('GvSchemaActions', () => {
         { provide: SubfieldPageControllerService, useClass: MockPaginatedStatementsControllerService }
       ]
     })
-    actions = TestBed.get(GvSchemaActions);
-    ngRedux = TestBed.get(NgRedux);
+    actions = TestBed.inject(GvSchemaActions);
+    main = TestBed.inject(ReduxMainService);
+    ngRedux = TestBed.inject(NgRedux);
   });
   describe('.loadGvSchemaObject()', () => {
     it('should put parts of object into store', () => {
@@ -43,12 +45,12 @@ describe('GvSchemaActions', () => {
     });
   })
 
-  describe('.loadGvPaginationObject()', () => {
+  describe('.loadFieldPage()', () => {
     it('should put paginated statements of subfield Appelation for language -> refers to name -> appellation ', (done) => {
-      const req = GvFieldPageReqMock.appeTeEnRefersToName
-      actions.loadGvPaginationObject(req)
 
-      const q$ = ngRedux.select(['inf', 'statement', 'by_subfield_page', subfieldIdToString(req.page)])
+      main.loadFieldPage(GvFieldPageReqMock.appeTeEnRefersToName)
+
+      const q$ = ngRedux.select(['inf', 'statement', 'by_subfield_page', subfieldIdToString(GvFieldPageReqMock.appeTeEnRefersToName.page)])
         .pipe(
           first((p: any) => (p && !!p.rows))
         )

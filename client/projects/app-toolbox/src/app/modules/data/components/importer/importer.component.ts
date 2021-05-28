@@ -269,7 +269,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    *  Deduction of the headers from the parsed binaries (either CSV or XLSX)
    * @param result the binaries parsed
    */
-  parseHeaders(result: string[][]) {
+  parseHeaders(result?: string[][]) {
     if (!result) { // if we come from html: rebuild the result
       if (this.columnsOption != 'First row') { // ==> if we had 'first row' and we are going to 'no headers'
         result = [this.headers.map(c => c.colLabel)].concat(this.table);

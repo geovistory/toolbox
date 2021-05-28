@@ -21,7 +21,7 @@ export class VersionPickerComponent implements OnChanges {
 
   selectedItem: Version;
 
-  selectVisible: false;
+  selectVisible: boolean;
 
   constructor() { }
 
@@ -33,8 +33,8 @@ export class VersionPickerComponent implements OnChanges {
   }
 
   change() {
-      this.versionChange.emit(this.selectedItem);
-      this.selectVisible = false;
+    this.versionChange.emit(this.selectedItem);
+    this.selectVisible = false;
   }
 
 }
