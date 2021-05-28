@@ -2492,6 +2492,16 @@ $mat-color-divider: mat-color($foreground, divider);
   border-right-style: solid !important;
 }
 
+.mat-border-edit-mode {
+  border-top-color: $mat-color-primary !important;
+  border-top-width: 1px !important;
+  border-top-style: solid !important;
+}
+
+.mat-bg-edit-mode {
+  background-color: $mat-color-primary;
+}
+
 mat-checkbox {
   label {
     margin-bottom: 0;

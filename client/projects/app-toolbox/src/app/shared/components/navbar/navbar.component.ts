@@ -42,36 +42,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.subscription = this.activeAccountService.getAccount().subscribe(account => {
       this.account = account;
     })
-
-    // TEMP GMU
-    this.p.pro$.table_config$.by_fk_digital$.all$.subscribe(x => {
-      console.log('TRIGGERED 1');
-      console.log(x)
-    })
-
-    this.p.pro$.table_config$.by_pk_entity$.all$.subscribe(x => {
-      console.log('TRIGGERED 2');
-      console.log(x)
-    })
-
-    this.ngRedux.select(['pro', 'table_config']).subscribe(elt => {
-      console.log('TRIGGER: pro', 'table_config');
-      console.log(elt)
-    })
-
-    this.ngRedux.select(['pro', 'table_config', 'by_pk_entity']).subscribe(elt => {
-      console.log('TRIGGER pro', 'table_config', 'by_pk_entity');
-      console.log(elt)
-    })
-
-    this.ngRedux.select(['pro', 'table_config', 'by_fk_digital']).subscribe(elt => {
-      console.log('TRIGGER pro', 'table_config', 'by_fk_digital');
-      console.log(elt)
-    })
-    this.ngRedux.select(['pro', 'table_config', 'by_pk_entity', '5091', 'config', 'columns', '1', 'visible']).subscribe(elt => {
-      console.log('TRIGGER pro', 'table_config', 'by_pk_entity', '5091', 'config', 'columns', '1', 'visible');
-      console.log(elt)
-    })
   }
 
   ngOnDestroy(): void {

@@ -11,6 +11,7 @@ import { ColMappingComponent } from './col-mapping/col-mapping.component';
 export enum TableMode {
   edit = 'edit',
   view = 'view',
+  ids = 'ids'
 }
 
 export interface ColumnMapping {
@@ -232,7 +233,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string) {
     const header = this.headers.find(h => h.pk_column == pkColumn);
-    const content = header.type == 'number' ? parseFloat(newContent) : newContent.trimEnd();
+    const content = header.type == 'number' ? parseFloat(newContent) : newContent.trim();
     const cell: TabCell = {
       fk_digital: this.pkDigital,
       fk_row: pkRow,
@@ -249,8 +250,9 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  createRow(cell: Cell) {
-    this.createRowDemanded.emit({ position: parseInt(cell.text, 10) })
+  createRow(cell: Cell, place: 'above' | 'below') {
+    const position = place == 'above' ? parseInt(cell.text, 10) : parseInt(cell.text, 10) + 1;
+    this.createRowDemanded.emit({ position })
   }
 
   moveToIndex(cell: Cell) {
@@ -272,6 +274,14 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   getTypeOfColumn(index: number) {
     return this.headers[index].type == 'number' ? 'number' : 'text';
+  }
+
+  doesColumnHasMapping(pkColumn): boolean {
+    return !!this.headers.find(h => h.pk_column == pkColumn).mapping
+  }
+
+  getUIcolumnNumber(): number {
+    return this.table.length + this.headers.filter(h => !!h.mapping).length
   }
 
 }

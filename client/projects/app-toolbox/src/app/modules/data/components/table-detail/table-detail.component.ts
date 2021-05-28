@@ -209,7 +209,11 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           )
         ))
       )
+    ).pipe(
+      map(c => [{ colLabel: 'Index', comment: 'number', type: 'number', pk_column: -1 } as Header].concat(c))
+      // we add the first column: Indexes
     )
+    this.headers$.subscribe(hs => this.headers = hs);
 
     // set the table: for table.component
     this.table$ = combineLatest([this.headers$, res$]).pipe(
@@ -222,6 +226,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           table[i][0] = { text: row.index.toString(), pkCell: -1, pkColumn: -1, pkRow: row.pk_row };
           for (let j = 0; j < keys.length; j++) {
             const key = keys[j];
+            // if (key == 'index') continue;
             const str: string = row[key].string_value ?
               row[key].string_value :
               row[key].numeric_value == 0 || row[key].numeric_value ? row[key].numeric_value : '';

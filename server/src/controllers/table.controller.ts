@@ -480,7 +480,6 @@ export class TableController {
       //check presence
       if (!cell.fk_column) throw new HttpErrors.UnprocessableEntity('fkColumn is missing on cell');
       if (!cell.fk_row) throw new HttpErrors.UnprocessableEntity('fkRow is missing on cell');
-      if (!cell.string_value && !cell.numeric_value) throw new HttpErrors.UnprocessableEntity('Cell has no value');
       //check digital of col and row
       const col = await this.datColumnRepo.findOne({ where: { pk_entity: cell.fk_column } });
       if (!col || col.fk_digital !== pkDigital) throw new HttpErrors.UnprocessableEntity('You can not add a cell to this column');
