@@ -5,7 +5,6 @@ import { inject } from '@loopback/context';
 import { tags } from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import { model, property, repository } from '@loopback/repository';
 import { get, HttpErrors, param, post, requestBody } from '@loopback/rest';
-import { NumberOfAutoScalingGroups } from 'aws-sdk/clients/autoscaling';
 import { keys, uniq } from 'ramda';
 import { Roles } from '../components/authorization/keys';
 import { QMatchedRowsFromColumn } from '../components/query/q-matched-rows-from-column';
@@ -20,7 +19,7 @@ import { DatColumn } from '../models/dat-column.model';
 import { FkProjectFkEntity, PkEntity } from '../models/gv-negative-schema-object.model';
 import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
 import { GvSchemaModifier } from '../models/gv-schema-modifier.model';
-import { DatClassColumnMappingRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, InfLanguageRepository, ProInfoProjRelRepository, ProTableConfigRepository, PubAccountRepository } from '../repositories';
+import { DatClassColumnMappingRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, InfLanguageRepository, InfStatementRepository, ProInfoProjRelRepository, ProTableConfigRepository, PubAccountRepository } from '../repositories';
 
 @model()
 export class MapColumnBody {
@@ -65,6 +64,13 @@ export class TabCells {
   @property.array(TabCell) cells: Array<TabCell>
 }
 
+@model()
+export class DeleteRowResponse {
+  @property() pkRow?: number;
+  @property() existedMatchings?: true;
+}
+
+
 /**
  * A controller to get data from and about tables (digitals)
  */
@@ -81,7 +87,8 @@ export class TableController {
     @repository(DatClassColumnMappingRepository) public datClassColumnMappingRepo: DatClassColumnMappingRepository,
     @repository(PubAccountRepository) public pubAccountRepo: PubAccountRepository,
     @repository(ProTableConfigRepository) public proTableConfigRepo: ProTableConfigRepository,
-    @repository(InfLanguageRepository) public infLanguageRepo: InfLanguageRepository
+    @repository(InfLanguageRepository) public infLanguageRepo: InfLanguageRepository,
+    @repository(InfStatementRepository) public infStatementRepo: InfStatementRepository,
   ) { }
 
 
@@ -506,7 +513,7 @@ export class TableController {
 
     //when we have checked everything, we can make the modifications in db
     for (const cell of toUpdate) await fakeRepoCell.updateCell(cell);
-    for (const cell of toCreate) await fakeRepoCell.createCell(cell);
+    for (const cell of toCreate) cell.pk_cell = parseInt((await fakeRepoCell.createCell(cell) + '') as string, 10);
 
     return { cells: toUpdate.concat(toCreate) };
   }
@@ -565,14 +572,14 @@ export class TableController {
     responses: {
       '200': {
         description: 'Delete a row',
-        content: { 'application/json': { schema: { 'x-ts-type': Number } } }
+        content: { 'application/json': { schema: { 'x-ts-type': DeleteRowResponse } } }
       },
     },
   })
   async deleteRow(@param.query.number('pkProject', { required: true }) pkProject: number,
     @param.query.number('pkDigital', { required: true }) pkDigital: number,
     @param.query.number('pkRow', { required: true }) pkRow: number,
-  ): Promise<NumberOfAutoScalingGroups> {
+  ): Promise<DeleteRowResponse> {
     const fakeRepoRow = new QTablesRow(this.dataSource);
     const fakeRepoCell = new QTablesCell(this.dataSource);
 
@@ -581,10 +588,16 @@ export class TableController {
     if (!await fakeRepoRow.getRow(pkDigital, pkRow)) throw new HttpErrors.UnprocessableEntity('Unknown row');
 
     const relatedCells = await fakeRepoCell.getAllCellsInRow(pkDigital, pkRow);
+
+    //is there mapping to one of these cells?
+    if (relatedCells.some(cell => fakeRepoCell.wasCellMatchedOnce(cell.pk_cell as number))) {
+      return { existedMatchings: true };
+    }
+
     for (const cell of relatedCells) {
       await fakeRepoCell.deleteCell(cell.fk_digital as number, cell.pk_cell as number)
     }
-    return fakeRepoRow.deleteRow(pkDigital, pkRow);
+    return { pkRow: await fakeRepoRow.deleteRow(pkDigital, pkRow) }
   }
 
 

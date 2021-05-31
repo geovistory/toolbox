@@ -47,7 +47,7 @@
       <!-- toggle onto info -->
       <button mat-menu-item>
         <mat-slide-toggle color="accent" [ngModel]="tableMode == 'ids'"
-          (change)="$event.checked ? tableMode = 'ids' : tableMode = 'view'">
+          (change)="$event.checked ? setTableMode('ids') : setTableMode('view')">
           Display IDs
         </mat-slide-toggle>
       </button>

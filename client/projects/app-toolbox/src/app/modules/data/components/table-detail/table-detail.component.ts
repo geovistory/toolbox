@@ -347,4 +347,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     })
   }
 
+  setTableMode(mode: string) {
+    if (mode == 'ids') this.tableMode = TableMode.ids;
+    if (mode == 'view') this.tableMode = TableMode.view;
+    if (mode == 'edit') this.tableMode = TableMode.edit;
+  }
+
 }

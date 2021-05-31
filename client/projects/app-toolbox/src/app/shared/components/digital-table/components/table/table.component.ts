@@ -233,7 +233,8 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string) {
     const header = this.headers.find(h => h.pk_column == pkColumn);
-    const content = header.type == 'number' ? parseFloat(newContent) : newContent.trim();
+    let content = header.type == 'number' ? parseFloat(newContent) : newContent.trim();
+    if (header.type == 'number' && isNaN(content as number)) content = this.precCellValue;
     const cell: TabCell = {
       fk_digital: this.pkDigital,
       fk_row: pkRow,
@@ -246,7 +247,10 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.table[i][j].text = content + '';
     if (this.precCellValue !== content + '') {
       this.tableAPI.tableControllerInsertOrUpdateCells(this.pkProject, this.pkDigital, { cells: [cell] })
-        .subscribe(nv => this.table[i][j].text = header.type == 'number' ? nv.cells[0].numeric_value + '' : nv.cells[0].string_value);
+        .subscribe(nv => {
+          this.table[i][j].text = header.type == 'number' ? nv.cells[0].numeric_value + '' : nv.cells[0].string_value
+          this.table[i][j].pkCell = nv.cells[0].pk_cell;
+        });
     }
   }
 
@@ -262,9 +266,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
       })
       .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
         if (result == undefined) return;
-        this.moveRowDemanded.emit({ pkRow: cell.pkRow, position: result })
-        console.log({ pkRow: cell.pkRow, position: result })
-
+        this.moveRowDemanded.emit({ pkRow: cell.pkRow, position: result });
       })
   }
 

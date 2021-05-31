@@ -34,7 +34,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
     private s: SchemaSelectorsService,
     private dialog: MatDialog,
     private inf: InfActions,
-    @Inject(forwardRef(() => TableComponent)) private tableComponent: TableComponent
+    @Inject(forwardRef(() => TableComponent)) public tableComponent: TableComponent
   ) { }
 
   ngOnDestroy() {

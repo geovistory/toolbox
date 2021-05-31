@@ -28,7 +28,7 @@
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
               <th class="gv-pointer gv-td-col-header" [ngClass]="{'mat-bg-grey-100': i==0 && origin !='importer'}"
-                colspan="1" [matTooltip]="mode == 'ids' ? 'Click to copy colum id: ' + col.pk_column : ''">
+                colspan="1">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
@@ -49,7 +49,8 @@
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{col.comment}}
-                  <span *ngIf="mode == 'ids' && i != 0">
+                  <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column"
+                    [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
                   </span>
                 </div>
@@ -75,7 +76,8 @@
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{col.comment}}
-                  <span *ngIf="mode == 'ids' && i != 0">
+                  <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column"
+                    [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
                   </span>
                 </div>
@@ -167,13 +169,14 @@
               <td
                 [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'mat-bg-grey-100': origin !='importer'}"
                 class="text-center align-self-center" pResizableColumn colspan="1"
-                [matTooltip]="mode == 'ids' ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard="test">
-                <div [ngStyle]="{'justify-content': mode == 'edit' ? 'space-between' : 'center'}"
+                [matTooltip]="mode == 'ids' ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
+                [toClipboard]="value.pkRow" [clipBoardActivated]="mode == 'ids'">
+                <div [ngStyle]=" {'justify-content': mode=='edit' ? 'space-between' : 'center' }"
                   style="display: flex; min-height: 40px;">
                   <mat-icon *ngIf="mode == 'edit'"></mat-icon>
                   <span style="margin-top: auto; margin-bottom: auto;">
                     {{value.text}}
-                    <span *ngIf="mode == 'ids'">&nbsp;| id:
+                    <span *ngIf="mode == 'ids'" class="mat-caption">&nbsp;| id:
                       {{value.pkRow}}</span>
                   </span>
                   <mat-menu #appMenu="matMenu">
@@ -189,11 +192,12 @@
                       <mat-icon color="primary" svgIcon="arrow-up-down"></mat-icon>
                       Move to index
                     </button>
-                    <mat-divider></mat-divider>
+                    <!-- Temporary comment, will be remove after correct implementation -->
+                    <!-- <mat-divider></mat-divider>
                     <button mat-menu-item (click)="deleteRow(value)">
                       <mat-icon color="warn" svgIcon="delete"></mat-icon>
-                      Delete Row
-                    </button>
+                      Delete row
+                    </button> -->
                   </mat-menu>
                   <mat-icon *ngIf="mode=='edit'" svgIcon="dots-vertical" [matMenuTriggerFor]="appMenu"
                     style="margin-top: auto; margin-bottom: auto;"></mat-icon>
@@ -205,7 +209,8 @@
               <!-- Cell content on columns -->
               <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
                 class="text-center align-self-center" pResizableColumn colspan="1" pEditableColumn
-                [matTooltip]="mode == 'ids' ? 'Click to copy cell id: ' + value.pkCell : ''">
+                [matTooltip]="mode == 'ids' && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
+                gvCopyClipboard [toClipboard]="value.pkCell" [clipBoardActivated]="mode == 'ids'">
 
                 <ng-container *ngIf="mode === 'view'">
                   <div class="content-cell">
@@ -250,27 +255,13 @@
                 </gv-entity-matcher>
                 <gv-value-matcher *ngIf="isClassValueObjectType(headers[j].mapping.fkClass)"
                   [vot]="getVOT(headers[j].mapping.fkClass)" [pkClass]="headers[j].mapping.fkClass"
-                  [pkCell]="value.pkCell"></gv-value-matcher>
+                  [pkCell]="value.pkCell">
+                </gv-value-matcher>
               </td>
-
-
-
-
-
-
-
-
-
-
-
             </ng-container>
           </ng-container>
-
-
-
         </tr>
       </ng-template>
-
     </p-table>
   </span>
 </div>

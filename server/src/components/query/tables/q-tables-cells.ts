@@ -1,5 +1,5 @@
 import { Postgres1DataSource } from '../../../datasources';
-import { TabCell } from '../../../models';
+import { InfStatement, TabCell } from '../../../models';
 import { SqlBuilderLb4Models } from '../../../utils/sql-builders/sql-builder-lb4-models';
 
 export class QTablesCell extends SqlBuilderLb4Models {
@@ -28,7 +28,7 @@ export class QTablesCell extends SqlBuilderLb4Models {
         else whereClause += `fk_column = ${cell.fk_column} AND fk_row = ${cell.fk_row};`
 
         const stringValue = `string_value = ${cell.string_value ? "'" + cell.string_value + "'" : "NULL"}`;
-        const numericValue = `numeric_value = ${cell.numeric_value ? cell.numeric_value : "NULL"}`;
+        const numericValue = `numeric_value = ${isNaN(cell.numeric_value as number) ? "NULL" : cell.numeric_value}`;
 
         this.params = [];
         this.sql = `UPDATE tables.cell_${cell.fk_digital} SET ${stringValue}, ${numericValue} ${whereClause};`
@@ -36,15 +36,16 @@ export class QTablesCell extends SqlBuilderLb4Models {
         return (await this.execute<Array<TabCell>>())[0];
     }
 
-    async createCell(cell: Partial<TabCell>): Promise<TabCell> {
+    async createCell(cell: Partial<TabCell>): Promise<number> {
         this.params = [];
         const stringValue = cell.string_value ? "'" + cell.string_value + "'" : "NULL";
-        const numericValue = cell.numeric_value ? cell.numeric_value : "NULL";
+        const numericValue = !isNaN(cell.numeric_value as number) ? cell.numeric_value : "NULL";
         this.sql = `INSERT INTO tables.cell_${cell.fk_digital}
                     (fk_column, fk_row, fk_digital, string_value, numeric_value)
-                    VALUES (${cell.fk_column}, ${cell.fk_row}, ${cell.fk_digital}, ${stringValue}, ${numericValue})`
+                    VALUES (${cell.fk_column}, ${cell.fk_row}, ${cell.fk_digital}, ${stringValue}, ${numericValue})
+                    RETURNING pk_cell;`
         this.getBuiltQuery();
-        return (await this.execute<Array<TabCell>>())[0];
+        return (await this.execute<Array<{pk_cell: number}>>())[0].pk_cell;
     }
 
     async deleteCell(pkDigital: number, pkCell: number) {
@@ -64,4 +65,12 @@ export class QTablesCell extends SqlBuilderLb4Models {
         this.getBuiltQuery();
         return this.execute<Array<TabCell>>();
     }
+
+    async wasCellMatchedOnce(pkCell: number) {
+        this.params = [];
+        this.sql = `SELECT * FROM information.statement WHERE fk_property = 1334 AND fk_subject_tables_cell = ${pkCell};`;
+        this.getBuiltQuery();
+        return this.execute<Array<InfStatement>>();
+    }
+
 }

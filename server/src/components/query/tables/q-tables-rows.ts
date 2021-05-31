@@ -6,10 +6,26 @@ export class TabRowExtended extends TabRow {
     index: number;
 }
 
+
+
 export class QTablesRow extends SqlBuilderLb4Models {
 
-    repositionThreshold = 0.001;
-    multiplier = 1000000;
+    // these parameters assure us a repositionning every 57 "bad repositionning" (typically inverting 2 rows this number of time, or inserting a row at a the same place)
+    // here is the function that gives us the number:
+    /*
+    function test(multiplier, step) {
+        let current = multiplier;
+        let nb = 0;
+        while(current >= step) {
+            nb ++
+            current /= 2;
+        }
+        console.log('nb:', nb)
+    }
+    */
+    repositionThreshold = 0.0000001;
+    multiplier = 10000000000;
+
 
 
     constructor(dataSource: Postgres1DataSource) {
@@ -63,6 +79,8 @@ export class QTablesRow extends SqlBuilderLb4Models {
     }
 
     async moveRow(fkDigital: number, pkRow: number, index: number): Promise<TabRowExtended> {
+        const currentPosition = (await this.getRow(fkDigital, pkRow)).index;
+        if(currentPosition < index) index++;
         const { range, position } = await this.getRangeAndPosFromIndex(fkDigital, index);
 
         const row = await this.getRow(fkDigital, pkRow);
