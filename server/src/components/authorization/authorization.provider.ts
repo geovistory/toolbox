@@ -8,7 +8,6 @@ import { Provider } from "@loopback/core";
 import { repository } from '@loopback/repository';
 import { RequestContext } from '@loopback/rest';
 import { isInteger } from 'lodash';
-import pkgDir from 'pkg-dir';
 import { DatDigitalRepository, DatNamespaceRepository, PubAccountProjectRelRepository } from '../../repositories';
 import { PubRoleMappingRepository } from '../../repositories/pub-role-mapping.repository';
 import { SqlBuilderBase } from '../../utils/sql-builders/sql-builder-base';
@@ -125,10 +124,11 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   private async authorizeDataEntityInNamespace(context: AuthorizationContext): Promise<AuthorizationDecision> {
     const accountId = this.extractAccountId(context);
     const pkDataEntity = this.extractPkDataEntity(context);
+    const pkDigital = this.extractPkDigital(context);
 
-    if (!accountId || !pkDataEntity) return AuthorizationDecision.DENY;
+    if (!accountId || (!pkDataEntity && !pkDigital)) return AuthorizationDecision.DENY;
     const q = new SqlBuilderBase();
-    q.sql = 'SELECT fk_namespace FROM data.entity WHERE pk_entity=' + q.addParam(pkDataEntity) + ';';
+    q.sql = 'SELECT fk_namespace FROM data.entity WHERE pk_entity=' + q.addParam(pkDataEntity ?? pkDigital) + ';';
     const fkNamespace = (await testdb.execute(q.sql, q.params))[0]?.fk_namespace;
     if (!fkNamespace) return AuthorizationDecision.DENY;
     const namespace = await this.datNamespaceRepository.findById(fkNamespace);
@@ -197,5 +197,13 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     const pkDataEntity = request?.query?.pkDataEntity ?? request?.body?.pkDataEntity;
     if (typeof pkDataEntity === 'string') return isInteger(parseInt(pkDataEntity)) ? parseInt(pkDataEntity) : null;
     if (typeof pkDataEntity === 'string') return parseInt(pkDataEntity);
+  }
+
+  private extractPkDigital(context: AuthorizationContext) {
+    const requestContext = context.invocationContext?.parent as RequestContext;
+    const request = requestContext?.request;
+    const pkDigital = request?.query?.pkDigital ?? request?.body?.pkDigital;
+    if (typeof pkDigital === 'string') return isInteger(parseInt(pkDigital)) ? parseInt(pkDigital) : null;
+    if (typeof pkDigital === 'string') return parseInt(pkDigital);
   }
 }

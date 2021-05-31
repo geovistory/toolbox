@@ -8,7 +8,7 @@
   <!-- TABLE -->
   <span id="scrollAccess" style="width: 100%; height: 100%">
     <p-table [value]="table" [scrollable]="true" [resizableColumns]="true" columnResizeMode="expand"
-      class="gv-ui-table-full-height gv-ui-table-border-cells">
+      class="gv-ui-table-full-height gv-ui-table-border-cells" [ngClass]="{'mat-border-edit-mode': mode=='edit'}">
 
       <!-- Header params for prime-ng -->
       <ng-template pTemplate="colgroup">
@@ -27,29 +27,32 @@
         <tr>
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th class="gv-pointer gv-td-col-header" colspan="1">
+              <th class="gv-pointer gv-td-col-header" [ngClass]="{'mat-bg-grey-100': i==0 && origin !='importer'}"
+                colspan="1">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
-                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i && !changingColumns" (click)="sort(i)"
+                  <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
                     [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                   </mat-icon>
-                  <mat-icon *ngIf="i != 0 && i != 1 && changingColumns" (click)="changeColumnClick(i, 'left')"
-                    [svgIcon]="'arrow-left'"></mat-icon>
                   <mat-icon></mat-icon>
                   <span (click)="sort(i)" style="display: flex; overflow: hidden;"
-                    class="gv-fade-out-right">{{col.colLabel}}</span>
-                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i || (changingColumns && i != 1)"></mat-icon>
-                  <mat-icon *ngIf="i != 0 && origin == 'importer'"></mat-icon>
-                  <mat-icon *ngIf="i != 0 && origin !='importer' && !changingColumns" svgIcon="link"
+                    [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                    {{col.colLabel}}
+                  </span>
+                  <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
+                  <mat-icon *ngIf="origin == 'importer' || i == 0"></mat-icon>
+                  <mat-icon *ngIf="origin !='importer' && i != 0 && mode == 'edit'" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
-                  <mat-icon *ngIf="i == 0 || (changingColumns && i == headers.length - 1)"></mat-icon>
-                  <mat-icon *ngIf="i != 0 && i != headers.length - 1 && changingColumns"
-                    (click)="changeColumnClick(i, 'right')" [svgIcon]="'arrow-right'"></mat-icon>
+                  <mat-icon *ngIf="mode != 'edit' && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{col.comment}}
+                  <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column"
+                    [matTooltip]="'Click to copy colum id: ' + col.pk_column">
+                    &nbsp;| id: {{col.pk_column}}
+                  </span>
                 </div>
               </th>
             </ng-container>
@@ -58,24 +61,25 @@
               <th class="gv-pointer gv-td-col-header" colspan="2">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
-                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i && !changingColumns" (click)="sort(i)"
+                  <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
                     [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                   </mat-icon>
-                  <mat-icon *ngIf="i != 0 && i != 1 && changingColumns" (click)="changeColumnClick(i, 'left')"
-                    [svgIcon]="'arrow-left'"></mat-icon>
                   <mat-icon></mat-icon>
                   <span (click)="sort(i)">{{col.colLabel}}</span>
-                  <mat-icon *ngIf="sortingEnabled && curSort.colNb == i || (changingColumns && i != 1)"></mat-icon>
-                  <mat-icon *ngIf="i != 0 && !changingColumns" svgIcon="link"
-                    (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
-                  <mat-icon *ngIf="i == 0 || (changingColumns && i == headers.length - 1)"></mat-icon>
-                  <mat-icon *ngIf="i != 0 && i != headers.length - 1 && changingColumns"
-                    (click)="changeColumnClick(i, 'right')" [svgIcon]="'arrow-right'"></mat-icon>
+                  <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
+                  <mat-icon *ngIf="mode == 'edit'" svgIcon="link"
+                    (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)">
+                  </mat-icon>
+                  <mat-icon *ngIf="mode != 'edit' && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{col.comment}}
+                  <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column"
+                    [matTooltip]="'Click to copy colum id: ' + col.pk_column">
+                    &nbsp;| id: {{col.pk_column}}
+                  </span>
                 </div>
               </th>
             </ng-container>
@@ -83,10 +87,11 @@
         </tr>
 
         <!-- MAPPING ROW -->
-        <tr *ngIf="isThereMappings$|async">
-          <ng-container *ngFor="let col of headers;">
+        <tr *ngIf="isThereMappings$ | async">
+          <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th class="text-center mat-caption" pResizableColumn colspan="1"></th>
+              <th [ngClass]="{'mat-bg-grey-100': i==0}" class="text-center mat-caption" pResizableColumn colspan="1">
+              </th>
             </ng-container>
 
             <ng-container *ngIf="col.mapping">
@@ -95,11 +100,11 @@
               </th>
               <th class="text-center mat-caption mat-bg-grey-50" pResizableColumn colspan="1">
                 Matched
-                <span *ngIf="col.mapping.icon === 'teEn'"
+                <span *ngIf="(col.mapping.icon | async) === 'teEn'"
                   class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
-                <span *ngIf="col.mapping.icon === 'peIt'"
+                <span *ngIf="(col.mapping.icon | async)  === 'peIt'"
                   class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-                {{col.mapping.className}}
+                {{(col.mapping.className | async)}}
               </th>
             </ng-container>
           </ng-container>
@@ -108,59 +113,155 @@
         <!-- FILTERING ROW-->
         <tr class="table-row-filter" *ngIf="filteringEnabled">
           <ng-container *ngFor="let col of headers; let i = index">
-            <th [attr.colSpan]="col.mapping?2:1">
-              <div class="mat-elevation-z3 gv-td-filter-box p-1">
-                <gv-col-filter-text *ngIf="col.type=='string'" (filterChange)="filter(i, $event)"></gv-col-filter-text>
-                <gv-col-filter-numeric *ngIf="col.type=='number'" (filterChange)="filter(i, $event)">
+            <th [attr.colSpan]="col.mapping ? 2 : 1" [ngClass]="{'mat-bg-grey-100': i==0}">
+              <div class="mat-elevation-z3 gv-td-filter-box p-1" *ngIf="i != 0">
+                <gv-col-filter-text *ngIf="col.type=='string'" (filterChange)="filter(col.pk_column, $event)">
+                </gv-col-filter-text>
+                <gv-col-filter-numeric *ngIf="col.type=='number'" (filterChange)="filter(col.pk_column, $event)">
                 </gv-col-filter-numeric>
               </div>
             </th>
           </ng-container>
         </tr>
+
+
+        <!-- NEW TEMPROW for creating a new one -->
+        <tr *ngIf="origin !='importer' && newRow.position >= 0">
+          <ng-container *ngFor="let value of newRow.cells; let j = index">
+            <td *ngIf="j != 0">
+              <div style="display: flex; justify-content: center;">
+                <mat-form-field appearance="outline" style="width: 95%; margin-bottom: -1.25em">
+                  <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text" placeholder="Empty cell">
+                </mat-form-field>
+              </div>
+            </td>
+            <td *ngIf="j == 0">
+              <div style="display: flex; justify-content: center; min-height: 40px;">
+                New row at position {{value.text}}
+              </div>
+              <div style="display: flex; justify-content: space-evenly;">
+                <mat-icon color="accent" svgIcon="check-circle-outline" (click)="validateNewRowDemanded.emit(newRow)"
+                  style="cursor: pointer;">
+                </mat-icon>
+                <mat-icon color="warn" svgIcon="close-circle-outline" (click)="cancelNewRowDemanded.emit()"
+                  style="cursor: pointer;"></mat-icon>
+              </div>
+            </td>
+
+            <td *ngIf="doesColumnHasMapping(value.pkColumn)" class="mat-bg-grey-100"></td>
+          </ng-container>
+        </tr>
+
       </ng-template>
 
       <!-- BODY -->
       <ng-template pTemplate="body" let-row let-i="rowIndex">
         <tr>
+          <ng-container *ngIf="row.length == 0">
+            <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
+              class="text-center align-self-center" pResizableColumn [colSpan]="getUIcolumnNumber()">
+              No records
+            </td>
+          </ng-container>
           <ng-container *ngFor="let value of row; let j = index">
-
-            <ng-container *ngIf="value.type != 'no records'">
-              <!-- Cell content -->
-              <ng-container *ngIf="!headers[j]?.mapping">
-                <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-                  class="text-center align-self-center" pResizableColumn colspan="1">
-                  {{value}}
-                </td>
-              </ng-container>
-
-              <ng-container *ngIf="headers[j]?.mapping">
-                <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-                  class="text-center align-self-center" pResizableColumn colspan="1">
-                  {{value.text}}
-                </td>
-                <td *ngIf="headers[j].mapping" pResizableColumn colspan="1" class="mat-bg-grey-50"
-                  [ngClass]="{'gv-white-space-nowrap': true}">
-                  <gv-entity-matcher *ngIf="!isClassValueObjectType(headers[j].mapping.fkClass)"
-                    [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell" [cellContent]="value.text">
-                  </gv-entity-matcher>
-                  <gv-value-matcher *ngIf="isClassValueObjectType(headers[j].mapping.fkClass)"
-                    [vot]="getVOT(headers[j].mapping.fkClass)" [pkClass]="headers[j].mapping.fkClass"
-                    [pkCell]="value.pkCell"></gv-value-matcher>
-                </td>
-              </ng-container>
-            </ng-container>
-
-            <ng-container *ngIf="value.type == 'no records'">
-              <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
-                class="text-center align-self-center" pResizableColumn [colSpan]="value.size">
-                No records
+            <ng-container *ngIf="j == 0">
+              <!-- Cell content on first column (index) -->
+              <td
+                [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'mat-bg-grey-100': origin !='importer'}"
+                class="text-center align-self-center" pResizableColumn colspan="1"
+                [matTooltip]="mode == 'ids' ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
+                [toClipboard]="value.pkRow" [clipBoardActivated]="mode == 'ids'">
+                <div [ngStyle]=" {'justify-content': mode=='edit' ? 'space-between' : 'center' }"
+                  style="display: flex; min-height: 40px;">
+                  <mat-icon *ngIf="mode == 'edit'"></mat-icon>
+                  <span style="margin-top: auto; margin-bottom: auto;">
+                    {{value.text}}
+                    <span *ngIf="mode == 'ids'" class="mat-caption">&nbsp;| id:
+                      {{value.pkRow}}</span>
+                  </span>
+                  <mat-menu #appMenu="matMenu">
+                    <button mat-menu-item (click)="createRow(value, 'above')">
+                      <mat-icon color="primary" svgIcon="plus"></mat-icon>
+                      Add a new row above
+                    </button>
+                    <button mat-menu-item (click)="createRow(value, 'below')">
+                      <mat-icon color="primary" svgIcon="plus"></mat-icon>
+                      Add a new row below
+                    </button>
+                    <button mat-menu-item (click)="moveToIndex(value)">
+                      <mat-icon color="primary" svgIcon="arrow-up-down"></mat-icon>
+                      Move to index
+                    </button>
+                    <!-- Temporary comment, will be remove after correct implementation -->
+                    <!-- <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="deleteRow(value)">
+                      <mat-icon color="warn" svgIcon="delete"></mat-icon>
+                      Delete row
+                    </button> -->
+                  </mat-menu>
+                  <mat-icon *ngIf="mode=='edit'" svgIcon="dots-vertical" [matMenuTriggerFor]="appMenu"
+                    style="margin-top: auto; margin-bottom: auto;"></mat-icon>
+                </div>
               </td>
             </ng-container>
 
+            <ng-container *ngIf="j != 0">
+              <!-- Cell content on columns -->
+              <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
+                class="text-center align-self-center" pResizableColumn colspan="1" pEditableColumn
+                [matTooltip]="mode == 'ids' && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
+                gvCopyClipboard [toClipboard]="value.pkCell" [clipBoardActivated]="mode == 'ids'">
+
+                <ng-container *ngIf="mode === 'view'">
+                  <div class="content-cell">
+                    <span class="center-vert">{{value.text}}</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="mode === 'edit'">
+                  <p-cellEditor id="cells_{{i}}_{{j}}">
+                    <ng-template pTemplate="input">
+                      <input pInputText type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
+                        (focus)="focusCell(value.text)"
+                        (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
+                        (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
+                        autocomplete="off">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      <div class="content-cell">
+                        <span class="center-vert">{{value.text}}</span>
+                      </div>
+                    </ng-template>
+                  </p-cellEditor>
+                </ng-container>
+
+                <ng-container *ngIf="mode === 'ids'">
+                  <div class="id-cell mat-caption">
+                    <span *ngIf="!!value.pkCell">
+                      id: {{value.pkCell}}
+                    </span>
+                  </div>
+                  <div class="content-cell">
+                    <span class="center-vert">{{value.text}}</span>
+                  </div>
+                </ng-container>
+
+              </td>
+
+              <td *ngIf="headers[j]?.mapping" pResizableColumn colspan="1" class="mat-bg-grey-50"
+                [ngClass]="{'gv-white-space-nowrap': true}">
+                <gv-entity-matcher *ngIf="!isClassValueObjectType(headers[j].mapping.fkClass)"
+                  [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell" [cellContent]="value.text">
+                </gv-entity-matcher>
+                <gv-value-matcher *ngIf="isClassValueObjectType(headers[j].mapping.fkClass)"
+                  [vot]="getVOT(headers[j].mapping.fkClass)" [pkClass]="headers[j].mapping.fkClass"
+                  [pkCell]="value.pkCell">
+                </gv-value-matcher>
+              </td>
+            </ng-container>
           </ng-container>
         </tr>
       </ng-template>
-
     </p-table>
   </span>
 </div>

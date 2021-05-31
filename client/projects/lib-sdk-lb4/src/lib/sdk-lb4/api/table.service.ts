@@ -17,10 +17,13 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
+import { ColumnNames } from '../model/models';
 import { GetTablePageOptions } from '../model/models';
 import { GvPositiveSchemaObject } from '../model/models';
 import { GvSchemaModifier } from '../model/models';
 import { MapColumnBody } from '../model/models';
+import { TabCells } from '../model/models';
+import { TabRow } from '../model/models';
 import { TableConfig } from '../model/models';
 import { TablePageResponse } from '../model/models';
 import { UnMapCheckResponse } from '../model/models';
@@ -89,6 +92,87 @@ export class TableService {
             throw Error("key may not be null if value is not object or array");
         }
         return httpParams;
+    }
+
+    /**
+     * @param pkProject 
+     * @param pkDigital 
+     * @param pkRow 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<number>;
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<number>>;
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<number>>;
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerDeleteRow.');
+        }
+        if (pkDigital === null || pkDigital === undefined) {
+            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerDeleteRow.');
+        }
+        if (pkRow === null || pkRow === undefined) {
+            throw new Error('Required parameter pkRow was null or undefined when calling tableControllerDeleteRow.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkDigital !== undefined && pkDigital !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDigital, 'pkDigital');
+        }
+        if (pkRow !== undefined && pkRow !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkRow, 'pkRow');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<number>(`${this.configuration.basePath}/delete-row`,
+            null,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
     }
 
     /**
@@ -326,6 +410,89 @@ export class TableService {
     }
 
     /**
+     * @param pkProject 
+     * @param pkDigital 
+     * @param tabCells 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerInsertOrUpdateCells(pkProject: number, pkDigital: number, tabCells?: TabCells, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<TabCells>;
+    public tableControllerInsertOrUpdateCells(pkProject: number, pkDigital: number, tabCells?: TabCells, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<TabCells>>;
+    public tableControllerInsertOrUpdateCells(pkProject: number, pkDigital: number, tabCells?: TabCells, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<TabCells>>;
+    public tableControllerInsertOrUpdateCells(pkProject: number, pkDigital: number, tabCells?: TabCells, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerInsertOrUpdateCells.');
+        }
+        if (pkDigital === null || pkDigital === undefined) {
+            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerInsertOrUpdateCells.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkDigital !== undefined && pkDigital !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDigital, 'pkDigital');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<TabCells>(`${this.configuration.basePath}/insert-or-update-cells`,
+            tabCells,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Set the mapping of a column
      * @param pkNamespace 
      * @param mapColumnBody 
@@ -390,6 +557,176 @@ export class TableService {
 
         return this.httpClient.post<GvPositiveSchemaObject>(`${this.configuration.basePath}/map-column`,
             mapColumnBody,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param pkDigital 
+     * @param pkRow 
+     * @param index 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerMoveRow(pkProject: number, pkDigital: number, pkRow: number, index: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<TabRow>;
+    public tableControllerMoveRow(pkProject: number, pkDigital: number, pkRow: number, index: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<TabRow>>;
+    public tableControllerMoveRow(pkProject: number, pkDigital: number, pkRow: number, index: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<TabRow>>;
+    public tableControllerMoveRow(pkProject: number, pkDigital: number, pkRow: number, index: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerMoveRow.');
+        }
+        if (pkDigital === null || pkDigital === undefined) {
+            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerMoveRow.');
+        }
+        if (pkRow === null || pkRow === undefined) {
+            throw new Error('Required parameter pkRow was null or undefined when calling tableControllerMoveRow.');
+        }
+        if (index === null || index === undefined) {
+            throw new Error('Required parameter index was null or undefined when calling tableControllerMoveRow.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkDigital !== undefined && pkDigital !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDigital, 'pkDigital');
+        }
+        if (pkRow !== undefined && pkRow !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkRow, 'pkRow');
+        }
+        if (index !== undefined && index !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>index, 'index');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<TabRow>(`${this.configuration.basePath}/move-row-to-index`,
+            null,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param pkDigital 
+     * @param index 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerNewRow(pkProject: number, pkDigital: number, index: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<TabRow>;
+    public tableControllerNewRow(pkProject: number, pkDigital: number, index: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<TabRow>>;
+    public tableControllerNewRow(pkProject: number, pkDigital: number, index: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<TabRow>>;
+    public tableControllerNewRow(pkProject: number, pkDigital: number, index: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerNewRow.');
+        }
+        if (pkDigital === null || pkDigital === undefined) {
+            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerNewRow.');
+        }
+        if (index === null || index === undefined) {
+            throw new Error('Required parameter index was null or undefined when calling tableControllerNewRow.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkDigital !== undefined && pkDigital !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDigital, 'pkDigital');
+        }
+        if (index !== undefined && index !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>index, 'index');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<TabRow>(`${this.configuration.basePath}/new-row`,
+            null,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
@@ -630,6 +967,99 @@ export class TableService {
 
         return this.httpClient.post<UnMapCheckResponse>(`${this.configuration.basePath}/unmap-column-check`,
             unmapColumnBody,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param pkDigital 
+     * @param accountId 
+     * @param fkLanguage 
+     * @param columnNames 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public tableControllerUpdateColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling tableControllerUpdateColumn.');
+        }
+        if (pkDigital === null || pkDigital === undefined) {
+            throw new Error('Required parameter pkDigital was null or undefined when calling tableControllerUpdateColumn.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkDigital !== undefined && pkDigital !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkDigital, 'pkDigital');
+        }
+        if (accountId !== undefined && accountId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>accountId, 'accountId');
+        }
+        if (fkLanguage !== undefined && fkLanguage !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>fkLanguage, 'fkLanguage');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvSchemaModifier>(`${this.configuration.basePath}/update-columns`,
+            columnNames,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

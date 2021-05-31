@@ -86,20 +86,33 @@ export class ImportTableControllerService {
     }
 
     /**
+     * @param pkProject 
      * @param pkNamespace 
+     * @param accountId 
      * @param importTable 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public importTableControllerImportTable(pkNamespace?: number, importTable?: ImportTable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ImportTableResponse>;
-    public importTableControllerImportTable(pkNamespace?: number, importTable?: ImportTable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ImportTableResponse>>;
-    public importTableControllerImportTable(pkNamespace?: number, importTable?: ImportTable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ImportTableResponse>>;
-    public importTableControllerImportTable(pkNamespace?: number, importTable?: ImportTable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public importTableControllerImportTable(pkProject: number, pkNamespace?: number, accountId?: number, importTable?: ImportTable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ImportTableResponse>;
+    public importTableControllerImportTable(pkProject: number, pkNamespace?: number, accountId?: number, importTable?: ImportTable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ImportTableResponse>>;
+    public importTableControllerImportTable(pkProject: number, pkNamespace?: number, accountId?: number, importTable?: ImportTable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ImportTableResponse>>;
+    public importTableControllerImportTable(pkProject: number, pkNamespace?: number, accountId?: number, importTable?: ImportTable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling importTableControllerImportTable.');
+        }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (pkNamespace !== undefined && pkNamespace !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>pkNamespace, 'pkNamespace');
+        }
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (accountId !== undefined && accountId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>accountId, 'accountId');
         }
 
         let headers = this.defaultHeaders;

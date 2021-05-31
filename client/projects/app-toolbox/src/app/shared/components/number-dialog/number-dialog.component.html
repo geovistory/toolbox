@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>
+  {{data.title}}
+</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="outline">
+    <input matInput type="number" [(ngModel)]="toReturn" placeholder="Write a number">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()" cdkFocusInitial>Cancel</button>
+  <button mat-button color="primary" (click)="validate()">Validate</button>
+</div>

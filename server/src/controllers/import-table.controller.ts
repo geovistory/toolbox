@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { authenticate } from '@loopback/authentication';
 import { authorize } from '@loopback/authorization';
 import { inject } from '@loopback/context';
-import { model, property } from '@loopback/repository';
+import { model, property, repository } from '@loopback/repository';
 import { param, post, requestBody } from '@loopback/rest';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Socket } from 'socket.io';
 import { Roles } from '../components/authorization';
 import { Postgres1DataSource } from '../datasources';
 import { ws } from '../decorators/websocket.decorator';
+import { ProTableConfig } from '../models';
 import { Header } from '../models/import-table-header.model';
 import { ImportTable } from '../models/import-table.model';
+import { ProTableConfigRepository } from '../repositories';
 import { SqlBuilderBase } from '../utils/sql-builders/sql-builder-base';
 
 enum DataType {
@@ -42,6 +45,7 @@ export class ImportTableController {
   constructor(
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
+    @repository(ProTableConfigRepository) public proTableConfigRepo: ProTableConfigRepository,
   ) { }
 
 
@@ -57,8 +61,9 @@ export class ImportTableController {
   })
   async importTable(
     @param.query.number('pkNamespace') pkNamespace: number,
-    @requestBody()
-    table: ImportTable
+    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('accountId', { required: false }) accountId: number,
+    @requestBody() table: ImportTable
   ): Promise<ImportTableResponse> {
 
     ////// CHECKINGS //////
@@ -78,7 +83,7 @@ export class ImportTableController {
       for (let j = 0; j < table.rows[i].length; j++) {
         //number
         if (table.headers[j].type === 'number') {
-          if (isNaN(parseFloat(table.rows[i][j] + ''))) {
+          if (isNaN(parseFloat(table.rows[i][j] + '')) && table.rows[i][j] + '' !== '') {
             return { error: 'The cell [' + (i + 1) + ', ' + (j + 1) + '] has not the right format: it should be a number.\nCorrect your file before importing it.' };
           }
         } else if (table.headers[j].type === 'string') {
@@ -96,9 +101,9 @@ export class ImportTableController {
     const keysColumns = await createColumns(this.datasource, digital, pkNamespace, table.headers);
     await createTextProperty(digital, this.datasource, keysColumns, table.headers, table.pk_language, pkNamespace);
 
-    const keysRows = await createRows(this.datasource, digital, table.rows.length);
-    await createTablePartitionCell(this.datasource, digital);
+    await createTablePartitionCellAndRow(this.datasource, digital);
     await this.datasource.execute('COMMIT;'); //importer is necessary because we are creating a table, and we want to add element to it
+    const keysRows = await createRows(this.datasource, digital, table.rows.length);
 
     ////// IMPORTING //////
     (async function (importer, keyDigital) {
@@ -120,6 +125,12 @@ export class ImportTableController {
       delete feedBacks[digital];
 
     })(this, digital)
+
+    // create a table configuration
+    const config = { columns: keysColumns.map(pkCol => ({ fkColumn: pkCol, visible: true })) }
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    const configRow = new ProTableConfig({ fk_project: pkProject, account_id: accountId, fk_digital: digital, config })
+    await this.proTableConfigRepo.create(configRow);
 
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -212,22 +223,26 @@ async function createTextProperty(digital: number, datasource: Postgres1DataSour
 async function createRows(datasource: Postgres1DataSource, fkDigital: number, rowsNb: number): Promise<Array<number>> {
   feedBacks[fkDigital].next({ id: fkDigital, advancement: 0, infos: '[4/6] Rows creation ...' });
   let q = new SqlBuilderBase();
-  q.sql = 'INSERT INTO tables.row (fk_digital) VALUES ';
-  const temp = "(" + q.addParam(fkDigital) + "),";
-  for (let i = 0; i < rowsNb; i++) q.sql += temp; //perf are ok: on my pc (average) 1 million actions like this took 102 ms
+  q.sql = 'INSERT INTO tables.row_' + fkDigital + ' (fk_digital, position) VALUES ';
+  for (let i = 0; i < rowsNb; i++) {
+    q.sql += '(' + fkDigital + ', ' + (i+1) + '),'
+  } //perf are ok: on my pc (average) 1 million actions like this took 102 ms
   await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 
   q = new SqlBuilderBase();
-  q.sql = "SELECT pk_row FROM tables.row WHERE fk_digital = " + q.addParam(fkDigital) + " ORDER BY pk_row ASC";
+  q.sql = 'SELECT pk_row FROM tables.row_' + fkDigital + ' WHERE fk_digital = ' + q.addParam(fkDigital) + ' ORDER BY pk_row ASC';
   const result = await datasource.execute(q.sql, q.params);
   feedBacks[fkDigital].next({ id: fkDigital, advancement: 0, infos: '[4/6] Rows creation ... Done' });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.map((r: any) => r.pk_row);
 }
 
-async function createTablePartitionCell(datasource: Postgres1DataSource, fkDigital: number): Promise<void> {
+async function createTablePartitionCellAndRow(datasource: Postgres1DataSource, fkDigital: number): Promise<void> {
   feedBacks[fkDigital].next({ id: fkDigital, advancement: 0, infos: '[5/6] Creating memory space ...' });
-  const q = new SqlBuilderBase();
+  let q = new SqlBuilderBase();
+  q.sql = "SELECT tables.create_row_table_for_digital(" + q.addParam(fkDigital) + ");";
+  await datasource.execute(q.sql, q.params); //since we access the same datasource, and there's no repository for tables
+  q = new SqlBuilderBase();
   q.sql = "SELECT tables.create_cell_table_for_digital(" + q.addParam(fkDigital) + ");";
   await datasource.execute(q.sql, q.params); //since we access the same datasource, and there's no repository for tables
   feedBacks[fkDigital].next({ id: fkDigital, advancement: 0, infos: '[5/6] Creating memory space ... Done' });

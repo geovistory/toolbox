@@ -6,9 +6,9 @@ import { TabRow, TabRowRelations } from '../models/tab-row.model';
 
 export class TabRowRepository extends DefaultCrudRepository<
     TabRow,
-    typeof TabRow.prototype.pk_entity,
+    typeof TabRow.prototype.pk_row,
     TabRowRelations
-    > {
+> {
 
     constructor(
         @inject('datasources.postgres1') dataSource: Postgres1DataSource

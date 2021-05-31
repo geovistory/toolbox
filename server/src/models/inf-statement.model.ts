@@ -1,19 +1,19 @@
-import {Entity, hasMany, hasOne, model, property} from '@loopback/repository';
-import {InfDimension, InfEntity, ProInfoProjRel} from '.';
-import {DatChunk} from './dat-chunk.model';
-import {DatDigital} from './dat-digital.model';
-import {InfAppellation} from './inf-appellation.model';
-import {InfLangString} from './inf-lang-string.model';
-import {InfLanguage} from './inf-language.model';
-import {InfPlace} from './inf-place.model';
-import {InfResource} from './inf-resource.model';
-import {InfTimePrimitive} from './inf-time-primitive.model';
+import { Entity, hasMany, hasOne, model, property } from '@loopback/repository';
+import { InfDimension, InfEntity, ProInfoProjRel } from '.';
+import { DatChunk } from './dat-chunk.model';
+import { DatDigital } from './dat-digital.model';
+import { InfAppellation } from './inf-appellation.model';
+import { InfLangString } from './inf-lang-string.model';
+import { InfLanguage } from './inf-language.model';
+import { InfPlace } from './inf-place.model';
+import { InfResource } from './inf-resource.model';
+import { InfTimePrimitive } from './inf-time-primitive.model';
 
 @model({
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'v_statement'}
+    postgresql: { schema: 'information', table: 'v_statement' }
   }
 })
 export class InfStatement extends Entity implements InfEntity {
@@ -101,22 +101,22 @@ export class InfStatement extends Entity implements InfEntity {
   })
   community_favorite_calendar?: string;
 
-  @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
+  @hasMany(() => ProInfoProjRel, { keyTo: 'fk_entity' })
   entity_version_project_rels?: ProInfoProjRel[];
 
-  @hasOne(()=> InfResource)
+  @hasOne(() => InfResource)
   subject_resource?: InfResource;
 
 
-  @hasOne(()=> DatChunk)
+  @hasOne(() => DatChunk)
   subject_chunk?: DatChunk;
 
 
-  @hasOne(()=> InfStatement)
+  @hasOne(() => InfStatement)
   subject_statement?: InfStatement;
 
 
-  @hasOne(()=> DatDigital)
+  @hasOne(() => DatDigital)
   subject_digital?: DatDigital;
 
 
@@ -125,34 +125,34 @@ export class InfStatement extends Entity implements InfEntity {
  */
 
 
-  @hasOne(()=> InfResource)
+  @hasOne(() => InfResource)
   object_resource?: InfResource;
 
-  @hasOne(()=> InfAppellation)
+  @hasOne(() => InfAppellation)
   object_appellation?: InfAppellation;
 
 
-  @hasOne(()=> InfTimePrimitive)
+  @hasOne(() => InfTimePrimitive)
   object_time_primitive?: InfTimePrimitive;
 
 
-  @hasOne(()=> InfLanguage)
+  @hasOne(() => InfLanguage)
   object_language?: InfLanguage;
 
 
-  @hasOne(()=> InfLangString)
+  @hasOne(() => InfLangString)
   object_lang_string?: InfLangString;
 
 
-  @hasOne(()=> InfDimension)
+  @hasOne(() => InfDimension)
   object_dimension?: InfDimension;
 
 
-  @hasOne(()=> InfPlace)
+  @hasOne(() => InfPlace)
   object_place?: InfPlace;
 
 
-  @hasOne(()=> DatChunk)
+  @hasOne(() => DatChunk)
   object_chunk?: DatChunk;
 
 

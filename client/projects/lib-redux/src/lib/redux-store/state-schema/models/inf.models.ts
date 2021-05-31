@@ -75,7 +75,7 @@ export interface Inf {
   lang_string?: InfLangStringSlice;
   dimension?: InfDimensionSlice;
 
-  pkEntityModelMap?: ByPk<{ modelName: string }>
+  pkEntityModelMap?: ByPk<{ modelName: string, fkClass: number }>
 }
 
 

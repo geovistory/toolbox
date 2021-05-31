@@ -4,18 +4,19 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
 import { accountRootReducer } from '../state-gui/reducers/account.reducers';
-import { loadingBarReducer } from '../state-gui/reducers/loading-bar.reducer';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
 import { informationReducer } from '../state-gui/reducers/entity-list.reducer';
-import { sourceListReducer } from '../state-gui/reducers/source-list.reducer';
+import { loadingBarReducer } from '../state-gui/reducers/loading-bar.reducer';
 import { createProjectsReducer } from '../state-gui/reducers/projects.reducers';
-import { createSysReducer } from '../state-schema/reducers/sys.reducer';
+import { sourceListReducer } from '../state-gui/reducers/source-list.reducer';
+import { createDatReducer } from '../state-schema/reducers/dat.reducer';
 import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
 import { createInfReducer } from '../state-schema/reducers/inf.reducer';
-import { createDatReducer } from '../state-schema/reducers/dat.reducer';
 import { createProReducer } from '../state-schema/reducers/pro.reducer';
-import { createWarReducer } from '../state-schema/reducers/war.reducer';
+import { schemaModifierReducer } from '../state-schema/reducers/schema.reducer';
+import { createSysReducer } from '../state-schema/reducers/sys.reducer';
 import { createTabReducer } from '../state-schema/reducers/tab.reducer';
+import { createWarReducer } from '../state-schema/reducers/war.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -84,6 +85,7 @@ export const setAppState = (state = {}, action) => {
 
 export const rootReducer = composeReducers(
   defaultFormReducer(),
+  schemaModifierReducer,
   combineReducers({
     account: accountRootReducer,
     loadingBar: loadingBarReducer,

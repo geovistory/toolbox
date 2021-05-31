@@ -14,5 +14,6 @@
 export interface TabRow { 
     pk_row?: number;
     fk_digital?: number;
+    position: number;
 }
 

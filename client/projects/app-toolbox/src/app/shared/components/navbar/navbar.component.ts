@@ -1,6 +1,8 @@
+import { NgRedux } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
+import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { PubAccount } from '@kleiolab/lib-sdk-lb4';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -8,6 +10,7 @@ import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-a
 import { FeedbackDialogComponent } from 'projects/app-toolbox/src/app/modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { Subscription } from 'rxjs';
+import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 
 
 @AutoUnsubscribe()
@@ -26,7 +29,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private activeAccountService: ActiveAccountService,
     public router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private p: ActiveProjectService,
+    private ngRedux: NgRedux<IAppState>,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);

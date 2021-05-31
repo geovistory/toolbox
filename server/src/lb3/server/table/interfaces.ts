@@ -13,7 +13,7 @@ export interface TColFilter {
 
 }
 export interface TColFilters {
-  [colName: string]: TColFilter
+  [pkColumn: string]: TColFilter
 }
 export interface GetTablePageOptions {
   limit: number,

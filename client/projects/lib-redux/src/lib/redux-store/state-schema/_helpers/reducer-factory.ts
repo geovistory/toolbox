@@ -99,7 +99,7 @@ export class ReducerFactory<Payload, Model> {
         // If action state differs from
         state = facette(action, state, (innerState) => (
           {
-            ...this.mergeItemsInState(config, innerState, action),
+            ...mergeItemsInState(config, innerState, action.meta.items),
             loading: false
           }))
       }
@@ -114,7 +114,7 @@ export class ReducerFactory<Payload, Model> {
 
       else if (action.type === actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED') {
         state = facette(action, state, (innerState) => ({
-          ... this.mergeItemsInState(config, innerState, action
+          ...mergeItemsInState(config, innerState, action.meta.items
             // , true
           ),
           [this.updatingBy(config.indexBy.keyInStore)]:
@@ -269,16 +269,7 @@ export class ReducerFactory<Payload, Model> {
       switch (action.type) {
         case modelPath + '::LOAD_SUCCEEDED':
         case modelPath + '::UPSERT_SUCCEEDED':
-          const idx = {}
-          for (let i = 0; i < items.length; i++) {
-            const item = items[i] as any;
-            if (item.pk_entity) {
-              idx[item.pk_entity] = {
-                modelName,
-                fkClass: item.fk_class
-              }
-            }
-          }
+          const idx = addToEntityModelMap<Model>(items, modelName);
           state = {
             ...state,
             ...idx
@@ -391,7 +382,7 @@ export class ReducerFactory<Payload, Model> {
 
         // delete the removedItem at path in the group index
         groups.forEach(g => {
-          const groupKey = this.getGroupKeyOfItem(g.groupByFn, oldItem)
+          const groupKey = getGroupKeyOfItem(g.groupByFn, oldItem)
           state = {
             ...state,
             [g.groupByKey]: {
@@ -438,84 +429,6 @@ export class ReducerFactory<Payload, Model> {
     return state;
   }
 
-  mergeItemsInState(config: ReducerConfig, state, action: FluxStandardAction<Payload, { items: Model[]; }>
-    // , resetPaginations = false
-  ) {
-    const items = action.meta.items;
-    const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
-    const groups = groupBys.map(i => ({
-      groupByKey: by(i.keyInStore),
-      groupByFn: i.groupByFn,
-    }))
-
-    const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
-
-    items.forEach((newItem) => {
-      // get path segments of new item
-      const itemKey = config.indexBy.indexByFn(newItem); // second segment e.g. '807060'
-
-      // get old item, if exists
-      const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
-
-      let itemToSet;
-
-      // Q: Does the item exists, and is it deeply-equal to the new item?
-      const equalsFn = config.equals || equals
-      if (oldItem && equalsFn(newItem, oldItem)) {
-        // A: Yes. use old item as itemToSet
-        itemToSet = oldItem;
-      }
-      else {
-        // A: No. use new item as itemToSet
-        itemToSet = newItem;
-
-        // put the itemToSet at path in main index
-        state = {
-          ...state,
-          [mainIndexKey]: {
-            ...state[mainIndexKey],
-            [itemKey]: itemToSet
-          }
-        }
-
-        // iterate over the group indexes
-        groups.forEach(g => {
-          // remove the oldItem from all group indexes
-          const oldGroupKey = this.getGroupKeyOfItem(g.groupByFn, oldItem)
-          state = {
-            ...state,
-            [g.groupByKey]: {
-              ...state[g.groupByKey],
-              [oldGroupKey]: {
-                ...omit([itemKey], (state[g.groupByKey] || {})[oldGroupKey])
-              }
-            }
-          }
-
-          // add the itemToSet to all group indexes, if not undefined
-          const newGroupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet)
-          if (newGroupKey !== undefined) {
-            state = {
-              ...state,
-              [g.groupByKey]: {
-                ...state[g.groupByKey],
-                [newGroupKey]: {
-                  ...(state[g.groupByKey] || {})[newGroupKey],
-                  [itemKey]: itemToSet
-                }
-              }
-            }
-          }
-
-        })
-      }
-    })
-
-
-    return state;
-  }
-
-
   // /**
   //  * resets pagination within a group, e.g. 'pag_by_fk_property'
   //  * TODO: check if can be deleted
@@ -560,7 +473,7 @@ export class ReducerFactory<Payload, Model> {
     const groups = {}
     items.forEach(item => {
       // if the group by key is not possible to create, the item won't be added to the index
-      const groupKey = this.getGroupKeyOfItem(groupByFn, item);
+      const groupKey = getGroupKeyOfItem(groupByFn, item);
 
       if (groupKey) {
         const indexKey = indexByFn(item);
@@ -573,13 +486,106 @@ export class ReducerFactory<Payload, Model> {
 
 
 
-  private getGroupKeyOfItem(groupByFn: (item: any) => string, item: any): string {
-    let groupKey
-    try {
-      groupKey = groupByFn(item);
-    } catch (error) {
 
-    }
-    return groupKey;
-  }
 }
+
+export function addToEntityModelMap<Model>(items: Model[], modelName: any) {
+  const idx = {};
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i] as any;
+    if (item.pk_entity) {
+      idx[item.pk_entity] = {
+        modelName,
+        fkClass: item.fk_class
+      };
+    }
+  }
+  return idx;
+}
+
+export function getGroupKeyOfItem(groupByFn: (item: any) => string, item: any): string {
+  let groupKey
+  try {
+    groupKey = groupByFn(item);
+  } catch (error) {
+
+  }
+  return groupKey;
+}
+export function mergeItemsInState<Model>(config: ReducerConfig, state, items: Model[]
+  // , resetPaginations = false
+) {
+  // const items = action.meta.items;
+  const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
+  const groups = groupBys.map(i => ({
+    groupByKey: by(i.keyInStore),
+    groupByFn: i.groupByFn,
+  }))
+
+  const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+
+  items.forEach((newItem) => {
+    // get path segments of new item
+    const itemKey = config.indexBy.indexByFn(newItem); // second segment e.g. '807060'
+
+    // get old item, if exists
+    const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+
+    let itemToSet;
+
+    // Q: Does the item exists, and is it deeply-equal to the new item?
+    const equalsFn = config.equals || equals
+    if (oldItem && equalsFn(newItem, oldItem)) {
+      // A: Yes. use old item as itemToSet
+      itemToSet = oldItem;
+    }
+    else {
+      // A: No. use new item as itemToSet
+      itemToSet = newItem;
+
+      // put the itemToSet at path in main index
+      state = {
+        ...state,
+        [mainIndexKey]: {
+          ...state[mainIndexKey],
+          [itemKey]: itemToSet
+        }
+      }
+
+      // iterate over the group indexes
+      groups.forEach(g => {
+        // remove the oldItem from all group indexes
+        const oldGroupKey = getGroupKeyOfItem(g.groupByFn, oldItem)
+        state = {
+          ...state,
+          [g.groupByKey]: {
+            ...state[g.groupByKey],
+            [oldGroupKey]: {
+              ...omit([itemKey], (state[g.groupByKey] || {})[oldGroupKey])
+            }
+          }
+        }
+
+        // add the itemToSet to all group indexes, if not undefined
+        const newGroupKey = getGroupKeyOfItem(g.groupByFn, itemToSet)
+        if (newGroupKey !== undefined) {
+          state = {
+            ...state,
+            [g.groupByKey]: {
+              ...state[g.groupByKey],
+              [newGroupKey]: {
+                ...(state[g.groupByKey] || {})[newGroupKey],
+                [itemKey]: itemToSet
+              }
+            }
+          }
+        }
+
+      })
+    }
+  })
+
+
+  return state;
+}
+
