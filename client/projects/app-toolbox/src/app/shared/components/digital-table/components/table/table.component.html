@@ -209,12 +209,12 @@
               <!-- Cell content on columns -->
               <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
                 class="text-center align-self-center" pResizableColumn colspan="1" pEditableColumn
-                [matTooltip]="mode == 'ids' && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
-                gvCopyClipboard [toClipboard]="value.pkCell" [clipBoardActivated]="mode == 'ids'">
+                [matTooltip]="mode == 'ids' && value && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
+                gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="mode == 'ids'">
 
                 <ng-container *ngIf="mode === 'view'">
                   <div class="content-cell">
-                    <span class="center-vert">{{value.text}}</span>
+                    <span class="center-vert">{{value ? value.text : ''}}</span>
                   </div>
                 </ng-container>
 

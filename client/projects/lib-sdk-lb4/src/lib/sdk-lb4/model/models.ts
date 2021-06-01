@@ -37,6 +37,7 @@ export * from './datNegativeObject';
 export * from './datObject';
 export * from './datTextProperty';
 export * from './deactivationReportItem';
+export * from './deleteRowResponse';
 export * from './dfhClass';
 export * from './dfhLabel';
 export * from './dfhObject';

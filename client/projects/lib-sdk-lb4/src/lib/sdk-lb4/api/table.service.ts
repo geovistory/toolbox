@@ -18,6 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { ColumnNames } from '../model/models';
+import { DeleteRowResponse } from '../model/models';
 import { GetTablePageOptions } from '../model/models';
 import { GvPositiveSchemaObject } from '../model/models';
 import { GvSchemaModifier } from '../model/models';
@@ -101,9 +102,9 @@ export class TableService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<number>;
-    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<number>>;
-    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<number>>;
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<DeleteRowResponse>;
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<DeleteRowResponse>>;
+    public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<DeleteRowResponse>>;
     public tableControllerDeleteRow(pkProject: number, pkDigital: number, pkRow: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling tableControllerDeleteRow.');
@@ -162,7 +163,7 @@ export class TableService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<number>(`${this.configuration.basePath}/delete-row`,
+        return this.httpClient.post<DeleteRowResponse>(`${this.configuration.basePath}/delete-row`,
             null,
             {
                 params: queryParameters,

@@ -155,8 +155,12 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
   changeColumnName(pkColumn: number, name: string, keepEdit?: boolean) {
     const updated = this.getUpdated(pkColumn);
 
+    // save the update
     if (updated) this.setUpdated({ ...updated, name });
     else this.setUpdated({ ...this.aggregated.find(c => c.pkColumn == pkColumn), name });
+
+    // update the front
+    this.aggregated.find(c => c.pkColumn == pkColumn).name = name;
   }
 
   createNewColumn() {

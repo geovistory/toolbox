@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { IAppState } from '@kleiolab/lib-redux/public-api';
+import { IAppState } from '@kleiolab/lib-redux';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { PubAccount } from '@kleiolab/lib-sdk-lb4';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';

@@ -2,6 +2,7 @@ import { Component, forwardRef, Inject, Input, OnDestroy, OnInit } from '@angula
 import { MatDialog } from '@angular/material';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
@@ -32,7 +33,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
     private ap: ActiveProjectPipesService,
     private s: SchemaSelectorsService,
     private dialog: MatDialog,
-    private inf: InfActions,
+    private dataService: ReduxMainService,
     @Inject(forwardRef(() => TableComponent)) public tableComponent: TableComponent
   ) { }
 

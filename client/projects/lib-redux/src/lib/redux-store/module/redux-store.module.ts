@@ -131,7 +131,10 @@ export class ReduxModule {
         dynamicMiddlewares,
       ],
       // Enhancers
-      devTools.isEnabled() ? [devTools.enhancer({ trace: true })] : []
+      devTools.isEnabled()
+        && process.env.DB_ENV != 'production'
+        && process.env.DB_ENV != 'staging'
+        ? [devTools.enhancer({ trace: true })] : []
     );
 
     // Apply rootEpic

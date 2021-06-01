@@ -84,6 +84,7 @@ model/datNegativeObject.ts
 model/datObject.ts
 model/datTextProperty.ts
 model/deactivationReportItem.ts
+model/deleteRowResponse.ts
 model/dfhClass.ts
 model/dfhLabel.ts
 model/dfhObject.ts

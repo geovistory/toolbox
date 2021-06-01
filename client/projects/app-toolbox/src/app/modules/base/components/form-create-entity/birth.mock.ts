@@ -1,4 +1,4 @@
-import { InfResource } from '@kleiolab/lib-sdk-lb4/public-api';
+import { InfResource } from '@kleiolab/lib-sdk-lb4';
 
 export const mockBirth: InfResource = {
   outgoing_statements: [

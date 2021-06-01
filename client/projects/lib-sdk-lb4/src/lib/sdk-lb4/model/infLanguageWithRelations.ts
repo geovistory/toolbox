@@ -18,11 +18,11 @@ export interface InfLanguageWithRelations {
     pk_entity?: number;
     fk_class?: number;
     pk_language?: string;
-    lang_type?: string;
-    scope?: string;
-    iso6392b?: string;
-    iso6392t?: string;
-    iso6391?: string;
-    notes?: string;
+    lang_type?: string | null;
+    scope?: string | null;
+    iso6392b?: string | null;
+    iso6392t?: string | null;
+    iso6391?: string | null;
+    notes?: string | null;
 }
 

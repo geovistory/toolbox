@@ -1,9 +1,8 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { GvFieldPageReq, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
-import { GvPaginationObject } from 'projects/lib-sdk-lb4/src/lib/sdk-lb4';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';

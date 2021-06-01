@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, EventEmitter, HostBinding, Inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { EntityDetail, IAppState, RootEpics } from '@kleiolab/lib-redux';
-import { InfResource } from '@kleiolab/lib-sdk-lb4/public-api';
+import { InfResource } from '@kleiolab/lib-sdk-lb4';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { Observable, Subject } from 'rxjs';
 import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
