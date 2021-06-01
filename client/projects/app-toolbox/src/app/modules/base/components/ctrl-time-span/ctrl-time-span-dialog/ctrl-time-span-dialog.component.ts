@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, Field } from '@kleiolab/lib-queries';
@@ -24,7 +24,7 @@ interface TimeSpanFormDef {
   templateUrl: './ctrl-time-span-dialog.component.html',
   styleUrls: ['./ctrl-time-span-dialog.component.scss']
 })
-export class CtrlTimeSpanDialogComponent implements OnInit {
+export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
@@ -339,7 +339,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
     this.destroy$.unsubscribe();
   }
 
-  getErrorMessage(formControl: FormControl) {
+  getErrorMessage(formControl: AbstractControl) {
     for (const propertyName in formControl.errors) {
       if (formControl.errors.hasOwnProperty(propertyName) && formControl.touched) {
         return ValidationService.getValidatorErrorMessage(propertyName, formControl.errors[propertyName]);

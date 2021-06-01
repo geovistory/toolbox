@@ -73,7 +73,7 @@
         <!-- <mat-icon svgIcon="bars"></mat-icon> -->
         <i *ngIf="!reordering" class="fa fa-bars gv-cursor-drag" pReorderableRowHandle>
         </i>
-        <mat-spinner *ngIf="reordering" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="reordering" [diameter]="20" color="accent"></mat-spinner>
       </td>
       <td>
         <gv-onto-property-info *ngIf="row.propertyField" [pkProperty]="row.pkProperty"></gv-onto-property-info>

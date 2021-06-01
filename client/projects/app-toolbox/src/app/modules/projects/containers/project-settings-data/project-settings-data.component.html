@@ -7,7 +7,7 @@
     </mat-checkbox>
 
     <div class="ml-5 mr-2">
-      <input matInput (keyup)="textFilter($event.target.value)" placeholder="Filter" autocomplete="false">
+      <input matInput (keyup)="textFilter($event)" placeholder="Filter" autocomplete="false">
     </div>
 
   </span>
@@ -21,7 +21,7 @@
 
 
 
-  <table mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true" (matSortChange)="sortData($event)"
+  <table mat-table [dataSource]="filteredItems$" matSort [matSortDisableClear]="true" (matSortChange)="sortData($event)"
     class="mat-elevation-z1 w-100">
     <!-- <table class="gv-flex-fh" mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
     (matSortChange)="sortData($event)" multiTemplateDataRows class="mat-elevation-z1"> -->
@@ -37,7 +37,7 @@
           [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]"
           *ngIf="!element.excluded_from_entities">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" [diameter]="20" color="accent"></mat-spinner>
       </td>
     </ng-container>
 
@@ -166,7 +166,8 @@
         <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_basics')"
           [checked]="element.required_by_basics" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
+        </mat-spinner>
       </td>
     </ng-container>
 
@@ -181,7 +182,8 @@
         <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_sources')"
           [checked]="element.required_by_sources" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
+        </mat-spinner>
       </td>
     </ng-container>
     <!-- Checkbox Column only visible in Default Config Project-->
@@ -195,7 +197,8 @@
         <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_entities')"
           [checked]="element.required_by_entities" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
+        </mat-spinner>
       </td>
     </ng-container>
 
@@ -210,7 +213,8 @@
         <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'excluded_from_entities')"
           [checked]="element.excluded_from_entities" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
+        </mat-spinner>
       </td>
     </ng-container>
 

@@ -263,7 +263,7 @@
         Add selected ({{selectedCount$|async}})
       </ng-container>
       <div *ngIf="(adding$|async)" style="margin: 6px;">
-        <mat-spinner diameter="20"></mat-spinner>
+        <mat-spinner [diameter]="20"></mat-spinner>
       </div>
     </button>
     <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"

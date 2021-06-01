@@ -22,7 +22,13 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
-
+// create a new type HTMLElementEvent that has a target of type you pass
+// type T must be a HTMLElement (e.g. HTMLTextAreaElement extends HTMLElement)
+type HTMLElementEvent<T extends HTMLElement> = Event & {
+  target: T;
+  // probably you might want to add the currentTarget as well
+  // currentTarget: T;
+}
 interface Profile {
   label: string,
   fkProfile: number,
@@ -407,8 +413,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   /**
    * Called when user types something in the search filter
    */
-  textFilter(text: string) {
-    this.text$.next(text);
+  textFilter(event: HTMLElementEvent<HTMLInputElement>) {
+    this.text$.next(event.target.value);
   }
 
   /**
