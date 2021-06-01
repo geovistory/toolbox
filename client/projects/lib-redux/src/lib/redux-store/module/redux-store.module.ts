@@ -132,8 +132,8 @@ export class ReduxModule {
       ],
       // Enhancers
       devTools.isEnabled()
-        && process.env.DB_ENV != 'production'
-        && process.env.DB_ENV != 'staging'
+        // && process.env.DB_ENV != 'production'
+        // && process.env.DB_ENV != 'staging'
         ? [devTools.enhancer({ trace: true })] : []
     );
 
