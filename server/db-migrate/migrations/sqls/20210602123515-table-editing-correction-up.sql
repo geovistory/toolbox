@@ -6,13 +6,13 @@ BEGIN
     SELECT
         array_agg(DISTINCT fk_digital) INTO fkdigitals
     FROM
-        tables.row_old;
+        tables.row;
     IF fkdigitals IS NOT NULL THEN
         FOREACH fkdigital IN ARRAY (
             SELECT
                 array_agg(DISTINCT fk_digital)
             FROM
-                tables.row_old)
+                tables.row)
             LOOP
 
             EXECUTE 'ALTER TABLE tables.row_' || fkdigital::text || ' ENABLE TRIGGER create_entity_version_key;';
