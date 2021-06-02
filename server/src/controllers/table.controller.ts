@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { authenticate } from '@loopback/authentication';
 import { authorize } from '@loopback/authorization';
 import { inject } from '@loopback/context';
@@ -383,7 +382,17 @@ export class TableController {
   ): Promise<GvSchemaModifier> {
     let result: ProTableConfig | null;
     if (accountId) result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
-    else result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: null, fk_digital: pkDataEntity } });
+    else result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: null, fk_digital: pkDataEntity } }); // look fot the project scope
+
+    if (result === null) { // ie: it is an 'old' table (imported before the migration)
+      // create the default config:
+      const config = { columns: (await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } })).map(col => ({ fkColumn: col.pk_entity as number, visible: true })) };
+      result = new ProTableConfig();
+      // save the config
+      await this.proTableConfigRepo.create({ fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity, config });
+      // fetch the new result
+      result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
+    }
 
     if (result === null) throw new HttpErrors.UnprocessableEntity('Impossible error: table should have a table config at this point');
 

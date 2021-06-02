@@ -11,6 +11,7 @@ import { DigitalTableModule } from 'projects/app-toolbox/src/app/shared/componen
 import { CoverModule } from 'projects/app-toolbox/src/app/shared/directives/cover/cover.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
+import { InfoDialogModule } from '../../shared/components/info-dialog/info-dialog.module';
 import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy-clipboard.module';
 import { BaseModule } from '../base/base.module';
 import { QuillModule } from '../quill';
@@ -38,6 +39,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     BaseModule,
     DragDropModule,
     CopyClipboardModule,
+    InfoDialogModule
   ],
   providers: [],
   declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent],

@@ -11,6 +11,7 @@ import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-a
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { Cell, Header, Row, TableMode } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
+import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from 'projects/app-toolbox/src/app/shared/components/info-dialog/info-dialog.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -324,6 +325,20 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         this.newRowTemp = { position: -1, cells: [] };
         this.reload$.next(this.reload$.value + 1) // trick to reload the content
       })
+
+      if (row.position < this.pageIndex$.value * this.pageSize$.value
+        || row.position > (this.pageIndex$.value + 1) * this.pageSize$.value) {
+        this.dialog.open<InfoDialogComponent,
+          InfoDialogData, InfoDialogReturn>(InfoDialogComponent, {
+            data: {
+              title: 'New row created',
+              infos: 'Because you are displaying rows from ' + (this.pageIndex$.value * this.pageSize$.value + 1)
+                + ' to ' + ((this.pageIndex$.value + 1) * this.pageSize$.value)
+                + ', and the new row is at position ' + row.position
+                + ', you will not see it on this page.'
+            }
+          });
+      }
     })
   }
 

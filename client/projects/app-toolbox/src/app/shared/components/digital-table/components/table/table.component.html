@@ -131,7 +131,8 @@
             <td *ngIf="j != 0">
               <div style="display: flex; justify-content: center;">
                 <mat-form-field appearance="outline" style="width: 95%; margin-bottom: -1.25em">
-                  <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text" placeholder="Empty cell">
+                  <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text" placeholder="Empty cell"
+                    autocomplete="off">
                 </mat-form-field>
               </div>
             </td>

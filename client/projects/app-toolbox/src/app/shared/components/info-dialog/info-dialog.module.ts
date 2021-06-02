@@ -1,0 +1,19 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { MatButtonModule, MatDialogModule } from '@angular/material';
+import { MaterialModule } from '../../../core/material/material.module';
+import { BaseModule } from '../../../modules/base/base.module';
+import { InfoDialogComponent } from './info-dialog.component';
+
+@NgModule({
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    BaseModule,
+    MaterialModule
+  ],
+  declarations: [InfoDialogComponent],
+  entryComponents: [InfoDialogComponent]
+})
+export class InfoDialogModule { }
