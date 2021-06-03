@@ -14,8 +14,8 @@
       <ng-template pTemplate="colgroup">
         <colgroup>
           <ng-container *ngFor="let col of headers, let i = index">
-            <col [style.width.px]="i == 0 ? 170 : undefined" />
-            <col *ngIf="col.mapping" />
+            <col style="width:150px" />
+            <col *ngIf="col.mapping" style="width:200px" />
           </ng-container>
         </colgroup>
       </ng-template>
