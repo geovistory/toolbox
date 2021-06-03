@@ -335,7 +335,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
               infos: 'Because you are displaying rows from ' + (this.pageIndex$.value * this.pageSize$.value + 1)
                 + ' to ' + ((this.pageIndex$.value + 1) * this.pageSize$.value)
                 + ', and the new row is at position ' + row.position
-                + ', you will not see it on this page.'
+                + ', you will not see the new entry on this page. You have to navigate to the right page to display it.'
             }
           });
       }
