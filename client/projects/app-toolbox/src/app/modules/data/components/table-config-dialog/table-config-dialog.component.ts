@@ -92,7 +92,7 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
             type: updated ? updated.type : columns.find(c => c.pk_entity == col.fkColumn).fk_data_type == 3292 ? 'string' : 'number' as 'string' | 'number',
             position: updated ? updated.position : i
           }
-        }).filter(column => column.name.indexOf(aFilter) != -1)
+        }).filter(column => column.name.toUpperCase().indexOf(aFilter.toUpperCase()) != -1)
           .concat(this.updates.filter(c => c.pkColumn < 0 && c.name.indexOf(aFilter) != -1))
           .sort((a, b) => a.position - b.position);
         return this.columns;

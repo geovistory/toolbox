@@ -75,7 +75,7 @@
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                  {{col.comment}}
+                  {{col.comment == 'number' ? 'number' : 'text'}}
                   <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column"
                     [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
@@ -96,10 +96,10 @@
 
             <ng-container *ngIf="col.mapping">
               <th class="text-center mat-caption" pResizableColumn colspan="1">
-                Text
+                text
               </th>
               <th class="text-center mat-caption mat-bg-grey-50" pResizableColumn colspan="1">
-                Matched
+                matched
                 <span *ngIf="(col.mapping.icon | async) === 'teEn'"
                   class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
                 <span *ngIf="(col.mapping.icon | async)  === 'peIt'"

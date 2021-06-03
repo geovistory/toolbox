@@ -276,11 +276,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   }
 
   changeTableMode(checked: boolean) {
-    this.tableMode = checked ? TableMode.edit : TableMode.view;
+    this.setTableMode(checked ? TableMode.edit : TableMode.view)
   }
 
   tableConfiguration() {
-    this.newRowTemp = { position: -1, cells: [] };
     this.setTableMode('view');
     this.dialog.open<TableConfigDialogComponent,
       TableConfigDialogData, TableConfigDialogResult>(TableConfigDialogComponent, {
@@ -366,6 +365,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   }
 
   setTableMode(mode: string) {
+    this.newRowTemp = { position: -1, cells: [] };
     if (mode == 'ids') this.tableMode = TableMode.ids;
     if (mode == 'view') this.tableMode = TableMode.view;
     if (mode == 'edit') this.tableMode = TableMode.edit;
