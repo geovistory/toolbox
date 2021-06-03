@@ -4,10 +4,12 @@
 
 <h1 mat-dialog-title *ngIf="activated">Profile '{{data.profileLabel}}' activated !</h1>
 
-<h1 mat-dialog-title *ngIf="error">Crap, something went wrong...</h1>
+<h1 mat-dialog-title *ngIf="error">Sorry, something went wrong...</h1>
 
 
 <mat-dialog-content class="pb-1 mat-typography">
+  <p *ngIf="error">Please write a bug report using the Help button.</p>
+
   <gv-ontome-profile-activation-report [hidden]="activating || error || activated" #c [profileId]="data.profileId"
     [pkProject]="data.pkProject">
   </gv-ontome-profile-activation-report>
