@@ -13,7 +13,7 @@ http://ontome.dataforhistory.org/api/classes-class.json?lang=en&selected-by-proj
 import {model, property} from '@loopback/repository'
 import {registerType} from '../../components/spec-enhancer/model.spec.enhancer'
 
-@model()
+@model({settings: {strict: false}})
 export class ApiClassProfile {
   @property({required: true}) classID: number
   @property({required: true}) classIdentifierInNamespace: string
@@ -41,6 +41,6 @@ export class ApiClassProfile {
     "items": {$ref: registerType(ApiClassProfile)}
   }
 })
-export class ApiClassProfileList  { }
+export class ApiClassProfileList { }
 
 registerType(ApiClassProfileList)
