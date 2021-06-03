@@ -1,34 +1,34 @@
-import { authenticate } from '@loopback/authentication';
-import { authorize } from '@loopback/authorization';
-import { inject } from '@loopback/context';
-import { tags } from '@loopback/openapi-v3/dist/decorators/tags.decorator';
-import { model, property, repository } from '@loopback/repository';
-import { get, HttpErrors, param, post, requestBody } from '@loopback/rest';
-import { keys, uniq } from 'ramda';
-import { Roles } from '../components/authorization/keys';
-import { QMatchedRowsFromColumn } from '../components/query/q-matched-rows-from-column';
-import { QTableColumns } from '../components/query/q-table-columns';
-import { QTableDatColumns } from '../components/query/q-table-dat-columns';
-import { GetTablePageOptions, QTableTablePage, TablePageResponse } from '../components/query/q-table-page';
-import { QTablesCell } from '../components/query/tables/q-tables-cells';
-import { QTablesRow } from '../components/query/tables/q-tables-rows';
-import { Postgres1DataSource } from '../datasources';
-import { ProTableConfig, TabCell, TableConfig, TabRow } from '../models';
-import { DatColumn } from '../models/dat-column.model';
-import { FkProjectFkEntity, PkEntity } from '../models/gv-negative-schema-object.model';
-import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
-import { GvSchemaModifier } from '../models/gv-schema-modifier.model';
-import { DatClassColumnMappingRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, InfLanguageRepository, InfStatementRepository, ProInfoProjRelRepository, ProTableConfigRepository, PubAccountRepository } from '../repositories';
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
+import {inject} from '@loopback/context';
+import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
+import {model, property, repository} from '@loopback/repository';
+import {get, HttpErrors, param, post, requestBody} from '@loopback/rest';
+import {keys, uniq} from 'ramda';
+import {Roles} from '../components/authorization/keys';
+import {QMatchedRowsFromColumn} from '../components/query/q-matched-rows-from-column';
+import {QTableColumns} from '../components/query/q-table-columns';
+import {QTableDatColumns} from '../components/query/q-table-dat-columns';
+import {GetTablePageOptions, QTableTablePage, TablePageResponse} from '../components/query/q-table-page';
+import {QTablesCell} from '../components/query/tables/q-tables-cells';
+import {QTablesRow} from '../components/query/tables/q-tables-rows';
+import {Postgres1DataSource} from '../datasources';
+import {ProTableConfig, TabCell, TableConfig, TabRow} from '../models';
+import {DatColumn} from '../models/dat-column.model';
+import {FkProjectFkEntity, PkEntity} from '../models/gv-negative-schema-object.model';
+import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
+import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
+import {DatClassColumnMappingRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, InfLanguageRepository, InfStatementRepository, ProInfoProjRelRepository, ProTableConfigRepository, PubAccountRepository} from '../repositories';
 
 @model()
 export class MapColumnBody {
-  @property({ required: true }) pkColumn: number;
-  @property({ required: true }) pkClass: number;
+  @property({required: true}) pkColumn: number;
+  @property({required: true}) pkClass: number;
 }
 
 @model()
 export class UnmapColumnBody {
-  @property({ required: true }) pkColumn: number;
+  @property({required: true}) pkColumn: number;
   @property() deleteAll: boolean;
 }
 
@@ -96,15 +96,15 @@ export class TableController {
     responses: {
       '200': {
         description: 'Ok',
-        content: { 'application/json': { schema: { 'x-ts-type': GvPositiveSchemaObject } } },
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
       },
     },
   })
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   getTableColumns(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDigital', { required: true }) pkDigital: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
   ): Promise<GvPositiveSchemaObject> {
     return new QTableColumns(this.dataSource).query(pkProject, pkDigital)
   }
@@ -114,15 +114,15 @@ export class TableController {
     responses: {
       '200': {
         description: 'Ok',
-        content: { 'application/json': { schema: { 'x-ts-type': TablePageResponse } } },
+        content: {'application/json': {schema: {'x-ts-type': TablePageResponse}}},
       },
     },
   })
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async getTablePage(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkEntity', { required: true }) pkEntity: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkEntity', {required: true}) pkEntity: number,
     @requestBody() options: GetTablePageOptions
   ): Promise<TablePageResponse> {
 
@@ -176,14 +176,14 @@ export class TableController {
 
     //add languages to schema object
     const pksLanguages = uniq((response.schemaObject.inf?.lang_string ?? []).map(ls => ls.fk_language));
-    if (response.schemaObject.inf) response.schemaObject.inf.language = await this.infLanguageRepo.find({ where: { or: pksLanguages.map(pk => ({ pk_languages: pk })) } })
+    if (response.schemaObject.inf) response.schemaObject.inf.language = await this.infLanguageRepo.find({where: {or: pksLanguages.map(pk => ({pk_languages: pk}))}})
     return response
   }
 
 
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.NAMESPACE_MEMBER] })
+  @authorize({allowedRoles: [Roles.NAMESPACE_MEMBER]})
   @post('/map-column', {
     description: 'Set the mapping of a column',
     responses: {
@@ -200,7 +200,7 @@ export class TableController {
     },
   })
   async mapColumn(
-    @param.query.number('pkNamespace', { required: true }) pkNamespace: number,
+    @param.query.number('pkNamespace', {required: true}) pkNamespace: number,
     @requestBody() body: MapColumnBody
   ): Promise<GvPositiveSchemaObject> {
     // check if the column and class exists
@@ -208,16 +208,16 @@ export class TableController {
     await this.dfhClassRepo.findById(body.pkClass);
 
     // check if the column is already mapped to this class
-    const actualMapping = await this.datClassColumnMappingRepo.findOne({ where: { fk_column: body.pkColumn, fk_class: body.pkClass }, });
+    const actualMapping = await this.datClassColumnMappingRepo.findOne({where: {fk_column: body.pkColumn, fk_class: body.pkClass}, });
     if (actualMapping != null) throw new HttpErrors.UnprocessableEntity('The column is already mapped to this class');
 
     // map the column
-    const created = await this.datClassColumnMappingRepo.create({ fk_class: body.pkClass, fk_column: body.pkColumn })
-    return { dat: { class_column_mapping: [created] } }
+    const created = await this.datClassColumnMappingRepo.create({fk_class: body.pkClass, fk_column: body.pkColumn})
+    return {dat: {class_column_mapping: [created]}}
   }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.NAMESPACE_MEMBER] })
+  @authorize({allowedRoles: [Roles.NAMESPACE_MEMBER]})
   @post('/unmap-column', {
     description: 'Reset the mapping of a column',
     responses: {
@@ -234,7 +234,7 @@ export class TableController {
     },
   })
   async unMapColumn(
-    @param.query.number('pkNamespace', { required: true }) pkNamespace: number,
+    @param.query.number('pkNamespace', {required: true}) pkNamespace: number,
     @requestBody() body: UnmapColumnBody
   ): Promise<GvSchemaModifier> {
 
@@ -245,7 +245,7 @@ export class TableController {
     let count = 0, statements: Array<PkEntity> = [], infoProjRels: Array<FkProjectFkEntity> = [];
     if (body.deleteAll) {
       const deletions = await request.query(pkProject, body.pkColumn);
-      statements = deletions.map(d => ({ pk_entity: d.pkStatement }));
+      statements = deletions.map(d => ({pk_entity: d.pkStatement}));
       infoProjRels = deletions.map(d => d.infProjRel);
     }
     else count = parseInt((await request.queryCount(pkProject, body.pkColumn))[0].count, 10);
@@ -257,16 +257,16 @@ export class TableController {
     return {
       positive: {},
       negative: {
-        dat: { class_column_mapping: [{ pk_entity: theMapping.pk_entity as number }] },
-        inf: { statement: statements },
-        pro: { info_proj_rel: infoProjRels }
+        dat: {class_column_mapping: [{pk_entity: theMapping.pk_entity as number}]},
+        inf: {statement: statements},
+        pro: {info_proj_rel: infoProjRels}
       }
     }
   }
 
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.NAMESPACE_MEMBER] })
+  @authorize({allowedRoles: [Roles.NAMESPACE_MEMBER]})
   @post('/unmap-column-check', {
     description: 'Check if the mapping of a column can be removed',
     responses: {
@@ -283,7 +283,7 @@ export class TableController {
     },
   })
   async unMapColumnCheck(
-    @param.query.number('pkNamespace', { required: true }) pkNamespace: number,
+    @param.query.number('pkNamespace', {required: true}) pkNamespace: number,
     @requestBody() body: UnmapColumnBody
   ): Promise<UnMapCheckResponse> {
     await this.checkMapping(body.pkColumn);
@@ -301,13 +301,13 @@ export class TableController {
 
 
   async checkMapping(pkColumn: number) {
-    const theMapping = await this.datClassColumnMappingRepo.findOne({ where: { fk_column: pkColumn }, });
+    const theMapping = await this.datClassColumnMappingRepo.findOne({where: {fk_column: pkColumn}, });
     if (theMapping === null) throw new HttpErrors.UnprocessableEntity('The mapping does not exists');
     return theMapping;
   }
 
   async getPkProject(pkNamespace: number) {
-    const namespace = await this.datNamespaceRepo.findOne({ where: { pk_entity: pkNamespace } });
+    const namespace = await this.datNamespaceRepo.findOne({where: {pk_entity: pkNamespace}});
     if (!namespace) throw new HttpErrors.UnprocessableEntity('The namespace does not exists')
     return namespace.fk_project;
   }
@@ -324,19 +324,19 @@ export class TableController {
 
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @post('/set-table-config', {
     responses: {
       '200': {
         description: 'Set the configuration of a table (for project or account scope)',
-        content: { 'application/json': { schema: { 'x-ts-type': GvSchemaModifier } } }
+        content: {'application/json': {schema: {'x-ts-type': GvSchemaModifier}}}
       },
     },
   })
   async setTableConfig(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDataEntity', { required: true }) pkDataEntity: number,
-    @param.query.number('accountId', { required: false }) accountId: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDataEntity', {required: true}) pkDataEntity: number,
+    @param.query.number('accountId', {required: false}) accountId: number,
     @requestBody() config: TableConfig,
   ): Promise<GvSchemaModifier> {
 
@@ -347,14 +347,14 @@ export class TableController {
       }
 
       //check nb of column in config
-      const digitalColumns = await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } });
+      const digitalColumns = await this.datColumnRepo.find({where: {fk_digital: pkDataEntity}});
       if (digitalColumns.length > config.columns.length) throw new HttpErrors.UnprocessableEntity('Too few columns provided for this digital');
       else if (digitalColumns.length < config.columns.length) throw new HttpErrors.UnprocessableEntity('Too much columns provided for this digital');
 
     }
 
-    const configRow = new ProTableConfig({ fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity, config })
-    const existing = await this.proTableConfigRepo.findOne({ where: { and: [{ fk_project: pkProject, account_id: accountId ?? null, fk_digital: pkDataEntity }] } });
+    const configRow = new ProTableConfig({fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity, config})
+    const existing = await this.proTableConfigRepo.findOne({where: {and: [{fk_project: pkProject, account_id: accountId ?? null, fk_digital: pkDataEntity}]}});
 
     if (existing?.pk_entity) {
       await this.proTableConfigRepo.updateById(existing.pk_entity as number, configRow);
@@ -366,83 +366,86 @@ export class TableController {
 
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @get('/get-table-config', {
     responses: {
       '200': {
         description: 'get the configuration of a table (for project or account scope)',
-        content: { 'application/json': { schema: { 'x-ts-type': GvSchemaModifier } } }
+        content: {'application/json': {schema: {'x-ts-type': GvSchemaModifier}}}
       },
     },
   })
   async getTableConfig(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
     @param.query.number('accountId') accountId: number,
-    @param.query.number('pkDataEntity', { required: true }) pkDataEntity: number,
+    @param.query.number('pkDataEntity', {required: true}) pkDataEntity: number,
   ): Promise<GvSchemaModifier> {
     let result: ProTableConfig | null;
-    if (accountId) result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
-    else result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: null, fk_digital: pkDataEntity } }); // look fot the project scope
+    if (accountId) result = await this.proTableConfigRepo.findOne({where: {fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity}});
+    else result = await this.proTableConfigRepo.findOne({where: {fk_project: pkProject, account_id: null, fk_digital: pkDataEntity}}); // look fot the project scope
 
     if (result === null) { // ie: it is an 'old' table (imported before the migration)
       // create the default config:
-      const config = { columns: (await this.datColumnRepo.find({ where: { fk_digital: pkDataEntity } })).map(col => ({ fkColumn: col.pk_entity as number, visible: true })) };
+      const config = {columns: (await this.datColumnRepo.find({where: {fk_digital: pkDataEntity}})).map(col => ({fkColumn: col.pk_entity as number, visible: true}))};
       result = new ProTableConfig();
       // save the config
-      await this.proTableConfigRepo.create({ fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity, config });
+      await this.proTableConfigRepo.create({fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity, config});
       // fetch the new result
-      result = await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity } });
+      result = await this.proTableConfigRepo.findOne({where: {fk_project: pkProject, account_id: accountId, fk_digital: pkDataEntity}});
     }
 
     if (result === null) throw new HttpErrors.UnprocessableEntity('Impossible error: table should have a table config at this point');
 
     return {
-      positive: { pro: { table_config: [result] } },
+      positive: {pro: {table_config: [result]}},
       negative: {}
     }
   }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @post('/update-columns', {
     responses: {
       '200': {
         description: 'Update the name of columns',
-        content: { 'application/json': { schema: { 'x-ts-type': GvSchemaModifier } } }
+        content: {'application/json': {schema: {'x-ts-type': GvSchemaModifier}}}
       },
     },
   })
   async updateColumn(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDigital', { required: true }) pkDigital: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
     @param.query.number('accountId') accountId: number,
     @param.query.number('fkLanguage') fkLanguage: number,
     @requestBody() body: ColumnNames
   ): Promise<GvSchemaModifier> {
 
-    const tableConfig = (await this.proTableConfigRepo.findOne({ where: { fk_project: pkProject, account_id: accountId, fk_digital: pkDigital } }))?.config;
+    const tableConfig = (await this.proTableConfigRepo.findOne({where: {fk_project: pkProject, account_id: accountId, fk_digital: pkDigital}}))?.config;
     if (!tableConfig) throw new HttpErrors.UnprocessableEntity('Table config does not exists for this table (impossible error)');
 
     for (const col of body.names) {
+      const datNamespace = await this.datNamespaceRepo.findOne({where: {fk_project: pkProject}})
+      if (!datNamespace) throw new HttpErrors.UnprocessableEntity('Namespace does not exists for this digital');
       if (col.pkColumn < 0) {//the column is new:
         if (!col.type) throw new HttpErrors.UnprocessableEntity('New column has no type');
-        const datNamespace = await this.datNamespaceRepo.findOne({ where: { fk_project: pkProject } })
-        if (!datNamespace) throw new HttpErrors.UnprocessableEntity('Namespace does not exists for this digital');
         //create the column
-        const datCol = await this.datColumnRepo.create({ fk_digital: pkDigital, fk_data_type: col.type === 'string' ? 3292 : 3293, fk_column_content_type: 3291, fk_namespace: datNamespace.pk_entity })
-        await this.datTextPropertyRepo.create({ fk_entity: datCol.pk_entity, string: col.name, fk_system_type: 3295, fk_language: fkLanguage, fk_namespace: datNamespace.pk_entity });
+        const datCol = await this.datColumnRepo.create({fk_digital: pkDigital, fk_data_type: col.type === 'string' ? 3292 : 3293, fk_column_content_type: 3291, fk_namespace: datNamespace.pk_entity})
+        await this.datTextPropertyRepo.create({fk_entity: datCol.pk_entity, string: col.name, fk_system_type: 3295, fk_language: fkLanguage, fk_namespace: datNamespace.pk_entity});
         if (!datCol.pk_entity) throw new HttpErrors.UnprocessableEntity('Column creation failed (impossible error)');
         // put it at correct index
-        tableConfig?.columns?.push({ fkColumn: datCol.pk_entity, visible: col.visible })
+        tableConfig?.columns?.push({fkColumn: datCol.pk_entity, visible: col.visible})
         if (tableConfig?.columns && col.position) tableConfig.columns.splice(col.position, 0, tableConfig.columns.splice(tableConfig?.columns?.length - 1, 1)[0])
 
       } else { // the column already exists
-        const datCol = await this.datColumnRepo.findOne({ where: { pk_entity: col.pkColumn } })
+        const datCol = await this.datColumnRepo.findOne({where: {pk_entity: col.pkColumn}})
         if (datCol?.fk_digital && datCol.fk_digital !== pkDigital) throw new HttpErrors.UnprocessableEntity('Column is not in the digital');
-        const tp = await this.datTextPropertyRepo.findOne({ where: { fk_entity: col.pkColumn } });
-        if (!tp) throw new HttpErrors.UnprocessableEntity('Unknown column');
+        const tp = await this.datTextPropertyRepo.findOne({where: {fk_entity: col.pkColumn}});
 
-        if (tp.string !== col.name) { // the column label has changed
+        if (!tp) { // column label does not exist yet
+          if (col.name) await this.datTextPropertyRepo.create({fk_entity: col.pkColumn, string: col.name, fk_system_type: 3295, fk_language: fkLanguage, fk_namespace: datNamespace.pk_entity});
+          // throw new HttpErrors.UnprocessableEntity('Unknown column');
+        }
+        else if (tp.string !== col.name) { // the column label has changed
           tp.string = col.name;
           await this.datTextPropertyRepo.updateById(tp.pk_entity, tp);
         }
@@ -465,24 +468,24 @@ export class TableController {
     const newColumns = await this.getTableColumns(pkProject, pkDigital);
 
     return {
-      positive: { ...newConfig, ...newColumns },
+      positive: {...newConfig, ...newColumns},
       negative: {}
     }
   }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @post('/insert-or-update-cells', {
     responses: {
       '200': {
         description: 'Update the content of a cell. if the cell does not exists, create it',
-        content: { 'application/json': { schema: { 'x-ts-type': TabCells } } }
+        content: {'application/json': {schema: {'x-ts-type': TabCells}}}
       },
     },
   })
   async insertOrUpdateCells(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDigital', { required: true }) pkDigital: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
     @requestBody() body: TabCells
   ): Promise<TabCells> {
     const fakeRepoCell = new QTablesCell(this.dataSource);
@@ -497,7 +500,7 @@ export class TableController {
       if (!cell.fk_column) throw new HttpErrors.UnprocessableEntity('fkColumn is missing on cell');
       if (!cell.fk_row) throw new HttpErrors.UnprocessableEntity('fkRow is missing on cell');
       //check digital of col and row
-      const col = await this.datColumnRepo.findOne({ where: { pk_entity: cell.fk_column } });
+      const col = await this.datColumnRepo.findOne({where: {pk_entity: cell.fk_column}});
       if (!col || col.fk_digital !== pkDigital) throw new HttpErrors.UnprocessableEntity('You can not add a cell to this column');
       const row = await fakeRepoRow.getRow(pkDigital, cell.fk_row);
       if (!row || row.fk_digital !== pkDigital) throw new HttpErrors.UnprocessableEntity('You can not add a cell to this row');
@@ -524,23 +527,23 @@ export class TableController {
     for (const cell of toUpdate) await fakeRepoCell.updateCell(cell);
     for (const cell of toCreate) cell.pk_cell = parseInt((await fakeRepoCell.createCell(cell) + '') as string, 10);
 
-    return { cells: toUpdate.concat(toCreate) };
+    return {cells: toUpdate.concat(toCreate)};
   }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @post('/new-row', {
     responses: {
       '200': {
         description: 'Add a new row at specified position. And returns it',
-        content: { 'application/json': { schema: { 'x-ts-type': TabRow } } }
+        content: {'application/json': {schema: {'x-ts-type': TabRow}}}
       },
     },
   })
   async newRow(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDigital', { required: true }) pkDigital: number,
-    @param.query.number('index', { required: true }) index: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
+    @param.query.number('index', {required: true}) index: number,
   ): Promise<TabRow> {
     const fakeRepo = new QTablesRow(this.dataSource);
 
@@ -551,20 +554,20 @@ export class TableController {
   }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @post('/move-row-to-index', {
     responses: {
       '200': {
         description: 'Move a row from his index to another one',
-        content: { 'application/json': { schema: { 'x-ts-type': TabRow } } }
+        content: {'application/json': {schema: {'x-ts-type': TabRow}}}
       },
     },
   })
   async moveRow(
-    @param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDigital', { required: true }) pkDigital: number,
-    @param.query.number('pkRow', { required: true }) pkRow: number,
-    @param.query.number('index', { required: true }) index: number
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
+    @param.query.number('pkRow', {required: true}) pkRow: number,
+    @param.query.number('index', {required: true}) index: number
   ): Promise<TabRow> {
     const fakeRepo = new QTablesRow(this.dataSource);
 
@@ -576,18 +579,18 @@ export class TableController {
   }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.DATAENTITY_IN_NAMESPACE]})
   @post('/delete-row', {
     responses: {
       '200': {
         description: 'Delete a row',
-        content: { 'application/json': { schema: { 'x-ts-type': DeleteRowResponse } } }
+        content: {'application/json': {schema: {'x-ts-type': DeleteRowResponse}}}
       },
     },
   })
-  async deleteRow(@param.query.number('pkProject', { required: true }) pkProject: number,
-    @param.query.number('pkDigital', { required: true }) pkDigital: number,
-    @param.query.number('pkRow', { required: true }) pkRow: number,
+  async deleteRow(@param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
+    @param.query.number('pkRow', {required: true}) pkRow: number,
   ): Promise<DeleteRowResponse> {
     const fakeRepoRow = new QTablesRow(this.dataSource);
     const fakeRepoCell = new QTablesCell(this.dataSource);
@@ -600,13 +603,13 @@ export class TableController {
 
     //is there mapping to one of these cells?
     if (relatedCells.some(cell => fakeRepoCell.wasCellMatchedOnce(cell.pk_cell as number))) {
-      return { existedMatchings: true };
+      return {existedMatchings: true};
     }
 
     for (const cell of relatedCells) {
       await fakeRepoCell.deleteCell(cell.fk_digital as number, cell.pk_cell as number)
     }
-    return { pkRow: await fakeRepoRow.deleteRow(pkDigital, pkRow) }
+    return {pkRow: await fakeRepoRow.deleteRow(pkDigital, pkRow)}
   }
 
 
