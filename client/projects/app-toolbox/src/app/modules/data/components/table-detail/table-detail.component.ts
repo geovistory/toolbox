@@ -280,6 +280,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   }
 
   tableConfiguration() {
+    this.newRowTemp = { position: -1, cells: [] };
+    this.setTableMode('view');
     this.dialog.open<TableConfigDialogComponent,
       TableConfigDialogData, TableConfigDialogResult>(TableConfigDialogComponent, {
         height: 'calc(80% - 30px)',
@@ -330,6 +332,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         || row.position > (this.pageIndex$.value + 1) * this.pageSize$.value) {
         this.dialog.open<InfoDialogComponent,
           InfoDialogData, InfoDialogReturn>(InfoDialogComponent, {
+            maxWidth: '500px',
             data: {
               title: 'New row created',
               infos: 'Because you are displaying rows from ' + (this.pageIndex$.value * this.pageSize$.value + 1)

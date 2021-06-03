@@ -13,9 +13,9 @@
       <!-- Header params for prime-ng -->
       <ng-template pTemplate="colgroup">
         <colgroup>
-          <ng-container *ngFor="let col of headers">
-            <col style="width:150px" />
-            <col *ngIf="col.mapping" style="width:200px" />
+          <ng-container *ngFor="let col of headers, let i = index">
+            <col [style.width.px]="i == 0 ? 170 : undefined" />
+            <col *ngIf="col.mapping" />
           </ng-container>
         </colgroup>
       </ng-template>
@@ -48,7 +48,7 @@
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                  {{col.comment}}
+                  {{col.comment == 'number' ? 'number' : 'text'}}
                   <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column"
                     [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
@@ -131,8 +131,8 @@
             <td *ngIf="j != 0">
               <div style="display: flex; justify-content: center;">
                 <mat-form-field appearance="outline" style="width: 95%; margin-bottom: -1.25em">
-                  <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text" placeholder="Empty cell"
-                    autocomplete="off">
+                  <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
+                    [placeholder]="'Enter ' + (getTypeOfColumn(j) == 'number' ? 'number' : 'text')" autocomplete="off">
                 </mat-form-field>
               </div>
             </td>

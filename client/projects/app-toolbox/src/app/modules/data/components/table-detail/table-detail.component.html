@@ -35,10 +35,7 @@
     <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
       [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons (page)="onPageChange($event)">
     </mat-paginator>
-  </div>
 
-  <div
-    class="gv-td-menu-item mat-border-top mat-border-left gv-td-paginator orange d-flex justify-content-center align-items-center">
     <!-- Additional options -->
     <button mat-icon-button [matMenuTriggerFor]="mainMenu">
       <mat-icon>more_vert</mat-icon>

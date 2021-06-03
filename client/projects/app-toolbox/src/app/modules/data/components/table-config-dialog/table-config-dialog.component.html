@@ -37,7 +37,7 @@
                 <mat-radio-group aria-labelledby="view-mode" [(ngModel)]="col.type" *ngIf="col.pkColumn < 0">
                     <mat-radio-button value="string" class="mat-caption" style="margin-left: 10px; cursor: pointer;"
                         (click)="changeColumnType(col.pkColumn,'string')">
-                        String
+                        Text
                     </mat-radio-button>
                     <mat-radio-button value="number" class="mat-caption" style="margin-left: 10px;cursor: pointer;"
                         (click)="changeColumnType(col.pkColumn,'number')">
