@@ -16,7 +16,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import { equals, flatten, groupBy, keys, sum, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
@@ -760,16 +760,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
-          const value: InfStatement[] = keys(v).map(key => {
-            const timePrim = v[key]
+          const value: InfStatement[] = Object.keys(v).map((key: string) => {
+            const { calendar, ...timePrim } = v[key];
+
             const statement: InfStatement = {
               entity_version_project_rels: [
                 {
                   is_in_project: true,
-                  calendar: timePrim.calendar
+                  calendar
                 }
               ],
-              fk_property: key,
+              fk_property: parseInt(key, 10),
               object_time_primitive: {
                 ...timePrim,
                 fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
