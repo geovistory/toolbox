@@ -9,5 +9,5 @@ curl http://0.0.0.0:3000/explorer/openapi.json \
   -i openapi.json \
   -g typescript-angular \
   -o ../client/projects/lib-sdk-lb4/src/lib/sdk-lb4 \
-  --additional-properties=\"ngVersion=8.3.1\" \
+  --additional-properties=\"ngVersion=9.1.13\" \
   --additional-properties=\"disallowAdditionalPropertiesIfNotPresent=false\"

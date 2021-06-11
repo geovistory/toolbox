@@ -89,11 +89,10 @@ export class PaginationService {
         const pl = this.pageLoaders.get(pageLoaderId);
         if (pl && (
           // is there no date on the page loader, or
-          !pl.isUpToDateUntil ||
+          (!pl.isUpToDateUntil ||
           // is ther no fieldChangeDate, or
-          !fieldChangedDate ||
-          // is the date of the page loader older than the fieldChangeDate?
-          pl.isUpToDateUntil < fieldChangedDate)) {
+          !fieldChangedDate || // is the date of the page loader older than the fieldChangeDate?
+          pl.isUpToDateUntil < fieldChangedDate))) {
           // load page
           this.loadPage(pageLoaderId);
         }

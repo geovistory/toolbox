@@ -59,27 +59,27 @@
     <!-- actions Column -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef class="action-col">
-        <button mat-icon-button [disabled]="(saving$ |async) || (editing$ | async)" matTooltip="Create new Label"
+        <button mat-icon-button [disabled]="!!(saving$ |async) || !!(editing$ | async)" matTooltip="Create new Label"
           (click)="add()">
           <mat-icon>add</mat-icon>
         </button>
       </th>
       <td mat-cell *matCellDef="let element" class="action-col">
         <span *ngIf="!element.editMode">
-          <button mat-icon-button matTooltip="Delete" [disabled]="(saving$ |async) || (editing$ | async)"
+          <button mat-icon-button matTooltip="Delete" [disabled]="!!(saving$ |async) || !!(editing$ | async)"
             (click)="delete(element)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button matTooltip="Edit" [disabled]="(saving$ |async) || (editing$ | async)"
+          <button mat-icon-button matTooltip="Edit" [disabled]="!!(saving$ |async) || !!(editing$ | async)"
             (click)="edit(element)">
             <mat-icon>edit</mat-icon>
           </button>
         </span>
         <span *ngIf="element.editMode && !element.saving">
-          <button mat-icon-button matTooltip="Cancel" [disabled]="(saving$ |async)" (click)="cancel()">
+          <button mat-icon-button matTooltip="Cancel" [disabled]="!!(saving$ |async)" (click)="cancel()">
             <mat-icon>close</mat-icon>
           </button>
-          <button mat-icon-button matTooltip="Save" [disabled]="(saving$ |async)" type="submit">
+          <button mat-icon-button matTooltip="Save" [disabled]="!!(saving$ |async)" type="submit">
             <mat-icon>done</mat-icon>
           </button>
         </span>

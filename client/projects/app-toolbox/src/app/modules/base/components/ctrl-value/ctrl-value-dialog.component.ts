@@ -5,7 +5,7 @@ import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
@@ -41,12 +41,20 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
   timeprimitive = new FormControl('');
   language = new FormControl('');
 
+  initValPlace$: Observable<InfPlace>
+  initValDimension$: Observable<InfDimension>
+  initValLangString$: Observable<InfLangString>
+
   constructor(
     public c: ConfigurationPipesService,
     private s: SchemaSelectorsService,
     public dialogRef: MatDialogRef<CtrlValueDialogComponent, CtrlValueDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data: CtrlValueDialogData
-  ) { }
+  ) {
+    this.initValPlace$ = data.initVal$.pipe(map(x => x.place))
+    this.initValDimension$ = data.initVal$.pipe(map(x => x.dimension))
+    this.initValLangString$ = data.initVal$.pipe(map(x => x.langString))
+  }
 
   ngOnInit(): void {
     this.newValue = {};

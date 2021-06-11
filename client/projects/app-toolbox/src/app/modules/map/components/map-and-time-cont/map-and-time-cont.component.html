@@ -1,7 +1,7 @@
-<as-split unit="pixel" class="gv-split-style" [direction]="'vertical'" gutterSize="1" [useTransition]="false"
-  (dragEnd)="timelineHeight=$event.sizes[1]">
+<as-split unit="pixel" class="gv-split-style" [direction]="'vertical'" [gutterSize]="1" [useTransition]="false"
+  (dragEnd)="setTimelineHeight($event.sizes[1])">
 
-  <as-split-area [size]="'*'" class="map">
+  <as-split-area [size]="$any('*')" class="map">
     <gv-map-czml-layers [data$]="mapData$" [julianSecondOfCursor$]="julianSecondOfCursor$"
       (objectClicked)="onMapObjectClicked($event)">
     </gv-map-czml-layers>

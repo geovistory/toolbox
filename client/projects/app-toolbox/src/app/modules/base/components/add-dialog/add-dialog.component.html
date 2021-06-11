@@ -31,15 +31,18 @@
 </h1>
 <div mat-dialog-content class="mat-typography gv-flex-fh">
     <div *ngIf="loading$|async" class="gv-table-spinner">
-        <mat-spinner diameter=20></mat-spinner>
+        <mat-spinner [diameter]="20"></mat-spinner>
     </div>
     <ng-container *ngIf="(activeElement$ | async) === 'add-existing-statements'">
-        <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [source]="data.source" [field]="fieldWithOneTarget" [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose()" (next)="onNext()"></gv-subfield>
+        <gv-subfield #s *ngIf="(notInProjectCount$|async)>0" [source]="data.source" [field]="fieldWithOneTarget"
+            [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose()"
+            (next)="onNext()"></gv-subfield>
     </ng-container>
 
 
     <ng-container *ngIf="(activeElement$ | async) === 'create-form'">
-        <gv-form-create-entity [field]="data.field" [targetClass]="data.targetClass" [source]="data.source" (cancel)="onClose()" (saved)="onSaved()">
+        <gv-form-create-entity [field]="data.field" [targetClass]="data.targetClass" [source]="data.source"
+            (cancel)="onClose()" (saved)="onSaved()">
         </gv-form-create-entity>
     </ng-container>
 
@@ -48,7 +51,9 @@
 
         <div class="gv-aoc-container">
             <div class="gv-aoc-left gv-flex-fh">
-                <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [field]="data.field" [targetClass]="data.targetClass" [source]="data.source" (cancel)="onClose()" (saved)="onClose()" (searchString)="searchStringChange($event)" [hideTitle]="true">
+                <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [field]="data.field"
+                    [targetClass]="data.targetClass" [source]="data.source" (cancel)="onClose()" (saved)="onClose()"
+                    (searchString)="searchStringChange($event)" [hideTitle]="true">
                 </gv-form-create-entity>
             </div>
             <div class="gv-aoc-center">
@@ -57,10 +62,13 @@
             <div class="gv-aoc-right gv-flex-fh">
                 <mat-form-field appearance="outline">
                     <mat-label>Search</mat-label>
-                    <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async" (keyup)="searchStringChange($event.target.value)">
+                    <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
+                        (keyup)="searchStringChange($any($event).target.value)">
                 </mat-form-field>
-                <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$" (onAddExisting)="onSelected($event, false)"
-                    (onOpenExisting)="onSelected($event, true)">
+                <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll"
+                    [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass"
+                    [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
+                    (onAddExisting)="onSelected($event, false)" (onOpenExisting)="onSelected($event, true)">
                 </gv-search-existing-entity>
             </div>
 

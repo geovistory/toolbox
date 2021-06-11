@@ -8,7 +8,7 @@ import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';

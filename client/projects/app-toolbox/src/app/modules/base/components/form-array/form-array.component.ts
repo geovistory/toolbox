@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { Field } from '@kleiolab/lib-queries';
-import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
+import { FormArrayChild, FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
@@ -69,12 +69,14 @@ export class FormArrayComponent implements OnInit, OnDestroy {
       this.formArrayFactory.parent.config.data.lists.fieldDefinition.targetClasses.length
   }
 
-  showRemoveBtn(child: LocalFormControlFactory | LocalFormChildFactory) {
+  showRemoveBtn(child: FormArrayChild<FormControlData, FormArrayData, FormChildData>) {
     return this.parentListDefsLength > 1 ||
       (
         (child.factoryType === 'control' || child.factoryType == 'childFactory')
         && this.parentLength > this.parentMinLength
-        && !((child.config.data as FormControlData).controlType && (child.config.data as FormControlData).controlType == 'ctrl-time-span')
+        && !(
+          (child?.controlFactory?.config.data.controlType) == 'ctrl-time-span'
+        )
       )
   }
 

@@ -1,6 +1,7 @@
 import { dispatch, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef } from '@angular/core';
 import { PanelTab, TabLayoutMode } from '@kleiolab/lib-redux';
+import { IOutputData } from 'angular-split/lib/interface';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -85,7 +86,7 @@ export class TabLayout {
   /**
    * When user resizes the areas
    */
-  onResizeArea(event: { gutterNum: number, sizes: Array<number> }) {
+  onResizeArea(event: IOutputData) {
     if (event.sizes[1] < 5) this.setLayoutMode('left-only')
     if (event.sizes[0] < 5) this.setLayoutMode('right-only')
   }

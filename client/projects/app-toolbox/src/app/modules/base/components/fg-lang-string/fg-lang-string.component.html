@@ -4,24 +4,26 @@
     <div formArrayName="childControl" class="gv-fg-lang-string-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
 
-        <mat-form-field class="ctrl-text" *ngIf="child.config.data.type=== 'text' " [appearance]="appearance">
-          <mat-label>{{child.config.placeholder}}</mat-label>
+        <mat-form-field class="ctrl-text" *ngIf="child?.controlFactory.config.data.type=== 'text' "
+          [appearance]="appearance">
+          <mat-label>{{child?.controlFactory.config.placeholder}}</mat-label>
 
-          <gv-ctrl-appellation placeholder="Placeholder" [formControl]="child.control">
+          <gv-ctrl-appellation placeholder="Placeholder" [formControl]="child?.controlFactory.control">
           </gv-ctrl-appellation>
 
-          <mat-error *ngIf="child.control.hasError('required')">
+          <mat-error *ngIf="child?.controlFactory.control.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="ctrl-language" *ngIf="child.config.data.type=== 'language' " [appearance]="appearance">
-          <mat-label>{{child.config.placeholder}}</mat-label>
+        <mat-form-field class="ctrl-language" *ngIf="child?.controlFactory.config.data.type=== 'language' "
+          [appearance]="appearance">
+          <mat-label>{{child?.controlFactory.config.placeholder}}</mat-label>
 
-          <gv-ctrl-language placeholder="Placeholder" [formControl]="child.control">
+          <gv-ctrl-language placeholder="Placeholder" [formControl]="child?.controlFactory.control">
           </gv-ctrl-language>
 
-          <mat-error *ngIf="child.control.hasError('required')">
+          <mat-error *ngIf="child?.controlFactory.control.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>

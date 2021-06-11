@@ -3,7 +3,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { ByPk, ProjectPreview } from '@kleiolab/lib-redux';
 import { ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
-import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
 
 export interface LabelGeneratorSettings {

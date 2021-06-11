@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core';
-import { QuillDoc } from '../quill.models';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { QuillService } from '../quill.service';
 
 @Component({

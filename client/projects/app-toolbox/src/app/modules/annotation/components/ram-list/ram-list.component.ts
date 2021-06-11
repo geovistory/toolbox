@@ -11,7 +11,7 @@ import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/qui
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { GraphPathEntity, GraphPathSegment } from '../graph-path/graph-path.component';
+import { GraphPathEntity, GraphPathMode, GraphPathSegment } from '../graph-path/graph-path.component';
 import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListRemoveDialogComponent, RamListRemoveDialogData } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
 
@@ -65,7 +65,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   items$: Observable<RamListItem[]>;
   cols: any[];
 
-  viewMode = 'small';
+  viewMode: GraphPathMode = 'small';
 
   filtersVisible = false;
 

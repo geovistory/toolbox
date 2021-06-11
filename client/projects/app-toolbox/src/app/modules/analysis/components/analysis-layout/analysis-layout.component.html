@@ -1,5 +1,5 @@
 <as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': t.layoutMode!=='both'}" [direction]="'horizontal'"
-  gutterSize="1" (dragEnd)="t.onResizeArea($event)" [useTransition]="true" *ngIf="!deleted">
+  [gutterSize]="1" (dragEnd)="t.onResizeArea($event)" [useTransition]="true" *ngIf="!deleted">
 
 
   <!-------------------------------------------------------------------

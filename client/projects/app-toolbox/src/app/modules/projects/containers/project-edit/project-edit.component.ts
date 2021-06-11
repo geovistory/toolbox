@@ -170,7 +170,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.p.initProjectConfigData(id);
 
     this.allTabs$ = this.p.panels$.pipe(map(panels => {
-      let allTabs = []
+      let allTabs: TabBody[] = []
       panels.forEach((panel, panelIndex) => {
         allTabs = [...allTabs, ...[...panel.tabs].map((tab, tabIndex) => {
           const tabBody: TabBody = {
@@ -210,7 +210,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     return index; // or item.id
   }
 
-  trackByPath(index, item: PanelTab<any>) {
+  trackByPath(index, item: TabBody) {
     return item.path.join('');
   }
 

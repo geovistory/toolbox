@@ -3,9 +3,9 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
-import { QuillDoc } from '../../../quill';
 
 interface CtrlModel {
   fk_class?: number

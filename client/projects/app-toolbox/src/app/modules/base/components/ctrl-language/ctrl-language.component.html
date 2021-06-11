@@ -1,4 +1,4 @@
-<input type="text" matInput placeholder="{{placeholder}}" (input)="searchTermChanged($event.target.value)"
+<input type="text" matInput placeholder="{{placeholder}}" (input)="searchTermChanged($any($event).target.value)"
   [formControl]="formControl" (blur)="onBlur()" (focus)="onFocus()" [matAutocomplete]="auto">
 
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" [panelWidth]="300">

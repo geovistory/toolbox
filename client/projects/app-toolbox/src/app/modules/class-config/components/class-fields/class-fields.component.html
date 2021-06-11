@@ -29,7 +29,7 @@
           <span>
             <span *ngFor="let item of row.propertyField.targetClasses | slice:0:3; let i = index">
               <span *ngIf="i>0">,</span>
-              {{item.label}}
+              {{$any(item).label}}
             </span>
             <span *ngIf="row.propertyField.targetClasses.length > 3">
               , + {{row.propertyField.targetClasses.length-3}}
@@ -71,7 +71,7 @@
     <tr class="mat-row" [pReorderableRow]="index">
       <td class="mat-cell drag-col">
         <!-- <mat-icon svgIcon="bars"></mat-icon> -->
-        <i *ngIf="!reordering" class="fa fa-bars gv-cursor-drag" pReorderableRowHandle>
+        <i *ngIf="!reordering" class="fa fa-bars gv-cursor-drag" [pReorderableRowHandle]>
         </i>
         <mat-spinner *ngIf="reordering" [diameter]="20" color="accent"></mat-spinner>
       </td>
@@ -84,7 +84,7 @@
           <span>
             <span *ngFor="let item of row.propertyField.targetClasses | slice:0:3; let i = index">
               <span *ngIf="i>0">,</span>
-              {{item.label}}
+              {{$any(item).label}}
             </span>
             <span *ngIf="row.propertyField.targetClasses.length > 3">
               , + {{row.propertyField.targetClasses.length-3}}

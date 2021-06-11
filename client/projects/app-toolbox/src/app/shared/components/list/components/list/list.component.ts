@@ -1,15 +1,15 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
-import { RootEpics } from "@kleiolab/lib-redux";
+import { IAppState, RootEpics } from '@kleiolab/lib-redux';
+import { EntitySearchHit } from '@kleiolab/lib-sdk-lb4';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { WarEntityPreview } from 'projects/lib-sdk-lb4/src/public-api';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ListAPIActions } from '../../api/list.actions';
 import { ListAPIEpics } from '../../api/list.epics';
 import { List } from '../../api/list.models';
 import { listReducer } from '../../api/list.reducer';
-import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
-import { IAppState } from "@kleiolab/lib-redux";
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -39,7 +39,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
 
 
   // emits pk_entity of click
-  @Output() onOpen = new EventEmitter<number>();
+  @Output() onOpen = new EventEmitter<WarEntityPreview>();
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;

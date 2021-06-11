@@ -1,12 +1,13 @@
 
 import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import Delta from 'quill-delta';
 import { clone } from 'ramda';
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QuillNodeHandler } from '../quill-node-handler';
-import { DeltaI, Op, Ops, QuillDoc } from '../quill.models';
+import { DeltaI, Op, Ops } from '../quill.models';
 import { createEnterHandle } from '../quill.service';
 import { QuillEditorService } from '../services/quill-editor.service';
 
@@ -587,7 +588,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
       // is this a new character with invalid charid ?
       else if (op.insert !== '\n' &&
         (
-          !op.attributes || !op.attributes.charid // || op.attributes.charid < this.quillEditorService.latestId
+          (!op.attributes || !op.attributes.charid) // || op.attributes.charid < this.quillEditorService.latestId
         )
       ) {
         d.retain(1, { charid: ++this.quillEditorService.latestId })
@@ -596,7 +597,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
       // is this a new line break with invalid blockid ?
       else if (op.insert === '\n' &&
         (
-          !op.attributes || !op.attributes.blockid || op.attributes.blockid <= this.quillEditorService.latestId
+          !op.attributes || !op.attributes.blockid || parseInt(op.attributes.blockid, 10) <= this.quillEditorService.latestId
         )
       ) {
         d.retain(1, { blockid: ++this.quillEditorService.latestId }, 'api')

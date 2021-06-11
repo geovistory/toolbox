@@ -154,8 +154,8 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
       this.definition = definition;
       this.colDefs = definition.columns
-      const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
-      body.scrollTop = 0;
+      // const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
+      //  body.scrollTop = 0;
       this.table.reset();
 
     })

@@ -4,25 +4,27 @@
     <div formArrayName="childControl" class="gv-fg-dimension-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
 
-        <mat-form-field class="ctrl-number" *ngIf="child.config.data.type === 'number'" [appearance]="appearance">
-          <mat-label>{{child.config.placeholder}}</mat-label>
+        <mat-form-field class="ctrl-number" *ngIf="child?.controlFactory.config.data.type === 'number'"
+          [appearance]="appearance">
+          <mat-label>{{child?.controlFactory.config.placeholder}}</mat-label>
 
-          <input matInput type="number" placeholder="Number ..." [formControl]="child.control" autocomplete="off" />
+          <input matInput type="number" placeholder="Number ..." [formControl]="child.controlFactory.control"
+            autocomplete="off" />
 
-          <mat-error *ngIf="child.control.hasError('required')">
+          <mat-error *ngIf="child.controlFactory.control.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="ctrl-measurement-unit" *ngIf="child.config.data.type === 'measurementUnit'"
-          [appearance]="appearance">
-          <mat-label>{{child.config.placeholder}}</mat-label>
+        <mat-form-field class="ctrl-measurement-unit"
+          *ngIf="child?.controlFactory.config.data.type === 'measurementUnit'" [appearance]="appearance">
+          <mat-label>{{child?.controlFactory.config.placeholder}}</mat-label>
 
           <gv-ctrl-type #c [pkTypedClass]="pkClassOfDimension" [pkTypeClass]="pkClassOfMeasurementUnit$|async"
-            placeholder="Select ..." [formControl]="child.control">
+            placeholder="Select ..." [formControl]="child.controlFactory.control">
           </gv-ctrl-type>
 
-          <mat-error *ngIf="child.control.hasError('required')">
+          <mat-error *ngIf="child.controlFactory.control.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>

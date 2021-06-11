@@ -39,7 +39,7 @@
         </span>
         <mat-form-field appearance="outline" class="ml-3">
           <mat-label>Field</mat-label>
-          <mat-select [formControl]="group.get('fieldId')">
+          <mat-select [formControl]="$any(group).get('fieldId')">
             <mat-option *ngFor="let field of fields$|async" [value]="field.id">
               {{field.label}}
               <i class="mat-text-secondary" *ngIf="field.removedFromAllProfiles">Deprecated</i>
@@ -52,8 +52,8 @@
 
         <mat-form-field appearance="outline" class="ml-3">
           <mat-label>Max. considered elements per field</mat-label>
-          <input matInput placeholder="Add number" type="number" [formControl]="group.get('nrOfStmts')" />
-          <mat-error *ngIf="group.get('nrOfStmts').invalid">Value must be between 1 and 5.</mat-error>
+          <input matInput placeholder="Add number" type="number" [formControl]="$any(group).get('nrOfStmts')" />
+          <mat-error *ngIf="$any(group).get('nrOfStmts').invalid">Value must be between 1 and 5.</mat-error>
         </mat-form-field>
 
 

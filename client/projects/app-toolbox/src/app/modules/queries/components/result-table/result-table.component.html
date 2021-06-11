@@ -1,7 +1,7 @@
 <!-- {{(definition$ | async)?.columns | json}}
 {{(a.results$ |async)?.rows | json}} -->
 <p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
-  [rows]="limit" scrollHeight="100%" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
+  [rows]="limit" [scrollHeight]="'flex'" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
   [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading" class="h-100">
 
   <ng-template pTemplate="caption">

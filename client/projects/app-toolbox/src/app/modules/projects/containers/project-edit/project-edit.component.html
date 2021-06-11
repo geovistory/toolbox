@@ -8,7 +8,7 @@
 <mat-drawer-container class="gv-flex-fh">
 
   <!-- Main Categories (Sources, Entities …) -->
-  <mat-drawer class="bg-light gv-main-drawer" mode="side" opened style="width: 80px">
+  <mat-drawer class="bg-light gv-main-drawer" mode="side" [opened]=true style="width: 80px">
 
     <div class="h-100 d-flex flex-column">
 
@@ -89,9 +89,9 @@
           </div>
 
           <!-- Tab Handles -->
-          <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1"
+          <as-split class="gv-split-style" [direction]="'horizontal'" [gutterSize]="1"
             *ngIf="(p.panels$ | async)?.length > 0">
-            <as-split-area size="(100 / (p.panels$ | async)?.length )"
+            <as-split-area [size]="(100 / (p.panels$ | async)?.length )"
               *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn"
               class="gv-panel-for-tabs gv-grow-1 gv-flex-fh" style="overflow: hidden;" (mousedown)="p.focusPanel(i)"
               [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">

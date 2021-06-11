@@ -1,15 +1,9 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { TimeCzmlValue } from "@kleiolab/lib-sdk-lb4";
-import { GeoEntityMapAndTimeCont } from "@kleiolab/lib-sdk-lb4";
-import { CzmlSpatialValue } from "@kleiolab/lib-sdk-lb4";
-import { ChartLine } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisMapResponse } from "@kleiolab/lib-sdk-lb4";
+import { AnalysisMapResponse, AnalysisTimeChartResponse, ChartLine, CzmlSpatialValue, GeoEntityMapAndTimeCont, TimeCzmlValue, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import * as d3 from 'd3';
 import { ChartLineDefinition } from 'projects/app-toolbox/src/app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
-import * as d3 from 'd3';
 import { apply, equals, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
@@ -98,7 +92,7 @@ export class MapAndTimeContComponent implements OnInit {
   processedData$: Observable<MapAndTimeContData>;
   chartLines$: Observable<Observable<AnalysisTimeChartResponse>[]>
   mapData$: Observable<MapLayers>
-  julianSecondOfCursor$ = new ReplaySubject();
+  julianSecondOfCursor$ = new ReplaySubject<number>();
   selectedGeoEntityPk$ = new ReplaySubject<number>();
 
   pkEntityCzmlsMap = new Map<number, CzmlPath[]>()
@@ -196,6 +190,10 @@ export class MapAndTimeContComponent implements OnInit {
       ),
       map(layers => ({ layers }))
     )
+  }
+
+  setTimelineHeight(x: number | '*') {
+    if (typeof x === 'number') this.timelineHeight = x
   }
 
 

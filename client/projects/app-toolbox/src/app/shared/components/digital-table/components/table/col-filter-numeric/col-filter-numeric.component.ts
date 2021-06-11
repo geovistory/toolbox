@@ -53,8 +53,9 @@ export class ColFilterNumericComponent implements OnInit, OnDestroy {
    * listen to user changes regarding the string value
    * @param val
    */
-  onValueChange(val: number) {
-    this.value$.next(val)
+  onValueChange(val: KeyboardEvent) {
+    const target = val.target as HTMLInputElement
+    this.value$.next(parseInt(target.value, 10))
   }
 
   ngOnDestroy() {

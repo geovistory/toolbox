@@ -6,13 +6,13 @@
 <!-- CONTENT -->
 <div mat-dialog-content style="display: flex; align-items: center;">
   <!-- PLACE -->
-  <gv-fg-place #place *ngIf="data.vot.place" [initVal$]="data.initVal$" [appearance]="'outline'">
+  <gv-fg-place #place *ngIf="data.vot.place" [initVal$]="initValPlace$" [appearance]="'outline'">
   </gv-fg-place>
   <!-- LANG STRING -->
-  <gv-fg-lang-string #langString *ngIf="data.vot.langString" [initVal$]="data.initVal$" [appearance]="'outline'">
+  <gv-fg-lang-string #langString *ngIf="data.vot.langString" [initVal$]="initValLangString$" [appearance]="'outline'">
   </gv-fg-lang-string>
   <!-- DIMENSION -->
-  <gv-fg-dimension #dimension *ngIf="data.vot.dimension" [initVal$]="data.initVal$"
+  <gv-fg-dimension #dimension *ngIf="data.vot.dimension" [initVal$]="initValDimension$"
     [pkClassOfDimension]="data.vot.dimension.measurementUnitClass" [appearance]="'outline'">
   </gv-fg-dimension>
   <!-- APPELLATION -->

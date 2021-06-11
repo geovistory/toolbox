@@ -2,7 +2,7 @@
   <mat-icon>more_vert</mat-icon>
 </button>
 
-<mat-progress-spinner [diameter]="20" *ngIf="!(loaded$ | async)" mode="{{mode$ | async}}" value="{{value$ | async}}"
+<mat-progress-spinner [diameter]="20" *ngIf="!(loaded$ | async)" [mode]="mode$ | async" [value]="value$ | async"
   aria-label="Show progress of upload">
 </mat-progress-spinner>
 

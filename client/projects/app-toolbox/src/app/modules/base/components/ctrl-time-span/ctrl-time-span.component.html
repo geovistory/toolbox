@@ -4,7 +4,8 @@
     {{timeSpan | timeSpan}}
   </div>
 
-  <input type="text" matInput placeholder="{{placeholder}}" disabled *ngIf="!shouldLabelFloat" autocomplete="off">
+  <input type="text" matInput placeholder="{{placeholder}}" [disabled]=true *ngIf="!shouldLabelFloat"
+    autocomplete="off">
 
   <!-- <div class="ml-auto">
     <button mat-icon-button>

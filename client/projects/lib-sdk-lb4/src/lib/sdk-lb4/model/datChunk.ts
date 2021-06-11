@@ -9,14 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { QuillDoc } from './quillDoc';
 
 
 export interface DatChunk { 
-    quill_doc?: object;
-    string?: string;
-    fk_text: number;
-    fk_entity_version: number;
     pk_entity?: number;
-    fk_namespace?: number;
+    quill_doc?: QuillDoc;
+    string?: string;
+    fk_entity_version: number;
+    fk_text: number;
+    fk_namespace: number;
 }
 

@@ -13,7 +13,7 @@
   <div class="gv-aoc-left gv-flex-fh">
     <mat-divider></mat-divider>
     <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2 pr-5" [pkClass]="classAndTypePk.pkClass"
-      hideTitle="true" hideButtons="true" (cancel)="closeAddForm()" (saved)="onCreated($event)"
+      [hideTitle]="true" [hideButtons]="true" (cancel)="closeAddForm()" (saved)="onCreated($event)"
       (searchString)="searchStringChange($event)" #f>
     </gv-form-create-entity>
     <mat-divider></mat-divider>
@@ -26,7 +26,7 @@
     <mat-form-field appearance="outline" style="margin-top: -4px;">
       <mat-label>Search</mat-label>
       <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
-        (keyup)="searchStringChange($event.target.value)">
+        (keyup)="searchStringChange($any($event).target.value)">
     </mat-form-field>
     <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
       [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"

@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit, Input, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { TimeChartContLine } from '@kleiolab/lib-sdk-lb4';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
+import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-group-factory';
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
-import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
+import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { QueryFilterComponent, QueryFilterInjectData } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { values } from 'ramda';
-import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { TimeChartContLine } from "@kleiolab/lib-sdk-lb4";
 export interface TimeChartContInput {
   lines: TimeChartContLine[]
 }

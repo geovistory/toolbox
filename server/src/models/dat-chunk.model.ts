@@ -1,7 +1,8 @@
-import {Entity, hasMany, model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
 import {DatEntity, DatNamespace} from '.';
-import {InfStatement} from './inf-statement.model';
+import {overrideType} from '../components/spec-enhancer/model.spec.enhancer';
 import {DatDigital} from './dat-digital.model';
+import {InfStatement} from './inf-statement.model';
 import {QuillDoc} from './quill-doc/quill-doc.model';
 
 @model({
@@ -78,3 +79,6 @@ export interface DatChunkRelations {
 }
 
 export type DatChunkWithRelations = DatChunk & DatChunkRelations;
+
+
+overrideType(DatChunk) // TODO: remove this, when loopback 3 is completely removed

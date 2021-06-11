@@ -1,5 +1,6 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
 import {InfEntity} from '.';
+import {overrideType} from '../components/spec-enhancer/model.spec.enhancer';
 import {InfStatement} from './inf-statement.model';
 import {ProInfoProjRel} from './pro-info-proj-rel.model';
 import {QuillDoc} from './quill-doc/quill-doc.model';
@@ -57,3 +58,6 @@ export interface InfAppellationRelations {
 }
 
 export type InfAppellationWithRelations = InfAppellation & InfAppellationRelations;
+
+
+overrideType(InfAppellation) // TODO: remove this, when loopback 3 is completely removed

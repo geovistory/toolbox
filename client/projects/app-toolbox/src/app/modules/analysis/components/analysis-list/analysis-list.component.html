@@ -33,7 +33,7 @@
         </mat-checkbox>
 
         <mat-form-field class="ml-auto" [ngStyle]="{'width': '143px'}" appearance="outline" dense>
-          <input matInput autocomplete="off" (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <input matInput autocomplete="off" (keyup)="applyFilter($any($event).target.value)" placeholder="Filter">
         </mat-form-field>
       </mat-list-item>
     </mat-list>

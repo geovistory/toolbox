@@ -1,11 +1,9 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTimeChartRequest } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { SysConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
@@ -13,7 +11,7 @@ import { values } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { GvAnalysisService } from '../../services/analysis.service';
-import { TimeChartContFormComponent } from '../time-chart-cont-form/time-chart-cont-form.component';
+import { TimeChartContFormComponent, TimeChartContInput } from '../time-chart-cont-form/time-chart-cont-form.component';
 
 @Component({
   selector: 'gv-time-chart-cont-edit',
@@ -40,7 +38,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
     ]
   })
 
-  initVal$: Observable<AnalysisDefinition>
+  initVal$: Observable<TimeChartContInput>
 
 
   constructor(
@@ -54,7 +52,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
     if (this.a.pkEntity) {
       this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
         map(i => i.analysis_definition),
-        map((def) => def)
+        map((def) => ({ lines: def.lines ?? [] }))
       )
     }
     this.a.registerRunAnalysis(() => {

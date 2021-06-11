@@ -3,5 +3,6 @@
     <gv-entity-preview *ngIf="(entityPreview$|async)" [preview]="entityPreview$|async"></gv-entity-preview>
   </div>
 
-  <input type="text" matInput placeholder="{{placeholder}}" disabled *ngIf="!shouldLabelFloat" autocomplete="off">
+  <input type="text" matInput placeholder="{{placeholder}}" [disabled]=true *ngIf="!shouldLabelFloat"
+    autocomplete="off">
 </div>

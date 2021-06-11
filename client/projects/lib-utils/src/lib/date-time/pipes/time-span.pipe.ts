@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimePrimitivePipe } from './time-primitive.pipe';
+import { WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { TimeSpanUtil } from '../classes/time-span-util';
+import { TimePrimitivePipe } from './time-primitive.pipe';
 
 @Pipe({
   name: 'timeSpan'
@@ -9,7 +10,7 @@ export class TimeSpanPipe implements PipeTransform {
 
   constructor(private timePrimitivePipe: TimePrimitivePipe) { }
 
-  transform(timeSpan: TimeSpanUtil): string {
+  transform(timeSpan: WarEntityPreviewTimeSpan): string {
     if (!timeSpan) return null;
 
     const ts = new TimeSpanUtil(timeSpan).getPrimitivesForPreview();

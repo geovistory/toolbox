@@ -87,7 +87,6 @@ export interface FormChildData {
 }
 
 export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
-
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
 export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, FormChildData>;
 export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData, FormChildData>

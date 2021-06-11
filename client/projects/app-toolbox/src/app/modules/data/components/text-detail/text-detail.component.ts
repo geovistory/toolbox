@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState, RootEpics, SucceedActionMeta, TabBase } from '@kleiolab/lib-redux';
 import { DatChunk, DatDigital } from '@kleiolab/lib-sdk-lb3';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { getSpecificVersion, latestVersion } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
@@ -13,7 +14,7 @@ import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-la
 import { BehaviorSubject, combineLatest, Observable, Subject, timer } from 'rxjs';
 import { delay, distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { MentioningListOf, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
-import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
+import { DeltaI, Op, Ops } from '../../../quill';
 import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
 
 

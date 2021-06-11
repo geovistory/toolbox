@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DomChangeModule } from 'projects/app-toolbox/src/app/shared';
 import { BehaviorSubject } from 'rxjs';
 import { QuillModule } from '..';
-import { QuillDoc } from '../quill.models';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { QuillEditComponent, IndexedCharids } from './quill-edit.component';
 import { textBüchel, _33095characters, wikiRats } from './quill-edit.sandbox.mock';
 import { ChangeDetectorRef } from '@angular/core';

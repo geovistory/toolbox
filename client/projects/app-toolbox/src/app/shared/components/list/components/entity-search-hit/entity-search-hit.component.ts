@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { EntitySearchHit, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 
-import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -26,10 +25,10 @@ export class EntitySearchHitComponent implements OnInit {
   */
   @Input() repositorySearch: boolean;
 
-  @Output() onAdd: EventEmitter<number> = new EventEmitter();
-  @Output() onOpen: EventEmitter<number> = new EventEmitter();
-  @Output() onOpenEntityPreview: EventEmitter<WarEntityPreview> = new EventEmitter();
-  @Output() onSelect: EventEmitter<number> = new EventEmitter();
+  @Output() onAdd = new EventEmitter<number>();
+  @Output() onOpen = new EventEmitter<number>();
+  @Output() onOpenEntityPreview = new EventEmitter<WarEntityPreview>();
+  @Output() onSelect = new EventEmitter<number>();
 
   headlineItems: Array<string> = [];
   isInProject: boolean;

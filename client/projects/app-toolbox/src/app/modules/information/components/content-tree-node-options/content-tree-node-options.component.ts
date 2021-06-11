@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ImportTableSocket } from "@kleiolab/lib-sockets";
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ContentTreeNode } from '../content-tree/content-tree.component';
@@ -35,7 +36,7 @@ export class ContentTreeNodeOptionsComponent implements OnInit, OnDestroy {
   @Output() clicked = new EventEmitter<ContentTreeClickEvent>();
 
   loaded$ = new BehaviorSubject<boolean>(true);
-  mode$ = new BehaviorSubject<string>('indeterminate');
+  mode$ = new BehaviorSubject<ProgressSpinnerMode>('indeterminate');
   value$ = new BehaviorSubject<number>(0);
 
   constructor(

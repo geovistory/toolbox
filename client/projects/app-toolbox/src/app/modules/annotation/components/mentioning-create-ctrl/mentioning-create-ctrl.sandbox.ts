@@ -3,7 +3,7 @@ import { MentioningCreateCtrlComponent } from './mentioning-create-ctrl.componen
 import { DatChunk } from '@kleiolab/lib-sdk-lb3';
 import { AnnotationModule } from '../../annotation.module';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
-import { QuillDoc } from '../../../quill';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
 const chunk = {

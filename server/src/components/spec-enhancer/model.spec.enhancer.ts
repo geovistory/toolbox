@@ -13,9 +13,16 @@ export class ModelSpecEnhancer implements OASEnhancer {
   name = 'tsTypeModels';
   static tsTypes: Function[] = [];
 
+  // used for overriding Lb3 models with lb4 models (remove after complete lb migration)
+  static overrideTypes: Function[] = [];
+
   modifySpec(spec: OpenApiSpec): OpenApiSpec {
     for (const tsType of ModelSpecEnhancer.tsTypes) {
       this.generateOpenAPISchema(spec, tsType);
+    }
+
+    for (const tsType of ModelSpecEnhancer.overrideTypes) {
+      this.generateOpenAPISchema(spec, tsType, true);
     }
 
     return spec;
@@ -27,10 +34,10 @@ export class ModelSpecEnhancer implements OASEnhancer {
   * @param spec - Controller spec
   * @param tsType - TS Type
   */
-  generateOpenAPISchema(spec: ControllerSpec, tsType: Function) {
+  generateOpenAPISchema(spec: ControllerSpec, tsType: Function, override = false) {
     spec.components = spec.components ?? {};
     spec.components.schemas = spec.components.schemas ?? {};
-    if (tsType.name in spec.components.schemas) {
+    if (tsType.name in spec.components.schemas && override === false) {
       // Preserve user-provided definitions
       debug('    skipping type %j as already defined', tsType.name || tsType);
       return;
@@ -107,3 +114,11 @@ export function registerType(tsType: Function): string {
   ModelSpecEnhancer.tsTypes.push(tsType)
   return `#/components/schemas/${tsType.name}`
 }
+
+
+export function overrideType(tsType: Function): string {
+  ModelSpecEnhancer.overrideTypes.push(tsType)
+  return `#/components/schemas/${tsType.name}`
+}
+
+

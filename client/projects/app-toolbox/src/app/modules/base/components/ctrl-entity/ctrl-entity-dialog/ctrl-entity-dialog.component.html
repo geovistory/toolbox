@@ -12,7 +12,7 @@
 <div mat-dialog-content class="gv-aoc-container">
   <div class="gv-aoc-left gv-flex-fh">
     <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [pkClass]="classAndTypePk.pkClass"
-      [hiddenProperty]="data.hiddenProperty" hideTitle="true" hideButtons="true" [initVal$]="initVal$" #f>
+      [hiddenProperty]="data.hiddenProperty" [hideTitle]="true" [hideButtons]="true" [initVal$]="initVal$" #f>
     </gv-form-create-entity>
   </div>
   <div class="gv-aoc-center" *ngIf="data.showAddList">
@@ -22,7 +22,7 @@
     <mat-form-field appearance="outline" style="margin-top: -4px;">
       <mat-label>Search</mat-label>
       <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
-        (keyup)="searchStringChange($event.target.value)">
+        (keyup)="searchStringChange($any($event).target.value)">
     </mat-form-field>
     <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
       [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"

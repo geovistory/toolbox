@@ -1,7 +1,7 @@
 
 import Ajv, { ErrorObject } from 'ajv';
 import { quillDocSchema } from './quill-doc.schema';
-import { QuillDoc } from 'projects/app-toolbox/src/app/modules/quill';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 
 interface Validated<M> {
   obj?: M

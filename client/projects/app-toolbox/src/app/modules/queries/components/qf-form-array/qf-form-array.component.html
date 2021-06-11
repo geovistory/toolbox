@@ -72,7 +72,7 @@
 
       <!-- Subgroup Operation -->
       <gv-qf-form-control class="subgroup-operation-select" *ngIf="formArrayFactory.children.length > 2"
-        [formControlFactory]="formArrayFactory.children[0]">
+        [formControlFactory]="formArrayFactory.children[0].controlFactory">
       </gv-qf-form-control>
 
     </div>

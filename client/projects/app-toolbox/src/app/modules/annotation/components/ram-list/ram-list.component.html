@@ -30,7 +30,7 @@
           [pResizableColumnDisabled]="i == (cols.length - 2)">
           <mat-form-field *ngIf="col.hasFilter" class="gv-form-field-slim w-100" appearance="outline">
             <input matInput placeholder="Filter"
-              (input)="tt.filter($event.target.value, col.filterCol, col.filterMatchMode)" autocomplete="off">
+              (input)="tt.filter($any($event).target.value, col.filterCol, col.filterMatchMode)" autocomplete="off">
           </mat-form-field>
 
           <ng-container *ngIf="col.field == 'action'">

@@ -98,7 +98,7 @@
           </span> -->
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      <gv-table-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" class="left-col">
       </gv-table-form-array>
 
       <mat-action-row>
@@ -171,14 +171,14 @@
       </gv-table-form-control>
 
       <ng-template *ngIf="child.childFactory" [cdkPortalOutlet]="child.childFactory.portal" #outlet
-        (attached)="child.childFactory.attached($event, outlet)"></ng-template>
+        (attached)="child.childFactory.attached($any($event), $any(outlet))"></ng-template>
 
     </div>
 
     <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
       <button mat-flat-button color="primary"
         *ngIf="!(child.controlFactory.config?.disabled$|async) && child.control.valid" class="mb-4"
-        (click)="addQueryDefinition(child)">
+        (click)="addQueryDefinition(child.controlFactory)">
         Continue
       </button>
     </div>

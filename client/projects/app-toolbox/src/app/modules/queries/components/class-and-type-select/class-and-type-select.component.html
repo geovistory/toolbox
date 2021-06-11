@@ -1,14 +1,14 @@
 <mat-menu #menu="matMenu" (closed)="onClose()">
   <i *ngIf="s.treeControl.dataNodes.length===0" mat-menu-item>Nothing available</i>
   <mat-tree [dataSource]="s.dataSource" [treeControl]="s.treeControl" (click)="$event.stopPropagation();">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-      <button mat-icon-button disabled></button>
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+      <button mat-icon-button [disabled]=true></button>
       <mat-checkbox class="checklist-leaf-node" [checked]="s.checklistSelection.isSelected(node)"
         (change)="s.todoLeafItemSelectionToggle(node)">{{node.data.label}}</mat-checkbox>
     </mat-tree-node>
 
 
-    <mat-tree-node *matTreeNodeDef="let node; when: s.hasChild" matTreeNodePadding>
+    <mat-tree-node *matTreeNodeDef="let node; when: s.hasChild">
       <button mat-icon-button (click)="s.toggleExpansion(node)" [attr.aria-label]="'toggle ' + node.filename">
         <mat-icon class="mat-icon-rtl-mirror">
           {{s.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}

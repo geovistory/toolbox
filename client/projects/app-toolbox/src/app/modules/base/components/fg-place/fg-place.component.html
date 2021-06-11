@@ -4,8 +4,8 @@
     <div formArrayName="childControl" class="gv-fg-place-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
         <mat-form-field [appearance]="appearance">
-          <mat-label>{{child.config.placeholder}}</mat-label>
-          <input matInput autocomplete="off" type="number" [formControl]="child.control">
+          <mat-label>{{child.controlFactory.config.placeholder}}</mat-label>
+          <input matInput autocomplete="off" type="number" [formControl]="child.controlFactory.control">
           <mat-error *ngIf="child.control.hasError('required')">
             Please enter a value
           </mat-error>

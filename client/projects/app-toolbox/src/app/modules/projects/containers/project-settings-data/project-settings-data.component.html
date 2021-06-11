@@ -23,8 +23,7 @@
 
   <table mat-table [dataSource]="filteredItems$" matSort [matSortDisableClear]="true" (matSortChange)="sortData($event)"
     class="mat-elevation-z1 w-100">
-    <!-- <table class="gv-flex-fh" mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
-    (matSortChange)="sortData($event)" multiTemplateDataRows class="mat-elevation-z1"> -->
+
     <!-- Checkbox Column -->
     <ng-container matColumnDef="enabled_in_entities">
 
@@ -91,7 +90,7 @@
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <gv-onto-class-info [pkClass]="element.pkClass"></gv-onto-class-info>
         <!-- <a [attr.href]="'https://ontome.dataforhistory.org/class/' + element.pkClass" target="_blank"
-          (click)="$event.target.stopPropagation()">
+          (click)="$any($event).target.stopPropagation()">
           <span [innerHtml]="element.identifier_in_namespace"></span>
           <mat-icon inline="true">open_in_new</mat-icon>
         </a> -->

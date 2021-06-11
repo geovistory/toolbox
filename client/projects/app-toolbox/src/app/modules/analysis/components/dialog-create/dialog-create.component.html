@@ -4,7 +4,7 @@
     <p>
       <mat-form-field class="w-100">
         <mat-label>Name</mat-label>
-        <input formControlName="name" matInput placeholder="Name" required>
+        <input formControlName="name" matInput placeholder="Name" [required]=true>
         <mat-error *ngIf="formGroup.get('name').hasError('required')">Please enter a name.</mat-error>
       </mat-form-field>
     </p>
@@ -21,5 +21,5 @@
 
 
   <button mat-flat-button color="primary" (click)="onSaveClick()">{{data.okBtnText}}</button>
-  <button mat-flat-button color="secondary" (click)="onNoClick()">Cancel</button>
+  <button mat-flat-button (click)="onNoClick()">Cancel</button>
 </div>

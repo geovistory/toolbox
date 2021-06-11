@@ -45,15 +45,15 @@
 <!-- {{minLength}}/{{maxLength}} -->
 <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with " [ngClass]="{
     'is-list-item':formArrayFactory.config.isList,
-    'is-field': child?.config?.data.lists,
-    'hide-field-title': child.config.data.hideFieldTitle,
-    'is-ctrl-target-class': isCtrlTargetClass(child),
-    'bg-gray-100': isCtrlTargetClass(child)
+    'is-field': child?.arrayFactory?.config?.data.lists,
+    'hide-field-title': child?.arrayFactory.config.data.hideFieldTitle,
+    'is-ctrl-target-class': child?.controlFactory.config.data?.controlType === 'ctrl-target-class',
+    'bg-gray-100': child?.controlFactory.config.data?.controlType === 'ctrl-target-class'
 }">
 
 
 
-  <mat-card class="left-col mat-elevation-z5" *ngIf="wrapInCard(child); else noWrap">
+  <mat-card class="left-col mat-elevation-z5">
     <mat-card-content class="gv-full-with">
       <span class="card–class-info mat-caption mat-text-secondary">
         <i class="gv-entity-color fa fa-star-o"></i>
@@ -81,12 +81,14 @@
 
 
 
-    <gv-form-array class="left-col" *ngIf="isFormArray(child)" [formArrayFactory]="child">
+    <gv-form-array class="left-col" *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory">
     </gv-form-array>
-    <gv-form-control class="left-col" *ngIf="isFormControl(child)" [formControlFactory]="child">
+    <gv-form-control class="left-col" *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory">
     </gv-form-control>
-    <div class="left-col" *ngIf="child.factoryType ==='childFactory'">
-      <ng-template [cdkPortalOutlet]="child.portal" #outlet (attached)="child.attached($event, outlet)"></ng-template>
+    <div class="left-col" *ngIf="child.childFactory">
+      <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
+        (attached)="child.childFactory.attached($any($event), $any(outlet))">
+      </ng-template>
     </div>
 
   </ng-template>

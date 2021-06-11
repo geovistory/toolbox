@@ -25,7 +25,7 @@
 
     <!-- Paginator -->
     <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
-      [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons (page)="onPageChange($event)">
+      [pageSizeOptions]="[5, 10, 20, 50]" [showFirstLastButtons]=true (page)="onPageChange($event)">
     </mat-paginator>
 
   </div>

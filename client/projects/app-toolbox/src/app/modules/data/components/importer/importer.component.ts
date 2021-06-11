@@ -2,11 +2,12 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { Header, ImportTable, ImportTableControllerService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
+import { ImportTable, ImportTableControllerService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
@@ -43,8 +44,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   headers: Header[];
   table: string[][]; // the full table
   filteredTable: string[][]; // the full table filtered and sorted
-  headers$: ReplaySubject<Header[]>; // the headers to display
-  previewTable$: ReplaySubject<string[][]>; // the data to display
+  headers$ = new ReplaySubject<Header[]>(); // the headers to display
+  previewTable$ = new ReplaySubject<string[][]>(); // the data to display
 
   // file options CSV
   separators = [';', ',', '|', 'TAB'];
@@ -121,9 +122,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.filters = [];
     this.table = [];
     this.filteredTable = [];
-    this.headers$ = new ReplaySubject();
-    this.previewTable$ = new ReplaySubject();
-
+    this.headers$.next([])
+    this.previewTable$.next([])
     this.separator = this.separators[0];
     this.comma = this.commas[0];
     this.sheetsNames = [];

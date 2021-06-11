@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { DatColumn, TColFilterOpText, TColFilter } from '../../../../../../../../../../../server/src/lb3/server/table/interfaces';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
-import { Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { takeUntil, debounceTime, filter } from 'rxjs/operators';
-import { combineLatestOrEmpty } from "@kleiolab/lib-utils";
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { TColFilter, TColFilterOpText } from '../../../../../../../../../../../server/src/lb3/server/table/interfaces';
 
 @Component({
   selector: 'gv-col-filter-text',
@@ -51,8 +50,9 @@ export class ColFilterTextComponent implements OnInit, OnDestroy {
    * listen to user changes regarding the string value
    * @param val
    */
-  onValueChange(val: string) {
-    this.value$.next(val)
+  onValueChange(val: KeyboardEvent) {
+    const target = val.target as HTMLInputElement
+    this.value$.next(target.value)
   }
 
   ngOnDestroy() {
