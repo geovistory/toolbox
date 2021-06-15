@@ -19,7 +19,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
-import { MccColorPickerModule } from 'material-community-components';
+// import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
@@ -78,7 +78,7 @@ export const APP_MODULE_DECORATOR = {
     SlimLoadingBarModule.forRoot(),
     DndModule.forRoot(),
     AngularSplitModule.forRoot(),
-    MccColorPickerModule.forRoot({}),
+    // MccColorPickerModule.forRoot({}),
     CookiesModule.forRoot(),
 
 
@@ -156,7 +156,7 @@ export const APP_MODULE_DECORATOR = {
     SlimLoadingBarModule.forRoot(),
     DndModule.forRoot(),
     AngularSplitModule.forRoot(),
-    MccColorPickerModule.forRoot({}),
+    // MccColorPickerModule.forRoot({}),
     CookiesModule.forRoot(),
 
 
