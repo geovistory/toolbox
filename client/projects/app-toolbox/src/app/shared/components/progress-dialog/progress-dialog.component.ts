@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, auditTime } from 'rxjs/operators';
 

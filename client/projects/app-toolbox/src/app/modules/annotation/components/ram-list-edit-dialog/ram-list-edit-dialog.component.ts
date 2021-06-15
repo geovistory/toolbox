@@ -1,6 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MatTreeNestedDataSource, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase, Subfield } from '@kleiolab/lib-queries';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';

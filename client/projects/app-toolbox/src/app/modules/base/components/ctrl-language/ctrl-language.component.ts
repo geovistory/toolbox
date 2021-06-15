@@ -1,7 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
-import { MatAutocompleteTrigger, MatInput } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatInput } from '@angular/material/input';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';

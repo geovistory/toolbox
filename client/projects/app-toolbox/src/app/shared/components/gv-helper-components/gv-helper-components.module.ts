@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatTooltipModule, MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { GeoColSignalComponent } from './geo-col-signal/geo-col-signal.component';
 import { TimeColSignalComponent } from './time-col-signal/time-col-signal.component';
 /**

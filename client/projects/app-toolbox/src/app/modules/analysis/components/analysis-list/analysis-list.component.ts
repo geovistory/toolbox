@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { AnalysisTabData, SchemaService } from '@kleiolab/lib-redux';
 import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';

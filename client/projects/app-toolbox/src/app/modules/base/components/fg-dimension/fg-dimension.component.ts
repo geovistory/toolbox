@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { MatFormFieldAppearance, MatInput } from '@angular/material';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { InfDimension } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';

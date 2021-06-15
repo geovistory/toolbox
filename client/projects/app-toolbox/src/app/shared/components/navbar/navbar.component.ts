@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { PubAccount } from '@kleiolab/lib-sdk-lb4';

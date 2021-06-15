@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

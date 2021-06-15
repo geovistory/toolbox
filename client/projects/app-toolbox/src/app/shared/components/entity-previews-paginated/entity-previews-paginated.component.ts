@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { WarEntityPreviewControllerService } from "@kleiolab/lib-sdk-lb4";
 
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";

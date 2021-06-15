@@ -1,6 +1,6 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { ClassAndTypeNode, ClassAndTypePk, InformationPipesService } from '@kleiolab/lib-queries';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

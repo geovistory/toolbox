@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, Field } from '@kleiolab/lib-queries';
 import { ByPk } from '@kleiolab/lib-redux';

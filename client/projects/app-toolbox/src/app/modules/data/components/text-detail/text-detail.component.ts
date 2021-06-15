@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState, RootEpics, SucceedActionMeta, TabBase } from '@kleiolab/lib-redux';
 import { DatChunk, DatDigital } from '@kleiolab/lib-sdk-lb3';

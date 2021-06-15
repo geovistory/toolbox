@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AddOrCreateEntityDialogData, CreateOrAddEntityEvent, AddOrCreateEntityDialogComponent } from '../components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
