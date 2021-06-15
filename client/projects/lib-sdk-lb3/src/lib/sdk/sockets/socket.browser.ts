@@ -2,7 +2,8 @@
 // add this to compilerOptions in tsconfig.json:
 //    "allowSyntheticDefaultImports": true,
 //    "esModuleInterop": true 
-import io from 'socket.io-client'; 
+import io from 'socket.io-client';
+import { Injectable } from "@angular/core"; 
 /**
 * @author Jonathan Casarrubias <twitter:@johncasarrubias> <github:@mean-expert-official>
 * @module SocketBrowser
@@ -12,6 +13,7 @@ import io from 'socket.io-client';
 * depending on the platform environment.
 * This module will be generated when the -d ng2web flag is set
 **/
+@Injectable()
 export class SocketBrowser {
   /**
    * @method connect
