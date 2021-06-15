@@ -20,9 +20,9 @@ describe('ActiveProjectPipesService', () => {
     TestBed.configureTestingModule({
       imports: moduleImports
     })
-    service = TestBed.get(ActiveProjectPipesService);
-    ngRedux = TestBed.get(NgRedux);
-    schemaObjServcie = TestBed.get(SchemaService);
+    service = TestBed.inject(ActiveProjectPipesService);
+    ngRedux = TestBed.inject(NgRedux);
+    schemaObjServcie = TestBed.inject(SchemaService);
   });
 
   describe('Service', () => {

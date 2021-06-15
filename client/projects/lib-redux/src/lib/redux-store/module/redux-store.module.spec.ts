@@ -15,7 +15,7 @@ describe('ReduxModule', () => {
         SdkLb4Module
       ]
     })
-    module = TestBed.get(ReduxModule);
+    module = TestBed.inject(ReduxModule);
   });
 
   it('should be created', () => {

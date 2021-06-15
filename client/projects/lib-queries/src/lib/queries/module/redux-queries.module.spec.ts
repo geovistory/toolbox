@@ -10,7 +10,7 @@ describe('ReduxQueriesModule', () => {
     TestBed.configureTestingModule({
       imports: moduleImports
     })
-    module = TestBed.get(ReduxQueriesModule);
+    module = TestBed.inject(ReduxQueriesModule);
   });
 
   it('should be created', () => {

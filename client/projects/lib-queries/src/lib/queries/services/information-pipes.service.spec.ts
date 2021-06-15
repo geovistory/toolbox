@@ -29,10 +29,10 @@ describe('InformationPipesService', () => {
         { provide: SubfieldPageControllerService, useClass: MockPaginatedStatementsControllerService }
       ]
     });
-    service = TestBed.get(InformationPipesService);
-    dataService = TestBed.get(ReduxMainService);
-    schemaService = TestBed.get(SchemaService);
-    ngRedux = TestBed.get(NgRedux);
+    service = TestBed.inject(InformationPipesService);
+    dataService = TestBed.inject(ReduxMainService);
+    schemaService = TestBed.inject(SchemaService);
+    ngRedux = TestBed.inject(NgRedux);
   });
 
 
@@ -194,10 +194,10 @@ describe('InformationPipesService', () => {
           { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes }
         ]
       });
-      service = TestBed.get(InformationPipesService);
-      dataService = TestBed.get(GvSchemaActions);
-      schemaService = TestBed.get(SchemaService);
-      ngRedux = TestBed.get(NgRedux);
+      service = TestBed.inject(InformationPipesService);
+      dataService = TestBed.inject(GvSchemaActions);
+      schemaService = TestBed.inject(SchemaService);
+      ngRedux = TestBed.inject(NgRedux);
 
       // seeding basic data
       setAppState(ngRedux, IAppStateMock.stateProject1)

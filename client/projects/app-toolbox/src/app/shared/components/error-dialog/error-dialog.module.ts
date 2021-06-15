@@ -11,7 +11,6 @@ import { ErrorDialogComponent } from './error-dialog.component';
     MatIconModule,
     MatDividerModule
   ],
-  declarations: [ErrorDialogComponent],
-  entryComponents: [ErrorDialogComponent]
+  declarations: [ErrorDialogComponent]
 })
 export class ErrorDialogModule { }

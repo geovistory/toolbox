@@ -8,7 +8,6 @@ import { ProgressDialogComponent } from './progress-dialog.component';
     CommonModule,
     MaterialModule
   ],
-  declarations: [ProgressDialogComponent],
-  entryComponents: [ProgressDialogComponent]
+  declarations: [ProgressDialogComponent]
 })
 export class ProgressDialogModule { }

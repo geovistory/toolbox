@@ -16,7 +16,6 @@ import { EntityPreviewsPaginatedDialogService } from './service/entity-previews-
     CommonModule,
     EntityPreviewModule,
     MaterialModule
-  ],
-  entryComponents: [EntityPreviewsPaginatedDialogComponent]
+  ]
 })
 export class EntityPreviewsPaginatedModule { }

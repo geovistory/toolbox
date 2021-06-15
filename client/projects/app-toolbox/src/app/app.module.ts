@@ -126,9 +126,6 @@ export const APP_MODULE_DECORATOR = {
     },
     lb4SdkConfigurationProvider
   ],
-  entryComponents: [
-    AppComponent
-  ],
   bootstrap: [AppComponent]
 }
 
@@ -206,9 +203,6 @@ export const APP_MODULE_DECORATOR = {
       useValue: appearance
     },
     lb4SdkConfigurationProvider
-  ],
-  entryComponents: [
-    AppComponent
   ],
   bootstrap: [AppComponent]
 })

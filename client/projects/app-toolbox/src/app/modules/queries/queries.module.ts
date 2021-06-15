@@ -2,10 +2,12 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfigurationPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { AngularSplitModule } from 'angular-split';
-import { ValidationDirectivesModule } from "projects/app-toolbox/src/app/core/validation/validation.directives";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { TableModule } from 'primeng/table';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
+import { ValidationDirectivesModule } from 'projects/app-toolbox/src/app/core/validation/validation.directives';
 import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { ChecklistControlModule } from 'projects/app-toolbox/src/app/shared/components/checklist-control/checklist-control.module';
 import { CoreTableFilterModule } from 'projects/app-toolbox/src/app/shared/components/core-table/filter/filter.module';
@@ -17,12 +19,8 @@ import { EntityPreviewModule } from 'projects/app-toolbox/src/app/shared/compone
 import { ErrorDialogModule } from 'projects/app-toolbox/src/app/shared/components/error-dialog/error-dialog.module';
 import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.module';
-import { TableModule } from 'primeng/table';
 import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { InformationBasicPipesService } from "@kleiolab/lib-queries";
-import { InformationPipesService } from "@kleiolab/lib-queries";
 // import { ClassAndTypeFilterComponent, ClassAndTypeFilterRequiredValidatorDirective } from './components/class-and-type-filter/class-and-type-filter.component';
 // import { ClassAndTypePathSegmentComponent, ClassAndTypePathSegmentRequiredValidatorDirective } from './components/class-and-type-path-segment/class-and-type-path-segment.component';
 import { ClassAndTypeSelectComponent, ClassOrTypeRequiredValidatorDirective } from './components/class-and-type-select/class-and-type-select.component';
@@ -40,6 +38,7 @@ import { QueryFilterService } from './components/query-filter/query-filter.servi
 // import { QueryPathControlComponent } from './components/query-path-control/query-path-control.component';
 import { ResultTableComponent } from './components/result-table/result-table.component';
 import { ResultingEntitiesDialogComponent } from './components/resulting-entities-dialog/resulting-entities-dialog.component';
+import { ResultingValuesDialogComponent } from './components/resulting-values-dialog/resulting-values-dialog.component';
 // import { SubgroupComponent } from './components/subgroup/subgroup.component';
 // import { QueryDetailAPIActions } from './containers/query-detail/api/query-detail.actions';
 // import { QueryDetailAPIEpics } from './containers/query-detail/api/query-detail.epics';
@@ -49,7 +48,6 @@ import { QueryPathFormArrayComponent } from './forms/query-path/query-path-form-
 import { QueryPathFormControlComponent } from './forms/query-path/query-path-form-control/query-path-form-control.component';
 import { QueryPathFormGroupComponent } from './forms/query-path/query-path-form-group/query-path-form-group.component';
 import { QueryPathFormComponent } from './forms/query-path/query-path-form/query-path-form.component';
-import { ResultingValuesDialogComponent } from './components/resulting-values-dialog/resulting-values-dialog.component';
 
 const components = [
   PropertySelectComponent,
@@ -104,13 +102,7 @@ const components = [
     QueryFilterService
   ],
   declarations: components,
-  exports: components,
-  entryComponents: [
-    ResultingEntitiesDialogComponent,
-    ResultingValuesDialogComponent,
-    QueryFilterComponent,
-    QueryPathFormComponent
-  ]
+  exports: components
 
 })
 export class QueriesModule { }

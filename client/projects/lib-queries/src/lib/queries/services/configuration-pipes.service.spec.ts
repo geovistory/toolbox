@@ -26,9 +26,9 @@ describe('ConfigurationPipeService', () => {
     TestBed.configureTestingModule({
       imports: moduleImports
     });
-    service = TestBed.get(ConfigurationPipesService);
-    schemaObjServcie = TestBed.get(SchemaService);
-    ngRedux = TestBed.get(NgRedux);
+    service = TestBed.inject(ConfigurationPipesService);
+    schemaObjServcie = TestBed.inject(SchemaService);
+    ngRedux = TestBed.inject(NgRedux);
   });
   // afterEach(() => {
   //   setAppState(ngRedux, {})

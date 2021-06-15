@@ -82,9 +82,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
   exports: [
     InformationComponent,
     EntityDetailComponent,
-  ],
-  entryComponents: [
-
   ]
 })
 export class InformationModule { }

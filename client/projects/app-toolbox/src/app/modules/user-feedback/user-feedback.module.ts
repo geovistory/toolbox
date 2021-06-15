@@ -8,7 +8,6 @@ import { FeedbackDialogComponent } from './components/feedback-dialog/feedback-d
     CommonModule,
     MaterialModule
   ],
-  declarations: [FeedbackDialogComponent],
-  entryComponents: [FeedbackDialogComponent]
+  declarations: [FeedbackDialogComponent]
 })
 export class UserFeedbackModule { }

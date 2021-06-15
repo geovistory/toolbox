@@ -91,8 +91,5 @@ const components = [
     MaterialModule
   ],
   exports: components,
-  entryComponents: [
-    DialogCreateComponent
-  ]
 })
 export class AnalysisModule { }

@@ -23,9 +23,9 @@ describe('SchemaSelectorsService', () => {
     TestBed.configureTestingModule({
       imports: moduleImports
     })
-    service = TestBed.get(SchemaSelectorsService);
-    schemaObjService = TestBed.get(SchemaService);
-    ngRedux = TestBed.get(NgRedux);
+    service = TestBed.inject(SchemaSelectorsService);
+    schemaObjService = TestBed.inject(SchemaService);
+    ngRedux = TestBed.inject(NgRedux);
 
     schemaObjService.storeGv(new BehaviorSubject(gvSchemaObj), 100)
   });

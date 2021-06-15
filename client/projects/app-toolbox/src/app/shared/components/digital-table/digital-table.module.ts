@@ -25,7 +25,6 @@ import { ValueMatcherComponent } from './components/table/value-matcher/value-ma
   exports: [
     TableComponent
   ],
-  entryComponents: [ColMappingComponent],
   imports: [
     CommonModule,
     MaterialModule,

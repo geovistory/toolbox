@@ -40,12 +40,6 @@ import { OntomeProfilesSettingsComponent } from './components/ontome-profiles-se
     DetailTopBarModule,
     DetailContentModule,
     MaterialModule
-  ],
-  entryComponents: [
-    OntomeProfilesListDialogComponent,
-    OntomeProfileActivationReportDialogComponent,
-    OntomeProfileDeactivationReportDialogComponent,
-    OntomeProfileUpdateDialogComponent
   ]
 })
 export class SettingsModule { }

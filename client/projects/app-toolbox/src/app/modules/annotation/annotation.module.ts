@@ -32,6 +32,5 @@ import { RamListComponent } from './components/ram-list/ram-list.component';
   declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent,
     RamListEditDialogComponent, RamListRemoveDialogComponent, FactoidListComponent],
   exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, FactoidListComponent],
-  entryComponents: [RamListEditDialogComponent, RamListRemoveDialogComponent, FactoidListComponent]
 })
 export class AnnotationModule { }

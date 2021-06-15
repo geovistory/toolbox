@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TableModule } from 'primeng/table';
 import { LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { OntoInfoModule } from 'projects/app-toolbox/src/app/shared/components/onto-info/onto-info.module';
 import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.module';
-import { TableModule } from 'primeng/table';
-import { ReactiveFormsModule } from '@angular/forms';
 import { BaseModule } from '../base/base.module';
 import { InformationModule } from '../information/information.module';
 import { ClassConfigDialogComponent } from './components/class-config-dialog/class-config-dialog.component';
@@ -39,7 +39,6 @@ import { PropertyLabelTableComponent } from './components/property-label-table/p
   ],
   exports: [
     ClassFieldsComponent
-  ], // TODO REMOVE
-  entryComponents: [ClassConfigDialogComponent, FieldConfigDialogComponent]
+  ]
 })
 export class ClassConfigModule { }

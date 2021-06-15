@@ -15,18 +15,18 @@ describe('NgRedux', () => {
     TestBed.configureTestingModule({
       imports: [NgReduxModule],
     });
-    service = TestBed.get(NgRedux);
+    service = TestBed.inject(NgRedux);
     service.configureStore((state, a) => {
       return state
     }, {
-        inf: {
-          lang_string: {
-            by_pk_entity: {
-              123: { pk_entity: 123, fk_class: 1, fk_language: 2, quill_doc: {}, string: 'hello' }
-            }
+      inf: {
+        lang_string: {
+          by_pk_entity: {
+            123: { pk_entity: 123, fk_class: 1, fk_language: 2, quill_doc: {}, string: 'hello' }
           }
         }
-      })
+      }
+    })
   });
 
   it('#select should return app state', (done) => {

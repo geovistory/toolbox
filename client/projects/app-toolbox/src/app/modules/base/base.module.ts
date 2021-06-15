@@ -122,19 +122,6 @@ const baseModules = [
   exports: [
     ...components,
     ...baseModules
-  ],
-  entryComponents: [
-    ChooseClassDialogComponent,
-    CtrlTimeSpanDialogComponent,
-    CtrlEntityDialogComponent,
-    CtrlValueDialogComponent,
-    PropertiesTreeDialogComponent,
-    AddDialogComponent,
-    AddOrCreateEntityDialogComponent,
-    FgPlaceComponent,
-    FgLangStringComponent,
-    FgDimensionComponent,
-    SubfieldDialogComponent
   ]
 })
 export class BaseModule { }

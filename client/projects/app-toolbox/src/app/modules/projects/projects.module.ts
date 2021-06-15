@@ -110,9 +110,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectSettingsDataAPIActions,
     TypeEditFormAPIActions,
     TypeEditFormAPIEpics
-  ],
-  entryComponents: [
-    TypeEditFormComponent
   ]
 })
 export class ProjectsModule { }
