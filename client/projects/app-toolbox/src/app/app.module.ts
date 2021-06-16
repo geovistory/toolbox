@@ -9,7 +9,6 @@ import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@ang
 import { MatIconRegistry } from '@angular/material/icon';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
 import { LoopBackConfig, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
@@ -41,6 +40,7 @@ import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
+import { LoadingBarModule } from './shared/components/loading-bar/loading-bar.module';
 import { KeysModule } from './shared/pipes/keys.module';
 
 // TODO: check if this can stay.
@@ -53,80 +53,80 @@ const appearance: MatFormFieldDefaultOptions = {
 
 registerLocaleData(localeDeCh);
 
-export const APP_MODULE_DECORATOR = {
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // angular modules
-    CommonModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MaterialModule,
+// export const APP_MODULE_DECORATOR = {
+//   declarations: [
+//     AppComponent,
+//   ],
+//   imports: [
+//     // angular modules
+//     CommonModule,
+//     BrowserModule,
+//     BrowserAnimationsModule,
+//     FormsModule,
+//     ReactiveFormsModule,
+//     HttpClientModule,
+//     MaterialModule,
 
 
 
-    // other thid party modules
-    NgReduxRouterModule,
-    NgReduxModule,
-    NgbModule,
-    AngularCesiumModule.forRoot(),
-    ElasticInputModule.forRoot(),
-    SlimLoadingBarModule.forRoot(),
-    DndModule.forRoot(),
-    AngularSplitModule.forRoot(),
-    // MccColorPickerModule.forRoot({}),
-    CookiesModule.forRoot(),
+//     // other thid party modules
+//     NgReduxRouterModule,
+//     NgReduxModule,
+//     NgbModule,
+//     AngularCesiumModule.forRoot(),
+//     ElasticInputModule.forRoot(),
+//     DndModule.forRoot(),
+//     AngularSplitModule.forRoot(),
+//     // MccColorPickerModule.forRoot({}),
+//     CookiesModule.forRoot(),
 
 
-    // ??
-    SocketsModule,
-    SocketIoModule.forRoot(socketIoConfig),
+//     // ??
+//     SocketsModule,
+//     SocketIoModule.forRoot(socketIoConfig),
 
-    // @kleiolab/lib-* modules
-    SdkLb3Module, // .forRoot(),
-    SdkLb4Module,
-    ReduxModule, // .forRoot(),
-    ReduxQueriesModule,
-    NotificationsModule,
+//     // @kleiolab/lib-* modules
+//     SdkLb3Module, // .forRoot(),
+//     SdkLb4Module,
+//     ReduxModule, // .forRoot(),
+//     ReduxQueriesModule,
+//     NotificationsModule,
 
-    // own modules (@kleiolab/app-toolbox)
-    AppRoutingModule,
-    BasicModule,
-    RepoModule,
-    ProjectsModule,
-    BackofficeModule,
-    PassiveLinkModule,
-    ControlMessagesModule,
-    LanguageSearchTypeaheadModule,
-    KeysModule,
-    AccountModule,
-    ValidationDirectivesModule,
-    UserFeedbackModule,
+//     // own modules (@kleiolab/app-toolbox)
+//     AppRoutingModule,
+//     BasicModule,
+//     RepoModule,
+//     ProjectsModule,
+//     BackofficeModule,
+//     PassiveLinkModule,
+//     ControlMessagesModule,
+//     LanguageSearchTypeaheadModule,
+//     KeysModule,
+//     AccountModule,
+//     ValidationDirectivesModule,
+//     UserFeedbackModule,
+//     LoadingBarModule
 
-  ],
-  providers: [
-    ActiveAccountService,
-    AuthGuard,
-    GvAuthService,
-    SystemAdminGuard,
+//   ],
+//   providers: [
+//     ActiveAccountService,
+//     AuthGuard,
+//     GvAuthService,
+//     SystemAdminGuard,
 
-    { provide: LOCALE_ID, useValue: 'en-US' },
-    {
-      provide: SOCKETS_CONFIG,
-      useValue: socketsConfig
-    },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: appearance
-    },
-    lb4SdkConfigurationProvider
-  ],
-  bootstrap: [AppComponent]
-}
+//     { provide: LOCALE_ID, useValue: 'en-US' },
+//     {
+//       provide: SOCKETS_CONFIG,
+//       useValue: socketsConfig
+//     },
+//     {
+//       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+//       useValue: appearance
+//     },
+//     lb4SdkConfigurationProvider
+//   ],
+//   bootstrap: [AppComponent]
+// }
 
 
 // Third party imports
@@ -153,7 +153,6 @@ export const APP_MODULE_DECORATOR = {
     NgbModule,
     AngularCesiumModule.forRoot(),
     ElasticInputModule.forRoot(),
-    SlimLoadingBarModule.forRoot(),
     DndModule.forRoot(),
     AngularSplitModule.forRoot(),
     // MccColorPickerModule.forRoot({}),
@@ -184,7 +183,7 @@ export const APP_MODULE_DECORATOR = {
     AccountModule,
     ValidationDirectivesModule,
     UserFeedbackModule,
-
+    LoadingBarModule
   ],
   providers: [
     ActiveAccountService,

@@ -19,9 +19,9 @@ describe('ProSelector', () => {
     TestBed.configureTestingModule({
       imports: moduleImports
     });
-    service = TestBed.get(ProSelector);
-    schemaObjServcie = TestBed.get(SchemaService);
-    ngRedux = TestBed.get(NgRedux);
+    service = TestBed.inject(ProSelector);
+    schemaObjServcie = TestBed.inject(SchemaService);
+    ngRedux = TestBed.inject(NgRedux);
   });
 
   describe('Service', () => {

@@ -7,7 +7,7 @@ import { omit } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
-import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
+import { first, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actions/active-project.action';
 import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
@@ -47,8 +47,6 @@ export class ActiveProjectEpics {
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return combineEpics(
       this.createLoadProjectBasicsEpic(),
-      // this.createLoadProjectConfigEpic(),
-      this.createLoadProjectUpdatedEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
@@ -72,18 +70,22 @@ export class ActiveProjectEpics {
         /**
        * Emit the global action that activates the loading bar
        */
-        globalStore.next(this.loadingBarActions.startLoading());
+        globalStore.next(this.loadingBarActions.addJob());
 
         this.projectApi.getBasics(action.meta.pk_project)
+          .pipe(first())
+
           .subscribe(
             (data: ProProject[]) => {
               globalStore.next(this.actions.loadProjectBasiscsSucceded(proProjectToProjectPreview(data[0])))
+              globalStore.next(this.loadingBarActions.removeJob());
               this.schemaObj.storeSchemaObject({
                 inf: { language: [data[0].default_language] },
                 pro: { project: [omit(['default_language'], data[0])] }
               }, action.meta.pk_project)
             },
             error => {
+              globalStore.next(this.loadingBarActions.removeJob());
               globalStore.next(this.notificationActions.addToast({
                 type: 'error',
                 options: { title: error.message }
@@ -99,12 +101,12 @@ export class ActiveProjectEpics {
   *
   * It dispaches an action that completes the loading bar
   */
-  private createLoadProjectUpdatedEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
-    return (action$, store) => action$.pipe(
-      ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED),
-      mapTo(this.loadingBarActions.completeLoading())
-    )
-  }
+  // private createLoadProjectUpdatedEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  //   return (action$, store) => action$.pipe(
+  //     ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED),
+  //     mapTo(this.loadingBarActions.completeLoading())
+  //   )
+  // }
 
   // private createLoadProjectConfigEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
   //   return (action$, store) => action$.pipe(

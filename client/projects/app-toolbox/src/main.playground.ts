@@ -4,8 +4,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { PlaygroundModule } from 'angular-playground';
 import { buildModuleUrl } from 'cesium';
-import { AppRoutingModule } from './app/app-routing.module';
-import { APP_MODULE_DECORATOR } from './app/app.module';
 
 
 @NgModule()
@@ -16,16 +14,16 @@ export class MatIconRegistryModule {
 }
 
 
-PlaygroundModule
-  .configure({
-    selector: 'gv-root',
-    overlay: false,
-    modules: [
-      // import exactly the same modules ass AppModule except for routing
-      // since routing is different in Playground
-      APP_MODULE_DECORATOR.imports.filter(m => m !== AppRoutingModule)
-    ]
-  });
+// PlaygroundModule
+//   .configure({
+//     selector: 'gv-root',
+//     overlay: false,
+//     modules: [
+//       // import exactly the same modules ass AppModule except for routing
+//       // since routing is different in Playground
+//       APP_MODULE_DECORATOR.imports.filter(m => m !== AppRoutingModule)
+//     ]
+//   });
 
 
 buildModuleUrl.setBaseUrl('/assets/cesium/')

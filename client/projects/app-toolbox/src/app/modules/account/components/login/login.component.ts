@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ActiveAccountService } from "projects/app-toolbox/src/app/core/active-account";
+import { LoadingBarActions } from '@kleiolab/lib-redux';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
+import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
-
-
-
-
+import { first } from 'rxjs/operators';
 
 
 @Component({
@@ -30,7 +27,7 @@ export class LoginComponent implements OnInit {
     private activeAccountService: ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private slimLoadingBarService: SlimLoadingBarService,
+    private loadingBarActions: LoadingBarActions,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -47,11 +44,12 @@ export class LoginComponent implements OnInit {
     const { email, password } = this.model
     if (email && password) {
       this.activeAccountService.login({ email, password })
+        .pipe(first())
         .subscribe(
           result => {
-            this.completeLoading();
             const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
             this.router.navigate([redirect]);
+            this.completeLoading()
           },
           error => {
             // TODO: error handling for statusCode: 500; ENOTFOUND;
@@ -62,37 +60,25 @@ export class LoginComponent implements OnInit {
             else {
               this.errorMessage = 'Login not possible.';
             }
+            this.stopLoading()
+          },
 
-            this.resetLoading();
-          }
         )
     }
 
   }
 
-
-  /**
-  * Loading Bar Logic
-  */
-
   startLoading() {
-    this.slimLoadingBarService.progress = 20;
-    this.slimLoadingBarService.start(() => {
-    });
+    this.loadingBarActions.addJob()
     this.loading = true;
   }
 
   stopLoading() {
-    this.slimLoadingBarService.stop();
+    this.loadingBarActions.removeJob()
   }
 
   completeLoading() {
     this.loading = false;
-    this.slimLoadingBarService.complete();
-  }
-
-  resetLoading() {
-    this.loading = false;
-    this.slimLoadingBarService.reset();
+    this.loadingBarActions.removeJob()
   }
 }

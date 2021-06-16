@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
-import { ProProjectApi } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguageApi } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
+import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { InfLanguage, InfLanguageApi, LoopBackAuth, LoopBackConfig, ProProjectApi } from '@kleiolab/lib-sdk-lb3';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 
 export class ProjectLabelDescription {
@@ -39,7 +36,7 @@ export class ProjectCreateComponent implements OnInit {
     private projectApi: ProProjectApi,
     private languageApi: InfLanguageApi,
     private authService: LoopBackAuth,
-    private slimLoadingBarService: SlimLoadingBarService
+    private loadingBarActions: LoadingBarActions,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -47,27 +44,29 @@ export class ProjectCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.startLoading();
+    this.loadingBarActions.addJob()
     const userLang = navigator.language.split('-')[0].split('_')[0];
     this.languageApi.find({ 'where': { 'iso6391': userLang } })
+      .pipe(first())
       .subscribe(
         (data: any) => {
-          this.completeLoading();
 
           try {
             this.model.language = data[0];
           } catch (e) {
             // TODO error handling
           }
+          this.loadingBarActions.removeJob()
         },
         error => {
-        }
+          this.loadingBarActions.removeJob()
+        },
       );
   }
 
 
   request() {
-    this.startLoading();
+    this.loadingBarActions.addJob()
     this.createBtnDisabled = true;
 
     this.errorMessages = {};
@@ -77,62 +76,24 @@ export class ProjectCreateComponent implements OnInit {
       this.model.language.pk_entity,
       this.model.label,
       (this.model.text_property ? this.model.text_property : null)
-    ).subscribe(
-      data => {
-        this.completeLoading();
-        this.createBtnDisabled = false;
-        this.router.navigate(['../'], { relativeTo: this.activatedRoute })
-      },
-      error => {
-        this.resetLoading();
+    )
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.createBtnDisabled = false;
+          this.router.navigate(['../'], { relativeTo: this.activatedRoute })
+          this.loadingBarActions.removeJob()
+        },
+        error => {
 
-        // TODO: Alert
-        this.errorMessages = error.error.details.messages;
-        this.createBtnDisabled = false;
-      }
-    );
+          // TODO: Alert
+          this.errorMessages = error.error.details.messages;
+          this.createBtnDisabled = false;
+          this.loadingBarActions.removeJob()
+        },
+      );
   }
 
 
-  // search = (text$: Observable<string>) =>
-  //   text$
-  //     .pipe(
-  //       debounceTime(300),
-  //       distinctUntilChanged(),
-  //       tap(() => this.searching = true),
-  //       switchMap(term =>
-  //         this.languageApi.queryByString(term)
-  //           .do(() => this.searchFailed = false)
-  //           .catch(() => {
-  //             this.searchFailed = true;
-  //             return Observable.of([]);
-  //           })),
-  //       tap(() => this.searching = false),
-  //       merge(this.hideSearchingWhenUnsubscribed)
-  //     )
 
-  // formatter = (x) => x.notes;
-
-
-  /**
-  * Loading Bar Logic
-  */
-
-  startLoading() {
-    this.slimLoadingBarService.progress = 20;
-    this.slimLoadingBarService.start(() => {
-    });
-  }
-
-  stopLoading() {
-    this.slimLoadingBarService.stop();
-  }
-
-  completeLoading() {
-    this.slimLoadingBarService.complete();
-  }
-
-  resetLoading() {
-    this.slimLoadingBarService.reset();
-  }
 }

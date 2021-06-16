@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
-import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { AngularCesiumModule } from 'angular-cesium';
@@ -45,7 +44,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,
-    SlimLoadingBarModule,
     NgbModule,
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,

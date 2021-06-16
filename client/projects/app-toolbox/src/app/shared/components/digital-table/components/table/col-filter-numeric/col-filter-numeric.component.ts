@@ -15,7 +15,7 @@ export class ColFilterNumericComponent implements OnInit, OnDestroy {
   @Output() filterChange = new EventEmitter<TColFilter | undefined>()
 
   operator$ = new BehaviorSubject<TColFilterOpNumeric>('=');
-  value$ = new BehaviorSubject<number>(null);
+  value$ = new BehaviorSubject<string>(null); // input of type number returns a string
 
   operators: TColFilterOpNumeric[] = [
     '=', '<', '>'
@@ -28,13 +28,13 @@ export class ColFilterNumericComponent implements OnInit, OnDestroy {
       filter((val) => val !== null),
       debounceTime(600));
 
-    combineLatest(debouncedVal$, this.operator$).pipe(
+    combineLatest([debouncedVal$, this.operator$]).pipe(
       takeUntil(this.destroy$)
     ).subscribe(([value, operator]) => {
       if (!value) this.filterChange.emit()
       else {
         const f: TColFilter = {
-          numeric: { operator, value }
+          numeric: { operator, value: parseFloat(value) }
         }
         this.filterChange.emit(f)
       }
@@ -55,7 +55,7 @@ export class ColFilterNumericComponent implements OnInit, OnDestroy {
    */
   onValueChange(val: KeyboardEvent) {
     const target = val.target as HTMLInputElement
-    this.value$.next(parseInt(target.value, 10))
+    this.value$.next(target.value)
   }
 
   ngOnDestroy() {

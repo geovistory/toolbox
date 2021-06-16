@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AccountEpics } from '../state-gui/epics/account.epics';
 import { ActiveProjectEpics } from '../state-gui/epics/active-project.epics';
-import { LoadingBarEpics } from '../state-gui/epics/loading-bar.epics';
 import { NotificationsAPIEpics } from '../state-gui/epics/notifications.epics';
 import { ActionResolverEpics } from '../state-schema/epics/action-resolver.epics';
 import { DatEpics } from '../state-schema/epics/dat.epics';
@@ -26,7 +25,6 @@ export class RootEpics {
   private rootEpic;
 
   constructor(
-    private loadingBarEpics: LoadingBarEpics,
     private notificationEpics: NotificationsAPIEpics,
     private activeProjectEpics: ActiveProjectEpics,
     private accountEpics: AccountEpics,
@@ -40,7 +38,6 @@ export class RootEpics {
   ) {
 
     this.rootEpicStream$ = new BehaviorSubject(combineEpics(
-      this.loadingBarEpics.createEpics(),
       this.notificationEpics.createEpics(),
       this.activeProjectEpics.createEpics(),
       this.accountEpics.createEpics(),

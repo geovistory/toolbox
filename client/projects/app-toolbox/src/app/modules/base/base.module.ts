@@ -106,6 +106,7 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
+
   // ReduxQueriesModule
 ]
 

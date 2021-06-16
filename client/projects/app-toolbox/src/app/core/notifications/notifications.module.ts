@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ToastyModule } from '@cime/ngx-toasty';
+import { ToastyModule } from '@kleiolab/ng2-toasty';
 import { NotificationsComponent } from './components/notifications.component';
 
 @NgModule({

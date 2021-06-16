@@ -34,7 +34,7 @@ export class ListAPIEpics {
           /**
            * Emit the global action that activates the loading bar
            */
-          globalStore.next(this.loadingBarActions.startLoading());
+          globalStore.next(this.loadingBarActions.addJob());
           /**
            * Emit the local action that sets the loading flag to true
            */
@@ -57,7 +57,7 @@ export class ListAPIEpics {
               /**
                * Emit the global action that completes the loading bar
                */
-              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               /**
                * Emit the local action on loading succeeded
                */
@@ -67,7 +67,7 @@ export class ListAPIEpics {
               /**
                * Emit the global action that shows some loading error message
                */
-              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               globalStore.next(this.notificationsActions.addToast({
                 type: 'error',
                 options: {

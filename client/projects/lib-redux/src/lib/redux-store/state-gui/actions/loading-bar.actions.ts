@@ -9,38 +9,27 @@ export type LoadingBarAction = FluxStandardAction<Payload, undefined>;
 
 
 /**
-* This actions start, stop and complete the global loading bar
-* using a SlimLoadingBarService instantiated within the loading-bar
-* module.
-*
-* In order to show a loading bar in GUI, use the LoadingBarComponent
-* exported by this module.
+* This actions add or remove the count of running jobs
 */
 @Injectable({
   providedIn: 'root'
 })
 export class LoadingBarActions {
-  static readonly START = 'LOADING_BAR_START';
-  static readonly STOP = 'LOADING_BAR_STOP';
-  static readonly COPMLETE = 'LOADING_BAR_COPMLETE';
-  @dispatch() startLoading = (): LoadingBarAction => ({
-    type: LoadingBarActions.START,
+
+  static readonly ADD_JOB = 'LOADING_BAR_ADD_JOB';
+  static readonly REMOVE_JOB = 'LOADING_BAR_REMOVE_JOB';
+
+  @dispatch() addJob = (): LoadingBarAction => ({
+    type: LoadingBarActions.ADD_JOB,
     meta: null,
     payload: null,
   })
 
-  @dispatch() stopLoading = (): LoadingBarAction => ({
-    type: LoadingBarActions.STOP,
+  @dispatch() removeJob = (): LoadingBarAction => ({
+    type: LoadingBarActions.REMOVE_JOB,
     meta: null,
     payload: null
   })
-
-  @dispatch() completeLoading = (): LoadingBarAction => ({
-    type: LoadingBarActions.COPMLETE,
-    meta: null,
-    payload: null,
-  })
-
 
 
 }

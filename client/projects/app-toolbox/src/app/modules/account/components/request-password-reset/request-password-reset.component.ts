@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { LoadingBarActions } from '@kleiolab/lib-redux';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { AccountService } from "@kleiolab/lib-sdk-lb4";
+import { AccountService } from '@kleiolab/lib-sdk-lb4';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
+import { first } from 'rxjs/operators';
 
 
 
@@ -21,7 +22,7 @@ export class RequestPasswordResetComponent {
 
   constructor(
     private accountApi: AccountService,
-    private slimLoadingBarService: SlimLoadingBarService
+    private loadingBarActions: LoadingBarActions,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -33,10 +34,11 @@ export class RequestPasswordResetComponent {
     this.errorMessage = '';
 
     this.accountApi.accountControllerForgotPassword(this.model.email)
+      .pipe(first())
       .subscribe(
         data => {
-          this.completeLoading();
           this.confirm = true;
+          this.completeLoading()
 
         },
         error => {
@@ -47,33 +49,24 @@ export class RequestPasswordResetComponent {
           else {
             this.errorMessage = 'Could not send email to reset password.';
           }
+          this.stopLoading()
 
-          this.resetLoading();
-        });
+        },
+
+      );
   }
 
-  /**
-  * Loading Bar Logic
-  */
-
   startLoading() {
-    this.slimLoadingBarService.progress = 20;
-    this.slimLoadingBarService.start(() => {
-    });
+    this.loadingBarActions.addJob()
     this.loading = true;
   }
 
   stopLoading() {
-    this.slimLoadingBarService.stop();
+    this.loadingBarActions.removeJob()
   }
 
   completeLoading() {
-    this.slimLoadingBarService.complete();
     this.loading = false;
-  }
-
-  resetLoading() {
-    this.slimLoadingBarService.reset();
-    this.loading = false;
+    this.loadingBarActions.removeJob()
   }
 }

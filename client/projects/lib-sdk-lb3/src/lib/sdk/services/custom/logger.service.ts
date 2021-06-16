@@ -13,51 +13,51 @@ export class LoggerService {
 
   log(...args: any[]) {
     if (LoopBackConfig.debuggable())
-    console.log.apply(console, args);
+      console.log.apply(console, args);
   }
 
   info(...args: any[]) {
     if (LoopBackConfig.debuggable())
-    console.info.apply(console, args);
+      console.info.apply(console, args);
   }
 
   error(...args: any[]) {
     if (LoopBackConfig.debuggable())
-    console.error.apply(console, args);
+      console.error.apply(console, args);
   }
 
   count(arg: string) {
     if (LoopBackConfig.debuggable())
-    console.count(arg);
+      console.count(arg);
   }
 
   group(arg: string) {
     if (LoopBackConfig.debuggable())
-    console.count(arg);
+      console.count(arg);
   }
 
   groupEnd() {
     if (LoopBackConfig.debuggable())
-    console.groupEnd();
+      console.groupEnd();
   }
 
   profile(arg: string) {
     if (LoopBackConfig.debuggable())
-    console.count(arg);
+      console.count(arg);
   }
 
   profileEnd() {
-    if (LoopBackConfig.debuggable())
-    console.profileEnd();
+    // if (LoopBackConfig.debuggable())
+    // console.profileEnd();
   }
 
   time(arg: string) {
     if (LoopBackConfig.debuggable())
-    console.time(arg);
+      console.time(arg);
   }
 
   timeEnd(arg: string) {
     if (LoopBackConfig.debuggable())
-    console.timeEnd(arg);
+      console.timeEnd(arg);
   }
 }

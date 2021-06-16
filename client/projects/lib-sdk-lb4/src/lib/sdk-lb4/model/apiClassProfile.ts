@@ -12,6 +12,9 @@
 
 
 export interface ApiClassProfile { 
+  [key: string]: object | any;
+
+
     classID: number;
     classIdentifierInNamespace: string;
     classLabel: string;

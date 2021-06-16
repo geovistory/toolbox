@@ -4,6 +4,7 @@ import * as d3 from 'd3-dsv';
 import { sort } from 'ramda';
 import * as XLSX from 'xlsx';
 import { TColFilter } from '../../../../../../../../server/src/lb3/server/table/interfaces';
+import { ImporterColFilter } from '../components/importer/importer.component';
 
 addEventListener('message', ({ data }) => {
   if (data.task == 'csvIntoTable') postMessage(csvIntoTable(data.params.binaries, data.params.separator));
@@ -99,11 +100,11 @@ function sortTable(table: string[][], col: number, direction: string): string[][
  * @param filters To what column and how should the table be filtered
  * @returns The filtered table
  */
-function filterTable(table: string[][], filters: { col: number, filter: TColFilter }[]): string[][] {
+function filterTable(table: string[][], filters: ImporterColFilter[]): string[][] {
   const result = table;
   for (let i = table.length - 1; i >= 0; i--) {
     for (let j = 0; j < filters.length; j++) {
-      if (!filterKeep(table[i][filters[j].col], filters[j].filter)) {
+      if (!filterKeep(table[i][filters[j].colNb], filters[j].filter)) {
         table.splice(i, 1);
         j = filters.length;
       }

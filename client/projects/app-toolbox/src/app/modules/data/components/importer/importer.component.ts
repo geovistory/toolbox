@@ -2,22 +2,26 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { ImportTable, ImportTableControllerService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
+import { ImportTable, ImportTableControllerService, ImportTableResponse, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
+import { Cell, Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkBook } from 'xlsx/types';
-import { TColFilter } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 export interface ImporterDialogData {
   apiCall: (table: ImportTableResponse) => Observable<ImportTableResponse>
+}
+
+export interface ImporterColFilter {
+  colNb: number,
+  filter: TColFilter
 }
 
 @Component({
@@ -41,12 +45,12 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   // data
   curSort: { colNb: number, direction: string };
-  filters: Array<{ col: number, filter: TColFilter }>;
+  filters: Array<ImporterColFilter>;
   headers: Header[];
   table: string[][]; // the full table
   filteredTable: string[][]; // the full table filtered and sorted
   headers$: ReplaySubject<Header[]>; // the headers to display
-  previewTable$: ReplaySubject<{ text: string }[][]>; // the data to display
+  previewTable$: ReplaySubject<Cell[][]>; // the data to display
 
   // file options CSV
   separators = [';', ',', '|', 'TAB'];
@@ -317,7 +321,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * Filters the table according to all previously filters set
    * @param filters All filters in place
    */
-  filter(filters: Array<{ col: number, filter: TColFilter }>) {
+  filter(filters: Array<ImporterColFilter>) {
     if (this.mode == 'drag-and-drop') return;
 
     this.filters = filters; // only usefull when we come from html

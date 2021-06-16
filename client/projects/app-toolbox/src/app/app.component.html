@@ -1,4 +1,4 @@
-<ngx-slim-loading-bar color="inherit"></ngx-slim-loading-bar>
+<gv-loading-bar id="global-loading-bar" [jobs$]="loadingBarJobs$"></gv-loading-bar>
 <gv-notifications></gv-notifications>
 <div *ngIf="warehouseInitializing" class="p-3 mat-bg-warn"
   style="color: white; width: 100%; position:absolute; display: block;  bottom: 0; z-index: 1000;">

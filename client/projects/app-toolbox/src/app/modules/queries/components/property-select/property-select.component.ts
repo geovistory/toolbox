@@ -2,8 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { PropertySelectModel } from "@kleiolab/lib-queries";
-import { PropertyOption } from "@kleiolab/lib-queries";
+import { PropertyOption, PropertySelectModel } from '@kleiolab/lib-queries';
 import { QueryFilter } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -39,8 +38,8 @@ export class PropertiesRequiredValidatorDirective implements Validator {
 
 // tslint:disable: member-ordering
 @Directive()
-class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<PropertySelectModel> {
-  value: PropertySelectModel;
+abstract class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<PropertySelectModel> {
+  abstract value: PropertySelectModel | null;
   static nextId = 0;
 
   model: PropertySelectModel;

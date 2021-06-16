@@ -1,18 +1,18 @@
 import { GvFieldPage, GvPaginationObject } from '@kleiolab/lib-sdk-lb4';
-import { GvFieldPageReqMock } from '../api-requests/GvFieldPageReq';
-import { DfhApiPropertyMock } from '../gvDB/DfhApiPropertyMock';
-import { InfAppellationMock } from '../gvDB/InfAppellationMock';
-import { InfDimensionMock } from '../gvDB/InfDimensionMock';
-import { InfLangStringMock } from '../gvDB/InfLangStringMock';
-import { InfLanguageMock } from '../gvDB/InfLanguageMock';
-import { InfPlaceMock } from '../gvDB/InfPlaceMock';
-import { InfResourceMock } from '../gvDB/InfResourceMock';
-import { InfStatementMock } from '../gvDB/InfStatementMock';
-import { InfTimePrimitiveMock } from '../gvDB/InfTimePrimitiveMock';
-import { DfhApiProperty } from '../gvDB/local-model.helpers';
-import { ProInfoProjRelMock } from '../gvDB/ProInfoProjRelMock';
-import { ProProjectMock } from '../gvDB/ProProjectMock';
-import { WarEntityPreviewMock } from '../gvDB/WarEntityPreviewMock';
+import { GvFieldPageReqMock } from '../api-requests/GvFieldPageReq'
+import { DfhApiPropertyMock } from '../gvDB/DfhApiPropertyMock'
+import { InfAppellationMock } from '../gvDB/InfAppellationMock'
+import { InfDimensionMock } from '../gvDB/InfDimensionMock'
+import { InfLangStringMock } from '../gvDB/InfLangStringMock'
+import { InfLanguageMock } from '../gvDB/InfLanguageMock'
+import { InfPlaceMock } from '../gvDB/InfPlaceMock'
+import { InfResourceMock } from '../gvDB/InfResourceMock'
+import { InfStatementMock } from '../gvDB/InfStatementMock'
+import { InfTimePrimitiveMock } from '../gvDB/InfTimePrimitiveMock'
+import { DfhApiProperty } from '../gvDB/local-model.helpers'
+import { ProInfoProjRelMock } from '../gvDB/ProInfoProjRelMock'
+import { ProProjectMock } from '../gvDB/ProProjectMock'
+import { WarEntityPreviewMock } from '../gvDB/WarEntityPreviewMock'
 
 export namespace GvPaginationObjectMock {
   export const appeTeEnHasAppeVt: GvPaginationObject = {

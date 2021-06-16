@@ -1,11 +1,11 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Field } from '@kleiolab/lib-queries';
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
-import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/gvDB/InfPersistentItemMock';
+import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { SubfieldMock } from 'projects/__test__/data/SubfieldMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
@@ -31,7 +31,7 @@ export default sandboxOf(FieldComponent, {
   .add('Field | type: LangStringVT ', {
     context: {
       field: SubfieldMock.manifestationSingletonHasDefinition,
-      source: { fkInfo: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
+      source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),
       treeControl: new NestedTreeControl<Field>(node => ([])),

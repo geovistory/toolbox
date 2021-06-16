@@ -13,6 +13,9 @@ import { ApiProfileSelectedByProjects } from './apiProfileSelectedByProjects';
 
 
 export interface ApiProfile { 
+  [key: string]: object | any;
+
+
     profileID: number;
     profileLabelLanguage: string;
     profileLabel: string;

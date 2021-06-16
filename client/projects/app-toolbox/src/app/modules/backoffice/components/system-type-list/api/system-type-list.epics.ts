@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from "@kleiolab/lib-redux";
+import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { SysSystemType, SysSystemTypeApi } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SystemTypeListComponent } from '../system-type-list.component';
-import { SystemTypeListAPIActions, SystemTypeListAPIAction } from './system-type-list.actions';
-import { SysSystemTypeApi } from '@kleiolab/lib-sdk-lb3';
-import { SysSystemType } from '@kleiolab/lib-sdk-lb3';
+import { SystemTypeListAPIAction, SystemTypeListAPIActions } from './system-type-list.actions';
 
 @Injectable()
 export class SystemTypeListAPIEpics {
@@ -32,7 +31,7 @@ export class SystemTypeListAPIEpics {
           /**
            * Emit the global action that activates the loading bar
            */
-          globalStore.next(this.loadingBarActions.startLoading());
+          globalStore.next(this.loadingBarActions.addJob());
           /**
            * Emit the local action that sets the loading flag to true
            */
@@ -48,7 +47,7 @@ export class SystemTypeListAPIEpics {
               /**
                * Emit the global action that completes the loading bar
                */
-              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               /**
                * Emit the local action on loading succeeded
                */
@@ -58,7 +57,7 @@ export class SystemTypeListAPIEpics {
               /**
                * Emit the global action that shows some loading error message
                */
-              // globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               /**
               * Emit the local action on loading failed
               */

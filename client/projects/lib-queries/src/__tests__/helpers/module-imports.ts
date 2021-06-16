@@ -8,8 +8,8 @@ import { ReduxQueriesModule } from '../../lib/queries/module/redux-queries.modul
 export const moduleImports = [
   SdkLb3Module.forRoot(),
   SdkLb4Module,
-  SocketsModule.forRoot({ baseUrl: '' }),
-  ReduxModule.forRoot(),
+  SocketsModule,
+  ReduxModule,
   ReduxQueriesModule,
   DateTimeModule
 ]

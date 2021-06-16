@@ -8,7 +8,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { DndModule } from 'ng2-dnd';
 import { LanguageSearchTypeaheadModule, NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
-import { DrawerContainerResizeModule } from 'projects/app-toolbox/src/app/shared/components/drawer-container-resize/drawer-container-resize.module';
 import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { ReadMoreModule } from 'projects/app-toolbox/src/app/shared/components/read-more/read-more.module';
 import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
@@ -38,9 +37,6 @@ import { OnActivateTabDirective, ProjectEditComponent, TabBodyComponent } from '
 import { ProjectListComponent } from './containers/project-list/project-list.component';
 import { ProjectSettingsDataAPIActions } from './containers/project-settings-data/api/project-settings-data.actions';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
-import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
-import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
-import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
@@ -68,7 +64,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     DragDropModule,
     AnalysisModule,
     PortalModule,
-    DrawerContainerResizeModule,
     AngularSplitModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
@@ -96,7 +91,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     RamFormComponent,
     ProjectSettingsDataComponent,
     TypesComponent,
-    TypeEditFormComponent,
     TabBodyComponent,
     PanelBodyDirective,
     TabHandleComponent,
@@ -108,8 +102,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectsActions,
     // ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
-    TypeEditFormAPIActions,
-    TypeEditFormAPIEpics
   ]
 })
 export class ProjectsModule { }

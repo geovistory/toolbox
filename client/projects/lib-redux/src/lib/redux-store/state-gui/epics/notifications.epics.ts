@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastyConfig, ToastyService } from '@cime/ngx-toasty';
+import { ToastyConfig, ToastyService } from '@kleiolab/ng2-toasty';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';

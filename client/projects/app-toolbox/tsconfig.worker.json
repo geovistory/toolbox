@@ -4,7 +4,8 @@
     "outDir": "../../out-tsc/worker",
     "lib": [
       "es2018",
-      "webworker"
+      "webworker",
+      "DOM"
     ],
     "types": []
   },

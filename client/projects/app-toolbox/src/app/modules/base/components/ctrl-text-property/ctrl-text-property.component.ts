@@ -97,7 +97,7 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
 
 
   focused$ = new BehaviorSubject(null);
-  value$ = new BehaviorSubject(this.model); // needed for rx way of checking should label float
+  value$ = new BehaviorSubject<CtrlModel>(undefined); // needed for rx way of checking should label float
   shouldLabelFloat$: Observable<boolean>; // needed for rx way of checking should label float
 
   fkLanguage: number

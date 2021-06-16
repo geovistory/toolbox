@@ -5,6 +5,7 @@
   "configurations": [
     {
       "type": "node",
+      "runtimeVersion": "12.8.1",
       "request": "launch",
       "name": "Launch Webserver",
       "skipFiles": [

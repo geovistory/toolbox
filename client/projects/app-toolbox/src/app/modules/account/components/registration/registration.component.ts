@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { LoadingBarActions } from '@kleiolab/lib-redux';
 import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { AccountService, SignupRequest, SignupValidationError } from '@kleiolab/lib-sdk-lb4';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
+import { first } from 'rxjs/operators';
 
 
 
@@ -27,7 +28,7 @@ export class RegistrationComponent {
 
   constructor(
     private accountApi: AccountService,
-    private slimLoadingBarService: SlimLoadingBarService
+    private loadingBarActions: LoadingBarActions,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -43,11 +44,12 @@ export class RegistrationComponent {
       username: this.model.username
     }
     this.accountApi.accountControllerSignUp(req)
+      .pipe(first())
       .subscribe(
         data => {
-          this.completeLoading();
           this.validationError = data.validationError;
           if (!this.validationError) { this.confirm = true; this.confirmEmail = data.success.email; };
+          this.completeLoading()
         },
         errResponse => {
 
@@ -60,33 +62,21 @@ export class RegistrationComponent {
               }
             }
           }
-
-          this.resetLoading();
-        });
+          this.stopLoading()
+        }
+      );
   }
 
-  /**
-  * Loading Bar Logic
-  */
 
   startLoading() {
+    this.loadingBarActions.addJob()
     this.loading = true;
-    this.slimLoadingBarService.progress = 20;
-    this.slimLoadingBarService.start(() => {
-    });
   }
-
   stopLoading() {
-    this.slimLoadingBarService.stop();
+    this.loadingBarActions.removeJob()
   }
-
   completeLoading() {
     this.loading = false;
-    this.slimLoadingBarService.complete();
-  }
-
-  resetLoading() {
-    this.loading = false;
-    this.slimLoadingBarService.reset();
+    this.loadingBarActions.removeJob()
   }
 }

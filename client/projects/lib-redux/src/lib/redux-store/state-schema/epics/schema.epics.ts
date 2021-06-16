@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType, StateObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { first, mergeMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
@@ -34,11 +34,12 @@ export class SchemaEpics {
       (action$, store) => action$.pipe(
         ofType(GvSchemaActions.GV_SCHEMA_OBJECT_LOAD),
         mergeMap((action: GvSchemaObjectAction) => new Observable<Action>((actionEmitter) => {
-          actionEmitter.next(this.loadingBarActions.startLoading());
-          action.payload.subscribe((data) => {
+          actionEmitter.next(this.loadingBarActions.addJob());
+          action.payload.pipe(first()).subscribe((data) => {
             this.schemaObjectService.storeSchemaObjectGv(data, 0)
-            actionEmitter.next(this.loadingBarActions.completeLoading());
+            actionEmitter.next(this.loadingBarActions.removeJob());
           }, error => {
+            actionEmitter.next(this.loadingBarActions.removeJob());
             actionEmitter.next(this.notificationActions.addToast({
               type: 'error',
               options: { title: error }
@@ -55,13 +56,14 @@ export class SchemaEpics {
       (action$, store) => action$.pipe(
         ofType(GvSchemaActions.GV_SCHEMA_MODIFIER_LOAD),
         mergeMap((action: GvSchemaModifierAction) => new Observable<Action>((actionEmitter) => {
-          actionEmitter.next(this.loadingBarActions.startLoading());
-          action.payload.subscribe((data) => {
+          actionEmitter.next(this.loadingBarActions.addJob());
+          action.payload.pipe(first()).subscribe((data) => {
             this.schemaObjectService.storeSchemaObjectGv(data.positive, 0)
             this.schemaObjectService.deleteSchemaObjectGv(data.negative, 0)
 
-            actionEmitter.next(this.loadingBarActions.completeLoading());
+            actionEmitter.next(this.loadingBarActions.removeJob());
           }, error => {
+            actionEmitter.next(this.loadingBarActions.removeJob());
             actionEmitter.next(this.notificationActions.addToast({
               type: 'error',
               options: { title: error }
@@ -78,7 +80,7 @@ export class SchemaEpics {
       (action$, store: StateObservable<IAppState>) => action$.pipe(
         ofType(GvSchemaActions.GV_PAGINATION_OBJECT_LOAD),
         mergeMap((action: GvPaginationObjectAction) => new Observable<Action>((actionEmitter) => {
-          actionEmitter.next(this.loadingBarActions.startLoading());
+          actionEmitter.next(this.loadingBarActions.addJob());
 
           const pkProject = store.value.activeProject.pk_project;
           // const meta = action.meta;
@@ -87,7 +89,7 @@ export class SchemaEpics {
           // this.infActions.statement.loadPage(meta.req.page, pkProject);
 
           // this.pag.subfieldPageControllerLoadSubfieldPage(action.meta.req)
-          action.payload.subscribe((data) => {
+          action.payload.pipe(first()).subscribe((data) => {
             // call action to store records
             this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
             // call action to store page informations
@@ -97,8 +99,9 @@ export class SchemaEpics {
               );
             }
             // call action to complete loading bar
-            actionEmitter.next(this.loadingBarActions.completeLoading());
+            actionEmitter.next(this.loadingBarActions.removeJob());
           }, error => {
+            actionEmitter.next(this.loadingBarActions.removeJob());
             actionEmitter.next(this.notificationActions.addToast({
               type: 'error',
               options: { title: error }

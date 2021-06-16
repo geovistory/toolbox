@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from "@kleiolab/lib-redux";
-import { DatNamespace } from '@kleiolab/lib-sdk-lb3';
+import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { DatNamespace, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { NamespaceListComponent } from '../namespace-list.component';
-import { NamespaceListAPIActions, NamespaceListAPIAction } from './namespace-list.actions';
-import { DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
+import { NamespaceListAPIAction, NamespaceListAPIActions } from './namespace-list.actions';
 
 @Injectable()
 export class NamespaceListAPIEpics {
@@ -32,7 +31,7 @@ export class NamespaceListAPIEpics {
           /**
            * Emit the global action that activates the loading bar
            */
-          globalStore.next(this.loadingBarActions.startLoading());
+          globalStore.next(this.loadingBarActions.addJob());
           /**
            * Emit the local action that sets the loading flag to true
            */
@@ -48,7 +47,7 @@ export class NamespaceListAPIEpics {
               /**
                * Emit the global action that completes the loading bar
                */
-              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               /**
                * Emit the local action on loading succeeded
                */
@@ -58,7 +57,7 @@ export class NamespaceListAPIEpics {
               /**
                * Emit the global action that shows some loading error message
                */
-              // globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               /**
               * Emit the local action on loading failed
               */

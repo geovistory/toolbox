@@ -4,16 +4,16 @@
 // our store and Angular.
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
 import { Inject, InjectionToken, NgModule, Optional, SkipSelf } from '@angular/core';
-import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
-import { ToastyModule } from '@cime/ngx-toasty';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { ToastyModule } from '@kleiolab/ng2-toasty';
 import { equals } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { createEpicMiddleware } from 'redux-observable-es6-compat';
 import { IAppState } from '../root/models/model';
 import { RootEpics } from '../root/root-epics';
 import { rootReducer } from '../root/root-reducer';
+
 
 
 /**
@@ -50,51 +50,15 @@ export function apiConfigFactory(): Configuration {
     NgReduxModule,
 
     // for gui-state epics
-    SlimLoadingBarModule,
     ToastyModule.forRoot(),
 
   ],
   providers: [
 
-    // AccountActions,
-    // ActiveProjectActions,
-    // LoadingBarActions,
-    // NotificationsAPIActions,
-
-    // AccountEpics,
-    // ActiveProjectEpics,
-    // LoadingBarEpics,
-    // NotificationsAPIEpics,
-
-    // DatActions,
-    // DfhActions,
-    // InfActions,
-    // ProActions,
-    // SysActions,
-    // TabActions,
-    // WarActions,
-
-    // DatEpics,
-    // DfhEpics,
-    // InfEpics,
-    // ProEpics,
-    // SysEpics,
-    // TabEpics,
-    // WarEpics,
-
-    // RootEpics,
-    // // SchemaActionsFactory,
-    // SchemaObjectService,
-    // { provide: APP_INITIAL_STATE, useValue: {} }
   ]
 })
 export class ReduxModule {
-  // public static forRoot(): ModuleWithProviders<ReduxModule> {
-  //   return {
-  //     ngModule: ReduxModule,
-  //     providers: [{ provide: APP_INITIAL_STATE, useValue: {} }]
-  //   };
-  // }
+
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

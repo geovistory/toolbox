@@ -1,8 +1,8 @@
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { BaseModule } from '../../base.module';
 import { CtrlTextPropertyComponent } from './ctrl-text-property.component';
-import { MatFormFieldModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
 
 
 
@@ -55,32 +55,32 @@ export default sandboxOf(CtrlTextPropertyComponent, {
         fk_concerned_entity: 123,
         fk_class_field: 567,
         quill_doc: {
-          "latestId": 2,
-          "ops": [
+          'latestId': 2,
+          'ops': [
             {
-              "attributes": {
-                "charid": "2"
+              'attributes': {
+                'charid': '2'
               },
-              "insert": "a"
+              'insert': 'a'
             },
             {
-              "attributes": {
-                "blockid": "1"
+              'attributes': {
+                'blockid': '1'
               },
-              "insert": "\n"
+              'insert': '\n'
             }
           ]
         },
         language: {
-          "fk_class": 54,
-          "pk_language": "spo",
-          "lang_type": "living",
-          "scope": "individual",
-          "iso6392b": null,
-          "iso6392t": null,
-          "iso6391": null,
-          "notes": "Spokane",
-          "pk_entity": 23053
+          'fk_class': 54,
+          'pk_language': 'spo',
+          'lang_type': 'living',
+          'scope': 'individual',
+          'iso6392b': null,
+          'iso6392t': null,
+          'iso6391': null,
+          'notes': 'Spokane',
+          'pk_entity': 23053
         }
       },
       parentPath: ''

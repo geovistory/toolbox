@@ -31,12 +31,12 @@ export class AccountListAPIEpics {
         filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: AccountListAPIAction) => new Observable<Action>((globalStore) => {
 
-          globalStore.next(this.loadingBarActions.startLoading());
+          globalStore.next(this.loadingBarActions.addJob());
 
           this.accountApi.withRolesAndProjects()
             .subscribe((data) => {
 
-              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               /**
                * Emit the local action on loading succeeded
                */
@@ -46,7 +46,7 @@ export class AccountListAPIEpics {
               /**
               * Emit the global action that shows some loading error message
               */
-              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.removeJob());
               globalStore.next(this.notificationActions.addToast({
                 type: 'error',
                 options: {

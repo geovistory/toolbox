@@ -1,7 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { IAppState, ProjectDetail } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
@@ -43,7 +42,6 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     activatedRoute: ActivatedRoute,
     public p: ActiveProjectService,
     private ngRedux: NgRedux<IAppState>,
-    private slimLoadingBarService: SlimLoadingBarService
   ) {
     this.id = activatedRoute.snapshot.params['pkActiveProject'];
 
@@ -58,7 +56,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.startLoading();
+    // this.startLoading();
 
     // listen to the crm and add extract the classes ready to add.
     this.ngRedux.select(['activeProject', 'crm']).pipe(
@@ -130,21 +128,21 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
    * Loading Bar Logic
    */
 
-  startLoading() {
-    this.slimLoadingBarService.progress = 20;
-    this.slimLoadingBarService.start(() => {
-    });
-  }
+  // startLoading() {
+  //   this.slimLoadingBarService.progress = 20;
+  //   this.slimLoadingBarService.start(() => {
+  //   });
+  // }
 
-  stopLoading() {
-    this.slimLoadingBarService.stop();
-  }
+  // stopLoading() {
+  //   this.slimLoadingBarService.stop();
+  // }
 
-  completeLoading() {
-    this.slimLoadingBarService.complete();
-  }
+  // completeLoading() {
+  //   this.slimLoadingBarService.complete();
+  // }
 
-  resetLoading() {
-    this.slimLoadingBarService.reset();
-  }
+  // resetLoading() {
+  //   this.slimLoadingBarService.reset();
+  // }
 }

@@ -687,6 +687,24 @@ gv-property {
   position: absolute;
 }
 
+#global-loading-bar {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  mat-progress-bar {
+    height: 2px !important;
+    transition: visibility 0s linear 0.33s, opacity 0.33s linear;
+    opacity: 0;
+    transition-delay: 0s;
+    &.is-visible {
+      opacity: 1;
+      transition-delay: 0s;
+    }
+  }
+}
+
 #userDashboard {
   #userImage {
     font-size: 6rem;

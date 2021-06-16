@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
-import { DatChunk } from '@kleiolab/lib-sdk-lb4';
-import { DatNamespaceMock } from './DatNamespaceMock';
-import { DatDigitalMock } from './DatDigitalMock';
+import {DatChunk} from '@kleiolab/lib-sdk-lb4';
+import {DatDigitalMock} from './DatDigitalMock';
+import {DatNamespaceMock} from './DatNamespaceMock';
+import {OmitEntity} from './local-model.helpers';
 
 /**
  * pk_entity prefix: 600
  */
 export class DatChunkMock {
-    static readonly RUDOLF: Partial<DatChunk> = ({
+    static readonly RUDOLF: OmitEntity<DatChunk> = ({
         pk_entity: 6001,
         fk_entity_version: 1,
         fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,

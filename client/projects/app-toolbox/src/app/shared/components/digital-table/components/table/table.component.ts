@@ -1,13 +1,20 @@
 import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SysConfigValue, SysConfigValueObjectType, TabCell, TableService } from '@kleiolab/lib-sdk-lb4';
+import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { TColFilter } from '../../../../../../../../../../server/src/lb3/server/table/interfaces';
 import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../../../number-dialog/number-dialog.component';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
 
+export interface TableSort {
+  // pkColumn of column to sort by. In case the col has no pk (yet), use colNb.
+  pkColumn: number,
+  // column index, from left to right, staring with 0,
+  colNb: number; // if === -1, sorting is not by col but by index of the roe
+  direction: GetTablePageOptions.SortDirectionEnum
+}
 export enum TableMode {
   edit = 'edit',
   view = 'view',
@@ -41,14 +48,20 @@ export enum ValueObjectTypeName {
 
 export interface Cell {
   text: string;
-  pkCell: number;
-  pkRow: number;
-  pkColumn: number;
+  pkCell?: number;
+  pkRow?: number;
+  pkColumn?: number;
 }
 
 export interface Row { // used to make the new temp row
   position: number,
   cells: Array<Cell>
+}
+
+export interface TableColFilter {
+  pkColumn: number;
+  colNb: number;
+  filter: TColFilter;
 }
 
 @Component({
@@ -70,14 +83,14 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() filteringEnabled = false;
   @Input() sortingEnabled = false;
   @Input() lineBreak = false;
-  @Input() sortBy$: Observable<{ pkColumn: number, direction: string }>;
-  @Input() origin: 'classic';
+  @Input() sortBy$: Observable<TableSort>;
+  @Input() origin = 'classic';
   @Input() mode: TableMode = TableMode.view;
   @Input() newRow: Row;
 
   // outputs
-  @Output() sortDemanded = new EventEmitter<{ pkColumn: number, direction: string }>();
-  @Output() filterDemanded = new EventEmitter<Array<{ pkColumn: number, filter: TColFilter }>>();
+  @Output() sortDemanded = new EventEmitter<TableSort>();
+  @Output() filterDemanded = new EventEmitter<Array<TableColFilter>>();
   @Output() cellClicked = new EventEmitter<{ pkColumn: number, pkRow: number }>();
   @Output() changeColumn = new EventEmitter<{ pkColumn: number, direction: 'right' | 'left' }>();
   @Output() createRowDemanded = new EventEmitter<{ position: number }>();
@@ -92,9 +105,9 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   // private parameters
   isThereMappings$: Observable<boolean>;
   headers: Header[];
-  table: Array<Array<{ text: string, pkCell: number, pkRow: number, pkColumn: number }>>;
-  curSort: { pkColumn: number, direction: string };
-  filters: Array<{ pkColumn: number, value: string }>;
+  table: Array<Array<Cell>>;
+  curSort: TableSort;
+  filters: { [key: number]: TableColFilter };
 
   // mapping options
   valuesObjectTypes: Array<{ pkClass: number, label: string }> = [];
@@ -121,7 +134,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   ngOnInit() {
     this.headers = [];
     this.table = [];
-    this.curSort = { pkColumn: -1, direction: '' };
+    this.curSort = { pkColumn: -1, colNb: -1, direction: 'ASC' };
     this.filters = [];
 
     // listen to input headers (from parent)
@@ -175,28 +188,38 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.subs) this.subs.unsubscribe();
   }
 
-  sort(col: number) {
+  sort(colNb: number) {
     if (!this.sortingEnabled) return;
 
-    const pkCol = col != 0 ? this.headers[col].pk_column : -1;
+    const pkCol = this.getPkColumnByColNb(colNb);
     if (pkCol == this.curSort.pkColumn) this.curSort.direction = this.curSort.direction == 'ASC' ? 'DESC' : 'ASC'
-    else this.curSort = { pkColumn: pkCol, direction: 'ASC' }
+    else this.curSort = { pkColumn: pkCol, colNb, direction: 'ASC' }
 
     this.sortDemanded.emit(this.curSort);
   }
 
-  filter(pkColumn: number, event: any) {
+  private getPkColumnByColNb(colNb: number) {
+    return colNb != 0 ? this.headers[colNb].pk_column : -1;
+  }
+
+  filter(colNb: number, filter?: TColFilter) {
     if (!this.filteringEnabled) {
       this.filterDemanded.emit([]);
       return;
     }
+    const pkColumn = this.getPkColumnByColNb(colNb);
 
-    if (event) {
-      if (event.numeric) event.numeric.value = parseFloat(event.numeric.value);
-      this.filters[pkColumn + ''] = { pkColumn, filter: event };
-    } else this.filters.splice(pkColumn, 1);
+    // if columns have pkColumn, use pkColumn to identify filter, else colNb
+    const key = pkColumn > -2 ? pkColumn : colNb;
 
-    this.filterDemanded.emit(Object.keys(this.filters).map(f => this.filters[f]));
+    if (filter) {
+      this.filters[key] = { pkColumn, colNb, filter };
+    } else {
+      delete this.filters[key];
+    }
+
+
+    this.filterDemanded.emit(values(this.filters));
   }
 
   cellClick(pkRow: number, pkColumn: number) {

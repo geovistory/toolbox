@@ -3,8 +3,7 @@ import { LoadingBarAction, LoadingBarActions } from '../actions/loading-bar.acti
 import { LoadingBar } from '../models/loading-bar.models';
 
 const INITIAL_STATE: LoadingBar = {
-  loading: false,
-  progress: 0,
+  runningJobsCount: 0,
 };
 
 
@@ -15,23 +14,22 @@ export function loadingBarReducer(state: LoadingBar = INITIAL_STATE, a: Action):
 
   switch (action.type) {
 
-    case LoadingBarActions.START:
+    case LoadingBarActions.ADD_JOB:
       return {
         ...state,
-        loading: true
+        runningJobsCount: state.runningJobsCount + 1
       };
 
-    case LoadingBarActions.STOP:
-      return {
-        ...state,
-        loading: false,
-      };
+    case LoadingBarActions.REMOVE_JOB:
+      if (state.runningJobsCount > 0) {
+        return {
+          ...state,
+          runningJobsCount: state.runningJobsCount - 1
+        };
+      } else {
+        console.warn('Impossible Error: Wanted to remove more jobs than existing');
+      }
 
-    case LoadingBarActions.COPMLETE:
-      return {
-        ...state,
-        loading: false,
-      };
   }
 
   return state;

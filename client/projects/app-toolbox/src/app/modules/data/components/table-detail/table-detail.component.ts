@@ -1,24 +1,28 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
-import { Cell, Header, Row, TableMode } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
+import { Cell, Header, Row, TableMode, TableSort } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from 'projects/app-toolbox/src/app/shared/components/info-dialog/info-dialog.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { TColFilters } from '../../../../../../../../../server/src/lb3/server/table/interfaces';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
 
+
+
+export interface TColFilters {
+  [pkColumn: string]: TColFilter
+}
 @Component({
   selector: 'gv-table-detail',
   templateUrl: './table-detail.component.html',
@@ -43,7 +47,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   pageSize$ = new BehaviorSubject(20)
   pageIndex$ = new BehaviorSubject(0)
   sortBy$ = new BehaviorSubject<string>('index')
-  sortDirection$ = new BehaviorSubject<'ASC' | 'DESC'>('ASC');
+  sortDirection$ = new BehaviorSubject<GetTablePageOptions.SortDirectionEnum>('ASC');
   filters$ = new BehaviorSubject<TColFilters>({});
 
   // biggest number in pagination UI (found in db, according to filters). Updated AFTER api call
@@ -65,7 +69,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   tableMode: TableMode = TableMode.view;
   headers$: Observable<Array<Header>>;
   table$: Observable<Array<Array<Cell>>>;
-  sortByIndex$ = new BehaviorSubject({ pkColumn: -1, direction: 'ASC' });
+  sortByIndex$ = new BehaviorSubject<TableSort>({ pkColumn: -1, colNb: -1, direction: 'ASC' });
   currentSortIndex: { colNb: number, direction: string, colName: string };
 
   // for creating new rows
@@ -270,7 +274,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.filters$.next(filters);
   }
 
-  onSortChange(sortOpt: { pkColumn: number, direction: 'ASC' | 'DESC' }) {
+  onSortChange(sortOpt: TableSort) {
     this.sortDirection$.next(sortOpt.direction);
     this.sortBy$.next(sortOpt.pkColumn == - 1 ? 'index' : sortOpt.pkColumn + '');
   }

@@ -15,6 +15,7 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": false,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "types": [
       "socket.io-client",
       "jasmine"
