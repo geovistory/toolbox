@@ -15,7 +15,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import { equals, flatten, groupBy, keys, sum, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
@@ -758,7 +758,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
-          const value: InfStatementWithRelations[] = keys(v).map(key => {
+          const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
             const timePrim: TimePrimitiveWithCal = v[key]
             const statement: InfStatementWithRelations = {
               entity_version_project_rels: [
@@ -767,7 +767,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   calendar: timePrim.calendar
                 }
               ],
-              fk_property: key,
+              fk_property: parseInt(key, 10),
               object_time_primitive: {
                 julian_day: timePrim.julianDay,
                 duration: timePrim.duration,

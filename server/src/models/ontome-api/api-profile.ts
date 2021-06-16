@@ -26,7 +26,7 @@ export class ApiProfileSelectedByProjects {
   @property() numberOfProjects: number
   @property.array(ApiProfileProject) projects: ApiProfileProject[]
 }
-@model()
+@model({settings: {strict: false}})
 export class ApiProfile {
   @property({required: true}) profileID: number
   @property({required: true}) profileLabelLanguage: string

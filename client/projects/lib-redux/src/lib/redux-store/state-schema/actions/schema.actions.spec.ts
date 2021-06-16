@@ -6,6 +6,7 @@ import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfStatementMock } from 'projects/__test__/data/auto-gen/gvDB/InfStatementMock';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { BehaviorSubject } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -42,6 +43,16 @@ describe('GvSchemaActions', () => {
       actions.loadGvSchemaObject(apiCall$)
       const expectedLanguage = ngRedux.getState().inf.language.by_pk_entity[InfLanguageMock.GERMAN.pk_entity]
       expect(expectedLanguage.pk_entity).toEqual(InfLanguageMock.GERMAN.pk_entity)
+
+      const expectedClass = ngRedux.getState().inf.pkEntityModelMap[18605].fkClass
+      expect(expectedClass).toEqual(InfLanguageMock.GERMAN.fk_class)
+
+    });
+    it('should put klasses into store', () => {
+      const apiCall$ = new BehaviorSubject<GvPositiveSchemaObject>(GvSchemaObjectMock.basicClassesAndProperties)
+      actions.loadGvSchemaObject(apiCall$)
+      expect(Object.keys(ngRedux.getState().dfh.klass).length).toBeGreaterThan(0);
+
     });
   })
 

@@ -1,14 +1,15 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, forwardRef, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity.component';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { TableComponent } from '../table.component';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
     private s: SchemaSelectorsService,
     private dialog: MatDialog,
     private dataService: ReduxMainService,
+    @Inject(forwardRef(() => TableComponent)) public tableComponent: TableComponent
   ) { }
 
   ngOnDestroy() {

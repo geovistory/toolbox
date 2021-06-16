@@ -5,6 +5,7 @@ import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
 import { ImportTable, ImportTableControllerService, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
@@ -44,8 +45,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   headers: Header[];
   table: string[][]; // the full table
   filteredTable: string[][]; // the full table filtered and sorted
-  headers$ = new ReplaySubject<Header[]>(); // the headers to display
-  previewTable$ = new ReplaySubject<string[][]>(); // the data to display
+  headers$: ReplaySubject<Header[]>; // the headers to display
+  previewTable$: ReplaySubject<{ text: string }[][]>; // the data to display
 
   // file options CSV
   separators = [';', ',', '|', 'TAB'];
@@ -70,12 +71,12 @@ export class ImporterComponent implements OnInit, OnDestroy {
   namespace: any;
   languages = [];
   language: InfLanguage;
+  pkProject: number;
 
   // formControls
   tableNameCtrl = new FormControl('', [Validators.required]);
   namespaceCtrl = new FormControl('', [Validators.required]);
   languageCtrl = new FormControl('', [Validators.required]);
-
 
   tableForm = new FormGroup({
     tableNameCtrl: this.tableNameCtrl,
@@ -90,6 +91,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     private worker: WorkerWrapperService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
+    private a: ActiveAccountService,
     private apiImporter: ImportTableControllerService,
     @Inject(MAT_DIALOG_DATA) public data: ImporterDialogData
   ) {
@@ -108,6 +110,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.reset();
     this.importTableSocket.cleanConnect();
+
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => this.pkProject = pkProject);
   }
 
   /**
@@ -244,7 +248,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Parse the binaries of the file into the workbook format. Uses the WWW.
-   * Making the Step to first parse into workbook allow us to avoid to reparse everything if is was not the first Excel Sheet that the user wanted to import
+   * Making the Step to first parse into workbook allow us to avoid
+   * to reparse everything if is was not the first Excel Sheet that the user wanted to import
    */
   parseWorkbook() {
     this.worker.work('parseWorkbook', { binaries: this.binaries })
@@ -343,7 +348,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
     // if there is no sort
     if (this.curSort.colNb == -1) {
-      this.previewTable$.next(this.filteredTable.slice(0, this.getRowsNb())); // put header back
+      const stringTable = this.filteredTable.slice(0, this.getRowsNb());
+      this.previewTable$.next(stringTable.map(row => row.map(cell => ({ text: cell })))); // put header back
       this.mode = 'preview';
       return;
     }
@@ -386,7 +392,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
             rows: this.table,
           };
 
-          this.apiImporter.importTableControllerImportTable(this.namespaceCtrl.value, importTable)
+          this.apiImporter.importTableControllerImportTable(this.pkProject, this.namespaceCtrl.value, this.a.account.id, importTable)
             .pipe(switchMap(response => {
 
               this.fkDigital = response.fk_digital;
@@ -417,7 +423,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
                 this.mode = 'preview';
                 this.loaded('Import error', 'The table has not been imported: ' + response.error)
               };
-              // else this.loaded('Table uploaded', 'Your table is saved in our database, we are right now creating it. It may take a few moments, based on your table. To know when it will be finished, keep the importer open.');
+              // else this.loaded('Table uploaded', 'Your table is saved in our database, we are right now creating it.
+              // It may take a few moments, based on your table. To know when it will be finished, keep the importer open.');
             });
         }
       })

@@ -1,3 +1,4 @@
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -5,7 +6,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOptionModule, MatRippleModule, MAT_HAMMER_OPTIONS } from '@angular/material/core';
+import { MatOptionModule, MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -23,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
@@ -30,7 +32,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const modules = [
   FormsModule,
@@ -64,6 +65,7 @@ const modules = [
   MatToolbarModule,
   MatRippleModule,
   MatGridListModule,
+  MatSnackBarModule,
   ScrollingModule
 ]
 
@@ -73,14 +75,6 @@ const modules = [
     ...modules
   ],
   providers: [
-    // Enable selction of child elements of matTooltip elements
-    // Read more here: https://stackoverflow.com/questions/55307860/using-angular-material-tooltip-but-cant-select-text-on-element-beneath-it
-    // Related issue: https://github.com/angular/components/issues/8817
-    // Attention: Deprecated – will be removed in Material 10
-    {
-      provide: MAT_HAMMER_OPTIONS,
-      useValue: { cssProps: { userSelect: true } },
-    },
   ],
   declarations: [],
   exports: [

@@ -1,8 +1,8 @@
-import {Postgres1DataSource} from '../../datasources';
-import {DatColumn, DatTextProperty} from '../../models';
-import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {DatClassColumnMapping} from '../../models/dat-class-column-mapping.model';
+import { Postgres1DataSource } from '../../datasources';
+import { DatColumn, DatTextProperty } from '../../models';
+import { DatClassColumnMapping } from '../../models/dat-class-column-mapping.model';
+import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 export class QTableColumns extends SqlBuilderLb4Models {

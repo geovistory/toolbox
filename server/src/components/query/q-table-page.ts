@@ -156,12 +156,11 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     -- master columns
     WITH tw1 AS (
       Select
-      ROW_NUMBER() OVER (
-        ${this.addOrderBy(options, colMeta)}
-      ),
+      t0.index,
       t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
-      From  tables.row t1
+      From  (SELECT ROW_NUMBER() OVER(ORDER BY position) as index, pk_row FROM tables.row_` + pkEntity + `) t0
+      JOIN tables.row_` + pkEntity + ` t1 ON t1.pk_row = t0.pk_row
       JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
       JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
       ${this.addColumnFroms(masterColumns, pkEntity)}
@@ -184,7 +183,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
 
     -- rows
     tw2 AS (
-      ${this.joinColBatchWiths(masterColumns)}
+      ${this.joinColBatchWiths(masterColumns, options.sortBy, options.sortDirection)}
 
     ),
 
@@ -192,7 +191,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     tw3 AS (
       Select
         count(t1.pk_row) as length
-      From  tables.row t1
+        From  tables.row_` + pkEntity + ` t1
         JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
         JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
         ${this.addColumnFroms(masterColumns, pkEntity)}
@@ -252,18 +251,6 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     LEFT JOIN language ON true
     LEFT JOIN info_proj_rel ON true;
     `
-
-
-    // console.log(this.sql)
-    // console.log(this.params)
-    // console.log(this.leftJoinStatements(this.getRefersToColumns(), fkProject));
-    // console.log(this.groupStatements(this.getRefersToColumns()))
-
-    // console.log('this.colBatchWiths', JSON.stringify(this.colBatchWiths))
-    // console.log('this.masterColumns', JSON.stringify(this.masterColumns))
-    // console.log('this.getRefersToColumns()', JSON.stringify(this.getRefersToColumns()))
-
-
 
     logSql(this.sql, this.params)
 
@@ -631,11 +618,14 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     return sql
   }
 
-  private joinColBatchWiths(masterColumns: string[]) {
+  private joinColBatchWiths(masterColumns: string[], sortBy: string, sortDirection: string) {
+    let direction = 'ASC';
+    if(sortBy === 'index') direction = sortDirection;
+
     return `
         Select
       ${[
-        ...['pk_row', ...masterColumns].map(colName => `tw1."${colName}"`),
+        ...['pk_row', 'index', ...masterColumns].map(colName => `tw1."${colName}"`),
         ...this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n'))
       ].join(',\n')
       }
@@ -648,7 +638,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
           .join(' AND \n')}
         `
       }
-      order by tw1.row_number
+      order by tw1.index ${direction}
     `
   }
 
@@ -684,8 +674,8 @@ export class QTableTablePage extends SqlBuilderLb4Models {
 
   private addOrderBy(options: GetTablePageOptions, colMeta: DatColumn[]): string {
     if (options.sortBy) {
-      if (options.sortBy === 'pk_row') {
-        return `ORDER BY t1.pk_row ${options.sortDirection}`
+      if (options.sortBy === 'index') {
+        return `ORDER BY index ${options.sortDirection}`
       }
       else {
         const pkCol = options.sortBy

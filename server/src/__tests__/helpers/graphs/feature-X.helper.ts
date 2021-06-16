@@ -17,7 +17,7 @@ import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper'
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
 import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
 import { createCellTable_old, createTabCell } from '../atomic/tab-cell-X.helper';
-import { createTabRow } from '../atomic/tab-row.helper';
+import { createRowTable, createTabRow } from '../atomic/tab-row.helper';
 import { DatChunkMock } from '../data/gvDB/DatChunkMock';
 import { DatClassColumnMappingMock } from '../data/gvDB/DatClassColumnMappingMock';
 import { DatColumnMock } from '../data/gvDB/DatColumnMock';
@@ -69,6 +69,7 @@ export async function forFeatureX() {
     await createDatColumn(DatColumnMock.COL_BIRTHDATES);
     await createDatTextProperty(DatTextPropertyMock.NAME);
     await createDatTextProperty(DatTextPropertyMock.BIRTHDATE);
+    await createRowTable(DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number);
     const row1 = await createTabRow(TabRowMock.ROW_ALBERT);
     const row2 = await createTabRow(TabRowMock.ROW_RUDOLF);
     await createCellTable_old(DatDigitalMock.DIGITAL_BIRTHDATES);
@@ -87,6 +88,7 @@ export async function forFeatureX() {
     await createDatColumn(DatColumnMock.COL_RND2);
     await createDatTextProperty(DatTextPropertyMock.RND1);
     await createDatTextProperty(DatTextPropertyMock.RND2);
+    await createRowTable(DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity as number);
     const row3 = await createTabRow(TabRowMock.ROW_RND_VAL1);
     const row4 = await createTabRow(TabRowMock.ROW_RND_VAL2);
     await createCellTable_old(DatDigitalMock.DIGITAL_RANDOM_TABLE);
@@ -103,6 +105,7 @@ export async function forFeatureX() {
     await createDatTextProperty(DatTextPropertyMock.PEOPLE);
     await createDatTextProperty(DatTextPropertyMock.UNION);
     await createDatTextProperty(DatTextPropertyMock.BIRTH2);
+    await createRowTable(DatDigitalMock.DIGITAL_UNIONS.pk_entity as number);
     const rowUNIONSALBERT = await createTabRow(TabRowMock.ROW_UNIONS_ALBERT);
     const rowUNIONSRUDOLPH = await createTabRow(TabRowMock.ROW_UNIONS_RUDOLPH);
     const rowUNIONSJEAN = await createTabRow(TabRowMock.ROW_UNIONS_JEAN);
@@ -122,7 +125,7 @@ export async function forFeatureX() {
     await createTabCell(TabCellXMock.FEATURE_X_UNIONS_HANS, rowUNIONSHANS);
     await createTabCell(TabCellXMock.FEATURE_X_UNIONS_HANS_UNION, rowUNIONSHANS);
     await createTabCell(TabCellXMock.FEATURE_X_UNIONS_HANS_BIRTH, rowUNIONSHANS);
-    await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE, rowUNIONSPIERRE);
+    // await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE, rowUNIONSPIERRE);
     await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE_UNION, rowUNIONSPIERRE);
     await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE_BIRTH, rowUNIONSPIERRE);
     await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ANGELA, rowUNIONSANGELA);
@@ -244,7 +247,6 @@ export async function forFeatureX() {
     await mapCell(projectId, cell_1_6, InfResourceMock.ALBERT_IV.pk_entity as number);
     await mapCell(projectId, cell_1_7, madrid as number);
 
-
     //factoids: person is identified by (1) appellation
     const factMap_birth = await createFactoidMapping(digital, DfhApiClassMock.EN_61_BIRTH.pk_entity);
     await createFactoid(factMap_birth, colPerson, DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.pk_entity);
@@ -273,7 +275,6 @@ export async function createTextAndAnnotation() {
     const infStmtIsRepro = await createInfStatement(InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP)
     const infStmtRefersTo = await createInfStatement(InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF)
     const infStmtMentions = await createInfStatement(InfStatementMock.HABS_EMP_EXPR_MENTIONS_RUDOLF)
-
 
     return {
         stmts: [infStmtIsRepro, infStmtRefersTo, infStmtMentions]

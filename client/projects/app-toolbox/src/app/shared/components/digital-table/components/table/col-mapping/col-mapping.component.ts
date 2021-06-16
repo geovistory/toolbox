@@ -136,7 +136,8 @@ export class ColMappingComponent implements OnInit, OnDestroy {
   changeColumnMapping() {
     if (!this.data.mapping || !this.data.mapping.pkColumn) this.createColumnMapping();
     else {
-      const isOk: Observable<UnMapCheckResponse> = this.tableAPI.tableControllerUnMapColumnCheck(this.pkNamespace, { pkColumn: this.data.mapping.pkColumn });
+      const isOk: Observable<UnMapCheckResponse> = this.tableAPI
+        .tableControllerUnMapColumnCheck(this.pkNamespace, { pkColumn: this.data.mapping.pkColumn });
       isOk.subscribe(resp => {
         if (resp.ok) {
           // we can update the column mapping right away
@@ -145,7 +146,8 @@ export class ColMappingComponent implements OnInit, OnDestroy {
         } else {
           // carefull, there is matching to some cell(s) of the column: ask 2 confirmations before delete all
           const multiple = resp.matchingNb !== 1;
-          const message1 = 'You can not delete this mapping: there ' + (multiple ? 'are' : 'is') + ' ' + resp.matchingNb + ' matching' + (multiple ? 's' : '') + ' in this column.'
+          const message1 = 'You can not delete this mapping: there ' + (multiple ? 'are' : 'is')
+            + ' ' + resp.matchingNb + ' matching' + (multiple ? 's' : '') + ' in this column.'
           const message2 = 'You have to delete ' + (multiple ? 'them' : 'it') + ' if you want to remove the mapping.';
           const data: ConfirmDialogData = {
             noBtnText: 'Cancel',
@@ -181,7 +183,9 @@ export class ColMappingComponent implements OnInit, OnDestroy {
   }
 
   deleteColumnMapping() {
-    const result = this.tableAPI.tableControllerUnMapColumn(this.pkNamespace, { pkColumn: this.data.mapping.pkColumn, deleteAll: true }).pipe(shareReplay());
+    const result = this.tableAPI
+      .tableControllerUnMapColumn(this.pkNamespace, { pkColumn: this.data.mapping.pkColumn, deleteAll: true })
+      .pipe(shareReplay());
     this.s.modifyGvSchema(result, this.pkProject);
   }
 

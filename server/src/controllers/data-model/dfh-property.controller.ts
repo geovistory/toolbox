@@ -1,15 +1,15 @@
-import {authenticate} from '@loopback/authentication';
-import {authorize} from '@loopback/authorization';
-import {inject} from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {get, param, tags} from '@loopback/rest';
-import {Roles} from '../../components/authorization/keys';
-import {Postgres1DataSource} from '../../datasources';
-import {DfhProperty} from '../../models';
-import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
-import {DfhPropertyRepository} from '../../repositories';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {SysConfigController} from '../sys-config.controller';
+import { authenticate } from '@loopback/authentication';
+import { authorize } from '@loopback/authorization';
+import { inject } from '@loopback/core';
+import { repository } from '@loopback/repository';
+import { get, param, tags } from '@loopback/rest';
+import { Roles } from '../../components/authorization/keys';
+import { Postgres1DataSource } from '../../datasources';
+import { DfhProperty } from '../../models';
+import { GvSchemaModifier } from '../../models/gv-schema-modifier.model';
+import { DfhPropertyRepository } from '../../repositories';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import { SysConfigController } from '../sys-config.controller';
 
 @tags('data model')
 export class DfhPropertyController {
@@ -37,7 +37,7 @@ export class DfhPropertyController {
     },
   })
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   async ofProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
@@ -153,7 +153,7 @@ export class DfhPropertyController {
 
       `;
     const properties = await q.execute<DfhProperty[]>()
-    return {positive: {dfh: {property: properties}}, negative: {}}
+    return { positive: { dfh: { property: properties } }, negative: {} }
   }
 
 

@@ -1,5 +1,5 @@
 
-import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4/public-api';
+import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { Granularity } from './date-time-commons';
 import { GregorianDateTime } from './gregorian-date-time';
 import { JulianDateTime } from './julian-date-time';

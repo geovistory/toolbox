@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { InfActions, ProActions } from '@kleiolab/lib-redux';
+import { InfActions, ProActions, textPropertyByFksWithoutLang } from '@kleiolab/lib-redux';
 import { InfLanguage, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
@@ -73,11 +73,18 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
     ) {
       throw new Error('you must provide fkProperty with fkPropertyDomain or fkPropertyRange input')
     }
-
+    const key = textPropertyByFksWithoutLang({
+      fk_project: this.fkProject,
+      fk_system_type: this.fkSystemType,
+      fk_dfh_class: this.fkClass,
+      fk_dfh_property: this.fkProperty,
+      fk_dfh_property_domain: this.fkPropertyDomain,
+      fk_dfh_property_range: this.fkPropertyRange,
+    })
     this.rows$ = combineLatest(
       this.p.pro$.text_property$
         .by_fks_without_lang$
-        .key(`${this.fkProject}_${this.fkSystemType}_${this.fkClass || null}_${this.fkProperty || null}_${this.fkPropertyDomain || null}_${this.fkPropertyRange || null}`)
+        .key(key)
         .pipe(map((props) => values(props))),
       this.editing$,
       this.saving$,

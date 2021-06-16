@@ -26,6 +26,7 @@ if [[ "$DB_ENV" == "staging" ]]; then
         heroku pg:copy geovistory-production::DATABASE_URL DATABASE_URL -a geovistory-staging --confirm=geovistory-staging
 
         # turn other workers ON
+        heroku ps:restart -a geovistory-stating
         heroku ps:scale worker=1 -a geovistory-staging
 
         # maintenante mode on stagin OFF
