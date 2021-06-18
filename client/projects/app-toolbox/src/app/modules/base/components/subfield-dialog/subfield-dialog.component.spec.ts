@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SubfieldDialogComponent } from './subfield-dialog.component';
 
@@ -6,7 +6,7 @@ describe('SubfieldDialogComponent', () => {
   let component: SubfieldDialogComponent;
   let fixture: ComponentFixture<SubfieldDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SubfieldDialogComponent ]
     })

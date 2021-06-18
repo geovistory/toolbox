@@ -59,7 +59,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -208,7 +207,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,
@@ -233,7 +231,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-sdk-lb3/tsconfig.lib.json",
             "project": "projects/lib-sdk-lb3/ng-package.json"
@@ -273,7 +271,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-sdk-lb4/tsconfig.lib.json",
             "project": "projects/lib-sdk-lb4/ng-package.json"
@@ -313,7 +311,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-utils/tsconfig.lib.json",
             "project": "projects/lib-utils/ng-package.json"
@@ -353,7 +351,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-config/tsconfig.lib.json",
             "project": "projects/lib-config/ng-package.json"
@@ -393,7 +391,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-sockets/tsconfig.lib.json",
             "project": "projects/lib-sockets/ng-package.json"
@@ -433,7 +431,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-redux/tsconfig.lib.json",
             "project": "projects/lib-redux/ng-package.json"
@@ -473,7 +471,7 @@
       "prefix": "gv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/lib-queries/tsconfig.lib.json",
             "project": "projects/lib-queries/ng-package.json"
