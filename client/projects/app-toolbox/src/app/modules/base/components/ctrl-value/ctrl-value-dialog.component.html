@@ -13,7 +13,7 @@
   </gv-fg-lang-string>
   <!-- DIMENSION -->
   <gv-fg-dimension #dimension *ngIf="data.vot.dimension" [initVal$]="initValDimension$"
-    [pkClassOfDimension]="data.vot.dimension.measurementUnitClass" [appearance]="'outline'">
+    [pkClassOfDimension]="data.pkClass" [appearance]="'outline'">
   </gv-fg-dimension>
   <!-- APPELLATION -->
   <mat-form-field *ngIf="data.vot.appellation" class="ctrl-text" [appearance]="'outline'">

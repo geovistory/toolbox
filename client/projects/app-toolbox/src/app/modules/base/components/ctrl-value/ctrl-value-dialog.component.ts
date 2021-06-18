@@ -12,9 +12,9 @@ import { FgPlaceComponent } from '../fg-place/fg-place.component';
 
 
 export interface CtrlValueDialogData {
-  vot: SysConfigValueObjectType | undefined,
+  vot?: SysConfigValueObjectType,
   pkClass: number,
-  initVal$: Observable<InfValueObject> | undefined;
+  initVal$?: Observable<InfValueObject>;
   pkProject: number;
 }
 
@@ -51,9 +51,12 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
     public dialogRef: MatDialogRef<CtrlValueDialogComponent, CtrlValueDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data: CtrlValueDialogData
   ) {
-    this.initValPlace$ = data.initVal$.pipe(map(x => x.place))
-    this.initValDimension$ = data.initVal$.pipe(map(x => x.dimension))
-    this.initValLangString$ = data.initVal$.pipe(map(x => x.langString))
+    if (data.initVal$) {
+
+      this.initValPlace$ = data.initVal$.pipe(map(x => x.place))
+      this.initValDimension$ = data.initVal$.pipe(map(x => x.dimension))
+      this.initValLangString$ = data.initVal$.pipe(map(x => x.langString))
+    }
   }
 
   ngOnInit(): void {
