@@ -1,8 +1,7 @@
 import {existsSync, mkdirSync, writeFileSync} from 'fs';
-import sqlFormatter from 'sql-formatter';
-import {QueryResult} from 'pg';
-import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
 import {concat, mergeDeepWith} from 'ramda';
+import sqlFormatter from 'sql-formatter';
+import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
 
 export const logSql = (sql: string, params: any[]) => {
 
