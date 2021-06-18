@@ -2605,10 +2605,10 @@ a.mat-menu-item > mat-icon {
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  .ui-table {
+  .p-datatable {
     background: mat-color($background, "card");
 
-    .ui-table-thead {
+    .p-datatable-thead {
       tr {
         height: 56px;
         th {
@@ -2630,44 +2630,44 @@ a.mat-menu-item > mat-icon {
       }
     }
 
-    .ui-table-tbody > tr > td,
-    .ui-table-tfoot > tr > td {
+    .p-datatable-tbody > tr > td,
+    .p-datatable-tfoot > tr > td {
       color: mat-color($foreground, text);
     }
-    .ui-table-tbody > tr > td:first-of-type,
-    .ui-table-tfoot > tr > td:first-of-type {
+    .p-datatable-tbody > tr > td:first-of-type,
+    .p-datatable-tfoot > tr > td:first-of-type {
       padding-left: 24px;
     }
-    .ui-table-tfoot > tr {
+    .p-datatable-tfoot > tr {
       height: 36px;
     }
-    .ui-table-tfoot > tr > td {
+    .p-datatable-tfoot > tr > td {
       color: mat-color($foreground, secondary-text);
       padding: 0;
       border-top-width: 1px;
       border-top-style: solid;
       border-top-color: mat-color($foreground, divider);
     }
-    .ui-table-tbody > tr > td:last-of-type,
-    .ui-table-tfoot > tr > td:last-of-type {
+    .p-datatable-tbody > tr > td:last-of-type,
+    .p-datatable-tfoot > tr > td:last-of-type {
       padding-right: 24px;
     }
   }
 
   td,
-  .ui-table-scrollable-header-box {
+  .p-datatable-scrollable-header-box {
     padding: 0;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: mat-color($foreground, divider);
   }
 
-  .ui-table-dragpoint-bottom {
+  .p-datatable-dragpoint-bottom {
     border-bottom-width: 3px;
     border-bottom-style: solid;
     border-bottom-color: $mat-color-primary;
   }
-  .ui-table-dragpoint-top {
+  .p-datatable-dragpoint-top {
     border-top-width: 3px;
     border-top-style: solid;
     border-top-color: $mat-color-primary;
@@ -2685,20 +2685,20 @@ a.mat-menu-item > mat-icon {
   }
 }
 @mixin primeng-table-typography($config) {
-  .ui-table {
+  .p-datatable {
     font-family: mat-font-family($config);
   }
 
-  .ui-table-scrollable-header {
+  .p-datatable-scrollable-header {
     font-size: mat-font-size($config, caption);
     font-weight: mat-font-weight($config, body-2);
   }
 
-  .ui-table td {
+  .p-datatable td {
     font-size: mat-font-size($config, body-1);
   }
 
-  .ui-table-tfoot > tr {
+  .p-datatable-tfoot > tr {
     @include mat-typography-level-to-styles($config, caption);
   }
 }
@@ -2749,22 +2749,22 @@ mat-dialog-actions {
 //   }
 // }
 
-.gv-ui-table-border-cells {
-  .ui-table {
-    .ui-table-thead > tr > th,
-    .ui-table-tbody > tr > td,
-    .ui-table-tfoot > tr > td {
+.gv-p-datatable-border-cells {
+  .p-datatable {
+    .p-datatable-thead > tr > th,
+    .p-datatable-tbody > tr > td,
+    .p-datatable-tfoot > tr > td {
       border: 1px solid rgb(229, 233, 240);
     }
   }
 }
 
-.gv-ui-table-full-height {
+.gv-p-datatable-full-height {
   height: 100%;
   display: flex;
   flex-direction: column;
 
-  .ui-table {
+  .p-datatable {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -2773,24 +2773,24 @@ mat-dialog-actions {
       flex: 0 0 auto;
     }
 
-    > .ui-table-scrollable-wrapper {
+    > .p-datatable-scrollable-wrapper {
       flex: 1 1 0%;
       overflow: hidden;
 
-      > .ui-table-scrollable-view {
+      > .p-datatable-scrollable-view {
         height: 100%;
         display: flex;
         flex-direction: column;
 
-        > .ui-table-scrollable-header {
+        > .p-datatable-scrollable-header {
           flex: 0 0 auto;
         }
 
-        > .ui-table-scrollable-body {
+        > .p-datatable-scrollable-body {
           flex: 1 1 auto;
         }
 
-        > .ui-table-scrollable-footer {
+        > .p-datatable-scrollable-footer {
           flex: 0 0 auto;
         }
       }

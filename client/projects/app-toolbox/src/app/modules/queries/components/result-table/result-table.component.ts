@@ -72,15 +72,24 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
       map(def => def.columns.map(colDef => colDef.label))
     );
 
-    let count = 0;
+    this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
+      this.definition = definition;
+      this.colDefs = definition.columns
+      this.loadDataOnScroll({ first: 0, rows: this.limit })
+      // const body = this.table.containerViewChild.nativeElement.getElementsByClassName('p-datatable-scrollable-body')[0];
+      //  body.scrollTop = 0;
+      // this.table.reset();
+
+    })
+    // let count = 0;
     this.a.results$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.items = this.transformResults(res);
 
-      // Hack for updating height of table on first load
-      if (res && count === 0) {
-        setTimeout(() => { this.ref.detectChanges() }, 100)
-        count++;
-      }
+      // // Hack for updating height of table on first load
+      // if (res && count === 0) {
+      //   setTimeout(() => { this.ref.detectChanges() }, 100)
+      //   count++;
+      // }
     })
 
   }
@@ -151,14 +160,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit() {
-    this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
-      this.definition = definition;
-      this.colDefs = definition.columns
-      // const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
-      //  body.scrollTop = 0;
-      this.table.reset();
 
-    })
   }
 
   loadDataOnScroll(event: {

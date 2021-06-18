@@ -1,24 +1,22 @@
-import { Component, Input, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-queries';
+import { AnalysisDefinition, QueryDefinition } from '@kleiolab/lib-sdk-lb4';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
+import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-group-factory';
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
-import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
-import { QueryFilterInjectData, CtrlClasses } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
+import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
+import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
+import { CtrlClasses, QueryFilterInjectData } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathInjectData } from 'projects/app-toolbox/src/app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
-import { InformationPipesService } from "@kleiolab/lib-queries";
-import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 
 
 export interface TableFormGroupData {
@@ -96,7 +94,6 @@ export class TableFormComponent implements OnInit, OnDestroy, AfterViewInit, For
     this.ff.create(ffConfig, this.destroy$).pipe(
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
-      console.log(v)
       this.formFactory$.next(v)
       this.formFactory = v;
     })

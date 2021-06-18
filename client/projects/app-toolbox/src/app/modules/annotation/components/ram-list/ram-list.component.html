@@ -3,7 +3,7 @@
 </div>
 <div *ngIf="!(loading$|async)" class="gv-ram-list mat-typography gv-flex-fh">
   <p-table #tt [value]="items$ | async" [columns]="cols" [scrollable]="true" [resizableColumns]="true"
-    class="gv-ui-table-border-cells gv-ui-table-full-height" [rowTrackBy]="rowTrackByFn">
+    class="gv-p-datatable-border-cells gv-p-datatable-full-height" [rowTrackBy]="rowTrackByFn">
     <ng-template pTemplate="colgroup" let-columns>
       <colgroup>
         <col *ngFor="let col of columns" [style.width]="col.width">

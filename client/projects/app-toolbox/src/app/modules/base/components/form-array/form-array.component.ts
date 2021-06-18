@@ -1,14 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { Field } from '@kleiolab/lib-queries';
-import { FormArrayChild, FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
+import { FormArrayChild } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
 import { ChildComponents } from '../form-control/form-control.component';
-import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormChildFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
+import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
 
 @Component({
   selector: 'gv-form-array',
@@ -181,27 +181,27 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   addItemInField(field: Field, targetClass: number) {
 
     // try to find the existing child FormArray containing the controls
-    let childList = this.formArrayFactory.children.find(c => {
+    let formArrayChild = this.formArrayFactory.children.find(c => {
       if (c.arrayFactory) {
         const d = c.arrayFactory.config.data;
         return equals({ field: d.controls.field, targetClass: d.controls.targetClass }, { field, targetClass })
       }
       return false
-    }) as FormArrayFactory<FormControlData, FormArrayData, FormChildData>;
+    })
 
     // if not available, add a child FormArray containing the controls
-    if (!childList) {
+    if (!formArrayChild) {
       const config = this.formCreateEntity.getListNode(field, targetClass, false, undefined)
       config.array.addOnInit = 0;
-      childList = this.formArrayFactory.prepend(config) as FormArrayFactory<FormControlData, FormArrayData, FormChildData>;
+      formArrayChild = this.formArrayFactory.prepend(config)
     }
-    const childFactory = childList.prependDefault() as LocalFormControlFactory | LocalFormChildFactory;
+    const arrayChild = formArrayChild.arrayFactory.prependDefault()
 
     // Do some actions after the control is added
-    if (childFactory.factoryType == 'control') {
+    if (arrayChild.controlFactory) {
 
       // Wait for the controls to be initialized by angular and emitted by childFactory
-      (childFactory as LocalFormControlFactory).childComponent$
+      arrayChild.controlFactory.childComponent$
         .pipe(first())
         .subscribe((childComponents: ChildComponents) => {
           // if child is gv-ctrl-entity
@@ -218,8 +218,8 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
         })
     }
-    else if (childFactory.factoryType === 'childFactory') {
-      (childFactory as LocalFormChildFactory).childComponent$
+    else if (arrayChild.childFactory) {
+      arrayChild.childFactory.childComponent$
         .pipe(first())
         .subscribe((childComponent) => {
           if (childComponent.FgPlaceComponent) {

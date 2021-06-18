@@ -1,4 +1,4 @@
-@import '../../../../shared/components/core-table/table';
+@import "../../../../shared/components/core-table/table";
 
 :host {
   display: block;
@@ -21,6 +21,6 @@ mat-progress-bar {
   position: absolute;
 }
 
-// ::ng-deep .ui-table table {
+// ::ng-deep .p-datatable table {
 //   table-layout: auto;
 // }

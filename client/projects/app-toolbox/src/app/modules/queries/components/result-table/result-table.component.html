@@ -1,8 +1,11 @@
 <!-- {{(definition$ | async)?.columns | json}}
 {{(a.results$ |async)?.rows | json}} -->
-<p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
+<!-- <p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
   [rows]="limit" [scrollHeight]="'flex'" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
-  [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading" class="h-100">
+  [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading" class="h-100"> -->
+<p-table #table *ngIf="displayedColumns$ | async" [columns]="displayedColumns$ | async" [value]="items"
+  [scrollable]="true" [rows]="limit" [scrollHeight]="'flex'" [virtualScroll]="true" [virtualRowHeight]="48"
+  [lazy]="true" [totalRecords]="totalRecords" (onLazyLoad)="loadDataOnScroll($event);">
 
   <ng-template pTemplate="caption">
 

@@ -163,7 +163,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (!this.target) {
       const pTableContainer = document.getElementById('scrollAccess') as HTMLElement;
       if (!pTableContainer) return;
-      this.target = pTableContainer.getElementsByClassName('ui-table-scrollable-body')[0];
+      this.target = pTableContainer.getElementsByClassName('p-datatable-scrollable-body')[0];
 
       let timeout;
       this.target.addEventListener('scroll', () => {
