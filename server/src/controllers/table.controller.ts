@@ -175,8 +175,13 @@ export class TableController {
     const response = await new QTableTablePage(this.dataSource).query(pkProject, pkEntity, options, masterColumns, datColumns);
 
     //add languages to schema object
-    const pksLanguages = uniq((response.schemaObject.inf?.lang_string ?? []).map(ls => ls.fk_language));
-    if (response.schemaObject.inf) response.schemaObject.inf.language = await this.infLanguageRepo.find({where: {or: pksLanguages.map(pk => ({pk_languages: pk}))}})
+    if (response.schemaObject?.inf?.lang_string?.length) {
+
+      const pksLanguages = uniq((response.schemaObject.inf?.lang_string).map(ls => ls.fk_language ?? -1));
+      if (pksLanguages.length) {
+        response.schemaObject.inf.language = await this.infLanguageRepo.find({where: {pk_entity: {inq: pksLanguages}}})
+      }
+    }
     return response
   }
 
