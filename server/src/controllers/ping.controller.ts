@@ -8,6 +8,7 @@ import {Roles} from '../components/authorization/keys';
 import {TColFilter} from '../components/query/q-table-page';
 import {GvSubentityTargetType, SysConfigFieldDisplay, SysConfigFieldsOfSourceClass} from '../models';
 import {GvTargetType} from '../models/field/gv-target-type';
+import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
 import {ClassConfig} from './sys-config-class-config';
 
 /**
@@ -172,6 +173,16 @@ export class PingController {
     }
   })
   xSysConfigFieldDisplay() { }
+
+  @post('/QuillOperationWithRelations', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': QuillOperationWithRelations}}}
+      }
+    }
+  })
+  xQuillOperationWithRelations() { }
 
 
 }

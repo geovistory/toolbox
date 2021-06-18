@@ -1,5 +1,4 @@
 import {model, property, ValueObject} from '@loopback/repository';
-import {registerType} from '../../components/spec-enhancer/model.spec.enhancer';
 import {QuillAttributes} from "./quill-attributes.model";
 
 @model()
@@ -14,6 +13,4 @@ export class QuillOperation extends ValueObject {
   @property() retain?: number;
   @property() attributes?: QuillAttributes;
 }
-@model()
-export class  QuillOperationWithRelations extends QuillOperation{}
-registerType(QuillOperationWithRelations)
+
