@@ -23,33 +23,33 @@
   </div>
 
   <!-- Load file -->
-  <div class="d-flex flex-direction-column"
+  <div class="d-flex flex-direction-column load-file"
     *ngIf="mode=='load' || mode == 'parsing' || mode == 'uploading' || mode == 'preview'">
 
-    <mat-form-field appearance="outline" style="margin-right: 10px">
+    <mat-form-field appearance="outline">
       <mat-icon matPrefix>folder</mat-icon>
       <input matInput placeholder="Selected file" [value]="file?.name" [readonly]="true">
       <mat-icon matSuffix (click)="reset()" *ngIf="mode!='load' && mode != 'parsing' && mode != 'uploading'">close
       </mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="type=='csv'" style="margin-right: 10px">
-      <mat-label>Separator used in the CSV file</mat-label>
+    <mat-form-field appearance="outline" *ngIf="type=='csv'">
+      <mat-label>Separator in CSV</mat-label>
       <mat-select [(value)]="separator" (selectionChange)="parseCSV()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
         <mat-option *ngFor="let s of separators" [value]="s">{{s}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="type=='csv'" style="margin-right: 10px">
-      <mat-label>Comma used in numbers</mat-label>
+    <mat-form-field appearance="outline" *ngIf="type=='csv'">
+      <mat-label>Comma in numbers</mat-label>
       <mat-select [(value)]="comma" (selectionChange)="parseCSV()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
         <mat-option *ngFor="let c of commas" [value]="c">{{c}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="type=='xls'" style="margin-right: 10px">
+    <mat-form-field appearance="outline" *ngIf="type=='xls'">
       <mat-label>Excel sheet</mat-label>
       <mat-select [(value)]="sheetName" (selectionChange)="parseXLS()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -57,23 +57,23 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" style="margin-right: 10px">
-      <mat-label>Columns headers are in</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label>Headers are in</mat-label>
       <mat-select [(value)]="columnsOption" (selectionChange)="parseHeaders()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
         <mat-option *ngFor="let opt of columnsOptions" [value]="opt">{{opt}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" style="margin-right: 10px">
-      <mat-label>Number of rows to preview</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label>Rows to preview</mat-label>
       <mat-select [(value)]="rowsNb" (selectionChange)="parseTable()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
         <mat-option *ngFor="let nb of rowsNbs" [value]="nb">{{nb}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" style="margin-right: 10px">
+    <mat-form-field appearance="outline">
       <mat-label>Encoding</mat-label>
       <mat-select [(value)]="encoding" (selectionChange)="selectFile(this.file)"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">

@@ -49,8 +49,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   headers: Header[];
   table: string[][]; // the full table
   filteredTable: string[][]; // the full table filtered and sorted
-  headers$: ReplaySubject<Header[]>; // the headers to display
-  previewTable$: ReplaySubject<Cell[][]>; // the data to display
+  headers$ = new ReplaySubject<Header[]>(); // the headers to display
+  previewTable$ = new ReplaySubject<Cell[][]>(); // the data to display
 
   // file options CSV
   separators = [';', ',', '|', 'TAB'];
