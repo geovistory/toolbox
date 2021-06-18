@@ -638,7 +638,6 @@ export class QTableTablePage extends SqlBuilderLb4Models {
           .join(' AND \n')}
         `
       }
-      order by tw1.index ${direction}
     `
   }
 
