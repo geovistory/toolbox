@@ -1,14 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ToastyModule } from '@kleiolab/ng2-toasty';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 import { NotificationsComponent } from './components/notifications.component';
+
 
 @NgModule({
   imports: [
     CommonModule,
-    ToastyModule.forRoot()
+    MatIconModule,
+    MatButtonModule,
+    ToastModule
   ],
-  providers: [],
+  providers: [MessageService],
   declarations: [NotificationsComponent],
   exports: [NotificationsComponent]
 })

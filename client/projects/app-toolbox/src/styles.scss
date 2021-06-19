@@ -2706,6 +2706,93 @@ a.mat-menu-item > mat-icon {
 @include primeng-table-theme($app-theme);
 @include primeng-table-typography($gv-typography);
 
+/*
+* Styles for primeng toast
+*/
+@mixin primeng-toast($theme) {
+  .p-toast {
+    opacity: 0.9;
+  }
+  .p-toast .p-toast-message {
+    margin: 0 0 1rem 0;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+      0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+  }
+  .p-toast .p-toast-message .p-toast-message-content {
+    padding: 1.25rem;
+    border-width: 0 0 0 0;
+  }
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text {
+    margin: 0 0 0 1rem;
+  }
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon {
+    font-size: 2rem;
+  }
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-summary {
+    font-weight: 700;
+  }
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+    margin: 0.5rem 0 0 0;
+  }
+  .p-toast .p-toast-message .p-toast-icon-close {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .p-toast .p-toast-message .p-toast-icon-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .p-toast .p-toast-message .p-toast-icon-close:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: none;
+  }
+  .p-toast .p-toast-message.p-toast-message-info {
+    background: #b3e5fc;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #01579b;
+  }
+  .p-toast .p-toast-message.p-toast-message-info .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-info .p-toast-icon-close {
+    color: #01579b;
+  }
+  .p-toast .p-toast-message.p-toast-message-success {
+    background: #c8e6c9;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #1b5e20;
+  }
+  .p-toast .p-toast-message.p-toast-message-success .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-success .p-toast-icon-close {
+    color: #1b5e20;
+  }
+  .p-toast .p-toast-message.p-toast-message-warn {
+    background: #ffecb3;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #7f6003;
+  }
+  .p-toast .p-toast-message.p-toast-message-warn .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-warn .p-toast-icon-close {
+    color: #7f6003;
+  }
+  .p-toast .p-toast-message.p-toast-message-error {
+    background: #ffcdd2;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #b71c1c;
+  }
+  .p-toast .p-toast-message.p-toast-message-error .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-error .p-toast-icon-close {
+    color: #b71c1c;
+  }
+}
+@include primeng-toast($app-theme);
+
 // override bootsrap symbol
 .form-control.ng-touched.ng-invalid,
 .form-control.ng-touched.ng-valid,
@@ -2920,10 +3007,6 @@ gv-importer {
   .gv-drop-zone-content {
     margin: auto;
   }
-}
-
-.gv-mat-text-input-placeholder {
-  color: _mat-control-placeholder-color($app-theme);
 }
 
 .mat-form-field[dense] {

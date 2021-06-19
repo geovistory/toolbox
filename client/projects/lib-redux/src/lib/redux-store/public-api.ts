@@ -7,6 +7,7 @@ export * from './state-gui/actions/active-project.action';
 export * from './state-gui/actions/loading-bar.actions';
 export * from './state-gui/actions/notifications.actions';
 export * from './state-gui/actions/projects.actions';
+export * from './state-gui/epics/notifications.epics';
 export * from './state-gui/models/account.model';
 export * from './state-gui/models/active-project.models';
 export * from './state-gui/models/active-project/entity-detail';

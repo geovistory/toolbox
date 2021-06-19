@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
-import { ToastyConfig, ToastyService } from '@kleiolab/ng2-toasty';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { NotificationsAPIAction, NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
+import { NotificationsI } from '../models/notifications.models';
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationsAPIEpics {
+  notificationChannel$ = new ReplaySubject<NotificationsI>()
   constructor(
-    private toastyService: ToastyService,
-    private toastyConfig: ToastyConfig
   ) {
-    // Assign the selected theme name to the `theme` property of the instance of ToastyConfig.
-    // Possible values: default, bootstrap, material
-    this.toastyConfig.theme = 'bootstrap';
+
   }
 
   public createEpics(): Epic {
@@ -43,7 +42,7 @@ export class NotificationsAPIEpics {
               a.payload.options.title = 'Oops, something went wrong!'
             }
           }
-          this.toastyService[a.payload.type](a.payload.options);
+          this.notificationChannel$.next(a.payload)
 
         })),
       )

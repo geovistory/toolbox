@@ -6,7 +6,6 @@ import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store'
 import { Inject, InjectionToken, NgModule, Optional, SkipSelf } from '@angular/core';
 import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { ToastyModule } from '@kleiolab/ng2-toasty';
 import { equals } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { createEpicMiddleware } from 'redux-observable-es6-compat';
@@ -48,10 +47,6 @@ export function apiConfigFactory(): Configuration {
 @NgModule({
   imports: [
     NgReduxModule,
-
-    // for gui-state epics
-    ToastyModule.forRoot(),
-
   ],
   providers: [
 

@@ -1,7 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType, StateObservable } from 'redux-observable-es6-compat';
-import { Observable } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
@@ -35,16 +36,13 @@ export class SchemaEpics {
         ofType(GvSchemaActions.GV_SCHEMA_OBJECT_LOAD),
         mergeMap((action: GvSchemaObjectAction) => new Observable<Action>((actionEmitter) => {
           actionEmitter.next(this.loadingBarActions.addJob());
-          action.payload.pipe(first()).subscribe((data) => {
-            this.schemaObjectService.storeSchemaObjectGv(data, 0)
-            actionEmitter.next(this.loadingBarActions.removeJob());
-          }, error => {
-            actionEmitter.next(this.loadingBarActions.removeJob());
-            actionEmitter.next(this.notificationActions.addToast({
-              type: 'error',
-              options: { title: error }
-            }))
-          })
+          action.payload.pipe(first()).subscribe(
+            (data) => {
+              this.schemaObjectService.storeSchemaObjectGv(data, 0)
+              actionEmitter.next(this.loadingBarActions.removeJob());
+            },
+            (error: HttpErrorResponse) => this.errorhandler(actionEmitter, error)
+          )
         }))
       ),
       /**
@@ -57,18 +55,15 @@ export class SchemaEpics {
         ofType(GvSchemaActions.GV_SCHEMA_MODIFIER_LOAD),
         mergeMap((action: GvSchemaModifierAction) => new Observable<Action>((actionEmitter) => {
           actionEmitter.next(this.loadingBarActions.addJob());
-          action.payload.pipe(first()).subscribe((data) => {
-            this.schemaObjectService.storeSchemaObjectGv(data.positive, 0)
-            this.schemaObjectService.deleteSchemaObjectGv(data.negative, 0)
+          action.payload.pipe(first()).subscribe(
+            (data) => {
+              this.schemaObjectService.storeSchemaObjectGv(data.positive, 0)
+              this.schemaObjectService.deleteSchemaObjectGv(data.negative, 0)
 
-            actionEmitter.next(this.loadingBarActions.removeJob());
-          }, error => {
-            actionEmitter.next(this.loadingBarActions.removeJob());
-            actionEmitter.next(this.notificationActions.addToast({
-              type: 'error',
-              options: { title: error }
-            }))
-          })
+              actionEmitter.next(this.loadingBarActions.removeJob());
+            },
+            (error: HttpErrorResponse) => this.errorhandler(actionEmitter, error)
+          )
         }))
       ),
       /**
@@ -89,27 +84,36 @@ export class SchemaEpics {
           // this.infActions.statement.loadPage(meta.req.page, pkProject);
 
           // this.pag.subfieldPageControllerLoadSubfieldPage(action.meta.req)
-          action.payload.pipe(first()).subscribe((data) => {
-            // call action to store records
-            this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
-            // call action to store page informations
-            for (const subfieldPage of data.subfieldPages) {
-              this.infActions.statement.loadPageSucceeded(
-                subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject
-              );
-            }
-            // call action to complete loading bar
-            actionEmitter.next(this.loadingBarActions.removeJob());
-          }, error => {
-            actionEmitter.next(this.loadingBarActions.removeJob());
-            actionEmitter.next(this.notificationActions.addToast({
-              type: 'error',
-              options: { title: error }
-            }))
-          })
+          action.payload.pipe(first()).subscribe(
+            (data) => {
+              // call action to store records
+              this.schemaObjectService.storeSchemaObjectGv(data.schemas, pkProject);
+              // call action to store page informations
+              for (const subfieldPage of data.subfieldPages) {
+                this.infActions.statement.loadPageSucceeded(
+                  subfieldPage.paginatedStatements, subfieldPage.count, subfieldPage.page, pkProject
+                );
+              }
+              // call action to complete loading bar
+              actionEmitter.next(this.loadingBarActions.removeJob());
+            },
+            (error: HttpErrorResponse) => this.errorhandler(actionEmitter, error)
+
+          )
         }))
       )
     )
+  }
+
+  errorhandler(actionEmitter: Subscriber<Action<any>>, error: HttpErrorResponse) {
+    actionEmitter.next(this.loadingBarActions.removeJob());
+    actionEmitter.next(this.notificationActions.addToast({
+      type: 'error',
+      options: {
+        title: error.name,
+        msg: error.message
+      }
+    }))
   }
 }
 
