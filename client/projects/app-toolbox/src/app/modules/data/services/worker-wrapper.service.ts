@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 })
 export class WorkerWrapperService {
 
-  worker = new Worker('./geov.worker', { type: 'module' });
+  worker = new Worker(new URL('./geov.worker', import.meta.url), { type: 'module' });
   busy: boolean = false;
   callback: Function;
 
