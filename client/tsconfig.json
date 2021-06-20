@@ -68,6 +68,9 @@
       ],
       "@kleiolab/lib-queries/*": [
         "dist/lib-queries/*"
+      ],
+      "util": [
+        "./util-polyfill.js"
       ]
     }
   },

@@ -7,6 +7,7 @@
 * Bootstrap variables are customized in ./assets/scss/bootstrap-variables.scss
 */
 
+@use '~@angular/material' as mat;
 @import "./assets/scss/bootstrap";
 $font-size-xs: 0.68rem;
 label {
@@ -2243,23 +2244,22 @@ gv-qf-form-array {
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
 
-@import "~@angular/material/theming";
 
 // Define a custom typography config that overrides the font-family as well as the
 // `title` and `body-2` and `button` levels to have a wheight of 600 instead of 500
 // because Source Sans Pro does not have 500
-$gv-typography: mat-typography-config(
+$gv-typography: mat.define-typography-config(
   $font-family: $font-family-base,
-  $title: mat-typography-level(20px, 32px, 600),
-  $body-2: mat-typography-level(14px, 24px, 600),
-  $button: mat-typography-level(14px, 14px, 600),
+  $title: mat.define-typography-level(20px, 32px, 600),
+  $body-2: mat.define-typography-level(14px, 24px, 600),
+  $button: mat.define-typography-level(14px, 14px, 600),
 );
 
 // Plus imports for other components in your app.
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core($gv-typography);
+@include mat.core($gv-typography);
 // Custom color Palette for primary colors (flex-starting with $purple)
 $gv-mat-purple: (
   50: #f2e7f5,
@@ -2277,20 +2277,20 @@ $gv-mat-purple: (
   A400: #d500f9,
   A700: #aa00ff,
   contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $light-primary-text,
-    400: $light-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text,
-    A100: $dark-primary-text,
-    A200: $light-primary-text,
-    A400: $light-primary-text,
-    A700: $light-primary-text,
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
   ),
 );
 $gv-mat-teal: (
@@ -2309,36 +2309,36 @@ $gv-mat-teal: (
   A400: #1de9b6,
   A700: #00bfa5,
   contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $dark-primary-text,
-    400: $dark-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text,
-    A100: $dark-primary-text,
-    A200: $dark-primary-text,
-    A400: $dark-primary-text,
-    A700: $dark-primary-text,
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: rgba(black, 0.87),
   ),
 );
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$app-primary: mat-palette($gv-mat-purple);
-$app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
+$app-primary: mat.define-palette($gv-mat-purple);
+$app-accent: mat.define-palette($gv-mat-teal, A200, A100, A400);
 // The warn palette is optional (defaults to red).
-$app-warn: mat-palette($mat-red);
+$app-warn: mat.define-palette(mat.$red-palette);
 // Create the theme object (a Sass map containing all of the palettes).
-$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+$app-theme: mat.define-light-theme($app-primary, $app-accent, $app-warn);
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($app-theme);
+@include mat.all-component-themes($app-theme);
 
 /***********************************
 * Custom sidenav accordion theme
@@ -2359,7 +2359,7 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
       > mat-expansion-panel-header {
         .mat-expansion-panel-header-title {
-          color: mat-color($foreground, secondary-text);
+          color: mat.get-color-from-palette($foreground, secondary-text);
         }
       }
     }
@@ -2367,7 +2367,7 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
     > mat-expansion-panel:not(:first-of-type) {
       $foreground: map-get($theme, foreground);
 
-      border-top-color: mat-color($foreground, divider);
+      border-top-color: mat.get-color-from-palette($foreground, divider);
       border-top-width: 1px;
       border-top-style: solid;
     }
@@ -2378,14 +2378,14 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
   mat-accordion.gv-sidenav-accordion {
     > mat-expansion-panel {
       > mat-expansion-panel-header {
-        font-family: mat-font-family($config, body-2);
-        font-size: mat-font-size($config, body-2);
-        font-weight: mat-font-weight($config, body-2);
+        font-family: mat.font-family($config, body-2);
+        font-size: mat.font-size($config, body-2);
+        font-weight: mat.font-weight($config, body-2);
         padding: 0 16px;
       }
 
       .mat-expansion-panel-content {
-        @include mat-typography-level-to-styles($config, body-1);
+        @include mat.typography-level($config, body-1);
       }
 
       .mat-expansion-panel-body {
@@ -2411,11 +2411,11 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 }
 $foreground: map-get($app-theme, foreground);
 
-$mat-color-primary: mat-color($app-primary);
-$mat-color-accent: mat-color($app-accent);
-$mat-color-warn: mat-color($app-warn);
-$mat-color-disabled-text: mat-color($foreground, disabled-text);
-$mat-color-secondary-text: mat-color($foreground, secondary-text);
+$mat-color-primary: mat.get-color-from-palette($app-primary);
+$mat-color-accent: mat.get-color-from-palette($app-accent);
+$mat-color-warn: mat.get-color-from-palette($app-warn);
+$mat-color-disabled-text: mat.get-color-from-palette($foreground, disabled-text);
+$mat-color-secondary-text: mat.get-color-from-palette($foreground, secondary-text);
 
 .mat-text-primary {
   color: $mat-color-primary;
@@ -2452,15 +2452,15 @@ $backgound: map-get($app-theme, background);
 
 .mat-bg-accent-A700 {
   background-color: map-get($app-accent, A700);
-  color: $dark-primary-text;
+  color: rgba(black, 0.87);
 }
 
 .mat-bg-grey-50 {
-  background-color: map_get($mat-grey, 50);
+  background-color: map_get(mat.$grey-palette, 50);
 }
 
 .mat-bg-grey-100 {
-  background-color: map_get($mat-grey, 100);
+  background-color: map_get(mat.$grey-palette, 100);
 }
 
 /*
@@ -2479,13 +2479,13 @@ $backgound: map-get($app-theme, background);
 }
 
 .mat-stroke-disabled {
-  stroke: mat-color($foreground, disabled-text);
+  stroke: mat.get-color-from-palette($foreground, disabled-text);
 }
 .mat-stroke-secondary {
-  stroke: mat-color($foreground, secondary-text);
+  stroke: mat.get-color-from-palette($foreground, secondary-text);
 }
 
-$mat-color-divider: mat-color($foreground, divider);
+$mat-color-divider: mat.get-color-from-palette($foreground, divider);
 
 .mat-border-top {
   border-top-color: $mat-color-divider !important;
@@ -2592,7 +2592,7 @@ a.mat-menu-item > mat-icon {
   background-color: hsla(271, 68%, 80%, 0.9);
 }
 .gv-quill-text-accent {
-  background-color: mat-color($app-accent);
+  background-color: mat.get-color-from-palette($app-accent);
 }
 .mat-row.gv-bg-highlight {
   background-color: rgba(223, 213, 232, 0.5);
@@ -2606,13 +2606,13 @@ a.mat-menu-item > mat-icon {
   $foreground: map-get($theme, foreground);
 
   .p-datatable {
-    background: mat-color($background, "card");
+    background: mat.get-color-from-palette($background, "card");
 
     .p-datatable-thead {
       tr {
         height: 56px;
         th {
-          color: mat-color($foreground, secondary-text);
+          color: mat.get-color-from-palette($foreground, secondary-text);
           text-align: left;
         }
         th:first-of-type {
@@ -2632,7 +2632,7 @@ a.mat-menu-item > mat-icon {
 
     .p-datatable-tbody > tr > td,
     .p-datatable-tfoot > tr > td {
-      color: mat-color($foreground, text);
+      color: mat.get-color-from-palette($foreground, text);
     }
     .p-datatable-tbody > tr > td:first-of-type,
     .p-datatable-tfoot > tr > td:first-of-type {
@@ -2642,11 +2642,11 @@ a.mat-menu-item > mat-icon {
       height: 36px;
     }
     .p-datatable-tfoot > tr > td {
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
       padding: 0;
       border-top-width: 1px;
       border-top-style: solid;
-      border-top-color: mat-color($foreground, divider);
+      border-top-color: mat.get-color-from-palette($foreground, divider);
     }
     .p-datatable-tbody > tr > td:last-of-type,
     .p-datatable-tfoot > tr > td:last-of-type {
@@ -2659,7 +2659,7 @@ a.mat-menu-item > mat-icon {
     padding: 0;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: mat-color($foreground, divider);
+    border-bottom-color: mat.get-color-from-palette($foreground, divider);
   }
 
   .p-datatable-dragpoint-bottom {
@@ -2686,20 +2686,20 @@ a.mat-menu-item > mat-icon {
 }
 @mixin primeng-table-typography($config) {
   .p-datatable {
-    font-family: mat-font-family($config);
+    font-family: mat.font-family($config);
   }
 
   .p-datatable-scrollable-header {
-    font-size: mat-font-size($config, caption);
-    font-weight: mat-font-weight($config, body-2);
+    font-size: mat.font-size($config, caption);
+    font-weight: mat.font-weight($config, body-2);
   }
 
   .p-datatable td {
-    font-size: mat-font-size($config, body-1);
+    font-size: mat.font-size($config, body-1);
   }
 
   .p-datatable-tfoot > tr {
-    @include mat-typography-level-to-styles($config, caption);
+    @include mat.typography-level($config, caption);
   }
 }
 
@@ -2824,7 +2824,7 @@ mat-dialog-actions {
 //     align-items: center;
 //     min-height: 48px;
 //     padding: 0 24px;
-//     border-bottom-color: mat-color($foreground, divider);
+//     border-bottom-color: mat.get-color-from-palette($foreground, divider);
 //   }
 
 //   .mat-cell,

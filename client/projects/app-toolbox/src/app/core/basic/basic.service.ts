@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class BasicService {
 
-  geoPosition$ = new BehaviorSubject<Position>(null)
+  geoPosition$ = new BehaviorSubject<GeolocationPosition>(null)
   constructor() {
     navigator.geolocation.getCurrentPosition((position) => {
       this.geoPosition$.next(position);

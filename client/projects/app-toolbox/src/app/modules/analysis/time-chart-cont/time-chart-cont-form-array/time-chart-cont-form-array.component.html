@@ -14,10 +14,10 @@
     <!-- <mat-divider></mat-divider> -->
   </mat-list>
 
-  <div *ngIf="child?.controlFactory.config.data.type==='lineLabel'" class="mat-title pt-3">
+  <div *ngIf="child?.controlFactory?.config.data.type==='lineLabel'" class="mat-title pt-3">
     Display Settings
   </div>
-  <div *ngIf="child?.childFactory.config.data.type ==='queryFilter'" class="mat-title pt-3">
+  <div *ngIf="child?.childFactory?.config.data.type ==='queryFilter'" class="mat-title pt-3">
     Data Settings
   </div>
 

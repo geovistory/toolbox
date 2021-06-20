@@ -146,7 +146,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     // wait for pkEntity and fkClass of the source
-    combineLatest(this.pkEntity$, this.fkClass$, this.p.pkProject$).pipe(
+    combineLatest([this.pkEntity$, this.fkClass$, this.p.pkProject$]).pipe(
       first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
     ).subscribe(([pkEntity, fkClass, pkProject]) => {
@@ -250,7 +250,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   observeChildren(pkRange): Observable<StatementNode[]> {
     if (!pkRange) return new BehaviorSubject([])
-    return combineLatest(
+    return combineLatest([
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1317,  // is part of
         fk_object_info: pkRange
@@ -259,23 +259,23 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         fk_property: 1216,  // is reproduction of
         fk_object_info: pkRange
       })
-    )
+    ])
       .pipe(
         switchMap(([isPartOfStatements, isReproOfStatements]) => {
 
           // Observe the children of this node
           const sections$ = combineLatestOrEmpty(isPartOfStatements.map(statement => {
-            const node$: Observable<StatementNode> = combineLatest(
+            const node$: Observable<StatementNode> =
               this.observeChildren(statement.fk_subject_info)
-            ).pipe(
-              map(([children]) => ({
-                statement,
-                isDigital: false,
-                pkEntity: statement.fk_subject_info,
-                pkDigital: undefined,
-                children
-              }))
-            );
+                .pipe(
+                  map((children) => ({
+                    statement,
+                    isDigital: false,
+                    pkEntity: statement.fk_subject_info,
+                    pkDigital: undefined,
+                    children
+                  }))
+                );
 
             return node$
           }))
@@ -451,7 +451,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   handleDrop(event, dropNode: ContentTreeNode) {
     if (dropNode.isDigital) return;
 
-    combineLatest(this.p.pkProject$, this.pkExpression$)
+    combineLatest([this.p.pkProject$, this.pkExpression$])
       .pipe(first((x) => !x.includes(undefined)), takeUntil(this.destroy$)).subscribe(([pkProject, pkExpression]) => {
 
         event.preventDefault();
@@ -556,7 +556,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * When user adds a new text digital to the content tree
    */
   addText(pkParent: number, parentIsF2Expression = false) {
-    combineLatest(this.p.pkProject$, this.p.datNamespaces$).pipe(
+    combineLatest([this.p.pkProject$, this.p.datNamespaces$]).pipe(
       first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
     ).subscribe(([pkProject, namespaces]) => {
@@ -638,7 +638,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
         const b$ = this.dat.digital.loadVersion(response.fk_digital).resolved$;
 
-        return combineLatest(a$, b$).pipe(map((vals) => vals[0]))
+        return combineLatest([a$, b$]).pipe(map((vals) => vals[0]))
       }
 
       this.dialog.open<ImporterComponent, ImporterDialogData>(ImporterComponent, {
@@ -744,18 +744,24 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   // expand nodes with stored ids
   expandNodesWithStoredId() {
-    this.dataSource._flattenedData.pipe(first()).subscribe(nodes => {
-      nodes.forEach(node => {
-        if (this.expandedNodeIds[node.statement.pk_entity]) {
-          this.treeControl.expand(node);
-        }
-      })
+    this.treeControl.dataNodes.forEach(node => {
+      if (this.expandedNodeIds[node.statement.pk_entity]) {
+        this.treeControl.expand(node);
+      }
     })
+    // this.dataSource._flattenedData.pipe(first()).subscribe(nodes => {
+    //   nodes.forEach(node => {
+    //   })
+    // })
   }
 
   handleClick_nodeOptions(data: ContentTreeClickEvent) {
     if (data.openNode) this.open(data.openNode);
-    if (data.addExpressionPortion) this.addExpressionPortion(data.addExpressionPortion.pkParent, data.addExpressionPortion.parentIsF2Expression);
+    if (data.addExpressionPortion) {
+      this.addExpressionPortion(
+        data.addExpressionPortion.pkParent, data.addExpressionPortion.parentIsF2Expression
+      );
+    }
     if (data.addText) this.addText(data.addText.pkParent, data.addText.parentIsF2Expression);
     if (data.addTable) this.addTable(data.addTable.pkParent, data.addTable.parentIsF2Expression);
     if (data.removeStatement) this.removeStatement(data.removeStatement);

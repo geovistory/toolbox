@@ -4,9 +4,9 @@
     <div formArrayName="childControl" class="gv-fg-lang-string-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
 
-        <mat-form-field class="ctrl-text" *ngIf="child?.controlFactory.config.data.type=== 'text' "
+        <mat-form-field class="ctrl-text" *ngIf="child?.controlFactory?.config.data.type=== 'text' "
           [appearance]="appearance">
-          <mat-label>{{child?.controlFactory.config.placeholder}}</mat-label>
+          <mat-label>{{child?.controlFactory?.config.placeholder}}</mat-label>
 
           <gv-ctrl-appellation placeholder="Placeholder" [formControl]="child?.controlFactory.control">
           </gv-ctrl-appellation>
@@ -16,9 +16,9 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="ctrl-language" *ngIf="child?.controlFactory.config.data.type=== 'language' "
+        <mat-form-field class="ctrl-language" *ngIf="child?.controlFactory?.config.data.type=== 'language' "
           [appearance]="appearance">
-          <mat-label>{{child?.controlFactory.config.placeholder}}</mat-label>
+          <mat-label>{{child?.controlFactory?.config.placeholder}}</mat-label>
 
           <gv-ctrl-language placeholder="Placeholder" [formControl]="child?.controlFactory.control">
           </gv-ctrl-language>

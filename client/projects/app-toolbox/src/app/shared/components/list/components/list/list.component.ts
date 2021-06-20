@@ -62,7 +62,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   typeOptions = [
     { value: 'peIt', label: '<i class="gv-icon gv-icon-persistent-entity"></i> Persistent' },
     { value: 'teEn', label: '<i class="fa fa-star-o"></i> Temporal' },
-    { value: null, label: '<i class="gv-icon gv-icon-entity"></i> All' },
+    { value: undefined, label: '<i class="gv-icon gv-icon-entity"></i> All' },
   ]
   selectedType: { value: any, label: string } = this.typeOptions[0];
 

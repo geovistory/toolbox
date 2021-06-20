@@ -12,7 +12,7 @@
 <ng-container>
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
 
-    <mat-list *ngIf="child?.childFactory.config?.data?.filter" class="mb-4">
+    <mat-list *ngIf="child?.childFactory?.config?.data?.filter" class="mb-4">
       <mat-list-item class="p-0">
         <div class="mat-headline" mat-line> Filter
         </div>
@@ -20,21 +20,21 @@
       <mat-divider></mat-divider>
     </mat-list>
 
-    <mat-list *ngIf="child?.controlFactory.config?.data?.ctrlClasses" class="mb-4">
+    <mat-list *ngIf="child?.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline" mat-line *ngIf="!(child.controlFactory.config.disabled$ | async)">
+        <div class="mat-headline" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
           Choose type of geographical entities
         </div>
-        <div class="mat-headline" mat-line *ngIf="(child.controlFactory.config.disabled$ | async)"
-          [ngClass]="{'mat-text-secondary': (child.controlFactory.config.disabled$ | async)}">
+        <div class="mat-headline" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
+          [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
           Chosen geographical entities
         </div>
-        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory.config.disabled$ | async)"
+        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
           (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
 
       </mat-list-item>
       <mat-divider></mat-divider>
-      <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.controlFactory.config.disabled$ | async)">
+      <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.controlFactory?.config.disabled$ | async)">
           <div class="mat-text-secondary">
             Select the classes and types you are interested in.
           </div>
@@ -58,9 +58,9 @@
 
     </div>
 
-    <div *ngIf="child?.controlFactory.config?.data?.ctrlClasses">
+    <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
       <button mat-flat-button color="primary"
-        *ngIf="!(child.controlFactory.config?.disabled$|async) && child.controlFactory.control.valid" class="mb-4"
+        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.controlFactory.control.valid" class="mb-4"
         (click)="addQueryDefinition(child.controlFactory)">
         Continue
       </button>

@@ -2,9 +2,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Injectable } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { clone, indexBy } from 'ramda';
+import { indexBy } from 'ramda';
 import { Subject } from 'rxjs';
-import { delay } from 'rxjs/operators';
 
 
 
@@ -52,6 +51,19 @@ export class ChecklistControlService<TreeNodeData> {
 
   selectionChange$ = new Subject<TreeNodeData[]>();
 
+  // chache for selected ids, mapped to flat node, if available
+  selectedIdCache = new Map<string, FlatNode<TreeNodeData> | undefined>();
+
+  // chache for expanded ids, mapped to flat node, if available
+  expandedIdCache = new Map<string, FlatNode<TreeNodeData> | undefined>();
+
+  /**
+   * TODO: This function needs to be injectable somehow
+   * Returns a unique string for the node
+   * useful for comparing the identity of nodes
+   */
+  getNodeId: (data: TreeNodeData) => string;
+
   constructor() {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
@@ -68,30 +80,43 @@ export class ChecklistControlService<TreeNodeData> {
       this.treeFlattener
     );
 
-    this.dataSource._flattenedData.pipe(delay(0)).subscribe(nodes => {
-      // initialize selection from selectedIdCache
-      this.checklistSelection.clear();
-      const byId = this.getTreeNodeIndexById();
+    // this.dataSource._flattenedData.pipe(delay(0)).subscribe(nodes => {
+    // initialize selection from selectedIdCache
 
-      nodes.forEach(node => {
-        const nodeToSelect = byId[node.id];
-        if (nodeToSelect) {
-          if (this.selectedIdCache.has(node.id)) {
-            this.todoItemSelectionSelect(nodeToSelect);
-          }
-        }
-      });
+    // });
+  }
 
-      // update selection output
-      this.emitTreeNodeDataArray()
-      // initialize expansion from expandedIdCache
-      this.expandedIdCache.forEach((val, key) => {
-        const nodeToExpand = this.idNodeMap.get(key);
-        if (nodeToExpand) {
-          this.treeControl.expand(nodeToExpand);
+  private manageSelection() {
+
+
+    this.checklistSelection.clear();
+    const byId = this.getTreeNodeIndexById();
+
+    this.treeControl.dataNodes.forEach(node => {
+      const nodeToSelect = byId[node.id];
+      if (nodeToSelect) {
+        if (this.selectedIdCache.has(node.id)) {
+          this.todoItemSelectionSelect(nodeToSelect);
         }
-      });
+      }
     });
+
+    // update selection output
+    this.emitTreeNodeDataArray();
+    // initialize expansion from expandedIdCache
+    this.expandedIdCache.forEach((val, key) => {
+      const nodeToExpand = this.idNodeMap.get(key);
+      if (nodeToExpand) {
+        this.treeControl.expand(nodeToExpand);
+      }
+    });
+
+  }
+
+  setData(d: NestedNode<TreeNodeData>[]) {
+    this.dataSource.data = d
+    setTimeout(() => { this.manageSelection(); })
+
   }
 
 
@@ -106,12 +131,6 @@ export class ChecklistControlService<TreeNodeData> {
   getChildren = (node: NestedNode<TreeNodeData>): NestedNode<TreeNodeData>[] => node.children;
 
   hasChild = (_: number, _nodeData: FlatNode<TreeNodeData>) => _nodeData.expandable;
-
-  // chache for selected ids, mapped to flat node, if available
-  selectedIdCache = new Map<string, FlatNode<TreeNodeData> | undefined>();
-
-  // chache for expanded ids, mapped to flat node, if available
-  expandedIdCache = new Map<string, FlatNode<TreeNodeData> | undefined>();
 
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
@@ -131,13 +150,6 @@ export class ChecklistControlService<TreeNodeData> {
     this.idNodeMap.set(id, flatNode);
     return flatNode;
   };
-
-  /**
-   * TODO: This function needs to be injectable somehow
-   * Returns a unique string for the node
-   * useful for comparing the identity of nodes
-   */
-  getNodeId: (data: TreeNodeData) => string;
 
   compareFn(d1: TreeNodeData, d2: TreeNodeData): boolean {
     return this.getNodeId(d1) === this.getNodeId(d2);

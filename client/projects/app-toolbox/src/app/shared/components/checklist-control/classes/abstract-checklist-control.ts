@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Input, OnInit, Optional, Self, Directive } from '@angular/core';
+import { Directive, Input, OnInit, Optional, Self } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Observable, Subject } from 'rxjs';
@@ -16,6 +16,13 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
 
   id = `AbstractChecklistControl-${AbstractChecklistControl.nextId++}`;
   stateChanges = new Subject<void>();
+  private _focused: boolean;
+
+  model: ControlModel;
+  private _placeholder: string;
+  private _required = false;
+  private _disabled = false;
+  describedBy = '';
   get focused(): boolean {
     return this._focused;
   }
@@ -23,9 +30,6 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     this._focused = value;
     this.stateChanges.next();
   }
-  private _focused: boolean;
-
-  model: ControlModel;
 
   get empty() {
     return this.s.isEmpty();
@@ -44,7 +48,6 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     this._placeholder = value;
     this.stateChanges.next();
   }
-  private _placeholder: string;
 
   @Input()
   get required(): boolean {
@@ -54,7 +57,6 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     this._required = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
-  private _required = false;
 
   @Input()
   get disabled(): boolean {
@@ -64,7 +66,6 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     this._disabled = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
-  private _disabled = false;
 
   get value(): ControlModel {
     return this.model;
@@ -73,7 +74,6 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     this.model = value;
     this.onChange(this.model);
   }
-  describedBy = '';
   setDescribedByIds(ids: string[]) {
     this.describedBy = ids.join(' ');
   }
@@ -99,9 +99,9 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     if (!this.nestedTree$) {
       throw new Error('You must provide nestedTree$ input');
     }
-    this.s.dataSource.data = [];
+    this.s.setData([])
     this.nestedTree$.subscribe(tree => {
-      this.s.dataSource.data = tree;
+      this.s.setData(tree)
     });
   }
 

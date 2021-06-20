@@ -1,12 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
-import { InformationPipesService } from "@kleiolab/lib-queries";
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
-import { switchMap, map, first, mergeMap, shareReplay } from 'rxjs/operators';
-import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';
-import { PropertySelectModel } from "@kleiolab/lib-queries";
+import { InformationPipesService } from '@kleiolab/lib-queries';
+import { QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
-import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
+import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory } from '../query-path-form/query-path-form.component';
 
 @Component({
   selector: 'gv-query-path-form-array',
@@ -17,7 +14,7 @@ export class QueryPathFormArrayComponent implements OnInit {
   @Input() formArrayFactory: QueryPathFormArrayFactory;
 
   get lastChild() {
-    return this.formArrayFactory.children[this.formArrayFactory.children.length - 1] as FormControlFactory<QueryPathFormControlData>
+    return this.formArrayFactory.children[this.formArrayFactory.children.length - 1]
   }
   constructor(
     private i: InformationPipesService
@@ -66,9 +63,9 @@ export class QueryPathFormArrayComponent implements OnInit {
   addSegment() {
     if (this.formArrayFactory.globalConfig.root.control.valid) {
 
-      if (this.lastChild.config.data.propertiesSegment) {
+      if (this.lastChild.controlFactory?.config.data.propertiesSegment) {
         this.addClassesSegment()
-      } else if (this.lastChild.config.data.classesSegment) {
+      } else if (this.lastChild.controlFactory?.config.data.classesSegment) {
         this.addPropertiesSegment()
       }
     } else {

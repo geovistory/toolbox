@@ -114,14 +114,14 @@
 
     <mat-list *ngIf="child.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline" mat-line *ngIf="!(child.controlFactory.config.disabled$ | async)">
+        <div class="mat-headline" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
           Choose your entities
         </div>
-        <div class="mat-headline" mat-line *ngIf="(child.controlFactory.config.disabled$ | async)"
-          [ngClass]="{'mat-text-secondary': (child.controlFactory.config.disabled$ | async)}">
+        <div class="mat-headline" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
+          [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
           Chosen entities
         </div>
-        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory.config.disabled$ | async)"
+        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
           (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
 
       </mat-list-item>
@@ -177,7 +177,7 @@
 
     <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
       <button mat-flat-button color="primary"
-        *ngIf="!(child.controlFactory.config?.disabled$|async) && child.control.valid" class="mb-4"
+        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.control.valid" class="mb-4"
         (click)="addQueryDefinition(child.controlFactory)">
         Continue
       </button>

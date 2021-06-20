@@ -70,9 +70,9 @@ export class ClassAndTypeSelectComponent
     )
 
 
-    this.s.dataSource.data = [];
+    this.s.setData([]);
     this.nestedTree$.subscribe(tree => {
-      this.s.dataSource.data = tree;
+      this.s.setData(tree);
     });
   }
 
