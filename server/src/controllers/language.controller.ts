@@ -64,7 +64,7 @@ export class FindLanguagesController {
 
     const langs = await q.execute<InfLanguage[]>()
     langs.forEach(lang => {
-      Object.entries(lang).forEach(e => {if (e[1] === null) delete lang[e[0]]});
+      Object.entries(lang).forEach(e => {if (e[1] === null) delete lang[e[0] as keyof InfLanguage]});
     })
     return langs
   }
