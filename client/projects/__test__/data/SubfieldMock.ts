@@ -9,7 +9,7 @@ function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentit
   for (const key in field.targets) {
     if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
       const element = field.targets[key];
-      if (element.listType.temporalEntity) {
+      if (element.listType.nestedResource) {
         targets[key] = { entityPreview: 'true' }
       } else {
         targets[key] = element.listType
@@ -98,7 +98,7 @@ export namespace SubfieldMock {
     [{
       class: DfhApiClassMock.EN_365_NAMING,
       subfieldType: {
-        temporalEntity: [
+        nestedResource: [
           fieldToSubentityFieldReq(appeHasAppeString, false),
           fieldToSubentityFieldReq(appeTeEnUsedInLanguage, false),
           fieldToSubentityFieldReq(appeTeEnIsAppeOfPerson, true),
@@ -160,6 +160,7 @@ export function createFieldBase(
     sourceMaxQuantity,
     identityDefiningForSource,
     identityDefiningForTarget,
+    isTimeSpanShortCutField: false
   }
   return base
 }

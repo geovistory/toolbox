@@ -1,6 +1,48 @@
 <h2>
-    Accounts
+  Accounts
 </h2>
+<p-table [value]="value$|async" [scrollable]="true" scrollHeight="200px">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>account id</th>
+      <th>username</th>
+      <th>email</th>
+      <th>email is verified</th>
+      <th>roles</th>
+      <th>projects</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>
+        {{row.id}}
+      </td>
+      <td>
+        {{row.username}}
+      </td>
+      <td>
+        {{row.email}}
+      </td>
+      <td>
+        {{row.emailverified}}
+      </td>
+      <td>
+        <span *ngFor="let role of row.roles" class="badge badge-info mr-1">{{role.name}}</span>
+      </td>
+      <td>
+        <div *ngFor="let projectrel of row.projectrels" class="badge badge-success mr-1">
+          {{projectrel.pk_entity}}: {{projectrel.role}}
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate="paginatorleft">
+    <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+  </ng-template>
+  <ng-template pTemplate="paginatorright">
+    <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+  </ng-template> -->
+</p-table>
 <!-- <ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
   <ng-template let-row let-index="index">
     <td>

@@ -153,85 +153,6 @@
         }
       }
     },
-    "playground": {
-      "root": "projects/app-toolbox",
-      "sourceRoot": "projects/app-toolbox/src",
-      "projectType": "application",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/playground",
-            "index": "projects/app-toolbox/src/index.html",
-            "main": "projects/app-toolbox/src/main.playground.ts",
-            "polyfills": "projects/app-toolbox/src/polyfills.ts",
-            "tsConfig": "projects/app-toolbox/src/tsconfig.playground.json",
-            "assets": [
-              "projects/app-toolbox/src/assets",
-              "projects/app-toolbox/src/favicon.ico",
-              {
-                "glob": "**/*",
-                "input": "node_modules/cesium/Build/Cesium",
-                "output": "./assets/cesium"
-              },
-              {
-                "glob": "mdi.svg",
-                "input": "node_modules/@mdi/angular-material",
-                "output": "./assets/mdi"
-              }
-            ],
-            "styles": [
-              "projects/app-toolbox/src/styles.scss",
-              "geovistory-font/dist/Geovistory.css",
-              "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/quill/dist/quill.snow.css",
-              "node_modules/quill/dist/quill.bubble.css",
-              "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
-            ],
-            "scripts": [
-              "node_modules/cesium/Build/CesiumUnminified/Cesium.js"
-            ],
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
-              "vendorChunk": false
-            }
-          },
-          "defaultConfiguration": ""
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "playground:build",
-            "port": 4201
-          }
-        }
-      }
-    },
     "lib-sdk-lb3": {
       "projectType": "library",
       "root": "projects/lib-sdk-lb3",
@@ -508,6 +429,79 @@
             "exclude": [
               "**/node_modules/**"
             ]
+          }
+        }
+      }
+    },
+    "playground": {
+      "projectType": "application",
+      "root": "projects/app-toolbox",
+      "sourceRoot": "projects/app-toolbox/src",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/playground",
+            "index": "projects/app-toolbox/src/index.html",
+            "main": ".angular-playground/main.playground.ts",
+            "polyfills": "projects/app-toolbox/src/polyfills.ts",
+            "tsConfig": ".angular-playground/tsconfig.playground.json",
+            "aot": false,
+            "assets": [
+              "projects/app-toolbox/src/favicon.ico",
+              "projects/app-toolbox/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/cesium/Build/Cesium",
+                "output": "./assets/cesium"
+              },
+              {
+                "glob": "mdi.svg",
+                "input": "node_modules/@mdi/angular-material",
+                "output": "./assets/mdi"
+              }
+            ],
+            "styles": [
+              "projects/app-toolbox/src/styles.scss",
+              "geovistory-font/dist/Geovistory.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/quill/dist/quill.bubble.css",
+              "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
+            ],
+            "scripts": [
+              "node_modules/cesium/Build/CesiumUnminified/Cesium.js"
+            ],
+            "webWorkerTsConfig": "projects/app-toolbox/tsconfig.worker.json"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/app-toolbox/src/environments/environment.ts",
+                  "with": "projects/app-toolbox/src/environments/environment.prod.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "extractLicenses": false,
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "playground:build",
+            "port": 4201
           }
         }
       }

@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { GvFieldProperty, InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, InfResourceWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
@@ -13,7 +13,7 @@ import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-d
 
 export interface CtrlEntityModel {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side
-  resource?: InfResource, // if resource, the output is just created
+  resource?: InfResourceWithRelations, // if resource, the output is just created
 }
 
 @Component({
@@ -27,6 +27,47 @@ export interface CtrlEntityModel {
 export class CtrlEntityComponent implements OnDestroy,
   ControlValueAccessor,
   MatFormFieldControl<CtrlEntityModel> {
+  static nextId = 0;
+
+  model: CtrlEntityModel;
+
+  @Input() pkClass: number;
+
+  // needed for creating the form, in order to exclude the circular field
+  @Input() property: GvFieldProperty;
+  @Input() disableExistingWithStatement: DisableIfHasStatement;
+
+  @Input() showAddList: boolean;
+
+
+
+  @Output() blur = new EventEmitter<number | undefined>();
+  @Output() focus = new EventEmitter<void>();
+
+  autofilled?: boolean;
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+  stateChanges = new Subject<void>();
+  focused = false;
+  errorState = false;
+  controlType = 'ctrl-entity';
+
+  id = `ctrl-entity-$ {
+    CtrlEntityComponent.nextId++
+  }
+
+  `;
+  describedBy = '';
+
+  private _placeholder: string;
+
+  private _required = false;
+
+  private _disabled = false;
+
+  value$ = new BehaviorSubject<CtrlEntityModel>(null);
+
+  entityPreview$: Observable<WarEntityPreview>;
 
   get empty() {
     return this.model ? false : true;
@@ -81,47 +122,6 @@ export class CtrlEntityComponent implements OnDestroy,
     this.onChange(this.model);
     this.value$.next(value);
   }
-  static nextId = 0;
-
-  model: CtrlEntityModel;
-
-  @Input() pkClass: number;
-
-  // needed for creating the form, in order to exclude the circular field
-  @Input() property: GvFieldProperty;
-  @Input() disableExistingWithStatement: DisableIfHasStatement;
-
-  @Input() showAddList: boolean;
-
-
-
-  @Output() blur = new EventEmitter<number | undefined>();
-  @Output() focus = new EventEmitter<void>();
-
-  autofilled?: boolean;
-  // emits true on destroy of this component
-  destroy$ = new Subject<boolean>();
-  stateChanges = new Subject<void>();
-  focused = false;
-  errorState = false;
-  controlType = 'ctrl-entity';
-
-  id = `ctrl-entity-$ {
-    CtrlEntityComponent.nextId++
-  }
-
-  `;
-  describedBy = '';
-
-  private _placeholder: string;
-
-  private _required = false;
-
-  private _disabled = false;
-
-  value$ = new BehaviorSubject<CtrlEntityModel>(null);
-
-  entityPreview$: Observable<WarEntityPreview>;
 
   onChange = (_: any) => { }
 

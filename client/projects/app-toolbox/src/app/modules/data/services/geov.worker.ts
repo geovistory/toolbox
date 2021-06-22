@@ -1,9 +1,9 @@
 /// <reference lib="webworker" />
 
+import { TColFilter } from '@kleiolab/lib-sdk-lb4';
 import * as d3 from 'd3-dsv';
 import { sort } from 'ramda';
 import * as XLSX from 'xlsx';
-import { TColFilter } from '../../../../../../../../server/src/lb3/server/table/interfaces';
 import { ImporterColFilter } from '../components/importer/importer.component';
 
 addEventListener('message', ({ data }) => {

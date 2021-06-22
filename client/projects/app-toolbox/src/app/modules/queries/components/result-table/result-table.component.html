@@ -5,11 +5,12 @@
   [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading" class="h-100"> -->
 <p-table #table *ngIf="displayedColumns$ | async" [columns]="displayedColumns$ | async" [value]="items"
   [scrollable]="true" [rows]="limit" [scrollHeight]="'flex'" [virtualScroll]="true" [virtualRowHeight]="48"
-  [lazy]="true" [totalRecords]="totalRecords" (onLazyLoad)="loadDataOnScroll($event);">
+  [lazy]="true" (onLazyLoad)="loadDataOnScroll($event);">
 
-  <ng-template pTemplate="caption">
-
-    <div class="d-flex">
+  <ng-template pTemplate="footer">
+    <mat-divider></mat-divider>
+    <div class="d-flex align-items-center">
+      <span class="mat-caption ml-4">{{items?.length}} {{items?.length ===1 ?'row':'rows'}}</span>
       <button class="ml-auto" mat-flat-button [matMenuTriggerFor]="exportMenu">
         <mat-icon svgIcon="download" color="primary"></mat-icon>
         Download
@@ -20,7 +21,6 @@
         <!-- <button  mat-menu-item (click)="onDownload('xlsx')">Download as Excel</button> -->
       </mat-menu>
     </div>
-    <mat-divider></mat-divider>
   </ng-template>
 
   <ng-template pTemplate="header" let-columns>
@@ -48,7 +48,7 @@
         {{lazyLoadState?.first}}
         {{index}}
       </td> -->
-      <td *ngFor="let col of colDefs">
+      <td *ngFor="let col of colDefs" class="gv-fade-out-right ">
 
         <ng-container *ngIf="rowData[col.id]?.entities; else values">
           <button *ngIf="rowData[col.id]?.entities?.length > 0" mat-raised-button
@@ -89,6 +89,13 @@
           <button *ngIf="rowData[col.id]?.length > 1" mat-raised-button
             (click)="openDialog(rowData[col.id])">{{rowData[col.id]?.length}}</button>
         </span> -->
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="loadingbody" let-columns="columns">
+    <tr style="height:48px">
+      <td *ngFor="let col of colDefs">
+        <div class="loading-text">oo</div>
       </td>
     </tr>
   </ng-template>

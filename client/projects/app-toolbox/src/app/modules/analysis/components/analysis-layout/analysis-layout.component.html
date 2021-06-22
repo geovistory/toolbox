@@ -76,10 +76,10 @@
       </div>
     </gv-detail-top-bar>
     <gv-detail-content>
-      <div class="h-100" *ngIf="!(!(a.results$ |async) && !a.loading)">
+      <div class="gv-flex-fh" *ngIf="!(!(a.results$ |async) && !a.loading)">
         <ng-content select="[results]"></ng-content>
       </div>
-      <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary"
+      <div class="gv-flex-fh d-flex align-items-center justify-content-center mat-text-secondary"
         *ngIf="!(a.results$ |async) && !a.loading">
         Configure your analysis to the left and click on "Run".
       </div>

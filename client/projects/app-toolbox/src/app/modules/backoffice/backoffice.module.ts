@@ -5,6 +5,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 // import { ClassAPIEpics } from './components/class/api/class.epics';
 // import { ClassAPIActions } from './components/class/api/class.actions';
 import { DndModule } from 'ng2-dnd';
+import { TableModule } from 'primeng/table';
 // import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
 // import { TableModule } from 'ngx-easy-table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
@@ -44,6 +45,7 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
     DndModule,
     FormsModule,
     ReactiveFormsModule,
+    TableModule,
     // TableModule,
     MaterialModule,
     // ReduxModule

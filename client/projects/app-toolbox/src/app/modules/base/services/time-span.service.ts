@@ -111,11 +111,12 @@ export class TimeSpanService {
       if (Object.prototype.hasOwnProperty.call(item.preview, key)) {
         const pkProperty = DfhConfig.existenceTimeToFk[key];
         const i = item.preview[key]
-        timePrimitives[pkProperty] = {
+        const t: TimePrimitiveWithCal = {
           calendar: i.calendar,
           duration: i.duration,
-          julian_day: i.julianDay
+          julianDay: i.julianDay
         }
+        timePrimitives[pkProperty] = t
       }
     }
 

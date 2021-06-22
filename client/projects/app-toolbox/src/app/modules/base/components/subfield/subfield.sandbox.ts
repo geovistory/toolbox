@@ -2,8 +2,7 @@ import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
-import { InfPersistentItemMock } from 'projects/__test__/data/auto-gen/gvDB/InfPersistentItemMock';
-import { InfTemporalEntityMock } from 'projects/__test__/data/auto-gen/gvDB/InfTemporalEntityMock';
+import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { SubfieldMock } from 'projects/__test__/data/SubfieldMock';
@@ -28,7 +27,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: AppellationVT ', {
     context: {
       field: SubfieldMock.appeHasAppeString,
-      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
+      source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -51,7 +50,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: PlaceVT ', {
     context: {
       field: SubfieldMock.presenceWasAtPlace,
-      source: { fkInfo: InfTemporalEntityMock.MADRIDS_PRESENCE.pk_entity },
+      source: { fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -75,7 +74,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: DimensionVT ', {
     context: {
       field: SubfieldMock.accountOfJourneyHasDuration,
-      source: { fkInfo: InfPersistentItemMock.ACCOUNT_OF_JOURNEY.pk_entity },
+      source: { fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -99,7 +98,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: LangStringVT ', {
     context: {
       field: SubfieldMock.manifestationSingletonHasShortTitle,
-      source: { fkInfo: InfPersistentItemMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
+      source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope
@@ -128,7 +127,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: LanguageVT ', {
     context: {
       field: SubfieldMock.appeTeEnUsedInLanguage,
-      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
+      source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -151,7 +150,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: EntityPreview ', {
     context: {
       field: SubfieldMock.appeTeEnIsAppeOfPerson,
-      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
+      source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       // schemaObjects: [
@@ -179,7 +178,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: TemporalEntity ', {
     context: {
       field: SubfieldMock.personHasAppeTeEn,
-      source: { fkInfo: InfPersistentItemMock.PERSON_1.pk_entity },
+      source: { fkInfo: InfResourceMock.PERSON_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope,
@@ -212,7 +211,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: TimeSpan', {
     context: {
       field: SubfieldMock.appeHasTimeSpan,
-      source: { fkInfo: InfTemporalEntityMock.NAMING_1.pk_entity },
+      source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [
@@ -241,7 +240,7 @@ export default sandboxOf(SubfieldComponent, {
   .add('Subfield | type: TimeSpan empty', {
     context: {
       field: SubfieldMock.appeHasTimeSpan,
-      source: { fkInfo: InfTemporalEntityMock.NAMING_2_STADT.pk_entity },
+      source: { fkInfo: InfResourceMock.NAMING_2_STADT.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [

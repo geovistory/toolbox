@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SysConfig } from '@kleiolab/lib-config';
 import { AnalysisDefinition, AnalysisTableCellValue, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { saveAs } from 'file-saver';
+import { LazyLoadEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
@@ -27,6 +28,12 @@ interface ResultTableCell {
 interface ResultTableRow {
   [colId: string]: ResultTableCell
 }
+
+interface PageLoadRes {
+  limit: number,
+  offset: number,
+  res: AnalysisTableResponse
+}
 @Component({
   selector: 'gv-result-table',
   templateUrl: './result-table.component.html',
@@ -36,30 +43,25 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject();
   @Input() definition$: Observable<QueryDefinition>;
   @ViewChild('table') table: Table;
-
   displayedColumns$: Observable<string[]>;
 
   definition: QueryDefinition;
   colDefs: ColDef[] = [];
 
-  limit = 50;
-  lazyLoadState: {
-    first: number,    // First row offset
-    rows: number // Number of rows per page
-  }
+  limit = 100;
+  lazyLoadState: LazyLoadEvent
   pkProject: number;
   items: ResultTableRow[];
 
   get totalRecords(): number {
     const result = this.a.results$.value
-    if (!result || !result.rows.length) return 0;
-    else return result.full_count
+    return result?.res?.full_count ?? 0
   }
 
   constructor(
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    public a: GvAnalysisService<AnalysisTableRequest, AnalysisTableResponse>,
+    public a: GvAnalysisService<AnalysisTableRequest, PageLoadRes>,
     private ref: ChangeDetectorRef,
   ) {
 
@@ -75,21 +77,39 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
       this.definition = definition;
       this.colDefs = definition.columns
-      this.loadDataOnScroll({ first: 0, rows: this.limit })
-      // const body = this.table.containerViewChild.nativeElement.getElementsByClassName('p-datatable-scrollable-body')[0];
-      //  body.scrollTop = 0;
-      // this.table.reset();
-
+      if (this.table) {
+        this.table.resetScrollTop()
+        this.table.reset()
+      }
     })
     // let count = 0;
+    this.items = []
     this.a.results$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      this.items = this.transformResults(res);
+      const fullcount = res?.res?.full_count ?? 0
+      if (this.items.length !== fullcount) {
+        this.items = Array.from({ length: fullcount });
+      }
 
-      // // Hack for updating height of table on first load
-      // if (res && count === 0) {
-      //   setTimeout(() => { this.ref.detectChanges() }, 100)
-      //   count++;
-      // }
+      if (res?.res.rows.length) {
+
+        const loadedItems = this.transformResults(res.res);
+
+        // populate page of items
+        Array.prototype.splice.apply(this.items, [...[res?.offset, res?.limit], ...loadedItems]);
+      }
+
+      // trigger change detection
+      this.items = [...this.items];
+
+
+      // Hack for updating height of table on first load
+      let count = 0
+      if (res && count === 0) {
+        setTimeout(() => {
+          this.table.scrollableViewChild.virtualScrollBody.checkViewportSize()
+        }, 100)
+        count++;
+      }
     })
 
   }
@@ -163,10 +183,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  loadDataOnScroll(event: {
-    first: number,    // First row offset
-    rows: number // Number of rows per page
-  }) {
+  loadDataOnScroll(event: LazyLoadEvent) {
     this.lazyLoadState = event;
     if (this.definition) this.load(this.definition, event.first, event.rows);
     // combineLatest([this.p.pkProject$, this.definition$]).pipe(first(), takeUntil(this.destroy$))
@@ -187,7 +204,12 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.a.callRunApi((fkProject => this.a.analysisApi.analysisControllerTableRun({
       fkProject,
       analysisDefinition
+    }).pipe(map(res => ({
+      limit: rows,
+      offset,
+      res
     })))
+    ))
   }
 
   download(fileType: AnalysisTableExportRequest.FileTypeEnum) {
@@ -219,40 +241,6 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
   }
-
-
-  // onInit() {
-  //   this.set([]);
-
-  //   let dataRefreshs = 0;
-  //   this.data$.pipe(
-  //     tap(() => dataRefreshs++),
-  //     takeUntil(this.$destroy)
-  //   ).subscribe(data => {
-
-  //     this.dataSource.allData = data;
-
-  //     if (data.length === 0) {
-  //       this.viewport.scrollTo({ top: 0, left: 0 })
-  //     }
-  //   })
-
-
-  //   this.headerTop$ = this.viewport.renderedRangeStream.pipe(
-  //     map(() => -this.viewport.getOffsetToRenderedContentStart())
-  //   );
-
-  //   // fake infinite scroll
-
-  //   this.viewport.renderedRangeStream.subscribe(({ start, end }) => {
-  //     this.rangeChange.emit({ start, end })
-  //   });
-  // }
-
-  // afterViewInit() {
-  //   this.sticky = true;
-  //   this.ref.detectChanges()
-  // }
 
   openEntitiesDialog(entityPreviews): void {
     const data: EntitiesDialogData = { entityPreviews }

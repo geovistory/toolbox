@@ -19,6 +19,52 @@ type CtrlModel = TimePrimitiveWithCal;
 
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+  static nextId = 0;
+
+  model: CtrlModel;
+
+  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild('yearInput', { static: true }) yearInput: ElementRef;
+
+
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
+
+  autofilled?: boolean;
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+  stateChanges = new Subject<void>();
+  focused = false;
+  errorState = false;
+  controlType = 'ctrl-time-primitive';
+  id = `ctrl-time-primitive-${CtrlTimePrimitiveComponent.nextId++}`;
+  describedBy = '';
+
+  @Input() autofocus: boolean;
+  private _placeholder: string;
+  private _required = false;
+  private _disabled = false;
+
+
+
+  /**
+ * Custom class variables
+ */
+  // value properties
+  julianDay: number
+  duration: Granularity;
+  calendar: CalendarType = 'julian'
+
+  // custom logic
+  gregorianDateTime = new GregorianDateTime();
+  julianDateTime = new JulianDateTime();
+
+  fieldNames = ['year', 'month', 'day', 'hours', 'minutes', 'seconds'];
+  editingCalendar = false;
+  timeInputsVisible = false;
+  calendarGivenByWriteValue: boolean
+
+  form: FormGroup;
 
   get empty() {
     return this.model ? false : true;
@@ -94,52 +140,6 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
     ) return true;
     return false;
   }
-  static nextId = 0;
-
-  model: CtrlModel;
-
-  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
-  @ViewChild('yearInput', { static: true }) yearInput: ElementRef;
-
-
-  @Output() blur = new EventEmitter<void>();
-  @Output() focus = new EventEmitter<void>();
-
-  autofilled?: boolean;
-  // emits true on destroy of this component
-  destroy$ = new Subject<boolean>();
-  stateChanges = new Subject<void>();
-  focused = false;
-  errorState = false;
-  controlType = 'ctrl-time-primitive';
-  id = `ctrl-time-primitive-${CtrlTimePrimitiveComponent.nextId++}`;
-  describedBy = '';
-
-  @Input() autofocus: boolean;
-  private _placeholder: string;
-  private _required = false;
-  private _disabled = false;
-
-
-
-  /**
- * Custom class variables
- */
-  // value properties
-  julianDay: number
-  duration: Granularity;
-  calendar: CalendarType = 'julian'
-
-  // custom logic
-  gregorianDateTime = new GregorianDateTime();
-  julianDateTime = new JulianDateTime();
-
-  fieldNames = ['year', 'month', 'day', 'hours', 'minutes', 'seconds'];
-  editingCalendar = false;
-  timeInputsVisible = false;
-  calendarGivenByWriteValue: boolean
-
-  form: FormGroup;
   onChange = (_: any) => { };
   onTouched = () => { };
 
@@ -223,7 +223,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
 
   writeValue(value: CtrlModel | null): void {
-    const { calendar, duration, julianDay } = value
+    const { calendar, duration, julianDay } = value ?? {}
     this.value = { calendar, duration, julianDay };
     if (value) {
       if (value.calendar) {

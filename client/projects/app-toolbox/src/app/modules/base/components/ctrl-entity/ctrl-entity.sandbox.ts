@@ -9,7 +9,7 @@ const initVal1: CtrlEntityModel = { pkEntity: 767402 }
 const initVal2: CtrlEntityModel = {
   'resource': {
     pk_entity: undefined,
-    'incoming_statements': [
+    incoming_statements: [
       {
         fk_subject_info: undefined,
         fk_subject_data: undefined,
@@ -25,7 +25,7 @@ const initVal2: CtrlEntityModel = {
         is_in_project_count: undefined,
         pk_entity: undefined,
         'fk_property': 1111,
-        'subject_temporal_entity': {
+        'subject_resource': {
           'outgoing_statements': [
             {
               fk_subject_info: undefined,
@@ -176,139 +176,6 @@ const initVal2: CtrlEntityModel = {
 
         }
 
-      }
-    ],
-    'text_properties': [
-      {
-        'fk_concerned_entity': undefined,
-        'string': undefined,
-        'pk_entity': undefined,
-        'fk_class_field': 219,
-        'quill_doc': {
-          'latestId': 20,
-          'ops': [
-            {
-              'attributes': {
-                'charid': '2'
-              },
-              'insert': 'D'
-            },
-            {
-              'attributes': {
-                'charid': '3'
-              },
-              'insert': 'e'
-            },
-            {
-              'attributes': {
-                'charid': '4'
-              },
-              'insert': 'r'
-            },
-            {
-              'attributes': {
-                'charid': '5'
-              },
-              'insert': ' '
-            },
-            {
-              'attributes': {
-                'charid': '8'
-              },
-              'insert': 'l'
-            },
-            {
-              'attributes': {
-                'charid': '9'
-              },
-              'insert': 'a'
-            },
-            {
-              'attributes': {
-                'charid': '10'
-              },
-              'insert': 'c'
-            },
-            {
-              'attributes': {
-                'charid': '11'
-              },
-              'insert': 'h'
-            },
-            {
-              'attributes': {
-                'charid': '12'
-              },
-              'insert': 'e'
-            },
-            {
-              'attributes': {
-                'charid': '13'
-              },
-              'insert': 'n'
-            },
-            {
-              'attributes': {
-                'charid': '14'
-              },
-              'insert': 'd'
-            },
-            {
-              'attributes': {
-                'charid': '15'
-              },
-              'insert': 'e'
-            },
-            {
-              'attributes': {
-                'charid': '16'
-              },
-              'insert': ' '
-            },
-            {
-              'attributes': {
-                'charid': '17'
-              },
-              'insert': 'H'
-            },
-            {
-              'attributes': {
-                'charid': '18'
-              },
-              'insert': 'a'
-            },
-            {
-              'attributes': {
-                'charid': '19'
-              },
-              'insert': 'n'
-            },
-            {
-              'attributes': {
-                'charid': '20'
-              },
-              'insert': 's'
-            },
-            {
-              'attributes': {
-                'blockid': '1'
-              },
-              'insert': '\n'
-            }
-          ]
-        },
-        'language': {
-          'fk_class': 54,
-          'pk_language': 'deu',
-          'lang_type': 'living',
-          'scope': 'individual',
-          'iso6392b': 'ger',
-          'iso6392t': 'deu',
-          'iso6391': 'de ',
-          'notes': 'German',
-          'pk_entity': 18605
-        },
-        'fk_language': 18605
       }
     ],
     'fk_class': 21
