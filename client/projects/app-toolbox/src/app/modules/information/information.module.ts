@@ -9,6 +9,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
 import { DndModule } from 'ng2-dnd';
+import { TreeModule } from 'primeng/tree';
 import { TimelineModule } from 'projects/app-toolbox/src/app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
@@ -61,7 +62,9 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     DetailTopBarModule,
     AnnotationModule,
     TileHeaderModule,
-    EntityLabelConfigModule
+    EntityLabelConfigModule,
+
+    TreeModule
   ],
   declarations: [
     InformationComponent,
@@ -80,6 +83,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
   exports: [
     InformationComponent,
     EntityDetailComponent,
+    ContentTreeComponent
   ]
 })
 export class InformationModule { }

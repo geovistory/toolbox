@@ -564,6 +564,26 @@ export class DfhApiClassMock {
     "dfh_class_identifier_in_namespace": "E2"
   }
 
+  static readonly EN_503_EXPRESSION_PORTION: DfhApiClass = {
+    "pk_entity": 3748,
+    "dfh_pk_class": 503,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Expression portion",
+    "dfh_fk_namespace": 74,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "The instances of this class are portions or sections of expressions defined by a user. Usually they correspond to a recognizable structure in the document but they can also be arbitrarily defined. Therefore the identity of the portion is provided by the definition adopted by the user in order to cut it out.\r\nIf an expression or expression portion is split on different carriers (e.g. the first part of the copy of a letter is found in the end of volume I and the second part of the copy in the beginning of volume II) then the portion is related to both volumes as carriers of the one relevant expression. In this case the Expression portion will be associated as part of two different Expression instances",
+    "tmsp_last_modification": "2021-06-16T15:05:55.324026+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C2"
+}
 }
 
 

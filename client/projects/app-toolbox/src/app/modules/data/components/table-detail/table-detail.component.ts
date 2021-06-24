@@ -9,13 +9,13 @@ import { GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, Table
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { Cell, Header, Row, TableMode, TableSort } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from 'projects/app-toolbox/src/app/shared/components/info-dialog/info-dialog.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
 
 

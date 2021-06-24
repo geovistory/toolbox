@@ -138,7 +138,7 @@
           </as-split>
 
           <!-- Tab Bodies. The body is placed to gvPanelBody via Cdk Portal -->
-          <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
+          <gv-tab-body [tab]="tab" [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
             *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
 
             <gv-text-detail class="gv-flex-fh" *ngIf="tab.component=='text-detail'" [pkEntity]="tab.data.pkEntity"

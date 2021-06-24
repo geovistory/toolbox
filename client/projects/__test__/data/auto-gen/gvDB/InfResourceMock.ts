@@ -183,4 +183,12 @@ export class InfResourceMock {
     fk_class: DfhApiClassMock.EN_51_PLACE.dfh_pk_class,
   })
 
+  static readonly EXPRESSION_PORTION_HABS_EMP_CHAPTER_1: OmitEntity<InfResource> = ({
+    pk_entity: 4018,
+    fk_class: DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_pk_class,
+  })
+  static readonly EXPRESSION_PORTION_HABS_EMP_CHAPTER_2: OmitEntity<InfResource> = ({
+    pk_entity: 4019,
+    fk_class: DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_pk_class,
+  })
 }

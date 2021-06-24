@@ -8,7 +8,7 @@ import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { getSpecificVersion, latestVersion } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
-import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
+import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/directives/on-activate-tab.directive';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { BehaviorSubject, combineLatest, Observable, Subject, timer } from 'rxjs';
@@ -105,6 +105,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
     this.t.setLayoutMode('left-only')
+    this.t.setTabLoading(true)
 
     /**
      * initialize the editor with the latest (!) version
@@ -113,6 +114,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
       // set the latest version as the initial version shown in editor
       this.setVersion(result)
       this.t.setTabTitle('Text ' + this.pkEntity)
+      this.t.setTabLoading(false)
     })
 
 

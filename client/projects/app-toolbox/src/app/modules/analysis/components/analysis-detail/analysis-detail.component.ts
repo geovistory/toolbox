@@ -1,10 +1,10 @@
-import { Component, OnInit, HostBinding, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
-import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { SysConfig } from '@kleiolab/lib-config';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
-import { Subject, Observable } from 'rxjs';
-import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
+import { Subject } from 'rxjs';
+import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { GvAnalysisService } from '../../services/analysis.service';
 
 @Component({

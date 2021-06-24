@@ -21,6 +21,7 @@ export class TypeItemComponent implements OnInit {
   @Input() pkTypedClass: number
   @Input() isOutgoing: boolean
   @Input() loadOnInit = true
+  @Input() keepPageUntil$: Observable<any> // if provided, this is used as takeUntil for the pageLoader
 
   isViewMode: boolean;
 
@@ -75,7 +76,7 @@ export class TypeItemComponent implements OnInit {
       }
 
       if (this.loadOnInit) {
-        this.pag.addPageLoader(fieldPageReq, this.destroy$)
+        this.pag.addPageLoader(fieldPageReq, this.keepPageUntil$ ?? this.destroy$)
         // if (this.isOutgoing) this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
         // else this.p.inf.statement.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
       }

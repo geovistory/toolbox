@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProInfoProjRel, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvSchemaActions } from '../actions/schema.actions';
@@ -20,6 +20,7 @@ export class ReduxMainService {
     private projectConfigApi: ProjectConfigurationService,
     private dataModelApi: DataModelService,
     private accountDataApi: AccountDataService,
+    private contentTree: ContentTreeService,
     private pag: SubfieldPageControllerService,
     private proInfoProjRelApi: ProInfoProjRelApi
   ) { }
@@ -123,5 +124,10 @@ export class ReduxMainService {
   loadFieldPage(req: GvFieldPageReq): Observable<GvPaginationObject> {
     const call$ = this.pag.subfieldPageControllerLoadSubfieldPage(req)
     return this.schemaActions.loadGvPaginationObject(call$)
+  }
+
+  loadContentTree(pkProject: number, pkTreeRootEntity: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.contentTree.contentTreeControllerGetContentTree(pkProject, pkTreeRootEntity)
+    return this.schemaActions.loadGvSchemaObject(call$)
   }
 }

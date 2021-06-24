@@ -2244,7 +2244,6 @@ gv-qf-form-array {
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
 
-
 // Define a custom typography config that overrides the font-family as well as the
 // `title` and `body-2` and `button` levels to have a wheight of 600 instead of 500
 // because Source Sans Pro does not have 500
@@ -2414,8 +2413,14 @@ $foreground: map-get($app-theme, foreground);
 $mat-color-primary: mat.get-color-from-palette($app-primary);
 $mat-color-accent: mat.get-color-from-palette($app-accent);
 $mat-color-warn: mat.get-color-from-palette($app-warn);
-$mat-color-disabled-text: mat.get-color-from-palette($foreground, disabled-text);
-$mat-color-secondary-text: mat.get-color-from-palette($foreground, secondary-text);
+$mat-color-disabled-text: mat.get-color-from-palette(
+  $foreground,
+  disabled-text
+);
+$mat-color-secondary-text: mat.get-color-from-palette(
+  $foreground,
+  secondary-text
+);
 
 .mat-text-primary {
   color: $mat-color-primary;

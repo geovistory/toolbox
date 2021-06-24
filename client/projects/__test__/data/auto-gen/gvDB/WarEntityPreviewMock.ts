@@ -6,6 +6,7 @@ import {DfhApiClassMock} from './DfhApiClassMock'
 import {InfLangStringMock} from './InfLangStringMock'
 import {OmitEntity} from './local-model.helpers'
 import {InfAppellationMock} from './InfAppellationMock'
+import {InfResourceMock} from './InfResourceMock'
 
 /**
  * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400
@@ -84,6 +85,23 @@ export class WarEntityPreviewMock {
         fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
         class_label: DfhApiClassMock.EN_21_PERSON.dfh_class_label,
         entity_label: InfAppellationMock.JACK_THE_FOO.string,
+        entity_type: 'peIt',
+    })
+
+    static readonly EXPRESSION_PORTION_HABS_EMP_CHAPTER_1: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_class_label,
+        entity_label: 'Chapter 1',
+        entity_type: 'peIt',
+    })
+    static readonly EXPRESSION_PORTION_HABS_EMP_CHAPTER_2: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_2,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_class_label,
+        entity_label: 'Chapter 2',
         entity_type: 'peIt',
     })
 }

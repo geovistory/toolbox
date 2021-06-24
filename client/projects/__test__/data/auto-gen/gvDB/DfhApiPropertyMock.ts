@@ -1043,6 +1043,37 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P13"
   }
+  static readonly EN_1317_IS_PART_OF: DfhApiProperty = {
+    "pk_entity": 7006,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 1317,
+    "dfh_fk_namespace": 74,
+    "dfh_is_inherited": true,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_property_label": "is part of",
+    "dfh_property_range": 503,
+    "requested_language": "591",
+    "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+    "dfh_property_domain": 503,
+    "tmsp_last_dfh_update": "2021-06-16T15:05:54.229+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "Associates an expression portion with the expression section (in some cases more then one) it is composed of",
+    "dfh_profile_label_language": "en",
+    "dfh_property_inverse_label": "has as part",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P4"
+  }
 }
 /**
  * SQL to create mock items

@@ -1,36 +1,17 @@
 
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { CdkPortal } from '@angular/cdk/portal';
-import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ListType, PanelTab } from '@kleiolab/lib-redux';
 import { SDKStorage } from '@kleiolab/lib-sdk-lb3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BasicService } from 'projects/app-toolbox/src/app/core/basic/basic.service';
+import { indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
-import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
-
-export interface TabLayoutComponentInterface {
-  t: TabLayout
-}
-
-@Directive({
-  selector: '[onActivateTab]'
-})
-export class OnActivateTabDirective {
-  @Input('onActivateTab') c: TabLayoutComponentInterface;
-
-  onActivateTab() {
-    this.c.t.onActivateTab()
-  }
-  beforeDeactivateTab() {
-    this.c.t.beforeDeactivateTab()
-  }
-}
 
 
 
@@ -40,78 +21,7 @@ export interface TabBody extends PanelTab<any> {
   tabIndex: number;
 }
 
-@Component({
-  selector: 'gv-tab-body',
-  template: `
-    <ng-container *cdkPortal>
-      <ng-content> </ng-content>
-    </ng-container>
-  `,
-})
-export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
-  @Input() active: boolean;
-  @Input() panelId: number;
-  @Input() panelBodies$: Observable<PanelBodyDirective[]>;
-
-  active$ = new Subject<boolean>();
-  panelId$ = new Subject<number>();
-  bodies$ = new Subject<PanelBodyDirective[]>();
-  destroy$ = new Subject<boolean>();
-
-  @ViewChild(CdkPortal, { static: true }) portal: CdkPortal;
-  @ContentChild(OnActivateTabDirective) child: OnActivateTabDirective;
-
-  private host: PanelBodyDirective;
-
-  constructor() {
-    combineLatest(this.active$, this.panelId$, this.bodies$).pipe(takeUntil(this.destroy$))
-      .subscribe(([active, panelId, panelBodies]) => {
-        // const oldHost = this.host;
-        const newHost = panelBodies.find(item => item.gvPanelId === panelId)
-
-        if (newHost && active) {
-          if (newHost.portal !== this.portal) {
-            // if host has attached detach it
-            if (newHost.hasAttached()) newHost.detach();
-            // if portal is attached detach it
-            if (this.portal.isAttached) this.portal.detach();
-            // attatch portal to new Host
-            newHost.attach(this.portal);
-            if (this.child) this.child.onActivateTab()
-          }
-        }
-
-        if (!active && this.host && this.host.hasAttached() && this.host.portal === this.portal) {
-          this.host.detach();
-        }
-
-        this.host = newHost;
-      })
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.active) {
-      this.active$.next(changes.active.currentValue)
-    }
-    if (changes.panelId) {
-      this.panelId$.next(changes.panelId.currentValue)
-    }
-  }
-  ngOnInit() {
-    this.panelBodies$.subscribe(d => {
-      this.bodies$.next(d);
-    })
-  }
-
-
-  ngOnDestroy(): void {
-    if (this.host) this.host.detach();
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-
-}
-
+export const getTabBodyKey = (b: TabBody) => b.path.join('');
 
 @Component({
   selector: 'gv-project-edit',
@@ -131,6 +41,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   beforeDestroy$ = new Subject<boolean>();
 
   allTabs$: Observable<TabBody[]>;
+  tabBodiesByKey$: Observable<{ [key: string]: TabBody }>;
   highlightPanel = {};
   tabDragging = false;
   panelBodies$ = new BehaviorSubject<PanelBodyDirective[]>([]);
@@ -185,6 +96,11 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
       return allTabs
     }))
 
+    this.tabBodiesByKey$ = this.allTabs$.pipe(
+      map(tabs => indexBy(tab => getTabBodyKey(tab), tabs)),
+      shareReplay({ refCount: true, bufferSize: 1 })
+    )
+
 
   }
 
@@ -209,7 +125,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   }
 
   trackByPath(index, item: TabBody) {
-    return item.path.join('');
+    return getTabBodyKey(item);
   }
 
   setHighlightPanel(i: number, area: string) {

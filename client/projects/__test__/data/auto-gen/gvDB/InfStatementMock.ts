@@ -411,6 +411,19 @@ export class InfStatementMock {
     fk_object_info: InfLanguageMock.ENGLISH.pk_entity,
   })
 
+
+  static readonly EXPR_PORTION_CHAPTER_1_IS_PART_OF_HABS_EMP_EXPR: OmitEntity<InfStatement> = ({
+    pk_entity: 3057,
+    fk_subject_info: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1317_IS_PART_OF.dfh_pk_property,
+    fk_object_info: InfResourceMock.HABS_EMP_EXPR.pk_entity,
+  })
+  static readonly EXPR_PORTION_CHAPTER_2_IS_PART_OF_EXPR_PORTION_CHAPTER_1: OmitEntity<InfStatement> = ({
+    pk_entity: 3058,
+    fk_subject_info: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_2.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1317_IS_PART_OF.dfh_pk_property,
+    fk_object_info: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity,
+  })
 }
 
 

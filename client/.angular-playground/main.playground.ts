@@ -2,8 +2,10 @@ import { NgReduxRouterModule } from '@angular-redux/router';
 import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReduxQueriesModule } from '@kleiolab/lib-queries';
@@ -39,6 +41,13 @@ buildModuleUrl.setBaseUrl('/assets/cesium/') // If youre using Cesium version >=
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODVhZjMzNC04ODE1LTRhZTYtYWMwMS0wOWZhZjUyYjQ1YTIiLCJpZCI6MTYyODgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NzAwOTE4NDR9.AKPArS_LoiwqgupddFnCqRoaq6IGA16MgzhSGZFlZ6c';
 
 
+@NgModule()
+export class MatIconRegistryModule {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3000/assets/mdi/mdi.svg'));
+  }
+}
+
 platformBrowserDynamic().bootstrapModule(PlaygroundModule
   .configure({
     selector: 'gv-root',
@@ -65,6 +74,9 @@ platformBrowserDynamic().bootstrapModule(PlaygroundModule
       AngularSplitModule.forRoot(),
       // MccColorPickerModule.forRoot({}),
       CookiesModule.forRoot(),
+
+      // only needed in playground
+      MatIconRegistryModule,
 
 
       // ??

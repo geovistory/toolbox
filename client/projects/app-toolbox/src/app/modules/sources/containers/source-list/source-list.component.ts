@@ -60,7 +60,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   ) {
     super();
     this.pkClassesOfAddBtn$ = this.sys.system_relevant_class$.by_required_by_sources$.all$.pipe(
-      first(d => !!d.true),
+      first(d => !!d?.true),
       map(reqBySource => U.obj2Arr(reqBySource.true).map(sysRelClass => sysRelClass.fk_class))
     )
   }

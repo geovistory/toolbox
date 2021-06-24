@@ -59,3 +59,37 @@
 
 <div #emptyItem>
 </div>
+<!--
+
+<p-tree [value]="primeNgTree$|async" class="mat-typography">
+  <ng-template let-node pTemplate="default">
+    <div class="gv-ct-node">
+
+      <div class="gv-ct-node-col gv-ct-label gv-fade-out-right">
+        <button *ngIf="node.data.expandable" mat-icon-button matTreeNodeToggle
+          [attr.aria-label]="'toggle ' + node.data.name">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <button *ngIf="!node.data.expandable" mat-icon-button [disabled]=true> </button>
+
+
+        <gv-content-tree-node-label [node]="node.data">
+        </gv-content-tree-node-label>
+      </div>
+
+
+      <gv-content-tree-node-type [node]="node.data" class="gv-ct-node-col gv-ct-type mat-text-secondary">
+      </gv-content-tree-node-type>
+
+      <div class="gv-ct-node-col gv-ct-button">
+        <gv-content-tree-node-options [node]="node.data" [isDigital]="node.data.isDigital"
+          [pkParent]="node.data.statement.fk_subject_info" [isAdmin]="isAdmin"
+          (clicked)="handleClick_nodeOptions($event)">
+        </gv-content-tree-node-options>
+      </div>
+    </div>
+  </ng-template>
+</p-tree>
+{{primeNgTree$|async|json:2}} -->

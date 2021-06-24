@@ -291,5 +291,26 @@ export class ProInfoProjRelMock {
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
+  static readonly PROJ_1_STMT_DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2035,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
 
+  static readonly PROJ_1_STMT_EXPR_PORTION_CHAPTER_1_IS_PART_OF_HABS_EMP_EXPR: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2036,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.EXPR_PORTION_CHAPTER_1_IS_PART_OF_HABS_EMP_EXPR.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+  static readonly PROJ_1_STMT_EXPR_PORTION_CHAPTER_2_IS_PART_OF_EXPR_PORTION_CHAPTER_1: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2037,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.EXPR_PORTION_CHAPTER_2_IS_PART_OF_EXPR_PORTION_CHAPTER_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
 }

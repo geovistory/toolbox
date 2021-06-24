@@ -2,4 +2,5 @@
   {{type}}
 </span>
 <gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.statement.fk_subject_info" [pkProperty]="1320"
-  [pkTypedClass]="503" [pkTypeClass]="516" [isOutgoing]="true" [loadOnInit]="true"></gv-type-item>
+  [pkTypedClass]="503" [pkTypeClass]="516" [isOutgoing]="true" [loadOnInit]="true"
+  [keepPageUntil$]="contentTree.destroy$"></gv-type-item>

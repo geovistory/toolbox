@@ -1,10 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ContentTreeNode } from '../content-tree/content-tree.component';
-import { Observable } from 'rxjs';
-import { SysConfig } from "@kleiolab/lib-config";
-import { latestVersion } from "@kleiolab/lib-utils";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { SysConfig } from '@kleiolab/lib-config';
+import { ContentTreeComponent, ContentTreeNode } from '../content-tree/content-tree.component';
 
 @Component({
   selector: 'gv-content-tree-node-type',
@@ -14,9 +10,9 @@ import { filter, map, shareReplay } from 'rxjs/operators';
 export class ContentTreeNodeTypeComponent implements OnInit {
 
   @Input() node: ContentTreeNode;
-
   type: string;
-  constructor(private p: ActiveProjectService) { }
+  constructor(public contentTree: ContentTreeComponent
+  ) { }
 
 
   ngOnInit() {

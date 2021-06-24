@@ -3,30 +3,44 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, DatSelector, InformationPipesService } from '@kleiolab/lib-queries';
-import { ByPk, InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { ContentTreeService, GvFieldPageReq, ImportTableResponse } from '@kleiolab/lib-sdk-lb4';
+import { SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ByPk } from '@kleiolab/lib-redux';
+import { DatDigital, GvFieldPageReq, ImportTableResponse, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { RepoService } from 'projects/app-toolbox/src/app/core/repo/repo.service';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/app/modules/data/components/importer/importer.component';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PaginationService } from '../../../base/services/pagination.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
+import { NgContentTreeService } from './content-tree.service';
+
+// interface PrimeNgNodeData {
+//   // the statement
+//   statement: InfStatement;
+
+//   // the name of the node, being tha favorite appellation of Expression Portion or some symbol for Digitals
+//   // name: string;
+
+//   // Wheter or not this node is a Digital and thus a leaf or a Expression Portion and thus not a leaf
+//   isDigital: boolean;
+
+//   pkEntity: number;
+
+//   digitalType?: number;
+
+//   pkDigital?: number
+//   datDigital?: DatDigital;
+// }
 
 /**
  * Food data with nested structure.
  * Each node has a name and an optiona list of children.
  */
-interface StatementNode {
+export interface StatementNode {
 
   // the statement
   statement: InfStatement;
@@ -64,10 +78,13 @@ export interface ContentTreeNode {
 
 
 
+export type DrageNodeOverArea = 'above' | 'center';
+
 @Component({
   selector: 'gv-content-tree',
   templateUrl: './content-tree.component.html',
-  styleUrls: ['./content-tree.component.scss']
+  styleUrls: ['./content-tree.component.scss'],
+  providers: [NgContentTreeService]
 })
 export class ContentTreeComponent implements OnInit, OnDestroy {
 
@@ -99,7 +116,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   dragNodeExpandOverWaitTimeMs = 300;
   dragNodeExpandOverNode: any;
   dragNodeExpandOverTime: number;
-  dragNodeExpandOverArea: string;
+  dragNodeExpandOverArea: DrageNodeOverArea;
   @ViewChild('emptyItem', { static: true }) emptyItem: ElementRef;
 
 
@@ -125,38 +142,31 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   digitals: { [key: number]: BehaviorSubject<{ id: number, advancement: number, infos: string }> } = {};
 
+  // primeNgTree$: Observable<TreeNode[]>
+
   constructor(
-    public p: ActiveProjectService,
-    public ap: ActiveProjectPipesService,
-    public a: ActiveAccountService,
-    private s: SchemaService,
-    private contentTree: ContentTreeService,
-    private r: RepoService,
-    private inf: InfActions,
-    private dat: DatSelector,
     private ref: ChangeDetectorRef,
-    private i: InformationPipesService,
     private dialog: MatDialog,
     private m: BaseModalsService,
+    private service: NgContentTreeService,
+    private p: SchemaSelectorsService,
     private pag: PaginationService,
-    private dataService: ReduxMainService
   ) { }
 
+  trackByFn(index: number, item: ContentTreeNode) {
+    return item.pkEntity + '_' + item.statement.pk_entity
+  }
   ngOnInit() {
     this.loading = true;
 
     // wait for pkEntity and fkClass of the source
-    combineLatest([this.pkEntity$, this.fkClass$, this.p.pkProject$]).pipe(
+    combineLatest([this.pkEntity$, this.fkClass$, this.service.pkProject$]).pipe(
       first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
     ).subscribe(([pkEntity, fkClass, pkProject]) => {
       this.loadRootEntity(pkEntity, fkClass, pkProject)
     })
 
-    // check if is admin ? (display importer or not)
-    this.a.isSystemAdmin()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(isAdmin => this.isAdmin = isAdmin);
   }
 
   /**
@@ -170,13 +180,15 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       this.rootIsF2Expression = true;
       this.fkPropertyFromSource = this.getFkPropertyFromSource(fkClass);
       this.sourceIsDomain = this.isSourceDomain(fkClass);
+      this.loadStatementToExpression(
+        pkProject,
+        pkEntity,
+        this.fkPropertyFromSource,
+        this.sourceIsDomain,
+        this.destroy$
+      )
+      this.pkExpression$ = this.pipeExpression(pkEntity, this.fkPropertyFromSource, this.sourceIsDomain)
 
-      if (this.sourceIsDomain) {
-        this.pkExpression$ = this.getExpressionWhereSourceIsDomain(pkEntity, pkProject);
-      }
-      else {
-        this.pkExpression$ = this.getExpressionWhereSourceIsRange(pkEntity, pkProject);
-      }
       this.pkRoot$ = this.pkExpression$;
     }
     else {
@@ -190,9 +202,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
       this.pkRoot = pkRoot;
       // load data recursive is part of / is reproduction of
-      this.s.storeGv(this.contentTree.contentTreeControllerGetContentTree(pkProject, pkRoot), pkProject)
-        .pipe(first(), takeUntil(this.destroy$)).subscribe(() => {
-          this.contentTree$ = this.observeChildren(pkRoot)
+      this.service.loadContentTree(pkProject, pkRoot)
+        .pipe(first(), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.contentTree$ = this.pipeChildren(pkRoot)
+          // this.primeNgTree$ = this.pipePrimeNgTree(pkRoot)
 
           this.contentTree$.pipe(distinctUntilChanged<StatementNode[]>(equals), takeUntil(this.destroy$))
             .subscribe((x) => {
@@ -213,156 +227,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
 
-
-
-
-
-  /**
-   * returns an observable string emitting the appellation of an expression portion
-   */
-  private labelOfEntity(pkExpressionPortion: number): Observable<string> {
-    return this.ap.streamEntityPreview(pkExpressionPortion).pipe(
-      map(p => p.entity_label)
-    );
-  }
-
-
-
-  private typeLabelOfExprPortion(pkExpressionPortion: number) {
-
-    const hasTypeStatement$ = this.i.pipeTypeOfEntity(
-      pkExpressionPortion,
-      DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE,
-      false
-    )
-
-    const pkType$ = hasTypeStatement$.pipe(
-      map(e => e ? e.fk_object_info : undefined)
-    )
-    const typeLabel$ = pkType$.pipe(
-      switchMap(pkType => this.labelOfEntity(pkType)),
-      startWith('[No Type]')
-    )
-
-    return typeLabel$;
-
-  }
-
-  observeChildren(pkRange): Observable<StatementNode[]> {
-    if (!pkRange) return new BehaviorSubject([])
-    return combineLatest([
-      this.p.inf$.statement$.by_object_and_property$({
-        fk_property: 1317,  // is part of
-        fk_object_info: pkRange
-      }),
-      this.p.inf$.statement$.by_object_and_property$({
-        fk_property: 1216,  // is reproduction of
-        fk_object_info: pkRange
-      })
-    ])
-      .pipe(
-        switchMap(([isPartOfStatements, isReproOfStatements]) => {
-
-          // Observe the children of this node
-          const sections$ = combineLatestOrEmpty(isPartOfStatements.map(statement => {
-            const node$: Observable<StatementNode> =
-              this.observeChildren(statement.fk_subject_info)
-                .pipe(
-                  map((children) => ({
-                    statement,
-                    isDigital: false,
-                    pkEntity: statement.fk_subject_info,
-                    pkDigital: undefined,
-                    children
-                  }))
-                );
-
-            return node$
-          }))
-
-          // Observe the leafs of this node
-          const digitals$ = combineLatestOrEmpty(isReproOfStatements.map(statement => {
-            const node$: Observable<StatementNode> = this.p.dat$.digital$.latestVersion(statement.fk_subject_data).pipe(
-              filter(x => !!x),
-              map(datDigital => ({
-                statement,
-                isDigital: true,
-                pkEntity: undefined,
-                pkDigital: statement.fk_subject_data,
-                datDigital,
-                children: []
-              }))
-            );
-
-            return node$
-          }))
-
-          return combineLatest([sections$, digitals$]).pipe(
-            map(([sections, digitals]) => [...sections, ...digitals])
-          )
-        }),
-      )
-  }
-
-
-  /**
-   * Returns an observable number with the
-   */
-  private getExpressionWhereSourceIsRange(pkEntity: number, pkProject: number): Observable<number> {
-    // this.inf.statement.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
-    this.loadStatementToExpression(pkProject, pkEntity, false);
-    return this.r.inf$.statement$
-      .by_object_and_property$(
-        {
-          fk_object_info: pkEntity,
-          fk_property: this.fkPropertyFromSource
-        },
-        false
-      )
-      .pipe(
-        tap((xs) => {
-          if (xs.length !== 1) console.warn('number of expressions must be one');
-        }),
-        filter((xs) => xs.length > 0),
-        map((x) => x[0].fk_subject_info)
-      );
-  }
-
-  private loadStatementToExpression(pkProject: number, pkEntity: number, isOutgoing: boolean) {
-    const fieldPage: GvFieldPageReq = {
-      pkProject,
-      page: {
-        isOutgoing,
-        property: { fkProperty: this.fkPropertyFromSource },
-        scope: { inProject: pkProject },
-        source: { fkInfo: pkEntity },
-        limit: 1,
-        offset: 0
-      },
-      targets: { [DfhConfig.CLASS_PK_EXPRESSION]: { entityPreview: 'true' } }
-    }
-    this.pag.addPageLoader(fieldPage, this.destroy$);
-  }
-
-  private getExpressionWhereSourceIsDomain(pkEntity: number, pkProject: number): Observable<number> {
-    this.loadStatementToExpression(pkProject, pkEntity, true);
-    // this.inf.statement.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
-    return this.r.inf$.statement$
-      .by_subject_and_property$(
-        {
-          fk_subject_info: pkEntity,
-          fk_property: this.fkPropertyFromSource
-        },
-        false
-      )
-      .pipe(
-        tap((xs) => {
-          // if (xs.length !== 1) console.warn('number of expressions must be one');
-        }),
-        filter((xs) => xs.length > 0),
-        map((x) => x[0].fk_object_info)
-      );
-  }
 
   private getFkPropertyFromSource(fkClass: number) {
     switch (fkClass) {
@@ -451,7 +315,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   handleDrop(event, dropNode: ContentTreeNode) {
     if (dropNode.isDigital) return;
 
-    combineLatest([this.p.pkProject$, this.pkExpression$])
+    combineLatest([this.service.pkProject$, this.pkExpression$])
       .pipe(first((x) => !x.includes(undefined)), takeUntil(this.destroy$)).subscribe(([pkProject, pkExpression]) => {
 
         event.preventDefault();
@@ -462,17 +326,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (this.parentOfDraggedChanged(dropNode, this.dragNode)) {
             // A: Yes. different parent. change the parent (and the order)
 
-            // remove the current statement from project
-            this.dataService.removeInfEntitiesFromProject([this.dragNode.statement.pk_entity], pkProject)
-
-            // find or create a new statement bewteen the dragged and the new parent
-            this.dataService.upsertInfStatementsWithRelations(pkProject,
-              [this.prepareNewEntityAssociatoin(dropNode, this.dragNode, pkExpression)])
+            // replace the current statement with new statement
+            const pkOldStatement = this.dragNode.statement.pk_entity
+            const newStatement = this.prepareNewStatement(dropNode, this.dragNode)
+            this.service.replaceStatement(pkProject, pkOldStatement, newStatement);
 
           }
 
-          // this.database.deleteItem(this.flatNodeMap.get(this.dragNode));
-          // this.treeControl.expandDescendants(this.nestedNodeMap.get(newItem));
         }
         this.dragNode = null;
         this.dragNodeExpandOverNode = null;
@@ -480,83 +340,54 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       })
   }
 
-  handleDragEnd(event) {
-    this.dragNode = null;
-    this.dragNodeExpandOverNode = null;
-    this.dragNodeExpandOverTime = 0;
-  }
-
-  prepareNewEntityAssociatoin(dropNode: ContentTreeNode, draggedNode: ContentTreeNode, pkExpression: number): InfStatement {
+  private prepareNewStatement(dropNode: ContentTreeNode, draggedNode: ContentTreeNode): InfStatement {
 
     let fk_object_info: number; // parent pk
-    let parentIsF2Expression: boolean;
-    let fk_property;
 
     if (this.dragNodeExpandOverArea === 'above') {
       // take the parent of the target node as new parent of the dragged node
       fk_object_info = dropNode.statement.fk_object_info;
-      parentIsF2Expression = (pkExpression == fk_object_info);
     }
-    //  else if (this.dragNodeExpandOverArea === 'below') {
-    // }
     else {
       // take the target node as new parent of the dragged node
       fk_object_info = dropNode.statement.fk_subject_info;
-    }
-
-
-    if (draggedNode.isDigital) {
-      fk_property = this.isReproProp(parentIsF2Expression);
-    } else {
-      fk_property = this.isPartOfProp(parentIsF2Expression);
     }
 
     return {
       fk_object_info,
       fk_subject_info: draggedNode.statement.fk_subject_info,
       fk_subject_data: draggedNode.statement.fk_subject_data,
-      fk_property
+      fk_property: draggedNode.statement.fk_property
     } as InfStatement;
   }
+  handleDragEnd(event) {
+    this.dragNode = null;
+    this.dragNodeExpandOverNode = null;
+    this.dragNodeExpandOverTime = 0;
+  }
+
 
   /**
    * returns the fk_property for 'is part of' depending on
    * wheter the range is an F2 Expression or geovC5 Expression Portion
    */
-  private isPartOfProp(parentIsF2Expression: boolean) {
+  private isPartOfProp() {
     return 1317;
-
-    // if (parentIsF2Expression) {
-    //   // geovC5 Expression portion -->geovP6 is part of -->	F2 Expression
-    //   return 1317;
-    // }
-    // else {
-    //   // geovC5 Expression portion -->geovP6 is part of --> geovC5 Expression portion
-    //   return 1328;
-    // }
   }
 
   /**
    * returns the fkProperty for 'is reproduction of' depending on
    * whether the range is an F2 Expression or geovC5 Expression Portion
    */
-  private isReproProp(parentIsF2Expression: boolean) {
+  private isReproProp() {
     return 1216;
-    // if (parentIsF2Expression) {
-    //   // geovC1 Digital	-->	geovP1 is reproduction of -->	F2 Expression
-    // return 1216;
-    // }
-    // else {
-    //   // geovC1 Digital	-->	geovP1 is reproduction of --> geovC5 Expression portion
-    //   return 1329;
-    // }
   }
 
   /**
    * When user adds a new text digital to the content tree
    */
   addText(pkParent: number, parentIsF2Expression = false) {
-    combineLatest([this.p.pkProject$, this.p.datNamespaces$]).pipe(
+    combineLatest([this.service.pkProject$, this.service.datNamespaces$]).pipe(
       first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
     ).subscribe(([pkProject, namespaces]) => {
@@ -572,31 +403,17 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         pk_text: undefined,
         quill_doc: undefined
       }
-      this.dat.digital.upsert([datDigital], pkNamespace)
-        .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-
-          if (resolved) {
-            // resolved.items[0].pk_entity
-
-            this.dataService.upsertInfStatementsWithRelations(
-              pkProject,
-              [{
-                fk_subject_data: resolved.items[0].pk_entity,
-                fk_object_info: pkParent,
-                fk_property: this.isReproProp(parentIsF2Expression)
-              } as InfStatement]
-            )
-
-          }
-        })
+      this.service.upsertText(datDigital, pkNamespace, pkProject, pkParent, parentIsF2Expression);
     })
   }
+
+
 
   /**
    * When user adds a new Expression Portion to the content tree
    */
   addExpressionPortion(pkParent: number, parentIsF2Expression = false) {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.service.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       this.m.openModalCreateOrAddEntity({
         notInProjectClickBehavior: 'addToProject',
@@ -609,34 +426,35 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
       }).subscribe((result) => {
 
-        this.dataService.loadInfResource(result.pkEntity, pkProject)
+        this.service.loadResource(result.pkEntity, pkProject)
 
-        this.dataService.upsertInfStatementsWithRelations(
+
+        this.service.upsertInfStatementsWithRelations(
           pkProject,
           [{
             fk_subject_info: result.pkEntity,
             fk_object_info: pkParent,
-            fk_property: this.isPartOfProp(parentIsF2Expression)
-          } as InfStatement])
+            fk_property: this.isPartOfProp()
+          }])
 
       })
     })
   }
 
-  addTable(pkParent: number, parentIsF2Expression = false) {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+  addTable(pkParent: number) {
+    this.service.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       const apiCall = (response: ImportTableResponse) => {
-        const a$ = this.dataService.upsertInfStatementsWithRelations(
+        const a$ = this.service.upsertInfStatementsWithRelations(
           pkProject,
           [{
             fk_subject_data: response.fk_digital,
             fk_object_info: pkParent,
-            fk_property: this.isReproProp(parentIsF2Expression)
-          } as InfStatement]
+            fk_property: this.isReproProp()
+          }]
         ).pipe(map(r => r ? response : undefined));
 
-        const b$ = this.dat.digital.loadVersion(response.fk_digital).resolved$;
+        const b$ = this.service.loadDigital(response.fk_digital);
 
         return combineLatest([a$, b$]).pipe(map((vals) => vals[0]))
       }
@@ -693,10 +511,10 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         .afterClosed()
         .subscribe(confirmed => {
           if (confirmed) {
-            this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+            this.service.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
               // remove the current statement from project
-              this.dataService.removeInfEntitiesFromProject([node.statement.pk_entity], pkProject)
+              this.service.removeInfEntitiesFromProject([node.statement.pk_entity], pkProject)
 
             })
           }
@@ -718,18 +536,15 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
   openText(node: ContentTreeNode) {
-    this.p.addTextTab(node.statement.fk_subject_data)
+    this.service.openText(node)
   }
 
   openTable(node: ContentTreeNode) {
-    this.p.addTableTab(node.statement.fk_subject_data)
+    this.service.openTable(node)
   }
 
   openExpressionPortion(node: ContentTreeNode) {
-    this.p.addEntityTab(
-      node.statement.fk_subject_info,
-      DfhConfig.CLASS_PK_EXPRESSION_PORTION,
-    )
+    this.service.openExpressionPortion(node)
   }
 
 
@@ -762,9 +577,189 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         data.addExpressionPortion.pkParent, data.addExpressionPortion.parentIsF2Expression
       );
     }
-    if (data.addText) this.addText(data.addText.pkParent, data.addText.parentIsF2Expression);
-    if (data.addTable) this.addTable(data.addTable.pkParent, data.addTable.parentIsF2Expression);
+    if (data.addText) this.addText(data.addText.pkParent);
+    if (data.addTable) this.addTable(data.addTable.pkParent);
     if (data.removeStatement) this.removeStatement(data.removeStatement);
   }
 
+
+  /**
+   *
+   * @param pkSource the source entity = expression portion / source (manifestation singleton etc.)
+   * @param fkProperty the fkProperty connecting source entity and expression
+   * @param isOutgoing the direction of the property (true if source entity is subject)
+   */
+  pipeExpression(pkSource: number, fkProperty: number, isOutgoing: boolean): Observable<number> {
+
+    // TODO: instead of this custom implementation, we could use InformationPipeService.pipePage() ??
+    let selector$: Observable<InfStatement[]>;
+    let mapper: (x: InfStatement[]) => number;
+    if (isOutgoing) {
+      selector$ = this.p.inf$.statement$.by_subject_and_property$(
+        { fk_subject_info: pkSource, fk_property: fkProperty }, false);
+      mapper = (x) => x[0].fk_object_info
+    } else {
+      selector$ = this.p.inf$.statement$.by_object_and_property$(
+        { fk_object_info: pkSource, fk_property: fkProperty }, false);
+      mapper = (x) => x[0].fk_subject_info
+    }
+
+    return selector$.pipe(
+      tap((xs) => {
+        if (xs.length !== 1) console.warn('number of expressions must be one');
+      }),
+      filter((xs) => xs.length > 0),
+      map(mapper)
+    );
+  }
+
+  pipeChildren(pkObject): Observable<StatementNode[]> {
+    if (!pkObject) return new BehaviorSubject([])
+    return combineLatest([
+      this.p.inf$.statement$.by_object_and_property$({
+        fk_property: 1317,  // is part of
+        fk_object_info: pkObject
+      }),
+      // .pipe(startWith([])),
+      this.p.inf$.statement$.by_object_and_property$({
+        fk_property: 1216,  // is reproduction of
+        fk_object_info: pkObject
+      })
+      // .pipe(startWith([])),
+    ])
+      .pipe(
+        switchMap(([isPartOfStatements, isReproOfStatements]) => {
+
+          // Observe the children of this node
+          const sections$ = combineLatestOrEmpty(isPartOfStatements.map(statement => {
+            const node$: Observable<StatementNode> =
+              this.pipeChildren(statement.fk_subject_info)
+                .pipe(
+                  map((children) => ({
+                    statement,
+                    isDigital: false,
+                    pkEntity: statement.fk_subject_info,
+                    pkDigital: undefined,
+                    children
+                  }))
+                );
+
+            return node$
+          }))
+
+          // Observe the leafs of this node
+          const digitals$ = combineLatestOrEmpty(isReproOfStatements.map(statement => {
+            const node$: Observable<StatementNode> = this.p.dat$.digital$.latestVersion(statement.fk_subject_data).pipe(
+              filter(x => !!x),
+              map(datDigital => ({
+                statement,
+                isDigital: true,
+                pkEntity: undefined,
+                pkDigital: statement.fk_subject_data,
+                datDigital,
+                children: []
+              }))
+            );
+
+            return node$
+          }))
+
+          return combineLatest([sections$, digitals$]).pipe(
+            map(([sections, digitals]) => [...sections, ...digitals])
+          )
+        }),
+      )
+  }
+
+
+  // pipePrimeNgTree(pkObject: number): Observable<TreeNode<PrimeNgNodeData>[]> {
+  //   if (!pkObject) return new BehaviorSubject([])
+  //   return combineLatest([
+  //     this.p.inf$.statement$.by_object_and_property$({
+  //       fk_property: 1317,  // is part of
+  //       fk_object_info: pkObject
+  //     }).pipe(startWith([] as InfStatement[])),
+  //     this.p.inf$.statement$.by_object_and_property$({
+  //       fk_property: 1216,  // is reproduction of
+  //       fk_object_info: pkObject
+  //     }).pipe(startWith([] as InfStatement[])),
+  //   ])
+  //     .pipe(
+  //       switchMap(([isPartOfStatements, isReproOfStatements]) => {
+  //         // Observe the children of this node
+  //         const sections$ = combineLatestOrEmpty(isPartOfStatements.map(statement => {
+
+  //           const node$: Observable<TreeNode<PrimeNgNodeData>> =
+  //             this.pipePrimeNgTree(statement.fk_subject_info)
+  //               .pipe(
+  //                 map((children) => {
+  //                   const n: TreeNode<PrimeNgNodeData> = {
+  //                     key: statement.pk_entity.toString(),
+  //                     data: {
+  //                       statement,
+  //                       isDigital: false,
+  //                       pkEntity: statement.fk_subject_info,
+  //                       pkDigital: undefined,
+  //                     },
+  //                     children
+  //                   }
+  //                   return n
+  //                 })
+  //               );
+
+  //           return node$
+  //         }))
+
+  //         // Observe the leafs of this node
+  //         const digitals$ = combineLatestOrEmpty(isReproOfStatements.map(statement => {
+  //           const node$: Observable<TreeNode<PrimeNgNodeData>> = this.p.dat$.digital$.latestVersion(statement.fk_subject_data).pipe(
+  //             filter(x => !!x),
+  //             map(datDigital => {
+  //               const n: TreeNode<PrimeNgNodeData> = {
+  //                 key: statement.pk_entity.toString(),
+  //                 data: {
+  //                   statement,
+  //                   isDigital: true,
+  //                   pkEntity: undefined,
+  //                   pkDigital: statement.fk_subject_data,
+  //                   datDigital
+  //                 },
+  //                 children: []
+  //               }
+  //               return n
+  //             })
+  //           );
+
+  //           return node$
+  //         }))
+
+  //         return combineLatest([sections$, digitals$]).pipe(
+  //           map(([sections, digitals]) => [...sections, ...digitals])
+  //         )
+  //       }),
+  //     )
+  // }
+
+
+  loadStatementToExpression(
+    pkProject: number,
+    pkEntity: number,
+    fkProperty: number,
+    isOutgoing: boolean,
+    destroy$: Observable<boolean>
+  ) {
+    const fieldPage: GvFieldPageReq = {
+      pkProject,
+      page: {
+        isOutgoing,
+        property: { fkProperty },
+        scope: { inProject: pkProject },
+        source: { fkInfo: pkEntity },
+        limit: 1,
+        offset: 0
+      },
+      targets: { [DfhConfig.CLASS_PK_EXPRESSION]: { entityPreview: 'true' } }
+    }
+    this.pag.addPageLoader(fieldPage, destroy$);
+  }
 }
