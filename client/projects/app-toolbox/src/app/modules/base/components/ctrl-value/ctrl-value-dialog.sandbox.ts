@@ -57,9 +57,11 @@ const dimensionClass = 689
 const langStringVOT: SysConfigValueObjectType = { langString: 'true' };
 const langStringClass = 657
 const timePrimitiveVOT: SysConfigValueObjectType = { timePrimitive: 'true' };
-const timePrimitiveClass = 335
-export default sandboxOf(SandBoxButtonComponent, {
-  declareComponent: true,
+const timePrimitiveClass = 335;
+
+export default sandboxOf(CtrlValueDialogComponent, {
+  declareComponent: false,
+  declarations: [SandBoxButtonComponent],
   imports: [
     InitStateModule,
     BaseModule
@@ -146,5 +148,5 @@ export default sandboxOf(SandBoxButtonComponent, {
     },
     template: `
     <gv-init-state [schemaObjects]="schemaObjects" [initState]="initState"></gv-init-state>
-    <gv-sandbox-button [vot]="langStringVOT" [pkClass]="langStringClass" [value]="langString" [pkProject]="pkProject"></gv-sandbox-button>
+    <gv-sandbox-button [vot]="timePrimitiveVOT" [pkClass]="timePrimitiveClass" [value]="timePrimitive" [pkProject]="pkProject"></gv-sandbox-button>
     `})
