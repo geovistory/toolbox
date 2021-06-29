@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
             else {
               this.errorMessage = 'Login not possible.';
             }
-            this.stopLoading()
+            this.completeLoading()
           },
 
         )
