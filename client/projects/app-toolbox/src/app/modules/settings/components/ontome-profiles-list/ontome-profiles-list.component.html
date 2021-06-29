@@ -6,7 +6,7 @@
   <p>
     The following table shows OntoMe Profiles ready to be activated in your Geovistory project.
     (See the full list of profiles on
-    <a href="https://ontome.dataforhistory.org/profile" target="_blank"> OntoMe </a>.)
+    <a [href]="ontomeUrl + '/profile'" target="_blank"> OntoMe </a>.)
   </p>
   <p>
     Click on 'Activate...' to go on with the activation of a profile.
@@ -19,7 +19,7 @@
         <td mat-cell *matCellDef="let element">
           <button mat-icon-button (click)="expandedElement = expandedElement === element ? null : element">
             <mat-icon class="mat-icon-rtl-mirror">
-              {{expandedElement === element  ? 'expand_more' : 'chevron_right'}}
+              {{expandedElement === element ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
           </button>
         </td>
@@ -31,7 +31,7 @@
       <ng-container matColumnDef="owner">
         <th mat-header-cell *matHeaderCellDef> Managed By </th>
         <td mat-cell *matCellDef="let element">
-          <a [attr.href]="'http://ontome.dataforhistory.org/project/' + element.ownerId" target="_blank">
+          <a [attr.href]="ontomeUrl + '/project/' + element.ownerId" target="_blank">
             OntoMe-Project #{{element.ownerId}}
           </a>
         </td>
@@ -39,7 +39,7 @@
       <ng-container matColumnDef="ontomeLink">
         <th mat-header-cell *matHeaderCellDef> Documentation Link </th>
         <td mat-cell *matCellDef="let element">
-          <a [attr.href]="'http://ontome.dataforhistory.org/profile/' + element.profileId" target="_blank">
+          <a [attr.href]="ontomeUrl + '/profile/' + element.profileId" target="_blank">
             Documentation on OntoMe
           </a>
         </td>

@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { SysConfig } from '@kleiolab/lib-config';
 import { ActivationReportItem } from '../../../../../../../../../server/src/lb3/common/interfaces/profile-activation-report.interface';
 
 @Component({
@@ -14,6 +15,7 @@ export class ActivationReportItemsTableComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'identifierInNamespace', 'label'];
   dataSource = new MatTableDataSource<ActivationReportItem>();
+  ontomeUrl = SysConfig.ONTOME_URL
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 

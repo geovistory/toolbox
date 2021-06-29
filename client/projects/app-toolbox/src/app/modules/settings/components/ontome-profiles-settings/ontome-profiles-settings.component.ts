@@ -1,19 +1,19 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { DfhConfig, SysConfig } from "@kleiolab/lib-config";
+import { DfhProfile } from "@kleiolab/lib-sdk-lb4";
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
 import { TabLayoutComponentInterface } from 'projects/app-toolbox/src/app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
-import { Subject, Observable, of, combineLatest } from 'rxjs';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { first, takeUntil, switchMap, map, filter } from 'rxjs/operators';
 import { values } from 'ramda';
-import { DfhConfig } from "@kleiolab/lib-config";
-import { MatDialog } from '@angular/material';
-import { OntomeProfilesListDialogComponent } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { OntomeProfileDeactivationReportDialogComponent, OntomeProfileDeactivationReportDialogData } from '../ontome-profile-deactivation-report-dialog/ontome-profile-deactivation-report-dialog.component';
-import { OntomeProfileUpdateDialogData, OntomeProfileUpdateDialogComponent } from '../ontome-profile-update-dialog/ontome-profile-update-dialog.component';
-import { DfhProfile } from "@kleiolab/lib-sdk-lb4";
+import { OntomeProfileUpdateDialogComponent, OntomeProfileUpdateDialogData } from '../ontome-profile-update-dialog/ontome-profile-update-dialog.component';
+import { OntomeProfilesListDialogComponent } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
 export interface ProfileItem {
   label: string;
   ownerId: number;
@@ -53,6 +53,8 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   dataSource$: Observable<ProfileItem[]>;
   columnsToDisplay = ['expand', 'label', 'owner', 'ontomeLink', 'deactivate', 'update'];
   expandedElement: ProfileItem | null;
+
+  ontomeUrl = SysConfig.ONTOME_URL;
 
   constructor(
     public ref: ChangeDetectorRef,

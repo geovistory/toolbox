@@ -90,11 +90,7 @@
       </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <gv-onto-class-info [pkClass]="element.pkClass"></gv-onto-class-info>
-        <!-- <a [attr.href]="'https://ontome.dataforhistory.org/class/' + element.pkClass" target="_blank"
-          (click)="$event.target.stopPropagation()">
-          <span [innerHtml]="element.identifier_in_namespace"></span>
-          <mat-icon inline="true">open_in_new</mat-icon>
-        </a> -->
+
       </td>
     </ng-container>
 
@@ -116,7 +112,7 @@
         <div class="d-flex align-items-center">
           <mat-menu #appMenu="matMenu">
             <a *ngFor="let profile of element.profiles" mat-menu-item
-              [attr.href]="'http://ontome.dataforhistory.org/profile/' + profile.fkProfile" target="_blank">
+              [attr.href]="ontomeURL + '/profile/' + profile.fkProfile" target="_blank">
               {{profile.label}}
               <mat-icon color="warn" *ngIf="profile.removedFromApi" svgIcon="alert"
                 matTooltip="This class has been removed from the profile on OntoMe."></mat-icon>

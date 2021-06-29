@@ -6,6 +6,12 @@
  */
 export class SysConfig {
 
+  /***********************
+  * Remote Servives
+  ************************/
+
+  // Ontome URL (base url)
+  static readonly ONTOME_URL = 'https://ontome.net'
 
   /***********************
    * Ui Contexts

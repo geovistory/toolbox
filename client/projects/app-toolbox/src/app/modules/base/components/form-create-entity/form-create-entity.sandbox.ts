@@ -1,4 +1,5 @@
 import { FormsModule } from '@angular/forms';
+import { SysConfig } from '@kleiolab/lib-config/public-api';
 import { sandboxOf } from 'angular-playground';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
@@ -372,7 +373,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'at distance',
         listType: 'dimension',
         ontoInfoLabel: 'P14',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1183',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1183',
         property: { pkProperty: 1183 },
         targetClass: 52,
         sourceClass: 212,
@@ -413,7 +414,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'Was present at',
         listType: 'place',
         ontoInfoLabel: 'P167',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/148',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/148',
         property: { pkProperty: 148 },
         targetClass: 51,
         sourceClass: 84,
@@ -455,7 +456,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'Spelling',
         listType: 'appellation',
         ontoInfoLabel: 'histP11',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1113',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1113',
         property: { pkProperty: 1113 },
         targetClass: 40,
         sourceClass: 365,
@@ -494,7 +495,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'Used in Language',
         listType: 'language',
         ontoInfoLabel: 'histP10',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1112',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1112',
         property: { pkProperty: 1112 },
         targetClass: 54,
         sourceClass: 365,
@@ -572,7 +573,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'has departure place',
         listType: 'entity-preview',
         ontoInfoLabel: 'P1',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1335',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1335',
         property: { pkProperty: 1335 },
         sourceClass: 523,
         targetClass: 363,
@@ -608,7 +609,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'stems from',
         listType: 'temporal-entity',
         ontoInfoLabel: 'P41',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1435',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1435',
         property: { pkProperty: 1435 },
         sourceClass: 67,
         targetClass: 633,

@@ -14,12 +14,12 @@
       <th mat-header-cell *matHeaderCellDef> short identifier </th>
       <td mat-cell *matCellDef="let element">
 
-        <a *ngIf="category=='property'" class="badge badge-success"
-          [attr.href]="'https://ontome.dataforhistory.org/property/' + element.id" target="_blank">
+        <a *ngIf="category=='property'" class="badge badge-success" [attr.href]="ontomeUrl + '/property/' + element.id"
+          target="_blank">
           {{element.identifierInNamespace}}
         </a>
-        <a *ngIf="category=='class'" class="badge badge-success"
-          [attr.href]="'https://ontome.dataforhistory.org/class/' + element.id" target="_blank">
+        <a *ngIf="category=='class'" class="badge badge-success" [attr.href]="ontomeUrl + '/class/' + element.id"
+          target="_blank">
           {{element.identifierInNamespace}}
         </a>
 
