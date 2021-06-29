@@ -21,7 +21,7 @@ export default sandboxOf(FgPlaceComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-          <gv-fg-place #c [appearance]="'fill'"></gv-fg-place>
+          <gv-fg-place #c [appearance]="'outline'"></gv-fg-place>
       </div>
       <div>
           <button (click)="c.focusOnCtrlLat()" >focus on lat</button>

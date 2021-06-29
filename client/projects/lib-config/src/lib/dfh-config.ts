@@ -32,8 +32,11 @@ export class DfhConfig {
   // dfh_pk_property used to connect an appellation use with an entity
   static PROPERTY_PK_IS_APPELLATION_OF = 1111;
 
-  // // dfh_pk_property used to connect an appellation use with an appellation
-  // static PROPERTY_PK_R64_USED_NAME = 1113;
+  static PROPERY_PK_P12_USED_IN_LANGUAGE = 1112;
+  // dfh_pk_property used to connect an appellation use with an appellation
+  static PROPERTY_PK_P13_REFERS_TO_NAME = 1113;
+
+  static PROPERTY_PK_P14_HAS_APPELLATION_FOR_LANGUAGE_TYPE = 1430
 
   // // dfh_pk_property has section
   // static PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR = 1016;
@@ -89,6 +92,7 @@ export class DfhConfig {
 
   // dfh_pk_class of appellation use
   static CLASS_PK_APPELLATION_FOR_LANGUAGE = 365;
+  static CLASS_PK_APPELLATION_FOR_LANGUAGE_TYPE = 630;
 
   // dfh_pk_class of appellation
   static CLASS_PK_APPELLATION = 40;

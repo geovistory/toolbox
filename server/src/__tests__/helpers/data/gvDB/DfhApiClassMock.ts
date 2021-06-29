@@ -583,7 +583,27 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C2"
-}
+  }
+  static readonly EN_630_APPELLATION_IN_A_LANGUAGE_TYPE: DfhApiClass = {
+    "pk_entity": 6943,
+    "dfh_pk_class": 630,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Appellation in a language type",
+    "dfh_fk_namespace": 3,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of the C7 Appellation in a language (Temporal Entity) class.",
+    "tmsp_last_modification": "2021-06-16T15:05:55.324026+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C12"
+  }
 }
 
 

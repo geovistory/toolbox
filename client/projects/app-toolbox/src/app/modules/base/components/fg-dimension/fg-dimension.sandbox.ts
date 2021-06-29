@@ -1,12 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { sandboxOf } from 'angular-playground';
-import { InfDimension } from '@kleiolab/lib-sdk-lb3';
 import { DfhConfig } from "@kleiolab/lib-config";
+import { InfDimension } from '@kleiolab/lib-sdk-lb3';
+import { sandboxOf } from 'angular-playground';
+import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { FgDimensionComponent } from './fg-dimension.component';
-import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 
 const pkProject = 591;
 
@@ -35,7 +35,7 @@ export default sandboxOf(FgDimensionComponent, {
 
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-          <gv-fg-dimension #c [appearance]="'fill'" [initVal$]="initVal$" [pkClassOfDimension]="709"></gv-fg-dimension>
+          <gv-fg-dimension #c [appearance]="'outline'" [initVal$]="initVal$" [pkClassOfDimension]="709"></gv-fg-dimension>
       </div>
       <div>
           <button (click)="c.focusOnCtrlNumber()" >focus on number</button>

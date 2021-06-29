@@ -1,11 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { sandboxOf } from 'angular-playground';
+import { DfhConfig } from '@kleiolab/lib-config';
 import { InfLangString } from '@kleiolab/lib-sdk-lb3';
-import { DfhConfig } from "@kleiolab/lib-config";
+import { sandboxOf } from 'angular-playground';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { FgLangStringComponent } from './fg-lang-string.component';
+
 
 
 export default sandboxOf(FgLangStringComponent, {
@@ -30,7 +31,7 @@ export default sandboxOf(FgLangStringComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-          <gv-fg-lang-string #c [appearance]="'fill'" [initVal$]="initVal$"></gv-fg-lang-string>
+          <gv-fg-lang-string #c [appearance]="'outline'" [initVal$]="initVal$"></gv-fg-lang-string>
       </div>
       <div>
           <button (click)="c.focusOnCtrlText()" >focus on text</button>

@@ -32,6 +32,7 @@ import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dia
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntityFieldComponent } from './components/entity-field/entity-field.component';
 import { EntityWithFieldsComponent } from './components/entity-with-fields/entity-with-fields.component';
+import { FgAppellationTeEnComponent } from './components/fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from './components/fg-place/fg-place.component';
@@ -81,6 +82,7 @@ const components = [
   FgPlaceComponent,
   FgLangStringComponent,
   FgDimensionComponent,
+  FgAppellationTeEnComponent,
   SubfieldComponent,
   SubfieldDialogComponent,
   FieldLabelComponent,
