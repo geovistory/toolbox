@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ProConfig } from '@kleiolab/lib-config';
+import { ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntityType, IAppState, ProjectSettingsData, RootEpics } from '@kleiolab/lib-redux';
 import { ProDfhClassProjRel, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
@@ -152,7 +152,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
   t: TabLayout;
 
-
+  ontomeURL = SysConfig.ONTOME_URL;
 
   constructor(
     protected rootEpics: RootEpics,

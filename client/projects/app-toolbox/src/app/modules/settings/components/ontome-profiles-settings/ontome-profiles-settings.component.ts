@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig } from '@kleiolab/lib-config';
+import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
@@ -53,6 +53,8 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   dataSource$: Observable<ProfileItem[]>;
   columnsToDisplay = ['expand', 'label', 'owner', 'ontomeLink', 'deactivate', 'update'];
   expandedElement: ProfileItem | null;
+
+  ontomeUrl = SysConfig.ONTOME_URL;
 
   constructor(
     public ref: ChangeDetectorRef,

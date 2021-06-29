@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { DfhConfig } from '@kleiolab/lib-config';
+import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { indexBy } from 'ramda';
@@ -39,6 +39,7 @@ export class OntomeProfilesListComponent implements OnInit {
 
   enabledProfiles$: Observable<{ [key: number]: number }>
 
+  ontomeUrl = SysConfig.ONTOME_URL;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(
@@ -69,7 +70,7 @@ export class OntomeProfilesListComponent implements OnInit {
 
 
     this.loading = true;
-    this.http.get(`https://ontome.dataforhistory.org/api/profiles.json?lang=en&selected-by-project=6`)
+    this.http.get(this.ontomeUrl + `/api/profiles.json?lang=en&selected-by-project=6`)
       .pipe(takeUntil(this.destroy$))
       .subscribe((response: ApiProfile[]) => {
 

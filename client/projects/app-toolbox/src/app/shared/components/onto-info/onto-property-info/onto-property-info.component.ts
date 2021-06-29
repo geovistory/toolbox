@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { map, filter } from 'rxjs/operators';
 import { values } from 'ramda';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-onto-property-info',
@@ -13,6 +14,7 @@ export class OntoPropertyInfoComponent implements OnInit {
   @Input() pkProperty: number;
   url: string
   label$: Observable<string>
+  ontomeUrl = SysConfig.ONTOME_URL
 
   constructor(public p: ActiveProjectService) { }
 
@@ -21,6 +23,6 @@ export class OntoPropertyInfoComponent implements OnInit {
     this.label$ = property$.pipe(map((c) => {
       return values(c)[0].identifier_in_namespace
     }))
-    this.url = 'https://ontome.dataforhistory.org/property/' + this.pkProperty
+    this.url = this.ontomeUrl + '/property/' + this.pkProperty
   }
 }

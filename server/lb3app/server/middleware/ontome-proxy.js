@@ -21,7 +21,7 @@ function ontoMeProxy() {
 
   return function(req, res) {
     var q = req.query;
-    var remoteUrl = 'https://ontome.dataforhistory.org/api/profiles.json/';
+    var remoteUrl = 'https://ontome.net/api/profiles.json/';
 
     request.get(
       {
