@@ -1,9 +1,10 @@
-import {model, property, Entity, hasMany, belongsTo} from '@loopback/repository';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
+import {PartialDeep} from 'type-fest';
 import {InfEntity} from '.';
-import {InfStatement} from './inf-statement.model';
-import {InfLanguage} from './inf-language.model';
-import {QuillDoc} from './quill-doc/quill-doc.model';
 import {GvLoopbackEntity} from '../utils/GvLoopbackEntity';
+import {InfLanguage} from './inf-language.model';
+import {InfStatement} from './inf-statement.model';
+import {QuillDoc} from './quill-doc/quill-doc.model';
 
 @model({
   settings: {
@@ -48,7 +49,7 @@ export class InfLangString extends GvLoopbackEntity implements InfEntity {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // [prop: string]: any;
 
-  constructor(data?: Partial<InfLangString>) {
+  constructor(data?: PartialDeep<InfLangString>) {
     super(data);
   }
 }
