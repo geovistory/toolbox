@@ -1,3 +1,5 @@
+import {DfhApiProfile} from '../../../../models';
+
 /**
  * this class mirrors {Entity} from '@loopback/repository'
  */
@@ -82,3 +84,9 @@ export interface DfhApiProperty {
 
 
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
+
+export interface OntomeProfileMock {
+    profile: OmitEntity<DfhApiProfile>,
+    properties: Partial<DfhApiProperty>[],
+    classes: Partial<DfhApiClass>[],
+  }

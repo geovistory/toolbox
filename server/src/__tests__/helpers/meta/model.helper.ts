@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { DfhApiProfile, InfLanguage } from '../../../models';
 import { createDfhApiClass } from '../atomic/dfh-api-class.helper';
 import { createDfhApiProfile } from '../atomic/dfh-api-profile.helper';

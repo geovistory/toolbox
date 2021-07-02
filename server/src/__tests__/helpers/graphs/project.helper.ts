@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { DatNamespace, ProProject } from '../../../models';
 import * as AtmNamespace from '../atomic/dat-namespace.helper';
 import { createDatNamespace } from '../atomic/dat-namespace.helper';
