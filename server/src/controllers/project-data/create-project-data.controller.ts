@@ -3,11 +3,13 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
-import {DataObject, repository} from '@loopback/repository';
+import {repository} from '@loopback/repository';
 import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
+import {PartialDeep} from 'type-fest';
 import {Roles} from '../../components/authorization';
+import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
@@ -125,7 +127,11 @@ export class CreateProjectDataController {
 
 
 
-  async findOrCreateResourceWithRelations(resource: InfResourceWithRelations, project: number): Promise<InfResourceWithRelations> {
+  async findOrCreateResourceWithRelations(resource: PartialDeep<InfResourceWithRelations>, project: number): Promise<InfResourceWithRelations> {
+
+
+    // manage adding of hidden F2 Expression for sources
+    addOfF2Expression(resource);
 
     // find or create the resource and its project relations
     const promisedResource = resource.pk_entity ?
@@ -138,14 +144,18 @@ export class CreateProjectDataController {
     // find or create the statements and their project relations
     if (resource.outgoing_statements) {
       for (const statement of resource.outgoing_statements) {
-        statement.fk_subject_info = returnedResource.pk_entity;
-        await this.findOrCreateStatementWithRelations(statement, project);
+        if (statement) {
+          statement.fk_subject_info = returnedResource.pk_entity;
+          await this.findOrCreateStatementWithRelations(statement, project);
+        }
       }
     }
     if (resource.incoming_statements) {
       for (const statement of resource.incoming_statements) {
-        statement.fk_object_info = returnedResource.pk_entity;
-        await this.findOrCreateStatementWithRelations(statement, project);
+        if (statement) {
+          statement.fk_object_info = returnedResource.pk_entity;
+          await this.findOrCreateStatementWithRelations(statement, project);
+        }
       }
     }
 
@@ -157,7 +167,7 @@ export class CreateProjectDataController {
 
 
 
-  private async findResourceAndUpsertProjectRel(resourceWithRels: InfResourceWithRelations, fkProject: number) {
+  private async findResourceAndUpsertProjectRel(resourceWithRels: PartialDeep<InfResourceWithRelations>, fkProject: number) {
     const returnedResource = await this.infResourceRepository.findById(resourceWithRels.pk_entity);
     if (!returnedResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not find resource with id ${resourceWithRels.pk_entity}`)
     const override = resourceWithRels?.entity_version_project_rels?.[0] ?? {}
@@ -180,7 +190,7 @@ export class CreateProjectDataController {
    *               only fk_project can't be modified this way.
    * @param fkProject the project to relate the entity to
    */
-  async createResourceAndProjectRel(resourceWithRels: InfResourceWithRelations, fkProject: number) {
+  async createResourceAndProjectRel(resourceWithRels: PartialDeep<InfResourceWithRelations>, fkProject: number) {
     const {pk_entity, fk_class} = resourceWithRels;
     const createdResource = await this.infResourceRepository.create({pk_entity, fk_class});
     if (!createdResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not create resource ${JSON.stringify(resourceWithRels)}`)
@@ -199,8 +209,8 @@ export class CreateProjectDataController {
   }
 
 
-  private async upsertInfoProjRel(fkEntity: number, override: Partial<ProInfoProjRel> = {}, fkProject: number) {
-    const dataObject: DataObject<ProInfoProjRel> = {
+  private async upsertInfoProjRel(fkEntity: number, override: PartialDeep<ProInfoProjRel> = {}, fkProject: number) {
+    const dataObject: PartialDeep<ProInfoProjRel> = {
       // defaults:
       fk_entity: fkEntity,
       is_in_project: true,
@@ -231,7 +241,7 @@ export class CreateProjectDataController {
     })
   }
 
-  async findOrCreateStatementWithRelations(statementWithRels: InfStatementWithRelations, project: number) {
+  async findOrCreateStatementWithRelations(statementWithRels: PartialDeep<InfStatementWithRelations>, project: number) {
     const subject = await this.getStatementSubject(project, statementWithRels);
     const object = await this.getStatementObject(project, statementWithRels);
     const dataObject = this.cloneInfStatementWithoutRelations({
@@ -270,7 +280,7 @@ export class CreateProjectDataController {
  * @param {*} pkProject
  * @param {*} stmt
  */
-  async getStatementSubject(pkProject: number, stmt: InfStatementWithRelations) {
+  async getStatementSubject(pkProject: number, stmt: PartialDeep<InfStatementWithRelations>) {
 
     const stmtSubFk: InfStatementSubjectFks = {}
     const stmtSubVal: InfStatementSubjectValues = {}
@@ -335,7 +345,7 @@ export class CreateProjectDataController {
    * @param {*} stmt
    * @param {*} ctxWithoutBody
    */
-  async getStatementObject(pkProject: number, stmt: InfStatementWithRelations) {
+  async getStatementObject(pkProject: number, stmt: PartialDeep<InfStatementWithRelations>) {
 
     const stmtObFk: InfStatementObjectFks = {}
     const stmtObVal: InfStatementObjectValues = {}
@@ -379,7 +389,7 @@ export class CreateProjectDataController {
     }
 
     else if (stmt.object_appellation && !isEmpty(stmt.object_appellation)) {
-      const created =  await this.infAppellationRepo.create(stmt.object_appellation)
+      const created = await this.infAppellationRepo.create(stmt.object_appellation)
       stmtObVal.object_appellation = await this.infAppellationRepo.findById(created.pk_entity)
       this.mergeSchemaModifier({positive: {inf: {appellation: [stmtObVal.object_appellation]}}})
       stmtObFk.fk_object_info = stmtObVal.object_appellation.pk_entity
@@ -420,7 +430,7 @@ export class CreateProjectDataController {
   }
 
 
-  cloneInfStatementWithoutRelations(statementWithRels: DataObject<InfStatementWithRelations>): DataObject<InfStatement> {
+  cloneInfStatementWithoutRelations(statementWithRels: PartialDeep<InfStatementWithRelations>): PartialDeep<InfStatement> {
 
     const {
       pk_entity, fk_subject_info, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_object_info, fk_object_data, fk_object_tables_cell, fk_object_tables_row, is_in_project_count, is_standard_in_project_count, community_favorite_calendar
@@ -439,5 +449,48 @@ export class CreateProjectDataController {
     this.schemaModifier = mergeDeepWith(concat, this.schemaModifier, ob)
   }
 
+}
+
+/**
+ * Manage adding of hidden F2 Expression for source-classes
+ *
+ * @param resource
+ */
+function addOfF2Expression(resource:PartialDeep<InfResourceWithRelations>) {
+  if (!resource.pk_entity) {
+
+    // Add F2 Expression, if this is a F4 Manifestation Singleton
+    if (resource.fk_class === CLASS_PK_MANIFESTATION_SINGLETON) {
+      resource.outgoing_statements = [
+        ...(resource.outgoing_statements ?? []),
+        {fk_property: 1016, object_resource: {fk_class: 218}},
+      ];
+    }
+
+    // Add F2 Expression, if this is a F3 Manifestation Product Type
+    else if (resource.fk_class === 219) {
+      resource.incoming_statements = [
+        ...(resource.incoming_statements ?? []),
+        {fk_property: 979, subject_resource: {fk_class: 218}},
+      ];
+    }
+
+    // Add F2 Expression, if this is a F5 Item
+    else if (resource.fk_class === 221) {
+      resource.incoming_statements = [
+        ...(resource.incoming_statements ?? []),
+        {fk_property: 1316, subject_resource: {fk_class: 218}},
+      ];
+    }
+
+    // Add F2 Expression, if this is a geovC4 Web Request
+    else if (resource.fk_class === 502) {
+      resource.incoming_statements = [
+        ...(resource.incoming_statements ?? []),
+        {fk_property: 1305, subject_resource: {fk_class: 218}},
+      ];
+    }
+
+  }
 }
 
