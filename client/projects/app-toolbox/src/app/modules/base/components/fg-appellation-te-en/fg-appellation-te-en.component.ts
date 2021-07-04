@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
@@ -24,7 +25,43 @@ export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInject
 @Component({
   selector: 'gv-fg-appellation-te-en',
   templateUrl: './fg-appellation-te-en.component.html',
-  styleUrls: ['./fg-appellation-te-en.component.scss']
+  styleUrls: ['./fg-appellation-te-en.component.scss'],
+  animations: [
+    trigger('openClose', [
+      // ...
+      state('open', style({
+        height: '180px',
+        overflow: 'hidden',
+      })),
+      state('closed', style({
+        height: '90px',
+        overflow: 'hidden',
+      })),
+      transition('open => closed', [
+        animate('0.4s')
+      ]),
+      transition('closed => open', [
+        animate('0.2s')
+      ]),
+      transition('* => closed', [
+        animate('0s')
+      ]),
+      transition('* => open', [
+        animate('0s')
+      ]),
+      transition('open <=> closed', [
+        animate('0.2s')
+      ]),
+      transition('* => open', [
+        animate('0.4s',
+          style({ opacity: '*' }),
+        ),
+      ]),
+      transition('* => *', [
+        animate('0.4s')
+      ]),
+    ]),
+  ]
 })
 export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
