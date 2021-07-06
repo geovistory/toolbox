@@ -222,11 +222,15 @@
                 <ng-container *ngIf="mode === 'edit'">
                   <p-cellEditor id="cells_{{i}}_{{j}}">
                     <ng-template pTemplate="input">
-                      <input pInputText type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
-                        (focus)="focusCell(value.text)"
-                        (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
-                        (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
-                        autocomplete="off">
+
+                      <mat-form-field appearance="outline">
+                        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" pInputText
+                          [(ngModel)]="value.text" (focus)="focusCell(value.text)"
+                          (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
+                          (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
+                          autocomplete="off" style="overflow: hidden;"></textarea>
+                      </mat-form-field>
+
                     </ng-template>
                     <ng-template pTemplate="output">
                       <div class="content-cell">
