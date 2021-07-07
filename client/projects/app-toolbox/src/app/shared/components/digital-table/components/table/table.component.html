@@ -235,7 +235,7 @@
                     </ng-template>
                     <ng-template pTemplate="output">
                       <div class="content-cell">
-                        <span class="center-vert">{{value.text}}</span>
+                        <span class="center-vert" [ngClass]="{'gv-fade-out-right': !lineBreak}">{{value.text}}</span>
                       </div>
                     </ng-template>
                   </p-cellEditor>
