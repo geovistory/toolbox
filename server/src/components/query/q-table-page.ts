@@ -253,13 +253,6 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     `
 
     logSql(this.sql, this.params)
-    console.log('===========================')
-    console.log('===========================')
-    console.log('===========================')
-    console.log('===========================')
-    console.log('===========================')
-    console.log(this.sql);
-    console.log(this.params);
 
     const res = await this.executeAndReturnFirstData<{
       rows: TableRow[],
