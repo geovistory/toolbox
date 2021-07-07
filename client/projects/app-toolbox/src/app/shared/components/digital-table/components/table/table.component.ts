@@ -291,7 +291,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.table.length + this.headers.filter(h => !!h.mapping).length
   }
 
-  onFocusCell(content: string) {
+  onCellFocus(content: string) {
     this.oldContent = content;
   }
 }
