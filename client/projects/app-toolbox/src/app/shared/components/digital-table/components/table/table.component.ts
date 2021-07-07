@@ -112,6 +112,9 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @ViewChildren('cells') cells: QueryList<Input>;
 
+  // for textarea type checking
+  oldContent: string;
+
   constructor(
     public p: ActiveProjectService,
     private dialog: MatDialog,
@@ -231,7 +234,9 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.precCellValue = precValue + '';
   }
 
-  cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string) {
+  cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string, event: any, type: 'number' | 'text') {
+    if (type == 'number' && isNaN(event.target.value)) event.target.value = this.oldContent;
+
     const header = this.headers.find(h => h.pk_column == pkColumn);
     let content = header.type == 'number' ? parseFloat(newContent) : newContent.trim();
     if (header.type == 'number' && isNaN(content as number)) content = this.precCellValue;
@@ -286,5 +291,8 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.table.length + this.headers.filter(h => !!h.mapping).length
   }
 
+  onFocusCell(content: string) {
+    this.oldContent = content;
+  }
 }
 

@@ -173,7 +173,7 @@
                 [matTooltip]="mode == 'ids' ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
                 [toClipboard]="value.pkRow" [clipBoardActivated]="mode == 'ids'">
                 <div [ngStyle]=" {'justify-content': mode=='edit' ? 'space-between' : 'center' }"
-                  style="display: flex; min-height: 40px;">
+                  style="display: flex; min-height: 35px;">
                   <mat-icon *ngIf="mode == 'edit'"></mat-icon>
                   <span style="margin-top: auto; margin-bottom: auto;">
                     {{value.text}}
@@ -214,7 +214,7 @@
                 gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="mode == 'ids'">
 
                 <ng-container *ngIf="mode === 'view'">
-                  <div class="content-cell">
+                  <div class="content-cell" [ngClass]="{'gv-fade-out-right': !lineBreak}">
                     <span class="center-vert">{{value ? value.text : ''}}</span>
                   </div>
                 </ng-container>
@@ -226,6 +226,7 @@
                       <mat-form-field appearance="outline">
                         <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" pInputText
                           [(ngModel)]="value.text" (focus)="focusCell(value.text)"
+                          (focus)="onCellFocus($event.target.value)"
                           (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
                           (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $event.target.value)"
                           autocomplete="off" style="overflow: hidden;"></textarea>
