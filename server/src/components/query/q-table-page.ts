@@ -253,6 +253,13 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     `
 
     logSql(this.sql, this.params)
+    console.log('===========================')
+    console.log('===========================')
+    console.log('===========================')
+    console.log('===========================')
+    console.log('===========================')
+    console.log(this.sql);
+    console.log(this.params);
 
     const res = await this.executeAndReturnFirstData<{
       rows: TableRow[],
@@ -620,7 +627,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
 
   private joinColBatchWiths(masterColumns: string[], sortBy: string, sortDirection: string) {
     let direction = 'ASC';
-    if(sortBy === 'index') direction = sortDirection;
+    if (sortBy === 'index') direction = sortDirection;
 
     return `
         Select
@@ -638,7 +645,6 @@ export class QTableTablePage extends SqlBuilderLb4Models {
           .join(' AND \n')}
         `
       }
-      order by tw1.index ${direction}
     `
   }
 
