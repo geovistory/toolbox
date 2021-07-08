@@ -8,7 +8,7 @@
 
         <gv-ctrl-appellation placeholder="Placeholder" [formControl]="ctrls.text">
         </gv-ctrl-appellation>
-        <button mat-icon-button matSuffix (click)="toggle()">
+        <button mat-icon-button matSuffix [color]="(showOptions$|async) ? 'primary' : 'default'" (click)="toggle()">
           <mat-icon>tune</mat-icon>
         </button>
         <mat-error *ngIf="ctrls.text.hasError('required')">
