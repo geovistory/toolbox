@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { SysConfig } from '@kleiolab/lib-config/public-api';
+import { SysConfig } from '@kleiolab/lib-config';
 import { sandboxOf } from 'angular-playground';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';

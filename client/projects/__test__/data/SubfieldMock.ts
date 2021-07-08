@@ -1,4 +1,4 @@
-import { SysConfig } from '@kleiolab/lib-config/public-api';
+import { SysConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
 import { GvSubentitFieldPageReq, GvSubentityTargetType, GvTargetType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
