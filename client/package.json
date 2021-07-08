@@ -6,6 +6,7 @@
     "ng": "ng",
     "serve": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng serve",
     "start": "ng serve",
+    "build:libs": "sh ./scripts/ng-build-libs.sh",
     "build:all": "sh ./scripts/ng-build-all.sh",
     "build:stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --stats-json",
     "build:app-toolbox": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --prod",

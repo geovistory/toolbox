@@ -620,7 +620,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
 
   private joinColBatchWiths(masterColumns: string[], sortBy: string, sortDirection: string) {
     let direction = 'ASC';
-    if(sortBy === 'index') direction = sortDirection;
+    if (sortBy === 'index') direction = sortDirection;
 
     return `
         Select
