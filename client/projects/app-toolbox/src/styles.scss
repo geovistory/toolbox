@@ -162,6 +162,7 @@ button:focus {
 }
 .gv-word-wrap-break-word {
   word-wrap: break-word;
+  white-space: unset !important;
 }
 
 // https://stackblitz.com/edit/typescript-zozfey
