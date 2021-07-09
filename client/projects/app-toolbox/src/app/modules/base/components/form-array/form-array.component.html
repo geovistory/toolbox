@@ -1,3 +1,4 @@
+<!-- TMP GM: field header start – extract this to gv-form-field-header -->
 <ng-container *ngIf="formArrayFactory.config.data.lists">
   <div class="gv-full-with">
     <div class="left-col">
@@ -38,9 +39,8 @@
       </button>
     </mat-menu>
   </div>
-
 </ng-container>
-
+<!-- TMP GM: field header end – extract this to gv-form-field-header -->
 
 <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with " [ngClass]="{
     'is-list-item':formArrayFactory?.config.isList,
