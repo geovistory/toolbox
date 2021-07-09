@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/camelcase */
 import { genSalt, hash } from 'bcrypt';
 import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
 import { createPubAccount } from '../atomic/pub-account.helper';

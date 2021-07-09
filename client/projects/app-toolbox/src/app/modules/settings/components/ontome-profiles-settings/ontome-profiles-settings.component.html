@@ -16,7 +16,7 @@
     </li>
   </ul>
   <p>
-    <a [attr.href]="'http://ontome.dataforhistory.org/'" target="_blank">
+    <a [attr.href]="ontomeUrl + '/'" target="_blank">
       OntoMe
     </a>
     itself is an open platform for the development, management and sharing of ontologies. <br>
@@ -47,7 +47,7 @@
     <ng-container matColumnDef="owner">
       <th mat-header-cell *matHeaderCellDef> Managed By </th>
       <td mat-cell *matCellDef="let element">
-        <a [attr.href]="'http://ontome.dataforhistory.org/project/' + element.ownerId" target="_blank">
+        <a [attr.href]="ontomeUrl + '/project/' + element.ownerId" target="_blank">
           OntoMe-Project #{{element.ownerId}}
         </a>
       </td>
@@ -55,7 +55,7 @@
     <ng-container matColumnDef="ontomeLink">
       <th mat-header-cell *matHeaderCellDef> Documentation Link </th>
       <td mat-cell *matCellDef="let element">
-        <a [attr.href]="'http://ontome.dataforhistory.org/profile/' + element.profileId" target="_blank">
+        <a [attr.href]="ontomeUrl + '/profile/' + element.profileId" target="_blank">
           Documentation on OntoME
         </a>
       </td>

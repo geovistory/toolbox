@@ -444,7 +444,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           identityDefiningForSource: o ? p.identity_defining : false,
           identityDefiningForTarget: o ? false : p.identity_defining,
           ontoInfoLabel: p.identifier_in_namespace,
-          ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + p.pk_property,
+          ontoInfoUrl: SysConfig.ONTOME_URL + '/property/' + p.pk_property,
           removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
         };
         return node;

@@ -1,6 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { InfLanguage, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { SysConfig } from '@kleiolab/lib-config';
 import { sandboxOf } from 'angular-playground';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -412,7 +413,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'at distance',
         listType: 'dimension',
         ontoInfoLabel: 'P14',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1183',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1183',
         property: { pkProperty: 1183 },
         targetClass: 52,
         sourceClass: 212,
@@ -453,7 +454,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'Was present at',
         listType: 'place',
         ontoInfoLabel: 'P167',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/148',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/148',
         property: { pkProperty: 148 },
         targetClass: 51,
         sourceClass: 84,
@@ -591,7 +592,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'has departure place',
         listType: 'entity-preview',
         ontoInfoLabel: 'P1',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1335',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1335',
         property: { pkProperty: 1335 },
         sourceClass: 523,
         targetClass: 363,
@@ -627,7 +628,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         label: 'stems from',
         listType: 'temporal-entity',
         ontoInfoLabel: 'P41',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1435',
+        ontoInfoUrl: SysConfig.ONTOME_URL + '/property/1435',
         property: { pkProperty: 1435 },
         sourceClass: 67,
         targetClass: 633,

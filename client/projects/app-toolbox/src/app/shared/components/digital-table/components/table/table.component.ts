@@ -255,6 +255,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   cellBlur(pkCell: number, pkRow: number, pkColumn: number, i: number, j: number, newContent: string) {
+
     const header = this.headers.find(h => h.pk_column == pkColumn);
     let content = header.type == 'number' ? parseFloat(newContent) : newContent.trim();
     if (header.type == 'number' && isNaN(content as number)) content = this.precCellValue;
@@ -308,6 +309,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   getUIcolumnNumber(): number {
     return this.table.length + this.headers.filter(h => !!h.mapping).length
   }
+
 
 }
 

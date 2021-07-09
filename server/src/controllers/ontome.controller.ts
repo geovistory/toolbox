@@ -15,6 +15,7 @@ import {ProfileActivationReport, ActivationReportItem} from '../models/ontome-ap
 import {ProfileDeactivationReport, DeactivationReportItem} from '../models/ontome-api/profile-deactivation-report';
 import {SqlBuilderBase} from '../utils/sql-builders/sql-builder-base';
 import {indexBy} from 'ramda';
+import path from 'path';
 interface DeactivationReportQueryRow {
   category: 'property' | 'class',
   id: number,
@@ -24,14 +25,16 @@ interface DeactivationReportQueryRow {
   status: 'maintained' | 'deactivated'
 }
 
+const onromeUrl = process.env['ONTOME_URL'] ?? 'https://ontome.net'
+
 export class OntoMeController {
 
 
-  _profilesUrl = 'https://ontome.dataforhistory.org/api/profiles.json';
+  _profilesUrl = path.join(onromeUrl + '/api/profiles.json');
 
-  _classesUrl = 'https://ontome.dataforhistory.org/api/classes-profile.json';
+  _classesUrl = path.join(onromeUrl + '/api/classes-profile.json');
 
-  _propertiesUrl = 'https://ontome.dataforhistory.org/api/properties-profile.json';
+  _propertiesUrl = path.join(onromeUrl + '/api/properties-profile.json');
 
 
 
@@ -42,11 +45,11 @@ export class OntoMeController {
     public app: GeovistoryApplication,
   ) { }
 
-    /**
-   * Pulls data from ontome and updates tables in geovistory
-   * @param fkProfile
-   * @param requestedLanguage
-   */
+  /**
+ * Pulls data from ontome and updates tables in geovistory
+ * @param fkProfile
+ * @param requestedLanguage
+ */
   @post('ontome/update-from-ontome', {
     responses: {
       '200': {
@@ -468,7 +471,7 @@ export class OntoMeController {
         AND t2.fk_project = $1
         JOIN ptw2 t3 ON  t1.pk_property = t3.pk_property;
     `;
-    const resultObjects: DeactivationReportQueryRow[] = await this.datasource.execute(sql,params);
+    const resultObjects: DeactivationReportQueryRow[] = await this.datasource.execute(sql, params);
     const maintainedClasses: DeactivationReportItem[] = [];
     const deactivatedClasses: DeactivationReportItem[] = [];
     const maintainedProperties: DeactivationReportItem[] = [];
@@ -536,27 +539,56 @@ export class OntoMeController {
   private async getDataFromApis(requestedLanguage: string, fkProfile: number) {
     const timestampBeforeApiCall = new Date();
 
+    const profilesUrl = this.profilesUrl(requestedLanguage)
+    const classesUrl = this.classesUrl(requestedLanguage, fkProfile)
+    const propertiesUrl = this.propertiesUrl(requestedLanguage, fkProfile)
     const [profiles, classes, properties] = await Promise.all([
-      this.getHttpPromise(this.profilesUrl(requestedLanguage)),
-      this.getHttpPromise(this.classesUrl(requestedLanguage, fkProfile)),
-      this.getHttpPromise(this.propertiesUrl(requestedLanguage, fkProfile)),
+      this.getHttpPromise(profilesUrl),
+      this.getHttpPromise(classesUrl),
+      this.getHttpPromise(propertiesUrl),
     ])
     const profilesValidator = await createValidator(ApiProfileList, this.app)
     const classesValidator = await createValidator(ApiClassProfileList, this.app)
     const propertiesValidator = await createValidator(ApiPropertyProfileList, this.app)
-    try {
-      const prof = await applyValidator<ApiProfile[]>(removeNulls(profiles), profilesValidator)
-      const classesCleaned = removeNulls(classes);
-      const clas = await applyValidator<ApiClassProfile[]>(classesCleaned, classesValidator)
-      let props = await applyValidator<ApiPropertyProfile[]>(removeNulls(properties), propertiesValidator)
-      const profile = prof.find(p => p.profileID === fkProfile);
-      props = props.filter((prop: any) => !!prop.propertyLabel);
+    let prof: ApiProfile[] = [];
+    let clas: ApiClassProfile[] = [];
+    let props: ApiPropertyProfile[] = [];
 
-      return {profile, classes: clas, properties: props, timestampBeforeApiCall}
+    const errors: string[] = []
+    try {
+      // const p = profiles.find((x: any) => x.profileID === fkProfile);
+      // prof = await applyValidator<ApiProfile[]>(removeNulls([p]), profilesValidator)
+      prof = await applyValidator<ApiProfile[]>(removeNulls(profiles), profilesValidator)
     } catch (error) {
-      throw new HttpErrors.InternalServerError(error)
+      errors.push(`ERROR Invalid response of: ${profilesUrl} ${error}`)
+
+    }
+    try {
+      const classesCleaned = removeNulls(classes);
+      clas = await applyValidator<ApiClassProfile[]>(classesCleaned, classesValidator)
+    } catch (error) {
+      errors.push(`ERROR Invalid response of: ${classesUrl} ${error}`)
     }
 
+    try {
+      props = await applyValidator<ApiPropertyProfile[]>(removeNulls(properties), propertiesValidator)
+      props = props.filter((prop: any) => !!prop.propertyLabel);
+
+    } catch (error) {
+      errors.push(`ERROR Invalid response of: ${propertiesUrl} ${error}`)
+    }
+
+    if (errors.length) {
+      const e = errors.join('\n')
+      console.log(e)
+      throw new HttpErrors.InternalServerError(e)
+    }
+
+
+    // find the requested profile
+    const profile = prof.find(p => p.profileID === fkProfile);
+
+    return {profile, classes: clas, properties: props, timestampBeforeApiCall}
   }
 
 

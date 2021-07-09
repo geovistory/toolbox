@@ -1,3 +1,4 @@
+import { SysConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
 import { GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargetViewType, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -154,7 +155,7 @@ export function createFieldBase(
 
   const base: FieldBase = {
     label,
-    ontoInfoUrl: 'https://ontome.dataforhistory.org/property/' + property.dfh_pk_property,
+    ontoInfoUrl: SysConfig.ONTOME_URL + '/property/' + property.dfh_pk_property,
     ontoInfoLabel: property.dfh_property_identifier_in_namespace,
     property: { fkProperty: property.dfh_pk_property },
     isHasTypeField,

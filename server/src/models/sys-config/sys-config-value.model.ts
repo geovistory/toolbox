@@ -100,7 +100,7 @@ const example: SysConfigValue = {
 @model({
   jsonSchema: {
     title: "SysConfigValue",
-    description: 'Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.dataforhistory.org/class/21) ',
+    description: 'Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.net/class/21) ',
     example
   }
 })

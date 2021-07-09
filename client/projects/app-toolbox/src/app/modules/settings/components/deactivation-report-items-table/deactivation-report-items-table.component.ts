@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { DeactivationReportItem } from '../../../../../../../../../server/src/lb3/common/interfaces/profile-deactivation-report.interface';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { SysConfig } from '@kleiolab/lib-config';
+import { DeactivationReportItem } from '../../../../../../../../../server/src/lb3/common/interfaces/profile-deactivation-report.interface';
 
 @Component({
   selector: 'gv-deactivation-report-items-table',
@@ -16,8 +17,9 @@ export class DeactivationReportItemsTableComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'identifierInNamespace', 'label', 'numberOfInstances', 'icon'];
   dataSource = new MatTableDataSource<DeactivationReportItem>();
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  ontomeUrl = SysConfig.ONTOME_URL;
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;

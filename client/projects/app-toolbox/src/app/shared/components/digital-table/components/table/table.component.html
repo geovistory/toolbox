@@ -173,7 +173,7 @@
                 [matTooltip]="mode == 'ids' ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
                 [toClipboard]="value.pkRow+''" [clipBoardActivated]="mode == 'ids'">
                 <div [ngStyle]=" {'justify-content': mode=='edit' ? 'space-between' : 'center' }"
-                  style="display: flex; min-height: 40px;">
+                  style="display: flex; min-height: 35px;">
                   <mat-icon *ngIf="mode == 'edit'"></mat-icon>
                   <span style="margin-top: auto; margin-bottom: auto;">
                     {{value.text}}
@@ -214,7 +214,7 @@
                 gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="mode == 'ids'">
 
                 <ng-container *ngIf="mode === 'view'">
-                  <div class="content-cell">
+                  <div class="content-cell" [ngClass]="{'gv-fade-out-right': !lineBreak}">
                     <span class="center-vert">{{value ? value.text : ''}}</span>
                   </div>
                 </ng-container>
@@ -222,15 +222,19 @@
                 <ng-container *ngIf="mode === 'edit'">
                   <p-cellEditor id="cells_{{i}}_{{j}}">
                     <ng-template pTemplate="input">
-                      <input pInputText type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
-                        (focus)="focusCell(value.text)"
-                        (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $any($event.target).value)"
-                        (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $any($event.target).value)"
-                        autocomplete="off">
+
+                      <mat-form-field appearance="outline">
+                        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" pInputText
+                          [(ngModel)]="value.text" (focus)="focusCell(value.text)"
+                          (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $any($event).target.value)"
+                          (blur)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $any($event).target.value)"
+                          autocomplete="off" style="overflow: hidden;"></textarea>
+                      </mat-form-field>
+
                     </ng-template>
                     <ng-template pTemplate="output">
                       <div class="content-cell">
-                        <span class="center-vert">{{value.text}}</span>
+                        <span class="center-vert" [ngClass]="{'gv-fade-out-right': !lineBreak}">{{value.text}}</span>
                       </div>
                     </ng-template>
                   </p-cellEditor>
