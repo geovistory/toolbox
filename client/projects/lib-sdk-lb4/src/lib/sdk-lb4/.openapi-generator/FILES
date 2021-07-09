@@ -193,6 +193,7 @@ model/sysConfigAddPropertyForClass.ts
 model/sysConfigFieldDisplay.ts
 model/sysConfigFieldPosition.ts
 model/sysConfigFieldsOfSourceClass.ts
+model/sysConfigFormCtrlType.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
 model/sysConfigValueObjectType.ts

@@ -9,7 +9,7 @@ export class SysStatusSocket extends Socket {
     // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
 
-    super({ url: c.config.baseUrl + '/SysStatus' });
+    super({ url: c.config.baseUrl + '/SysStatus', options: c.config.options });
 
   }
 }

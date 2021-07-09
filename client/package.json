@@ -12,6 +12,7 @@
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "pretest": "node ../server/scripts/build-mock.js",
     "test": "ng test",
+    "test:lib-queries": "ng test lib-queries",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "playground": "node --max_old_space_size=8192 node_modules/.bin/angular-playground",

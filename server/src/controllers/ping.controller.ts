@@ -6,9 +6,11 @@ import {get, param, post, Request, requestBody, ResponseObject, RestBindings} fr
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Roles} from '../components/authorization/keys';
 import {TColFilter} from '../components/query/q-table-page';
-import {GvSubentityFieldTargetViewType, SysConfigFieldDisplay, SysConfigFieldsOfSourceClass} from '../models';
 import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
+import {GvSubentityFieldTargetViewType} from '../models/field/gv-subentity-field-target-view-type';
 import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
+import {SysConfigFieldDisplay} from '../models/sys-config/sys-config-field-display.model';
+import {SysConfigFieldsOfSourceClass} from '../models/sys-config/sys-config-fields-of-source-class.model';
 import {ClassConfig} from './sys-config-class-config';
 
 /**

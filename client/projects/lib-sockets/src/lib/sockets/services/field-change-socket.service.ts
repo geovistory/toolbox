@@ -9,7 +9,7 @@ export class FieldChangeSocket extends Socket {
     // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
 
-    super({ url: c.config.baseUrl + '/' + FieldChangeSocket.NAMESPACE });
+    super({ url: c.config.baseUrl + '/' + FieldChangeSocket.NAMESPACE, options: c.config.options });
 
   }
 }

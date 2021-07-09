@@ -30,15 +30,15 @@ export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInject
     trigger('openClose', [
       // ...
       state('open', style({
-        height: '180px',
+        height: '*',
         overflow: 'hidden',
       })),
       state('closed', style({
-        height: '90px',
+        height: '0',
         overflow: 'hidden',
       })),
       transition('open => closed', [
-        animate('0.4s')
+        animate('0.2s')
       ]),
       transition('closed => open', [
         animate('0.2s')
@@ -112,7 +112,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
     if (!this.initVal$) {
       this.initVal$ = new BehaviorSubject<InfPlace>({
         pk_entity: undefined,
-        fk_class: DfhConfig.CLASS_PK_PLACE,
+        fk_class: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
         lat: undefined,
         long: undefined
       })
@@ -190,11 +190,14 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
               mapValue: (x: InfAppellation) => {
                 const s: InfStatementWithRelations = {
                   fk_property: DfhConfig.PROPERTY_PK_P13_REFERS_TO_NAME,
-                  object_appellation: x
+                  object_appellation: {
+                    ...x,
+                    fk_class: DfhConfig.CLASS_PK_APPELLATION,
+                  }
                 }
                 return s
               },
-              placeholder: 'name'
+              placeholder: 'Name'
             }
           }
           const langCtrl: FgAppellationTeEnNodeConfig = {
@@ -210,7 +213,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
                   object_language: x
                 }
                 return s
-              }, placeholder: 'used in language'
+              }, placeholder: 'Language'
             }
           }
 
@@ -228,7 +231,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
                   fk_object_info: x
                 }
                 return s
-              }, placeholder: 'has type'
+              }, placeholder: 'Type'
             }
           }
 

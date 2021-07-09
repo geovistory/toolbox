@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { GvSchemaActions, IAppState, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
+import { IAppState, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
@@ -43,7 +43,7 @@ describe('InformationPipesService', () => {
   })
 
   describe('.pipeFieldPage()', () => {
-    it('should return subfield page for subfieldType appellation', async (done) => {
+    it('should return subfield page for subfieldType appellation', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.appeTeEnRefersToName
@@ -62,7 +62,7 @@ describe('InformationPipesService', () => {
           null,
           done);
     });
-    it('should return subfield page for subfieldType place', async (done) => {
+    it('should return subfield page for subfieldType place', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.madridsPresenceWasAtPlace
@@ -81,7 +81,7 @@ describe('InformationPipesService', () => {
           null,
           done);
     });
-    it('should return subfield page for subfieldType dimension', async (done) => {
+    it('should return subfield page for subfieldType dimension', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.journyeHasDuration
@@ -101,7 +101,7 @@ describe('InformationPipesService', () => {
           done);
     });
 
-    it('should return subfield page for subfieldType langString', async (done) => {
+    it('should return subfield page for subfieldType langString', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.manifSingletonHasShortTitleMurderer
@@ -121,7 +121,7 @@ describe('InformationPipesService', () => {
           done);
     });
 
-    it('should return subfield page for subfieldType language', async (done) => {
+    it('should return subfield page for subfieldType language', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.appeTeEnUsedInLanguage
@@ -140,7 +140,7 @@ describe('InformationPipesService', () => {
           null,
           done);
     });
-    it('should return subfield page for subfieldType timePrimitive', async (done) => {
+    it('should return subfield page for subfieldType timePrimitive', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.shipVoyageAtSomeTimeWithin
@@ -160,7 +160,7 @@ describe('InformationPipesService', () => {
           done);
     });
 
-    it('should return subfield page for subfieldType temporalEntity', async (done) => {
+    it('should return subfield page for subfieldType temporalEntity', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.person1HasAppeTeEn
@@ -185,7 +185,7 @@ describe('InformationPipesService', () => {
           done);
     });
 
-    it('should not emit more than once after paginating forth and back for subfieldType temporalEntity', async (done) => {
+    it('should not emit more than once after paginating forth and back for subfieldType temporalEntity', (done) => {
       TestBed.resetTestingModule()
       TestBed.configureTestingModule({
         imports: moduleImports,
@@ -195,7 +195,7 @@ describe('InformationPipesService', () => {
         ]
       });
       service = TestBed.inject(InformationPipesService);
-      dataService = TestBed.inject(GvSchemaActions);
+      dataService = TestBed.inject(ReduxMainService);
       schemaService = TestBed.inject(SchemaService);
       ngRedux = TestBed.inject(NgRedux);
 
@@ -253,7 +253,7 @@ describe('InformationPipesService', () => {
     });
 
 
-    it('should return subfield page for subfieldType timeSpan', async (done) => {
+    it('should return subfield page for subfieldType timeSpan', (done) => {
       // seeding data
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.shipVoyageHasTimeSpan
@@ -282,7 +282,7 @@ describe('InformationPipesService', () => {
 
   })
 
-  it('should return subfield page for subfieldType entityPreview', async (done) => {
+  it('should return subfield page for subfieldType entityPreview', (done) => {
     // seeding data
     setAppState(ngRedux, IAppStateMock.stateProject1)
     const req = GvFieldPageReqMock.appeTeEnRefersToName

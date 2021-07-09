@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
@@ -73,7 +73,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * that build on this pipe.
    */
   public pipeFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       // pipe source class
       this.s.dfh$.class$.by_pk_class$.key(pkClass),
       // pipe outgoing properties
@@ -83,8 +83,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // pipe sys config
       this.s.sys$.config$.main$.pipe(filter(x => !!x)),
       // pipe enabled profiles
-      this.pipeProfilesEnabledByProject(),
-    ).pipe(
+      this.pipeProfilesEnabledByProject()
+    ]).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
         const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
@@ -112,11 +112,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         //   outP.push(createHasDefinitionProperty(pkClass))
         // }
-        return combineLatest(
+        return combineLatest([
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, sysConfig, noNesting),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, sysConfig, noNesting),
           this.pipeFieldConfigs(pkClass)
-        ).pipe(
+        ]).pipe(
           map(([subfields1, subfields2, fieldConfigs]) => {
             const subfields = [...subfields1, ...subfields2]
 
@@ -167,6 +167,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   targets: {
                     [s.targetClass]: {
                       viewType: s.viewType,
+                      formControlType: s.formControlType,
                       removedFromAllProfiles: s.removedFromAllProfiles,
                       targetClass: s.targetClass,
                       targetClassLabel: s.targetClassLabel
@@ -187,6 +188,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                 uniqFields[fieldId].targetClasses.push(s.targetClass)
                 uniqFields[fieldId].targets[s.targetClass] = {
                   viewType: s.viewType,
+                  formControlType: s.formControlType,
                   removedFromAllProfiles: s.removedFromAllProfiles,
                   targetClass: s.targetClass,
                   targetClassLabel: s.targetClassLabel
@@ -289,10 +291,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeBasicAndSpecificFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.pipeBasicFieldsOfClass(pkClass, noNesting),
       this.pipeSpecificFieldOfClass(pkClass, noNesting)
-    )
+    ])
       .pipe(
         map(([a, b]) => [...a, ...b])
       )
@@ -308,10 +310,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeSpecificAndBasicFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.pipeSpecificFieldOfClass(pkClass, noNesting),
       this.pipeBasicFieldsOfClass(pkClass, noNesting),
-    )
+    ])
       .pipe(
         map(([a, b]) => [...a, ...b])
       )
@@ -341,7 +343,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean, noNesting = false): Observable<Subfield> {
     const domain = isOutgoing ? sourceClass : targetClass;
     const range = isOutgoing ? targetClass : sourceClass;
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.s.dfh$.property$.pk_property__has_domain__has_range$.key([property, domain, range].join('_'))
         .pipe(filter(x => {
           return !!x
@@ -352,7 +354,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       this.pipeProfilesEnabledByProject().pipe(filter(x => {
         return !!x
       })),
-    ).pipe(
+    ]).pipe(
       switchMap(([dfhProp, sysConf, enabledProfiles]) => this.pipeSubfield(
         isOutgoing,
         dfhProp,
@@ -398,7 +400,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       })
     );
 
-    return combineLatest(
+    return combineLatest([
       this.pipeClassLabel(sourceClass).pipe(tap(x => {
         // console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
@@ -409,7 +411,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         return x
       })),
-      this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
+      this.pipeTargetTypesOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
         // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
@@ -417,14 +419,15 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         // console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
-    )
-      .pipe(map(([sourceClassLabel, targetClassLabel, listType, label]
+    ])
+      .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label]
       ) => {
 
         // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         const node: Subfield = {
-          viewType: listType,
+          viewType: targetTypes.viewType,
+          formControlType: targetTypes.formControlType,
           sourceClass,
           sourceClassLabel,
           sourceMaxQuantity,
@@ -435,7 +438,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           targetMaxQuantity,
           label,
           isHasTypeField: o && p.is_has_type_subproperty,
-          isTimeSpanShortCutField: listType.timeSpan ? true : false,
+          isTimeSpanShortCutField: targetTypes.viewType.timeSpan ? true : false,
           property: { fkProperty: p.pk_property },
           isOutgoing: o,
           identityDefiningForSource: o ? p.identity_defining : false,
@@ -467,110 +470,136 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   // @spyTag
   // @cache({ refCount: false })
-  pipeSubfieldTypeOfClass(sysConfig: SysConfigValue, pkClass: number, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvFieldTargetViewType> {
+  pipeTargetTypesOfClass(
+    sysConfig: SysConfigValue,
+    pkClass: number,
+    targetMaxQuantity: number,
+    pkProperty?: number,
+    isOutgoing?: boolean,
+    noNesting = false
+  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
     const obs$ = this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
-      switchMap((klass) => this.pipeSubfieldType(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
+      switchMap((klass) => this.pipeTargetTypes(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
     )
-    return this.cache('pipeSubfieldTypeOfClass', obs$, ...arguments)
+    return this.cache('pipeTargetTypesOfClass', obs$, ...arguments)
 
   }
 
 
-  pipeSubfieldType(sysConfig: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvFieldTargetViewType> {
-
-    const res = (x: GvFieldTargetViewType) => new BehaviorSubject(x)
-    let classConfig: ClassConfig
-    if (sysConfig) classConfig = sysConfig.classes[klass.pk_class];
-
-    /**
-     * Case 1: class maps to value object type
-     */
-    if (classConfig && classConfig.valueObjectType) {
-      return res(classConfig.valueObjectType)
-    }
-    /**
-   * Case 1b: class maps to form control type
-   */
-    if (classConfig && classConfig.valueObjectType) {
-      return res(classConfig.valueObjectType)
-    }
+  pipeTargetTypes(
+    s: SysConfigValue,
+    klass: DfhClass,
+    targetMaxQuantity: number,
+    pkProperty?: number,
+    isOutgoing?: boolean,
+    noNesting = false
+  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
 
     // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
-    const sysConfOfProp = isOutgoing ? sysConfig.specialFields.outgoingProperties : sysConfig.specialFields.incomingProperties;
-
+    const res = (
+      v: GvFieldTargetViewType,
+      f: SysConfigFormCtrlType
+    ) => new BehaviorSubject({ viewType: v, formControlType: f })
+    const classId = klass.pk_class
+    const basicType = klass.basic_type
+    const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
     const isTimeSpanShortCutField = sysConfOfProp[pkProperty] ? sysConfOfProp[pkProperty].isHasTimeSpanShortCut : false;
 
     /**
-     * Case 2 (particular): the field is time span field
+     * Particular Case 1: the field is time span field
      */
     if (isTimeSpanShortCutField) {
-      return res({ timeSpan: 'true' })
+      return res({ timeSpan: 'true' }, { timeSpan: 'true' })
     }
 
+    // /**
+    //  * Particular Case 2: the field is has type field
+    //  */
+    // else if (basicType === 30 && targetMaxQuantity == 1) {
+    //   return res({ typeItem: 'true' }, { typeItem: 'true' })
+    // }
+
+    /*
+    * get form control type (for display on create form)
+    */
+    const formControlType: SysConfigFormCtrlType =
+      s?.classes?.[classId]?.formControlType ??
+      s?.classesByBasicType?.[basicType]?.formControlType ??
+      s?.classesDefault?.formControlType ??
+      { entity: 'true' }; // <- fallback
+
     /**
-     * Case 3 (particular): the field is has type field
+     * get view type (for display on entity card)
      */
-    else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
-      return res({ typeItem: 'true' })
+    const viewType: GvFieldTargetViewType =
+      s?.classes?.[classId]?.viewType ??
+      s?.classesByBasicType?.[basicType]?.viewType ??
+      s?.classesDefault?.viewType ??
+      { entityPreview: 'true' }; // <- fallback
+
+    /**
+    * If the view wants a nestedResource, but the nested fields are not yet defined, do it.
+    * If noNesting is true, this is skipped
+    */
+    if (viewType?.nestedResource?.length === 0 && noNesting !== true) {
+
+      return this.pipeNestedResource(classId, pkProperty, formControlType);
     }
 
     /**
-    * Case 4: class is a persistent item (basic-type 8) or type (basic-type 30) map it to entityPreview
+    * Else return the trargets retrieved from system config / fallbacks
     */
-    else if (klass.basic_type === 8 || klass.basic_type === 30 || noNesting) {
-      return res({ entityPreview: 'true' })
-    }
-    /**
-    * Else: we assume the class is a temporal entity – map it to nestedResource
-    */
-    else {
-      // pipe the subfields of the temporalEntity class
-      const noNest = true;
-      return this.pipeSpecificAndBasicFields(klass.pk_class, noNest).pipe(
-        map(fields => {
-          const subentitySubfieldPage: GvSubentitFieldPageReq[] = []
-          for (const field of fields) {
-            // for each of these subfields
-            // create page:GvSubfieldPage
+    return res(viewType, formControlType)
 
-            const nestedTargets: GvSubentityFieldTargets = {};
-            for (const key in field.targets) {
-              if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
-                const listType = field.targets[key].viewType;
-                const subTargetType: GvSubentityFieldTargetViewType = listType.nestedResource ?
-                  { entityPreview: 'true' } :
-                  listType
-                nestedTargets[key] = subTargetType
-              }
-            }
-            let isCircular = false;
-            if (
-              pkProperty &&
-              field.property.fkProperty == pkProperty &&
-              field.targetMaxQuantity === 1
-            ) {
-              isCircular = true
-            }
-            const nestedPage: GvSubentitFieldPageReq = {
-              targets: nestedTargets,
-              page: {
-                property: field.property,
-                isOutgoing: field.isOutgoing,
-                limit: 1,
-                offset: 0,
-                isCircular
-              }
-            }
-            subentitySubfieldPage.push(nestedPage)
-          }
-          return { nestedResource: subentitySubfieldPage }
-        }),
-
-      )
-    }
   }
 
+
+  // pipe the subfields of the entity
+  private pipeNestedResource(classId: number, pkProperty: number, formControlType: SysConfigFormCtrlType) {
+    const noNest = true;
+    return this.pipeSpecificAndBasicFields(classId, noNest).pipe(
+      map(fields => {
+        const subentitySubfieldPage: GvSubentitFieldPageReq[] = [];
+        for (const field of fields) {
+          // for each of these subfields
+          // create page:GvSubfieldPage
+          const nestedTargets: GvSubentityFieldTargets = {};
+          for (const key in field.targets) {
+            if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
+              const listType = field.targets[key].viewType;
+              const subTargetType: GvSubentityFieldTargetViewType = listType.nestedResource ?
+                { entityPreview: 'true' } :
+                listType;
+              nestedTargets[key] = subTargetType;
+            }
+          }
+          let isCircular = false;
+          if (pkProperty &&
+            field.property.fkProperty == pkProperty &&
+            field.targetMaxQuantity === 1) {
+            isCircular = true;
+          }
+          const nestedPage: GvSubentitFieldPageReq = {
+            targets: nestedTargets,
+            page: {
+              property: field.property,
+              isOutgoing: field.isOutgoing,
+              limit: 1,
+              offset: 0,
+              isCircular
+            }
+          };
+          subentitySubfieldPage.push(nestedPage);
+        }
+        return {
+          viewType: { nestedResource: subentitySubfieldPage },
+          formControlType
+        };
+      })
+
+    );
+  }
 
   /**
    * Gets class field configs of given pkClass

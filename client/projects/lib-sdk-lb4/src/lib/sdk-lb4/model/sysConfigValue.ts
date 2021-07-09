@@ -18,6 +18,8 @@ import { SysConfigSpecialFields } from './sysConfigSpecialFields';
  * Classes indexed by primary key: Use class id as key (e.g. \"21\" for Person, https://ontome.dataforhistory.org/class/21) 
  */
 export interface SysConfigValue { 
+    classesDefault?: ClassConfig;
+    classesByBasicType?: { [key: string]: ClassConfig; };
     classes: { [key: string]: ClassConfig; };
     specialFields: SysConfigSpecialFields;
     addProperty?: Array<SysConfigAddProperty>;

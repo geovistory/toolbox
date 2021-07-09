@@ -13,20 +13,29 @@ import { DimensionValueObjectType } from './dimensionValueObjectType';
 
 
 /**
- * If present, defines a specific view type for the class.
+ * If present, defines a specific form control type for the class.
  */
-export interface GvSubentityFieldTargetViewType { 
-    appellation?: GvSubentityFieldTargetViewType.AppellationEnum;
-    language?: GvSubentityFieldTargetViewType.LanguageEnum;
-    place?: GvSubentityFieldTargetViewType.PlaceEnum;
-    timePrimitive?: GvSubentityFieldTargetViewType.TimePrimitiveEnum;
-    langString?: GvSubentityFieldTargetViewType.LangStringEnum;
+export interface SysConfigFormCtrlType { 
+    entity?: SysConfigFormCtrlType.EntityEnum;
+    appellationTeEn?: SysConfigFormCtrlType.AppellationTeEnEnum;
+    appellation?: SysConfigFormCtrlType.AppellationEnum;
+    language?: SysConfigFormCtrlType.LanguageEnum;
+    place?: SysConfigFormCtrlType.PlaceEnum;
+    timePrimitive?: SysConfigFormCtrlType.TimePrimitiveEnum;
+    langString?: SysConfigFormCtrlType.LangStringEnum;
     dimension?: DimensionValueObjectType;
-    entityPreview?: GvSubentityFieldTargetViewType.EntityPreviewEnum;
-    typeItem?: GvSubentityFieldTargetViewType.TypeItemEnum;
-    timeSpan?: GvSubentityFieldTargetViewType.TimeSpanEnum;
+    typeItem?: SysConfigFormCtrlType.TypeItemEnum;
+    timeSpan?: SysConfigFormCtrlType.TimeSpanEnum;
 }
-export namespace GvSubentityFieldTargetViewType {
+export namespace SysConfigFormCtrlType {
+    export type EntityEnum = 'true';
+    export const EntityEnum = {
+        True: 'true' as EntityEnum
+    };
+    export type AppellationTeEnEnum = 'true';
+    export const AppellationTeEnEnum = {
+        True: 'true' as AppellationTeEnEnum
+    };
     export type AppellationEnum = 'true';
     export const AppellationEnum = {
         True: 'true' as AppellationEnum
@@ -46,10 +55,6 @@ export namespace GvSubentityFieldTargetViewType {
     export type LangStringEnum = 'true';
     export const LangStringEnum = {
         True: 'true' as LangStringEnum
-    };
-    export type EntityPreviewEnum = 'true';
-    export const EntityPreviewEnum = {
-        True: 'true' as EntityPreviewEnum
     };
     export type TypeItemEnum = 'true';
     export const TypeItemEnum = {

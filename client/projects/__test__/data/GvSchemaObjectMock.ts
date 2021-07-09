@@ -92,6 +92,46 @@ export namespace GvSchemaObjectMock {
     }
   }
   /**
+  * This object should provide the class Geov Place Type
+  */
+  export const classGeographicalPlaceType: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE),
+      ],
+      property: [
+      ],
+      label: [
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_364_GEO_PLACE_TYPE),
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+      ]
+    }
+  }
+  /**
+* This object should provide the class Geov Place
+*/
+  export const classGeographicalPlace: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_363_GEO_PLACE),
+      ],
+      property: [
+      ],
+      label: [
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_363_GEO_PLACE),
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4
+      ]
+    }
+  }
+  /**
     * This object should provide the classes and properties
     * for working with EN_220_MANIFESTATION_SINGLETON
     */
@@ -195,6 +235,35 @@ export namespace GvSchemaObjectMock {
     }
   }
 
+  export const modelOfAppellationTeEn: GvPositiveSchemaObject = {
+    dfh: {
+      klass: [
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_365_NAMING),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_40_APPELLATION),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_54_LANGUAGE),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON),
+      ],
+      property: [
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE),
+        transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
+      ],
+      label: [
+        ...transformDfhApiPropertyToDfhLabels(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON),
+        ...transformDfhApiPropertyToDfhLabels(DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE),
+        ...transformDfhApiPropertyToDfhLabels(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_365_NAMING),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_40_APPELLATION),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_54_LANGUAGE),
+        transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_21_PERSON),
+      ]
+    },
+    pro: {
+      dfh_profile_proj_rel: [
+        ProDfhProfileProjRelMock.PROJ_1_PROFILE_4,
+      ]
+    }
+  }
 
   export const modelOfPerson: GvPositiveSchemaObject = {
     dfh: {

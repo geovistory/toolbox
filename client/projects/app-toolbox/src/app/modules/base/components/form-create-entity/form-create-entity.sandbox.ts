@@ -1,16 +1,51 @@
 import { FormsModule } from '@angular/forms';
+import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { InfLanguage, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
+import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
+import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
+import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
+import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
+import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../base.module';
+import { appeTeEnSandboxMock } from '../fg-appellation-te-en/fg-appellation-te-en.sandbox';
 import { mockBirth } from './birth.mock';
 import { FormCreateEntityComponent } from './form-create-entity.component';
 import { mockGeoreference } from './georeference.mock';
 import { mockNaming } from './naming.mock';
 import { mockPerson } from './person.mock';
+class LanguagesServiceMock {
+  findLanguagesControllerSearchInLanguages(searchString?: string): Observable<InfLanguage[]> {
 
+    const langs = [InfLanguageMock.GERMAN, InfLanguageMock.FRENCH]
+    if (!searchString) return of(langs)
+    else {
+      const filtered = langs.filter(lang => lang.notes.toUpperCase().includes(searchString.toUpperCase()))
+      return of(filtered)
+    }
+  }
+
+}
+export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
+  pkProject$ = new BehaviorSubject(ProProjectMock.PROJECT_1.pk_entity)
+  datNamespaces$ = new BehaviorSubject([DatNamespaceMock.SANDBOX_NAMESPACE])
+
+  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
+    // const previews = values(WarEntityPreviewMock) as WarEntityPreview[]
+    const preview = warEntityPreviews.find((x) => x?.pk_entity === pkEntity)
+    return new BehaviorSubject(preview).pipe(delay(300))
+  }
+}
+
+const warEntityPreviews = [
+  WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
+  WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
+]
 const pkProject = 591;
 export default sandboxOf(FormCreateEntityComponent, {
   declareComponent: false,
@@ -18,6 +53,10 @@ export default sandboxOf(FormCreateEntityComponent, {
     BaseModule,
     FormsModule,
     InitStateModule
+  ],
+  providers: [
+    { provide: ActiveProjectPipesService, useClass: ActiveProjectPipesServiceMock },
+    { provide: LanguagesService, useClass: LanguagesServiceMock },
   ]
 })
   .add('FormCreateEntityComponent | New Georeference', {
@@ -221,6 +260,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         GvSchemaObjectMock.modelOfPerson,
         GvSchemaObjectMock.project1,
         GvSchemaObjectMock.sysConfig,
+        appeTeEnSandboxMock
       ]
     },
     template: `
@@ -443,31 +483,21 @@ export default sandboxOf(FormCreateEntityComponent, {
   .add('FormCreateEntityComponent | has spelling --> spelling', {
     context: {
       pkProject,
-      listDefinition: {
-        fkClassField: undefined,
-        identityDefiningForSource: true,
-        identityDefiningForTarget: false,
-        targetMinQuantity: undefined,
-        sourceMinQuantity: undefined,
-        sourceMaxQuantity: undefined,
-        sourceClassLabel: undefined,
-        isOutgoing: true,
-        label: 'Spelling',
-        listType: 'appellation',
-        ontoInfoLabel: 'histP11',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1113',
-        property: { pkProperty: 1113 },
-        targetClass: 40,
-        sourceClass: 365,
-        targetClassLabel: 'Appellation',
-        targetMaxQuantity: 1,
-      }
+      field: FieldMock.appeHasAppeString,
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        GvSchemaObjectMock.basicClassesAndProperties,
+        GvSchemaObjectMock.modelOfPerson,
+        GvSchemaObjectMock.project1,
+        GvSchemaObjectMock.sysConfig,
+        appeTeEnSandboxMock
+      ]
     },
     template: `
-        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkSourceEntity]="456" [listDefinition]="listDefinition" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="40" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -482,31 +512,20 @@ export default sandboxOf(FormCreateEntityComponent, {
   .add('FormCreateEntityComponent | Used in Language --> Language', {
     context: {
       pkProject,
-      listDefinition: {
-        fkClassField: undefined,
-        identityDefiningForSource: true,
-        identityDefiningForTarget: false,
-        targetMinQuantity: undefined,
-        sourceMinQuantity: undefined,
-        sourceMaxQuantity: undefined,
-        sourceClassLabel: undefined,
-        isOutgoing: true,
-        label: 'Used in Language',
-        listType: 'language',
-        ontoInfoLabel: 'histP10',
-        ontoInfoUrl: 'https://ontome.dataforhistory.org/property/1112',
-        property: { pkProperty: 1112 },
-        targetClass: 54,
-        sourceClass: 365,
-        targetClassLabel: 'Language',
-        targetMaxQuantity: 1,
-      }
+      field: FieldMock.appeTeEnUsedInLanguage,
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        GvSchemaObjectMock.modelOfAppellationTeEn,
+        GvSchemaObjectMock.project1,
+        GvSchemaObjectMock.sysConfig,
+        appeTeEnSandboxMock
+      ]
     },
     template: `
-        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkSourceEntity]="456" [listDefinition]="listDefinition" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="54" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
             </div>
             <div>
                 <p>searchString: {{s}}</p>

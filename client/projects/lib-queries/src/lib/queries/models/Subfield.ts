@@ -1,5 +1,5 @@
-import { FieldTargetClass } from '@kleiolab/lib-queries';
 import { FieldBase } from './FieldBase';
+import { FieldTargetClass } from './FieldTargetClass';
 /**
  * A Subfield contains contains information to create the different GUI's to display and edit
  * statements of an entity.

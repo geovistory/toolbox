@@ -1,4 +1,4 @@
-import { Field, GvFieldTargets } from '@kleiolab/lib-queries';
+import { Field, FieldBase, GvFieldTargets, Subfield } from '@kleiolab/lib-queries';
 import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldTargetViewType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
@@ -69,6 +69,24 @@ export function fieldToWarFieldChangeId(pkProject: number, fkInfo: number, field
   };
 }
 
+export function fieldToFieldBase(f: Field): FieldBase {
+  const {
+    placeOfDisplay,
+    fieldConfig,
+    targetClasses,
+    allSubfieldsRemovedFromAllProfiles,
+    isSpecialField,
+    targets,
+    ...fieldBase
+  } = f
+  return fieldBase
+}
+export function fieldToSubfield(f: Field, targetClass: number): Subfield {
+  const fieldBase = fieldToFieldBase(f)
+  const fieldTargetClass = f.targets[targetClass]
+  if (!fieldTargetClass) throw Error('this targetClass is not part of that field');
+  return { ...fieldBase, ...fieldTargetClass }
+}
 
 
 export const temporalEntityListDefaultLimit = 5;

@@ -31,7 +31,7 @@ describe('ProSelector', () => {
   })
 
   describe('table_config$.by_fk_digital$.all$', () => {
-    it('with minimal data', async (done) => {
+    it('with minimal data', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const q$ = service.table_config$.by_fk_digital$.all$
       // const q$ = ngRedux.select(['pro', 'table_config', 'by_fk_digital']);
@@ -101,7 +101,7 @@ describe('ProSelector', () => {
 
     });
 
-    it('with more data', async (done) => {
+    it('with more data', (done) => {
       const dat = { 'column': [{ 'pk_entity': 100094, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100095, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100096, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100097, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100098, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }], 'text_property': [{ 'string': '1', 'fk_entity': 100094, 'pk_entity': 100099, 'quill_doc': { 'ops': [{ 'insert': '1', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '2', 'fk_entity': 100095, 'pk_entity': 100100, 'quill_doc': { 'ops': [{ 'insert': '2', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '3', 'fk_entity': 100096, 'pk_entity': 100101, 'quill_doc': { 'ops': [{ 'insert': '3', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '4', 'fk_entity': 100097, 'pk_entity': 100102, 'quill_doc': { 'ops': [{ 'insert': '4', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '5', 'fk_entity': 100098, 'pk_entity': 100103, 'quill_doc': { 'ops': [{ 'insert': '5', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }] }
       setAppState(ngRedux, IAppStateMock.stateProject1)
       const q$ = service.table_config$.by_fk_digital$.all$

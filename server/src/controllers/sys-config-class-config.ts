@@ -1,4 +1,6 @@
 import {model, property} from '@loopback/repository';
+import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
+import {SysConfigFormCtrlType} from '../models/sys-config/sys-config-form-ctrl-type';
 import {SysConfigValueObjectType} from '../models/sys-config/sys-config-value-obect-type';
 
 @model({
@@ -7,6 +9,8 @@ import {SysConfigValueObjectType} from '../models/sys-config/sys-config-value-ob
   }
 })
 export class ClassConfig {
-  @property({type: SysConfigValueObjectType}) valueObjectType?: SysConfigValueObjectType;
+  @property({ type: GvFieldTargetViewType }) viewType?: GvFieldTargetViewType;
+  @property({ type: SysConfigFormCtrlType }) formControlType?: SysConfigFormCtrlType;
+  @property({ type: SysConfigValueObjectType }) valueObjectType?: SysConfigValueObjectType;
   @property() excludedFromEntities?: boolean;
 }

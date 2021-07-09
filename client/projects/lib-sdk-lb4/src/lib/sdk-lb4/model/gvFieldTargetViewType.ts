@@ -26,7 +26,6 @@ export interface GvFieldTargetViewType {
     entityPreview?: GvFieldTargetViewType.EntityPreviewEnum;
     typeItem?: GvFieldTargetViewType.TypeItemEnum;
     timeSpan?: GvFieldTargetViewType.TimeSpanEnum;
-    textProperty?: GvFieldTargetViewType.TextPropertyEnum;
     nestedResource?: Array<GvSubentitFieldPageReq>;
 }
 export namespace GvFieldTargetViewType {
@@ -61,10 +60,6 @@ export namespace GvFieldTargetViewType {
     export type TimeSpanEnum = 'true';
     export const TimeSpanEnum = {
         True: 'true' as TimeSpanEnum
-    };
-    export type TextPropertyEnum = 'true';
-    export const TextPropertyEnum = {
-        True: 'true' as TextPropertyEnum
     };
 }
 

@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldTargetViewType, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvPositiveSchemaObject, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -24,7 +24,7 @@ describe('ConfigurationPipeService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: moduleImports
+      imports: moduleImports,
     });
     service = TestBed.inject(ConfigurationPipesService);
     schemaObjServcie = TestBed.inject(SchemaService);
@@ -40,7 +40,7 @@ describe('ConfigurationPipeService', () => {
   })
 
   describe('.pipeProfilesEnabledByProject()', () => {
-    it('should return two custom profiles + basic profile (id:5)', async (done) => {
+    it('should return two custom profiles + basic profile (id:5)', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       // seeding data
       const gvSchemaObj: GvPositiveSchemaObject = {
@@ -202,20 +202,24 @@ describe('ConfigurationPipeService', () => {
     });
   })
   describe('.pipeSubfieldTypeOfClass()', () => {
-    it('should return subfieldtype for EN_784_SHORT_TITLE', (done) => {
+    it('should return correct target types for EN_784_SHORT_TITLE', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
-      const q$ = service.pipeSubfieldTypeOfClass(
+      const q$ = service.pipeTargetTypesOfClass(
         GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class,
         -1
       )
 
       // testing pipe
-      const expectedSequence: GvFieldTargetViewType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class].valueObjectType]
+      const shortTitleConfig = GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class];
+      const expectedSequence = [{
+        viewType: shortTitleConfig.valueObjectType,
+        formControlType: shortTitleConfig.formControlType
+      }]
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -226,114 +230,138 @@ describe('ConfigurationPipeService', () => {
           done);
 
     });
-    it('should return subfieldtype for EN_785_TEXT', (done) => {
+
+    it('should return correct target types for EN_785_TEXT', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
-      const q$ = service.pipeSubfieldTypeOfClass(
+      const q$ = service.pipeTargetTypesOfClass(
         GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_785_TEXT.dfh_pk_class,
         -1
       )
 
       // testing pipe
-      const expectedSequence: GvFieldTargetViewType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class].valueObjectType]
+      const shortTitleConfig = GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class];
+      const expectedSequence = [{
+        viewType: shortTitleConfig.valueObjectType,
+        formControlType: shortTitleConfig.formControlType
+      }]
 
       q$.pipe(first(), toArray())
-        .subscribe(
-          actualSequence => {
+        .subscribe({
+          next: actualSequence => {
             expect(actualSequence).toEqual(expectedSequence)
           },
-          null,
-          done);
+          complete: done
+        });
 
     });
+
+    it('should return typeItem/typeItem for EN_364_GEO_PLACE_TYPE', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.classGeographicalPlaceType, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeTargetTypesOfClass(
+        GvSchemaObjectMock.sysConfig.sys.config[0],
+        DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
+        1
+      )
+
+      // testing pipe
+      const viewType: GvFieldTargetViewType = { typeItem: 'true' }
+      const formControlType: SysConfigFormCtrlType = { typeItem: 'true' }
+      const expectedSequence = [{ viewType, formControlType }]
+
+      q$.pipe(first(), toArray())
+        .subscribe({
+          next: actualSequence => {
+            expect(actualSequence).toEqual(expectedSequence)
+          },
+          complete: done
+        });
+
+    });
+
+    it('should return entityPreview/entity for EN_363_GEO_PLACE', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.classGeographicalPlace, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeTargetTypesOfClass(
+        GvSchemaObjectMock.sysConfig.sys.config[0],
+        DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class,
+        1
+      )
+
+      // testing pipe
+      const viewType: GvFieldTargetViewType = { entityPreview: 'true' }
+      const formControlType: SysConfigFormCtrlType = { entity: 'true' }
+      const expectedSequence = [{ viewType, formControlType }]
+
+      q$.pipe(first(), toArray())
+        .subscribe({
+          next: actualSequence => {
+            expect(actualSequence).toEqual(expectedSequence)
+          },
+          complete: done
+        });
+
+    });
+
+    it('should return entity/nestedRessource for EN_61_BIRTH', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.modelOfBirth, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeTargetTypesOfClass(
+        GvSchemaObjectMock.sysConfig.sys.config[0],
+        DfhApiClassMock.EN_61_BIRTH.dfh_pk_class,
+        1
+      )
+      q$.pipe(first(), toArray())
+        .subscribe({
+          next: actualSequence => {
+            expect(actualSequence[0].formControlType).toEqual({ entity: 'true' })
+            expect(actualSequence[0].viewType.nestedResource.length).toEqual(3)
+          },
+          complete: done
+        });
+
+    });
+    it('should return appellationTeEn/nestedRessource for EN_365_NAMING', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.modelOfBirth, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeTargetTypesOfClass(
+        GvSchemaObjectMock.sysConfig.sys.config[0],
+        DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+        1
+      )
+      q$.pipe(first(), toArray())
+        .subscribe({
+          next: actualSequence => {
+            expect(actualSequence[0].formControlType).toEqual({ appellationTeEn: 'true' })
+            expect(actualSequence[0].viewType.nestedResource.length).toBeGreaterThan(0)
+          },
+          complete: done
+        });
+
+    });
+
   })
-  // describe('.pipePropertiesToSubfields()', () => {
-  //   it('should contvert property EN_1113_REFERS_TO_NAME to subfield', (done) => {
-  //     // seeding data
-  //     setAppState(ngRedux, IAppStateMock.stateProject1)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
-
-  //     // using pipe
-  //     const q$ = service.pipePropertiesToSubfields(
-  //       [transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME)],
-  //       true,
-  //       [4, 5],
-  //       SysConfigValueMock.SYS_CONFIC_VALID
-  //     )
-
-  //     // testing pipe
-  //     const expectedSequence = [[SubfieldMock.appeHasAppeString]]
-
-  //     q$.pipe(first(), toArray())
-  //       .subscribe(
-  //         actualSequence => {
-  //           expect(actualSequence).toEqual(expectedSequence)
-  //         },
-  //         null,
-  //         done);
-
-  //   });
-  //   it('should contvert property EN_1762_HAS_DEFINITION to subfield', (done) => {
-  //     // seeding data
-  //     setAppState(ngRedux, IAppStateMock.stateProject1)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.fieldsOfManifestationSingleton, PK_DEFAULT_CONFIG_PROJECT)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
-  //     // using pipe
-  //     const q$ = service.pipePropertiesToSubfields(
-  //       [transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1762_HAS_DEFINITION)],
-  //       true,
-  //       [4, 5],
-  //       SysConfigValueMock.SYS_CONFIC_VALID
-  //     )
-
-  //     // testing pipe (remove source class info because this is a generic property where souce is CRM Entity)
-  //     const { sourceClass, sourceClassLabel, ...subfield } = SubfieldMock.manifestationSingletonHasDefinition;
-
-  //     q$.pipe(first(), toArray())
-  //       .subscribe(
-  //         actualSequence => {
-  //           const { sourceClass, sourceClassLabel, ...actualSubfield } = actualSequence[0][0]
-  //           expect(actualSubfield).toEqual(subfield)
-  //         },
-  //         null,
-  //         done);
-
-  //   });
-  //   it('should contvert appeForLang->hasTimeSpanProperty to subfield', (done) => {
-  //     // seeding data
-  //     setAppState(ngRedux, IAppStateMock.stateProject1)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.fieldsOfManifestationSingleton, PK_DEFAULT_CONFIG_PROJECT)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
-  //     schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
-  //     // using pipe
-  //     const q$ = service.pipePropertiesToSubfields(
-  //       [createHasTimeSpanProperty(DfhApiClassMock.EN_365_NAMING.dfh_pk_class)],
-  //       true,
-  //       [4, 5],
-  //       SysConfigValueMock.SYS_CONFIC_VALID
-  //     )
-
-  //     // testing pipe (remove source class info because this is a generic property where souce is CRM Entity)
-  //     const { sourceClass, sourceClassLabel, ...subfield } = SubfieldMock.appeHasTimeSpan;
-
-  //     q$.pipe(first(), toArray())
-  //       .subscribe(
-  //         actualSequence => {
-  //           const { sourceClass, sourceClassLabel, ...actualSubfield } = actualSequence[0][0]
-  //           expect(actualSubfield).toEqual(subfield)
-  //         },
-  //         null,
-  //         done);
-
-  //   });
-  // })
 
   describe('.pipeFields()', () => {
 

@@ -3,6 +3,7 @@ import {SysConfigSpecialFields} from './sys-config-special-fields.model';
 import {ClassesIndex} from "./sys-config-classes-index";
 import {TrueEnum} from './TrueEnum';
 import {SysConfigAddProperty} from './sys-config-add-property';
+import {ClassConfig} from '../../controllers/sys-config-class-config';
 const example: SysConfigValue = {
   classes: {
     40: {
@@ -105,6 +106,12 @@ const example: SysConfigValue = {
 })
 
 export class SysConfigValue {
+
+  @property({type: ClassConfig})
+  classesDefault?: ClassConfig;
+
+  @property({type: ClassesIndex})
+  classesByBasicType?: ClassesIndex;
 
   @property({type: ClassesIndex, required: true})
   classes: ClassesIndex;

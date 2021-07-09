@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
@@ -29,13 +28,23 @@ class LanguagesServiceMock {
   }
 
 }
+export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
+  pkProject$ = new BehaviorSubject(ProProjectMock.PROJECT_1.pk_entity)
+  datNamespaces$ = new BehaviorSubject([DatNamespaceMock.SANDBOX_NAMESPACE])
+
+  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
+    // const previews = values(WarEntityPreviewMock) as WarEntityPreview[]
+    const preview = warEntityPreviews.find((x) => x?.pk_entity === pkEntity)
+    return new BehaviorSubject(preview).pipe(delay(300))
+  }
+}
 
 const warEntityPreviews = [
   WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
   WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
 ]
 
-const gvPositiveSchemaObject: GvPositiveSchemaObject = {
+export const appeTeEnSandboxMock: GvPositiveSchemaObject = {
   war: {
     entity_preview: warEntityPreviews
   },
@@ -65,17 +74,7 @@ const gvPositiveSchemaObject: GvPositiveSchemaObject = {
     ]
   }
 }
-@Injectable()
-export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
-  pkProject$ = new BehaviorSubject(ProProjectMock.PROJECT_1.pk_entity)
-  datNamespaces$ = new BehaviorSubject([DatNamespaceMock.SANDBOX_NAMESPACE])
 
-  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
-    // const previews = values(WarEntityPreviewMock) as WarEntityPreview[]
-    const preview = warEntityPreviews.find((x) => x?.pk_entity === pkEntity)
-    return new BehaviorSubject(preview).pipe(delay(300))
-  }
-}
 
 const existing: InfResourceWithRelations = {
   ...InfResourceMock.NAMING_1,
@@ -106,7 +105,7 @@ export default sandboxOf(FgAppellationTeEnComponent, {
   .add('FgAppellationTeEnComponent | New ', {
     context: {
       initState: IAppStateMock.stateProject1,
-      schemaObjects: [gvPositiveSchemaObject],
+      schemaObjects: [appeTeEnSandboxMock],
     },
     template: `
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
@@ -131,7 +130,7 @@ export default sandboxOf(FgAppellationTeEnComponent, {
   .add('FgAppellationTeEnComponent | Existing ', {
     context: {
       initState: IAppStateMock.stateProject1,
-      schemaObjects: [gvPositiveSchemaObject],
+      schemaObjects: [appeTeEnSandboxMock],
       initVal$: of(existing)
     },
     template: `

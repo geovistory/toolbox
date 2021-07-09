@@ -145,6 +145,7 @@ export * from './sysConfigAddPropertyForClass';
 export * from './sysConfigFieldDisplay';
 export * from './sysConfigFieldPosition';
 export * from './sysConfigFieldsOfSourceClass';
+export * from './sysConfigFormCtrlType';
 export * from './sysConfigSpecialFields';
 export * from './sysConfigValue';
 export * from './sysConfigValueObjectType';

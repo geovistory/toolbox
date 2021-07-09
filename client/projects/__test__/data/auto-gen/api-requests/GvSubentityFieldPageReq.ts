@@ -9,7 +9,7 @@ export namespace GvSubentityFieldPageReqMock {
   export const appeTeEnRefersToName: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
-        appellation: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        appellation: 'true'
       }
     },
     page: {
@@ -24,7 +24,7 @@ export namespace GvSubentityFieldPageReqMock {
   export const appeTeEnHasDefinition: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_365_NAMING.dfh_pk_class]: {
-        langString: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        langString: 'true'
       }
     },
     page: {
@@ -39,7 +39,7 @@ export namespace GvSubentityFieldPageReqMock {
   export const appeTeEnHasTimeSpan: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-        timeSpan: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        timeSpan: 'true'
       }
     },
     page: {
@@ -53,7 +53,7 @@ export namespace GvSubentityFieldPageReqMock {
   export const appeTeEnIsAppeOfPerson: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_21_PERSON.dfh_pk_class]: {
-        entityPreview: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        entityPreview: 'true'
       }
     },
     page: {

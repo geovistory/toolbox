@@ -4,7 +4,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldProperty, GvFieldSourceEntity, GvFieldTargetViewType, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -47,7 +47,7 @@ export interface FormArrayData {
   controls?: {
     field: Field
     targetClass: number
-    targetType: GvFieldTargetViewType
+    targetType: SysConfigFormCtrlType
   }
 
   /**
@@ -56,7 +56,7 @@ export interface FormArrayData {
   addStatement?: {
     field: Field
     targetClass: number
-    targetType: GvFieldTargetViewType
+    targetType: SysConfigFormCtrlType
   }
 
   // gets called when removed
@@ -164,7 +164,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     ).subscribe((v) => {
       this.formFactory = v
       // TMP GM
-      console.log(v)
+      // console.log(v)
     })
 
   }
@@ -237,7 +237,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             addStatement: {
               field: data.field,
               targetClass: data.targetClass,
-              targetType: data.field.targets[data.targetClass].viewType
+              targetType: data.field.targets[data.targetClass].formControlType
             },
             hideFieldTitle: false,
             pkClass: null
@@ -574,7 +574,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     customPlaceholder?: string
   ): LocalNodeConfig {
 
-    let childListType = field.targets[targetClass].viewType;
+    let childListType = field.targets[targetClass].formControlType;
     const stringPartId = this.searchStringPartId++;
 
     const removeHook = (data: FormArrayData) => {
@@ -627,54 +627,54 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   };
 
 
-  private getControlNodes(arrayConfig: LocalArrayConfig, listType: GvFieldTargetViewType): Observable<LocalNodeConfig[]> {
+  private getControlNodes(arrayConfig: LocalArrayConfig, formCtrlType: SysConfigFormCtrlType): Observable<LocalNodeConfig[]> {
 
-    if (listType.timeSpan) {
+    if (formCtrlType.timeSpan) {
 
       return this.timeSpanCtrl(arrayConfig)
 
-    } else if (listType.place) {
+    } else if (formCtrlType.place) {
 
       return this.placeCtrl(arrayConfig)
 
     }
 
-    else if (listType.appellationTeEn) {
+    else if (formCtrlType.appellationTeEn) {
 
       return this.appellationTeEnCtrl(arrayConfig)
 
     }
 
-    else if (listType.entityPreview || listType.nestedResource) {
+    else if (formCtrlType.entity) {
 
       return this.entityCtrl(arrayConfig)
 
     }
-    else if (listType.language) {
+    else if (formCtrlType.language) {
 
       return this.languageCtrl(arrayConfig)
 
-    } else if (listType.appellation) {
+    } else if (formCtrlType.appellation) {
 
       return this.appellationCtrl(arrayConfig)
 
     }
-    else if (listType.langString) {
+    else if (formCtrlType.langString) {
 
       return this.langStringCtrl(arrayConfig)
 
     }
-    else if (listType.dimension) {
+    else if (formCtrlType.dimension) {
 
       return this.dimensionCtrl(arrayConfig)
 
     }
-    else if (listType.typeItem) {
+    else if (formCtrlType.typeItem) {
 
       return this.typeCtrl(arrayConfig)
 
     }
-    else if (listType.timePrimitive) {
+    else if (formCtrlType.timePrimitive) {
 
       return this.timePrimitiveCtrl(arrayConfig)
 

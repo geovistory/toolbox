@@ -109,7 +109,7 @@ function autoGenFiles(from, to, type) {
       content,
       'SysConfigValueObjectType',
       'TrueEnum',
-      "'${param}' as unknown as SysConfigValueObjectType.AppellationEnum",
+      "'${param}'",
     );
 
     content = treatEnumSpecial(
