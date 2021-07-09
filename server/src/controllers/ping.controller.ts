@@ -9,7 +9,7 @@ import {TColFilter} from '../components/query/q-table-page';
 import {GvSubentityTargetType, SysConfigFieldDisplay, SysConfigFieldsOfSourceClass} from '../models';
 import {GvTargetType} from '../models/field/gv-target-type';
 import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
-import {ClassConfig} from './sys-config-class-config';
+import {ClassConfig} from '../models/sys-config/sys-config-class-config';
 
 /**
  * OpenAPI response for ping()

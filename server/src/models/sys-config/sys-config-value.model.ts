@@ -3,7 +3,35 @@ import {SysConfigSpecialFields} from './sys-config-special-fields.model';
 import {ClassesIndex} from "./sys-config-classes-index";
 import {TrueEnum} from './TrueEnum';
 import {SysConfigAddProperty} from './sys-config-add-property';
+import {ClassConfig} from './sys-config-class-config';
 const example: SysConfigValue = {
+  classesDefault: {
+    projectVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+    communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+  },
+  classesByBasicType: {
+    8: {
+      communityVisibilityRange: {
+        min: {toolbox: true, dataApi: true, website: true},
+        max: {toolbox: true, dataApi: true, website: true},
+      },
+      communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+    },
+    9: {
+      communityVisibilityRange: {
+        min: {toolbox: true, dataApi: false, website: false},
+        max: {toolbox: true, dataApi: true, website: true},
+      },
+      communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+    },
+    30: {
+      communityVisibilityRange: {
+        min: {toolbox: true, dataApi: true, website: true},
+        max: {toolbox: true, dataApi: true, website: true},
+      },
+      communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+    }
+  },
   classes: {
     40: {
       valueObjectType: {
@@ -36,6 +64,13 @@ const example: SysConfigValue = {
       valueObjectType: {
         langString: TrueEnum.true
       }
+    },
+    635: {
+      communityVisibilityRange: {
+        min: {toolbox: false, dataApi: false, website: false},
+        max: {toolbox: false, dataApi: false, website: false},
+      },
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
     }
   },
   specialFields: {
@@ -105,6 +140,13 @@ const example: SysConfigValue = {
 })
 
 export class SysConfigValue {
+
+
+  @property({type: ClassesIndex})
+  classesDefault?: ClassConfig;
+
+  @property({type: ClassesIndex})
+  classesByBasicType?: ClassesIndex;
 
   @property({type: ClassesIndex, required: true})
   classes: ClassesIndex;
