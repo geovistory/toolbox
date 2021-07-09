@@ -19,7 +19,7 @@ import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component'
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
 
 type FgAppellationTeEnNodeConfig = FormNodeConfig<any, any, any, any>
-export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInjectData<Observable<InfPlace>> {
+export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInjectData<Observable<InfResourceWithRelations>> {
   appearance: MatFormFieldAppearance
 }
 @Component({

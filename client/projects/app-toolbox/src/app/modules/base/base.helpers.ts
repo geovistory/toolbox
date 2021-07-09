@@ -1,5 +1,5 @@
 import { Field, GvFieldTargets } from '@kleiolab/lib-queries';
-import { GvFieldId, GvFieldPage, GvFieldPageScope, GvTargetType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldTargetViewType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
 
@@ -8,7 +8,7 @@ import { values } from 'd3';
  * returns true if the subfield type is representing a value object type
  * @param subfieldType
  */
-export function isValueObjectSubfield(subfieldType: GvTargetType): boolean {
+export function isValueObjectSubfield(subfieldType: GvFieldTargetViewType): boolean {
   if (subfieldType.appellation) return true
   else if (subfieldType.language) return true
   else if (subfieldType.place) return true
@@ -26,7 +26,7 @@ export function isValueObjectSubfield(subfieldType: GvTargetType): boolean {
  * It returns false if the subfield type is temporalEntity, typeItem or timeSpan
  * @param subfieldType
  */
-export function isLeafItemSubfield(subfieldType: GvTargetType): boolean {
+export function isLeafItemSubfield(subfieldType: GvFieldTargetViewType): boolean {
   if (isValueObjectSubfield(subfieldType)) return true
   else if (subfieldType.entityPreview) return true
   return false
@@ -55,7 +55,7 @@ export function fieldToFieldId(subfield: Field, source: GvFieldSourceEntity, sco
 export function fieldToGvFieldTargets(field: Field): GvFieldTargets {
   const res: GvFieldTargets = {}
   values(field.targets).forEach(t => {
-    res[t.targetClass] = t.listType
+    res[t.targetClass] = t.viewType
   })
   return res
 }

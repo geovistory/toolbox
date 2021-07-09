@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityTargetType, GvTargetType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
@@ -166,7 +166,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   isSpecialField,
                   targets: {
                     [s.targetClass]: {
-                      listType: s.listType,
+                      viewType: s.viewType,
                       removedFromAllProfiles: s.removedFromAllProfiles,
                       targetClass: s.targetClass,
                       targetClassLabel: s.targetClassLabel
@@ -186,7 +186,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles = s.removedFromAllProfiles;
                 uniqFields[fieldId].targetClasses.push(s.targetClass)
                 uniqFields[fieldId].targets[s.targetClass] = {
-                  listType: s.listType,
+                  viewType: s.viewType,
                   removedFromAllProfiles: s.removedFromAllProfiles,
                   targetClass: s.targetClass,
                   targetClassLabel: s.targetClassLabel
@@ -424,7 +424,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         const node: Subfield = {
-          listType,
+          viewType: listType,
           sourceClass,
           sourceClassLabel,
           sourceMaxQuantity,
@@ -467,7 +467,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   // @spyTag
   // @cache({ refCount: false })
-  pipeSubfieldTypeOfClass(sysConfig: SysConfigValue, pkClass: number, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvTargetType> {
+  pipeSubfieldTypeOfClass(sysConfig: SysConfigValue, pkClass: number, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvFieldTargetViewType> {
     const obs$ = this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       filter(i => !!i),
       switchMap((klass) => this.pipeSubfieldType(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
@@ -477,11 +477,21 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
 
-  pipeSubfieldType(sysConfig: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvTargetType> {
+  pipeSubfieldType(sysConfig: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvFieldTargetViewType> {
 
-    const res = (x: GvTargetType) => new BehaviorSubject(x)
+    const res = (x: GvFieldTargetViewType) => new BehaviorSubject(x)
     let classConfig: ClassConfig
     if (sysConfig) classConfig = sysConfig.classes[klass.pk_class];
+
+    /**
+     * Case 1: class maps to value object type
+     */
+    if (classConfig && classConfig.valueObjectType) {
+      return res(classConfig.valueObjectType)
+    }
+    /**
+   * Case 1b: class maps to form control type
+   */
     if (classConfig && classConfig.valueObjectType) {
       return res(classConfig.valueObjectType)
     }
@@ -490,22 +500,30 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const sysConfOfProp = isOutgoing ? sysConfig.specialFields.outgoingProperties : sysConfig.specialFields.incomingProperties;
 
     const isTimeSpanShortCutField = sysConfOfProp[pkProperty] ? sysConfOfProp[pkProperty].isHasTimeSpanShortCut : false;
+
+    /**
+     * Case 2 (particular): the field is time span field
+     */
     if (isTimeSpanShortCutField) {
       return res({ timeSpan: 'true' })
     }
 
-
+    /**
+     * Case 3 (particular): the field is has type field
+     */
     else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
       return res({ typeItem: 'true' })
     }
-    // TODO add this to sysConfigValue
-    // TODO time span!!!
-    // else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
-    //   return res({ timeSpan: 'true' })
-    // }
+
+    /**
+    * Case 4: class is a persistent item (basic-type 8) or type (basic-type 30) map it to entityPreview
+    */
     else if (klass.basic_type === 8 || klass.basic_type === 30 || noNesting) {
       return res({ entityPreview: 'true' })
     }
+    /**
+    * Else: we assume the class is a temporal entity – map it to nestedResource
+    */
     else {
       // pipe the subfields of the temporalEntity class
       const noNest = true;
@@ -519,8 +537,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             const nestedTargets: GvSubentityFieldTargets = {};
             for (const key in field.targets) {
               if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
-                const listType = field.targets[key].listType;
-                const subTargetType: GvSubentityTargetType = listType.nestedResource ?
+                const listType = field.targets[key].viewType;
+                const subTargetType: GvSubentityFieldTargetViewType = listType.nestedResource ?
                   { entityPreview: 'true' } :
                   listType
                 nestedTargets[key] = subTargetType

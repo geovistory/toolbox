@@ -161,7 +161,7 @@ export class FieldComponent implements OnInit {
 
   private openAddDialog(field: Field, targetClass: number) {
     const targetTyp = field.targets[targetClass]
-    const isValueLike = isValueObjectSubfield(targetTyp.listType);
+    const isValueLike = isValueObjectSubfield(targetTyp.viewType);
     const showAddList = (!isValueLike && !field.identityDefiningForTarget)
     const data: AddDialogData = {
       field: field,

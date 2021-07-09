@@ -53,7 +53,7 @@ export const fieldAtReferencePoP: Field = {
   allSubfieldsRemovedFromAllProfiles: false,
   targets: {
     657: {
-      listType: { langString: 'true' },
+      viewType: { langString: 'true' },
       targetClass: 657,
       targetClassLabel: 'Reference',
       removedFromAllProfiles: false,

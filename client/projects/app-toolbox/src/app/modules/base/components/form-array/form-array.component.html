@@ -53,16 +53,20 @@
 
 
 
-
-  <gv-form-array class="left-col" *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory">
-  </gv-form-array>
+  <!-- This is adding the 'leaf' of the form via template: a form-control like input, ect. -->
   <gv-form-control class="left-col" *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory">
   </gv-form-control>
+
+  <!-- This is adding the 'leaf' of the form via portal: a fg-* -->
   <div class="left-col" *ngIf="child.childFactory">
     <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
       (attached)="child.childFactory.attached($any($event), $any(outlet))">
     </ng-template>
   </div>
+
+  <gv-form-array class="left-col" *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory">
+  </gv-form-array>
+
 
 
   <div class="right-col rmv-btn" *ngIf="showRemoveBtn(child)">

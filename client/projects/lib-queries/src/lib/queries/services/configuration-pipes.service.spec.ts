@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvPositiveSchemaObject, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -215,7 +215,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const expectedSequence: GvTargetType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class].valueObjectType]
+      const expectedSequence: GvFieldTargetViewType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class].valueObjectType]
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -239,7 +239,7 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const expectedSequence: GvTargetType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class].valueObjectType]
+      const expectedSequence: GvFieldTargetViewType[] = [GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class].valueObjectType]
 
       q$.pipe(first(), toArray())
         .subscribe(
@@ -476,7 +476,7 @@ describe('ConfigurationPipeService', () => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
             expect(fs[0].property.fkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
-            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.nestedResource[0].page.isCircular).toEqual(true)
+            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].viewType.nestedResource[0].page.isCircular).toEqual(true)
           },
           null,
           done);
@@ -498,7 +498,7 @@ describe('ConfigurationPipeService', () => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
             expect(fs[0].property.fkProperty).toEqual(DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property)
-            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].listType.nestedResource[3].page.isCircular).toEqual(false)
+            expect(fs[0].targets[DfhApiClassMock.EN_365_NAMING.dfh_pk_class].viewType.nestedResource[3].page.isCircular).toEqual(false)
           },
           null,
           done);

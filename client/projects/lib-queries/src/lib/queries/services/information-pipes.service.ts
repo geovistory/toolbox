@@ -3,7 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvTargetType, InfStatement, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldTargetViewType, InfStatement, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -101,7 +101,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     return this.s.inf$.getModelOfEntity$(targetInfo).pipe(
       filter(x => !!x),
       switchMap(item => {
-        const subfieldType: GvTargetType = targets[item.fkClass]
+        const subfieldType: GvFieldTargetViewType = targets[item.fkClass]
         if (subfieldType.appellation) {
           return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(
             filter(x => !!x),
@@ -356,7 +356,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
           source: page.source,
           scope,
         }
-        const subfType: GvTargetType = {
+        const subfType: GvFieldTargetViewType = {
           timePrimitive: 'true'
         }
         const trgts = {

@@ -1,18 +1,18 @@
 import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
-import { GvSubentitFieldPageReq, GvSubentityTargetType, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvSubentitFieldPageReq } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
 import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 
 function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentitFieldPageReq {
-  const targets: { [key: number]: GvSubentityTargetType } = {}
+  const targets: { [key: number]: GvSubentityFieldTargetViewType } = {}
   for (const key in field.targets) {
     if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
       const element = field.targets[key];
-      if (element.listType.nestedResource) {
+      if (element.viewType.nestedResource) {
         targets[key] = { entityPreview: 'true' }
       } else {
-        targets[key] = element.listType
+        targets[key] = element.viewType
       }
     }
   }
@@ -189,7 +189,7 @@ function createField(
   property: DfhApiProperty,
   targets: {
     class: DfhApiClass,
-    subfieldType: GvTargetType
+    subfieldType: GvFieldTargetViewType
   }[],
   isOutgoing: boolean,
   isSpecialField: SpecialFieldType = false
@@ -198,7 +198,7 @@ function createField(
   const ts: { [fkClass: number]: FieldTargetClass } = {}
   for (const t of targets) {
     ts[t.class.dfh_pk_class] = {
-      listType: t.subfieldType,
+      viewType: t.subfieldType,
       removedFromAllProfiles: false,
       targetClass: t.class.dfh_pk_class,
       targetClassLabel: t.class.dfh_class_label

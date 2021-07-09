@@ -4,12 +4,12 @@ import {TrueEnum} from '../sys-config/TrueEnum';
 
 @model({
   jsonSchema: {
-    description: "If present, defines a specific list type for the class.",
+    description: "If present, defines a specific view type for the class.",
     maxProperties: 1,
     minProperties: 1,
   }
 })
-export class GvSubentityTargetType {
+export class GvSubentityFieldTargetViewType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   appellation?: TrueEnum;
 
@@ -46,3 +46,6 @@ export class GvSubentityTargetType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   textProperty?: TrueEnum;
 }
+
+
+

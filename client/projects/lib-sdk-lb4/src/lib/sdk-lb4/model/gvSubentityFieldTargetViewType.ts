@@ -15,19 +15,19 @@ import { DimensionValueObjectType } from './dimensionValueObjectType';
 /**
  * If present, defines a specific list type for the class.
  */
-export interface GvSubentityTargetType { 
-    appellation?: GvSubentityTargetType.AppellationEnum;
-    language?: GvSubentityTargetType.LanguageEnum;
-    place?: GvSubentityTargetType.PlaceEnum;
-    timePrimitive?: GvSubentityTargetType.TimePrimitiveEnum;
-    langString?: GvSubentityTargetType.LangStringEnum;
+export interface GvSubentityFieldTargetViewType { 
+    appellation?: GvSubentityFieldTargetViewType.AppellationEnum;
+    language?: GvSubentityFieldTargetViewType.LanguageEnum;
+    place?: GvSubentityFieldTargetViewType.PlaceEnum;
+    timePrimitive?: GvSubentityFieldTargetViewType.TimePrimitiveEnum;
+    langString?: GvSubentityFieldTargetViewType.LangStringEnum;
     dimension?: DimensionValueObjectType;
-    entityPreview?: GvSubentityTargetType.EntityPreviewEnum;
-    typeItem?: GvSubentityTargetType.TypeItemEnum;
-    timeSpan?: GvSubentityTargetType.TimeSpanEnum;
-    textProperty?: GvSubentityTargetType.TextPropertyEnum;
+    entityPreview?: GvSubentityFieldTargetViewType.EntityPreviewEnum;
+    typeItem?: GvSubentityFieldTargetViewType.TypeItemEnum;
+    timeSpan?: GvSubentityFieldTargetViewType.TimeSpanEnum;
+    textProperty?: GvSubentityFieldTargetViewType.TextPropertyEnum;
 }
-export namespace GvSubentityTargetType {
+export namespace GvSubentityFieldTargetViewType {
     export type AppellationEnum = 'true';
     export const AppellationEnum = {
         True: 'true' as AppellationEnum

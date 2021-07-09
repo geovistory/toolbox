@@ -4,7 +4,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, GvFieldTargetViewType, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -20,6 +20,7 @@ import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
+import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
@@ -35,6 +36,7 @@ export interface FormArrayData {
     parentProperty: GvFieldProperty
   }
 
+  // if lists is used, we have a gv-form-field (with header ect.)
   lists?: {
     parentModel?: EntityModel;
     fieldDefinition: Field
@@ -45,7 +47,7 @@ export interface FormArrayData {
   controls?: {
     field: Field
     targetClass: number
-    targetType: GvTargetType
+    targetType: GvFieldTargetViewType
   }
 
   /**
@@ -54,7 +56,7 @@ export interface FormArrayData {
   addStatement?: {
     field: Field
     targetClass: number
-    targetType: GvTargetType
+    targetType: GvFieldTargetViewType
   }
 
   // gets called when removed
@@ -81,7 +83,7 @@ export interface FormControlData {
 
 export interface FormChildData {
   place?: FgPlaceInjectData
-  // textProperty?: FgTextPropertyInjectData
+  appellationTeEn?: FgAppellationTeEnInjectData
   langString?: FgLangStringInjectData
   dimension?: FgDimensionInjectData
 }
@@ -161,7 +163,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
       this.formFactory = v
-      // console.log(v)
+      // TMP GM
+      console.log(v)
     })
 
   }
@@ -234,7 +237,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             addStatement: {
               field: data.field,
               targetClass: data.targetClass,
-              targetType: data.field.targets[data.targetClass].listType
+              targetType: data.field.targets[data.targetClass].viewType
             },
             hideFieldTitle: false,
             pkClass: null
@@ -571,7 +574,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     customPlaceholder?: string
   ): LocalNodeConfig {
 
-    let childListType = field.targets[targetClass].listType;
+    let childListType = field.targets[targetClass].viewType;
     const stringPartId = this.searchStringPartId++;
 
     const removeHook = (data: FormArrayData) => {
@@ -624,7 +627,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   };
 
 
-  private getControlNodes(arrayConfig: LocalArrayConfig, listType: GvTargetType): Observable<LocalNodeConfig[]> {
+  private getControlNodes(arrayConfig: LocalArrayConfig, listType: GvFieldTargetViewType): Observable<LocalNodeConfig[]> {
 
     if (listType.timeSpan) {
 
@@ -634,7 +637,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
       return this.placeCtrl(arrayConfig)
 
-    } else if (listType.entityPreview || listType.nestedResource) {
+    }
+
+    else if (listType.appellationTeEn) {
+
+      return this.appellationTeEnCtrl(arrayConfig)
+
+    }
+
+    else if (listType.entityPreview || listType.nestedResource) {
 
       return this.entityCtrl(arrayConfig)
 
@@ -1128,6 +1139,54 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     }))
 
     return of(controlConfigs);
+  }
+
+  private appellationTeEnCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const field = arrayConfig.data.controls.field;
+    // with [{}] we make sure at least one item is added
+    const initItems: InfStatementWithRelations[] = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal) => ({
+      childFactory: {
+        component: FgAppellationTeEnComponent,
+        getInjectData: (d) => {
+          return d.appellationTeEn
+        },
+        required: this.ctrlRequired(arrayConfig.data.controls.field),
+        data: {
+          appellationTeEn: {
+            appearance: this.appearance,
+            initVal$: of(field.isOutgoing ? initVal.object_resource : initVal.subject_resource)
+          }
+        },
+        mapValue: (val: InfResourceWithRelations) => {
+          if (!val) return null;
+          let value: InfStatementWithRelations;
+          if (field.isOutgoing) {
+            value = {
+              fk_subject_info: undefined,
+              fk_property: field.property.fkProperty,
+              object_resource: {
+                ...val,
+                fk_class: arrayConfig.data.controls.targetClass,
+              },
+            };
+          } else {
+            value = {
+              fk_object_info: undefined,
+              fk_property: field.property.fkProperty,
+              subject_resource: {
+                ...val,
+                fk_class: arrayConfig.data.controls.targetClass,
+              },
+            };
+          }
+          return value;
+        }
+      }
+    }));
+    return of(controlConfigs);
+
+
   }
 
 }
