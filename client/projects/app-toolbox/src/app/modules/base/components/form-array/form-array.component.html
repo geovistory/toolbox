@@ -7,7 +7,7 @@
         <span class="ml-1 mat-caption mat-text-secondary">
           ({{length}})
         </span>
-
+        <mat-divider></mat-divider>
         <span class="ml-1 mat-caption mat-text-warn"
           *ngIf="formArrayFactory.control.touched && formArrayFactory.control.hasError('maxLength')">
           Max. {{formArrayFactory.control.getError('maxLength').maxLength}} item(s) allowed
@@ -42,7 +42,6 @@
 </ng-container>
 
 
-<!-- {{minLength}}/{{maxLength}} -->
 <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with " [ngClass]="{
     'is-list-item':formArrayFactory?.config.isList,
     'is-field': child?.arrayFactory?.config?.data.lists,
@@ -51,32 +50,7 @@
     'bg-gray-100': child?.controlFactory?.config.data?.controlType === 'ctrl-target-class'
 }">
 
-  <!--
 
-  <mat-card class="left-col mat-elevation-z5">
-    <mat-card-content class="gv-full-with">
-      <span class="card–class-info mat-caption mat-text-secondary">
-        <i class="gv-entity-color fa fa-star-o"></i>
-      </span>
-      <ng-container *ngTemplateOutlet="noWrap"></ng-container>
-    </mat-card-content>
-  </mat-card> -->
-
-
-  <!-- <ng-template #noWrap> -->
-  <!-- <div style="flex: 1 0 100%;" *ngIf="isCtrlTargetClass(child)">
-      <div class="gv-full-with">
-        <ng-container *ngTemplateOutlet="title; context:{
-        'placeholder':child?.config.placeholder,
-        'count': child?.children?.length || 0,
-        'showAddBtn': showAddBtn,
-        'required': child.config.required
-      }"></ng-container>
-
-
-      </div>
-    </div>
- -->
 
 
 
@@ -90,13 +64,10 @@
     </ng-template>
   </div>
 
-  <!-- </ng-template> -->
 
   <div class="right-col rmv-btn" *ngIf="showRemoveBtn(child)">
     <button mat-icon-button (click)="remove(i)">
       <mat-icon>remove</mat-icon>
     </button>
-    <!-- {{parentLength}} of {{parentMinLength}}/{{parentMaxLength}} -->
-
   </div>
 </div>
