@@ -171,6 +171,21 @@ export class SysConfigValueMock {
         'excludedFromEntities': true
       },
       '716': {
+        'viewType': {
+          'dimension': {
+            'measurementUnitClass': 715
+          }
+        },
+        'valueObjectType': {
+          'dimension': {
+            'measurementUnitClass': 715
+          }
+        },
+        'formControlType': {
+          'dimension': {
+            'measurementUnitClass': 715
+          }
+        },
         'excludedFromEntities': true
       },
       '717': {

@@ -1,4 +1,4 @@
-import {DfhApiClass} from "./local-model.helpers"
+import { DfhApiClass } from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -603,6 +603,68 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C12"
+  }
+
+  static readonly EN_716_VOLUME: DfhApiClass = {
+    "pk_entity": 14561,
+    "dfh_pk_class": 716,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 34,
+    "dfh_class_label": "Volume",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Archaeological excavations",
+    "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "Amount of space that an object fills or a container has",
+    "tmsp_last_modification": "2021-06-08T21:24:55.882507+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C20"
+  }
+  static readonly EN_723_COMPONENT: DfhApiClass = {
+    "pk_entity": 6865,
+    "dfh_pk_class": 723,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 21,
+    "dfh_class_label": "Component",
+    "dfh_fk_namespace": 74,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Intellectual and literary life",
+    "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "A constituent part, an element or ingredient.",
+    "tmsp_last_modification": "2021-07-07T17:13:06.226726+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C6"
+  }
+
+  static readonly EN_715_VOLUME_MEASUREMENT_UNIT: DfhApiClass = {
+    "pk_entity": 6284,
+    "dfh_pk_class": 715,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 20,
+    "dfh_class_label": "Volume measurement unit",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Physical man-made objects and basic information about them",
+    "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "A measurement unit of volume, like pint, liter, gallon, etc.",
+    "tmsp_last_modification": "2021-05-07T09:03:43.210785+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C19"
   }
 }
 

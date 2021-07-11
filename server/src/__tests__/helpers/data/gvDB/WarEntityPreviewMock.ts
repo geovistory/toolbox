@@ -123,5 +123,14 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
+    static readonly VOLUME_UNIT_CUBIC_METER: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.VOLUME_UNIT_CUBIC_METER,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_class_label,
+        entity_label: 'Cubic Meter',
+        entity_type: 'peIt',
+    })
+
 }
 

@@ -73,6 +73,23 @@ export namespace FieldMock {
     }],
     true,
   )
+  export const componentHasVolume: Field = createField(
+    DfhApiClassMock.EN_723_COMPONENT,
+    DfhApiPropertyMock.EN_1646_HAS_VOLUME,
+    [{
+      class: DfhApiClassMock.EN_716_VOLUME, viewType: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_pk_class
+        }
+      },
+      formControlType: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_pk_class
+        }
+      },
+    }],
+    true,
+  )
   export const appeHasAppeString: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1113_REFERS_TO_NAME,
@@ -115,7 +132,19 @@ export namespace FieldMock {
     },
     ],
     false,
+  )
 
+  export const unionHasPartner: Field = createField(
+    DfhApiClassMock.EN_633_UNION,
+    DfhApiPropertyMock.EN_1436_HAS_PARTNER,
+    [{ class: DfhApiClassMock.EN_21_PERSON, viewType: { entityPreview: 'true' }, formControlType: { entity: 'true' } }],
+    true,
+  )
+  export const birthStemsFrom: Field = createField(
+    DfhApiClassMock.EN_61_BIRTH,
+    DfhApiPropertyMock.EN_1435_STEMS_FROM,
+    [{ class: DfhApiClassMock.EN_633_UNION, viewType: { nestedResource: [] }, formControlType: { entity: 'true' } }],
+    true,
   )
 }
 

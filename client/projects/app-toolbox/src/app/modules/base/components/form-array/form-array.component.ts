@@ -1,72 +1,33 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { Field } from '@kleiolab/lib-queries';
-import { FormArrayChild } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
+import { FormArrayChild, ParentFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
+import { openClose } from '../../../information/shared/animations';
+import { FgAppellationTeEnComponent } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
 import { ChildComponents } from '../form-control/form-control.component';
-import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
+import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory } from '../form-create-entity/form-create-entity.component';
 
 @Component({
   selector: 'gv-form-array',
   templateUrl: './form-array.component.html',
-  styleUrls: ['./form-array.component.scss']
+  styleUrls: ['./form-array.component.scss'],
+  animations: [openClose]
 })
 export class FormArrayComponent implements OnInit, OnDestroy {
 
   @Input() formArrayFactory: LocalFormArrayFactory
+  parent: ParentFactory<FormControlData, FormArrayData, FormChildData>;
+  data: FormArrayData
+  control: FormArray
 
-
-  wrapInCard(child: LocalFormArrayFactory | LocalFormControlFactory) {
-    return false;
-    // if (child.factoryType !== 'array') return false
-    // else {
-    //   const c = child as LocalFormArrayFactory
-    //   return (
-    //     c.config.data.fieldDefinition.listType.temporalEntity &&
-    //     c.config.isList === false
-    //   )
-    // }
-  }
-
-  isFormArray(child: LocalFormArrayFactory | LocalFormControlFactory) {
-    return child.factoryType === 'array'
-  }
-
-  isFormControl(child: LocalFormArrayFactory | LocalFormControlFactory) {
-    if (child.factoryType === 'control') {
-      return true;
-    }
-    return false;
-  }
-
-  isCtrlTargetClass(formArrayFactory: LocalFormArrayFactory | LocalFormControlFactory) {
-    if (formArrayFactory.factoryType === 'control') {
-      const c = formArrayFactory as LocalFormControlFactory
-      if (c.config.data.controlType === 'ctrl-target-class') {
-        return true
-      }
-    }
-    return false
-  }
-
-
-
-  get showAddBtn() {
-    return (
-      (
-        this.formArrayFactory.config.maxLength > this.formArrayFactory.children.length
-      )
-    )
-  }
 
   get parentListDefsLength() {
-    return this.formArrayFactory.parent.config.data &&
-      this.formArrayFactory.parent.config.data.lists &&
-      this.formArrayFactory.parent.config.data.lists.fieldDefinition.targetClasses.length
+    return this.parent?.arrayFactory?.config?.data?.gvFormField?.field?.targetClasses?.length
   }
 
   showRemoveBtn(child: FormArrayChild<FormControlData, FormArrayData, FormChildData>) {
@@ -80,34 +41,15 @@ export class FormArrayComponent implements OnInit, OnDestroy {
       )
   }
 
-  get paddingLeft() {
-    return this.showTitle ? this.titleLevel * 15 : 0
-  }
-
-  get showTitle() {
-    return this.formArrayFactory.config.isList && !this.formArrayFactory.config.data.hideFieldTitle;
-  }
-
-  // get isTemporalEntityList() {
-  //   return (this.formArrayFactory.config.data.lists &&
-  //     this.formArrayFactory.config.data.lists.fieldDefinition.listType.temporalEntity)
-  // }
-
-  get itemNumberFlexible() {
-    return (this.formArrayFactory.config.isList &&
-      this.formArrayFactory.config.maxLength !== 1 &&
-      this.formArrayFactory.config.maxLength !== undefined)
-  }
-
   get maxLength() {
-    if (this.formArrayFactory.config.data.lists) {
-      return this.formArrayFactory.config.data.lists.maxLength;
+    if (this.formArrayFactory.config.data.gvFormField) {
+      return this.formArrayFactory.config.data.gvFormField.maxLength;
     }
   }
 
   get minLength() {
-    if (this.formArrayFactory.config.data.lists) {
-      return this.formArrayFactory.config.data.lists.minLength;
+    if (this.formArrayFactory.config.data.gvFormField) {
+      return this.formArrayFactory.config.data.gvFormField.minLength;
     }
   }
 
@@ -115,40 +57,27 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     return sum(this.formArrayFactory.control.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
   }
 
-  get parentMaxLength() {
-    if (this.formArrayFactory.parent.config.data.lists) {
-      return this.formArrayFactory.parent.config.data.lists.maxLength;
-    }
-  }
-
   get parentMinLength() {
-    if (this.formArrayFactory.parent.config.data.lists) {
-      return this.formArrayFactory.parent.config.data.lists.minLength;
-    }
+    return this.parent?.arrayFactory?.config?.data?.gvFormField?.minLength;
   }
 
   get parentLength() {
-    const formArray = this.formArrayFactory.parent.control as FormArray;
+    const formArray = this.parent?.arrayFactory.control;
     if (formArray.controls && formArray.controls.length > 0) {
       return sum(formArray.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
     }
     return 0;
   }
 
-  get titleLevel(): number {
-    return this.formArrayFactory.level
-  }
-
-  ctrlTargetClassIsDisabled(configs: LocalNodeConfig[]) {
-    // disable if no config is not disabled
-    return !configs.some(c => !c.disabled)
-  }
 
   constructor(
     private formCreateEntity: FormCreateEntityComponent,
   ) { }
 
   ngOnInit() {
+    this.parent = this.formArrayFactory.parent
+    this.data = this.formArrayFactory.config.data
+    this.control = this.formArrayFactory.control
   }
 
 
@@ -156,42 +85,20 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     this.formArrayFactory.remove(i)
   }
 
-  // addSpecific(i, d: FormControlData, j) {
-
-  //   const configs = d.nodeConfigs
-  //   const config = configs[j];
-
-  //   if (d.fieldDefinition.targetMaxQuantity === 1) {
-  //     const disabledConfig = configs.find(c => c.disabled === true)
-  //     if (disabledConfig) {
-  //       // remove the previously selected child
-  //       this.formArrayFactory.remove(i + 1)
-  //       // enable the previously disabled config in options menu
-  //       disabledConfig.disabled = false;
-  //     }
-  //   }
-
-  //   // add the selected child
-  //   this.formArrayFactory.add(i + 1, config)
-
-  //   // disable the selected config
-  //   config.disabled = true;
-
-  // }
   addItemInField(field: Field, targetClass: number) {
 
     // try to find the existing child FormArray containing the controls
     let formArrayChild = this.formArrayFactory.children.find(c => {
       if (c.arrayFactory) {
         const d = c.arrayFactory.config.data;
-        return equals({ field: d.controls.field, targetClass: d.controls.targetClass }, { field, targetClass })
+        return equals({ field: d.controlWrapper.field, targetClass: d.controlWrapper.targetClass }, { field, targetClass })
       }
       return false
     })
 
     // if not available, add a child FormArray containing the controls
     if (!formArrayChild) {
-      const config = this.formCreateEntity.getListNode(field, targetClass, false, undefined)
+      const config = this.formCreateEntity.getControlWrapper(field, targetClass, undefined)
       config.array.addOnInit = 0;
       formArrayChild = this.formArrayFactory.prepend(config)
     }
@@ -228,6 +135,8 @@ export class FormArrayComponent implements OnInit, OnDestroy {
             (childComponent.FgLangStringComponent as FgLangStringComponent).focusOnCtrlText()
           } else if (childComponent.FgDimensionComponent) {
             (childComponent.FgDimensionComponent as FgDimensionComponent).focusOnCtrlNumber()
+          } else if (childComponent.FgAppellationTeEnComponent) {
+            (childComponent.FgAppellationTeEnComponent as FgAppellationTeEnComponent).focusOnCtrlText()
           }
         })
     }

@@ -1,15 +1,14 @@
-import { FormControl, Validators } from "@angular/forms";
+import { FormControl, Validators } from '@angular/forms';
 import { merge, of, ReplaySubject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { FormFactoryGlobal } from "../services/FormFactoryGlobal";
-import { FormControlConfig } from "../services/FormControlConfig";
-import { FormArrayFactory } from './form-array-factory';
+import { FormControlConfig } from '../services/FormControlConfig';
+import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
+import { ParentFactory } from './form-array-factory';
 import { AbstractControlFactory, FactoryType, StatusChange } from './form-factory.models';
-import { FormGroupFactory } from './form-group-factory';
 /**
  * Factory for a formControl, being the leaf element of the nested form
  */
-export class FormControlFactory<M> extends AbstractControlFactory {
+export class FormControlFactory<C> extends AbstractControlFactory {
   factoryType: FactoryType = 'control';
 
   public control: FormControl
@@ -20,9 +19,9 @@ export class FormControlFactory<M> extends AbstractControlFactory {
 
   constructor(
     public globalConfig: FormFactoryGlobal<any, any, any, any>,
-    public config: FormControlConfig<M>,
+    public config: FormControlConfig<C>,
     private level: number,
-    private parent?: FormGroupFactory | FormArrayFactory<any, any, any>
+    private parent?: ParentFactory<C, any, any>
   ) {
     super()
     const validators = config.required ? [Validators.required, ...(config.validators || [])] : config.validators

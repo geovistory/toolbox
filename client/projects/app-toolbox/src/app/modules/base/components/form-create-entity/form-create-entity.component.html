@@ -13,6 +13,7 @@
     <span *ngIf="!saving">Create</span>
     <span *ngIf="saving">Saving</span>
   </button>
-
   <button mat-button type="button" class="ml-2" (click)="cancel.emit()">Cancel</button>
+  <button (click)="setAdvanced(true)">advanced</button>
+  <button (click)="setAdvanced(false)">simple</button>
 </div>

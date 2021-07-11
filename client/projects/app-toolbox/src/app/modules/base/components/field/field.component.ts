@@ -90,23 +90,6 @@ export class FieldComponent implements OnInit {
      */
     if (this.field.isSpecialField !== 'has-type') {
 
-      //   this.listsWithCounts$ = combineLatest(this.field.listDefinitions.map(l => {
-      //     let obs$: Observable<number>;
-      //     if (l.listType.temporalEntity || l.listType.entityPreview) {
-      //       obs$ = this.p.inf$.statement$.pagination$.pipeCount(subfieldToSubfieldId(l, this.pkEntity, { inProject: pkProject }))
-      //     } else {
-      //       obs$ = this.i.pipeListLength(l, this.pkEntity)
-      //     }
-      //     return obs$.pipe(
-      //       map((itemsCount) => ({ ...l, itemsCount }))
-      //     )
-      //   })).pipe(
-      //     map(lists => lists.filter((list: SubfieldWithItemCount) => list.itemsCount > 0)),
-      //     shareReplay({ refCount: true, bufferSize: 1 }),
-      //   )
-
-      //   this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
-
 
       this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
         .pipe(map(([n, r]) => {
@@ -118,21 +101,12 @@ export class FieldComponent implements OnInit {
           return true;
         }))
     }
-    // else {
-    //   this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.field.property.pkProperty, this.field.isOutgoing).pipe(
-    //     map(hasTypeStatement => hasTypeStatement ? 1 : 0)
-    //   )
-    // }
 
-    // })
   }
 
   addClick() {
     if (this.field.isSpecialField === 'time-span') {
-      // TODO
-      // this.i.pipeItemTimeSpan(this.pkEntity).pipe(first(), takeUntil(this.destroy$)).subscribe(item => {
-      //   // this.timeSpan.openModal(item, this.pkEntity)
-      // })
+
     }
     // More than one target class?
     else if (this.field.targetClasses && this.field.targetClasses.length > 1) {

@@ -26,7 +26,7 @@ async function start() {
   const ps = properties.map(p => propertyToDfhApiProperty(p));
   // prepare file
   const filename = createFilename(response.profileId, profile.profileLabel);
-  const filepath = './src/__tests__/helpers/data/ontomeProfiles/' + filename;
+  const filepath = './src/__tests__/helpers/data/ontome-profiles/' + filename;
   const filecontent = createFileContent(p, ks, ps);
   // write file
   writeFileSync(filepath, filecontent);

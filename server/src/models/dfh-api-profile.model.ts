@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
 
 @model({
   settings: {
@@ -74,3 +75,5 @@ export interface DfhApiProfileRelations {
 }
 
 export type DfhApiProfileWithRelations = DfhApiProfile & DfhApiProfileRelations;
+
+registerType(DfhApiProfile)

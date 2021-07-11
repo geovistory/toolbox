@@ -313,4 +313,12 @@ export class ProInfoProjRelMock {
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
+
+  static readonly PROJ_1_VOLUME_UNIT_CUBIC_METER: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2038,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfResourceMock.VOLUME_UNIT_CUBIC_METER.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
 }

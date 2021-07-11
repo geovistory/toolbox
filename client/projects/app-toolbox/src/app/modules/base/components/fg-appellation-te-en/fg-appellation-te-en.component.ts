@@ -1,5 +1,4 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
@@ -14,6 +13,8 @@ import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-fac
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { openClose } from '../../../information/shared/animations';
+import { getFirstElementFormQueryList } from '../../base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
@@ -26,42 +27,7 @@ export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInject
   selector: 'gv-fg-appellation-te-en',
   templateUrl: './fg-appellation-te-en.component.html',
   styleUrls: ['./fg-appellation-te-en.component.scss'],
-  animations: [
-    trigger('openClose', [
-      // ...
-      state('open', style({
-        height: '*',
-        overflow: 'hidden',
-      })),
-      state('closed', style({
-        height: '0',
-        overflow: 'hidden',
-      })),
-      transition('open => closed', [
-        animate('0.2s')
-      ]),
-      transition('closed => open', [
-        animate('0.2s')
-      ]),
-      transition('* => closed', [
-        animate('0s')
-      ]),
-      transition('* => open', [
-        animate('0s')
-      ]),
-      transition('open <=> closed', [
-        animate('0.2s')
-      ]),
-      transition('* => open', [
-        animate('0.4s',
-          style({ opacity: '*' }),
-        ),
-      ]),
-      transition('* => *', [
-        animate('0.4s')
-      ]),
-    ]),
-  ]
+  animations: [openClose]
 })
 export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
@@ -85,9 +51,9 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
 
   showOptions$ = new BehaviorSubject(false)
 
-  @ViewChild(CtrlAppellationComponent) ctrlAppe: CtrlAppellationComponent
-  @ViewChild(CtrlLanguageComponent) ctrlLang: CtrlLanguageComponent
-  @ViewChild(CtrlTypeComponent) ctrlType: CtrlTypeComponent
+  @ViewChildren(CtrlAppellationComponent) ctrlAppe: QueryList<CtrlAppellationComponent>
+  @ViewChildren(CtrlLanguageComponent) ctrlLang: QueryList<CtrlLanguageComponent>
+  @ViewChildren(CtrlTypeComponent) ctrlType: QueryList<CtrlTypeComponent>
 
   pkTypedClass = DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE;
   pkTypeClass = DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE_TYPE;
@@ -242,29 +208,17 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
       )
     }
   }
-  focusOnCtrlText() {
-    if (this.ctrlAppe) {
-      this.ctrlAppe.onContainerClick()
-    }
-    // this.matInputs.changes.pipe(first((x: QueryList<MatInput>) => x.length > 0)).subscribe((items) => {
-    //   items.first.focus()
-    // })
+  async focusOnCtrlText() {
+    const ctrl = await getFirstElementFormQueryList(this.ctrlAppe)
+    ctrl.onContainerClick()
   }
-  focusOnCtrlLang() {
-    if (this.ctrlLang) {
-      this.ctrlLang.onContainerClick()
-    }
-    // this.matInputs.changes.pipe(first((x: QueryList<MatInput>) => x.length > 1)).subscribe((items) => {
-    //   items.last.focus()
-    // })
+  async focusOnCtrlLang() {
+    const ctrl = await getFirstElementFormQueryList(this.ctrlLang)
+    ctrl.onContainerClick()
   }
-  focusOnCtrlType() {
-    if (this.ctrlType) {
-      this.ctrlType.onContainerClick()
-    }
-    // this.matInputs.changes.pipe(first((x: QueryList<MatInput>) => x.length > 1)).subscribe((items) => {
-    //   items.last.focus()
-    // })
+  async focusOnCtrlType() {
+    const ctrl = await getFirstElementFormQueryList(this.ctrlType)
+    ctrl.onContainerClick()
   }
 
   toggle() {

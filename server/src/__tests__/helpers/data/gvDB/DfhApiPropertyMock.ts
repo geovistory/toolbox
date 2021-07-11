@@ -1,4 +1,4 @@
-import {DfhApiProperty} from "./local-model.helpers"
+import { DfhApiProperty } from "./local-model.helpers"
 
 export class DfhApiPropertyMock {
   static readonly EN_1111_IS_APPE_OF: DfhApiProperty = {
@@ -1104,6 +1104,68 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P14"
+  }
+  static readonly EN_1646_HAS_VOLUME: DfhApiProperty = {
+    "pk_entity": 6917,
+    "dfh_fk_profile": 21,
+    "dfh_pk_property": 1646,
+    "dfh_fk_namespace": 74,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Intellectual and literary life",
+    "dfh_property_label": "has volume",
+    "dfh_property_range": 716,
+    "requested_language": "en",
+    "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+    "dfh_property_domain": 723,
+    "tmsp_last_dfh_update": "2021-07-07T17:13:05.504+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "Associates the volume of the component",
+    "dfh_profile_label_language": "en",
+    "dfh_property_inverse_label": "is volume of",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 0,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P8"
+  }
+  static readonly EN_1639_HAS_MEASUREMENT_UNIT: DfhApiProperty = {
+    "pk_entity": 6293,
+    "dfh_fk_profile": 20,
+    "dfh_pk_property": 1639,
+    "dfh_fk_namespace": 110,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Physical man-made objects and basic information about them",
+    "dfh_property_label": "has measurement unit",
+    "dfh_property_range": 715,
+    "requested_language": "en",
+    "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+    "dfh_property_domain": 716,
+    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "Associates a volume with its measurement unit",
+    "dfh_profile_label_language": "en",
+    "dfh_property_inverse_label": "is measurement unit of",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P15"
   }
 }
 /**

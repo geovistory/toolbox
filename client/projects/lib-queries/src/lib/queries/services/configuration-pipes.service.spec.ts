@@ -201,7 +201,7 @@ describe('ConfigurationPipeService', () => {
       pipeClassLabelTest(dfhClass, ngRedux, schemaObjServcie, service, done);
     });
   })
-  describe('.pipeSubfieldTypeOfClass()', () => {
+  describe('.pipeTargetTypesOfClass()', () => {
     it('should return correct target types for EN_784_SHORT_TITLE', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
@@ -209,7 +209,6 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeTargetTypesOfClass(
-        GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class,
         -1
       )
@@ -238,7 +237,6 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeTargetTypesOfClass(
-        GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_785_TEXT.dfh_pk_class,
         -1
       )
@@ -267,7 +265,6 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeTargetTypesOfClass(
-        GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
         1
       )
@@ -294,7 +291,6 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeTargetTypesOfClass(
-        GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class,
         1
       )
@@ -323,7 +319,6 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeTargetTypesOfClass(
-        GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_61_BIRTH.dfh_pk_class,
         1
       )
@@ -346,7 +341,6 @@ describe('ConfigurationPipeService', () => {
 
       // using pipe
       const q$ = service.pipeTargetTypesOfClass(
-        GvSchemaObjectMock.sysConfig.sys.config[0],
         DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
         1
       )

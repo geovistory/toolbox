@@ -1,15 +1,16 @@
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Profiles } from '@kleiolab/lib-queries';
-import { DfhClass, DfhLabel, DfhProperty } from '@kleiolab/lib-sdk-lb4';
+import { DfhClass, DfhLabel, DfhProperty, GvPositiveSchemaObject, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { concat, mergeDeepWith } from 'ramda';
 import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
-import { DfhApiClass, DfhApiProperty } from '../data/auto-gen/gvDB/local-model.helpers';
+import { DfhApiClass, DfhApiProperty, OntomeProfileMock } from '../data/auto-gen/gvDB/local-model.helpers';
 
 
 /**
  * converts a DfhApiClass (database format)
  * to a DfhClass (redux store format)
  */
-export function transformDfhApiClassToDfhClass(dfhApiClass: DfhApiClass): DfhClass {
+export function transformDfhApiClassToDfhClass(dfhApiClass: Omit<DfhApiClass, 'pk_entity'>): DfhClass {
   return {
     pk_class: dfhApiClass.dfh_pk_class,
     identifier_in_namespace: dfhApiClass.dfh_class_identifier_in_namespace,
@@ -25,7 +26,7 @@ export function transformDfhApiClassToDfhClass(dfhApiClass: DfhApiClass): DfhCla
  * converts a DfhApiProperty (database format)
  * to a DfhProperty (redux store format)
  */
-export function transformDfhApiPropertyToDfhProperty(dfhApiProperty: DfhApiProperty): DfhProperty {
+export function transformDfhApiPropertyToDfhProperty(dfhApiProperty: Omit<DfhApiProperty, 'pk_entity'>): DfhProperty {
   return {
     pk_property: dfhApiProperty.dfh_pk_property,
     is_inherited: dfhApiProperty.dfh_is_inherited,
@@ -45,11 +46,12 @@ export function transformDfhApiPropertyToDfhProperty(dfhApiProperty: DfhApiPrope
   }
 }
 
+
 /**
 * converts a DfhApiClass (database format)
 * to a DfhLabel (redux store format)
 */
-export function transformDfhApiClassToDfhLabel(dfhApiClass: DfhApiClass): DfhLabel {
+export function transformDfhApiClassToDfhLabel(dfhApiClass: Omit<DfhApiClass, 'pk_entity'>): DfhLabel {
   return {
     fk_class: dfhApiClass.dfh_pk_class,
     label: dfhApiClass.dfh_class_label,
@@ -59,10 +61,10 @@ export function transformDfhApiClassToDfhLabel(dfhApiClass: DfhApiClass): DfhLab
 }
 
 /**
-* converts a DfhApiProperty (database format)
+* converts a dfhApiProperty (database format)
 * to a DfhLabel (redux store format)
 */
-export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: DfhApiProperty): DfhLabel {
+export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: Omit<DfhApiProperty, 'pk_entity'>): DfhLabel {
   return {
     fk_property: dfhApiProperty.dfh_pk_property,
     label: dfhApiProperty.dfh_property_label,
@@ -70,7 +72,7 @@ export function transformDfhApiPropertyToDfhLabel(dfhApiProperty: DfhApiProperty
     type: 'label'
   }
 }
-export function transformDfhApiPropertyToDfhInverseLabel(dfhApiProperty: DfhApiProperty): DfhLabel {
+export function transformDfhApiPropertyToDfhInverseLabel(dfhApiProperty: Omit<DfhApiProperty, 'pk_entity'>): DfhLabel {
   return {
     fk_property: dfhApiProperty.dfh_pk_property,
     label: dfhApiProperty.dfh_property_inverse_label,
@@ -80,7 +82,7 @@ export function transformDfhApiPropertyToDfhInverseLabel(dfhApiProperty: DfhApiP
 }
 
 
-export function transformDfhApiPropertyToDfhLabels(dfhApiProperty: DfhApiProperty): DfhLabel[] {
+export function transformDfhApiPropertyToDfhLabels(dfhApiProperty: Omit<DfhApiProperty, 'pk_entity'>): DfhLabel[] {
   return [
     transformDfhApiPropertyToDfhLabel(dfhApiProperty),
     transformDfhApiPropertyToDfhInverseLabel(dfhApiProperty),
@@ -126,3 +128,87 @@ export function createAppellationProperty(rangeClass: number) {
   return hasAppeProp
 }
 
+let id = 54321;
+export function ontomeProfileMockToGvPositiveSchema(o: OntomeProfileMock, addToProject?: number): GvPositiveSchemaObject {
+
+  const klass = o.classes.map(x => transformDfhApiClassToDfhClass(x))
+  const property = o.properties.map(x => transformDfhApiPropertyToDfhProperty(x))
+  const label = [...o.classes.map(x => transformDfhApiClassToDfhLabel(x))]
+  o.properties.forEach(x => {
+    label.push(...transformDfhApiPropertyToDfhLabels(x))
+  })
+  if (addToProject) {
+    const dfh_profile_proj_rel = [{
+      pk_entity: id++,
+      fk_project: addToProject,
+      fk_profile: o.profile.dfh_pk_profile,
+      enabled: true
+    }]
+    return {
+      dfh: { klass, property, label },
+      pro: { dfh_profile_proj_rel }
+    }
+
+  }
+  return { dfh: { klass, property, label } }
+}
+
+/**
+ * creates a positive schema object with all classes and properties from the
+ * provided ontoMock
+ * + plus it adds the addProperties defined in sysConfig
+ * + it relates the profiles given by ontoMock to the given project
+ * @param d
+ * @returns
+ */
+export function createCrmAsGvPositiveSchema(d: {
+  ontoMocks: OntomeProfileMock[],
+  sysConf: SysConfigValue,
+  p?: number
+}): GvPositiveSchemaObject {
+  let o: GvPositiveSchemaObject = {}
+  d.ontoMocks.forEach(ontoMock => {
+    const o2 = ontomeProfileMockToGvPositiveSchema(ontoMock, d.p)
+    o = mergeDeepWith(concat, o, o2)
+  })
+
+  const property = addProperties(d.sysConf, o)
+  const autoPropsObj: GvPositiveSchemaObject = { dfh: { property }, sys: { config: [d.sysConf] } }
+  return mergeDeepWith(concat, o, autoPropsObj)
+}
+
+function addProperties(sysConf: SysConfigValue, schemaObj: GvPositiveSchemaObject) {
+  const autoProps: DfhProperty[] = []
+  const toAdd = sysConf.addProperty ?? []
+  toAdd.forEach(i => {
+
+    // find property
+    const prop = schemaObj?.dfh?.property?.find(p =>
+      i.wherePkProperty ? p.pk_property === i.wherePkProperty : true &&
+        i.whereFkRange ? p.has_range === i.whereFkRange : true &&
+          i.whereFkDomain ? p.has_domain === i.whereFkDomain : true
+    )
+
+    // extend property
+    if (prop) {
+      schemaObj.dfh.klass.forEach(k => {
+        if (i.toSourceClass?.whereBasicTypeNotIn?.includes(k.basic_type)) return;
+        if (i.toSourceClass?.wherePkClassNotIn?.includes(k.pk_class)) return;
+        if (i.toSourceClass?.all ||
+          i.toSourceClass?.wherePkClassIn?.includes(k.pk_class) ||
+          i.toSourceClass?.whereBasicTypeIn?.includes(k.basic_type)
+        ) {
+
+          autoProps.push(
+            {
+              ...prop,
+              [i.isOutgoing ? 'has_domain' : 'has_range']: k.pk_class
+            }
+          )
+
+        }
+      })
+    }
+  })
+  return autoProps
+}
