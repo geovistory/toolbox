@@ -1,13 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ProConfig } from '@kleiolab/lib-config';
 import { IAppState, LoadingBarActions, ProjectPreview } from '@kleiolab/lib-redux';
 import { LoopBackAuth, LoopBackConfig, ProProject, PubAccount, PubAccountApi } from '@kleiolab/lib-sdk-lb3';
 import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { first } from 'rxjs/operators';
-import * as Config from '../../../../../../../../../server/lb3app/common/config/Config';
 import { ProjectsActions } from '../../api/projects.actions';
 
 
@@ -25,8 +25,10 @@ export class ProjectListComponent implements OnInit {
   loadingComplete = false;
 
 
-  config = Config;
 
+  PK_PROJECT_OF_TEMPLATE_PROJECT = ProConfig.PK_PROJECT_OF_TEMPLATE_PROJECT
+  PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT = ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT
+  PK_PROJECT_OF_SANDBOX_PROJECT = ProConfig.PK_PROJECT_OF_SANDBOX_PROJECT
   // TEMP 2020-03-10
   // temp;
   // tempProjectLabel;
@@ -47,7 +49,7 @@ export class ProjectListComponent implements OnInit {
     private router: Router,
     private dataService: ReduxMainService
   ) {
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 

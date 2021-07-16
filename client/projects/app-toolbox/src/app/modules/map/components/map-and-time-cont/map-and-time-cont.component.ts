@@ -7,7 +7,7 @@ import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/a
 import { apply, equals, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
-import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../../../../../../../../server/src/lb3/common/interfaces';
+import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../map.models';
 import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 
 export interface MapAndTimeContLayer {

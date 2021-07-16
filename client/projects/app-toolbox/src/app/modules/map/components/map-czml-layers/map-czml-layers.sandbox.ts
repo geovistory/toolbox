@@ -1,7 +1,7 @@
 import { sandboxOf } from 'angular-playground';
 import { clone } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
-import { CzmlPacket } from '../../../../../../../../../server/src/lb3/common/interfaces/czml-types';
+import { CzmlPacket } from '../../map.models';
 import { MapModule } from '../../map.module';
 import { MapCzmlLayersComponent, MapLayer } from './map-czml-layers.component';
 import { data2 } from './map-czml-layers.mock';

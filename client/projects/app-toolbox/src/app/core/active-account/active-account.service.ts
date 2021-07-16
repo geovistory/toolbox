@@ -28,7 +28,7 @@ export class ActiveAccountService {
     private lb4AccountApi: AccountService,
     private lb3AccountApi: PubAccountApi,
   ) {
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.updateAccount()

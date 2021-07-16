@@ -2,7 +2,7 @@
 
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
-import { CzmlLabel } from '../../../../../../../server/src/lb3/common/interfaces/czml-types';
+import { CzmlLabel } from '../../modules/map/map.models';
 import { TemporalDistribution } from './statistic-helpers';
 export interface GeoPresence {
   time_span: TimeSpanUtil,
@@ -78,7 +78,7 @@ export class CzmlLabelGenerator {
 
     this.d.scaleByDistance = {
       nearFarScalar: [150, 1.0, 15000000, 0.5]
-      //[1.5e2, 1.0, 8.0e6, 0.6]
+      // [1.5e2, 1.0, 8.0e6, 0.6]
     }
 
     // this.d.translucencyByDistance = {

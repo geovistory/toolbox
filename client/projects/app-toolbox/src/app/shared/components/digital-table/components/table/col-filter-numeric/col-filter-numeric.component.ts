@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+import { TColFilter, TColFilterNum } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { TColFilter, TColFilterOpNumeric } from '../../../../../../../../../../../server/src/lb3/server/table/interfaces';
 
 @Component({
   selector: 'gv-col-filter-numeric',
@@ -14,10 +14,10 @@ export class ColFilterNumericComponent implements OnInit, OnDestroy {
 
   @Output() filterChange = new EventEmitter<TColFilter | undefined>()
 
-  operator$ = new BehaviorSubject<TColFilterOpNumeric>('=');
+  operator$ = new BehaviorSubject<TColFilterNum.OperatorEnum>('=');
   value$ = new BehaviorSubject<string>(null); // input of type number returns a string
 
-  operators: TColFilterOpNumeric[] = [
+  operators: TColFilterNum.OperatorEnum[] = [
     '=', '<', '>'
   ]
 

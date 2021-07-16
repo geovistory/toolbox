@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # This file is used by .github/workflows/warehouse-compat.yml
-# to create deployment/warehouse-compat-list.txt
+# to create server/warehouse-compat-list.txt
 # The script generates a list of commits from the current commit
-# backwards in history in order to list commits where warehouse 
+# backwards in history in order to list commits where warehouse
 # was unchanged compared to current commit.
 
 # assign variables
 path=server/src/warehouse
-output=deployment/warehouse-compat-list.txt
+output=server/warehouse-compat-list.txt
 currentCommit=$(git rev-parse --short HEAD)
 i=0
 
@@ -26,7 +26,7 @@ while [ $i -le 1000 ]; do
   if [ $? -eq 0 ]; then
     # No modifications found in directory $path between $currentCommit and $commit.
     # Adding commit to list of commits where warehouse is compatible with current comit
-    echo $commit >> $output
+    echo $commit >>$output
   else
     # Modifications found in directory $path between $currentCommit and $commit
     # exit loop because from now on all next iterations will return a difference between the commits

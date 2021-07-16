@@ -24,7 +24,7 @@ export class RequestPasswordResetComponent {
     private accountApi: AccountService,
     private loadingBarActions: LoadingBarActions,
   ) {
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 

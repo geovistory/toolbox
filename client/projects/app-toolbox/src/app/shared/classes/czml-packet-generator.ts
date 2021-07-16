@@ -1,9 +1,9 @@
 /// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 
+import { CzmlPacket } from '../../modules/map/map.models';
 import { CzmlLabelGenerator, QueryPoint } from './czml-label-generator';
 import { CzmlPointGenerator } from './czml-point-generator';
 import { CzmlPositionGenerator } from './czml-position-generator';
-import { CzmlPacket } from '../../../../../../../server/src/lb3/common/interfaces/czml-types';
 
 // https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet
 
