@@ -93,7 +93,7 @@ jobs:
                webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  
         
   build-and-push-webserver:
-    runs-on: ubunteu-latest
+    runs-on: ubuntu-latest
     needs: [extract-metadata]
     if: ${{needs.extract-metadata.outputs.webserver_image_exists != 0}}
     steps:
@@ -126,7 +126,7 @@ jobs:
  
        
   build-and-push-warehouse:
-    runs-on: ubunteu-latest
+    runs-on: ubuntu-latest
     needs: [extract-metadata]
     if: ${{needs.extract-metadata.outputs.warehouse_image_exists != 0}}
     steps:
@@ -159,7 +159,7 @@ jobs:
  
      
   build-and-push-client:
-    runs-on: ubunteu-latest
+    runs-on: ubuntu-latest
     needs: [extract-metadata]
     if: ${{needs.extract-metadata.outputs.client_image_exists != 0}}
     steps:
