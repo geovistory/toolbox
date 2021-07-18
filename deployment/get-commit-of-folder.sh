@@ -16,6 +16,7 @@ done
 
 # assign variables
 currentCommit=$(git rev-parse HEAD)
+latestCommitWithoutChanges=$currentCommit
 i=0
 
 # check if directory exists
@@ -29,8 +30,9 @@ while [ $i -le 1000 ]; do
   if [ $? -eq 1 ]; then
     # Modifications found in directory $path between $currentCommit and $commit
     # exit loop because from now on all next iterations will return a difference between the commits
-    echo $commit
+    echo $latestCommitWithoutChanges
     exit 0
   fi
   i=$(($i + 1))
+  latestCommitWithoutChanges=$commit
 done
