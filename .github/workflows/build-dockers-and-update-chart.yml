@@ -49,7 +49,7 @@ jobs:
             fetch-depth: 0
             
       - name: Extract latest commit sha of ./server
-        run: echo '::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server)'
+        run: echo ::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server)
         id: extract_latest_commit
       
       - name: echo latest commit
@@ -75,7 +75,7 @@ jobs:
         id: extract_image_exists
       
       - name: Docker Build & Push
-        if: ${{steps.extract_image_exists.image_exists == 0}}
+        if: ${{steps.extract_image_exists.outputs.image_exists == 0}}
         uses: docker/build-push-action@v2
         with:
           # Location of Dockerfile, if not Dockerfile in root directory
