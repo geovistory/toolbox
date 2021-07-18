@@ -52,7 +52,7 @@ jobs:
         
       - name: echo latest commit of client
         shell: bash
-        run: echo ${{outputs.client_sha}}
+        run: echo ${{steps.shas.outputs.client_sha}}
         
 #  # This workflow contains a single job called "build"
 #  build-and-push-webserver:
