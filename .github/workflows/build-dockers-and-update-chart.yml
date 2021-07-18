@@ -16,39 +16,43 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{steps.extract_branch.outputs.branch}}    
-      webserver_sha: ${{steps.extract_webserver_sha.outputs.sha}}  
-      warehouse_sha: ${{steps.extract_warehouse_sha.outputs.sha}}  
-      client_sha: ${{steps.extract_client_sha.outputs.sha}}  
+      webserver_sha: ${{steps.shas.outputs.sha}}  
+      warehouse_sha: ${{steps.shas.outputs.warehouse_sha}}  
+      client_sha: ${{steps.shas.outputs.client_sha}}  
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
             fetch-depth: 0
+            
       - name: Extract branch name
         shell: bash
         run: echo ::set-output name=branch::$(echo stag)
         # for production, use something like the following
         # run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})"
         id: extract_branch
-     
-      - name: Extract latest commit sha of webserver
-        run: echo ::set-output name=sha::$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
-        id: extract_webserver_sha
-      
-      - name: Extract latest commit sha of warehouse
-        run: echo ::set-output name=sha::$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
-        id: extract_warehouse_sha
         
-      - name: Extract latest commit sha of client
+      - name: Extract latest commits of client, warehouse and webserver
         run: |
+          # client
           client_sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
           echo $client_sha
-          echo ::set-output name=sha::$client_sha
-        id: extract_client_sha
+          echo ::set-output name=client_sha::$client_sha
+          
+          # warehouse
+          client_sha=$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
+          echo $warehouse_sha
+          echo ::set-output name=warehouse_sha::$warehouse_sha
+            
+          # webserver
+          client_sha=$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
+          echo $webserver_sha
+          echo ::set-output name=webserver_sha::$webserver_sha
+        id: shas
         
-      - name: echo latest commit  of client
+      - name: echo latest commit of client
         shell: bash
-        run: echo ${{steps.extract_client_sha.outputs.sha}}
+        run: echo ${{outputs.client_sha}}
         
 #  # This workflow contains a single job called "build"
 #  build-and-push-webserver:
