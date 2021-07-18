@@ -32,27 +32,40 @@ jobs:
         # run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})"
         id: extract_branch
         
-      - name: Extract latest commits of client, warehouse and webserver
+      - name: Extract latest commits of client
+        id: client_sha
         run: |
-          # client
-          client_sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
-          echo $client_sha
-          echo ::set-output name=client_sha::$client_sha
+          sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
+          echo $sha
+          echo ::set-output name=sha::$sha
+      
+      - name: Check if client image exists     
+        id: client_image_exists
+        run: |
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{needs.extract_metadata.outputs.webserver_sha}} > /dev/null ; echo $?)
+          echo $exists
+          echo ::set-output name=exists::$exists
           
-          # warehouse
-          client_sha=$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
-          echo $warehouse_sha
-          echo ::set-output name=warehouse_sha::$warehouse_sha
-            
-          # webserver
-          client_sha=$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
-          echo $webserver_sha
-          echo ::set-output name=webserver_sha::$webserver_sha
-        id: shas
+    # - name: Extract latest commits of client, warehouse and webserver
+    #   run: |
+    #     # client
+    #     sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
+    #     echo $sha
+    #     echo ::set-output name=sha::$client_sha    
+    #     # warehouse
+    #     client_sha=$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
+    #     echo $warehouse_sha
+    #     echo ::set-output name=warehouse_sha::$warehouse_sha
+    #       
+    #     # webserver
+    #     client_sha=$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
+    #     echo $webserver_sha
+    #     echo ::set-output name=webserver_sha::$webserver_sha
+    #   id: shas
         
       - name: echo latest commit of client
         shell: bash
-        run: echo ${{steps.shas.outputs.client_sha}}
+        run: echo ${{steps.client_sha.outputs.sha}}
         
 #  # This workflow contains a single job called "build"
 #  build-and-push-webserver:
