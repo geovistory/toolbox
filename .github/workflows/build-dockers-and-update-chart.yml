@@ -36,53 +36,57 @@ jobs:
         id: extract_warehouse_sha
         
       - name: Extract latest commit sha of client
-        run: echo ::set-output name=sha::$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
+        run: |
+          client_sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
+          echo $client_sha
+          echo ::set-output name=sha::$client_sha
         id: extract_client_sha
         
       - name: echo latest commit  of client
         shell: bash
         run: echo ${{steps.extract_client_sha.outputs.sha}}
         
-  # This workflow contains a single job called "build"
-  build-and-push-webserver:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    needs: [extract-metadata]
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-     
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-            fetch-depth: 0
-      
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
- 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
- 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Check if image already exists (retrns 0 if exists)
-        shell: bash
-        run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{needs.extract_metadata.outputs.webserver_sha}} > /dev/null ; echo $?)"
-        id: extract_image_exists
-      
-      - name: Docker Build & Push
-        if: ${{steps.extract_image_exists.outputs.image_exists != 0}}
-        uses: docker/build-push-action@v2
-        with:
-          # Location of Dockerfile, if not Dockerfile in root directory
-          file: server/webserver.dockerfile
-          # Directory to run `docker build` from, if not project root
-          context: server
-          push: true
-          tags: ghcr.io/kleiolab/geovistory-webserver:${{needs.extract_metadata.outputs.webserver_sha}}
- 
- 
+#  # This workflow contains a single job called "build"
+#  build-and-push-webserver:
+#    # The type of runner that the job will run on
+#    runs-on: ubuntu-latest
+#    needs: [extract-metadata]
+#    # Steps represent a sequence of tasks that will be executed as part of the job
+#    steps:
+#     
+#      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#      - uses: actions/checkout@v2
+#        with:
+#            fetch-depth: 0
+#      
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+# 
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+# 
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v1
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.repository_owner }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#          
+#      - name: Check if image already exists (retrns 0 if exists)
+#        shell: bash
+#        run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{needs.extract_metadata.outputs.webserver_sha}} > /dev/null ; echo $?)"
+#        id: extract_image_exists
+#      
+#      - name: Docker Build & Push
+#        if: ${{steps.extract_image_exists.outputs.image_exists != 0}}
+#        uses: docker/build-push-action@v2
+#        with:
+#          # Location of Dockerfile, if not Dockerfile in root directory
+#          file: server/webserver.dockerfile
+#          # Directory to run `docker build` from, if not project root
+#          context: server
+#          push: true
+#          tags: ghcr.io/kleiolab/geovistory-webserver:${{needs.extract_metadata.outputs.webserver_sha}}
+# 
+# 
+#
