@@ -49,7 +49,7 @@ jobs:
             fetch-depth: 0
             
       - name: Extract latest commit sha of ./server
-        run: echo ::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server)
+        run: echo ::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
         id: extract_latest_commit
       
       - name: echo latest commit
@@ -69,13 +69,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Check if image already exists
+      - name: Check if image already exists (retrns 0 if exists)
         shell: bash
         run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.extract_latest_commit.outputs.latest_commit}} > /dev/null ; echo $?)"
         id: extract_image_exists
       
       - name: Docker Build & Push
-        if: ${{steps.extract_image_exists.outputs.image_exists == 0}}
+        if: ${{steps.extract_image_exists.outputs.image_exists != 0}}
         uses: docker/build-push-action@v2
         with:
           # Location of Dockerfile, if not Dockerfile in root directory
