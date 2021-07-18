@@ -55,7 +55,7 @@ jobs:
         run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
 
       - name: Extract latest commit sha of ./server
-        run: echo '::set-output name=latest_commit:abc'
+        run: echo '::set-output name=latest_commit::abc'
         #run: echo ::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server)
         id: extract_latest_commit
       - name: echo latest commit
