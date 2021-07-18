@@ -45,6 +45,8 @@ jobs:
      
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+            ref: k8s
 
       - name: Extract latest commit sha of ./server
         shell: bash
