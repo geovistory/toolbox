@@ -1,0 +1,81 @@
+# This workflow creates and publishes docker images 
+# and updates geovistory-charts repo with new image tags
+
+name: Build, push, deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the dev branch
+on:
+  push:
+    branches: [k8s] # for production, change this to [dev, master]
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  extract-current-sha:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{steps.extract_sha.outputs.sha}}  
+    steps:  
+      # Extracts sha of git commit
+      - name: Extract sha
+        shell: bash
+        run: echo "##[set-output name=sha;]$(echo $GITHUB_SHA)"
+        id: extract_sha
+  extract-branch-name:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{steps.extract_branch.outputs.branch}}  
+    steps:         
+      # Extracts branch name
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo stag)"
+        # for production, use something like the following
+        # run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})"
+        id: extract_branch
+        
+  # This workflow contains a single job called "build"
+  build-and-push-webserver:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: [extract-current-sha, extract-branch-name]
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+     
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.MY_GITHUB_PACKAGES_TOKEN }}
+          
+      - name: Extract latest commit sha of ./server
+        shell: bash
+        run: echo "##[set-output name=latest_commit;]$(bash deployment/get-commit-of-folder.sh -p server)"
+        id: extract_latest_commit
+      
+      - name: Check if image already exists
+        shell: bash
+        run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{extract_latest_commit.latest_commit}} > /dev/null ; echo $?)"
+        id: extract_image_exists
+      
+      - name: Docker Build & Push
+        if: ${{extract_image_exists.image_exists === 0}}
+        uses: docker/build-push-action@v2
+        with:
+          # Location of Dockerfile, if not Dockerfile in root directory
+          file: server/webserver.dockerfile
+          # Directory to run `docker build` from, if not project root
+          context: server
+          push: true
+          tags: ghcr.io/kleiolab/geovistory-webserver:${{extract_latest_commit.latest_commit}}
