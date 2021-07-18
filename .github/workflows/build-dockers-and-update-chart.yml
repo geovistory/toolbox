@@ -83,6 +83,6 @@ jobs:
           # Directory to run `docker build` from, if not project root
           context: server
           push: true
-          tags: ghcr.io/kleiolab/geovistory-webserver:${{steps.extract_latest_commit.latest_commit}}
+          tags: ghcr.io/kleiolab/geovistory-webserver:${{steps.extract_latest_commit.outputs.latest_commit}}
  
  
