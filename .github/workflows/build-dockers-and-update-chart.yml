@@ -42,7 +42,7 @@ jobs:
       - name: Check if client image exists     
         id: client_image_exists
         run: |
-          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{needs.extract_metadata.outputs.webserver_sha}} > /dev/null ; echo $?)
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-client:${{steps.client_sha.outputs.sha}} > /dev/null ; echo $?)
           echo $exists
           echo ::set-output name=exists::$exists
           
