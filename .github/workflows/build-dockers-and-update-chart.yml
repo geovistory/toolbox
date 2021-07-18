@@ -66,7 +66,7 @@ jobs:
       
       - name: Check if image already exists
         shell: bash
-        run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{extract_latest_commit.latest_commit}} > /dev/null ; echo $?)"
+        run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.extract_latest_commit.latest_commit}} > /dev/null ; echo $?)"
         id: extract_image_exists
       
       - name: Docker Build & Push
