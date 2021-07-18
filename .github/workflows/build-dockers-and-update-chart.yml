@@ -55,7 +55,6 @@ jobs:
       - name: echo latest commit
         shell: bash
         run: echo ${{steps.extract_latest_commit.latest_commit}}
-        id: extract_latest_commit
 #      
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
