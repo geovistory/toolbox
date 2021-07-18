@@ -32,7 +32,7 @@ jobs:
         # run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})"
         id: extract_branch
         
-      - name: Extract latest commits of client
+      - name: Extract latest commit of client
         id: client_sha
         run: |
           sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
@@ -45,27 +45,44 @@ jobs:
           exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-client:${{steps.client_sha.outputs.sha}} > /dev/null ; echo $?)
           echo $exists
           echo ::set-output name=exists::$exists
+    
+      - name: Extract latest commit of webserver
+        id: webserver_sha
+        run: |
+          sha=$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
+          echo $sha
+          echo ::set-output name=sha::$sha
+      
+      - name: Check if webserver image exists     
+        id: webserver_image_exists
+        run: |
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.webserver_sha.outputs.sha}} > /dev/null ; echo $?)
+          echo $exists
+          echo ::set-output name=exists::$exists 
           
-    # - name: Extract latest commits of client, warehouse and webserver
-    #   run: |
-    #     # client
-    #     sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
-    #     echo $sha
-    #     echo ::set-output name=sha::$client_sha    
-    #     # warehouse
-    #     client_sha=$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
-    #     echo $warehouse_sha
-    #     echo ::set-output name=warehouse_sha::$warehouse_sha
-    #       
-    #     # webserver
-    #     client_sha=$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
-    #     echo $webserver_sha
-    #     echo ::set-output name=webserver_sha::$webserver_sha
-    #   id: shas
-        
-      - name: echo latest commit of client
+      - name: Extract latest commit of warehouse
+        id: warehouse_sha
+        run: |
+          sha=$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
+          echo $sha
+          echo ::set-output name=sha::$sha
+      
+      - name: Check if warehouse image exists     
+        id: warehouse_image_exists
+        run: |
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.warehouse_sha.outputs.sha}} > /dev/null ; echo $?)
+          echo $exists
+          echo ::set-output name=exists::$exists 
+ 
+      - name: report
         shell: bash
-        run: echo ${{steps.client_sha.outputs.sha}}
+        run: |
+          echo client sha: ${{steps.client_sha.outputs.sha}} \
+               client image exists: ${{steps.client_image_exists.outputs.exists}} \
+               warehouse sha: ${{steps.warehouse_sha.outputs.sha}} \
+               warehouse image exists: ${{steps.warehouse_image_exists.outputs.exists}} \
+               webserver sha: ${{steps.webserver_sha.outputs.sha}} \
+               webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  
         
 #  # This workflow contains a single job called "build"
 #  build-and-push-webserver:
