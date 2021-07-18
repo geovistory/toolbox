@@ -78,7 +78,7 @@ jobs:
       - name: Check if warehouse image exists     
         id: warehouse_image_exists
         run: |
-          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.warehouse_sha.outputs.sha}} > /dev/null ; echo $?)
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-warehouse:${{steps.warehouse_sha.outputs.sha}} > /dev/null ; echo $?)
           echo $exists
           echo ::set-output name=exists::$exists 
  
