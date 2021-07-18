@@ -18,10 +18,10 @@ jobs:
       branch: ${{steps.extract_branch.outputs.branch}}    
       webserver_image_exists: ${{steps.webserver_image_exists.outputs.exists}}  
       warehouse_image_exists: ${{steps.warehouse_image_exists.outputs.exists}}  
-      client_image_exists: ${{steps.client_image_exists.outputs.exists}}  
+      toolbox_image_exists: ${{steps.toolbox_image_exists.outputs.exists}}  
       webserver_sha: ${{steps.webserver_sha.outputs.sha}}  
       warehouse_sha: ${{steps.warehouse_sha.outputs.sha}}  
-      client_sha: ${{steps.client_sha.outputs.sha}}  
+      toolbox_sha: ${{steps.toolbox_sha.outputs.sha}}  
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -40,17 +40,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract latest commit of client
-        id: client_sha
+      - name: Extract latest commit of toolbox
+        id: toolbox_sha
         run: |
-          sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
+          sha=$(bash deployment/get-commit-of-folder.sh -p toolbox | cut -c1-8)
           echo $sha
           echo ::set-output name=sha::$sha
       
-      - name: Check if client image exists     
-        id: client_image_exists
+      - name: Check if toolbox image exists     
+        id: toolbox_image_exists
         run: |
-          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-client:${{steps.client_sha.outputs.sha}} > /dev/null ; echo $?)
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-toolbox:${{steps.toolbox_sha.outputs.sha}} > /dev/null ; echo $?)
           echo $exists
           echo ::set-output name=exists::$exists
     
@@ -85,8 +85,8 @@ jobs:
       - name: report
         shell: bash
         run: |
-          echo client sha: ${{steps.client_sha.outputs.sha}} \
-               client image exists: ${{steps.client_image_exists.outputs.exists}} \
+          echo toolbox sha: ${{steps.toolbox_sha.outputs.sha}} \
+               toolbox image exists: ${{steps.toolbox_image_exists.outputs.exists}} \
                warehouse sha: ${{steps.warehouse_sha.outputs.sha}} \
                warehouse image exists: ${{steps.warehouse_image_exists.outputs.exists}} \
                webserver sha: ${{steps.webserver_sha.outputs.sha}} \
@@ -158,10 +158,10 @@ jobs:
  
  
      
-  build-and-push-client:
+  build-and-push-toolbox:
     runs-on: ubuntu-latest
     needs: [extract-metadata]
-    if: ${{needs.extract-metadata.outputs.client_image_exists != 0}}
+    if: ${{needs.extract-metadata.outputs.toolbox_image_exists != 0}}
     steps:
      
       - uses: actions/checkout@v2
@@ -187,5 +187,5 @@ jobs:
           # Directory to run `docker build` from, if not project root
           context: client
           push: true
-          tags: ghcr.io/kleiolab/geovistory-client:${{needs.extract-metadata.outputs.client_sha}}
+          tags: ghcr.io/kleiolab/geovistory-toolbox:${{needs.extract-metadata.outputs.toolbox_sha}}
  
