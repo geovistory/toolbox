@@ -19,7 +19,11 @@ jobs:
       webserver_sha: ${{steps.extract_webserver_sha.outputs.sha}}  
       warehouse_sha: ${{steps.extract_warehouse_sha.outputs.sha}}  
       client_sha: ${{steps.extract_client_sha.outputs.sha}}  
-    steps:         
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+            fetch-depth: 0
       - name: Extract branch name
         shell: bash
         run: echo ::set-output name=branch::$(echo stag)
