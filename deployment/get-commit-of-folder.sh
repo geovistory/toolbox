@@ -12,7 +12,7 @@ while getopts p: flag; do
   p) path=${OPTARG} ;;
   esac
 done
-echo "Path: $path"
+# echo "Path: $path"
 
 # assign variables
 currentCommit=$(git rev-parse HEAD)
@@ -24,7 +24,7 @@ i=0
 # loop over old commits as long as no changes to current commit detected
 # first iteration is over the current commit, so that the list starts with current commit
 while [ $i -le 1000 ]; do
-  commit=$(git rev-parse @~$i)
+  commit=$(git rev-parse HEAD~$i)
   git diff --quiet $currentCommit $commit -- $path
   if [ $? -eq 1 ]; then
     # Modifications found in directory $path between $currentCommit and $commit
