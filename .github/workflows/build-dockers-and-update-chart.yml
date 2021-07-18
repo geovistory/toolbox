@@ -57,7 +57,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.MY_GITHUB_PACKAGES_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Extract latest commit sha of ./server
         shell: bash
