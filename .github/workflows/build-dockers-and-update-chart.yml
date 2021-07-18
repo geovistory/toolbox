@@ -46,6 +46,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Extract latest commit sha of ./server
+        shell: bash
+        run: echo "##[set-output name=latest_commit;]$(bash deployment/get-commit-of-folder.sh -p server)"
+        id: extract_latest_commit
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -59,11 +64,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Extract latest commit sha of ./server
-        shell: bash
-        run: echo "##[set-output name=latest_commit;]$(bash deployment/get-commit-of-folder.sh -p server)"
-        id: extract_latest_commit
-      
       - name: Check if image already exists
         shell: bash
         run: echo "##[set-output name=image_exists;]$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.extract_latest_commit.latest_commit}} > /dev/null ; echo $?)"
