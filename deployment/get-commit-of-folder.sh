@@ -30,7 +30,7 @@ while [ $i -le 1000 ]; do
     # Modifications found in directory $path between $currentCommit and $commit
     # exit loop because from now on all next iterations will return a difference between the commits
     echo $commit
-    exit
+    exit 0
   fi
   i=$(($i + 1))
 done
