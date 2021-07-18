@@ -18,9 +18,6 @@ COPY src /app/src
 # Copy javiscript (no compilation needed)
 COPY lb3app /app/lb3app
 
-# Copy static assets (client_dist)
-COPY client_dist /app/client_dist
-
 # Copy migration files
 COPY db-migrate /app/db-migrate
 
