@@ -49,7 +49,8 @@ jobs:
             fetch-depth: 0
 
       - name: Extract latest commit sha of ./server
-        run: echo ::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server)
+        run: echo ::set-output name=latest_commit::$(echo abc)
+        #run: echo ::set-output name=latest_commit::$(bash deployment/get-commit-of-folder.sh -p server)
         id: extract_latest_commit
       - name: echo latest commit
         shell: bash
