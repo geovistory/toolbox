@@ -50,7 +50,9 @@ jobs:
 
       - name: Extract latest commit sha of ./server
         shell: bash
-        run: echo "##[set-output name=latest_commit;]$(bash deployment/get-commit-of-folder.sh -p server)"
+        run: |
+          bash deployment/get-commit-of-folder.sh -p server
+          echo "##[set-output name=latest_commit;]$(bash deployment/get-commit-of-folder.sh -p server)"
         id: extract_latest_commit
       - name: echo latest commit
         shell: bash
