@@ -46,11 +46,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-            ref: k8s
+            fetch-depth: 0
 
       - name: Extract latest commit sha of ./server
         shell: bash
         run: |
+          echo 'git rev-parse HEAD' 
+          git rev-parse HEAD
           echo 'git rev-parse HEAD' 
           git rev-parse HEAD
           echo 'git rev-parse HEAD~1' 
