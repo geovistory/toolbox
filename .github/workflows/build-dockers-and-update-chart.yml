@@ -43,7 +43,7 @@ jobs:
       - name: Extract latest commit of toolbox
         id: toolbox_sha
         run: |
-          sha=$(bash deployment/get-commit-of-folder.sh -p toolbox | cut -c1-8)
+          sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
           echo $sha
           echo ::set-output name=sha::$sha
       
