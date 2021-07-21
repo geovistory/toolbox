@@ -2,6 +2,8 @@
 (function (window) {
   window["env"] = window["env"] || {};
 
-  // Environment variables
+  // Environment variable for the rest api url
   window["env"]["apiUrl"] = "${API_URL}";
+  // Environment variable for the url serving static assets of angular dist folder
+  window["env"]["assetsUrl"] = "${ASSETS_URL}";
 })(this);

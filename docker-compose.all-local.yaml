@@ -26,6 +26,7 @@ services:
       dockerfile: Dockerfile
     environment:
       API_URL: ${DOMAIN_NAME}:${GEOV_WEBSERVER_PORT}
+      ASSETS_URL: ${DOMAIN_NAME}:${GEOV_WEBSERVER_PORT}
     ports:
       - ${NGINX_TOOLBOX_PORT}:80
 
