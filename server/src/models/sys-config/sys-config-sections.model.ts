@@ -2,7 +2,6 @@ import { model, property } from '@loopback/repository';
 import { registerType } from '../../components/spec-enhancer/model.spec.enhancer';
 
 export enum DisplayType { form, view }
-export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
 
 @model()
 export class Section {
@@ -12,5 +11,7 @@ export class Section {
 
 @model({ jsonSchema: { additionalProperties: { $ref: registerType(Section) }, } })
 export class Sections {
-  [key: string]: Section;
+  @property() basic: Section;
+  @property() metadata: Section;
+  @property() specific: Section;
 }
