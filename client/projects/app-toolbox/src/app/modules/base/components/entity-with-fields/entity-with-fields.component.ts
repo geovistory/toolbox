@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Optional } from '@angular/core';
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class EntityWithFieldsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.fields$ = this.c.pipeSpecificAndBasicFields(this.fkClass, true)
+    this.fields$ = this.c.pipeAllSections(this.fkClass, DisplayType.view, true)
       .pipe(
         map(fields => fields.filter(field => !this.isCircular(field)))
       )

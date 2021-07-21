@@ -8,7 +8,6 @@ import { flatten, indexBy, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { Field } from '../models/Field';
-import { FieldPlaceOfDisplay } from '../models/FieldPosition';
 import { Profiles } from '../models/Profiles';
 import { SpecialFieldType } from '../models/SpecialFieldType';
 import { Subfield } from '../models/Subfield';
@@ -16,6 +15,9 @@ import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
+
+export enum DisplayType { form, view }
+export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
 
 // this is the
 export type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'resource'
@@ -162,7 +164,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   allSubfieldsRemovedFromAllProfiles: s.removedFromAllProfiles,
                   targetClasses: [s.targetClass],
                   fieldConfig,
-                  placeOfDisplay: getPlaceOfDisplay(sysConfig.specialFields, s, fieldConfig),
+                  display: getFieldDisplay(sysConfig.specialFields, s, fieldConfig),
                   isSpecialField,
                   targets: {
                     [s.targetClass]: {
@@ -204,48 +206,30 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     return this.cache('pipeFields', obs$, ...arguments)
   }
 
-
-
-  /**
-   * pipe all the specific fields of a class,
-   * ordered by the position of the field within the specific fields
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  public pipeSpecificFieldOfClass(pkClass: number, noNesting = false): Observable<Field[]> {
-
-    const obs$ = this.pipeFields(pkClass, noNesting).pipe(
-      map(fields => fields
-        // filter fields that are displayd in specific fields
-        .filter(field => field.placeOfDisplay.specificFields)
-        // sort fields by the position defined in the specific fields
-        .sort((a, b) => a.placeOfDisplay.specificFields.position - b.placeOfDisplay.specificFields.position)
-      )
-    )
-    return this.cache('pipeSpecificFieldOfClass', obs$, ...arguments)
-
-  }
-
   /**
     * pipe all the basic fields of a class,
-    * ordered by the position of the field within the basic fields
+    * ordered by the position of the field within the basic/metadata/specific fields
     */
   // @spyTag
   // @cache({ refCount: false })
-  public pipeBasicFieldsOfClass(pkClass: number, noNesting = false): Observable<Field[]> {
+  public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
+
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
-        // filter fields that are displayd in basic fields
-        .filter(field => field.placeOfDisplay.basicFields)
-        // sort fields by the position defined in the basic fields
-        .sort((a, b) => a.placeOfDisplay.basicFields.position - b.placeOfDisplay.basicFields.position)
+        // filter fields that are displayed in specific fields
+        .filter(field => {
+          if (displayType === DisplayType.form) return field.display.formSections[section]
+          if (displayType === DisplayType.view) return field.display.viewSections[section]
+        })
+        // sort fields by the position defined in the section
+        .sort((a, b) => {
+          if (displayType === DisplayType.form) return a.display.formSections[section].position - b.display.formSections[section].position
+          if (displayType === DisplayType.view) return a.display.viewSections[section].position - b.display.viewSections[section].position
+        })
       )
     )
-    return this.cache('pipeBasicFieldsOfClass', obs$, ...arguments)
+    return this.cache('pipeSection', obs$, ...arguments)
   }
-
-
-
 
   /**
      * Pipes the fields for temporal entity forms
@@ -261,9 +245,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       map(allFields => {
         const fields = allFields
           // filter fields that are displayd in specific fields and not removed from all profiles
-          .filter(field => (field.placeOfDisplay.specificFields && field.allSubfieldsRemovedFromAllProfiles === false))
+          .filter(field => (field.display.formSections.specific && field.allSubfieldsRemovedFromAllProfiles === false))
           // sort fields by the position defined in the specific fields
-          .sort((a, b) => a.placeOfDisplay.specificFields.position - b.placeOfDisplay.specificFields.position)
+          .sort((a, b) => a.display.formSections.specific.position - b.display.formSections.specific.position)
 
         const whenField = allFields.find(field => field.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
         if (whenField) fields.push(whenField)
@@ -278,46 +262,24 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   }
 
-
-
-
-
-
-  /**
-   * Pipes the fields of given class in this order:
-   * - basic fields
-   * - specific fields
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeBasicAndSpecificFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest([
-      this.pipeBasicFieldsOfClass(pkClass, noNesting),
-      this.pipeSpecificFieldOfClass(pkClass, noNesting)
-    ])
-      .pipe(
-        map(([a, b]) => [...a, ...b])
-      )
-    return this.cache('pipeBasicAndSpecificFields', obs$, ...arguments)
-
-  }
-
   /**
   * Pipes the fields of given class in this order:
-  * - specific fields
   * - basic fields
+  * - metadata fields
+  * - specific fields
   */
   // @spyTag
   // @cache({ refCount: false })
-  pipeSpecificAndBasicFields(pkClass: number, noNesting = false): Observable<Field[]> {
+  pipeAllSections(pkClass: number, displayType: DisplayType, noNesting = false): Observable<Field[]> {
     const obs$ = combineLatest([
-      this.pipeSpecificFieldOfClass(pkClass, noNesting),
-      this.pipeBasicFieldsOfClass(pkClass, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.basic),
+      this.pipeSection(pkClass, displayType, SectionName.metadata),
+      this.pipeSection(pkClass, displayType, SectionName.specific),
     ])
       .pipe(
-        map(([a, b]) => [...a, ...b])
+        map(([a, b, c]) => [...a, ...b, ...c])
       )
-    return this.cache('pipeSpecificAndBasicFields', obs$, ...arguments)
+    return this.cache('pipeAllSections', obs$, ...arguments)
   }
 
 
@@ -557,7 +519,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // pipe the subfields of the entity
   private pipeNestedResource(classId: number, contextPkProperty?: number): Observable<GvSubentitFieldPageReq[]> {
     const noNest = true;
-    return this.pipeSpecificAndBasicFields(classId, noNest).pipe(
+    return this.pipeAllSections(classId, DisplayType.view, noNest).pipe(
       map(fields => {
         const subentitySubfieldPage: GvSubentitFieldPageReq[] = [];
         for (const field of fields) {
@@ -1223,26 +1185,27 @@ function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: RelatedPr
 
 }
 
-function getPlaceOfDisplay(specialFields: SysConfigSpecialFields, subfield: Subfield, projectFieldConfig?: ProClassFieldConfig): FieldPlaceOfDisplay {
+function getFieldDisplay(
+  specialFields: SysConfigSpecialFields,
+  subfield: Subfield,
+  projectFieldConfig?: ProClassFieldConfig
+): SysConfigFieldDisplay {
   let settings: SysConfigFieldDisplay;
-
   settings = getSettingsFromSysConfig(subfield, specialFields, settings);
 
   // if this is a special field, create corresponding display settings and return it
-  if (settings) {
-    if (settings.displayInBasicFields) {
-      return { basicFields: { position: settings.displayInBasicFields.position } }
-    } else if (settings.hidden) {
-      return { hidden: true }
-    }
-  }
+  if (settings) return settings;
 
   // otherwise display the field in specific fields (default)
-  let position = Number.POSITIVE_INFINITY;
-  if (projectFieldConfig) position = projectFieldConfig.ord_num
-  return { specificFields: { position } }
+  let thePos = Number.POSITIVE_INFINITY;
+  if (projectFieldConfig) thePos = projectFieldConfig.ord_num
+  return {
+    formSections: { specific: { position: thePos } },
+    viewSections: { specific: { position: thePos } }
+  }
 
 }
+
 function getSettingsFromSysConfig(
   subfield: Subfield, specialFields: SysConfigSpecialFields, settings: SysConfigFieldDisplay) {
   if (subfield.isOutgoing) {

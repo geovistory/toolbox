@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -33,6 +33,11 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   generalDataSource = new MatTreeNestedDataSource<Field>();
   generalShowEmptyFields = false;
 
+  metadataTree$: Observable<Field[]>
+  metadataTreeControl = new NestedTreeControl<Field>(node => ([]));
+  metadataDataSource = new MatTreeNestedDataSource<Field>();
+  metadataShowEmptyFields = false;
+
   specificTree$: Observable<Field[]>
   specificTreeControl = new NestedTreeControl<Field>(node => ([]));
   specificDataSource = new MatTreeNestedDataSource<Field>();
@@ -43,21 +48,24 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
     public c: ConfigurationPipesService,
     public p: ActiveProjectService
   ) { }
-
   ngOnInit() {
-    // this.appContext = this.appContext || SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
     combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
       .subscribe(([pkClass]) => {
 
-        this.generalTree$ = this.c.pipeBasicFieldsOfClass(pkClass);
+        this.generalTree$ = this.c.pipeSection(pkClass, DisplayType.view, SectionName.basic);
         this.generalTree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
           this.generalDataSource.data = data;
         })
 
-        this.specificTree$ = this.c.pipeSpecificFieldOfClass(pkClass);
+        this.specificTree$ = this.c.pipeSection(pkClass, DisplayType.view, SectionName.specific);
         this.specificTree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
           this.specificDataSource.data = data;
+        })
+
+        this.metadataTree$ = this.c.pipeSection(pkClass, DisplayType.view, SectionName.metadata);
+        this.metadataTree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+          this.metadataDataSource.data = data;
         })
       })
   }

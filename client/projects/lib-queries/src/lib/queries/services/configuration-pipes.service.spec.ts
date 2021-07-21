@@ -15,7 +15,7 @@ import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel } from '
 import { first, take, toArray } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
-import { ConfigurationPipesService } from './configuration-pipes.service';
+import { ConfigurationPipesService, DisplayType } from './configuration-pipes.service';
 
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
@@ -452,14 +452,14 @@ describe('ConfigurationPipeService', () => {
     });
   })
 
-  describe('.pipeBasicAndSpecificFields()', () => {
+  describe('.pipeAllSections()', () => {
     it('should return correct fields of Appellation for language', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
       // using pipe
-      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_365_NAMING.dfh_pk_class)
+      const q$ = service.pipeAllSections(DfhApiClassMock.EN_365_NAMING.dfh_pk_class, DisplayType.view)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]
@@ -471,7 +471,7 @@ describe('ConfigurationPipeService', () => {
             const fs = actualSequence[0];
 
             expect(fs[0].label).toEqual('has definition')
-            expect(fs[0].placeOfDisplay.basicFields.position).toEqual(4)
+            expect(fs[0].display.formSections.basic.position).toEqual(4)
             expect(fs[1].label).toEqual('has time-span')
             expect(fs[2].label).toEqual('is appellation for language of')
             expect(fs[3].label).toEqual('refers to name')
@@ -487,7 +487,7 @@ describe('ConfigurationPipeService', () => {
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
       // using pipe
-      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_21_PERSON.dfh_pk_class)
+      const q$ = service.pipeAllSections(DfhApiClassMock.EN_21_PERSON.dfh_pk_class, DisplayType.view)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]
@@ -509,7 +509,7 @@ describe('ConfigurationPipeService', () => {
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
       // using pipe
-      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_21_PERSON.dfh_pk_class)
+      const q$ = service.pipeAllSections(DfhApiClassMock.EN_21_PERSON.dfh_pk_class, DisplayType.view)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]
@@ -533,7 +533,7 @@ describe('ConfigurationPipeService', () => {
       schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
 
       // using pipe
-      const q$ = service.pipeBasicAndSpecificFields(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class)
+      const q$ = service.pipeAllSections(DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class, DisplayType.view)
 
       // testing pipe
       const expectedSequence: Field[][] = [[]]
@@ -544,7 +544,7 @@ describe('ConfigurationPipeService', () => {
             // console.log(JSON.stringify(actualSequence))
             const fs = actualSequence[0];
 
-            expect(fs[0].placeOfDisplay.basicFields.position).toEqual(1)
+            expect(fs[0].display.formSections.basic.position).toEqual(1)
             expect(fs[0].label).toEqual('has short title')
             expect(fs[1].label).toEqual('has appellation for language')
             expect(fs[2].label).toEqual('has manifestation singleton type')

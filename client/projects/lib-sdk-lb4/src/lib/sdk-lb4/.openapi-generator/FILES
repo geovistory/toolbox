@@ -184,6 +184,7 @@ model/role.ts
 model/schemaObject.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts
+model/section.ts
 model/signupRequest.ts
 model/signupResponse.ts
 model/signupValidationError.ts
@@ -192,7 +193,6 @@ model/sysClassHasTypeProperty.ts
 model/sysConfigAddProperty.ts
 model/sysConfigAddPropertyForClass.ts
 model/sysConfigFieldDisplay.ts
-model/sysConfigFieldPosition.ts
 model/sysConfigFieldsOfSourceClass.ts
 model/sysConfigFormCtrlType.ts
 model/sysConfigSpecialFields.ts

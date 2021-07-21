@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, Field, SchemaSelectorsService, Subfield, TableName } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
@@ -98,7 +98,7 @@ export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayD
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
 export type LocalFormChildFactory = FormChildFactory<FormChildData>
 export interface FieldSection {
-  key: 'basic' | 'specific',
+  key: 'basic' | 'metadata' | 'specific',
   label: string,
   showHeader$: BehaviorSubject<boolean>,
   expanded$: BehaviorSubject<boolean>,
@@ -148,14 +148,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     expanded$: new BehaviorSubject(false),
     key: 'basic',
     label: 'Basics',
-    pipeFields: (pk) => this.c.pipeBasicFieldsOfClass(pk)
+    pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.basic)
   }
   specificSection: FieldSection = {
     showHeader$: new BehaviorSubject(false),
     expanded$: new BehaviorSubject(false),
     key: 'specific',
     label: 'Specific Fields',
-    pipeFields: (pk) => this.c.pipeSpecificFieldOfClass(pk)
+    pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.specific)
+  }
+  metadataSection: FieldSection = {
+    showHeader$: new BehaviorSubject(false),
+    expanded$: new BehaviorSubject(false),
+    key: 'metadata',
+    label: 'Metadata Fields',
+    pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.metadata)
   }
   sections: FieldSection[] = []
 
@@ -334,9 +341,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
         // initialize the sections
         if (klass.basic_type === 8 || klass.basic_type === 30) {
-          this.sections = [this.basicSection, this.specificSection]
+          this.sections = [this.basicSection, this.metadataSection, this.specificSection]
         } else {
-          this.sections = [this.specificSection, this.basicSection]
+          this.sections = [this.specificSection, this.metadataSection, this.basicSection]
         }
         this.sections[0].expanded$.next(true)
 

@@ -49,7 +49,7 @@ const fieldBase: FieldBase = {
 export const fieldAtReferencePoP: Field = {
   ...fieldBase,
   targetClasses: [657],
-  placeOfDisplay: {},
+  display: {},
   allSubfieldsRemovedFromAllProfiles: false,
   targets: {
     657: {

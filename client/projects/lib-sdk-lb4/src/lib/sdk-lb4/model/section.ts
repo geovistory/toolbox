@@ -11,7 +11,8 @@
  */
 
 
-export interface SysConfigFieldPosition { 
+export interface Section { 
     position?: number;
+    hidden?: boolean;
 }
 

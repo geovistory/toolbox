@@ -73,7 +73,7 @@ export function fieldToWarFieldChangeId(pkProject: number, fkInfo: number, field
 
 export function fieldToFieldBase(f: Field): FieldBase {
   const {
-    placeOfDisplay,
+    display,
     fieldConfig,
     targetClasses,
     allSubfieldsRemovedFromAllProfiles,

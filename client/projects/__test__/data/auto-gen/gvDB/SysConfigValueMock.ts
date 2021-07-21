@@ -1,4 +1,4 @@
-import {SysConfigValue, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -223,74 +223,52 @@ export class SysConfigValueMock {
       'incomingProperties': {
         '1111': {
           'comment': 'has appellation for language',
-          'displayInBasicFields': {
-            'position': 2
-          }
+          'formSection': { 'basic': { 'position': 2 } }
         },
         '1782': {
           'comment': 'has identification – P18',
-          'displayInBasicFields': {
-            'position': 9
-          }
+          'formSection': { 'basic': { 'position': 9 } }
         },
         '1499': {
           'comment': 'has to be preferred to',
-          'displayInBasicFields': {
-            'position': 11
-          }
+          'formSection': { 'basic': { 'position': 11 } }
         }
       },
       'outgoingProperties': {
         '4': {
           'comment': 'has time-span (When)',
-          'displayInBasicFields': {
-            'position': 7
-          },
+          'formSection': { 'basic': { 'position': 7 } },
           'isHasTimeSpanShortCut': true
         },
         '145': {
           'comment': 'during (When)',
-          'displayInBasicFields': {
-            'position': 8
-          },
+          'formSection': { 'basic': { 'position': 8 } },
           'isHasTimeSpanShortCut': true
         },
         '1760': {
           'comment': 'has web address (is web addess of) – P16',
-          'displayInBasicFields': {
-            'position': 5
-          }
+          'formSection': { 'basic': { 'position': 5 } }
         },
         '1761': {
           'comment': 'has short title',
-          'displayInBasicFields': {
-            'position': 1
-          }
+          'formSection': { 'basic': { 'position': 1 } }
         },
         '1762': {
           'comment': 'P18 has definition (is definition of)',
-          'displayInBasicFields': {
-            'position': 4
-          }
+          'formSection': { 'basic': { 'position': 4 } }
         },
         '1763': {
           'comment': 'P19 has comment (is comment about)',
-          'displayInBasicFields': {
-            'position': 6
-          }
+          'formSection': { 'basic': { 'position': 6 } }
         },
         '1499': {
           'comment': 'has to be merged with',
-          'displayInBasicFields': {
-            'position': 10
-          }
+          'formSection': { 'basic': { 'position': 10 } }
         }
       },
       'hasTypeSubproperties': {
         'comment': 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-        'displayInBasicFields': {
-          'position': 3
-        }
+        'formSection': { 'basic': { 'position': 3 } },
       }
     },
     'addProperty': [

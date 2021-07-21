@@ -1,7 +1,7 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
@@ -44,6 +44,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
 
 
   defaultFields$: Observable<FieldConfig[]>
+  metadataFields$: Observable<FieldConfig[]>
   specificFields$: Observable<FieldConfig[]>
 
   reordering = false;
@@ -56,12 +57,17 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.defaultFields$ = this.c.pipeBasicFieldsOfClass(this.fkClass)
+    this.defaultFields$ = this.c.pipeSection(this.fkClass, DisplayType.view, SectionName.basic)
       .pipe(
         map((fields: Field[]) => this.mapFields(fields))
       )
 
-    this.specificFields$ = this.c.pipeSpecificFieldOfClass(this.fkClass)
+    this.metadataFields$ = this.c.pipeSection(this.fkClass, DisplayType.view, SectionName.metadata)
+      .pipe(
+        map((fields: Field[]) => this.mapFields(fields))
+      )
+
+    this.specificFields$ = this.c.pipeSection(this.fkClass, DisplayType.view, SectionName.specific)
       .pipe(
         map((fields: Field[]) => this.mapFields(fields))
       )

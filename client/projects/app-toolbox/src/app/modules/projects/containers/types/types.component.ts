@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, DisplayType, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
@@ -91,7 +91,7 @@ export class TypesComponent implements OnInit, OnDestroy {
 
     this.typePks$ = this.b.pipePersistentItemPksByClass(this.pkClass)
 
-    const appeAndDefFields$ = this.c.pipeBasicAndSpecificFields(this.pkClass).pipe(
+    const appeAndDefFields$ = this.c.pipeAllSections(this.pkClass, DisplayType.view).pipe(
       map(fieldDefinitions => {
         let appeField: Field, definitionField: Field;
         fieldDefinitions.forEach(f => {

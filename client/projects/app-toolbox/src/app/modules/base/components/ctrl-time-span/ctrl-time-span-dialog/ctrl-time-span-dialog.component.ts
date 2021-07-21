@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { ByPk } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
@@ -153,10 +153,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
   */
   createTimeSpanForm() {
 
-
-
-
-    const formParts$ = this.c.pipeSpecificFieldOfClass(50).pipe(
+    const formParts$ = this.c.pipeSection(50, DisplayType.form, SectionName.specific).pipe(
       debounceTime(20),
       map(fields => fields.filter(f => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(f.property.fkProperty))),
       mergeMap(fields => {
