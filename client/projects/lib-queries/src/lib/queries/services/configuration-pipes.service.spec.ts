@@ -12,10 +12,11 @@ import { ProDfhProfileProjRelMock } from 'projects/__test__/data/auto-gen/gvDB/P
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel } from 'projects/__test__/helpers/transformers';
-import { first, take, toArray } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { first, map, take, toArray } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
-import { ConfigurationPipesService, DisplayType } from './configuration-pipes.service';
+import { ConfigurationPipesService, DisplayType, SectionName } from './configuration-pipes.service';
 
 describe('ConfigurationPipeService', () => {
   let ngRedux: NgRedux<IAppState>;
@@ -77,7 +78,9 @@ describe('ConfigurationPipeService', () => {
     it('should return class config for class C365_NAMING', (done) => {
       setAppState(ngRedux, IAppStateMock.stateDefaultConfigProject)
       // seeding data
-      const gvSchemaObj: GvPositiveSchemaObject = { pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] } }
+      const gvSchemaObj: GvPositiveSchemaObject = {
+        pro: { class_field_config: [ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME] }
+      }
       schemaObjServcie.storeSchemaObjectGv(gvSchemaObj, PK_DEFAULT_CONFIG_PROJECT)
 
       setTimeout(() => {
@@ -675,25 +678,115 @@ describe('ConfigurationPipeService', () => {
 
   })
 
+  describe('.pipeSection()', () => {
+    it('should return section: form - basic', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
 
-});
-function pipeClassLabelTest(
-  dfhClass: DfhApiClass,
-  ngRedux: NgRedux<IAppState>,
-  schemaObjServcie: SchemaService,
-  service: ConfigurationPipesService,
-  done: DoneFn
-) {
-  setAppState(ngRedux, IAppStateMock.stateProject1);
-  schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT);
-  schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT);
-  // using pipe
-  const q$ = service.pipeClassLabel(dfhClass.dfh_pk_class);
-  // testing pipe
-  const expectedSequence: string[] = [dfhClass.dfh_class_label];
-  q$.pipe(first(), toArray())
-    .subscribe(actualSequence => {
-      expect(actualSequence).toEqual(expectedSequence);
-    }, null, done);
-}
+      service.pipeSection(21, DisplayType.form, SectionName.basic).pipe(first())
+        .subscribe(
+          result => { expect(result.length).toBeGreaterThan(0); },
+          null,
+          done
+        )
+    })
+
+    it('should return section: form - metadata', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      service.pipeSection(21, DisplayType.form, SectionName.basic).pipe(first())
+        .subscribe(
+          result => { expect(result.length).toBeGreaterThan(0); },
+          null,
+          done
+        )
+    })
+
+    it('should return section: form - specific', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      service.pipeSection(21, DisplayType.form, SectionName.basic).pipe(first())
+        .subscribe(
+          result => { expect(result.length).toBeGreaterThan(0); },
+          null,
+          done
+        )
+    })
+
+    it('should return section: view - basic', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      service.pipeSection(21, DisplayType.view, SectionName.basic).pipe(first())
+        .subscribe(
+          result => { expect(result.length).toBeGreaterThan(0); },
+          null,
+          done
+        )
+    })
+
+    it('should return section: view - metadata', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      service.pipeSection(21, DisplayType.view, SectionName.basic).pipe(first())
+        .subscribe(
+          result => { expect(result.length).toBeGreaterThan(0); },
+          null,
+          done
+        )
+    })
+
+    it('should return section: view - specific', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      service.pipeSection(21, DisplayType.view, SectionName.basic).pipe(first())
+        .subscribe(
+          result => { expect(result.length).toBeGreaterThan(0); },
+          null,
+          done
+        )
+    })
+  })
+
+
+  describe('.pipeAllSections()', () => {
+    it('should return all section: view', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      combineLatest([
+        service.pipeSection(21, DisplayType.view, SectionName.basic),
+        service.pipeSection(21, DisplayType.view, SectionName.metadata),
+        service.pipeSection(21, DisplayType.view, SectionName.specific),
+        service.pipeAllSections(21, DisplayType.view),
+      ]).pipe(map(([basics, metadatas, specifics, alls]) => {
+        expect(basics.length + metadatas.length + specifics.length).toEqual(alls.length);
+      }))
+    })
+
+
+  });
+  function pipeClassLabelTest(
+    dfhClass: DfhApiClass,
+    ngRedux: NgRedux<IAppState>,
+    schemaObjServcie: SchemaService,
+    service: ConfigurationPipesService,
+    done: DoneFn
+  ) {
+    setAppState(ngRedux, IAppStateMock.stateProject1);
+    schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT);
+    schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT);
+    // using pipe
+    const q$ = service.pipeClassLabel(dfhClass.dfh_pk_class);
+    // testing pipe
+    const expectedSequence: string[] = [dfhClass.dfh_class_label];
+    q$.pipe(first(), toArray())
+      .subscribe(actualSequence => {
+        expect(actualSequence).toEqual(expectedSequence);
+      }, null, done);
+  }
 

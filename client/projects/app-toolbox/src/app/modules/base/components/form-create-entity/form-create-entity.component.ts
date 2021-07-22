@@ -176,6 +176,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+
     if (!this.pkClass && !(this.field && this.targetClass)) throw new Error('You must provide a pkClass or a field+targetClass as @Input() on FormCreateEntityComponent');
 
     if (this.initVal$) this.initVal$.subscribe(b => this._initVal$.next(b))
@@ -229,6 +230,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   getChildNodeConfigs = (n: LocalNodeConfig): Observable<LocalNodeConfig[]> => {
+    console.log('### getChildNodeConfigs ### ', n)
     if (n.group?.data) return this.getRootArray(n.group.data)
     else if (n.array) {
       if (n.array?.data?.rootArray?.pkClass) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
@@ -251,6 +253,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * wrap the whole form in a form node that maps child values into a InfStatementWithRelations
    */
   private getWrapperStatement(data: FormGroupData): Observable<LocalNodeConfig[]> {
+    console.log('getWrapperStatement')
+
     this.hiddenProperty = data.field.property;
     const n: LocalNodeConfig = {
       array: {
@@ -299,6 +303,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   private getRootArray(data: FormGroupData): Observable<LocalNodeConfig[]> {
+    console.log('getRootArray')
+
     const n: LocalNodeConfig = {
       array: {
         placeholder: '',
@@ -327,6 +333,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * generate the top level sections of the form
    */
   private getGvFormSections(pkClass: number, field?: Field): Observable<LocalNodeConfig[]> {
+    console.log('getGvFormSections')
+
     return combineLatest([
       // fetch the formControlType of class
       this.ss.dfh$.class$.by_pk_class$.key(pkClass),
@@ -401,6 +409,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * Generates the array of gvFormFields
    */
   private getGvFormFields(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    console.log('getGvFormFields', arrayConfig)
 
     return combineLatest([
       this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass),
@@ -505,6 +514,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     gvFormField: FormArrayData['gvFormField'],
     initStatements: InfStatementWithRelations[] = [],
   ): Observable<LocalNodeConfig[]> {
+    console.log('getControlWrappers')
+
     const field = gvFormField.field;
     const targetClasses = field.targetClasses;
     const isOutgoing = field.isOutgoing
@@ -659,6 +670,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     field: Field,
     initStmts: InfStatementWithRelations[] = [{}]
   ): Observable<LocalNodeConfig[]> {
+    console.log('getLeafControl')
+
     if (formCtrlType.timeSpan) return this.timeSpanCtrl(targetClass, field, initStmts)
     else if (formCtrlType.place) return this.placeCtrl(targetClass, field, initStmts)
     else if (formCtrlType.appellationTeEn) return this.appellationTeEnCtrl(targetClass, field, initStmts)

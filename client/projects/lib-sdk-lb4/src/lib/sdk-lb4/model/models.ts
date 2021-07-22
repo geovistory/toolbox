@@ -137,6 +137,7 @@ export * from './schemaObject';
 export * from './searchExistingRelatedStatement';
 export * from './searchExistingRelatedStatementFilter';
 export * from './section';
+export * from './sections';
 export * from './signupRequest';
 export * from './signupResponse';
 export * from './signupValidationError';

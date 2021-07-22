@@ -223,52 +223,52 @@ export class SysConfigValueMock {
       'incomingProperties': {
         '1111': {
           'comment': 'has appellation for language',
-          'formSection': { 'basic': { 'position': 2 } }
+          'formSections': { 'basic': { 'position': 2 } }
         },
         '1782': {
           'comment': 'has identification – P18',
-          'formSection': { 'basic': { 'position': 9 } }
+          'formSections': { 'basic': { 'position': 9 } }
         },
         '1499': {
           'comment': 'has to be preferred to',
-          'formSection': { 'basic': { 'position': 11 } }
+          'formSections': { 'basic': { 'position': 11 } }
         }
       },
       'outgoingProperties': {
         '4': {
           'comment': 'has time-span (When)',
-          'formSection': { 'basic': { 'position': 7 } },
+          'formSections': { 'basic': { 'position': 7 } },
           'isHasTimeSpanShortCut': true
         },
         '145': {
           'comment': 'during (When)',
-          'formSection': { 'basic': { 'position': 8 } },
+          'formSections': { 'basic': { 'position': 8 } },
           'isHasTimeSpanShortCut': true
         },
         '1760': {
           'comment': 'has web address (is web addess of) – P16',
-          'formSection': { 'basic': { 'position': 5 } }
+          'formSections': { 'basic': { 'position': 5 } }
         },
         '1761': {
           'comment': 'has short title',
-          'formSection': { 'basic': { 'position': 1 } }
+          'formSections': { 'basic': { 'position': 1 } }
         },
         '1762': {
           'comment': 'P18 has definition (is definition of)',
-          'formSection': { 'basic': { 'position': 4 } }
+          'formSections': { 'basic': { 'position': 4 } }
         },
         '1763': {
           'comment': 'P19 has comment (is comment about)',
-          'formSection': { 'basic': { 'position': 6 } }
+          'formSections': { 'basic': { 'position': 6 } }
         },
         '1499': {
           'comment': 'has to be merged with',
-          'formSection': { 'basic': { 'position': 10 } }
+          'formSections': { 'basic': { 'position': 10 } }
         }
       },
       'hasTypeSubproperties': {
         'comment': 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-        'formSection': { 'basic': { 'position': 3 } },
+        'formSections': { 'basic': { 'position': 3 } },
       }
     },
     'addProperty': [

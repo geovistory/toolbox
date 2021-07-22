@@ -17,7 +17,9 @@ import { SchemaSelectorsService } from './schema-selectors.service';
 
 
 export enum DisplayType { form, view }
+// export type SectionNameType = keyof Sections
 export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
+
 
 // this is the
 export type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'resource'
@@ -75,6 +77,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * that build on this pipe.
    */
   public pipeFields(pkClass: number, noNesting = false): Observable<Field[]> {
+
     const obs$ = combineLatest([
       // pipe source class
       this.s.dfh$.class$.by_pk_class$.key(pkClass),
@@ -213,6 +216,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
+    console.log('##############')
+    console.log('pipeSection(' + pkClass + ', ' + displayType + ', ' + section + ', ' + noNesting + ')')
+
 
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
@@ -301,7 +307,14 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
 
   // @cache({ refCount: false })
-  pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean, noNesting = false): Observable<Subfield> {
+  pipeSubfieldIdToSubfield(
+    sourceClass: number,
+    property: number,
+    targetClass: number,
+    isOutgoing: boolean,
+    noNesting = false
+  ): Observable<Subfield> {
+
     const domain = isOutgoing ? sourceClass : targetClass;
     const range = isOutgoing ? targetClass : sourceClass;
     const obs$ = combineLatest([
@@ -581,10 +594,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           fk_class_for_class_field: pkClass,
           fk_project: ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT
         })
-        return combineLatest(
+        return combineLatest([
           this.s.pro$.class_field_config$.by_fk_project__fk_class$.key(activeProjectkey),
           this.s.pro$.class_field_config$.by_fk_project__fk_class$.key(defaultProjectkey)
-        )
+        ])
           .pipe(
             map(([activeProjectFields, defaultProjectFields]) => {
               if (activeProjectFields && values(activeProjectFields).length) return activeProjectFields;
@@ -608,10 +621,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeClassLabel(pkClass?: number): Observable<string> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.a.pkProject$,
       this.a.pipeActiveDefaultLanguage()
-    ).pipe(
+    ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
           map(items => {
@@ -675,7 +688,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     }
 
 
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       // label of project in default language of project
       this.pipeProTextProperty({
         fk_project: d.fkProject,
@@ -744,7 +757,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of ontome in english';
         return { origin, text: item.label }
       })),
-    )
+    ])
     return this.cache('pipeLabels', obs$, ...arguments)
 
   }
@@ -793,10 +806,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const fkPropertyDomain = isOutgoing ? fkSource : undefined;
     const fkPropertyRange = isOutgoing ? undefined : fkSource;
     const type = isOutgoing ? 'label' : 'inverse_label'
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.a.pkProject$,
       this.a.pipeActiveDefaultLanguage()
-    ).pipe(
+    ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels(
         {
           fkProject,
@@ -827,10 +840,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeTableNameOfClass(targetClassPk: number): Observable<TableName> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.s.sys$.config$.main$,
       this.s.dfh$.class$.by_pk_class$.key(targetClassPk)
-    ).pipe(
+    ]).pipe(
       filter(i => !i.includes(undefined)),
       map(([config, klass]) => {
         const classConfig: ClassConfig = config.classes[targetClassPk];
@@ -871,10 +884,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeClassesInEntitiesOrSources(): Observable<{ [key: string]: number }> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.pipeClassesEnabledInEntities(),
       this.pipeClassesRequiredBySources()
-    ).pipe(
+    ]).pipe(
       map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
       startWith({})
     )
@@ -967,10 +980,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.pipeTeEnClassesEnabledInEntities(),
       this.pipeTeEnClassesRequiredBySources()
-    ).pipe(
+    ]).pipe(
       map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
       startWith({})
     )

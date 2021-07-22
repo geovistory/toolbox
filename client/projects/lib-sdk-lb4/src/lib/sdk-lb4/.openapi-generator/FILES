@@ -185,6 +185,7 @@ model/schemaObject.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts
 model/section.ts
+model/sections.ts
 model/signupRequest.ts
 model/signupResponse.ts
 model/signupValidationError.ts

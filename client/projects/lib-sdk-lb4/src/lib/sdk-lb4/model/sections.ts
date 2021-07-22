@@ -9,13 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Sections } from './sections';
+import { Section } from './section';
 
 
-export interface SysConfigFieldDisplay { 
-    comment?: string;
-    formSections?: Sections;
-    viewSections?: Sections;
-    isHasTimeSpanShortCut?: boolean;
+export interface Sections { 
+    basic?: Section;
+    metadata?: Section;
+    specific?: Section;
 }
 

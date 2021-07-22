@@ -1,7 +1,4 @@
 import { model, property } from '@loopback/repository';
-import { registerType } from '../../components/spec-enhancer/model.spec.enhancer';
-
-export enum DisplayType { form, view }
 
 @model()
 export class Section {
@@ -9,9 +6,9 @@ export class Section {
   @property() hidden?: true; // if the field has to be hidden in this section (eg. has to be merged with in form-metadata)
 }
 
-@model({ jsonSchema: { additionalProperties: { $ref: registerType(Section) }, } })
+@model()
 export class Sections {
-  @property() basic: Section;
-  @property() metadata: Section;
-  @property() specific: Section;
+  @property() basic?: Section;
+  @property() metadata?: Section;
+  @property() specific?: Section;
 }

@@ -247,10 +247,9 @@ function createField(
   const base = createFieldBase(source, property, isOutgoing)
   const field: Field = {
     ...base,
-    placeOfDisplay: {
-      specificFields: {
-        position: 1
-      }
+    display: {
+      formSections: { specific: { position: 1 } },
+      viewSections: { specific: { position: 1 } },
     },
     targetClasses: targets.map(t => t.class.dfh_pk_class),
     allSubfieldsRemovedFromAllProfiles: false,
