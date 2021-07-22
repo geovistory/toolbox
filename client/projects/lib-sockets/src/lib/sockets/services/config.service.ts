@@ -12,11 +12,19 @@ export class ConfigService {
       return suffix
     }
   }
+
+  get url(): string {
+    try {
+      return this.removeTrailingSlash(new URL(this.config.baseUrl).origin)
+    } catch {
+      return ''
+    }
+  }
   constructor() {
   }
 
   public createNamespaceUrl(namespace: string) {
-    return this.removeTrailingSlash(this.config.baseUrl) + '/' + namespace;
+    return this.removeTrailingSlash(this.url) + '/' + namespace;
   }
   private removeTrailingSlash(x: string) {
     return x.replace(/\/$/, '');
