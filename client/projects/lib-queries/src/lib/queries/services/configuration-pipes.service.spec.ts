@@ -789,4 +789,4 @@ describe('ConfigurationPipeService', () => {
         expect(actualSequence).toEqual(expectedSequence);
       }, null, done);
   }
-
+})
