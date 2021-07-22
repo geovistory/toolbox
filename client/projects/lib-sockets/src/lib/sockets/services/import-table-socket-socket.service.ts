@@ -11,8 +11,8 @@ export class ImportTableSocket extends Socket {
   ) {
 
     super({
-      url: c.config.baseUrl + '/ImportTable',
-      options: { path: c.config.baseUrl + '/socket.io' }
+      url: c.createNamespaceUrl('ImportTable'),
+      options: { path: c.path }
     });
 
     this.connected = true;

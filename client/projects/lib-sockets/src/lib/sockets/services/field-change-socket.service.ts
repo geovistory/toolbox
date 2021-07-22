@@ -10,8 +10,8 @@ export class FieldChangeSocket extends Socket {
   ) {
 
     super({
-      url: c.config.baseUrl + '/' + FieldChangeSocket.NAMESPACE,
-      options: { path: c.config.baseUrl + '/socket.io' }
+      url: c.createNamespaceUrl(FieldChangeSocket.NAMESPACE),
+      options: { path: c.path }
     });
 
   }

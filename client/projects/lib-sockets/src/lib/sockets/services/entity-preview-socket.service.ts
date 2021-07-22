@@ -13,8 +13,8 @@ export class EntityPreviewSocket extends Socket {
   ) {
 
     super({
-      url: c.config.baseUrl + '/WarEntityPreview',
-      options: { path: c.config.baseUrl + '/socket.io' }
+      url: c.createNamespaceUrl('WarEntityPreview'),
+      options: { path: c.path }
     });
 
     // dispatch a method to put the EntityPreview to the store
