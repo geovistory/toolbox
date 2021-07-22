@@ -206,7 +206,7 @@ registerLocaleData(localeDeCh);
 })
 export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
-    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.apiUrl + '/assets/mdi/mdi.svg'));
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/mdi/mdi.svg'));
     LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
