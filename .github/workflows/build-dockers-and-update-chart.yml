@@ -216,7 +216,7 @@ jobs:
       - name: Checkout geovistory-catalog @ test or stag
         uses: actions/checkout@v2
         with:
-          repository: 'kleiolab@geovistory-catalog'
+          repository: 'kleiolab/geovistory-catalog'
           ref: ${{steps.release_env.outputs.release_environment}}
 
       - name: update release file
