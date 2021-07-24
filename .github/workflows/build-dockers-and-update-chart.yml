@@ -195,6 +195,13 @@ jobs:
     needs: [extract-metadata]
     steps:
 
+    steps:
+      - name: Checkout geovistory-catalog @ test
+        if:  ${{needs.extract-metadata.outputs.branch=='k8s'}}
+        uses: actions/checkout@v2
+        with:
+          repository: 'kleiolab@geovistory-catalog'
+          ref: test
 
       - name: update release file
         run: |
