@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{steps.extract_branch.outputs.branch}}    
+      release_environment: ${{steps.release_env.outputs.environment}}
       webserver_image_exists: ${{steps.webserver_image_exists.outputs.exists}}  
       warehouse_image_exists: ${{steps.warehouse_image_exists.outputs.exists}}  
       toolbox_image_exists: ${{steps.toolbox_image_exists.outputs.exists}}  
@@ -30,10 +31,27 @@ jobs:
             
       - name: Extract branch name
         shell: bash
-        run: echo ::set-output name=branch::$(echo stag)
-        # for production, use something like the following
-        # run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})"
+        run: echo ::set-output name=branch::$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})
         id: extract_branch
+        
+      - name: Extract release environment [test|stag|prod] 
+        id: release_env
+        run: |
+          case ${{needs.extract-metadata.outputs.branch}} in
+            k8s)
+              echo ::set-output name=environment::'test'
+              ;;
+            dev)
+              echo ::set-output name=environment::'test'
+              ;;
+            master)
+              echo ::set-output name=environment::'stag'
+              ;;
+            *)
+              echo 'branch does not match a release environment'
+              exit 1
+              ;;
+          esac
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -194,32 +212,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract-metadata]
     steps:
-      - name: Get release environment [test|stag|prod] 
-        id: release_env
-        run: |
-          case ${{needs.extract-metadata.outputs.branch}} in
-
-            k8s)
-              echo ::set-output name=environment::'test'
-              ;;
-              
-            *)
-              echo 'branch does not match a release environment'
-              exit 1
-              ;;
-          esac
-        
-      - name: Checkout geovistory-catalog @ test
+         
+      - name: Checkout geovistory-catalog @ test or stag
         uses: actions/checkout@v2
         with:
           repository: 'kleiolab@geovistory-catalog'
-          ref: ${{steps.release_env.outputs.environment}}
+          ref: ${{steps.release_env.outputs.release_environment}}
 
       - name: update release file
         run: |
-          cd _releases
-          echo toolbox: ${{needs.extract-metadata.outputs.toolbox_sha}} > 
-          echo toolbox: ${{needs.extract-metadata.outputs.toolbox_sha}}
-          echo toolbox: ${{needs.extract-metadata.outputs.toolbox_sha}}
           git rev-parse --abbrev-ref HEAD
+          cd _releases
+          echo toolbox: ${{needs.extract-metadata.outputs.toolbox_sha}} >> ${{steps.release_env.outputs.release_environment}}
+          echo webserver: ${{needs.extract-metadata.outputs.webserver_sha}} >> ${{steps.release_env.outputs.release_environment}}
+          echo warehouse: ${{needs.extract-metadata.outputs.warehouse_sha}} >> ${{steps.release_env.outputs.release_environment}}
 
