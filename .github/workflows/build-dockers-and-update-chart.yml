@@ -108,7 +108,8 @@ jobs:
                warehouse sha: ${{steps.warehouse_sha.outputs.sha}} \
                warehouse image exists: ${{steps.warehouse_image_exists.outputs.exists}} \
                webserver sha: ${{steps.webserver_sha.outputs.sha}} \
-               webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  
+               webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  \
+               release environment: ${{steps.release_env.outputs.environment}}
         
   build-and-push-webserver:
     runs-on: ubuntu-latest
