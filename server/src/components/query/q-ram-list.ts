@@ -1,9 +1,9 @@
-import {Postgres1DataSource} from '../../datasources';
-import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {WarEntityPreviewWithFulltext, ProInfoProjRel, InfStatement, InfLangString, DatChunk, DatDigital} from '../../models';
-import {Streams} from '../../realtime/streams/streams';
-import {TabCell} from '../../models/tab-cell.model';
+import { Postgres1DataSource } from '../../datasources';
+import { DatChunk, DatDigital, InfLangString, InfStatement, ProInfoProjRel, WarEntityPreviewWithFulltext } from '../../models';
+import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import { TabCell } from '../../models/tab-cell.model';
+import { Streams } from '../../realtime/streams/streams';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 export class QRamList extends SqlBuilderLb4Models {
@@ -16,10 +16,10 @@ export class QRamList extends SqlBuilderLb4Models {
   }
 
   /**
- * Joins the spot (chunk or cell, later maybe also spot in image) and the
- * digital.
- * @param refersTo
- */
+   * Joins the spot (chunk or cell, later maybe also spot in image) and the
+   * digital.
+   * @param refersTo
+   */
   joinSpotAndDigital(refersTo?: 'Chunk' | 'Cell') {
     if (refersTo === 'Chunk') {
       return `,
@@ -161,7 +161,7 @@ export class QRamList extends SqlBuilderLb4Models {
 
 
   leftJoinGroupedSpotModel(refersTo?: 'Chunk' | 'Cell') {
-  if (refersTo === 'Chunk') {
+    if (refersTo === 'Chunk') {
       return `
       LEFT JOIN chunk ON true
       `
