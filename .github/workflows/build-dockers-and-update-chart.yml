@@ -219,6 +219,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'kleiolab/geovistory-charts'
+          token: ${{ secrets.PAT_PRIVATE_REPOS }} 
+          ref: ${{steps.release_env.outputs.release_environment}}
 
       - name: update release file
         run: |
