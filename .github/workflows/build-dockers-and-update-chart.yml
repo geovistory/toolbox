@@ -219,11 +219,11 @@ jobs:
         with:
           workflow: make-pre-production-release
           repo: kleiolab/geovistory-charts
-          ref: ${{steps.release_env.outputs.release_environment}}
+          ref: ${{needs.extract-metadata.outputs.release_environment}}
           token: ${{ secrets.KLEIOLAB_PRIVATE_REPOS_PAT }}
           inputs: |
             {
-              "releaseEnvironment": "${{steps.release_env.outputs.release_environment}}",
+              "releaseEnvironment": "${{needs.extract-metadata.outputs.release_environment}}",
               "warehouseTag":"${{needs.extract-metadata.outputs.warehouse_sha}}",
               "toolboxTag":"${{needs.extract-metadata.outputs.toolbox_sha}}", 
               "webserverTag":"${{needs.extract-metadata.outputs.webserver_sha}}" 
