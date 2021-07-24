@@ -37,7 +37,7 @@ jobs:
       - name: Extract release environment [test|stag|prod] 
         id: release_env
         run: |
-          case ${{needs.extract-metadata.outputs.branch}} in
+          case ${{steps.extract_branch.outputs.branch}} in
             k8s)
               echo ::set-output name=environment::'test'
               ;;
