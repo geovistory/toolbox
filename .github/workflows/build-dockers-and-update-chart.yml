@@ -194,8 +194,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract-metadata]
     steps:
-
-    steps:
       - name: Checkout geovistory-catalog @ test
         if:  ${{needs.extract-metadata.outputs.branch=='k8s'}}
         uses: actions/checkout@v2
