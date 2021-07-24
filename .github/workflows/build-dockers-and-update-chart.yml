@@ -214,26 +214,16 @@ jobs:
     if: always()
     needs: [extract-metadata, build-and-push-webserver, build-and-push-toolbox, build-and-push-warehouse]
     steps:
-         
-      - name: Checkout geovistory-charts @ test or stag
-        uses: actions/checkout@v2
+      - name: Invoke workflow in geovistory-charts to make a pre production release
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          repository: 'kleiolab/geovistory-charts'
-          token: ${{ secrets.PAT_PRIVATE_REPOS }} 
-          ref: ${{steps.release_env.outputs.release_environment}}
-
-      - name: update release file
-        run: |
-          git rev-parse --abbrev-ref HEAD
-          cd _releases
-          echo toolbox: ${{needs.extract-metadata.outputs.toolbox_sha}} >> ${{steps.release_env.outputs.release_environment}}
-          echo webserver: ${{needs.extract-metadata.outputs.webserver_sha}} >> ${{steps.release_env.outputs.release_environment}}
-          echo warehouse: ${{needs.extract-metadata.outputs.warehouse_sha}} >> ${{steps.release_env.outputs.release_environment}}
-#      - name: Push changes on dev-deploy
-#        run: |
-#          git config --global user.email "action@github.com"
-#          git config --global user.name "GitHub Action"
-#          git add .
-#          git add --force ./client/dist/*
-#          git commit -m "dist folder"
-#          git push --force origin dev-deploy
+          workflow: make-pre-production-release
+          repo: kleiolab/geovistory-charts
+          token: ${{ secrets.KLEIOLAB_PRIVATE_REPOS_PAT }}
+          inputs: |
+            {
+              "releaseEnvironment": "${{steps.release_env.outputs.release_environment}}",
+              "warehouseTag":"${{needs.extract-metadata.outputs.warehouse_sha}}",
+              "toolboxTag":"${{needs.extract-metadata.outputs.toolbox_sha}}", 
+              "webserverTag":"${{needs.extract-metadata.outputs.webserver_sha}}" 
+            }
