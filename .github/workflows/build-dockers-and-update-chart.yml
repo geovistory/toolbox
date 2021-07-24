@@ -211,6 +211,7 @@ jobs:
  
   update-geovistory-catalog:
     runs-on: ubuntu-latest
+    if: always()
     needs: [extract-metadata, build-and-push-webserver, build-and-push-toolbox, build-and-push-warehouse]
     steps:
          
