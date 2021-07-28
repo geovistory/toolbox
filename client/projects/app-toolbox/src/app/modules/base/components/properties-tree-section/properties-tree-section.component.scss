@@ -1,0 +1,19 @@
+mat-tree {
+  background: none;
+}
+.subheader {
+  padding: 12px 24px;
+  margin-top: 24px;
+  /* background: #ececec; */
+  &.second-subheader {
+    // margin-top: 60px;
+  }
+
+  > h3 {
+    margin: 0;
+  }
+}
+
+.show-empty-toggle {
+  margin-left: auto;
+}

@@ -1,4 +1,4 @@
-import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -223,15 +223,18 @@ export class SysConfigValueMock {
       'incomingProperties': {
         '1111': {
           'comment': 'has appellation for language',
-          'formSections': { 'basic': { 'position': 2 } }
+          'formSections': { 'basic': { 'position': 2 } },
+          'viewSections': { 'basic': { 'position': 2 } }
         },
         '1782': {
           'comment': 'has identification – P18',
-          'formSections': { 'basic': { 'position': 9 } }
+          'formSections': { 'metadata': { 'hidden': true } },
+          'viewSections': { 'metadata': { 'position': 9 } }
         },
         '1499': {
           'comment': 'has to be preferred to',
-          'formSections': { 'basic': { 'position': 11 } }
+          'formSections': { 'metadata': { 'hidden': true } },
+          'viewSections': { 'metadata': { 'position': 11 } }
         }
       },
       'outgoingProperties': {
@@ -255,7 +258,8 @@ export class SysConfigValueMock {
         },
         '1762': {
           'comment': 'P18 has definition (is definition of)',
-          'formSections': { 'basic': { 'position': 4 } }
+          'formSections': { 'metadata': { 'position': 4 } },
+          'viewSections': { 'metadata': { 'position': 4 } }
         },
         '1763': {
           'comment': 'P19 has comment (is comment about)',

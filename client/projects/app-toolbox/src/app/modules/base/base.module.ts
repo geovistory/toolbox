@@ -41,8 +41,10 @@ import { FieldComponent } from './components/field/field.component';
 import { FormArrayComponent } from './components/form-array/form-array.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
+import { FormFieldHeaderComponent } from './components/form-field-header/form-field-header.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { PropertiesTreeDialogComponent } from './components/properties-tree-dialog/properties-tree-dialog.component';
+import { PropertiesTreeSectionComponent } from './components/properties-tree-section/properties-tree-section.component';
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
@@ -56,6 +58,7 @@ import { TimeSpanService } from './services/time-span.service';
 const components = [
   PropertiesTreeComponent,
   PropertiesTreeDialogComponent,
+  PropertiesTreeSectionComponent,
   FieldComponent,
   TypeItemComponent,
   CtrlAppellationComponent,
@@ -71,6 +74,7 @@ const components = [
   FormCreateEntityComponent,
   FormGroupComponent,
   FormArrayComponent,
+  FormFieldHeaderComponent,
   FormControlComponent,
   ClassesAndTypesSelectComponent,
   ChooseClassDialogComponent,

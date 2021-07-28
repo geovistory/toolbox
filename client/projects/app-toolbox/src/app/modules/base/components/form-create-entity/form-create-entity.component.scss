@@ -16,3 +16,9 @@ form {
 .form-buttons {
   flex: 0 0 auto;
 }
+
+.align-right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end
+}

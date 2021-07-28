@@ -28,3 +28,18 @@
 .is-control {
   margin-top: 0.5rem;
 }
+
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.icon {
+  display: flex; 
+  flex-direction:column; 
+  justify-content: center;
+  height: 100%;
+  margin-top: auto;
+  margin-bottom: auto;
+}

@@ -1,50 +1,17 @@
-<h2 *ngIf="data.gvFormSection?.section?.showHeader$|async">
+<h2 *ngIf="data.gvFormSection?.section?.showHeader$|async" class="title mt-3"
+  (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">
   {{data.gvFormSection?.section?.label}}
   <span class="mat-caption mat-error" style="display: inline-block;"
     *ngIf="control.touched && control.invalid">Error!</span>
   <span class="mat-caption mat-text-secondary" style="display: inline-block;"
     *ngIf="control.touched && control.valid">OK</span>
-  <button
-    (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">toggle</button>
+  <mat-icon class="icon" [svgIcon]="data.gvFormSection.section.expanded$.value ? 'chevron-up' : 'chevron-down'">
+  </mat-icon>
 </h2>
-<!-- TMP GM: field header start – you may extract this to gv-form-field-header -->
-<div class="gv-full-with" *ngIf="data.gvFormField">
-  <div class="left-col">
-    <span class="mat-h3 mb-0">
-      {{formArrayFactory?.config.placeholder}}
-      <span matTooltip="Required" *ngIf="formArrayFactory.config.required"> * </span>
-      <span class="ml-1 mat-caption mat-text-secondary">
-        ({{length}})
-      </span>
-      <mat-divider></mat-divider>
-      <span class="ml-1 mat-caption mat-text-warn" *ngIf="control.touched && control.hasError('maxLength')">
-        Max. {{control.getError('maxLength').maxLength}} item(s) allowed
-      </span>
-      <span class="ml-1 mat-caption mat-text-warn" *ngIf="control.touched && control.hasError('minLength')">
-        At least {{control.getError('minLength').minLength}} item(s) required
-      </span>
-    </span>
-  </div>
 
-  <button class="right-col" mat-icon-button (click)="addItemInField(
-      data.gvFormField.field,
-      data.gvFormField.field.targetClasses[0])" *ngIf="data.gvFormField.field?.targetClasses.length===1"
-    [disabled]="length>=maxLength">
-    <mat-icon>add</mat-icon>
-  </button>
+<gv-form-field-header [formField]="data.gvFormField" [length]="length" [maxLength]="maxLength" [control]="control"
+  [formArrayFactory]="formArrayFactory"></gv-form-field-header>
 
-  <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col"
-    *ngIf="data.gvFormField.field?.targetClasses.length>1">
-    <mat-icon>add</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item *ngFor="let pkClass of data.gvFormField.field.targetClasses "
-      (click)="addItemInField(data.gvFormField.field, pkClass)">
-      {{data.gvFormField.field.targets[pkClass]?.targetClassLabel}}
-    </button>
-  </mat-menu>
-</div>
-<!-- TMP GM: field header end – extract this to gv-form-field-header -->
 <div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
 
   <ng-container *ngFor="let child of formArrayFactory.children; let i=index">

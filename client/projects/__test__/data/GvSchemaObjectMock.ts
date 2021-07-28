@@ -211,6 +211,7 @@ export namespace GvSchemaObjectMock {
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_61_BIRTH),
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON),
         transformDfhApiClassToDfhClass(DfhApiClassMock.EN_633_UNION),
+        transformDfhApiClassToDfhClass(DfhApiClassMock.EN_50_TIME_SPAN),
       ],
       property: [
         createHasTimeSpanProperty(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class),

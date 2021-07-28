@@ -16,7 +16,7 @@ import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
 
-export enum DisplayType { form, view }
+export enum DisplayType { form = 'form', view = 'view' }
 // export type SectionNameType = keyof Sections
 export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
 
@@ -77,6 +77,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * that build on this pipe.
    */
   public pipeFields(pkClass: number, noNesting = false): Observable<Field[]> {
+    // console.log('pipeFields(' + pkClass + ',' + noNesting + ')');
 
     const obs$ = combineLatest([
       // pipe source class
@@ -120,7 +121,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         return combineLatest([
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, noNesting),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, noNesting),
-          this.pipeFieldConfigs(pkClass)
+          this.pipeFieldConfigs(pkClass),
         ]).pipe(
           map(([subfields1, subfields2, fieldConfigs]) => {
             const subfields = [...subfields1, ...subfields2]
@@ -216,21 +217,29 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
-    console.log('##############')
-    console.log('pipeSection(' + pkClass + ', ' + displayType + ', ' + section + ', ' + noNesting + ')')
-
 
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
         // filter fields that are displayed in specific fields
         .filter(field => {
-          if (displayType === DisplayType.form) return field.display.formSections[section]
-          if (displayType === DisplayType.view) return field.display.viewSections[section]
+          if (displayType === DisplayType.form) return field.display.formSections?.[section]
+          if (displayType === DisplayType.view) return field.display.viewSections?.[section]
+        })
+        // filter fields that should be hidden
+        .filter(field => {
+          return !(
+            field.display.formSections?.[section]?.hidden ||
+            field.display.viewSections?.[section]?.hidden
+          )
         })
         // sort fields by the position defined in the section
         .sort((a, b) => {
-          if (displayType === DisplayType.form) return a.display.formSections[section].position - b.display.formSections[section].position
-          if (displayType === DisplayType.view) return a.display.viewSections[section].position - b.display.viewSections[section].position
+          if (displayType === DisplayType.form) {
+            return a.display.formSections?.[section].position - b.display.formSections?.[section].position
+          }
+          if (displayType === DisplayType.view) {
+            return a.display.viewSections?.[section].position - b.display.viewSections?.[section].position
+          }
         })
       )
     )
@@ -278,9 +287,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @cache({ refCount: false })
   pipeAllSections(pkClass: number, displayType: DisplayType, noNesting = false): Observable<Field[]> {
     const obs$ = combineLatest([
-      this.pipeSection(pkClass, displayType, SectionName.basic),
-      this.pipeSection(pkClass, displayType, SectionName.metadata),
-      this.pipeSection(pkClass, displayType, SectionName.specific),
+      this.pipeSection(pkClass, displayType, SectionName.basic, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.metadata, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.specific, noNesting),
     ])
       .pipe(
         map(([a, b, c]) => [...a, ...b, ...c])
@@ -382,7 +391,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         return x
       })),
       this.pipeTargetTypesOfClass(targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
-        // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        // console.log('pppp found targetTypeOfClass: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
       this.pipeFieldLabel(sourceClass, isOutgoing, p.pk_property).pipe(tap(x => {
@@ -393,7 +402,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label]
       ) => {
 
-        // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        // console.log('pppp Subfield complete: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         const node: Subfield = {
           viewType: targetTypes.viewType,
@@ -467,7 +476,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     noNesting = false
   ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
 
-    // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+    // console.log('pppp found: ', [undefined, pkProperty, klass.pk_class, isOutgoing])
     const res = (
       v: GvFieldTargetViewType,
       f: SysConfigFormCtrlType
@@ -530,7 +539,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
 
   // pipe the subfields of the entity
-  private pipeNestedResource(classId: number, contextPkProperty?: number): Observable<GvSubentitFieldPageReq[]> {
+  public pipeNestedResource(classId: number, contextPkProperty?: number): Observable<GvSubentitFieldPageReq[]> {
     const noNest = true;
     return this.pipeAllSections(classId, DisplayType.view, noNest).pipe(
       map(fields => {
@@ -1207,14 +1216,13 @@ function getFieldDisplay(
   settings = getSettingsFromSysConfig(subfield, specialFields, settings);
 
   // if this is a special field, create corresponding display settings and return it
-  if (settings) return settings;
-
-  // otherwise display the field in specific fields (default)
   let thePos = Number.POSITIVE_INFINITY;
   if (projectFieldConfig) thePos = projectFieldConfig.ord_num
+
+  // returns form/view sections of config if exists, else add to specific fields
   return {
-    formSections: { specific: { position: thePos } },
-    viewSections: { specific: { position: thePos } }
+    formSections: settings?.formSections ?? { specific: { position: thePos } },
+    viewSections: settings?.viewSections ?? { specific: { position: thePos } }
   }
 
 }
