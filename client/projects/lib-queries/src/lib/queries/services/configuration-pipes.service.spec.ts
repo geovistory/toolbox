@@ -887,6 +887,21 @@ describe('ConfigurationPipeService', () => {
         )
     })
 
+    fit('should return all section: view 2', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      service.pipeAllSections(21, DisplayType.view)
+        .pipe(first())
+        .subscribe({
+          next: actualSequence => {
+            expect(actualSequence?.length).toEqual(4)
+          },
+          complete: done
+        });
+
+    })
+
 
   });
   function pipeClassLabelTest(
