@@ -171,6 +171,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   advancedMode = false;
 
+  previousHasNames: Array<string> = [];
+  previousFocusName = '';
+
   constructor(
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
@@ -366,7 +369,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 pkClass: pkClass,
               },
               mapValue: (items: InfResourceWithRelations[]): GvSectionsModel => {
-                this.emitNewSearchString();
+
+                // fetch the appellation for language string
+                const curHasNames = items[0].incoming_statements
+                  ?.filter(is => is.fk_property == 1111)
+                  ?.map(appe => appe.subject_resource.outgoing_statements
+                    ?.find(stm => stm.fk_property == 1113)
+                    ?.object_appellation?.quill_doc?.ops.map(op => op.insert).join('').slice(0, -1)) ?? [];
+
+                let focusName = curHasNames.find(name => !this.previousHasNames.some(old => old == name));
+                if (!focusName) focusName = this.previousFocusName;
+                else this.previousFocusName = focusName;
+
+                this.previousHasNames = curHasNames;
+
+                this.emitNewSearchString(focusName);
 
                 const result: InfResourceWithRelations = {} as InfResourceWithRelations;
                 items.forEach(item => {
@@ -579,7 +596,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       if (id && this.searchStringParts[id]) {
         delete this.searchStringParts[id];
       }
-      this.emitNewSearchString();
+      this.emitNewSearchString(values(this.searchStringParts).filter(string => !!string).join(' '));
     };
 
     const required = field.identityDefiningForSource;
@@ -678,8 +695,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
 
-  private emitNewSearchString() {
-    this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
+  private emitNewSearchString(str: string) {
+    // this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
+    this.searchString.emit(str);
   }
 
   submit() {

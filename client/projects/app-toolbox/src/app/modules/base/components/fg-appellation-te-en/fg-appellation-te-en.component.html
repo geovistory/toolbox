@@ -3,32 +3,36 @@
     [formGroup]="formFactory.formGroupFactory.control">
     <div formArrayName="childControl">
 
-      <mat-form-field class="ctrl-text" *ngIf="ctrls?.text" [appearance]="appearance">
-        <mat-label>{{placeholders.text}}</mat-label>
+      <div class="second-line">
+        <mat-form-field class="ctrl-text" *ngIf="ctrls?.text" [appearance]="appearance">
+          <mat-label>{{placeholders.text}}</mat-label>
 
-        <gv-ctrl-appellation placeholder="Placeholder" [formControl]="ctrls.text">
-        </gv-ctrl-appellation>
-        <button mat-icon-button matSuffix [color]="(showOptions$|async) ? 'primary' : 'default'" (click)="toggle()">
-          <mat-icon>tune</mat-icon>
-        </button>
-        <mat-error *ngIf="ctrls.text.hasError('required')">
-          Required
-        </mat-error>
-      </mat-form-field>
-
-      <div class="second-line" [@openClose]="(showOptions$|async) ? 'open' : 'closed'">
-
-        <mat-form-field class="ctrl-lang" *ngIf="ctrls?.lang " [appearance]="appearance">
-          <mat-label>{{placeholders.lang}}</mat-label>
-
-          <gv-ctrl-language placeholder="Placeholder" [formControl]="ctrls.lang">
-          </gv-ctrl-language>
-
+          <gv-ctrl-appellation placeholder="Placeholder" [formControl]="ctrls.text">
+          </gv-ctrl-appellation>
+          <button mat-icon-button matSuffix [color]="(showOptions$|async) ? 'primary' : 'default'" (click)="toggle()">
+            <mat-icon>tune</mat-icon>
+          </button>
           <mat-error *ngIf="ctrls.text.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>
 
+        <div style="width: 20%; margin: 0 0 0 1rem;">
+          <mat-form-field [@openClose]="(showOptions$|async) ? 'open' : 'closed'" class="ctrl-text" *ngIf="ctrls?.lang "
+            [appearance]="appearance">
+            <mat-label>{{placeholders.lang}}</mat-label>
+
+            <gv-ctrl-language placeholder="Placeholder" [formControl]="ctrls.lang">
+            </gv-ctrl-language>
+
+            <mat-error *ngIf="ctrls.text.hasError('required')">
+              Required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="second-line" [@openClose]="(showOptions$|async) ? 'open' : 'closed'">
         <mat-form-field class="ctrl-type" *ngIf="ctrls?.type " [appearance]="appearance">
           <mat-label>{{placeholders.type}}</mat-label>
 
@@ -40,11 +44,7 @@
             Required
           </mat-error>
         </mat-form-field>
-
       </div>
-
-
-
     </div>
   </div>
 </form>
