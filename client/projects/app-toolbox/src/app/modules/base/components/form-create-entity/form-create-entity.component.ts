@@ -371,7 +371,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               mapValue: (items: InfResourceWithRelations[]): GvSectionsModel => {
 
                 // fetch the appellation for language string
-                const curHasNames = items[0].incoming_statements
+                const curHasNames = items.filter(it => it.incoming_statements)[0].incoming_statements
                   ?.filter(is => is.fk_property == 1111)
                   ?.map(appe => appe.subject_resource.outgoing_statements
                     ?.find(stm => stm.fk_property == 1113)
