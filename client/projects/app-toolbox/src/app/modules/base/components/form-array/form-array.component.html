@@ -14,10 +14,12 @@
 
 <div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
 
-  <ng-container *ngFor="let child of formArrayFactory.children; let i=index">
+  <ng-container *ngFor="let child of formArrayFactory.children; let i=index" trackBy="trackByFn">
 
     <gv-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" [ngClass]="{
-      'is-field': child.arrayFactory?.config?.data.gvFormField}" class="left-col">
+      'is-field': child.arrayFactory?.config?.data.gvFormField,
+      'is-section': child.arrayFactory?.config?.data.gvFormSection
+    }" class="left-col">
     </gv-form-array>
 
     <div *ngIf="child.controlFactory || child.childFactory" class="gv-full-with is-control">

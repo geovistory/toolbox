@@ -17,7 +17,8 @@
   justify-content: center;
 }
 
-.is-field + .is-field {
+.is-field + .is-field,
+.is-section + .is-section {
   margin-top: 0.5rem;
 }
 
@@ -36,8 +37,8 @@
 }
 
 .icon {
-  display: flex; 
-  flex-direction:column; 
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   height: 100%;
   margin-top: auto;

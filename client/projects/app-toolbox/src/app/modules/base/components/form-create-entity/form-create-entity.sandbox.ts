@@ -57,6 +57,11 @@ const volumeDimensionMock: GvPositiveSchemaObject = {
   war: { entity_preview: [WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER] },
   pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_VOLUME_UNIT_CUBIC_METER] }
 }
+const appeTypeMock: GvPositiveSchemaObject = {
+  inf: { resource: [InfResourceMock.APPE_IN_LANG_TYPE_LAST_NAME] },
+  war: { entity_preview: [WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME] },
+  pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_APPE_IN_LANG_TYPE_LAST_NAME] }
+}
 
 /*****************************************************************************
  * MOCK services
@@ -181,7 +186,7 @@ export default sandboxOf(FormCreateEntityComponent, {
     context: {
       initVal$: of(InfResourceWithRelationsMock.mockNaming),
       initState: IAppStateMock.stateProject1,
-      schemaObjects: initialSchemaObects
+      schemaObjects: [...initialSchemaObects, appeTypeMock]
     },
     template: `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
