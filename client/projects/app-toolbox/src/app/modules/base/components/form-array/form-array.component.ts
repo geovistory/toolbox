@@ -80,6 +80,9 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     this.control = this.formArrayFactory.control
   }
 
+  trackByFn(i: number, _) {
+    return i
+  }
 
   remove(i) {
     this.formArrayFactory.remove(i)
