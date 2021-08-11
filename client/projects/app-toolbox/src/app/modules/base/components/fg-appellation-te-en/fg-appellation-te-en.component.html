@@ -17,9 +17,9 @@
           </mat-error>
         </mat-form-field>
 
-        <div style="width: 20%; margin: 0 0 0 1rem;">
-          <mat-form-field [@openClose]="(showOptions$|async) ? 'open' : 'closed'" class="ctrl-text" *ngIf="ctrls?.lang "
-            [appearance]="appearance">
+        <div style="margin: 0 0 0 0; width: {{(showOptions$|async) ? '30%' : '0%'}}">
+          <mat-form-field [@openClose]="(showOptions$|async) ? 'open' : 'closed'" class="ctrl-text ml-3"
+            *ngIf="ctrls?.lang " [appearance]="appearance">
             <mat-label>{{placeholders.lang}}</mat-label>
 
             <gv-ctrl-language placeholder="Placeholder" [formControl]="ctrls.lang">

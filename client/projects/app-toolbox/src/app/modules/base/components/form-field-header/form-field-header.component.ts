@@ -86,4 +86,8 @@ export class FormFieldHeaderComponent {
     }
 
   }
+
+  isInfinity(nb: number): boolean {
+    return nb == Number.POSITIVE_INFINITY;
+  }
 }

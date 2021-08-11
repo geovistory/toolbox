@@ -3031,3 +3031,15 @@ gv-importer {
     padding-bottom: 0;
   }
 }
+
+.gv-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.gv-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
