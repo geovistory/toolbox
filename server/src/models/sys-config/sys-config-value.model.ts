@@ -6,6 +6,12 @@ import { SysConfigSpecialFields } from './sys-config-special-fields.model';
 import { TrueEnum } from './TrueEnum';
 const example: SysConfigValue = {
   classesDefault: {
+    formControlType: {
+      entity: TrueEnum.true
+    },
+    viewType: {
+      nestedResource: []
+    },
     communityVisibilityRange: {
       min: { toolbox: true, dataApi: true, website: true },
       max: { toolbox: true, dataApi: true, website: true },
@@ -15,6 +21,12 @@ const example: SysConfigValue = {
   },
   classesByBasicType: {
     8: {
+      formControlType: {
+        entity: TrueEnum.true
+      },
+      viewType: {
+        entityPreview: TrueEnum.true
+      },
       communityVisibilityRange: {
         min: { toolbox: true, dataApi: true, website: true },
         max: { toolbox: true, dataApi: true, website: true },
@@ -29,6 +41,12 @@ const example: SysConfigValue = {
       communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
     },
     30: {
+      formControlType: {
+        entity: TrueEnum.true
+      },
+      viewType: {
+        entityPreview: TrueEnum.true
+      },
       communityVisibilityRange: {
         min: { toolbox: true, dataApi: true, website: true },
         max: { toolbox: true, dataApi: true, website: true },

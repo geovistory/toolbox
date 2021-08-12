@@ -7,8 +7,8 @@ import { get, param } from '@loopback/rest';
 import { Roles } from '../components/authorization';
 import { QFactoidsFromEntity } from '../components/query/q-factoids-from-entity';
 import { Postgres1DataSource } from '../datasources';
-import { SysConfigValue } from '../models';
 import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
+import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
 import { InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository } from '../repositories';
 
 enum ValueObjectTypeName {

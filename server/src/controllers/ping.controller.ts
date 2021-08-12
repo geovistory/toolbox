@@ -11,7 +11,7 @@ import {GvSubentityFieldTargetViewType} from '../models/field/gv-subentity-field
 import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
 import {SysConfigFieldDisplay} from '../models/sys-config/sys-config-field-display.model';
 import {SysConfigFieldsOfSourceClass} from '../models/sys-config/sys-config-fields-of-source-class.model';
-import {ClassConfig} from './sys-config-class-config';
+import {ClassConfig} from '../models/sys-config/sys-config-class-config';
 
 /**
  * OpenAPI response for ping()

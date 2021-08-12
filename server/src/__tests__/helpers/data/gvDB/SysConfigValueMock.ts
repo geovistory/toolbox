@@ -1,4 +1,5 @@
-import { SysConfigValue, TrueEnum } from '../../../../models';
+import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
+import {TrueEnum} from '../../../../models/sys-config/TrueEnum';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -8,27 +9,49 @@ export class SysConfigValueMock {
       },
       viewType: {
         nestedResource: []
-      }
+      },
+      communityVisibilityRange: {
+        min: { toolbox: true, dataApi: true, website: true },
+        max: { toolbox: true, dataApi: true, website: true },
+      },
+      projectVisibilityDefault: { dataApi: false, website: false },
+      communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
     },
     classesByBasicType: {
-      [8]: {
+      8: {
         formControlType: {
           entity: TrueEnum.true
         },
         viewType: {
           entityPreview: TrueEnum.true
-        }
+        },
+        communityVisibilityRange: {
+          min: { toolbox: true, dataApi: true, website: true },
+          max: { toolbox: true, dataApi: true, website: true },
+        },
+        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
       },
-      [30]: {
+      9: {
+        communityVisibilityRange: {
+          min: { toolbox: true, dataApi: false, website: false },
+          max: { toolbox: true, dataApi: true, website: true },
+        },
+        communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
+      },
+      30: {
         formControlType: {
           entity: TrueEnum.true
         },
         viewType: {
           entityPreview: TrueEnum.true
-        }
+        },
+        communityVisibilityRange: {
+          min: { toolbox: true, dataApi: true, website: true },
+          max: { toolbox: true, dataApi: true, website: true },
+        },
+        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
       }
     },
-
     'classes': {
       '365': {
         formControlType: {
@@ -130,6 +153,13 @@ export class SysConfigValueMock {
       },
       '521': {
         'excludedFromEntities': true
+      },
+      635: {
+        communityVisibilityRange: {
+          min: { toolbox: false, dataApi: false, website: false },
+          max: { toolbox: false, dataApi: false, website: false },
+        },
+        communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
       },
       '657': {
         'viewType': {

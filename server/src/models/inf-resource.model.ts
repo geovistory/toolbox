@@ -1,7 +1,7 @@
 import { Entity, hasMany, model, property } from '@loopback/repository';
 import { InfEntity, InfStatementWithRelations, ProInfoProjRel } from '.';
 import { InfStatement } from './inf-statement.model';
-import { CommunityVisibilityOptions } from './sys-config/sys-config-visibility-options';
+import {CommunityVisibilityOptions} from './sys-config/sys-config-community-visibility-options';
 
 @model({
   settings: {

@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { CommunityVisibilityOptions } from "./sys-config-visibility-options";
+import { CommunityVisibilityOptions } from "./sys-config-community-visibility-options";
 
 
 @model({
