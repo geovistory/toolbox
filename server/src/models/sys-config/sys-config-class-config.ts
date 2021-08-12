@@ -1,7 +1,8 @@
-import {model, property} from '@loopback/repository';
-import {SysConfigValueObjectType} from './sys-config-value-obect-type';
-import {VisibilityOptions} from './sys-config-visibility-options';
-import {VisibilityRange} from './sys-config-visibility-range';
+import { model, property } from '@loopback/repository';
+import { ProjectVisibilityOptions } from './sys-config-project-visibility-options';
+import { SysConfigValueObjectType } from './sys-config-value-obect-type';
+import { CommunityVisibilityOptions } from './sys-config-visibility-options';
+import { VisibilityRange } from './sys-config-visibility-range';
 
 @model({
   jsonSchema: {
@@ -9,10 +10,10 @@ import {VisibilityRange} from './sys-config-visibility-range';
   }
 })
 export class ClassConfig {
-  @property({type: SysConfigValueObjectType}) valueObjectType?: SysConfigValueObjectType;
+  @property({ type: SysConfigValueObjectType }) valueObjectType?: SysConfigValueObjectType;
   @property() excludedFromEntities?: boolean;
-  @property({type: VisibilityRange}) communityVisibilityRange?: VisibilityRange;
-  @property({type: VisibilityRange}) communityVisibilityDefault?: VisibilityOptions;
-  @property({type: VisibilityRange}) projectVisibilityDefault?: VisibilityOptions;
+  @property({ type: VisibilityRange }) communityVisibilityRange?: VisibilityRange;
+  @property({ type: VisibilityRange }) communityVisibilityDefault?: CommunityVisibilityOptions;
+  @property({ type: VisibilityRange }) projectVisibilityDefault?: ProjectVisibilityOptions;
 
 }

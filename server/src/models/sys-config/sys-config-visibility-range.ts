@@ -1,5 +1,5 @@
-import {model, property} from '@loopback/repository';
-import {VisibilityOptions} from "./sys-config-visibility-options";
+import { model, property } from '@loopback/repository';
+import { CommunityVisibilityOptions } from "./sys-config-visibility-options";
 
 
 @model({
@@ -10,6 +10,6 @@ import {VisibilityOptions} from "./sys-config-visibility-options";
   }
 })
 export class VisibilityRange {
-  @property({type: VisibilityOptions, required: true}) min: VisibilityOptions;
-  @property({type: VisibilityOptions, required: true}) max: VisibilityOptions;
+  @property({ type: CommunityVisibilityOptions, required: true }) min: CommunityVisibilityOptions;
+  @property({ type: CommunityVisibilityOptions, required: true }) max: CommunityVisibilityOptions;
 }
