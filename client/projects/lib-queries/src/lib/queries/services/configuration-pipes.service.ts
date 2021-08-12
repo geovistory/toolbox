@@ -15,10 +15,9 @@ import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
-
 export enum DisplayType { form = 'form', view = 'view' }
 // export type SectionNameType = keyof Sections
-export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
+export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific', simpleForm = 'simpleForm' }
 
 
 // this is the
@@ -235,15 +234,41 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         // sort fields by the position defined in the section
         .sort((a, b) => {
           if (displayType === DisplayType.form) {
-            return a.display.formSections?.[section].position - b.display.formSections?.[section].position
+            return a.display.formSections?.[section]?.position - b.display.formSections?.[section]?.position
           }
           if (displayType === DisplayType.view) {
-            return a.display.viewSections?.[section].position - b.display.viewSections?.[section].position
+            return a.display.viewSections?.[section]?.position - b.display.viewSections?.[section]?.position
           }
         })
       )
     )
     return this.cache('pipeSection', obs$, ...arguments)
+  }
+
+
+  /**
+     * Pipes the fields for simple form
+     * - the specific fields + simple form for TeEn
+     * - the basic fields + simple form for PeIt
+     */
+  public pipeSimpleForm(pkClass: number, basicType: 'TeEn' | 'PeIt'): Observable<Field[]> {
+    const sectionName = basicType == 'PeIt' ? SectionName.basic : SectionName.specific;
+    const fields1$ = this.pipeSection(pkClass, DisplayType.form, sectionName);
+    const fields2$ = this.pipeSection(pkClass, DisplayType.form, SectionName.simpleForm);
+
+    const obs$ = combineLatestOrEmpty([fields1$, fields2$]).pipe(
+      map(([fields1, fields2]) => {
+        const uniqFields = indexBy(i => i.property.fkProperty + '_' + i.isOutgoing, fields1.concat(fields2))
+        return values(uniqFields)
+          .filter(elt => !elt.display.formSections?.simpleForm?.hidden)
+          .sort((a, b) => {
+            const aPos = a.display.formSections?.simpleForm?.position ?? a.display.formSections?.[sectionName]?.position;
+            const bPos = b.display.formSections?.simpleForm?.position ?? b.display.formSections?.[sectionName]?.position;
+            return aPos - bPos;
+          })
+      })
+    )
+    return this.cache('pipeSimpleForm', obs$, ...arguments)
   }
 
   /**

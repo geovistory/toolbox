@@ -101,11 +101,11 @@ export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayD
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
 export type LocalFormChildFactory = FormChildFactory<FormChildData>
 export interface FieldSection {
-  key: 'basic' | 'metadata' | 'specific',
+  key: SectionName,
   label: string,
   showHeader$: BehaviorSubject<boolean>,
   expanded$: BehaviorSubject<boolean>,
-  pipeFields: (pkClass: number) => Observable<Field[]>
+  pipeFields?: (pkClass: number) => Observable<Field[]>
 }
 @Component({
   selector: 'gv-form-create-entity',
@@ -147,25 +147,31 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   resourcesToAdd: InfResource[] = []
 
   basicSection: FieldSection = {
-    showHeader$: new BehaviorSubject(false),
+    showHeader$: new BehaviorSubject(true),
     expanded$: new BehaviorSubject(true),
-    key: 'basic',
+    key: SectionName.basic,
     label: 'Basics',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.basic)
   }
   specificSection: FieldSection = {
-    showHeader$: new BehaviorSubject(false),
+    showHeader$: new BehaviorSubject(true),
     expanded$: new BehaviorSubject(true),
-    key: 'specific',
+    key: SectionName.specific,
     label: 'Specific Fields',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.specific)
   }
   metadataSection: FieldSection = {
-    showHeader$: new BehaviorSubject(false),
+    showHeader$: new BehaviorSubject(true),
     expanded$: new BehaviorSubject(true),
-    key: 'metadata',
+    key: SectionName.metadata,
     label: 'Metadata Fields',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.metadata)
+  }
+  simpleFormSection: FieldSection = {
+    showHeader$: new BehaviorSubject(true),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.simpleForm,
+    label: 'Simple Form Fields'
   }
   sections: FieldSection[] = []
 
@@ -180,7 +186,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     private dataService: ReduxMainService,
     private ss: SchemaSelectorsService,
     public ap: ActiveProjectPipesService,
-    public s: SchemaService
+    public s1: SchemaService,
+    private s2: SchemaSelectorsService,
   ) { }
 
   ngOnInit() {
@@ -224,21 +231,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     if (val) this._initVal$.next(val)
     this.advancedMode$.next(b);
 
-    if (b) { // switch to advanced mode
-      for (const section of this.sections) {
-        section.showHeader$.next(true)
-        section.expanded$.next(true)
-      }
-    } else { // switch to simple mode
-      let firstSection = true;
-      for (const section of this.sections) {
-        if (firstSection) {
-          section.expanded$.next(true) // expand first
-          firstSection = false
-        }
-        else section.expanded$.next(false) // collapse rest
-      }
-    }
+    // if (b) { // switch to advanced mode
+    //   for (const section of this.sections) {
+    //     section.showHeader$.next(true)
+    //     section.expanded$.next(true)
+    //   }
+    // } else { // switch to simple mode
+    //   let firstSection = true;
+    //   for (const section of this.sections) {
+    //     if (firstSection) {
+    //       section.expanded$.next(true) // expand first
+    //       firstSection = false
+    //     }
+    //     else section.expanded$.next(false) // collapse rest
+    //   }
+    // }
   }
 
   getChildNodeConfigs = (n: LocalNodeConfig): Observable<LocalNodeConfig[]> => {
@@ -345,21 +352,36 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       this.ss.dfh$.class$.by_pk_class$.key(pkClass),
       this.c.pipeTargetTypesOfClass(pkClass, field?.targetMaxQuantity),
       this.c.pipeTableNameOfClass(pkClass),
-      this.c.pipeClassLabel(pkClass)
-    ]).pipe(auditTime(10), map(([klass, targets, parentModel, label]) => {
+      this.c.pipeClassLabel(pkClass),
+      this.advancedMode$,
+      this._initVal$
+    ]).pipe(auditTime(10), map(([klass, targets, parentModel, label, advancedMode, initVal]) => {
 
       const formControlType = targets.formControlType;
 
       if (formControlType.entity || !field) { // generate a the generic form
 
+        const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
         // initialize the sections
-        if (klass.basic_type === 8 || klass.basic_type === 30) {
+        if (!advancedMode) {
+          const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
+          this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
+          this.sections = [this.simpleFormSection]
+        } else if (isPersistentItem) {
           this.sections = [this.basicSection, this.metadataSection, this.specificSection]
         } else {
           this.sections = [this.specificSection, this.metadataSection, this.basicSection]
         }
         // this.sections[0].expanded$.next(true)
         // this.sections[1].expanded$.next(true)
+
+        // temp
+        // const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
+        // this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
+        // this.sections = [this.specificSection, this.metadataSection, this.basicSection, this.simpleFormSection];
+        // end temp
+
+
 
         const nodes: LocalNodeConfig[] = this.sections.map(section => {
           const n: LocalNodeConfig = {
@@ -430,13 +452,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
   private getGvFormFields(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     return combineLatest([
-      this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass),
-      this._initVal$,
-      this.advancedMode$
+      this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass)
     ])
       .pipe(
         filter(([klass]) => !!klass),
-        switchMap(([dfhClass, initVal, advancedMode]) => {
+        switchMap(([dfhClass]) => {
 
           /**
            * Here we define different simple forms for TeEn / PeIt
@@ -446,6 +466,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           // if (isPersistentItem && section.key === 'basic') section.expanded$.next(true)
           // else if (!isPersistentItem && section.key === 'specific') section.expanded$.next(true)
           const section = arrayConfig.data.gvFormSection.section;
+
           return section.pipeFields(dfhClass.pk_class).pipe(
             map((fields) => fields.filter(fDef => {
               // Q: is this field not circular?
@@ -453,15 +474,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               if (parentPropety === fDef.property.fkProperty) return false;
               // Q: is this field hidden?
               if (equals(fDef.property, this.hiddenProperty)) return false;
-              // Q: are we in simple mode?
-              if (!advancedMode) {
-                // Q: is this field in simple form?
-                // TODO
-
-                // Q: is this field only visible in simple mode?
-                if (isPersistentItem && section.key !== 'basic') return false
-                else if (!isPersistentItem && section.key !== 'specific') return false
-              }
 
               return true;
             })
@@ -479,8 +491,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   addItemsOnInit = 1
                 }
 
+                // Add default controls to some properties according to the config
+                if (f.display.formSections?.[section.key]?.controlsOnInit) {
+                  addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
+                }
+
                 const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
                 const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
+
+                const initVal = {}
 
                 const n: LocalNodeConfig = {
                   array: {
@@ -726,7 +745,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   save() {
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s.api.addEntityToProject(pkProject, pkEntity))
+      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s1.api.addEntityToProject(pkProject, pkEntity))
       const value = this.formFactory.formGroupFactory.valueChanges$.value
       let upsert$: Observable<GvSchemaModifier>;
       if (value.resource) {

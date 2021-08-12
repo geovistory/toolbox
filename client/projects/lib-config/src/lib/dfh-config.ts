@@ -83,7 +83,11 @@ export class DfhConfig {
    */
   static PROPERTY_PK_WHERE_PLACE_IS_RANGE = 148
 
-
+  /**
+   * For Sources
+   */
+  static PROPERTY_PK_HAS_WEB_ADDRESS = 1760
+  static PROPERTY_PK_HAS_SHORT_TITLE = 1761
 
 
   /**

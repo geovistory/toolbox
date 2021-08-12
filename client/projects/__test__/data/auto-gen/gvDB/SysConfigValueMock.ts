@@ -1,4 +1,4 @@
-import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -240,7 +240,14 @@ export class SysConfigValueMock {
       'outgoingProperties': {
         '4': {
           'comment': 'has time-span (When)',
-          'formSections': { 'basic': { 'position': 7 } },
+          'formSections': {
+            'basic': {
+              'position': 7
+            },
+            'simpleForm': {
+              'position': 1
+            }
+          },
           'isHasTimeSpanShortCut': true
         },
         '145': {
