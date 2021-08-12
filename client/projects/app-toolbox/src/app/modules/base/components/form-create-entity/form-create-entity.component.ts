@@ -43,6 +43,7 @@ export interface FormArrayData {
   gvFormSection?: {
     parentProperty?: GvFieldProperty
     section: FieldSection
+    initValue: InfResourceWithRelations
   }
 
   // a gv-form-field (with header, plus button, ect.)
@@ -135,7 +136,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   appearance: MatFormFieldAppearance = 'outline';
 
-  _initVal$ = new BehaviorSubject(undefined)
+  _initVal$ = new BehaviorSubject<InfResourceWithRelations>(undefined)
   destroy$ = new Subject<boolean>();
   formFactory$: Observable<FormFactory>;
   formFactory: FormFactory
@@ -385,6 +386,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
         const nodes: LocalNodeConfig[] = this.sections.map(section => {
           const n: LocalNodeConfig = {
+            id: U.uuid(),
             array: {
               isList: false,
               required: true,
@@ -392,6 +394,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               placeholder: label,
               data: {
                 gvFormSection: {
+                  initValue: initVal,
                   section
                 },
                 pkClass: pkClass,
@@ -466,6 +469,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           // if (isPersistentItem && section.key === 'basic') section.expanded$.next(true)
           // else if (!isPersistentItem && section.key === 'specific') section.expanded$.next(true)
           const section = arrayConfig.data.gvFormSection.section;
+          const initVal: any = arrayConfig.data.gvFormSection.initValue;
 
           return section.pipeFields(dfhClass.pk_class).pipe(
             map((fields) => fields.filter(fDef => {
@@ -499,7 +503,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
                 const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
 
-                const initVal = {}
 
                 const n: LocalNodeConfig = {
                   array: {
