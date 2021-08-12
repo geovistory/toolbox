@@ -1,11 +1,11 @@
-import {ModelDefinition} from '@loopback/repository';
-import {keys} from 'lodash';
-import {equals, groupBy, uniq} from 'ramda';
-import {Postgres1DataSource} from '../../datasources';
-import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
-import {GvFieldTargets} from '../../models/field/gv-field-targets';
-import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-positive-schema-object.model';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import { ModelDefinition } from '@loopback/repository';
+import { keys } from 'lodash';
+import { equals, groupBy, uniq } from 'ramda';
+import { Postgres1DataSource } from '../../datasources';
+import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldTargetViewType, GvPaginationObject, GvPaginationStatementFilter, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview } from '../../models';
+import { GvFieldTargets } from '../../models/field/gv-field-targets';
+import { DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject } from '../../models/gv-positive-schema-object.model';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 type With = {
@@ -13,17 +13,17 @@ type With = {
   name: string;
 };
 type InfObjectKey = keyof InfObject;
-type InfObjWiths = {[key in InfObjectKey]: string[]}
+type InfObjWiths = { [key in InfObjectKey]: string[] }
 type ProObjectKey = keyof ProObject;
-type ProObjWiths = {[key in ProObjectKey]: string[]}
+type ProObjWiths = { [key in ProObjectKey]: string[] }
 type DatObjectKey = keyof DatObject;
-type DatObjWiths = {[key in DatObjectKey]: string[]}
+type DatObjWiths = { [key in DatObjectKey]: string[] }
 type WarObjectKey = keyof WarObject;
-type WarObjWiths = {[key in WarObjectKey]: string[]}
+type WarObjWiths = { [key in WarObjectKey]: string[] }
 type DfhObjectKey = keyof DfhObject;
-type DfhObjWiths = {[key in DfhObjectKey]: string[]}
+type DfhObjWiths = { [key in DfhObjectKey]: string[] }
 type SysObjectKey = keyof SysObject;
-type SysObjWiths = {[key in SysObjectKey]: string[]}
+type SysObjWiths = { [key in SysObjectKey]: string[] }
 
 interface ObjectWiths {
   schemas: {
@@ -48,7 +48,7 @@ type StatementTargetMeta = {
   tableName: string,
   objectWith: string[],
 }
-type GvTargetTypeKey = keyof Omit<GvTargetType, 'textProperty'>;
+type GvTargetTypeKey = keyof GvFieldTargetViewType
 
 type Config = {
   [key in GvTargetTypeKey]: StatementTargetMeta
@@ -81,7 +81,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         resource: [],
       },
       dat: {
-        namespace:[],
+        namespace: [],
         class_column_mapping: [],
         text_property: [],
         chunk: [],
@@ -288,7 +288,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
   createSelects(req: GvFieldPageReq) {
 
-    if (equals(req.targets, {50: {timeSpan: TrueEnum.true}})) {
+    if (equals(req.targets, { 50: { timeSpan: TrueEnum.true } })) {
 
       const requests = this.createTimeSpanFieldRequests(req)
       return requests.map(request => this.createSelectForPage(request)).join(',\n')
@@ -414,14 +414,14 @@ export class QFieldPage extends SqlBuilderLb4Models {
     targets: GvFieldTargets,
     stmtTable: string
   ) {
-    const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
+    const targetArray = keys(targets).map((key) => ({ fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey }))
     const classesByTarget = groupBy((t) => t.target, targetArray)
-    const configs: {meta: StatementTargetMeta[], classes: number[]}[] = [];
+    const configs: { meta: StatementTargetMeta[], classes: number[] }[] = [];
     keys(classesByTarget).forEach((key) => {
       const meta = this.tableToFindOriginalItems[key as GvTargetTypeKey]
       if (!meta) throw new Error("tableToFindClass missing for: " + key);
       const classes = classesByTarget[key].map(val => parseInt(val.fkClass))
-      configs.push({meta, classes})
+      configs.push({ meta, classes })
     })
     const join = `
     JOIN LATERAL (
@@ -556,7 +556,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
   joinTargetOfStatement(page: GvFieldPage, targets: GvFieldTargets, twStatements: string): string {
     const sqls = []
-    const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
+    const targetArray = keys(targets).map((key) => ({ fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey }))
     const targetTypes: GvTargetTypeKey[] = uniq(targetArray.map(t => t.target))
 
     for (const targetType of targetTypes) {
@@ -582,7 +582,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
     scope: GvFieldPageScope
   ) {
 
-    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, objectWith} = spec
+    const { tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, objectWith } = spec
     const sqls: string[] = []
     const twTarget = this.nextWith;
     objectWith.push(twTarget);
@@ -607,7 +607,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
 
     const sql = sqls.join(',\n')
-    return {sql, tw: twTarget}
+    return { sql, tw: twTarget }
   }
 
   private joinProjRel(
@@ -658,7 +658,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
 
   private joinMeasurementUnit(leftTw: string) {
-    const {tableName, modelDefinition, modelPk, objectWith} = this.config.entityPreview as StatementTargetMeta
+    const { tableName, modelDefinition, modelPk, objectWith } = this.config.entityPreview as StatementTargetMeta
     const tw = this.nextWith;
     objectWith.push(tw);
     return `
@@ -673,7 +673,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
   }
 
   private joinLanguage(leftTw: string) {
-    const {tableName, modelDefinition, modelPk, objectWith} = this.config.language as StatementTargetMeta
+    const { tableName, modelDefinition, modelPk, objectWith } = this.config.language as StatementTargetMeta
     const tw = this.nextWith;
     objectWith.push(tw);
     return `
@@ -781,9 +781,9 @@ export class QFieldPage extends SqlBuilderLb4Models {
         ...req,
         page: {
           ...req.page,
-          property: {fkProperty: timeSpanProperty},
+          property: { fkProperty: timeSpanProperty },
         },
-        targets: {335: {timePrimitive: TrueEnum.true}}
+        targets: { 335: { timePrimitive: TrueEnum.true } }
       };
       return request;
     });

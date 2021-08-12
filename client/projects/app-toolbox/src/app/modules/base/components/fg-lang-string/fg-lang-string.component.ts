@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
-import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
@@ -8,9 +8,9 @@ import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { getFirstElementFormQueryList } from '../../base.helpers';
 import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 
@@ -168,22 +168,17 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
     }
   }
 
-  focusOnCtrlText() {
-    if (this.ctrlAppellation.length > 0) {
-      this.ctrlAppellation.first.onContainerClick()
-    }
-    this.ctrlAppellation.changes.pipe(first((x: QueryList<CtrlAppellationComponent>) => x.length > 0)).subscribe((items) => {
-      items.first.onContainerClick()
-    })
+  async focusOnCtrlText() {
+    const ctrl = await getFirstElementFormQueryList(this.ctrlAppellation)
+    ctrl.onContainerClick()
   }
-  focusOnCtrlLanguage() {
-    if (this.ctrlLanguage.length > 0) {
-      this.ctrlLanguage.first.onContainerClick()
-    }
-    this.ctrlLanguage.changes.pipe(first((x: QueryList<CtrlLanguageComponent>) => x.length > 0)).subscribe((items) => {
-      items.first.onContainerClick()
-    })
+  async focusOnCtrlLanguage() {
+    const ctrl = await getFirstElementFormQueryList(this.ctrlLanguage)
+    ctrl.onContainerClick()
   }
+
+
+
 
   ngAfterViewInit() {
     this.afterViewInit$.next(true)

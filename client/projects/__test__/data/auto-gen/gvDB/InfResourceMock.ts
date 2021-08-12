@@ -191,4 +191,20 @@ export class InfResourceMock {
     pk_entity: 4019,
     fk_class: DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_pk_class,
   })
+
+  static readonly APPE_IN_LANG_TYPE_FIRST_NAME: OmitEntity<InfResource> = ({
+    pk_entity: 4020,
+    fk_class: DfhApiClassMock.EN_630_APPELLATION_IN_A_LANGUAGE_TYPE.dfh_pk_class,
+  })
+  static readonly APPE_IN_LANG_TYPE_LAST_NAME: OmitEntity<InfResource> = ({
+    pk_entity: 4021,
+    fk_class: DfhApiClassMock.EN_630_APPELLATION_IN_A_LANGUAGE_TYPE.dfh_pk_class,
+  })
+
+  static readonly VOLUME_UNIT_CUBIC_METER: OmitEntity<InfResource> = ({
+    pk_entity: 4022,
+    fk_class: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_pk_class,
+  })
+
+
 }

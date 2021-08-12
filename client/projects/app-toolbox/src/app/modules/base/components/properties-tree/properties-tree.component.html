@@ -1,34 +1,8 @@
-<div class="mat-list-base subheader">
-    <h3 class="d-flex mat-text-secondary">Basic fields
-        <mat-slide-toggle class="mat-body show-empty-toggle" [(ngModel)]="generalShowEmptyFields">Show empty fields
-        </mat-slide-toggle>
-    </h3>
-</div>
-<mat-divider></mat-divider>
-
-<mat-tree [dataSource]="generalDataSource" [treeControl]="generalTreeControl" class="gv-properties-tree" [trackBy]="trackBy">
-    <mat-nested-tree-node *matTreeNodeDef="let node">
-
-        <gv-field #field [hidden]="(generalShowEmptyFields === false || node.allSubfieldsRemovedFromAllProfiles) && !(field.itemsCount$ | async)" [field]="node" [treeControl]="generalTreeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source"></gv-field>
-
-    </mat-nested-tree-node>
-</mat-tree>
-
-
-<mat-divider></mat-divider>
-<div class="mat-list-base subheader second-subheader">
-    <h3 class="d-flex mat-text-secondary">
-        Specific fields
-        <mat-slide-toggle class="mat-body show-empty-toggle" [(ngModel)]="specificShowEmptyFields">Show empty fields
-        </mat-slide-toggle>
-    </h3>
-</div>
-<mat-divider></mat-divider>
-
-
-<mat-tree [dataSource]="specificDataSource" [treeControl]="specificTreeControl" class="gv-properties-tree" [trackBy]="trackBy">
-    <mat-nested-tree-node *matTreeNodeDef="let node">
-
-        <gv-field #field [hidden]="(specificShowEmptyFields === false || node.allSubfieldsRemovedFromAllProfiles) && !(field.itemsCount$ | async)" [field]="node" [treeControl]="specificTreeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source"></gv-field>
-    </mat-nested-tree-node>
-</mat-tree>
+<gv-properties-tree-section [source]="source" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [section]='basic'>
+</gv-properties-tree-section>
+<gv-properties-tree-section [source]="source" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$"
+    [section]='metadata'>
+</gv-properties-tree-section>
+<gv-properties-tree-section [source]="source" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$"
+    [section]='specific'>
+</gv-properties-tree-section>

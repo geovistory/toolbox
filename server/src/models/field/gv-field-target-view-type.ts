@@ -1,6 +1,6 @@
 import {model, property} from '@loopback/repository';
 import {GvSubentitFieldPageReq} from './gv-subentity-field-page-req';
-import {GvSubentityTargetType} from './gv-subentity-target-type';
+import {GvSubentityFieldTargetViewType} from './gv-subentity-field-target-view-type';
 
 @model({
   jsonSchema: {
@@ -9,9 +9,10 @@ import {GvSubentityTargetType} from './gv-subentity-target-type';
     minProperties: 1,
   }
 })
-export class GvTargetType extends GvSubentityTargetType {
+export class GvFieldTargetViewType extends GvSubentityFieldTargetViewType {
 
   @property.array(GvSubentitFieldPageReq)
   nestedResource?: GvSubentitFieldPageReq[];
+
 
 }

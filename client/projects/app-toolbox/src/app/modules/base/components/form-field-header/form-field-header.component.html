@@ -1,0 +1,37 @@
+<div class="gv-full-with" *ngIf="formField">
+  <div class="inside-height-center" style="width: 100%;">
+    <span class="mat-h3 mb-0">
+      {{formArrayFactory?.config.placeholder}}
+      <span matTooltip="Required" *ngIf="formArrayFactory.config.required"> * </span>
+      <span class="ml-1 mat-caption mat-text-secondary">
+        ({{length}})
+      </span>
+      <mat-divider></mat-divider>
+      <span class="ml-1 mat-caption mat-text-warn" *ngIf="control.touched && control.hasError('maxLength')">
+        Max. {{control.getError('maxLength').maxLength}} item(s) allowed
+      </span>
+      <span class="ml-1 mat-caption mat-text-warn" *ngIf="control.touched && control.hasError('minLength')">
+        At least {{control.getError('minLength').minLength}} item(s) required
+      </span>
+    </span>
+  </div>
+
+  <div class="inside-width-center">
+    <button mat-icon-button (click)="addItemInField(
+      formField.field,
+      formField.field.targetClasses[0])" *ngIf="formField.field?.targetClasses.length===1"
+      [disabled]="length>=maxLength">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col" *ngIf="formField.field?.targetClasses.length>1">
+    <mat-icon>add</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item *ngFor="let pkClass of formField.field.targetClasses "
+      (click)="addItemInField(formField.field, pkClass)">
+      {{formField.field.targets[pkClass]?.targetClassLabel}}
+    </button>
+  </mat-menu>
+</div>

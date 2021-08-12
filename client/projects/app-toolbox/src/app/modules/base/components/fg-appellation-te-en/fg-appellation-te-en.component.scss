@@ -1,0 +1,26 @@
+:host {
+  width: 100%;
+}
+.ctrl-text {
+  display: block;
+}
+
+.second-line {
+  display: flex;
+  flex-direction: row;
+
+  .ctrl-lang,  .ctrl-type {
+    display: inline;
+  }
+
+  mat-form-field ~ mat-form-field {
+    margin: 0 0 0 1rem;
+  }
+  
+  mat-form-field {
+    ::ng-deep .mat-form-field-infix {
+      width: unset;
+    }
+    flex: 1 1 0%;
+  }
+}

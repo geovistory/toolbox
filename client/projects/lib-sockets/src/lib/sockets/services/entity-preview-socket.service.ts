@@ -12,7 +12,7 @@ export class EntityPreviewSocket extends Socket {
     // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
 
-    super({ url: c.config.baseUrl + '/WarEntityPreview' });
+    super({ url: c.config.baseUrl + '/WarEntityPreview', options: c.config.options });
 
     // dispatch a method to put the EntityPreview to the store
     this.fromEvent<WarEntityPreview>('entityPreview').subscribe(data => {

@@ -424,6 +424,14 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_1317_IS_PART_OF.dfh_pk_property,
     fk_object_info: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity,
   })
+
+  static readonly NAME_1_TO_TYPE: OmitEntity<InfStatement> = ({
+    pk_entity: 3059,
+    fk_subject_info: InfResourceMock.NAMING_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1430_HAS_APPELLATION_FOR_LANGUAGE_TYPE.dfh_pk_property,
+    fk_object_info: InfResourceMock.APPE_IN_LANG_TYPE_FIRST_NAME.pk_entity,
+  })
+
 }
 
 

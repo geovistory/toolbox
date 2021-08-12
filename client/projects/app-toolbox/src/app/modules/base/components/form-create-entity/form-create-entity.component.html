@@ -6,6 +6,11 @@
   <gv-form-group [formGroupFactory]="formFactory.formGroupFactory"></gv-form-group>
 </form>
 
+<div class="form-buttons mt-3 align-right">
+  <button mat-button type="button" color="primary" class="ml-2" (click)="setAdvanced(!advancedMode$.value)">Advanced
+    form</button>
+</div>
+
 <div *ngIf="!hideButtons && formFactory?.formGroup" class="form-buttons mt-3">
 
   <button mat-flat-button color="primary" [disabled]="(submitted && formFactory?.formGroup.invalid) || saving"
@@ -13,6 +18,5 @@
     <span *ngIf="!saving">Create</span>
     <span *ngIf="saving">Saving</span>
   </button>
-
   <button mat-button type="button" class="ml-2" (click)="cancel.emit()">Cancel</button>
 </div>

@@ -111,7 +111,7 @@ export class FormPart {
   public addItem() {
 
     if (this.field.targetClasses.length === 1) {
-      const initVal = this.fieldTarget.listType.language ? this.defaultLanguage : null;
+      const initVal = this.fieldTarget.viewType.language ? this.defaultLanguage : null;
       this.items.push({
         classSelect: false,
         required: this.isRequired(this.field),
@@ -190,7 +190,7 @@ export class FormPart {
   private mapValue(val, field: Field): any {
     if (!field) throw console.error('No field provided')
 
-    if (this.fieldTarget.listType.appellation) {
+    if (this.fieldTarget.viewType.appellation) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -205,7 +205,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (this.fieldTarget.listType.language) {
+    else if (this.fieldTarget.viewType.language) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -220,7 +220,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (this.fieldTarget.listType.langString) {
+    else if (this.fieldTarget.viewType.langString) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -235,7 +235,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (this.fieldTarget.listType.place) {
+    else if (this.fieldTarget.viewType.place) {
       if (!val) return null;
 
       const value: InfStatement = {
@@ -251,9 +251,9 @@ export class FormPart {
       return value;
     }
     else if (
-      this.fieldTarget.listType.nestedResource
-      || this.fieldTarget.listType.entityPreview
-      || this.fieldTarget.listType.typeItem
+      this.fieldTarget.viewType.nestedResource
+      || this.fieldTarget.viewType.entityPreview
+      || this.fieldTarget.viewType.typeItem
     ) {
       if (!val) return null;
 
@@ -273,7 +273,7 @@ export class FormPart {
     }
 
 
-    else if (this.fieldTarget.listType.timeSpan) {
+    else if (this.fieldTarget.viewType.timeSpan) {
       if (!val) return null;
 
       const v = val as CtrlTimeSpanDialogResult;
@@ -291,7 +291,7 @@ export class FormPart {
       return value;
     }
     else {
-      throw console.error('No mapping defined for list type', this.fieldTarget.listType)
+      throw console.error('No mapping defined for list type', this.fieldTarget.viewType)
     }
   }
 

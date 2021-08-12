@@ -1,8 +1,10 @@
-import { GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
+
 export interface FieldTargetClass {
-  // determines what components are used to create, edit or display
-  // the statement and its target.
-  listType: GvTargetType;
+  // determines what view-components are used to display the statement and its target.
+  viewType: GvFieldTargetViewType;
+  // determines what form-components are used to create the statement and its target.
+  formControlType: SysConfigFormCtrlType;
   // the target class of the sub-field (if is outgoing range else domain)
   targetClass: number;
   // label of the target class

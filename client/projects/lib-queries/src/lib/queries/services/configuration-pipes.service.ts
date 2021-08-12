@@ -2,19 +2,23 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityTargetType, GvTargetType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { Field } from '../models/Field';
-import { FieldPlaceOfDisplay } from '../models/FieldPosition';
 import { Profiles } from '../models/Profiles';
 import { SpecialFieldType } from '../models/SpecialFieldType';
 import { Subfield } from '../models/Subfield';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
+
+
+export enum DisplayType { form = 'form', view = 'view' }
+// export type SectionNameType = keyof Sections
+export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
 
 
 // this is the
@@ -73,7 +77,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * that build on this pipe.
    */
   public pipeFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest(
+    // console.log('pipeFields(' + pkClass + ',' + noNesting + ')');
+
+    const obs$ = combineLatest([
       // pipe source class
       this.s.dfh$.class$.by_pk_class$.key(pkClass),
       // pipe outgoing properties
@@ -83,8 +89,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // pipe sys config
       this.s.sys$.config$.main$.pipe(filter(x => !!x)),
       // pipe enabled profiles
-      this.pipeProfilesEnabledByProject(),
-    ).pipe(
+      this.pipeProfilesEnabledByProject()
+    ]).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
         const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
@@ -112,11 +118,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         //   outP.push(createHasDefinitionProperty(pkClass))
         // }
-        return combineLatest(
-          this.pipePropertiesToSubfields(outP, true, enabledProfiles, sysConfig, noNesting),
-          this.pipePropertiesToSubfields(inP, false, enabledProfiles, sysConfig, noNesting),
-          this.pipeFieldConfigs(pkClass)
-        ).pipe(
+        return combineLatest([
+          this.pipePropertiesToSubfields(outP, true, enabledProfiles, noNesting),
+          this.pipePropertiesToSubfields(inP, false, enabledProfiles, noNesting),
+          this.pipeFieldConfigs(pkClass),
+        ]).pipe(
           map(([subfields1, subfields2, fieldConfigs]) => {
             const subfields = [...subfields1, ...subfields2]
 
@@ -162,11 +168,12 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   allSubfieldsRemovedFromAllProfiles: s.removedFromAllProfiles,
                   targetClasses: [s.targetClass],
                   fieldConfig,
-                  placeOfDisplay: getPlaceOfDisplay(sysConfig.specialFields, s, fieldConfig),
+                  display: getFieldDisplay(sysConfig.specialFields, s, fieldConfig),
                   isSpecialField,
                   targets: {
                     [s.targetClass]: {
-                      listType: s.listType,
+                      viewType: s.viewType,
+                      formControlType: s.formControlType,
                       removedFromAllProfiles: s.removedFromAllProfiles,
                       targetClass: s.targetClass,
                       targetClassLabel: s.targetClassLabel
@@ -186,7 +193,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
                   uniqFields[fieldId].allSubfieldsRemovedFromAllProfiles = s.removedFromAllProfiles;
                 uniqFields[fieldId].targetClasses.push(s.targetClass)
                 uniqFields[fieldId].targets[s.targetClass] = {
-                  listType: s.listType,
+                  viewType: s.viewType,
+                  formControlType: s.formControlType,
                   removedFromAllProfiles: s.removedFromAllProfiles,
                   targetClass: s.targetClass,
                   targetClassLabel: s.targetClassLabel
@@ -202,48 +210,41 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     return this.cache('pipeFields', obs$, ...arguments)
   }
 
-
-
-  /**
-   * pipe all the specific fields of a class,
-   * ordered by the position of the field within the specific fields
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  public pipeSpecificFieldOfClass(pkClass: number, noNesting = false): Observable<Field[]> {
-
-    const obs$ = this.pipeFields(pkClass, noNesting).pipe(
-      map(fields => fields
-        // filter fields that are displayd in specific fields
-        .filter(field => field.placeOfDisplay.specificFields)
-        // sort fields by the position defined in the specific fields
-        .sort((a, b) => a.placeOfDisplay.specificFields.position - b.placeOfDisplay.specificFields.position)
-      )
-    )
-    return this.cache('pipeSpecificFieldOfClass', obs$, ...arguments)
-
-  }
-
   /**
     * pipe all the basic fields of a class,
-    * ordered by the position of the field within the basic fields
+    * ordered by the position of the field within the basic/metadata/specific fields
     */
   // @spyTag
   // @cache({ refCount: false })
-  public pipeBasicFieldsOfClass(pkClass: number, noNesting = false): Observable<Field[]> {
+  public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
+
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
-        // filter fields that are displayd in basic fields
-        .filter(field => field.placeOfDisplay.basicFields)
-        // sort fields by the position defined in the basic fields
-        .sort((a, b) => a.placeOfDisplay.basicFields.position - b.placeOfDisplay.basicFields.position)
+        // filter fields that are displayed in specific fields
+        .filter(field => {
+          if (displayType === DisplayType.form) return field.display.formSections?.[section]
+          if (displayType === DisplayType.view) return field.display.viewSections?.[section]
+        })
+        // filter fields that should be hidden
+        .filter(field => {
+          return !(
+            field.display.formSections?.[section]?.hidden ||
+            field.display.viewSections?.[section]?.hidden
+          )
+        })
+        // sort fields by the position defined in the section
+        .sort((a, b) => {
+          if (displayType === DisplayType.form) {
+            return a.display.formSections?.[section].position - b.display.formSections?.[section].position
+          }
+          if (displayType === DisplayType.view) {
+            return a.display.viewSections?.[section].position - b.display.viewSections?.[section].position
+          }
+        })
       )
     )
-    return this.cache('pipeBasicFieldsOfClass', obs$, ...arguments)
+    return this.cache('pipeSection', obs$, ...arguments)
   }
-
-
-
 
   /**
      * Pipes the fields for temporal entity forms
@@ -259,9 +260,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       map(allFields => {
         const fields = allFields
           // filter fields that are displayd in specific fields and not removed from all profiles
-          .filter(field => (field.placeOfDisplay.specificFields && field.allSubfieldsRemovedFromAllProfiles === false))
+          .filter(field => (field.display.formSections.specific && field.allSubfieldsRemovedFromAllProfiles === false))
           // sort fields by the position defined in the specific fields
-          .sort((a, b) => a.placeOfDisplay.specificFields.position - b.placeOfDisplay.specificFields.position)
+          .sort((a, b) => a.display.formSections.specific.position - b.display.formSections.specific.position)
 
         const whenField = allFields.find(field => field.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN)
         if (whenField) fields.push(whenField)
@@ -276,46 +277,24 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   }
 
-
-
-
-
-
-  /**
-   * Pipes the fields of given class in this order:
-   * - basic fields
-   * - specific fields
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeBasicAndSpecificFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest(
-      this.pipeBasicFieldsOfClass(pkClass, noNesting),
-      this.pipeSpecificFieldOfClass(pkClass, noNesting)
-    )
-      .pipe(
-        map(([a, b]) => [...a, ...b])
-      )
-    return this.cache('pipeBasicAndSpecificFields', obs$, ...arguments)
-
-  }
-
   /**
   * Pipes the fields of given class in this order:
-  * - specific fields
   * - basic fields
+  * - metadata fields
+  * - specific fields
   */
   // @spyTag
   // @cache({ refCount: false })
-  pipeSpecificAndBasicFields(pkClass: number, noNesting = false): Observable<Field[]> {
-    const obs$ = combineLatest(
-      this.pipeSpecificFieldOfClass(pkClass, noNesting),
-      this.pipeBasicFieldsOfClass(pkClass, noNesting),
-    )
+  pipeAllSections(pkClass: number, displayType: DisplayType, noNesting = false): Observable<Field[]> {
+    const obs$ = combineLatest([
+      this.pipeSection(pkClass, displayType, SectionName.basic, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.metadata, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.specific, noNesting),
+    ])
       .pipe(
-        map(([a, b]) => [...a, ...b])
+        map(([a, b, c]) => [...a, ...b, ...c])
       )
-    return this.cache('pipeSpecificAndBasicFields', obs$, ...arguments)
+    return this.cache('pipeAllSections', obs$, ...arguments)
   }
 
 
@@ -324,12 +303,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     properties: DfhProperty[],
     isOutgoing: boolean,
     enabledProfiles: number[],
-    sysConfig: SysConfigValue,
     noNesting = false
   ): Observable<Subfield[]> {
     const obs$ = combineLatestOrEmpty(
       properties.map(p => {
-        return this.pipeSubfield(isOutgoing, p, sysConfig, enabledProfiles, noNesting);
+        return this.pipeSubfield(isOutgoing, p, enabledProfiles, noNesting);
       })
     )
     return this.cache('pipePropertiesToSubfields', obs$, ...arguments)
@@ -338,25 +316,29 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
 
   // @cache({ refCount: false })
-  pipeSubfieldIdToSubfield(sourceClass: number, property: number, targetClass: number, isOutgoing: boolean, noNesting = false): Observable<Subfield> {
+  pipeSubfieldIdToSubfield(
+    sourceClass: number,
+    property: number,
+    targetClass: number,
+    isOutgoing: boolean,
+    noNesting = false
+  ): Observable<Subfield> {
+
     const domain = isOutgoing ? sourceClass : targetClass;
     const range = isOutgoing ? targetClass : sourceClass;
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.s.dfh$.property$.pk_property__has_domain__has_range$.key([property, domain, range].join('_'))
         .pipe(filter(x => {
           return !!x
         })),
-      this.s.sys$.config$.main$.pipe(filter(x => {
-        return !!x
-      })),
+
       this.pipeProfilesEnabledByProject().pipe(filter(x => {
         return !!x
       })),
-    ).pipe(
-      switchMap(([dfhProp, sysConf, enabledProfiles]) => this.pipeSubfield(
+    ]).pipe(
+      switchMap(([dfhProp, enabledProfiles]) => this.pipeSubfield(
         isOutgoing,
         dfhProp,
-        sysConf,
         enabledProfiles,
         noNesting
       ))
@@ -369,7 +351,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   private pipeSubfield(
     isOutgoing: boolean,
     p: DfhProperty,
-    sysConfig: SysConfigValue,
     enabledProfiles: number[],
     noNesting = false
   ): Observable<Subfield> {
@@ -398,7 +379,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       })
     );
 
-    return combineLatest(
+    return combineLatest([
       this.pipeClassLabel(sourceClass).pipe(tap(x => {
         // console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
@@ -409,22 +390,23 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         return x
       })),
-      this.pipeSubfieldTypeOfClass(sysConfig, targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
-        // console.log('pppp found subfieldType: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+      this.pipeTargetTypesOfClass(targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
+        // console.log('pppp found targetTypeOfClass: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
       this.pipeFieldLabel(sourceClass, isOutgoing, p.pk_property).pipe(tap(x => {
         // console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
         return x
       })),
-    )
-      .pipe(map(([sourceClassLabel, targetClassLabel, listType, label]
+    ])
+      .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label]
       ) => {
 
-        // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
+        // console.log('pppp Subfield complete: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
         const node: Subfield = {
-          listType,
+          viewType: targetTypes.viewType,
+          formControlType: targetTypes.formControlType,
           sourceClass,
           sourceClassLabel,
           sourceMaxQuantity,
@@ -435,7 +417,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           targetMaxQuantity,
           label,
           isHasTypeField: o && p.is_has_type_subproperty,
-          isTimeSpanShortCutField: listType.timeSpan ? true : false,
+          isTimeSpanShortCutField: targetTypes.viewType.timeSpan ? true : false,
           property: { fkProperty: p.pk_property },
           isOutgoing: o,
           identityDefiningForSource: o ? p.identity_defining : false,
@@ -467,92 +449,137 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   // @spyTag
   // @cache({ refCount: false })
-  pipeSubfieldTypeOfClass(sysConfig: SysConfigValue, pkClass: number, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvTargetType> {
-    const obs$ = this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
-      filter(i => !!i),
-      switchMap((klass) => this.pipeSubfieldType(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
+  pipeTargetTypesOfClass(
+    pkClass: number,
+    targetMaxQuantity: number = -1,
+    pkProperty?: number,
+    isOutgoing?: boolean,
+    noNesting = false
+  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
+    const obs$ = combineLatest([
+      this.s.sys$.config$.main$.pipe(filter(x => !!x)),
+      this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(i => !!i))
+    ]).pipe(
+      switchMap(([sysConfig, klass]) => this.pipeTargetTypes(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
     )
-    return this.cache('pipeSubfieldTypeOfClass', obs$, ...arguments)
+    return this.cache('pipeTargetTypesOfClass', obs$, ...arguments)
 
   }
 
 
-  pipeSubfieldType(sysConfig: SysConfigValue, klass: DfhClass, targetMaxQuantity: number, pkProperty?: number, isOutgoing?: boolean, noNesting = false): Observable<GvTargetType> {
+  pipeTargetTypes(
+    s: SysConfigValue,
+    klass: DfhClass,
+    targetMaxQuantity?: number,
+    pkProperty?: number,
+    isOutgoing?: boolean,
+    noNesting = false
+  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
 
-    const res = (x: GvTargetType) => new BehaviorSubject(x)
-    let classConfig: ClassConfig
-    if (sysConfig) classConfig = sysConfig.classes[klass.pk_class];
-    if (classConfig && classConfig.valueObjectType) {
-      return res(classConfig.valueObjectType)
-    }
-
-    // console.log('pppp found: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
-    const sysConfOfProp = isOutgoing ? sysConfig.specialFields.outgoingProperties : sysConfig.specialFields.incomingProperties;
-
+    // console.log('pppp found: ', [undefined, pkProperty, klass.pk_class, isOutgoing])
+    const res = (
+      v: GvFieldTargetViewType,
+      f: SysConfigFormCtrlType
+    ) => new BehaviorSubject({ viewType: v, formControlType: f })
+    const classId = klass.pk_class
+    const basicType = klass.basic_type
+    const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
     const isTimeSpanShortCutField = sysConfOfProp[pkProperty] ? sysConfOfProp[pkProperty].isHasTimeSpanShortCut : false;
+
+    /**
+     * Particular Case 1: the field is time span field
+     */
     if (isTimeSpanShortCutField) {
-      return res({ timeSpan: 'true' })
+      return res({ timeSpan: 'true' }, { timeSpan: 'true' })
     }
 
-
-    else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
-      return res({ typeItem: 'true' })
+    /**
+     * Particular Case 2: the field is has type field
+     */
+    else if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
+      return res({ typeItem: 'true' }, { typeItem: 'true' })
     }
-    // TODO add this to sysConfigValue
-    // TODO time span!!!
-    // else if (klass.pk_class === DfhConfig.ClASS_PK_TIME_SPAN) {
-    //   return res({ timeSpan: 'true' })
-    // }
-    else if (klass.basic_type === 8 || klass.basic_type === 30 || noNesting) {
-      return res({ entityPreview: 'true' })
-    }
-    else {
-      // pipe the subfields of the temporalEntity class
-      const noNest = true;
-      return this.pipeSpecificAndBasicFields(klass.pk_class, noNest).pipe(
-        map(fields => {
-          const subentitySubfieldPage: GvSubentitFieldPageReq[] = []
-          for (const field of fields) {
-            // for each of these subfields
-            // create page:GvSubfieldPage
 
-            const nestedTargets: GvSubentityFieldTargets = {};
-            for (const key in field.targets) {
-              if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
-                const listType = field.targets[key].listType;
-                const subTargetType: GvSubentityTargetType = listType.nestedResource ?
-                  { entityPreview: 'true' } :
-                  listType
-                nestedTargets[key] = subTargetType
-              }
-            }
-            let isCircular = false;
-            if (
-              pkProperty &&
-              field.property.fkProperty == pkProperty &&
-              field.targetMaxQuantity === 1
-            ) {
-              isCircular = true
-            }
-            const nestedPage: GvSubentitFieldPageReq = {
-              targets: nestedTargets,
-              page: {
-                property: field.property,
-                isOutgoing: field.isOutgoing,
-                limit: 1,
-                offset: 0,
-                isCircular
-              }
-            }
-            subentitySubfieldPage.push(nestedPage)
-          }
-          return { nestedResource: subentitySubfieldPage }
-        }),
+    /*
+    * get form control type (for display on create form)
+    */
+    const formControlType: SysConfigFormCtrlType =
+      s?.classes?.[classId]?.formControlType ??
+      s?.classesByBasicType?.[basicType]?.formControlType ??
+      s?.classesDefault?.formControlType ??
+      { entity: 'true' }; // <- fallback
 
-      )
+    /**
+     * get view type (for display on entity card)
+     */
+    const viewType: GvFieldTargetViewType =
+      s?.classes?.[classId]?.viewType ??
+      s?.classesByBasicType?.[basicType]?.viewType ??
+      s?.classesDefault?.viewType ??
+      { entityPreview: 'true' }; // <- fallback
+
+    /**
+    * If the view wants a nestedResource, but the nested fields are not yet defined, do it.
+    * If noNesting is true, this is skipped
+    */
+    if (viewType?.nestedResource?.length === 0 && noNesting !== true) {
+
+      return this.pipeNestedResource(classId, pkProperty).pipe(map(nestedResource => ({
+        viewType: { nestedResource },
+        formControlType
+      })));
     }
+
+    /**
+    * Else return the trargets retrieved from system config / fallbacks
+    */
+    return res(viewType, formControlType)
+
   }
 
+
+  // pipe the subfields of the entity
+  public pipeNestedResource(classId: number, contextPkProperty?: number): Observable<GvSubentitFieldPageReq[]> {
+    const noNest = true;
+    return this.pipeAllSections(classId, DisplayType.view, noNest).pipe(
+      map(fields => {
+        const subentitySubfieldPage: GvSubentitFieldPageReq[] = [];
+        for (const field of fields) {
+          // for each of these subfields
+          // create page:GvSubfieldPage
+          const nestedTargets: GvSubentityFieldTargets = {};
+          for (const key in field.targets) {
+            if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
+              const listType = field.targets[key].viewType;
+              const subTargetType: GvSubentityFieldTargetViewType = listType.nestedResource ?
+                { entityPreview: 'true' } :
+                listType;
+              nestedTargets[key] = subTargetType;
+            }
+          }
+          let isCircular = false;
+          if (contextPkProperty &&
+            field.property.fkProperty == contextPkProperty &&
+            field.targetMaxQuantity === 1) {
+            isCircular = true;
+          }
+          const nestedPage: GvSubentitFieldPageReq = {
+            targets: nestedTargets,
+            page: {
+              property: field.property,
+              isOutgoing: field.isOutgoing,
+              limit: 1,
+              offset: 0,
+              isCircular
+            }
+          };
+          subentitySubfieldPage.push(nestedPage);
+        }
+        return subentitySubfieldPage
+      })
+
+    );
+  }
 
   /**
    * Gets class field configs of given pkClass
@@ -576,10 +603,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           fk_class_for_class_field: pkClass,
           fk_project: ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT
         })
-        return combineLatest(
+        return combineLatest([
           this.s.pro$.class_field_config$.by_fk_project__fk_class$.key(activeProjectkey),
           this.s.pro$.class_field_config$.by_fk_project__fk_class$.key(defaultProjectkey)
-        )
+        ])
           .pipe(
             map(([activeProjectFields, defaultProjectFields]) => {
               if (activeProjectFields && values(activeProjectFields).length) return activeProjectFields;
@@ -603,10 +630,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeClassLabel(pkClass?: number): Observable<string> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.a.pkProject$,
       this.a.pipeActiveDefaultLanguage()
-    ).pipe(
+    ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
           map(items => {
@@ -670,7 +697,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     }
 
 
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       // label of project in default language of project
       this.pipeProTextProperty({
         fk_project: d.fkProject,
@@ -739,7 +766,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of ontome in english';
         return { origin, text: item.label }
       })),
-    )
+    ])
     return this.cache('pipeLabels', obs$, ...arguments)
 
   }
@@ -788,10 +815,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const fkPropertyDomain = isOutgoing ? fkSource : undefined;
     const fkPropertyRange = isOutgoing ? undefined : fkSource;
     const type = isOutgoing ? 'label' : 'inverse_label'
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.a.pkProject$,
       this.a.pipeActiveDefaultLanguage()
-    ).pipe(
+    ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels(
         {
           fkProject,
@@ -822,10 +849,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeTableNameOfClass(targetClassPk: number): Observable<TableName> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.s.sys$.config$.main$,
       this.s.dfh$.class$.by_pk_class$.key(targetClassPk)
-    ).pipe(
+    ]).pipe(
       filter(i => !i.includes(undefined)),
       map(([config, klass]) => {
         const classConfig: ClassConfig = config.classes[targetClassPk];
@@ -866,10 +893,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeClassesInEntitiesOrSources(): Observable<{ [key: string]: number }> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.pipeClassesEnabledInEntities(),
       this.pipeClassesRequiredBySources()
-    ).pipe(
+    ]).pipe(
       map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
       startWith({})
     )
@@ -962,10 +989,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
-    const obs$ = combineLatest(
+    const obs$ = combineLatest([
       this.pipeTeEnClassesEnabledInEntities(),
       this.pipeTeEnClassesRequiredBySources()
-    ).pipe(
+    ]).pipe(
       map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
       startWith({})
     )
@@ -1180,26 +1207,26 @@ function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: RelatedPr
 
 }
 
-function getPlaceOfDisplay(specialFields: SysConfigSpecialFields, subfield: Subfield, projectFieldConfig?: ProClassFieldConfig): FieldPlaceOfDisplay {
+function getFieldDisplay(
+  specialFields: SysConfigSpecialFields,
+  subfield: Subfield,
+  projectFieldConfig?: ProClassFieldConfig
+): SysConfigFieldDisplay {
   let settings: SysConfigFieldDisplay;
-
   settings = getSettingsFromSysConfig(subfield, specialFields, settings);
 
   // if this is a special field, create corresponding display settings and return it
-  if (settings) {
-    if (settings.displayInBasicFields) {
-      return { basicFields: { position: settings.displayInBasicFields.position } }
-    } else if (settings.hidden) {
-      return { hidden: true }
-    }
+  let thePos = Number.POSITIVE_INFINITY;
+  if (projectFieldConfig) thePos = projectFieldConfig.ord_num
+
+  // returns form/view sections of config if exists, else add to specific fields
+  return {
+    formSections: settings?.formSections ?? { specific: { position: thePos } },
+    viewSections: settings?.viewSections ?? { specific: { position: thePos } }
   }
 
-  // otherwise display the field in specific fields (default)
-  let position = Number.POSITIVE_INFINITY;
-  if (projectFieldConfig) position = projectFieldConfig.ord_num
-  return { specificFields: { position } }
-
 }
+
 function getSettingsFromSysConfig(
   subfield: Subfield, specialFields: SysConfigSpecialFields, settings: SysConfigFieldDisplay) {
   if (subfield.isOutgoing) {
@@ -1238,425 +1265,3 @@ function getSettingsFromSysConfig(
   return settings;
 }
 
-
-
-
-
-
-/**
- * Pipes the fields for temporal entity forms
- * - the specific fields
- * - the when field
- * - if available: the type field
- */
-// @spyTag @cache({ refCount: false }) pipeFieldDefinitionsForTeEnForm(pkClass: number): Observable<Field[]> {
-//   return of([])
-// const hasTypeListDef$ = this.pipeHasTypeSubfield(pkClass)
-// return combineLatest(
-//   this.pipeSpecificFieldDefinitions(pkClass)
-//     .pipe(
-//       map(fields => fields.filter(f => f.allSubfieldsRemovedFromAllProfiles === false))
-//     )
-//   ,
-//   hasTypeListDef$,
-// ).pipe(
-//   map(([fields, hasTypeListDefs]) => {
-//     const when = this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN)
-//     return [
-//       ...fields,
-//       when,
-//       ...hasTypeListDefs.map((hasTypeListDef) => {
-//         const typeField: Field = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
-//         return typeField;
-//       })
-//     ]
-//   })
-// )
-// }
-
-
-/**
- * Pipe the specific fields of given class
- */
-// @spyTag @cache({ refCount: false }) pipeSpecificFieldDefinitions(pkClass: number): Observable<Field[]> {
-// return combineLatest(
-//   this.pipePropertiesOfClass(pkClass, true).pipe(
-//     // filter out the 'has type' property, since it is part of the default fields
-//     map(outgoing => outgoing.filter(o => !o.is_has_type_subproperty))
-//   ),
-//   this.pipePropertiesOfClass(pkClass, false).pipe(
-//     // filter out the 'has appellation' property, since it is part of the default fields
-//     map(ingoing => ingoing.filter(i =>
-//       i.pk_property !== DfhConfig.PROPERTY_PK_IS_APPELLATION_OF
-//       && i.pk_property !== DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF
-//     ))
-//   ),
-//   this.pipeFieldConfigs(pkClass)
-// ).pipe(
-//   switchMap(([outgoing, ingoing, fieldConfigs]) => {
-
-//     const key = (fc: Partial<ProClassFieldConfig>) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`;
-//     const indexed = indexBy((fc) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`, fieldConfigs)
-//     const getFieldConfig = (listDef: Subfield): ProClassFieldConfig => {
-//       return indexed[key({
-//         fk_property: listDef.property.pkProperty,
-//         fk_domain_class: listDef.isOutgoing ? listDef.sourceClass : null,
-//         fk_range_class: listDef.isOutgoing ? null : listDef.sourceClass,
-//       })]
-//     }
-
-//     // Create list definitions
-//     return combineLatest(
-//       this.pipePropertiesToSubfields(ingoing, false),
-//       this.pipePropertiesToSubfields(outgoing, true)
-//     ).pipe(
-//       map(([ingoingListDefs, outgoingListDefs]) => {
-//         const listDefinitions = [...ingoingListDefs, ...outgoingListDefs];
-
-//         // Create field definitions
-//         const fieldDefs: { [key: string]: Field } = {}
-//         listDefinitions.forEach(listDef => {
-
-//           const k = listDef.property.pkProperty + '_' + listDef.isOutgoing;
-
-//           if (!fieldDefs[k]) {
-//             fieldDefs[k] = {
-//               ...listDef,
-//               placeOfDisplay: {},
-//               allSubfieldsRemovedFromAllProfiles: false,
-//               fieldConfig: getFieldConfig(listDef),
-//               listDefinitions: [listDef],
-//               targetClasses: [listDef.targetClass]
-//             }
-//           } else {
-//             fieldDefs[k].listDefinitions.push(listDef)
-//             fieldDefs[k].targetClasses.push(listDef.targetClass)
-//           }
-
-//           // }
-
-//         })
-//         // Order the fields according to ord_num (from project's config, kleiolab's config) or put it at end of list.
-//         return sort(
-//           (a, b) => {
-//             const getOrdNum = (item: Field) => {
-//               if (item && item.fieldConfig) return item.fieldConfig.ord_num;
-//               return Number.POSITIVE_INFINITY;
-//             }
-//             const ordNumA = getOrdNum(a);
-//             const ordNumB = getOrdNum(b);
-//             return ordNumA - ordNumB;
-//           },
-//           values(fieldDefs))
-//       })
-//     )
-//   })
-// )
-// }
-
-
-/**
- * Pipe the fields for identification of given class
- */
-// @spyTag @cache({ refCount: false }) pipeDefaultFieldDefinitions(pkClass: number): Observable<Field[]> {
-
-
-// /**
-//  * Pipe the generic field has appellation
-//  * with the given class as range
-//  */
-// const hasAppeProp: DfhPropertyStatus = {
-//   has_domain: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
-//   pk_property: DfhConfig.PROPERTY_PK_IS_APPELLATION_OF,
-//   has_range: pkClass,
-//   domain_instances_max_quantifier: -1,
-//   domain_instances_min_quantifier: 0,
-//   range_instances_max_quantifier: 1,
-//   range_instances_min_quantifier: 1,
-//   identifier_in_namespace: 'histP9',
-//   identity_defining: true,
-//   is_inherited: true,
-//   is_has_type_subproperty: false,
-//   removedFromAllProfiles: false,
-//   profiles: []
-// }
-// const hasAppeListDef$ = this.pipePropertiesToSubfields([hasAppeProp], false).pipe(
-//   filter(listDefs => !!listDefs && !!listDefs[0]),
-//   map(listDefs => listDefs[0])
-// );
-
-// /**
-//  * Pipe the generic field has type
-//  * with the given class as range
-//  */
-// const hasTypeListDef$ = this.pipeHasTypeSubfield(pkClass)
-// return combineLatest(
-//   hasAppeListDef$,
-//   hasTypeListDef$,
-//   this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(c => !!c))
-// ).pipe(
-//   map(([hasAppeListDef, hasTypeListDefs, klass]) => {
-//     const fields: Field[] = []
-
-
-//     // /*
-//     //  * Add 'short title' text-property to
-//     //  *
-//     //  * Manifestation Product Type – F3, 219
-//     //  * Manifestation Singleton – F4, 220
-//     //  * Item – F5, 221
-//     //  * Web Request – geovC4, 502
-//     //  */
-//     // if ([
-//     //   DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
-//     //   DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON,
-//     //   DfhConfig.CLASS_PK_ITEM,
-//     //   DfhConfig.CLASS_PK_WEB_REQUEST].includes(pkClass)) {
-//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_SHORT_TITLE));
-//     // }
-
-//     // /*
-//     // * Add 'has appellation for language – histP9' to
-//     // *
-//     // * all classes except 'Appellation for language – histC10', 365
-//     // */
-//     // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-//     //   const appeField: Field = { ...hasAppeListDef, listDefinitions: [hasAppeListDef] }
-//     //   fields.push(appeField);
-//     // }
-
-
-//     // /*
-//     // * Add 'hasType' fields
-//     // */
-//     // if (hasTypeListDefs && hasTypeListDefs.length > 0) {
-//     //   hasTypeListDefs.forEach((hasTypeListDef) => {
-//     //     const typeField: Field = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
-//     //     fields.push(typeField);
-//     //   })
-//     // }
-
-//     // /*
-//     // * Add 'entity definition' text-property to
-//     // *
-//     // * all classes except 'Appellation for language – histC10', 365
-//     // */
-//     // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION));
-//     // }
-//     // /*
-//     // * Add 'identifier / exact reference / url / ...' text-property to
-//     // *
-//     // * Web Request – geovC4, 502
-//     // */
-//     // if (DfhConfig.CLASS_PK_WEB_REQUEST === pkClass) {
-//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE));
-//     // }
-
-//     // /*
-//     // * Add 'comment' text-property to
-//     // *
-//     // * Manifestation Product Type – F3, 219
-//     // * Manifestation Singleton – F4, 220
-//     // * Item – F5, 221
-//     // * Web Request – geovC4, 502
-//     // * Expression portion – geovC5, 503
-//     // */
-//     // if ([
-//     //   DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
-//     //   DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON,
-//     //   DfhConfig.CLASS_PK_ITEM,
-//     //   DfhConfig.CLASS_PK_WEB_REQUEST,
-//     //   DfhConfig.CLASS_PK_EXPRESSION_PORTION].includes(pkClass)) {
-//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_COMMENT));
-//     // }
-
-//     // /*
-//     // * Add 'time-span' field to
-//     // *
-//     // * all temporal entity classes
-//     // */
-//     // if (klass.basic_type === 9) {
-//     //   fields.push(this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN));
-//     // }
-
-//     return fields
-
-//   })
-// )
-// }
-
-
-// private pipeHasTypeSubfield(pkClass: number) {
-//   return this.pipePropertiesOfClass(pkClass, true).pipe(
-//     // check if this class has 'has type' subproperty
-//     map(outgoing => {
-//       return outgoing.filter((prop) => prop.is_has_type_subproperty);
-//     }), switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
-//       return this.pipePropertiesToSubfields([dfhProp], true).pipe(filter(listDefs => !!listDefs && !!listDefs[0]), map(listDefs => {
-//         const listDef = listDefs[0];
-//         listDef.listType = { typeItem: 'true' };
-//         return listDef;
-//       }));
-//     }))));
-// }
-
-// getClassFieldSubfield(pkClassField: number): Subfield {
-//   const template = {
-//     property: {},
-//     sourceClass: undefined,
-//     sourceClassLabel: undefined,
-//     targetClass: undefined,
-//     isOutgoing: undefined,
-//     identityDefiningForSource: undefined,
-//     identityDefiningForTarget: undefined,
-//     targetMaxQuantity: undefined,
-//     targetMinQuantity: undefined,
-//     sourceMaxQuantity: undefined,
-//     sourceMinQuantity: undefined,
-//     removedFromAllProfiles: false
-//   }
-//   switch (pkClassField) {
-//     case SysConfig.PK_CLASS_FIELD_WHEN:
-//       return {
-//         ...template,
-//         listType: { timeSpan: 'true' },
-//         label: 'When',
-//         isOutgoing: true,
-//         // fkClassField: pkClassField,
-//         ontoInfoLabel: 'P4',
-//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/4',
-//         targetMaxQuantity: 1
-//       }
-//     case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-//       return {
-//         ...template,
-//         listType:  { textProperty: 'true' },
-//         label: 'Description',
-//         // fkClassField: pkClassField,
-//         ontoInfoLabel: 'P3',
-//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-//         targetMaxQuantity: -1
-//       }
-//     case SysConfig.PK_CLASS_FIELD_COMMENT:
-//       return {
-//         ...template,
-//         // fkClassField: SysConfig.PK_CLASS_FIELD_COMMENT,
-//         listType:  { textProperty: 'true' },
-//         label: 'Comments',
-//         ontoInfoLabel: 'P3',
-//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-//         targetMaxQuantity: -1
-//       }
-//     case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-//       return {
-//         ...template,
-//         listType:  { textProperty: 'true' },
-//         label: 'Exact Reference',
-//         // fkClassField: pkClassField,
-//         ontoInfoLabel: 'P3',
-//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-//         targetMaxQuantity: -1
-//       }
-//     case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
-//       return {
-//         ...template,
-//         listType:  { textProperty: 'true' },
-//         label: 'Short Title',
-//         // fkClassField: pkClassField,
-//         ontoInfoLabel: 'P3',
-//         ontoInfoUrl: 'https://ontome.dataforhistory.org/property/3',
-//         targetMaxQuantity: -1
-//       }
-//     default:
-//       break;
-//   }
-// }
-
-// getClassFieldDefinition(pkClassField: number): Field {
-//   const listDef = this.getClassFieldSubfield(pkClassField)
-//   return { ...listDef, listDefinitions: [listDef] }
-// }
-
-
-// @spyTag @cache({ refCount: false }) pipeClassesRequired() {
-//   return this.s.sys$.system_relevant_class$.by_required$.key('true')
-//     .pipe(map(c => values(c).map(k => k.fk_class)))
-// }
-
-
-
-// /**
-//  * Pipes all the enabled properties of a class
-//  */
-// @spyTag @cache({ refCount: false }) pipePropertiesOfClass(pkClass: number, isOutgoing: boolean): Observable<DfhPropertyStatus[]> {
-
-
-//   let $: Observable<ByPk<DfhProperty>>
-//   if (isOutgoing) {
-//     $ = this.s.dfh$.property$.by_has_domain$.key(pkClass)
-//   }
-//   else {
-//     $ = this.s.dfh$.property$.by_has_range$.key(pkClass)
-//   }
-
-//   // filter properties that are in at least one profile enabled by project
-//   const profiles$ = this.pipeProfilesEnabledByProject()
-
-
-//   // Filter out only the properties for which target class is allowed
-//   return combineLatest($, profiles$)
-//     .pipe(
-//       map(([props, profiles]) => {
-//         const p: DfhPropertyStatus[] = []
-
-//         values(props).forEach(prop => {
-
-
-//           const propProfileRel = prop.profiles as Profiles
-
-//           let enabledInAProfile = false;
-
-//           let removedFromAllProfiles = true;
-
-//           propProfileRel.forEach(item => {
-//             if (profiles.includes(item.fk_profile)) {
-//               enabledInAProfile = true;
-//               if (item.removed_from_api === false) {
-//                 removedFromAllProfiles = false
-//               }
-//             }
-//           })
-
-//           if (enabledInAProfile) {
-//             p.push({
-//               ...prop,
-//               removedFromAllProfiles
-//             })
-//           }
-//         })
-
-//         return p
-//       })
-//     )
-
-// }
-
-
-// /**
-//  * returns an object where the keys are the pks of the Classes
-//  * used by the given project
-//  * - or because the class is enabled by class_proj_rel
-//  * - or because the class is required by sources or by basics
-//  *
-//  * this is usefull to check if a class is available at all
-//  */
-// @spyTag @cache({ refCount: false }) pipeClassesInEntitesOrRequired(): Observable<{ [key: string]: number }> {
-//   return combineLatest(
-//     this.pipeClassesEnabledInEntities(),
-//     this.pipeClassesRequired()
-//   ).pipe(
-//     map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
-//     startWith({})
-//   )
-// }

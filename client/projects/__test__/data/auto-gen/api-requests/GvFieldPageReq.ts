@@ -39,7 +39,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
-        appellation: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        appellation: 'true'
       }
     },
     page: {
@@ -55,7 +55,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_21_PERSON.dfh_pk_class]: {
-        entityPreview: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        entityPreview: 'true'
       }
     },
     page: {
@@ -72,7 +72,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_51_PLACE.dfh_pk_class]: {
-        place: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        place: 'true'
       }
     },
     page: {
@@ -108,7 +108,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class]: {
-        langString: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        langString: 'true'
       }
     },
     page: {
@@ -126,7 +126,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class]: {
-        language: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        language: 'true'
       }
     },
     page: {
@@ -144,7 +144,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class]: {
-        timePrimitive: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        timePrimitive: 'true'
       }
     },
     page: {
@@ -161,7 +161,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-        timeSpan: 'true' as unknown as SysConfigValueObjectType.AppellationEnum
+        timeSpan: 'true'
       }
     },
     page: {

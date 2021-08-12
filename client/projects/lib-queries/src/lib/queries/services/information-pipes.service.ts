@@ -3,7 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvTargetType, InfStatement, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldTargetViewType, InfStatement, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -18,7 +18,7 @@ import { PropertySelectModel } from '../models/PropertySelectModel';
 import { StatementProjRel, StatementTarget, StatementWithTarget, SubentitySubfieldPage, SubfieldPage } from '../models/StatementWithTarget';
 import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { ConfigurationPipesService } from './configuration-pipes.service';
+import { ConfigurationPipesService, DisplayType } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
@@ -101,7 +101,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     return this.s.inf$.getModelOfEntity$(targetInfo).pipe(
       filter(x => !!x),
       switchMap(item => {
-        const subfieldType: GvTargetType = targets[item.fkClass]
+        const subfieldType: GvFieldTargetViewType = targets[item.fkClass]
         if (subfieldType.appellation) {
           return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(
             filter(x => !!x),
@@ -356,7 +356,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
           source: page.source,
           scope,
         }
-        const subfType: GvTargetType = {
+        const subfType: GvFieldTargetViewType = {
           timePrimitive: 'true'
         }
         const trgts = {
@@ -541,7 +541,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
     const obs$ = combineLatestOrEmpty(classes.map(pkClass => this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       map(c => c.basic_type === 9),
-      switchMap(isTeEn => this.c.pipeSpecificAndBasicFields(pkClass)
+      switchMap(isTeEn => this.c.pipeAllSections(pkClass, DisplayType.view)
         .pipe(
           map(classFields => classFields
             .filter(f => !!f.property.fkProperty)

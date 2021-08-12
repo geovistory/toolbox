@@ -3,9 +3,9 @@ import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-s
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
+import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { SubfieldMock } from 'projects/__test__/data/SubfieldMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
@@ -26,7 +26,7 @@ export default sandboxOf(SubfieldComponent, {
 })
   .add('Subfield | type: AppellationVT ', {
     context: {
-      field: SubfieldMock.appeHasAppeString,
+      field: FieldMock.appeHasAppeString,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
@@ -49,7 +49,7 @@ export default sandboxOf(SubfieldComponent, {
   })
   .add('Subfield | type: PlaceVT ', {
     context: {
-      field: SubfieldMock.presenceWasAtPlace,
+      field: FieldMock.presenceWasAtPlace,
       source: { fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
@@ -73,7 +73,7 @@ export default sandboxOf(SubfieldComponent, {
 
   .add('Subfield | type: DimensionVT ', {
     context: {
-      field: SubfieldMock.accountOfJourneyHasDuration,
+      field: FieldMock.accountOfJourneyHasDuration,
       source: { fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
@@ -97,7 +97,7 @@ export default sandboxOf(SubfieldComponent, {
 
   .add('Subfield | type: LangStringVT ', {
     context: {
-      field: SubfieldMock.manifestationSingletonHasShortTitle,
+      field: FieldMock.manifestationSingletonHasShortTitle,
       source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
@@ -126,7 +126,7 @@ export default sandboxOf(SubfieldComponent, {
   })
   .add('Subfield | type: LanguageVT ', {
     context: {
-      field: SubfieldMock.appeTeEnUsedInLanguage,
+      field: FieldMock.appeTeEnUsedInLanguage,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope
@@ -149,7 +149,7 @@ export default sandboxOf(SubfieldComponent, {
   })
   .add('Subfield | type: EntityPreview ', {
     context: {
-      field: SubfieldMock.appeTeEnIsAppeOfPerson,
+      field: FieldMock.appeTeEnIsAppeOfPerson,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
@@ -177,7 +177,7 @@ export default sandboxOf(SubfieldComponent, {
   })
   .add('Subfield | type: TemporalEntity ', {
     context: {
-      field: SubfieldMock.personHasAppeTeEn,
+      field: FieldMock.personHasAppeTeEn,
       source: { fkInfo: InfResourceMock.PERSON_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
@@ -210,7 +210,7 @@ export default sandboxOf(SubfieldComponent, {
 
   .add('Subfield | type: TimeSpan', {
     context: {
-      field: SubfieldMock.appeHasTimeSpan,
+      field: FieldMock.appeHasTimeSpan,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,
@@ -239,7 +239,7 @@ export default sandboxOf(SubfieldComponent, {
   })
   .add('Subfield | type: TimeSpan empty', {
     context: {
-      field: SubfieldMock.appeHasTimeSpan,
+      field: FieldMock.appeHasTimeSpan,
       source: { fkInfo: InfResourceMock.NAMING_2_STADT.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
       scope: inProjectScope,

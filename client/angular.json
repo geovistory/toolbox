@@ -416,7 +416,12 @@
           "options": {
             "main": "projects/lib-queries/src/test.ts",
             "tsConfig": "projects/lib-queries/tsconfig.spec.json",
-            "karmaConfig": "projects/lib-queries/karma.conf.js"
+            "karmaConfig": "projects/lib-queries/karma.conf.js",
+            "sourceMap": {
+              "scripts": true,
+              "styles": false,
+              "vendor": false
+            }
           }
         },
         "lint": {

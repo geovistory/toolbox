@@ -1,3 +1,5 @@
+import {DfhApiProfile} from '@kleiolab/lib-sdk-lb4';
+
 /**
  * this class mirrors {Entity} from '@loopback/repository'
  */
@@ -82,3 +84,9 @@ export interface DfhApiProperty {
 
 
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
+
+export interface OntomeProfileMock {
+    profile: OmitEntity<DfhApiProfile>,
+    properties: Omit<DfhApiProperty, 'pk_entity'>[],
+    classes: Omit<DfhApiClass, 'pk_entity'>[],
+}

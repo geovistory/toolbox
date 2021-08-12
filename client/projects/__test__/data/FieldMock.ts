@@ -1,19 +1,19 @@
 import { SysConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
-import { GvSubentitFieldPageReq, GvSubentityTargetType, GvTargetType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargetViewType, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
 import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 
 function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentitFieldPageReq {
-  const targets: { [key: number]: GvSubentityTargetType } = {}
+  const targets: { [key: number]: GvSubentityFieldTargetViewType } = {}
   for (const key in field.targets) {
     if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
       const element = field.targets[key];
-      if (element.listType.nestedResource) {
+      if (element.viewType.nestedResource) {
         targets[key] = { entityPreview: 'true' }
       } else {
-        targets[key] = element.listType
+        targets[key] = element.viewType
       }
     }
   }
@@ -32,27 +32,27 @@ function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentit
 
 
 
-export namespace SubfieldMock {
+export namespace FieldMock {
 
 
 
   export const presenceWasAtPlace: Field = createField(
     DfhApiClassMock.EN_84_PRESENCE,
     DfhApiPropertyMock.EN_148_WAS_AT,
-    [{ class: DfhApiClassMock.EN_51_PLACE, subfieldType: { place: 'true' } }],
+    [{ class: DfhApiClassMock.EN_51_PLACE, viewType: { place: 'true' }, formControlType: { place: 'true' } }],
     true,
   )
   export const manifestationSingletonHasDefinition: Field = createField(
     DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
     DfhApiPropertyMock.EN_1762_HAS_DEFINITION,
-    [{ class: DfhApiClassMock.EN_785_TEXT, subfieldType: { langString: 'true' } }],
+    [{ class: DfhApiClassMock.EN_785_TEXT, viewType: { langString: 'true' }, formControlType: { langString: 'true' }, }],
     true,
   )
 
   export const manifestationSingletonHasShortTitle: Field = createField(
     DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON,
     DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE,
-    [{ class: DfhApiClassMock.EN_784_SHORT_TITLE, subfieldType: { langString: 'true' } }],
+    [{ class: DfhApiClassMock.EN_784_SHORT_TITLE, viewType: { langString: 'true' }, formControlType: { langString: 'true' } }],
     true,
   )
 
@@ -60,36 +60,58 @@ export namespace SubfieldMock {
     DfhApiClassMock.EN_691_ACCOUNT_OF_A_JOURNEY_OR_STAY,
     DfhApiPropertyMock.EN_1613_HAS_DURATION,
     [{
-      class: DfhApiClassMock.EN_689_DURATION, subfieldType: {
+      class: DfhApiClassMock.EN_689_DURATION, viewType: {
         dimension: {
           measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
         }
-      }
+      },
+      formControlType: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_689_DURATION.dfh_pk_class
+        }
+      },
+    }],
+    true,
+  )
+  export const componentHasVolume: Field = createField(
+    DfhApiClassMock.EN_723_COMPONENT,
+    DfhApiPropertyMock.EN_1646_HAS_VOLUME,
+    [{
+      class: DfhApiClassMock.EN_716_VOLUME, viewType: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_pk_class
+        }
+      },
+      formControlType: {
+        dimension: {
+          measurementUnitClass: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_pk_class
+        }
+      },
     }],
     true,
   )
   export const appeHasAppeString: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1113_REFERS_TO_NAME,
-    [{ class: DfhApiClassMock.EN_40_APPELLATION, subfieldType: { appellation: 'true' } }],
+    [{ class: DfhApiClassMock.EN_40_APPELLATION, viewType: { appellation: 'true' }, formControlType: { appellation: 'true' } }],
     true,
   )
   export const appeTeEnUsedInLanguage: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE,
-    [{ class: DfhApiClassMock.EN_54_LANGUAGE, subfieldType: { language: 'true' } }],
+    [{ class: DfhApiClassMock.EN_54_LANGUAGE, viewType: { language: 'true' }, formControlType: { language: 'true' } }],
     true,
   )
   export const appeTeEnIsAppeOfPerson: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
-    [{ class: DfhApiClassMock.EN_21_PERSON, subfieldType: { entityPreview: 'true' } }],
+    [{ class: DfhApiClassMock.EN_21_PERSON, viewType: { entityPreview: 'true' }, formControlType: { entity: 'true' } }],
     true,
   )
   export const appeHasTimeSpan: Field = createField(
     DfhApiClassMock.EN_365_NAMING,
     DfhApiPropertyMock.EN_4_HAS_TIME_SPAN,
-    [{ class: DfhApiClassMock.EN_50_TIME_SPAN, subfieldType: { timeSpan: 'true' } }],
+    [{ class: DfhApiClassMock.EN_50_TIME_SPAN, viewType: { timeSpan: 'true' }, formControlType: { timeSpan: 'true' } }],
     true,
   )
 
@@ -98,17 +120,31 @@ export namespace SubfieldMock {
     DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON,
     [{
       class: DfhApiClassMock.EN_365_NAMING,
-      subfieldType: {
+      viewType: {
         nestedResource: [
           fieldToSubentityFieldReq(appeHasAppeString, false),
           fieldToSubentityFieldReq(appeTeEnUsedInLanguage, false),
           fieldToSubentityFieldReq(appeTeEnIsAppeOfPerson, true),
           fieldToSubentityFieldReq(appeHasTimeSpan, false),
         ]
-      }
-    }],
+      },
+      formControlType: { appellationTeEn: 'true' }
+    },
+    ],
     false,
+  )
 
+  export const unionHasPartner: Field = createField(
+    DfhApiClassMock.EN_633_UNION,
+    DfhApiPropertyMock.EN_1436_HAS_PARTNER,
+    [{ class: DfhApiClassMock.EN_21_PERSON, viewType: { entityPreview: 'true' }, formControlType: { entity: 'true' } }],
+    true,
+  )
+  export const birthStemsFrom: Field = createField(
+    DfhApiClassMock.EN_61_BIRTH,
+    DfhApiPropertyMock.EN_1435_STEMS_FROM,
+    [{ class: DfhApiClassMock.EN_633_UNION, viewType: { nestedResource: [] }, formControlType: { entity: 'true' } }],
+    true,
   )
 }
 
@@ -190,7 +226,8 @@ function createField(
   property: DfhApiProperty,
   targets: {
     class: DfhApiClass,
-    subfieldType: GvTargetType
+    viewType: GvFieldTargetViewType,
+    formControlType: SysConfigFormCtrlType
   }[],
   isOutgoing: boolean,
   isSpecialField: SpecialFieldType = false
@@ -199,7 +236,8 @@ function createField(
   const ts: { [fkClass: number]: FieldTargetClass } = {}
   for (const t of targets) {
     ts[t.class.dfh_pk_class] = {
-      listType: t.subfieldType,
+      viewType: t.viewType,
+      formControlType: t.formControlType,
       removedFromAllProfiles: false,
       targetClass: t.class.dfh_pk_class,
       targetClassLabel: t.class.dfh_class_label
@@ -209,10 +247,9 @@ function createField(
   const base = createFieldBase(source, property, isOutgoing)
   const field: Field = {
     ...base,
-    placeOfDisplay: {
-      specificFields: {
-        position: 1
-      }
+    display: {
+      formSections: { specific: { position: 1 } },
+      viewSections: { specific: { position: 1 } },
     },
     targetClasses: targets.map(t => t.class.dfh_pk_class),
     allSubfieldsRemovedFromAllProfiles: false,

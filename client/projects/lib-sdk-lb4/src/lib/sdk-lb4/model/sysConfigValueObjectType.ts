@@ -13,7 +13,7 @@ import { DimensionValueObjectType } from './dimensionValueObjectType';
 
 
 /**
- * If present, defines a specific list type for the class.
+ * If present, maps a class to a value object type.
  */
 export interface SysConfigValueObjectType { 
     appellation?: SysConfigValueObjectType.AppellationEnum;

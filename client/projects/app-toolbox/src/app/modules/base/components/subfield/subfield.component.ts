@@ -108,7 +108,8 @@ export class SubfieldComponent implements OnInit, OnDestroy {
                 targetClasses: [DfhConfig.CLASS_PK_TIME_PRIMITIVE],
                 targets: {
                   [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: {
-                    listType: { timePrimitive: 'true' },
+                    viewType: { timePrimitive: 'true' },
+                    formControlType: { timePrimitive: 'true' },
                     removedFromAllProfiles: false,
                     targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
                     targetClassLabel: ''

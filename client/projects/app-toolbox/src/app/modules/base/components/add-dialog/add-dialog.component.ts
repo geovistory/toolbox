@@ -114,7 +114,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   }
   onNext() {
 
-    const isValueLike = isValueObjectSubfield(this.fieldTargetClass.listType)
+    const isValueLike = isValueObjectSubfield(this.fieldTargetClass.viewType)
 
     if (isValueLike || this.fieldWithOneTarget.identityDefiningForTarget) {
       this.activeElement$.next('create-form')

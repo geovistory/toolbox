@@ -10,7 +10,7 @@ export class ImportTableSocket extends Socket {
     // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
 
-    super({ url: c.config.baseUrl + '/ImportTable' });
+    super({ url: c.config.baseUrl + '/ImportTable', options: c.config.options });
 
     this.connected = true;
 

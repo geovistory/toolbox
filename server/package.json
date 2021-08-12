@@ -24,7 +24,7 @@
     "forever": "./node_modules/.bin/forever",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
-    "ontomock":"node ./scripts/generate-ontome-profile-mock.js",
+    "ontomock": "node ./scripts/generate-ontome-profile-mock.js",
     "build:sdk": "bash build-ngx-sdk.sh",
     "build:mock": "node ./scripts/build-mock.js",
     "build:sdk-windows": "build-ngx-sdk.sh",
