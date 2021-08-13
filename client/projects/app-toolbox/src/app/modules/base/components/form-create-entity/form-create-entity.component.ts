@@ -24,6 +24,7 @@ import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-a
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
+import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 export interface FormArrayData {
   pkClass?: number
   // customCtrlLabel?: string
@@ -559,7 +560,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   ): Observable<LocalNodeConfig[]> {
 
     const field = gvFormField.field;
-    const targetClasses = field.targetClasses;
+    const targetClasses = getFormTargetClasses(field).map(f => f.targetClass);
     const isOutgoing = field.isOutgoing
 
     if (field.isSpecialField === 'time-span') {
@@ -1198,6 +1199,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         required: this.ctrlRequired(field),
         data: {
           appellationTeEn: {
+            pkClass: getFormTargetClasses(field)?.[0].targetClass,
             appearance: this.appearance,
             initVal$: of(field.isOutgoing ? initVal.object_resource : initVal.subject_resource)
           }

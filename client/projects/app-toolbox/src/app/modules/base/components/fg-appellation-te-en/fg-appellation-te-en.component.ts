@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, Q
 import { FormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { InfAppellation } from '@kleiolab/lib-sdk-lb3/models';
 import { InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -12,7 +13,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { getFirstElementFormQueryList } from '../../base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
@@ -22,6 +23,7 @@ import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
 type FgAppellationTeEnNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInjectData<Observable<InfResourceWithRelations>> {
   appearance: MatFormFieldAppearance
+  pkClass: number
 }
 @Component({
   selector: 'gv-fg-appellation-te-en',
@@ -35,6 +37,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
 
   @Input() initVal$: Observable<InfResourceWithRelations>
   @Input() appearance: MatFormFieldAppearance
+  @Input() pkClass: number // pkClass of the appellation te en or subclass
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
 
@@ -55,12 +58,14 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
   @ViewChildren(CtrlLanguageComponent) ctrlLang: QueryList<CtrlLanguageComponent>
   @ViewChildren(CtrlTypeComponent) ctrlType: QueryList<CtrlTypeComponent>
 
-  pkTypedClass = DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE;
-  pkTypeClass = DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE_TYPE;
+  pkTypeClass$: Observable<number>;
+  pkTypedClass: number;
+  pkTypeProperty = DfhConfig.PROPERTY_PK_P14_HAS_APPELLATION_FOR_LANGUAGE_TYPE
 
   constructor(
     private p: ActiveProjectService,
     private ff: FormFactoryService,
+    private c: ConfigurationPipesService,
     @Optional() @Inject(CONTAINER_DATA) public injectedData: FgAppellationTeEnInjectData
   ) {
     /**
@@ -70,15 +75,26 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
       if (injectedData.initVal$) {
         this.initVal$ = injectedData.initVal$
         this.appearance = injectedData.appearance
+        this.pkTypedClass = injectedData.pkClass
       }
     }
   }
 
   ngOnInit() {
+    this.pkTypedClass = this.pkTypedClass ?? this.pkClass;
+    if (!this.pkTypedClass) throw new Error('you must provide a pkClass of the TeEn')
+    this.pkTypeClass$ = this.c.pipeFields(this.pkTypedClass).pipe(
+      map(fields => {
+        return fields.find(f => f.property.fkProperty === this.pkTypeProperty)
+      }),
+      map(f => f.targetClasses?.[0]),
+      shareReplay()
+    )
+
     if (!this.initVal$) {
       this.initVal$ = new BehaviorSubject<InfPlace>({
         pk_entity: undefined,
-        fk_class: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
+        fk_class: this.pkTypedClass,
         lat: undefined,
         long: undefined
       })

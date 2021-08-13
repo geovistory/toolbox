@@ -666,6 +666,26 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C19"
   }
+  static readonly EN_1_CRM_ENTITY: DfhApiClass = {
+    "pk_entity": 4795,
+    "dfh_pk_class": 1,
+    "dfh_basic_type": 0,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "CRM Entity",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": null,
+    "dfh_class_scope_note": "This class comprises all things in the universe of discourse of the CIDOC Conceptual Reference Model.\r\n\r\nIt is an abstract concept providing for three general properties:\r\nIdentification by name or appellation, and in particular by a preferred identifier\r\nClassification by type, allowing further refinement of the specific subclass an instance belongs to\r\nAttachment of free text for the expression of anything not captured by formal properties\r\n\r\nWith the exception of E59 Primitive Value, all other classes within the CRM are directly or indirectly specialisations of E1 CRM Entity.",
+    "tmsp_last_modification": "2021-08-13T12:12:42.85426+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E1"
+}
 }
 
 

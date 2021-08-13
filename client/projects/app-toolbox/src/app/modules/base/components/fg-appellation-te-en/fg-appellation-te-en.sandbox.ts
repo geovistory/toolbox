@@ -111,7 +111,7 @@ export default sandboxOf(FgAppellationTeEnComponent, {
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-          <gv-fg-appellation-te-en #c [appearance]="'outline'"></gv-fg-appellation-te-en>
+          <gv-fg-appellation-te-en #c [appearance]="'outline'" [pkClass]="365"></gv-fg-appellation-te-en>
       </div>
       <div>
           <button (click)="c.focusOnCtrlText()" >focus on Text</button>
