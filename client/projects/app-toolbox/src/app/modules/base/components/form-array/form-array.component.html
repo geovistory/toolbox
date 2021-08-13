@@ -1,4 +1,4 @@
-<ng-container *ngIf="formArrayFactory.children.length != 0">
+<ng-container *ngIf="!(formArrayFactory.children.length == 0 && data.gvFormSection)">
   <h2 *ngIf="data.gvFormSection?.section?.showHeader$|async" class="title mt-3"
     (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">
     <span>
