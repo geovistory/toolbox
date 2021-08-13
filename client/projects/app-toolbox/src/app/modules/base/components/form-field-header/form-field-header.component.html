@@ -2,6 +2,8 @@
   <div class="gv-row" style="width: 100%; justify-content: space-between;">
     <span class="mat-caption mat-text-secondary" style=" margin: auto;
       white-space:nowrap;">{{formArrayFactory?.config.placeholder}}</span>
+    <span class="mat-caption mat-text-secondary" matTooltip="Required" *ngIf="formArrayFactory.config.required"> *
+    </span>
     <mat-divider class="ml-2 mr-2" style="width:100%; margin: auto;"></mat-divider>
     <span class="mat-caption mat-text-secondary" style="margin: auto;">({{length}}/{{isInfinity(maxLength) ? 'n' :
       maxLength}})</span>

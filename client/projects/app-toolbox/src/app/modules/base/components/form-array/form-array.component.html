@@ -1,51 +1,53 @@
-<h2 *ngIf="data.gvFormSection?.section?.showHeader$|async" class="title mt-3"
-  (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">
-  <span>
-    {{data.gvFormSection?.section?.label}}
-    <span class="mat-caption mat-error" style="display: inline-block;"
-      *ngIf="control.touched && control.invalid">Error!</span>
-  </span>
-  <mat-icon class="icon" [svgIcon]="data.gvFormSection.section.expanded$.value ? 'chevron-up' : 'chevron-down'">
-  </mat-icon>
-</h2>
+<ng-container *ngIf="formArrayFactory.children.length != 0">
+  <h2 *ngIf="data.gvFormSection?.section?.showHeader$|async" class="title mt-3"
+    (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">
+    <span>
+      {{data.gvFormSection?.section?.label}}
+      <span class="mat-caption mat-error" style="display: inline-block;"
+        *ngIf="control.touched && control.invalid">Error!</span>
+    </span>
+    <mat-icon class="icon" [svgIcon]="data.gvFormSection.section.expanded$.value ? 'chevron-up' : 'chevron-down'">
+    </mat-icon>
+  </h2>
 
-<gv-form-field-header [formField]="data.gvFormField" [length]="length" [maxLength]="maxLength" [control]="control"
-  [formArrayFactory]="formArrayFactory"></gv-form-field-header>
+  <gv-form-field-header [formField]="data.gvFormField" [length]="length" [maxLength]="maxLength" [control]="control"
+    [formArrayFactory]="formArrayFactory"></gv-form-field-header>
 
-<div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
+  <div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
 
-  <ng-container *ngFor="let child of formArrayFactory.children; let i=index" trackBy="trackByFn">
+    <ng-container *ngFor="let child of formArrayFactory.children; let i=index" trackBy="trackByFn">
 
-    <gv-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" [ngClass]="{
+      <gv-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" [ngClass]="{
       'is-field': child.arrayFactory?.config?.data.gvFormField,
       'is-section': child.arrayFactory?.config?.data.gvFormSection
     }" class="left-col">
-    </gv-form-array>
+      </gv-form-array>
 
-    <div *ngIf="child.controlFactory || child.childFactory" class="gv-full-with is-control">
+      <div *ngIf="child.controlFactory || child.childFactory" class="gv-full-with is-control">
 
-      <!-- This is adding the 'leaf' of the form via template: a form-control like input, ect. -->
-      <gv-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
-      </gv-form-control>
+        <!-- This is adding the 'leaf' of the form via template: a form-control like input, ect. -->
+        <gv-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
+        </gv-form-control>
 
-      <!-- This is adding the 'leaf' of the form via portal: a fg-* -->
-      <div *ngIf="child.childFactory" class="left-col">
-        <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
-          (attached)="child.childFactory.attached($any($event), $any(outlet))">
-        </ng-template>
+        <!-- This is adding the 'leaf' of the form via portal: a fg-* -->
+        <div *ngIf="child.childFactory" class="left-col">
+          <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
+            (attached)="child.childFactory.attached($any($event), $any(outlet))">
+          </ng-template>
+        </div>
+
+        <div class="gv-column ml-2" style="padding-bottom: 1.34375em">
+          <mat-icon class="mat-text-primary inside-width-center" style="font-size: 20px; height: 20px; cursor: pointer;"
+            (click)="remove(i)" [hidden]="!showRemoveBtn(child)">
+            close
+          </mat-icon>
+          <mat-icon class="mat-text-secondary inside-width-center" style="font-size: 20px; height: 20px;"
+            [hidden]="showRemoveBtn(child)">
+          </mat-icon>
+        </div>
+
       </div>
+    </ng-container>
 
-      <div class="gv-column ml-2" style="padding-bottom: 1.34375em">
-        <mat-icon class="mat-text-primary inside-width-center" style="font-size: 20px; height: 20px; cursor: pointer;"
-          (click)="remove(i)" [hidden]="!showRemoveBtn(child)">
-          close
-        </mat-icon>
-        <mat-icon class="mat-text-secondary inside-width-center" style="font-size: 20px; height: 20px; cursor: pointer;"
-          (click)="remove(i)" [hidden]="showRemoveBtn(child)">
-        </mat-icon>
-      </div>
-
-    </div>
-  </ng-container>
-
-</div>
+  </div>
+</ng-container>

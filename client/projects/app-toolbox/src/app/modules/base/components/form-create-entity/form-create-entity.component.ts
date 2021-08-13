@@ -169,7 +169,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.metadata)
   }
   simpleFormSection: FieldSection = {
-    showHeader$: new BehaviorSubject(true),
+    showHeader$: new BehaviorSubject(false),
     expanded$: new BehaviorSubject(true),
     key: SectionName.simpleForm,
     label: 'Simple Form Fields'
@@ -232,21 +232,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     if (val) this._initVal$.next(val)
     this.advancedMode$.next(b);
 
-    // if (b) { // switch to advanced mode
-    //   for (const section of this.sections) {
-    //     section.showHeader$.next(true)
-    //     section.expanded$.next(true)
-    //   }
-    // } else { // switch to simple mode
-    //   let firstSection = true;
-    //   for (const section of this.sections) {
-    //     if (firstSection) {
-    //       section.expanded$.next(true) // expand first
-    //       firstSection = false
-    //     }
-    //     else section.expanded$.next(false) // collapse rest
-    //   }
-    // }
+    if (b) { // switch to advanced mode
+      for (const section of this.sections) {
+        section.showHeader$.next(true)
+        section.expanded$.next(true)
+      }
+    } else { // switch to simple mode
+      let firstSection = true;
+      for (const section of this.sections) {
+        if (firstSection) {
+          section.expanded$.next(true) // expand first
+          firstSection = false
+        }
+        else section.expanded$.next(false) // collapse rest
+      }
+    }
   }
 
   getChildNodeConfigs = (n: LocalNodeConfig): Observable<LocalNodeConfig[]> => {

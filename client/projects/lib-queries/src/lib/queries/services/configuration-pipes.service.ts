@@ -219,17 +219,15 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
-        // filter fields that are displayed in specific fields
+        // filter by the right section of the right DisplayType
         .filter(field => {
           if (displayType === DisplayType.form) return field.display.formSections?.[section]
           if (displayType === DisplayType.view) return field.display.viewSections?.[section]
         })
         // filter fields that should be hidden
         .filter(field => {
-          return !(
-            field.display.formSections?.[section]?.hidden ||
-            field.display.viewSections?.[section]?.hidden
-          )
+          if (displayType === DisplayType.form) return !field.display.formSections?.[section]?.hidden
+          if (displayType === DisplayType.view) return !field.display.viewSections?.[section]?.hidden
         })
         // sort fields by the position defined in the section
         .sort((a, b) => {
