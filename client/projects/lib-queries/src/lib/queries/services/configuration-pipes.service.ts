@@ -219,6 +219,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
+        // filter the fields that are deprecated
+        .filter(field => !field.allSubfieldsRemovedFromAllProfiles)
         // filter by the right section of the right DisplayType
         .filter(field => {
           if (displayType === DisplayType.form) return field.display.formSections?.[section]
