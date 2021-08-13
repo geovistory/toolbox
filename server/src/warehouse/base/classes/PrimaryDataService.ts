@@ -231,10 +231,11 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
 
         if (this.updateReplications.length > 0) {
+            const pool1b = await this.wh.gvPgPool.connect()
             const replicationRequest = this.updateReplications.map(repl => {
                 return new PgDataReplicator<{count: number}>(
                     {client: pool1, table: tmpTable},
-                    {client: pool1, table: repl.targetTable},
+                    {client: pool1b, table: repl.targetTable},
                     [this.index.keyCols, 'val'],
                     repl.sqlFn
                 ).replicateTable()
