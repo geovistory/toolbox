@@ -241,6 +241,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
                 ).replicateTable()
             })
             await Promise.all(replicationRequest)
+            pool1b.release()
         }
 
         return upserted
