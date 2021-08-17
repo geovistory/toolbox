@@ -4,17 +4,17 @@
       white-space:nowrap;">{{formArrayFactory?.config.placeholder}}</span>
     <span class="mat-caption mat-text-secondary" matTooltip="Required" *ngIf="formArrayFactory.config.required"> *
     </span>
-    <mat-divider class="ml-2 mr-2" style="width:100%; margin: auto;"></mat-divider>
-    <span class="mat-caption mat-text-secondary" style="margin: auto;">({{length}}/{{isInfinity(maxLength) ? 'n' :
+    <mat-divider class="ml-2 mr-2"></mat-divider>
+    <span class="mat-caption mat-text-secondary target-class-info"
+      [matTooltip]="targetClassLabel">{{targetClassLabel}}</span>
+    <span class="mat-caption mat-text-secondary">({{length}}/{{isInfinity(maxLength) ? 'n' :
       maxLength}})</span>
-
   </div>
 
   <div class="gv-column">
     <mat-icon color="primary" class="inside-width-center ml-2" style="font-size: 20px; height: 20px; cursor: pointer;"
       (click)="addItemInField(
-      formField.field, formField.field.targetClasses[0])"
-      *ngIf="formField.field?.targetClasses.length===1 && length < maxLength">
+      formField.field, formField.field.targetClasses[0])" *ngIf="targetClasses.length===1 && length < maxLength">
       add
     </mat-icon>
 
@@ -22,15 +22,15 @@
 
     <mat-icon color="primary" style="font-size: 20px; height: 20px; cursor: pointer;" [matMenuTriggerFor]="menu"
       class="inside-width-center ml-2" style="font-size: 20px; height: 20px; cursor: pointer;"
-      *ngIf="formField.field?.targetClasses.length > 1">
+      *ngIf="targetClasses.length > 1">
       add
     </mat-icon>
   </div>
 
   <mat-menu #menu="matMenu">
-    <button mat-menu-item *ngFor="let pkClass of formField.field.targetClasses "
-      (click)="addItemInField(formField.field, pkClass)">
-      {{formField.field.targets[pkClass]?.targetClassLabel}}
+    <button mat-menu-item *ngFor="let option of targetClasses "
+      (click)="addItemInField(formField.field, option.pkClass)">
+      {{option.label}}
     </button>
   </mat-menu>
 </div>

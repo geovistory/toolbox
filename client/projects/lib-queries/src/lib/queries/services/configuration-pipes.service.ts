@@ -97,26 +97,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const outP = outgoingProps.filter((prop) => isEnabled(prop))
         const inP = ingoingProps.filter((prop) => isEnabled(prop))
 
-        // if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
-        //   // remove the has time span property
-        //   inP = []
-
-        // } else {
-        //   // // if class is not appellation for language, add appellation for language (1111) property
-        //   // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-        //   //   ingoingProps.push(createAppellationProperty(pkClass))
-        //   // }
-
-        //   // if is temporal entity, add has time span property
-        //   if (
-        //     // sourceKlass.basic_type !== 8 && sourceKlass.basic_type !== 30
-        //     sourceKlass.basic_type === 9
-        //   ) {
-        //     outP.push(createHasTimeSpanProperty(pkClass))
-        //   }
-
-        //   outP.push(createHasDefinitionProperty(pkClass))
-        // }
         return combineLatest([
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, noNesting),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, noNesting),
@@ -509,7 +489,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const classId = klass.pk_class
     const basicType = klass.basic_type
     const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
-    const isTimeSpanShortCutField = sysConfOfProp[pkProperty] ? sysConfOfProp[pkProperty].isHasTimeSpanShortCut : false;
+    const isTimeSpanShortCutField = sysConfOfProp?.[pkProperty]?.isHasTimeSpanShortCut ?? false;
 
     /**
      * Particular Case 1: the field is time span field
