@@ -36,6 +36,9 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   shouldDeleteCustomConfig = false;
   submitted = false;
 
+  // The max number of fields contributing to entity label
+  maxLabelFieldNumber = 10;
+
 
   constructor(
     public dialogRef: MatDialogRef<EntityLabelConfigDialogComponent>,
