@@ -44,8 +44,8 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData let-columns="columns">
       <tr>
-        <td *ngFor="let col of cols; let i = index" [ngClass]="{'col-action' : col.field=='action'}">
-
+        <td *ngFor="let col of cols; let i = index"
+          [ngClass]="{'col-action' : col.field=='action', 'gv-word-wrap-break-word': true}">
 
           <div *ngIf="col.field == 'path'" class="d-flex align-items-center" [matTooltip]="rowData.path.tooltip">
 
