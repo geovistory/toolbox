@@ -141,7 +141,8 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
     })
   }
 
-
+  onMoreClick(pkEntity: number) {
+  }
 
   onCreateOrAdd(res) {
     this.dialogRef.close(res);

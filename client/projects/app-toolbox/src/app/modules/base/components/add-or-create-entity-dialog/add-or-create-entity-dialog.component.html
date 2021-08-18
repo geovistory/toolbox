@@ -2,19 +2,13 @@
   <div class="gv-aoc-left">
     Create a new {{classLabel$|async}}
   </div>
-  <div class="gv-aoc-center">
-    or
-  </div>
-  <div class="gv-aoc-right">
-    Find an existing {{classLabel$|async}}
-  </div>
 </h1>
 <div mat-dialog-content class="gv-aoc-container">
   <div class="gv-aoc-left gv-flex-fh">
     <mat-divider></mat-divider>
     <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [pkClass]="classAndTypePk.pkClass" [hideTitle]="true"
-      [hideButtons]="true" (cancel)="closeAddForm()" (saved)="onCreated($event)"
-      (searchString)="searchStringChange($event)" #f>
+      [hideButtons]="true" (cancel)="closeAddForm()" (saved)="onCreated($event)" #f>
+      (searchString)="searchStringChange($event)"
     </gv-form-create-entity>
     <mat-divider></mat-divider>
   </div>
@@ -22,15 +16,8 @@
     <mat-divider [vertical]="true"></mat-divider>
   </div>
   <div class="gv-aoc-right gv-flex-fh">
-    <!-- <mat-divider></mat-divider> -->
-    <mat-form-field appearance="outline" style="margin-top: -4px;">
-      <mat-label>Search</mat-label>
-      <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
-        (keyup)="searchStringChange($any($event).target.value)">
-    </mat-form-field>
-    <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
-      [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
-      (onAddExisting)="onNotInProjectClicked($event)" (onOpenExisting)="onAlreadyInProjectClicked($event)">
+    <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [pkClass]="classAndTypePk.pkClass"
+      [searchString$]="searchString$" (onMore)="onMoreClick($event)">
     </gv-search-existing-entity>
     <mat-divider></mat-divider>
   </div>

@@ -184,6 +184,10 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.searchString$.next(term)
   }
 
+  onMoreClick(pkEntity: number) {
+
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

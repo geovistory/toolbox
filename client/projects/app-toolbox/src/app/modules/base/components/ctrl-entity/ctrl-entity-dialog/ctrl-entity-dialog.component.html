@@ -24,10 +24,9 @@
       <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
         (keyup)="searchStringChange($any($event).target.value)">
     </mat-form-field>
-    <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
-      [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
-      [disableIfHasStatement]="data.disableIfHasStatement" (onAddExisting)="onNotInProjectClicked($event)"
-      (onOpenExisting)="onAlreadyInProjectClicked($event)">
+    <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [pkClass]="classAndTypePk.pkClass"
+      [searchString$]="searchString$" [disableIfHasStatement]="data.disableIfHasStatement"
+      (onMore)="onMoreClick($event)">
     </gv-search-existing-entity>
   </div>
 

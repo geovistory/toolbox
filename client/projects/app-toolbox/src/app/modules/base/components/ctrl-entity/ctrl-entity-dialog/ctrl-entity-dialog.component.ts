@@ -186,4 +186,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
+  onMoreClick(pkEntity: number) {
+
+  }
 }
