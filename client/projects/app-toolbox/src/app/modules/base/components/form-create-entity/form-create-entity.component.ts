@@ -24,6 +24,7 @@ import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-a
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
+import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 export interface FormArrayData {
   pkClass?: number
   // customCtrlLabel?: string
@@ -43,6 +44,7 @@ export interface FormArrayData {
   gvFormSection?: {
     parentProperty?: GvFieldProperty
     section: FieldSection
+    initValue: InfResourceWithRelations
   }
 
   // a gv-form-field (with header, plus button, ect.)
@@ -101,11 +103,11 @@ export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayD
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
 export type LocalFormChildFactory = FormChildFactory<FormChildData>
 export interface FieldSection {
-  key: 'basic' | 'metadata' | 'specific',
+  key: SectionName,
   label: string,
   showHeader$: BehaviorSubject<boolean>,
   expanded$: BehaviorSubject<boolean>,
-  pipeFields: (pkClass: number) => Observable<Field[]>
+  pipeFields?: (pkClass: number) => Observable<Field[]>
 }
 @Component({
   selector: 'gv-form-create-entity',
@@ -135,7 +137,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   appearance: MatFormFieldAppearance = 'outline';
 
-  _initVal$ = new BehaviorSubject(undefined)
+  _initVal$ = new BehaviorSubject<InfResourceWithRelations>(undefined)
   destroy$ = new Subject<boolean>();
   formFactory$: Observable<FormFactory>;
   formFactory: FormFactory
@@ -147,29 +149,38 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   resourcesToAdd: InfResource[] = []
 
   basicSection: FieldSection = {
-    showHeader$: new BehaviorSubject(false),
-    expanded$: new BehaviorSubject(false),
-    key: 'basic',
+    showHeader$: new BehaviorSubject(true),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.basic,
     label: 'Basics',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.basic)
   }
   specificSection: FieldSection = {
-    showHeader$: new BehaviorSubject(false),
-    expanded$: new BehaviorSubject(false),
-    key: 'specific',
+    showHeader$: new BehaviorSubject(true),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.specific,
     label: 'Specific Fields',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.specific)
   }
   metadataSection: FieldSection = {
-    showHeader$: new BehaviorSubject(false),
-    expanded$: new BehaviorSubject(false),
-    key: 'metadata',
+    showHeader$: new BehaviorSubject(true),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.metadata,
     label: 'Metadata Fields',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.metadata)
   }
+  simpleFormSection: FieldSection = {
+    showHeader$: new BehaviorSubject(false),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.simpleForm,
+    label: 'Simple Form Fields'
+  }
   sections: FieldSection[] = []
 
-  advancedMode = false;
+  advancedMode$ = new BehaviorSubject(false);
+
+  previousHasNames: Array<string> = [];
+  previousFocusName = '';
 
   constructor(
     private formFactoryService: FormFactoryService,
@@ -177,15 +188,20 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     private dataService: ReduxMainService,
     private ss: SchemaSelectorsService,
     public ap: ActiveProjectPipesService,
-    public s: SchemaService
+    public s1: SchemaService,
+    private s2: SchemaSelectorsService,
   ) { }
 
   ngOnInit() {
 
     if (!this.pkClass && !(this.field && this.targetClass)) throw new Error('You must provide a pkClass or a field+targetClass as @Input() on FormCreateEntityComponent');
 
-    if (this.initVal$) this.initVal$.subscribe(b => this._initVal$.next(b))
-
+    if (this.initVal$) {
+      this.initVal$.subscribe(b => {
+        if (b) this.setAdvanced(true);
+        this._initVal$.next(b)
+      })
+    }
 
     const data: FormGroupData = {
       pkClass: this.pkClass,
@@ -213,7 +229,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   setAdvanced(b: boolean) {
-    this.advancedMode = b;
+    const val = this.formFactory?.formGroupFactory?.valueChanges$.value
+    if (val) this._initVal$.next(val)
+    this.advancedMode$.next(b);
 
     if (b) { // switch to advanced mode
       for (const section of this.sections) {
@@ -336,24 +354,40 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       this.ss.dfh$.class$.by_pk_class$.key(pkClass),
       this.c.pipeTargetTypesOfClass(pkClass, field?.targetMaxQuantity),
       this.c.pipeTableNameOfClass(pkClass),
-      this.c.pipeClassLabel(pkClass)
-    ]).pipe(auditTime(10), map(([klass, targets, parentModel, label]) => {
+      this.c.pipeClassLabel(pkClass),
+      this.advancedMode$,
+      this._initVal$
+    ]).pipe(auditTime(10), map(([klass, targets, parentModel, label, advancedMode, initVal]) => {
 
       const formControlType = targets.formControlType;
 
       if (formControlType.entity || !field) { // generate a the generic form
 
+        const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
         // initialize the sections
-        if (klass.basic_type === 8 || klass.basic_type === 30) {
+        if (!advancedMode) {
+          const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
+          this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
+          this.sections = [this.simpleFormSection]
+        } else if (isPersistentItem) {
           this.sections = [this.basicSection, this.metadataSection, this.specificSection]
         } else {
           this.sections = [this.specificSection, this.metadataSection, this.basicSection]
         }
-        this.sections[0].expanded$.next(true)
-        this.sections[1].expanded$.next(true)
+        // this.sections[0].expanded$.next(true)
+        // this.sections[1].expanded$.next(true)
+
+        // temp
+        // const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
+        // this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
+        // this.sections = [this.specificSection, this.metadataSection, this.basicSection, this.simpleFormSection];
+        // end temp
+
+
 
         const nodes: LocalNodeConfig[] = this.sections.map(section => {
           const n: LocalNodeConfig = {
+            id: U.uuid(),
             array: {
               isList: false,
               required: true,
@@ -361,12 +395,27 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               placeholder: label,
               data: {
                 gvFormSection: {
+                  initValue: initVal,
                   section
                 },
                 pkClass: pkClass,
               },
               mapValue: (items: InfResourceWithRelations[]): GvSectionsModel => {
-                this.emitNewSearchString();
+
+                // fetch the appellation for language string
+                const curHasNames = items.filter(it => it?.incoming_statements)?.[0]?.incoming_statements
+                  ?.filter(is => is.fk_property == 1111)
+                  ?.map(appe => appe.subject_resource.outgoing_statements
+                    ?.find(stm => stm.fk_property == 1113)
+                    ?.object_appellation?.quill_doc?.ops.map(op => op.insert).join('').slice(0, -1)) ?? [];
+
+                let focusName = curHasNames.find(name => !this.previousHasNames.some(old => old == name));
+                if (!focusName) focusName = this.previousFocusName;
+                else this.previousFocusName = focusName;
+
+                this.previousHasNames = curHasNames;
+
+                this.emitNewSearchString(focusName);
 
                 const result: InfResourceWithRelations = {} as InfResourceWithRelations;
                 items.forEach(item => {
@@ -407,14 +456,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
   private getGvFormFields(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     return combineLatest([
-      this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass),
-      this._initVal$,
+      this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass)
     ])
       .pipe(
         filter(([klass]) => !!klass),
-        switchMap(([dfhClass, initVal]) => {
-
-          const initResource = initVal
+        switchMap(([dfhClass]) => {
 
           /**
            * Here we define different simple forms for TeEn / PeIt
@@ -423,19 +469,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           // const section = arrayConfig.data.gvFormSection.section;
           // if (isPersistentItem && section.key === 'basic') section.expanded$.next(true)
           // else if (!isPersistentItem && section.key === 'specific') section.expanded$.next(true)
+          const section = arrayConfig.data.gvFormSection.section;
+          const initVal: any = arrayConfig.data.gvFormSection.initValue;
 
-          return arrayConfig.data.gvFormSection.section.pipeFields(dfhClass.pk_class).pipe(
+          return section.pipeFields(dfhClass.pk_class).pipe(
             map((fields) => fields.filter(fDef => {
-              // Q: is this field not circular or hidden?
-              const prop = arrayConfig.data.gvFormSection.parentProperty;
-              const parentPropety = prop ? prop.fkProperty : undefined;
-              if (
-                (!parentPropety || parentPropety !== fDef.property.fkProperty) &&
-                !equals(fDef.property, this.hiddenProperty)
-              ) {
-                return true;
-              }
-              return false;
+              // Q: is this field not circular?
+              const parentPropety = arrayConfig.data.gvFormSection.parentProperty?.fkProperty;
+              if (parentPropety === fDef.property.fkProperty) return false;
+              // Q: is this field hidden?
+              if (equals(fDef.property, this.hiddenProperty)) return false;
+
+              return true;
             })
             ),
             switchMap((fields) => {
@@ -451,8 +496,14 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   addItemsOnInit = 1
                 }
 
+                // Add default controls to some properties according to the config
+                if (f.display.formSections?.[section.key]?.controlsOnInit) {
+                  addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
+                }
+
                 const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
                 const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
+
 
                 const n: LocalNodeConfig = {
                   array: {
@@ -465,7 +516,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                       },
                       pkClass: undefined,
                     },
-                    initValue: this.getInitValueForFieldNode(f, { initResource }),
+                    initValue: this.getInitValueForFieldNode(f, initVal?.resource ?? initVal),
                     placeholder: f.label,
                     required: this.ctrlRequired(f),
                     validators: [
@@ -509,7 +560,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   ): Observable<LocalNodeConfig[]> {
 
     const field = gvFormField.field;
-    const targetClasses = field.targetClasses;
+    const targetClasses = getFormTargetClasses(field).map(f => f.targetClass);
     const isOutgoing = field.isOutgoing
 
     if (field.isSpecialField === 'time-span') {
@@ -579,7 +630,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       if (id && this.searchStringParts[id]) {
         delete this.searchStringParts[id];
       }
-      this.emitNewSearchString();
+      this.emitNewSearchString(values(this.searchStringParts).filter(string => !!string).join(' '));
     };
 
     const required = field.identityDefiningForSource;
@@ -622,19 +673,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   /**
    * gets the init value for the field definition out of the initial entity value
    */
-  getInitValueForFieldNode(lDef: Field, initVal: { initResource: InfResourceWithRelations }): InfStatementWithRelations[] {
+  getInitValueForFieldNode(lDef: Field, initVal: InfResourceWithRelations): InfStatementWithRelations[] {
     if (lDef.isSpecialField == 'time-span') {
-      if (initVal.initResource && initVal.initResource.outgoing_statements) {
-        return initVal.initResource.outgoing_statements
+      if (initVal && initVal.outgoing_statements) {
+        return initVal.outgoing_statements
           .filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
       }
     }
-    else if (initVal.initResource) {
-      if (lDef.isOutgoing && initVal.initResource.outgoing_statements) {
-        return initVal.initResource.outgoing_statements.filter(r => this.sameProperty(r, lDef))
+    else if (initVal) {
+      if (lDef.isOutgoing && initVal.outgoing_statements) {
+        return initVal.outgoing_statements.filter(r => this.sameProperty(r, lDef))
       }
-      else if (!lDef.isOutgoing && initVal.initResource.incoming_statements) {
-        return initVal.initResource.incoming_statements.filter(r => this.sameProperty(r, lDef))
+      else if (!lDef.isOutgoing && initVal.incoming_statements) {
+        return initVal.incoming_statements.filter(r => this.sameProperty(r, lDef))
       }
     }
 
@@ -678,8 +729,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
 
-  private emitNewSearchString() {
-    this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
+  private emitNewSearchString(str: string) {
+    // this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
+    this.searchString.emit(str);
   }
 
   submit() {
@@ -697,7 +749,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   save() {
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s.api.addEntityToProject(pkProject, pkEntity))
+      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s1.api.addEntityToProject(pkProject, pkEntity))
       const value = this.formFactory.formGroupFactory.valueChanges$.value
       let upsert$: Observable<GvSchemaModifier>;
       if (value.resource) {
@@ -742,7 +794,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const initValue: CtrlTimeSpanModel = {}
     for (let i = 0; i < initStmts.length; i++) {
       const element = initStmts[i];
-      initValue[element.fk_property] = element.object_time_primitive;
+      const calendar = element?.entity_version_project_rels?.[0].calendar
+      initValue[element.fk_property] = { ...element.object_time_primitive, calendar }
     }
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     const controlConfig: LocalNodeConfig = {
@@ -1146,6 +1199,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         required: this.ctrlRequired(field),
         data: {
           appellationTeEn: {
+            pkClass: getFormTargetClasses(field)?.[0].targetClass,
             appearance: this.appearance,
             initVal$: of(field.isOutgoing ? initVal.object_resource : initVal.subject_resource)
           }

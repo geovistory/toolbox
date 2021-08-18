@@ -64,8 +64,8 @@
       <mat-error *ngIf="labelParts.hasError('required')">You must add at least one field.</mat-error>
     </form>
 
-    <button mat-flat-button color="primary" [disabled]="labelParts.controls.length >= 3" *ngIf="editing"
-      (click)="addLabelPartFg()">
+    <button mat-flat-button color="primary" [disabled]="labelParts.controls.length >= maxLabelFieldNumber"
+      *ngIf="editing" (click)="addLabelPartFg()">
       Add a field
     </button>
 

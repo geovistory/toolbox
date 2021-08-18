@@ -2,23 +2,36 @@
   width: 100%;
 }
 .ctrl-text {
-  display: block;
+  flex: 1 1 auto;
 }
 
 .second-line {
-  .ctrl-lang,
-  .ctrl-type {
-    display: inline;
-  }
   display: flex;
   flex-direction: row;
+
   mat-form-field ~ mat-form-field {
     margin: 0 0 0 1rem;
+  } 
+  mat-form-field {
+    ::ng-deep .mat-form-field-infix {
+      width: unset;
+    }
   }
+
+
+  .ctrl-lang,  .ctrl-type {
+    display: inline;
+  }
+
+  
   mat-form-field {
     ::ng-deep .mat-form-field-infix {
       width: unset;
     }
     flex: 1 1 0%;
   }
+}
+
+.ctrl-language {
+  flex: 0 0 80px;
 }

@@ -16,7 +16,7 @@ import { PROFILE_32_LINKED_IDENTIFI_2021_07_23 } from 'projects/__test__/data/au
 import { PROFILE_5_GEOVISTORY_BASI_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-06-30';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { createCrmAsGvPositiveSchema, ontomeProfileMockToGvPositiveSchema, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel } from 'projects/__test__/helpers/transformers';
+import { createCrmAsGvPositiveSchema, ontomeProfileMockToGvPositiveSchema, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhProperty } from 'projects/__test__/helpers/transformers';
 import { first, take, toArray } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { Subfield } from '../models/Subfield';
@@ -496,7 +496,19 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
       schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjService.storeSchemaObjectGv({
+        sys: {
+          config: [{
+            classes: {}, specialFields: {
+              outgoingProperties: {
+                1111: { viewSections: { specific: { position: 1 } } }, // is appellation for language of
+                1762: { viewSections: { specific: { position: 2 } } }, // has definition
+                4: { viewSections: { specific: { position: 3 } } }, // has time-span
+              }
+            }
+          }]
+        },
+      }, PK_DEFAULT_CONFIG_PROJECT)
       // using pipe
       const q$ = service.pipeAllSections(DfhApiClassMock.EN_365_NAMING.dfh_pk_class, DisplayType.view)
 
@@ -508,10 +520,10 @@ describe('ConfigurationPipeService', () => {
           actualSequence => {
             const fs = actualSequence[0];
 
-            expect(fs[0].label).toEqual('has definition')
-            expect(fs[0].display.formSections.metadata.position).toEqual(4)
-            expect(fs[1].label).toEqual('has time-span')
-            expect(fs[2].label).toEqual('is appellation for language of')
+            expect(fs[0].label).toEqual('is appellation for language of')
+            expect(fs[0].display.viewSections.specific.position).toEqual(1)
+            expect(fs[1].label).toEqual('has definition')
+            expect(fs[2].label).toEqual('has time-span')
             expect(fs[3].label).toEqual('refers to name')
           },
           null,
@@ -738,7 +750,25 @@ describe('ConfigurationPipeService', () => {
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
           ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2021_06_30, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
-          sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
+          sysConf: {
+            classes: {},
+            specialFields: {
+              incomingProperties: {
+                1782: {
+                  formSections: { metadata: { position: 1 } }
+                }
+              }
+            },
+            addProperty: [
+              {
+                isOutgoing: false,
+                wherePkProperty: 1782,
+                toSourceClass: {
+                  wherePkClassIn: [21]
+                }
+              }
+            ]
+          },
           p: ProProjectMock.PROJECT_1.pk_entity
         }),
         PK_DEFAULT_CONFIG_PROJECT
@@ -880,27 +910,46 @@ describe('ConfigurationPipeService', () => {
         .subscribe(
           result => {
             // console.log(result)
-            expect(result.length).toEqual(2);
+            expect(result.length).toEqual(3);
           },
           null,
           done
         )
     })
 
-    fit('should return all section: view 2', (done) => {
+
+
+  });
+
+  describe('.pipePropertiesToSubfields()', () => {
+    it('should return subfield that is removed from api', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
-      schemaObjServcie.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
-
-      service.pipeAllSections(21, DisplayType.view)
-        .pipe(first())
-        .subscribe({
-          next: actualSequence => {
-            expect(actualSequence?.length).toEqual(4)
+      schemaObjService.storeSchemaObjectGv(
+        createCrmAsGvPositiveSchema({
+          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2021_06_30],
+          sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
+          p: ProProjectMock.PROJECT_1.pk_entity
+        }),
+        PK_DEFAULT_CONFIG_PROJECT
+      )
+      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      const property = transformDfhApiPropertyToDfhProperty(PROFILE_5_GEOVISTORY_BASI_2021_06_30.properties[0])
+      property.profiles[0].removed_from_api = true
+      service.pipePropertiesToSubfields(
+        [property],
+        true, // is outgoing
+        [5] // enabled profile
+      ).pipe(first())
+        .subscribe(
+          result => {
+            // console.log(result)
+            expect(result[0].removedFromAllProfiles).toEqual(true);
           },
-          complete: done
-        });
-
+          null,
+          done
+        )
     })
+
 
 
   });

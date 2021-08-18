@@ -240,7 +240,14 @@ export class SysConfigValueMock {
       'outgoingProperties': {
         '4': {
           'comment': 'has time-span (When)',
-          'formSections': { 'basic': { 'position': 7 } },
+          'formSections': {
+            'basic': {
+              'position': 7
+            },
+            'simpleForm': {
+              'position': 1
+            }
+          },
           'isHasTimeSpanShortCut': true
         },
         '145': {
@@ -258,8 +265,7 @@ export class SysConfigValueMock {
         },
         '1762': {
           'comment': 'P18 has definition (is definition of)',
-          'formSections': { 'metadata': { 'position': 4 } },
-          'viewSections': { 'metadata': { 'position': 4 } }
+          'formSections': { 'basic': { 'position': 4 } }
         },
         '1763': {
           'comment': 'P19 has comment (is comment about)',

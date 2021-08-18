@@ -91,7 +91,7 @@ const components = [
   SubfieldDialogComponent,
   FieldLabelComponent,
   EntityWithFieldsComponent,
-  EntityFieldComponent
+  EntityFieldComponent,
 
 ]
 
@@ -112,7 +112,6 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
-
   // ReduxQueriesModule
 ]
 

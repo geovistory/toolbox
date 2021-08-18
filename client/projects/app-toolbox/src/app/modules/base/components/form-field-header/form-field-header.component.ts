@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { Field } from '@kleiolab/lib-queries';
-import { equals } from 'ramda';
+import { Field, FieldTargetClass } from '@kleiolab/lib-queries';
+import { equals, values } from 'ramda';
 import { first } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { FgAppellationTeEnComponent } from '../fg-appellation-te-en/fg-appellation-te-en.component';
@@ -10,6 +10,7 @@ import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.componen
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
 import { ChildComponents } from '../form-control/form-control.component';
 import { FormCreateEntityComponent, FormField, LocalFormArrayFactory } from '../form-create-entity/form-create-entity.component';
+export interface TargetClassOption { label: string, pkClass: number }
 
 @Component({
   selector: 'gv-form-field-header',
@@ -17,7 +18,7 @@ import { FormCreateEntityComponent, FormField, LocalFormArrayFactory } from '../
   styleUrls: ['./form-field-header.component.scss'],
   animations: [openClose]
 })
-export class FormFieldHeaderComponent {
+export class FormFieldHeaderComponent implements OnInit {
 
   @Input() formArrayFactory: LocalFormArrayFactory;
   @Input() formField: FormField;
@@ -25,9 +26,19 @@ export class FormFieldHeaderComponent {
   @Input() length: number;
   @Input() maxLength: number;
 
+  targetClasses: TargetClassOption[]
+  targetClassLabel: string
+
   constructor(
     private formCreateEntity: FormCreateEntityComponent,
   ) { }
+  ngOnInit() {
+
+    this.targetClasses = getFormTargetClasses(this.formField?.field).
+      map(target => ({ label: target.targetClassLabel, pkClass: target.targetClass }));
+    this.targetClassLabel = this.targetClasses.map(t => t.label).join(' / ')
+  }
+
 
   addItemInField(field: Field, targetClass: number) {
 
@@ -86,4 +97,16 @@ export class FormFieldHeaderComponent {
     }
 
   }
+
+  isInfinity(nb: number): boolean {
+    return nb == Number.POSITIVE_INFINITY;
+  }
+}
+
+
+export function getFormTargetClasses(field?: Field): FieldTargetClass[] {
+  if (!field) return []
+  return values(field?.targets ?? [])
+    .filter(target => !target.removedFromAllProfiles)
+
 }

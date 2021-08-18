@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -14,7 +14,7 @@ import { PropertiesTreeService } from './properties-tree.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PropertiesTreeComponent implements OnInit, OnDestroy {
+export class PropertiesTreeComponent implements OnInit {
   destroy$ = new Subject<boolean>();
 
   @HostBinding('class.mat-typography') true;
@@ -34,8 +34,6 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
     public c: ConfigurationPipesService,
     public p: ActiveProjectService
   ) { }
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
-  }
+
   ngOnInit() { }
 }

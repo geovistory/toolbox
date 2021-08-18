@@ -15,10 +15,9 @@ import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
-
 export enum DisplayType { form = 'form', view = 'view' }
 // export type SectionNameType = keyof Sections
-export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific' }
+export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific', simpleForm = 'simpleForm' }
 
 
 // this is the
@@ -98,26 +97,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const outP = outgoingProps.filter((prop) => isEnabled(prop))
         const inP = ingoingProps.filter((prop) => isEnabled(prop))
 
-        // if (pkClass === DfhConfig.ClASS_PK_TIME_SPAN) {
-        //   // remove the has time span property
-        //   inP = []
-
-        // } else {
-        //   // // if class is not appellation for language, add appellation for language (1111) property
-        //   // if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
-        //   //   ingoingProps.push(createAppellationProperty(pkClass))
-        //   // }
-
-        //   // if is temporal entity, add has time span property
-        //   if (
-        //     // sourceKlass.basic_type !== 8 && sourceKlass.basic_type !== 30
-        //     sourceKlass.basic_type === 9
-        //   ) {
-        //     outP.push(createHasTimeSpanProperty(pkClass))
-        //   }
-
-        //   outP.push(createHasDefinitionProperty(pkClass))
-        // }
         return combineLatest([
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, noNesting),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, noNesting),
@@ -220,30 +199,56 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
-        // filter fields that are displayed in specific fields
+        // filter the fields that are deprecated
+        .filter(field => !field.allSubfieldsRemovedFromAllProfiles)
+        // filter by the right section of the right DisplayType
         .filter(field => {
           if (displayType === DisplayType.form) return field.display.formSections?.[section]
           if (displayType === DisplayType.view) return field.display.viewSections?.[section]
         })
         // filter fields that should be hidden
         .filter(field => {
-          return !(
-            field.display.formSections?.[section]?.hidden ||
-            field.display.viewSections?.[section]?.hidden
-          )
+          if (displayType === DisplayType.form) return !field.display.formSections?.[section]?.hidden
+          if (displayType === DisplayType.view) return !field.display.viewSections?.[section]?.hidden
         })
         // sort fields by the position defined in the section
         .sort((a, b) => {
           if (displayType === DisplayType.form) {
-            return a.display.formSections?.[section].position - b.display.formSections?.[section].position
+            return a.display.formSections?.[section]?.position - b.display.formSections?.[section]?.position
           }
           if (displayType === DisplayType.view) {
-            return a.display.viewSections?.[section].position - b.display.viewSections?.[section].position
+            return a.display.viewSections?.[section]?.position - b.display.viewSections?.[section]?.position
           }
         })
       )
     )
     return this.cache('pipeSection', obs$, ...arguments)
+  }
+
+
+  /**
+     * Pipes the fields for simple form
+     * - the specific fields + simple form for TeEn
+     * - the basic fields + simple form for PeIt
+     */
+  public pipeSimpleForm(pkClass: number, basicType: 'TeEn' | 'PeIt'): Observable<Field[]> {
+    const sectionName = basicType == 'PeIt' ? SectionName.basic : SectionName.specific;
+    const fields1$ = this.pipeSection(pkClass, DisplayType.form, sectionName);
+    const fields2$ = this.pipeSection(pkClass, DisplayType.form, SectionName.simpleForm);
+
+    const obs$ = combineLatestOrEmpty([fields1$, fields2$]).pipe(
+      map(([fields1, fields2]) => {
+        const uniqFields = indexBy(i => i.property.fkProperty + '_' + i.isOutgoing, fields1.concat(fields2))
+        return values(uniqFields)
+          .filter(elt => !elt.display.formSections?.simpleForm?.hidden)
+          .sort((a, b) => {
+            const aPos = a.display.formSections?.simpleForm?.position ?? a.display.formSections?.[sectionName]?.position;
+            const bPos = b.display.formSections?.simpleForm?.position ?? b.display.formSections?.[sectionName]?.position;
+            return aPos - bPos;
+          })
+      })
+    )
+    return this.cache('pipeSimpleForm', obs$, ...arguments)
   }
 
   /**
@@ -484,7 +489,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const classId = klass.pk_class
     const basicType = klass.basic_type
     const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
-    const isTimeSpanShortCutField = sysConfOfProp[pkProperty] ? sysConfOfProp[pkProperty].isHasTimeSpanShortCut : false;
+    const isTimeSpanShortCutField = sysConfOfProp?.[pkProperty]?.isHasTimeSpanShortCut ?? false;
 
     /**
      * Particular Case 1: the field is time span field
