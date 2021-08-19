@@ -2,9 +2,9 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
-import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { PropertiesTreeService } from './properties-tree.service';
 
@@ -25,8 +25,9 @@ export class PropertiesTreeSectionComponent implements OnInit, OnDestroy {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readonly$ = new BehaviorSubject(false);
+  @Input() readonly$: Observable<boolean>;
   @Input() section: SectionName;
+  @Input() scope: GvFieldPageScope;
 
   tree$: Observable<Field[]>
   treeControl = new NestedTreeControl<Field>(node => ([]));
@@ -39,6 +40,13 @@ export class PropertiesTreeSectionComponent implements OnInit, OnDestroy {
     public p: ActiveProjectService
   ) { }
   ngOnInit() {
+    const errors: string[] = []
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (!this.treeControl) errors.push('@Input() treeControl is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
 
     combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
       .subscribe(([pkClass]) => {

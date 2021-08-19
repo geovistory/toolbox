@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
-import { GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { MentioningListOf } from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
@@ -84,6 +84,9 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
   iconType$: Observable<IconType>;
 
+  scope$: Observable<GvFieldPageScope>
+
+  readonly$ = new BehaviorSubject(false)
 
   constructor(
 
@@ -117,8 +120,8 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true)
 
+    this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-
       this.dataService.loadInfResource(this.pkEntity, pkProject)
         .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
           this.t.setTabLoading(false)

@@ -8,7 +8,7 @@ import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
 import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
+import { MockPaginationControllerForPropertiesTree } from 'projects/__test__/mock-services/MockPaginationControllerForPropertiesTree';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { FieldComponent } from './field.component';
@@ -25,13 +25,14 @@ export default sandboxOf(FieldComponent, {
   ],
   providers: [
     { provide: APP_INITIAL_STATE, useValue: IAppStateMock.stateProject1 },
-    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes }
+    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForPropertiesTree }
   ]
 })
   .add('Field | type: LangStringVT ', {
     context: {
       field: FieldMock.manifestationSingletonHasDefinition,
       source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
+      scope: inProjectScope,
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),
       treeControl: new NestedTreeControl<Field>(node => ([])),
@@ -44,7 +45,7 @@ export default sandboxOf(FieldComponent, {
           <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-properties-tree">
             <mat-nested-tree-node *matTreeNodeDef="let node">
 
-              <gv-field #field [fieldDefinition]="node" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
+              <gv-field #field [field]="node" [scope]="scope" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
                 [readonly$]="readonly$" [source]="source"></gv-field>
 
             </mat-nested-tree-node>

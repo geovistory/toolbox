@@ -6,7 +6,7 @@ import { InfActions } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
@@ -32,12 +32,12 @@ export class FieldComponent implements OnInit {
   @Input() treeControl: NestedTreeControl<Field>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
+  @Input() scope: GvFieldPageScope;
 
 
   // listsWithCounts$: Observable<SubfieldWithItemCount[]>
   showAddButton$
   itemsCount$: Observable<number>;
-  scope$: Observable<GvFieldPageScope>;
 
   constructor(
     public t: PropertiesTreeService,
@@ -48,9 +48,7 @@ export class FieldComponent implements OnInit {
     public inf: InfActions,
     public dialog: MatDialog,
   ) {
-    this.scope$ = this.ap.pkProject$.pipe(map(pkProject => {
-      return { inProject: pkProject }
-    }))
+
   }
 
 
@@ -59,16 +57,24 @@ export class FieldComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    const errors: string[] = []
+    if (!this.field) errors.push('@Input() field is required.');
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.treeControl) errors.push('@Input() treeControl is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
+
     if (this.field.isSpecialField === 'time-span') {
       this.itemsCount$ = of(1);
     } else {
-      this.itemsCount$ = this.scope$.pipe(
-        switchMap(
-          (scope) => this.s.inf$.statement$.pagination$
-            .pipeCount(fieldToFieldId(this.field, this.source, scope))
-        ),
-        shareReplay({ refCount: true, bufferSize: 1 })
-      )
+      this.itemsCount$ = this.s.inf$.statement$.pagination$
+        .pipeCount(fieldToFieldId(this.field, this.source, this.scope)).pipe(
+          shareReplay({ refCount: true, bufferSize: 1 })
+        )
     }
 
     // const limit = temporalEntityListDefaultLimit

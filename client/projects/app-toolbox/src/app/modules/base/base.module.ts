@@ -30,6 +30,8 @@ import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existenc
 import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
 import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dialog.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
+import { EntityCardWrapperComponent } from './components/entity-card-wrapper/entity-card-wrapper.component';
+import { EntityCardComponent } from './components/entity-card/entity-card.component';
 import { EntityFieldComponent } from './components/entity-field/entity-field.component';
 import { EntityWithFieldsComponent } from './components/entity-with-fields/entity-with-fields.component';
 import { FgAppellationTeEnComponent } from './components/fg-appellation-te-en/fg-appellation-te-en.component';
@@ -92,7 +94,8 @@ const components = [
   FieldLabelComponent,
   EntityWithFieldsComponent,
   EntityFieldComponent,
-
+  EntityCardComponent,
+  EntityCardWrapperComponent
 ]
 
 const baseModules = [
