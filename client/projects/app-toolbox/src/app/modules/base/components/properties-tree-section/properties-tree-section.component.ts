@@ -4,8 +4,8 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { PropertiesTreeService } from './properties-tree.service';
 
 @Component({
@@ -48,13 +48,11 @@ export class PropertiesTreeSectionComponent implements OnInit, OnDestroy {
     if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
-    combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
-      .subscribe(([pkClass]) => {
-        this.tree$ = this.c.pipeSection(pkClass, DisplayType.view, this.section);
-        this.tree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-          this.dataSource.data = data;
-        })
-      })
+    this.tree$ = this.pkClass$.pipe(first(x => !!x), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
+
+    this.tree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.dataSource.data = data;
+    })
   }
 
   trackBy(_, f: Field) {

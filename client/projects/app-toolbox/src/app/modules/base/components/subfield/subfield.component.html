@@ -32,13 +32,20 @@
                 </button>
               </mat-menu>
 
-              <span class="font-xs text-muted class-label"
-                [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity"
-                [matMenuTriggerFor]="(readonly$|async) ? null : teEnMenu">
+              <span *ngIf="!(readonly$|async)" class="font-xs text-muted class-label"
+                [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity" [matMenuTriggerFor]="teEnMenu">
                 <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                 <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
                 {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
               </span>
+
+              <span *ngIf="(readonly$|async)" class="font-xs text-muted class-label"
+                [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity">
+                <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
+                <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
+                {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
+              </span>
+
               <gv-entity-with-fields [source]="{fkInfo:item.target.entity.pkEntity}"
                 [fkClass]="item.target.entity.fkClass" [showOntoInfo$]="showOntoInfo$"
                 [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">

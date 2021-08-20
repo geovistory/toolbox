@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 /**
  * This component is a standalone view for an entity
@@ -14,8 +14,8 @@ export class EntityCardComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() scope: GvFieldPageScope;
-  @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readonly$: Observable<boolean>;
+  @Input() showOntoInfo$: BehaviorSubject<boolean>;
+  @Input() readonly$: BehaviorSubject<boolean>;
 
   constructor(
   ) {

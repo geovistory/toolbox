@@ -1,6 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
@@ -12,7 +11,6 @@ import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-s
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { slideInOut } from '../../shared/animations';
 import { EntityDetailAPIActions } from './api/entity-detail.actions';
@@ -58,7 +56,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   @select() showRightArea$: Observable<boolean>;
 
   // // Visibility of generic elements
-  @select() showOntoInfo$: Observable<boolean>
+  showOntoInfo$ = new BehaviorSubject(false)
   // @select() showCommunityStats$: Observable<boolean>
 
   // Left Panel Sections
@@ -80,8 +78,6 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   t: TabLayout;
   listOf: MentioningListOf;
 
-  isViewMode$ = of(false);
-
   iconType$: Observable<IconType>;
 
   scope$: Observable<GvFieldPageScope>
@@ -99,7 +95,6 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     private b: InformationBasicPipesService,
     private inf: InfActions,
     private truncatePipe: TruncatePipe,
-    private dialog: MatDialog,
     private dataService: ReduxMainService
 
   ) {
@@ -196,26 +191,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   toggle(keyToToggle: string) {
     this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
-  openClassConfig() {
-    combineLatest(this.p.pkProject$, this.fkClass$).pipe(
-      first(([pro, kla]) => !!pro && !!kla),
-      takeUntil(this.destroy$)
-    ).subscribe(
-      ([pro, kla]) => {
-        const data: ClassConfigDialogData = {
-          fkAppContext: 45,
-          fkClass: kla,
-          fkProject: pro
-        }
-        this.dialog.open(ClassConfigDialogComponent, {
-          data,
-          height: 'calc(100% - 30px)',
-          width: '850px',
-          maxWidth: '100%',
-          // maxHeight: '100%'
-        })
-      })
-  }
+
 
 
   ngOnDestroy() {

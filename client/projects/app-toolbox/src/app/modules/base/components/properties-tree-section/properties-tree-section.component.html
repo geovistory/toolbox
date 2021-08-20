@@ -1,4 +1,4 @@
-<ng-container *ngIf="(tree$ | async).length > 0">
+<ng-container *ngIf="(tree$ | async)?.length > 0">
   <div class="mat-list-base subheader">
     <h3 class="d-flex mat-text-secondary">{{toPascalCase(section)}} fields
       <mat-slide-toggle class="mat-body show-empty-toggle" [(ngModel)]="showEmptyFields">Show empty fields

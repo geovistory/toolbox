@@ -23,9 +23,9 @@ export class EntityCardWrapperComponent implements OnInit {
   // params for gv-entity-card
   source: GvFieldSourceEntity
   pkClass$: Observable<number>
-  showOntoInfo$: Observable<boolean>;
+  showOntoInfo$: BehaviorSubject<boolean>;
   scope: GvFieldPageScope;
-  readonly$: Observable<boolean>;
+  readonly$: BehaviorSubject<boolean>;
 
   constructor(
     private activatedRoute: ActivatedRoute,
