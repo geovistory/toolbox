@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -36,7 +37,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   loading$ = new BehaviorSubject<boolean>(false);
 
   // Hits
-  persistentItems$ = new BehaviorSubject<HitPreview[]>([]);
+  hits$ = new BehaviorSubject<HitPreview[]>([]);
   hitsFound = false;
   hitsTo$: Observable<number>;
 
@@ -78,14 +79,14 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
               this.page = 1;
               this.search();
             } else {
-              this.persistentItems$.next([])
+              this.hits$.next([])
               this.collectionSize$.next(0)
             }
           });
       })
 
     // set hitsFound true, once there are some hits
-    this.persistentItems$.pipe(takeUntil(this.destroy$))
+    this.hits$.pipe(takeUntil(this.destroy$))
       .subscribe((i) => {
         if (i && i.length > 0) this.hitsFound = true
       })
@@ -104,7 +105,8 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  pageChange() {
+  pageChange(event: PageEvent) {
+    this.page = event.pageIndex + 1;
     this.search()
   }
 
@@ -132,20 +134,20 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
                 : ''
             }
           })
-          this.persistentItems$.next(hits)
+          this.hits$.next(hits)
           this.collectionSize$.next(result.totalCount)
         }, error => {
-          this.persistentItems$.next([])
+          this.hits$.next([])
           this.collectionSize$.next(0)
         })
     } else {
       this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
         .subscribe((result) => {
           const res: EntitySearchHit[] = result.data;
-          this.persistentItems$.next(res)
+          this.hits$.next(res)
           this.collectionSize$.next(result.totalCount)
         }, error => {
-          this.persistentItems$.next([])
+          this.hits$.next([])
           this.collectionSize$.next(0)
         })
 

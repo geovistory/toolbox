@@ -1,18 +1,18 @@
-<div class="gv-row mb-3" style="justify-content: flex-start; height: 100%; cursor: pointer;"
-  matTooltip="{{moreDetails ? 'Click to see more details about this entity' : ''}}" [matTooltipPosition]="'right'">
+<div class="gv-row mb-3 hit" matTooltip="{{moreDetails ? 'Click to see more details about this entity' : ''}}"
+  [matTooltipPosition]="'right'">
 
   <!-- Already in project icon -->
-  <div class="gv-column mr-4">
+  <div class="gv-column" style="margin-right: 10px">
     <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
     <mat-icon class="gv-settings-color" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
   </div>
 
   <!-- Entity description -->
   <div class="gv-column">
-    <h3 style="margin-bottom: 0px;">{{entityPreview.entity_label}}</h3>
+    <div class="mat-body-1 no-margin gv-one-liner">{{entityPreview.entity_label}}</div>
 
-    <div class="gv-search-hit-body text-muted">
-      <span class="gv-search-hit-property">ID {{entityPreview.pk_entity}} - {{hit.full_text_headline}}</span>
+    <div class="mat-caption mat-text-secondary ellipsis" style="overflow:hidden">
+      ID {{entityPreview.pk_entity}} - {{hit.full_text_headline}}
     </div>
   </div>
 
