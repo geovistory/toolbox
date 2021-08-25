@@ -287,24 +287,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         },
         mapValue: (items: GvSectionsModel[]): { statement?: Partial<InfStatementWithRelations> } => {
           const item = items[0]
-          let statement: Partial<InfStatementWithRelations> = { ...item.statement ?? {} }
-          if (data.field.isOutgoing) {
-            // assign subject
-            statement.fk_subject_info = this.source.fkInfo;
-            statement.fk_subject_data = this.source.fkData;
-            statement.fk_subject_tables_cell = this.source.fkTablesCell;
-            statement.fk_subject_tables_row = this.source.fkTablesRow;
-            // assign object
-            if (item.resource) statement.object_resource = item.resource
-          } else {
-            // assign object
-            statement.fk_object_info = this.source.fkInfo;
-            statement.fk_object_data = this.source.fkData;
-            statement.fk_object_tables_cell = this.source.fkTablesCell;
-            statement.fk_object_tables_row = this.source.fkTablesRow;
-            // assign subject
-            if (item.resource) statement.subject_resource = item.resource
-          }
+          // initalize statement
+          let statement: Partial<InfStatementWithRelations> = { ...item?.statement ?? {} }
 
           // assign property
           statement = {
@@ -312,6 +296,36 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             fk_property: data.field.property.fkProperty,
             fk_property_of_property: data.field.property.fkPropertyOfProperty,
           }
+
+          // assign the pkSource of the wrapping entity
+          if (data.field.isOutgoing) {
+            // assign subject
+            statement.fk_subject_info = this.source.fkInfo;
+            statement.fk_subject_data = this.source.fkData;
+            statement.fk_subject_tables_cell = this.source.fkTablesCell;
+            statement.fk_subject_tables_row = this.source.fkTablesRow;
+          } else {
+            // assign object
+            statement.fk_object_info = this.source.fkInfo;
+            statement.fk_object_data = this.source.fkData;
+            statement.fk_object_tables_cell = this.source.fkTablesCell;
+            statement.fk_object_tables_row = this.source.fkTablesRow;
+          }
+
+          let resource: InfResourceWithRelations = item?.resource
+          // assing the target resource statemts of all sections
+          if (resource) {
+            const incStmts = flatten<InfStatementWithRelations>(items.map(i => (i?.resource?.incoming_statements ?? []).filter(s => !!s)))
+            const outStmts = flatten<InfStatementWithRelations>(items.map(i => (i?.resource?.outgoing_statements ?? []).filter(s => !!s)))
+            item.resource.incoming_statements = incStmts
+            item.resource.outgoing_statements = outStmts
+            // assign object
+            if (data.field.isOutgoing) statement.object_resource = resource
+            // assign subject
+            else statement.subject_resource = resource
+          }
+
+
           return { statement }
 
         }
