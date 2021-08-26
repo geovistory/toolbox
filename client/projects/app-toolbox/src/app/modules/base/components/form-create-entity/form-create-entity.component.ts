@@ -15,7 +15,7 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import { equals, flatten, groupBy, sum, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
@@ -32,13 +32,6 @@ export interface FormArrayData {
 
   // rootArray where one static item is used by the formGroupFactory
   rootArray?: FormGroupData,
-
-  // wraps the whole form in a statement, where the new entity is subject or object
-  wrapperStatement?: {
-    field: Field
-    targetClass: number
-    targetType: SysConfigFormCtrlType
-  }
 
   // is a section of the form, containing gvFormFields
   gvFormSection?: {
@@ -61,6 +54,12 @@ export interface FormArrayData {
   removeHook?: (x: FormArrayData) => any
 }
 
+
+export interface FormCreateEntityValue {
+  resource?: InfResourceWithRelations;
+  statement?: InfStatementWithRelations;
+}
+
 export interface FormField {
   field: Field
   addItemsOnInit: number
@@ -69,10 +68,7 @@ export interface FormField {
 }
 
 interface FormGroupData {
-  pkClass?: number
-  field?: Field
-  targetClass?: number
-  targetClassLabel?: string
+  pkClass: number
 }
 export interface FormControlData {
   controlType: ControlType
@@ -121,7 +117,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Input() source: GvFieldSourceEntity;
   @Input() field: Field;
-  @Input() targetClass: number;
 
   @Input() hideButtons = false // : boolean;
   @Input() hideTitle: boolean;
@@ -194,7 +189,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    if (!this.pkClass && !(this.field && this.targetClass)) throw new Error('You must provide a pkClass or a field+targetClass as @Input() on FormCreateEntityComponent');
+    if (!this.pkClass) throw new Error('You must provide a pkClass');
 
     if (this.initVal$) {
       this.initVal$.subscribe(b => {
@@ -204,10 +199,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     }
 
     const data: FormGroupData = {
-      pkClass: this.pkClass,
-      field: this.field,
-      targetClass: this.targetClass,
-      targetClassLabel: this.field ? this.field.targets[this.targetClass].targetClassLabel : undefined
+      pkClass: this.pkClass
     }
 
     this.formFactory$ = this.formFactoryService.create<FormGroupData, FormArrayData, FormControlData, any>({
@@ -253,13 +245,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   getChildNodeConfigs = (n: LocalNodeConfig): Observable<LocalNodeConfig[]> => {
     if (n.group?.data) return this.getRootArray(n.group.data)
     else if (n.array) {
-      if (n.array?.data?.rootArray?.pkClass) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
-      else if (n.array?.data?.rootArray?.field) return this.getWrapperStatement(n.array?.data?.rootArray)
       const a = n.array
-      if (a.data.wrapperStatement) return this.getGvFormSections(a.data.wrapperStatement.targetClass, a.data.wrapperStatement.field);
-      else if (a.data.gvFormSection) return this.getGvFormFields(a)
-      else if (a.data.gvFormField) return this.getControlWrappers(a.data.gvFormField, a.initValue)
-      else if (a.data.controlWrapper) {
+      if (a?.data?.rootArray) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
+      if (a.data.gvFormSection) return this.getGvFormFields(a)
+      if (a.data.gvFormField) return this.getControlWrappers(a.data.gvFormField, a.initValue)
+      if (a.data.controlWrapper) {
         const w = a.data.controlWrapper
         return this.getLeafControl(w.targetType, w.targetClass, w.field, a.initValue)
       }
@@ -268,78 +258,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     console.error('no child node created for this nodeConfig:', n)
   }
 
-
-  /**
-   * wrap the whole form in a form node that maps child values into a InfStatementWithRelations
-   */
-  private getWrapperStatement(data: FormGroupData): Observable<LocalNodeConfig[]> {
-    this.hiddenProperty = data.field.property;
-    const n: LocalNodeConfig = {
-      array: {
-        placeholder: data.targetClassLabel,
-        data: {
-          wrapperStatement: {
-            field: data.field,
-            targetClass: data.targetClass,
-            targetType: data.field.targets[data.targetClass].formControlType
-          },
-          pkClass: null
-        },
-        mapValue: (items: GvSectionsModel[]): { statement?: Partial<InfStatementWithRelations> } => {
-          const item = items[0]
-          // initalize statement
-          let statement: Partial<InfStatementWithRelations> = { ...item?.statement ?? {} }
-
-          // assign property
-          statement = {
-            ...statement,
-            fk_property: data.field.property.fkProperty,
-            fk_property_of_property: data.field.property.fkPropertyOfProperty,
-          }
-
-          // assign the pkSource of the wrapping entity
-          if (data.field.isOutgoing) {
-            // assign subject
-            statement.fk_subject_info = this.source.fkInfo;
-            statement.fk_subject_data = this.source.fkData;
-            statement.fk_subject_tables_cell = this.source.fkTablesCell;
-            statement.fk_subject_tables_row = this.source.fkTablesRow;
-          } else {
-            // assign object
-            statement.fk_object_info = this.source.fkInfo;
-            statement.fk_object_data = this.source.fkData;
-            statement.fk_object_tables_cell = this.source.fkTablesCell;
-            statement.fk_object_tables_row = this.source.fkTablesRow;
-          }
-
-          let resource: InfResourceWithRelations = item?.resource
-          // assing the target resource statemts of all sections
-          if (resource) {
-            const incStmts = flatten<InfStatementWithRelations>(items.map(i => (i?.resource?.incoming_statements ?? []).filter(s => !!s)))
-            const outStmts = flatten<InfStatementWithRelations>(items.map(i => (i?.resource?.outgoing_statements ?? []).filter(s => !!s)))
-            item.resource.incoming_statements = incStmts
-            item.resource.outgoing_statements = outStmts
-            // assign object
-            if (data.field.isOutgoing) statement.object_resource = resource
-            // assign subject
-            else statement.subject_resource = resource
-          }
-
-
-          return { statement }
-
-        }
-      },
-    }
-    return of([n])
-  }
-
   private getRootArray(data: FormGroupData): Observable<LocalNodeConfig[]> {
+
     const n: LocalNodeConfig = {
       array: {
         placeholder: '',
         data: { rootArray: data },
-        mapValue: (items: { resource?: InfResourceWithRelations, statement?: InfStatementWithRelations }[]) => {
+        mapValue: (items?: FormCreateEntityValue[]): FormCreateEntityValue => {
           if (items?.[0]?.resource) {
             // merge the resources produced by each section
             const outgoing_statements: InfStatementWithRelations[] = []
@@ -349,9 +274,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               incoming_statements.push(...i.resource?.incoming_statements ?? [])
             })
             return { resource: { ...items[0].resource, outgoing_statements, incoming_statements } }
-          } else {
-            return items?.[0]
-          }
+
+          } else if (items?.[0]?.statement) return items[0]
+          else return {}
         }
       }
     }
@@ -362,11 +287,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   /**
    * generate the top level sections of the form
    */
-  private getGvFormSections(pkClass: number, field?: Field): Observable<LocalNodeConfig[]> {
+  private getGvFormSections(pkClass: number): Observable<LocalNodeConfig[]> {
     return combineLatest([
       // fetch the formControlType of class
       this.ss.dfh$.class$.by_pk_class$.key(pkClass),
-      this.c.pipeTargetTypesOfClass(pkClass, field?.targetMaxQuantity),
+      this.c.pipeTargetTypesOfClass(pkClass),
       this.c.pipeTableNameOfClass(pkClass),
       this.c.pipeClassLabel(pkClass),
       this.advancedMode$,
@@ -375,7 +300,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
       const formControlType = targets.formControlType;
 
-      if (formControlType.entity || !field) { // generate a the generic form
+      if (formControlType.entity) { // generate a the generic form
 
         const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
         // initialize the sections
@@ -388,16 +313,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         } else {
           this.sections = [this.specificSection, this.metadataSection, this.basicSection]
         }
-        // this.sections[0].expanded$.next(true)
-        // this.sections[1].expanded$.next(true)
-
-        // temp
-        // const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
-        // this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
-        // this.sections = [this.specificSection, this.metadataSection, this.basicSection, this.simpleFormSection];
-        // end temp
-
-
 
         const nodes: LocalNodeConfig[] = this.sections.map(section => {
           const n: LocalNodeConfig = {
@@ -452,7 +367,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
       // else we have control belonging to a field
 
-      const c = this.getControlWrapper(field, pkClass);
+      const c = this.getControlWrapper(this.field, pkClass);
       c.array.addOnInit = 1;
       const mapValue = (items: InfStatementWithRelations): GvSectionsModel => {
         return { statement: items[0] ?? {} }
@@ -763,31 +678,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   save() {
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s1.api.addEntityToProject(pkProject, pkEntity))
       const value = this.formFactory.formGroupFactory.valueChanges$.value
       let upsert$: Observable<GvSchemaModifier>;
       if (value.resource) {
         upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
       }
-      else if (value.statement) {
-        upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
-      }
       else {
         throw new Error(`Submitting ${value} is not implemented`);
       }
 
-
-      combineLatest([upsert$, ...addEntities$])
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(([res]: [GvSchemaModifier]) => {
+      upsert$.pipe(takeUntil(this.destroy$))
+        .subscribe((res: GvSchemaModifier) => {
           if (res) {
             if (value.resource) {
               if (!res.positive.inf.resource.length) throw new Error('bad result')
               this.saved.emit(res.positive.inf.resource[0])
-            }
-            if (value.statement) {
-              if (!res.positive.inf.statement.length) throw new Error('bad result')
-              this.saved.emit(res.positive.inf.statement[0])
             }
             this.saving = false;
           }
@@ -1136,12 +1041,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                 if (field.isOutgoing) {
                   // assign object
-                  if (val.pkEntity) statement.fk_object_info = val.pkEntity;
+                  if (val.pkEntity) statement.object_resource = { pk_entity: val.pkEntity, fk_class: targetClass };
                   else if (val.resource) statement.object_resource = val.resource
 
                 } else {
                   // assign subject
-                  if (val.pkEntity) statement.fk_subject_info = val.pkEntity;
+                  if (val.pkEntity) statement.subject_resource = { pk_entity: val.pkEntity, fk_class: targetClass };
                   else if (val.resource) statement.subject_resource = val.resource
                 }
 

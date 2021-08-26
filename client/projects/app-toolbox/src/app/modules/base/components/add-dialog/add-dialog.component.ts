@@ -1,15 +1,18 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormArray } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClassAndTypePk, ConfigurationPipesService, Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, isValueObjectSubfield } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { FormCreateEntityComponent, FormCreateEntityValue } from '../form-create-entity/form-create-entity.component';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
@@ -43,6 +46,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
   loading$ = new BehaviorSubject(false);
   notInProjectCount$ = new Observable<number>();
+  saving = false;
 
   fieldWithOneTarget: Field
   fieldTargetClass: FieldTargetClass
@@ -100,14 +104,71 @@ export class AddDialogComponent implements OnInit, OnDestroy {
       if (count === 0) this.onNext()
     })
   }
-  onSaved() {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const fkInfo = this.data.source.fkInfo;
-      const field = this.data.field;
-      this.triggerPageReloads(pkProject, fkInfo, field);
-    })
 
-    this.dialogRef.close()
+  onFormOk(createEntity: FormCreateEntityComponent) {
+    createEntity.submitted = true
+    if (createEntity.formFactory.formGroup.valid) {
+      this.p.dfh$.class$.by_pk_class$.key(this.classAndTypePk.pkClass).pipe(
+        first(i => !!i)
+      ).subscribe((klass) => {
+        const value: FormCreateEntityValue = createEntity.formFactory.formGroupFactory.valueChanges$.value
+
+        // field + source to create the wrapper statement
+        const data = this.data
+        const item = value
+
+        // assign property
+        const statement: InfStatementWithRelations = {
+          ...item.statement,
+          fk_property: data.field.property.fkProperty,
+          fk_property_of_property: data.field.property.fkPropertyOfProperty,
+        }
+
+        // assign the pkSource of the wrapping entity
+        if (data.field.isOutgoing) {
+          // assign subject
+          statement.fk_subject_info = data.source.fkInfo;
+          statement.fk_subject_data = data.source.fkData;
+          statement.fk_subject_tables_cell = data.source.fkTablesCell;
+          statement.fk_subject_tables_row = data.source.fkTablesRow;
+          // here we are assigning the object
+          if (item.resource) statement.object_resource = item.resource
+        } else {
+          // assign object
+          statement.fk_object_info = data.source.fkInfo;
+          statement.fk_object_data = data.source.fkData;
+          statement.fk_object_tables_cell = data.source.fkTablesCell;
+          statement.fk_object_tables_row = data.source.fkTablesRow;
+          // here we are assigning the subject
+          if (item.resource) statement.subject_resource = item.resource
+        }
+
+        // from onSaved()
+        this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+          const fkInfo = this.data.source.fkInfo;
+          const field = this.data.field;
+
+          // send the statement with the wrapped resource, and wait for response
+
+          this.saving = true;
+
+          this.dataService.upsertInfStatementsWithRelations(pkProject, [statement])
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res: GvSchemaModifier) => {
+              if (res) {
+                this.saving = false;
+
+                this.triggerPageReloads(pkProject, fkInfo, field);
+                this.dialogRef.close();
+              }
+            })
+        })
+
+      })
+    } else {
+      const f = createEntity.formFactory.formGroup.controls.childControl as FormArray;
+      U.recursiveMarkAsTouched(f)
+    }
   }
   onClose() {
     this.dialogRef.close()

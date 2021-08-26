@@ -8,8 +8,7 @@
 
 <div class="form-buttons mt-3 align-right">
   <button mat-button type="button" color="primary" class="ml-2" (click)="setAdvanced(!advancedMode$.value)"
-    *ngIf="!(advancedMode$|async)">Advanced
-    form</button>
+    *ngIf="!(advancedMode$|async)">Advanced form</button>
 </div>
 
 <div *ngIf="!hideButtons && formFactory?.formGroup" class="form-buttons mt-3">

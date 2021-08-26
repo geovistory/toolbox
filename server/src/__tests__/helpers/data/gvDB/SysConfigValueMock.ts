@@ -1,4 +1,4 @@
-import {SysConfigValue, TrueEnum} from '../../../../models';
+import { SysConfigValue, TrueEnum } from '../../../../models';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
