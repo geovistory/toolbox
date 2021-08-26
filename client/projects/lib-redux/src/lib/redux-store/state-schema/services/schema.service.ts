@@ -193,8 +193,8 @@ export class SchemaService {
     //       });
     //     }
     //   });
-    //   this.schemaObjectStored$.next(object)
     // }
+    this.schemaObjectStored$.next(object)
   }
 
   /**
