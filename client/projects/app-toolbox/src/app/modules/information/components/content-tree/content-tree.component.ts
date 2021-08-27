@@ -421,6 +421,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         notInProjectBtnText: 'Add',
         classAndTypePk: {
           pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
+          pkHasTypeProperty: undefined,
           pkType: undefined
         },
         pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,

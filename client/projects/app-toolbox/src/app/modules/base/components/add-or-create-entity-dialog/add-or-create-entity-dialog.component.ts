@@ -4,9 +4,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ClassAndTypePk, ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaObject } from '@kleiolab/lib-redux';
-import { InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { InfResource, InfResourceWithRelations, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 
@@ -57,6 +57,8 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
 
   classType$: Observable<string>;
 
+  initVal$?: Observable<InfResourceWithRelations>;
+
   @ViewChild('f', { static: true }) form: NgForm;
 
   constructor(
@@ -70,8 +72,27 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
     this.alreadyInProjectBtnText = data.alreadyInProjectBtnText
     this.notInProjectBtnText = data.notInProjectBtnText
     this.notInProjectClickBehavior = data.notInProjectClickBehavior
+
+
+    this.initializeHasTypeStatement();
   }
 
+
+  private initializeHasTypeStatement() {
+    const x = this.classAndTypePk
+    if (x?.pkType && x?.pkHasTypeProperty) {
+      const initVal: InfResourceWithRelations = {
+        outgoing_statements: [
+          {
+            'fk_property': x.pkHasTypeProperty,
+            'fk_object_info': x.pkType,
+          }
+        ],
+        'fk_class': x.pkClass,
+      };
+      this.initVal$ = new BehaviorSubject(initVal);
+    }
+  }
 
   ngOnInit() {
     // this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddEntityReducer);

@@ -30,6 +30,13 @@ export interface DfhPropertyStatus extends DfhProperty {
 
 type LabelOrigin = 'of project in project lang' | 'of default project in project lang' | 'of default project in english' | 'of ontome in project lang' | 'of ontome in english'
 
+export interface HasTypePropertyInfo {
+  typedClass: number;
+  hasTypeProperty: number;
+  isOutgoing: boolean;
+  typeClass: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -1072,7 +1079,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   // @spyTag
   // @cache({ refCount: false })
-  pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<{ typedClass: number, typeClass: number }[]> {
+  pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<HasTypePropertyInfo[]> {
 
     let pks$: Observable<number[]>[];
 
@@ -1100,14 +1107,16 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   // @spyTag
   // @cache({ refCount: false })
-  pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<{ typedClass: number, typeClass: number }[]> {
+  pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<HasTypePropertyInfo[]> {
 
     const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       map((allHasTypeProps) => {
         const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
         return pkTypedClasses.map(pk => ({
           typedClass: pk,
-          typeClass: byDomain[pk] ? byDomain[pk].has_range : undefined
+          hasTypeProperty: byDomain[pk]?.pk_property,
+          isOutgoing: true,
+          typeClass: byDomain[pk]?.has_range
         }))
       }))
     return this.cache('pipeTypeAndTypedClassesOfTypedClasses', obs$, ...arguments)

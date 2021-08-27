@@ -3,7 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldTargetViewType, InfStatement, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldTargetViewType, InfStatement, TimePrimitiveWithCal, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -18,7 +18,7 @@ import { PropertySelectModel } from '../models/PropertySelectModel';
 import { StatementProjRel, StatementTarget, StatementWithTarget, SubentitySubfieldPage, SubfieldPage } from '../models/StatementWithTarget';
 import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { ConfigurationPipesService, DisplayType } from './configuration-pipes.service';
+import { ConfigurationPipesService, DisplayType, HasTypePropertyInfo } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
@@ -478,22 +478,30 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
 
   @spyTag
   // @cache({ refCount: false })
-  pipeClassAndTypeNodes(typeAndTypedClasses: { typedClass: number; typeClass: number; }[]): Observable<ClassAndTypeNode[]> {
+  pipeClassAndTypeNodes(typeAndTypedClasses: HasTypePropertyInfo[]): Observable<ClassAndTypeNode[]> {
     const obs$ = combineLatestOrEmpty(
       typeAndTypedClasses.map(item => this.c.pipeClassLabel(item.typedClass).pipe(
-        map(label => ({
+        map<string, ClassAndTypeNode>(label => ({
           label,
-          data: { pkClass: item.typedClass, pkType: null }
-        } as ClassAndTypeNode)),
+          data: {
+            pkClass: item.typedClass,
+            pkHasTypeProperty: item.hasTypeProperty,
+            pkType: null
+          }
+        })),
         switchMap(node => iif(
           () => !!item.typeClass,
           this.b.pipePersistentItemPksByClass(item.typeClass).pipe(
             switchMap(typePks => combineLatestOrEmpty(
               typePks.map(pkType => this.p.streamEntityPreview(pkType).pipe(
-                map(preview => ({
+                map<WarEntityPreview, ClassAndTypeNode>(preview => ({
                   label: preview.entity_label,
-                  data: { pkClass: item.typedClass, pkType }
-                } as ClassAndTypeNode))
+                  data: {
+                    pkClass: item.typedClass,
+                    pkHasTypeProperty: item.hasTypeProperty,
+                    pkType
+                  }
+                }))
               ))
             ).pipe(
               sortAbc(n => n.label),
@@ -503,7 +511,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
               return node
             })
           ),
-          of({ ...node, children: [] } as ClassAndTypeNode)
+          of({ ...node, children: [] })
         )
         )
       ))

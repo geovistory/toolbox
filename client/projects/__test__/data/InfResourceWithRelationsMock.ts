@@ -1,4 +1,6 @@
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { InfResourceMock } from './auto-gen/gvDB/InfResourceMock';
+import { InfStatementMock } from './auto-gen/gvDB/InfStatementMock';
 import { WarEntityPreviewMock } from './auto-gen/gvDB/WarEntityPreviewMock';
 
 export namespace InfResourceWithRelationsMock {
@@ -116,6 +118,17 @@ export namespace InfResourceWithRelationsMock {
     ],
     'fk_class': 21
   }
+
+  export const mockGeoPlaceWithType: InfResourceWithRelations = {
+    outgoing_statements: [
+      {
+        'fk_property': InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY.fk_property,
+        'fk_object_info': InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY.fk_object_info,
+      }
+    ],
+    'fk_class': InfResourceMock.GEO_PLACE_MADRID.fk_class,
+  }
+
 
 
 }
