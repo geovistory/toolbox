@@ -64,7 +64,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
     this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
 
-    this.classAndTypePk = { pkClass: data.targetClass, pkType: undefined }
+    this.classAndTypePk = { pkClass: data.targetClass, pkHasTypeProperty: undefined, pkType: undefined }
     this.alreadyInProjectBtnText = 'Select'
     this.notInProjectBtnText = 'Add and Select'
     this.notInProjectClickBehavior = 'selectOnly'

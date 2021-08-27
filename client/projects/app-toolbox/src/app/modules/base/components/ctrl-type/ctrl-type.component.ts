@@ -3,13 +3,17 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, View
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { ActiveProjectPipesService, ClassAndTypeNode, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-queries';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4/public-api';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 type CtrlModel = number // pk_entity of type (persistent item)
-
+interface Option {
+  pkType: number;
+  label: string
+}
 @Component({
   selector: 'gv-ctrl-type',
   templateUrl: './ctrl-type.component.html',
@@ -85,7 +89,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
 
   value$ = new BehaviorSubject(null)
   typeLabel$: Observable<string>
-  typeOptions$: Observable<ClassAndTypeNode[]>
+  typeOptions$: Observable<Option[]>
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
@@ -111,13 +115,14 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
     this.typeOptions$ = this.b.pipePersistentItemPksByClass(this.pkTypeClass).pipe(
       switchMap(typePks => combineLatestOrEmpty(
         typePks.map(pkType => this.ap.streamEntityPreview(pkType).pipe(
-          map(preview => ({
-            label: preview.entity_label, data: { pkClass: this.pkTypedClass, pkType }
-          } as ClassAndTypeNode))
+          map<WarEntityPreview, Option>(preview => ({
+            label: preview.entity_label,
+            pkType: pkType
+          }))
         ))
       ).pipe(
         sortAbc(node => node.label),
-        map(options => [{ label: '--- No Type ---', data: { pkType: -1, pkClass: null } }, ...options]),
+        map<Option[], Option[]>(options => [{ label: '--- No Type ---', pkType: -1 }, ...options]),
       )),
     )
 

@@ -132,5 +132,14 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
+    static readonly GEO_PLACE_TYPE_CITY: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.GEO_PLACE_TYPE_CITY,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_class_label,
+        entity_label: 'City',
+        entity_type: 'peIt',
+    })
+
 }
 
