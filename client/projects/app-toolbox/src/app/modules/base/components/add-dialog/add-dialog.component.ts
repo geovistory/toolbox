@@ -37,7 +37,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   addMode$ = new BehaviorSubject(true)
   scope$: Observable<GvFieldPageScope>
 
-  searchString$ = new Subject<string>();
+  searchString$ = new BehaviorSubject<string>('');
 
   classAndTypePk: ClassAndTypePk;
   alreadyInProjectBtnText: string;

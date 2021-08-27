@@ -51,7 +51,7 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
   searchInput: string;
 
   // actual search str
-  searchString$ = new Subject<string>();
+  searchString$ = new BehaviorSubject<string>('');
 
   classLabel$: Observable<string>;
 

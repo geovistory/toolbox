@@ -48,9 +48,9 @@
       <div>
 
         <button mat-flat-button color="primary"
-          [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="onFormOk(f)">
-          <span *ngIf="!f?.saving">OK</span>
-          <div *ngIf="f?.saving" style="margin: 6px;">
+          [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || saving" (click)="onFormOk(f)">
+          <span *ngIf="!saving">Create</span>
+          <div *ngIf="saving" style="margin: 6px;">
             <mat-spinner [diameter]="20"></mat-spinner>
           </div>
         </button>
@@ -70,9 +70,9 @@
 
         <div>
           <button mat-flat-button color="primary"
-            [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="onFormOk(f)">
-            <span *ngIf="!f?.saving">OK</span>
-            <div *ngIf="f?.saving" style="margin: 6px;">
+            [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || saving" (click)="onFormOk(f)">
+            <span *ngIf="!saving">Create</span>
+            <div *ngIf="saving" style="margin: 6px;">
               <mat-spinner [diameter]="20"></mat-spinner>
             </div>
           </button>

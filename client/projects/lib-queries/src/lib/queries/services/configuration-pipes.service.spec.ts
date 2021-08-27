@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldTargetViewType, GvPositiveSchemaObject, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvPositiveSchemaObject, GvSubentityFieldTargetViewType, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -484,6 +484,37 @@ describe('ConfigurationPipeService', () => {
           actualSequence => {
             // console.log(actualSequence)
             expect(actualSequence[0].length).toEqual(3)
+          },
+          null,
+          done);
+
+    });
+
+    fit('nested fields should be of type entityPreview, not nestedResource', (done) => {
+      setAppState(ngRedux, IAppStateMock.stateProject1)
+      schemaObjService.storeSchemaObjectGv
+        (
+          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30, ProProjectMock.PROJECT_1.pk_entity),
+          PK_DEFAULT_CONFIG_PROJECT
+        )
+      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
+      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
+
+      // using pipe
+      const q$ = service.pipeFields(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class)
+
+      // testing pipe
+      const expectedSequence: Field[][] = [[]]
+
+      q$.pipe(first(), toArray())
+        .subscribe(
+          actualSequence => {
+            // console.log(actualSequence)
+            const stemsFromField = actualSequence[0].find(f => f.property.fkProperty === 1435) // stems from
+            const targetUnion = stemsFromField.targets[633] // union
+            const broughtIntoLifeField = targetUnion.viewType.nestedResource.find(sf => sf.page.property.fkProperty === 1435) // brought into life (stems from)
+            const targetBirth: GvSubentityFieldTargetViewType = broughtIntoLifeField.targets[61] // birth
+            expect(targetBirth.entityPreview).not.toBeUndefined()
           },
           null,
           done);
