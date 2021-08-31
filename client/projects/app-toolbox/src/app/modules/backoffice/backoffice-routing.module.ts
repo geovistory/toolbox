@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccountListComponent } from './components/account-list/account-list.component';
+import { CommunityVisibilityComponent } from './components/community-visibility/community-visibility.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { MainComponent } from './components/main/main.component';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
@@ -33,7 +34,10 @@ const routes: Routes = [
         path: 'warehouse',
         component: WarehouseComponent
       },
-
+      {
+        path: 'community-visibility',
+        component: CommunityVisibilityComponent
+      },
     ]
   }
 ];

@@ -5,10 +5,10 @@
   "editor.tabCompletion": "on",
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": false,
-    "source.fixAll.eslint": false
+    "source.organizeImports": true,
+    "source.fixAll.eslint": true
   },
   "files.exclude": {
     "**/.DS_Store": true,

@@ -6,3 +6,7 @@ export class ProjectVisibilityOptions {
   @property({ required: true }) dataApi: boolean;
   @property({ required: true }) website: boolean;
 }
+
+@model()
+export class ProjectVisibilityOptionsWithRelations extends ProjectVisibilityOptions {
+}

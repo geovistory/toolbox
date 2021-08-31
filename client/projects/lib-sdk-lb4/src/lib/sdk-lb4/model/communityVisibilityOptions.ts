@@ -9,12 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CommunityVisibilityOptions } from './communityVisibilityOptions';
 
 
-export interface InfResource { 
-    pk_entity?: number;
-    fk_class: number;
-    community_visibility?: CommunityVisibilityOptions;
+export interface CommunityVisibilityOptions { 
+    toolbox: boolean;
+    dataApi: boolean;
+    website: boolean;
 }
 

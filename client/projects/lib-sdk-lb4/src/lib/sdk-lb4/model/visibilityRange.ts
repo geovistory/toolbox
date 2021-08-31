@@ -12,9 +12,11 @@
 import { CommunityVisibilityOptions } from './communityVisibilityOptions';
 
 
-export interface InfResource { 
-    pk_entity?: number;
-    fk_class: number;
-    community_visibility?: CommunityVisibilityOptions;
+/**
+ * If present, defines a visibility range for class instances.
+ */
+export interface VisibilityRange { 
+    min: CommunityVisibilityOptions;
+    max: CommunityVisibilityOptions;
 }
 

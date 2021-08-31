@@ -1,0 +1,25 @@
+<button (click)="load()">Reload</button>
+
+<div *ngIf="report?.length===0">No Conflicts found!</div>
+<div class="gv-scroll-y-container">
+
+  <div class="klass" *ngFor="let item of report">
+    <div>entities of class <strong>{{item.classId}}</strong> have <strong>{{item.totalConflicts}}</strong> conflicts
+    </div>
+    <div class="conflict" *ngFor="let conflict of item.conflicts">
+      community visibility of <strong>{{conflict.channel}}</strong> has <strong>{{conflict.conflicts}}</strong> times
+      the not allowed value
+      <strong> {{conflict.conflicting_value|json}}</strong>
+      &nbsp;
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,true,true)">set conflicting
+        to true</button>
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,true,false)">set
+        conflicting to false</button>
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,false,true)">set all of
+        class to true</button>
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,false,false)">set all of
+        class to false</button>
+    </div>
+  </div>
+  {{report|json}}
+</div>

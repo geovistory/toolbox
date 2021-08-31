@@ -1,7 +1,7 @@
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 
 export interface REntity {
     pkEntity: number
@@ -53,7 +53,7 @@ export class REntityService extends PrimaryDataService<REntityId, REntity>{
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
-    getDeletesSql(tmsp: Date) {return ''};
+    getDeletesSql(tmsp: Date) {return deleteSql};
 
     get2ndUpdatesSql(tableAlias: string) {
         return `
@@ -80,9 +80,12 @@ WITH tw1 AS (
     FROM
     projects.info_proj_rel t1
     JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity
-	JOIN data_for_history.v_class t3 ON t2.fk_class = t3.pk_class
-    AND t1.tmsp_last_modification >=  $1
+        AND (t2.community_visibility->'toolbox')::boolean=true
+    JOIN data_for_history.v_class t3 ON t2.fk_class = t3.pk_class
+        AND t1.tmsp_last_modification >=  $1
+
 	UNION
+
 	SELECT
 	t2.pk_entity,
 	t2.fk_class,
@@ -91,7 +94,7 @@ WITH tw1 AS (
     FROM information.resource t2
 	JOIN data_for_history.v_class t3 ON t2.fk_class = t3.pk_class
     WHERE t2.tmsp_last_modification >=  $1
-
+        AND (t2.community_visibility->'toolbox')::boolean=true
     ),
     tw2 AS (
         INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
@@ -122,4 +125,20 @@ WITH tw1 AS (
 
 
 
+            `
+
+export const deleteSql = `
+            WITH tw1 AS (
+                SELECT t2.pk_entity "pkEntity"
+                FROM information.resource t2
+                WHERE t2.tmsp_last_modification >= $1
+                AND (t2.community_visibility->'toolbox')::boolean=false
+            ),
+            tw2 AS (
+                DELETE FROM war.entity_preview
+                USING tw1
+                WHERE pk_entity = tw1."pkEntity"
+                AND fk_project IS NULL
+            )
+            SELECT * FROM tw1
             `
