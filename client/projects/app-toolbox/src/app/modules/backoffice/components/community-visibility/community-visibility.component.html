@@ -7,9 +7,9 @@
     <div>entities of class <strong>{{item.classId}}</strong> have <strong>{{item.totalConflicts}}</strong> conflicts
     </div>
     <div class="conflict" *ngFor="let conflict of item.conflicts">
-      community visibility of <strong>{{conflict.channel}}</strong> has <strong>{{conflict.conflicts}}</strong> times
-      the not allowed value
-      <strong> {{conflict.conflicting_value|json}}</strong>
+      <strong>{{conflict.conflicts}}</strong> entities have the not allowed value
+      <strong> {{conflict.conflicting_value|json}}</strong> in the community visibility for
+      <strong>{{conflict.channel}}</strong>
       &nbsp;
       <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,true,true)">set conflicting
         to true</button>
@@ -21,5 +21,4 @@
         class to false</button>
     </div>
   </div>
-  {{report|json}}
 </div>
