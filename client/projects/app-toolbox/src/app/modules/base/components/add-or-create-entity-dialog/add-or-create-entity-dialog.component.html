@@ -11,10 +11,10 @@
 </h1>
 <div mat-dialog-content class="gv-aoc-container">
   <div class="gv-aoc-left gv-flex-fh">
-    <mat-divider></mat-divider>
-    <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [pkClass]="classAndTypePk.pkClass" [hideTitle]="true"
+    <!-- <mat-divider></mat-divider> -->
+    <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll" [pkClass]="classAndTypePk.pkClass" [hideTitle]="true"
       [hideButtons]="true" (cancel)="closeAddForm()" (saved)="onCreated($event)"
-      (searchString)="searchStringChange($event)" #f>
+      (searchString)="searchStringChange($event)" [initVal$]="initVal$" #f>
     </gv-form-create-entity>
     <mat-divider></mat-divider>
   </div>

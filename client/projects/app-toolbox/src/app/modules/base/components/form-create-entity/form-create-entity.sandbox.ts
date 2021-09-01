@@ -13,7 +13,7 @@ import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEn
 import { PROFILE_12_BIOGRAPHICAL_BA_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2021-06-30';
 import { PROFILE_16_INTERACTIONS_S_2021_07_10 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2021-07-10';
 import { PROFILE_20_PHYSICAL_MAN_MA_2021_07_11 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2021-07-11';
-import { PROFILE_5_GEOVISTORY_BASI_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-06-30';
+import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
 import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2021-07-09';
 import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
@@ -35,13 +35,14 @@ const warEntityPreviews = [
   WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
   WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
   WarEntityPreviewMock.PERSON_1,
-  WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER
+  WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER,
+  WarEntityPreviewMock.GEO_PLACE_TYPE_CITY
 ]
 // mock schema objects to initialize sandboxes below
 const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
-      PROFILE_5_GEOVISTORY_BASI_2021_06_30, // add basics profile
+      PROFILE_5_GEOVISTORY_BASI_2021_08_24, // add basics profile
       PROFILE_16_INTERACTIONS_S_2021_07_10, // add social interactions profile
       PROFILE_12_BIOGRAPHICAL_BA_2021_06_30, // add biographical profile
       PROFILE_8_MARITIME_HISTOR_2021_07_09, // add maritime profile
@@ -61,6 +62,11 @@ const appeTypeMock: GvPositiveSchemaObject = {
   inf: { resource: [InfResourceMock.APPE_IN_LANG_TYPE_LAST_NAME] },
   war: { entity_preview: [WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME] },
   pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_APPE_IN_LANG_TYPE_LAST_NAME] }
+}
+const geoPlaceTypeMock: GvPositiveSchemaObject = {
+  inf: { resource: [InfResourceMock.GEO_PLACE_TYPE_CITY] },
+  war: { entity_preview: [WarEntityPreviewMock.GEO_PLACE_TYPE_CITY] },
+  pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_CITY_TYPE] }
 }
 
 /*****************************************************************************
@@ -370,10 +376,32 @@ export default sandboxOf(FormCreateEntityComponent, {
       schemaObjects: initialSchemaObects
     },
     template: `
+    <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+    <div class="d-flex justify-content-center mt-5">
+    <div style="width:480px;height:500px" class="d-flex mr-5">
+    <gv-form-create-entity [pkClass]="363" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+    </div>
+    <div>
+    <p>searchString: {{s}}</p>
+    <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+    <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+    <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+    <p>Form.value </p>
+    <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+    </div>
+    </div>`
+  })
+  .add('Geographical Place (edit)', {
+    context: {
+      initVal$: of(InfResourceWithRelationsMock.mockGeoPlaceWithType),
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [...initialSchemaObects, geoPlaceTypeMock]
+    },
+    template: `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="363" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-entity [pkClass]="363" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
             </div>
             <div>
                 <p>searchString: {{s}}</p>

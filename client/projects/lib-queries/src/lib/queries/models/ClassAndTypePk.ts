@@ -1,4 +1,5 @@
 export interface ClassAndTypePk {
-    pkClass: number;
-    pkType: number;
+  pkClass: number;
+  pkHasTypeProperty: number
+  pkType: number;
 }

@@ -56,7 +56,7 @@ export class WarObject {
 export class DfhObject {
   @property.array(DfhProfile) profile?: DfhProfile[];
   @property.array(DfhClass) klass?: DfhClass[];
-  @property.array(DfhProperty) property?: DfhProperty[];
+  @property.array(DfhProperty) property?: Partial<DfhProperty>[];
   @property.array(DfhLabel) label?: DfhLabel[];
 }
 

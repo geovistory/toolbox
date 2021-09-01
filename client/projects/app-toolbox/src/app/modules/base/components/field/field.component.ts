@@ -10,6 +10,7 @@ import { map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
+import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 
@@ -106,15 +107,16 @@ export class FieldComponent implements OnInit {
 
   addClick() {
     if (this.field.isSpecialField === 'time-span') {
-
+      return;
     }
+    const targetClasses = getFormTargetClasses(this.field)
     // More than one target class?
-    else if (this.field.targetClasses && this.field.targetClasses.length > 1) {
+    if (targetClasses.length > 1) {
 
       // Let the user select target class first
 
       const data: ChooseClassDialogData = {
-        pkClasses: this.field.targetClasses,
+        pkClasses: targetClasses.map(t => t.targetClass),
         title: 'Choose a class'
       }
       this.dialog.open(ChooseClassDialogComponent, { data })
@@ -128,7 +130,7 @@ export class FieldComponent implements OnInit {
     // Only one target class!
     else {
 
-      const targetClass = this.field.targetClasses[0];
+      const targetClass = targetClasses[0].targetClass;
       this.openAddDialog(this.field, targetClass);
     }
   }

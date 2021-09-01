@@ -17,8 +17,8 @@ export class ClassConfig {
   @property({type: SysConfigValueObjectType}) valueObjectType?: SysConfigValueObjectType;
   @property() excludedFromEntities?: boolean;
   @property({type: AllowedCommunityVisibility}) communityVisibilityRange?: AllowedCommunityVisibility;
-  @property({type: AllowedCommunityVisibility}) communityVisibilityDefault?: CommunityVisibilityOptions;
-  @property({type: AllowedCommunityVisibility}) projectVisibilityDefault?: ProjectVisibilityOptions;
+  @property({type: CommunityVisibilityOptions}) communityVisibilityDefault?: CommunityVisibilityOptions;
+  @property({type: ProjectVisibilityOptions}) projectVisibilityDefault?: ProjectVisibilityOptions;
 
 }
 

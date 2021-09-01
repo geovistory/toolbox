@@ -9,6 +9,7 @@ import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
 import {PartialDeep} from 'type-fest';
 import {Roles} from '../../components/authorization';
+import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
 import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
@@ -137,12 +138,21 @@ export class CreateProjectDataController {
     // manage adding of hidden F2 Expression for sources
     addOfF2Expression(resource);
 
-    // find or create the resource and its project relations
-    const promisedResource = resource.pk_entity ?
-      this.findResourceAndUpsertProjectRel(resource, project) :
-      this.createResourceAndProjectRel(resource, project);
+    let returnedResource;
+    if (resource.pk_entity) {
+      // find the resource and its project relations
+      returnedResource = await this.findResourceAndUpsertProjectRel(resource, project);
+      // add the entity with the additionnal statements
+      if (returnedResource.entity_version_project_rels?.[0].is_in_project !== false) {
+        const q = new QEntityAddToProject(this.datasource)
+        await q.query(project, resource.pk_entity, parseInt(this.user[securityId]),)
+      }
+    } else {
+      // create the resource and its project relations
+      returnedResource = await this.createResourceAndProjectRel(resource, project);
+    }
 
-    const returnedResource = await promisedResource;
+
     if (!returnedResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not find or create resource with id ${resource.pk_entity}`)
 
     // find or create the statements and their project relations

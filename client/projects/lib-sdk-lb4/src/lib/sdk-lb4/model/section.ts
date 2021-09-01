@@ -14,5 +14,6 @@
 export interface Section { 
     position?: number;
     hidden?: boolean;
+    controlsOnInit?: number;
 }
 

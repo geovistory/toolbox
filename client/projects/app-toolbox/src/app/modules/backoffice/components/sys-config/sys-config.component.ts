@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { SystemConfigurationService } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import JSONEditor, { JSONEditorOptions } from 'jsoneditor';
 
 @Component({
@@ -12,6 +12,7 @@ export class SysConfigComponent implements OnInit {
   @ViewChild('jsonEditorContainer', { static: true })
   jsonEditorContainer: ElementRef;
   editor: JSONEditor;
+  saving = false
   constructor(
     private sysConf: SystemConfigurationService,
   ) { }
@@ -20,8 +21,6 @@ export class SysConfigComponent implements OnInit {
     const openapijson = await this.sysConf.sysConfigControllerGetSystemConfigJsonSchema().toPromise()
     const schema = openapijson.components.schemas.SysConfigValue;
     const schemaRefs = {}
-
-
 
     for (const key in openapijson.components.schemas) {
       if (Object.prototype.hasOwnProperty.call(openapijson.components.schemas, key)) {
@@ -36,7 +35,7 @@ export class SysConfigComponent implements OnInit {
       },
       schema,
       schemaRefs,
-      modes: ['tree', 'view', 'form', 'code', 'text', 'preview']
+      modes: ['tree', 'view', 'form', 'code', 'text', 'preview'],
     }
     this.editor = new JSONEditor(
       this.jsonEditorContainer.nativeElement,
@@ -44,5 +43,31 @@ export class SysConfigComponent implements OnInit {
       data,
     );
   }
+
+  async submit() {
+    let val: SysConfigValue;
+    try {
+      val = this.editor.get()
+    } catch (error) {
+      alert('the configuration is invalid, please fix it and submit.')
+      return
+    }
+    if (val) {
+      let err = false;
+      try {
+        this.saving = true
+        await this.sysConf.sysConfigControllerSetSystemConfig(val).toPromise()
+
+      } catch (error) {
+        if (error.status !== 200) {
+          err = true;
+          alert(`ERROR: error while saving config: ${JSON.stringify(error)}`)
+        }
+      }
+      if (!err) alert(`SUCCESS :-) System configuration has been updated`)
+      this.saving = false
+    }
+  }
+
 
 }

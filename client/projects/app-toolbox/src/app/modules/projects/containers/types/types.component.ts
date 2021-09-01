@@ -198,7 +198,7 @@ export class TypesComponent implements OnInit, OnDestroy {
       alreadyInProjectBtnText: 'Edit',
       notInProjectClickBehavior: 'addToProject',
       notInProjectBtnText: 'Add',
-      classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
+      classAndTypePk: { pkClass: this.pkClass, pkHasTypeProperty: undefined, pkType: undefined },
       pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
     })
 

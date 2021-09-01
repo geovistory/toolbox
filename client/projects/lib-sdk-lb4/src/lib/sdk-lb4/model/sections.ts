@@ -16,5 +16,6 @@ export interface Sections {
     basic?: Section;
     metadata?: Section;
     specific?: Section;
+    simpleForm?: Section;
 }
 

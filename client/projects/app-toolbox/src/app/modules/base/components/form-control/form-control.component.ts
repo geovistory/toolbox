@@ -2,8 +2,7 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
 import { FormControlConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormControlConfig';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CtrlEntityComponent, CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
+import { CtrlEntityComponent } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanComponent } from '../ctrl-time-span/ctrl-time-span.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
 import { FormControlData, FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
@@ -42,36 +41,8 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
     this.config = this.formControlFactory.config
 
     if (this.config.data.controlType == 'ctrl-entity') {
-
       this.configureEntityCtrl();
-
-      this.syncResourceToAdd();
     }
-
-
-  }
-
-
-  private syncResourceToAdd() {
-    let pkResourceToAdd;
-    this.formControlFactory.control.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((val: CtrlEntityModel) => {
-        if (pkResourceToAdd) {
-          const i = this.createForm.resourcesToAdd.indexOf(pkResourceToAdd);
-          this.createForm.resourcesToAdd.splice(i, 1);
-        }
-        if (this.config.data.ctrlEntity.model === 'resource' && val.pkEntity) {
-          pkResourceToAdd = val.pkEntity;
-          this.createForm.resourcesToAdd.push(pkResourceToAdd);
-        }
-      });
-    this.destroy$.subscribe(() => {
-      if (pkResourceToAdd) {
-        const i = this.createForm.resourcesToAdd.indexOf(pkResourceToAdd);
-        this.createForm.resourcesToAdd.splice(i, 1);
-      }
-    });
   }
 
   private configureEntityCtrl() {
