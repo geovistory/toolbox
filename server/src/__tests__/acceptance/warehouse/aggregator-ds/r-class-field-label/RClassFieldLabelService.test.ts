@@ -11,13 +11,13 @@ import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/meta/model.helper';
-import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
+import {createTypes} from '../../../../helpers/meta/model.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 
 const stubs: WarehouseStubs = {
@@ -68,7 +68,7 @@ describe('RClassFieldLabelService', function () {
 
     it('should create incoming property label for en from ontome', async () => {
         const {dfhProp} = await createDfhLabelMock();
-        const expected = '[reverse of: ' + DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label + ']'
+        const expected = DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_inverse_label
         const id: RClassFieldId = {
             fkClass: dfhProp.dfh_property_range,
             fkProperty: dfhProp.dfh_pk_property,
