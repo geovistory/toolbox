@@ -104,7 +104,7 @@ export class CommunityVisibilityController {
         tw1 t2
       where (
           (t1.community_visibility->'toolbox')::boolean IS NULL OR
-          (t1.community_visibility->'toolbox')::boolean <> ANY(t2.allowed_toolbox_visibility)
+          NOT ((t1.community_visibility->'toolbox')::boolean = ANY(t2.allowed_toolbox_visibility))
         )
       and t2.fk_class = t1.fk_class
       GROUP BY
@@ -123,7 +123,7 @@ export class CommunityVisibilityController {
         tw1 t2
       where (
           (t1.community_visibility->'dataApi')::boolean IS NULL OR
-          (t1.community_visibility->'dataApi')::boolean <> ANY(t2.allowed_dataapi_visibility)
+          NOT ((t1.community_visibility->'dataApi')::boolean = ANY(t2.allowed_dataapi_visibility))
         )
       and t2.fk_class = t1.fk_class
       GROUP BY
@@ -142,7 +142,7 @@ export class CommunityVisibilityController {
         tw1 t2
       where (
           (t1.community_visibility->'website')::boolean IS NULL OR
-          (t1.community_visibility->'website')::boolean <> ANY(t2.allowed_website_visibility)
+          NOT ((t1.community_visibility->'website')::boolean = ANY(t2.allowed_website_visibility))
         )
       and t2.fk_class = t1.fk_class
       GROUP BY

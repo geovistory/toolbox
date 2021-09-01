@@ -11,9 +11,8 @@ export class SysConfigValueMock {
         "entity": TrueEnum.true
       },
       communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-
-      projectVisibilityDefault: {dataApi: false, website: false},
       communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      projectVisibilityDefault: {dataApi: false, website: false},
     },
     "classesByBasicType": {
       "8": {
