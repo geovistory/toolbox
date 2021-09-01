@@ -178,7 +178,7 @@ export class SystemConfigurationService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<any>(`${this.configuration.basePath}/get-system-config-json-schema`,
+        return this.httpClient.get<any>(`${this.configuration.basePath}/get-open-api-json`,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,

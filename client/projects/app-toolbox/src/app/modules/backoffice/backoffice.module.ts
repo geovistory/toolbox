@@ -34,6 +34,7 @@ import { SystemTypeListAPIEpics } from './components/system-type-list/api/system
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { CommunityVisibilityComponent } from './components/community-visibility/community-visibility.component';
+import { SysConfigComponent } from './components/sys-config/sys-config.component';
 
 
 
@@ -82,6 +83,7 @@ import { CommunityVisibilityComponent } from './components/community-visibility/
     AccountListComponent,
     WarehouseComponent,
     CommunityVisibilityComponent,
+    SysConfigComponent,
   ]
 })
 export class BackofficeModule { }
