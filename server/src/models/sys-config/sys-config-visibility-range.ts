@@ -1,15 +1,9 @@
-import { model, property } from '@loopback/repository';
-import { CommunityVisibilityOptions } from "./sys-config-community-visibility-options";
+import {model, property} from '@loopback/repository';
 
 
-@model({
-  jsonSchema: {
-    description: "If present, defines a visibility range for class instances.",
-    maxProperties: 1,
-    minProperties: 1,
-  }
-})
-export class VisibilityRange {
-  @property({ type: CommunityVisibilityOptions, required: true }) min: CommunityVisibilityOptions;
-  @property({ type: CommunityVisibilityOptions, required: true }) max: CommunityVisibilityOptions;
+@model()
+export class AllowedCommunityVisibility {
+  @property.array(Boolean, {required: true}) toolbox: boolean[];
+  @property.array(Boolean, {required: true}) dataApi: boolean[];
+  @property.array(Boolean, {required: true}) website: boolean[];
 }

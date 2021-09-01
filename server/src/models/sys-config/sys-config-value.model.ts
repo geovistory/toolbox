@@ -1,9 +1,9 @@
-import { model, property } from '@loopback/repository';
-import { SysConfigAddProperty } from './sys-config-add-property';
-import { ClassConfig } from './sys-config-class-config';
-import { ClassesIndex } from "./sys-config-classes-index";
-import { SysConfigSpecialFields } from './sys-config-special-fields.model';
-import { TrueEnum } from './TrueEnum';
+import {model, property} from '@loopback/repository';
+import {SysConfigAddProperty} from './sys-config-add-property';
+import {ClassConfig} from './sys-config-class-config';
+import {ClassesIndex} from "./sys-config-classes-index";
+import {SysConfigSpecialFields} from './sys-config-special-fields.model';
+import {TrueEnum} from './TrueEnum';
 const example: SysConfigValue = {
   classesDefault: {
     formControlType: {
@@ -12,12 +12,9 @@ const example: SysConfigValue = {
     viewType: {
       nestedResource: []
     },
-    communityVisibilityRange: {
-      min: { toolbox: true, dataApi: true, website: true },
-      max: { toolbox: true, dataApi: true, website: true },
-    },
-    projectVisibilityDefault: { dataApi: false, website: false },
-    communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+    communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+    projectVisibilityDefault: {dataApi: false, website: false},
+    communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
   },
   classesByBasicType: {
     8: {
@@ -27,18 +24,12 @@ const example: SysConfigValue = {
       viewType: {
         entityPreview: TrueEnum.true
       },
-      communityVisibilityRange: {
-        min: { toolbox: true, dataApi: true, website: true },
-        max: { toolbox: true, dataApi: true, website: true },
-      },
-      communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
     },
     9: {
-      communityVisibilityRange: {
-        min: { toolbox: true, dataApi: false, website: false },
-        max: { toolbox: true, dataApi: true, website: true },
-      },
-      communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
+      communityVisibilityRange: {toolbox: [true], dataApi: [false, true], website: [false, true]},
+      communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
     },
     30: {
       formControlType: {
@@ -47,11 +38,8 @@ const example: SysConfigValue = {
       viewType: {
         entityPreview: TrueEnum.true
       },
-      communityVisibilityRange: {
-        min: { toolbox: true, dataApi: true, website: true },
-        max: { toolbox: true, dataApi: true, website: true },
-      },
-      communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
     }
   },
   classes: {
@@ -88,45 +76,42 @@ const example: SysConfigValue = {
       }
     },
     635: {
-      communityVisibilityRange: {
-        min: { toolbox: false, dataApi: false, website: false },
-        max: { toolbox: false, dataApi: false, website: false },
-      },
-      communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+      communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
     }
   },
   specialFields: {
     incomingProperties: {
       1761: {
         comment: 'has short title',
-        formSections: { basic: { position: 1 } }
+        formSections: {basic: {position: 1}}
       },
       1111: {
         comment: 'has appellation for language',
-        formSections: { basic: { position: 2 } }
+        formSections: {basic: {position: 2}}
       },
       1762: {
         comment: 'P18 has definition (is definition of)',
-        formSections: { basic: { position: 4 } }
+        formSections: {basic: {position: 4}}
       },
       1760: {
         comment: 'has web address (is web addess of) – P16',
-        formSections: { basic: { position: 5 } }
+        formSections: {basic: {position: 5}}
       },
       1763: {
         comment: 'P19 has comment (is comment about)',
-        formSections: { basic: { position: 6 } }
+        formSections: {basic: {position: 6}}
       },
     },
     outgoingProperties: {
       [4]: {
         comment: 'has time-span (When)',
-        formSections: { basic: { position: 1000 } }
+        formSections: {basic: {position: 1000}}
       }
     },
     hasTypeSubproperties: {
       comment: 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-      formSections: { basic: { position: 3 } }
+      formSections: {basic: {position: 3}}
     },
     bySourceClass: {
       '502': {
@@ -134,7 +119,7 @@ const example: SysConfigValue = {
         outgoingProperties: {
           1760: {
             comment: "has web address (is web addess of) – P16",
-            formSections: { basic: { position: 5 } }
+            formSections: {basic: {position: 5}}
           }
         }
       }
@@ -161,16 +146,16 @@ const example: SysConfigValue = {
 
 export class SysConfigValue {
 
-  @property({ type: ClassConfig })
+  @property({type: ClassConfig})
   classesDefault?: ClassConfig;
 
-  @property({ type: ClassesIndex })
+  @property({type: ClassesIndex})
   classesByBasicType?: ClassesIndex;
 
-  @property({ type: ClassesIndex, required: true })
+  @property({type: ClassesIndex, required: true})
   classes: ClassesIndex;
 
-  @property({ type: SysConfigSpecialFields, required: true })
+  @property({type: SysConfigSpecialFields, required: true})
   specialFields: SysConfigSpecialFields;
 
   @property.array(SysConfigAddProperty)

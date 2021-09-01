@@ -88,10 +88,10 @@ export class CommunityVisibilityService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public communityVisibiliyControllerReportConflicts(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<VisibilityReport>>;
-    public communityVisibiliyControllerReportConflicts(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<VisibilityReport>>>;
-    public communityVisibiliyControllerReportConflicts(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<VisibilityReport>>>;
-    public communityVisibiliyControllerReportConflicts(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public communityVisibilityControllerReportConflicts(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<VisibilityReport>>;
+    public communityVisibilityControllerReportConflicts(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<VisibilityReport>>>;
+    public communityVisibilityControllerReportConflicts(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<VisibilityReport>>>;
+    public communityVisibilityControllerReportConflicts(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -145,21 +145,21 @@ export class CommunityVisibilityService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public communityVisibiliyControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public communityVisibiliyControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public communityVisibiliyControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public communityVisibiliyControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public communityVisibilityControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public communityVisibilityControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public communityVisibilityControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public communityVisibilityControllerUpdate(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
         if (classId === null || classId === undefined) {
-            throw new Error('Required parameter classId was null or undefined when calling communityVisibiliyControllerUpdate.');
+            throw new Error('Required parameter classId was null or undefined when calling communityVisibilityControllerUpdate.');
         }
         if (channel === null || channel === undefined) {
-            throw new Error('Required parameter channel was null or undefined when calling communityVisibiliyControllerUpdate.');
+            throw new Error('Required parameter channel was null or undefined when calling communityVisibilityControllerUpdate.');
         }
         if (onlyConflicting === null || onlyConflicting === undefined) {
-            throw new Error('Required parameter onlyConflicting was null or undefined when calling communityVisibiliyControllerUpdate.');
+            throw new Error('Required parameter onlyConflicting was null or undefined when calling communityVisibilityControllerUpdate.');
         }
         if (newValue === null || newValue === undefined) {
-            throw new Error('Required parameter newValue was null or undefined when calling communityVisibiliyControllerUpdate.');
+            throw new Error('Required parameter newValue was null or undefined when calling communityVisibilityControllerUpdate.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});

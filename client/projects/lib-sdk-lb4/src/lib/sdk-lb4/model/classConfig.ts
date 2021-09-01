@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { VisibilityRange } from './visibilityRange';
 import { GvFieldTargetViewType } from './gvFieldTargetViewType';
+import { AllowedCommunityVisibility } from './allowedCommunityVisibility';
 import { SysConfigFormCtrlType } from './sysConfigFormCtrlType';
 import { SysConfigValueObjectType } from './sysConfigValueObjectType';
 
@@ -23,8 +23,8 @@ export interface ClassConfig {
     formControlType?: SysConfigFormCtrlType;
     valueObjectType?: SysConfigValueObjectType;
     excludedFromEntities?: boolean;
-    communityVisibilityRange?: VisibilityRange;
-    communityVisibilityDefault?: VisibilityRange;
-    projectVisibilityDefault?: VisibilityRange;
+    communityVisibilityRange?: AllowedCommunityVisibility;
+    communityVisibilityDefault?: AllowedCommunityVisibility;
+    projectVisibilityDefault?: AllowedCommunityVisibility;
 }
 

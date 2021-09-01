@@ -9,14 +9,17 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { VisibilityRange } from './visibilityRange';
 import { CommunityVisibilityConflicts } from './communityVisibilityConflicts';
+import { CommunityVisibilityOptions } from './communityVisibilityOptions';
+import { AllowedCommunityVisibility } from './allowedCommunityVisibility';
 
 
 export interface VisibilityReport { 
-    visibilityRange?: VisibilityRange;
-    visibilityDefault?: VisibilityRange;
     classId?: number;
+    label?: string;
+    entitiesCount?: number;
+    allowedVisibility?: AllowedCommunityVisibility;
+    defaultVisibility?: CommunityVisibilityOptions;
     conflicts?: Array<CommunityVisibilityConflicts>;
     totalConflicts?: number;
 }

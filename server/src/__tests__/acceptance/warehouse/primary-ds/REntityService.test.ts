@@ -10,6 +10,7 @@ import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource, updateInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {getWarEntityPreview} from '../../../helpers/atomic/war-entity-preview.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
@@ -154,15 +155,16 @@ describe('REntityService', () => {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
     await wait(500)
-    const result = await s.index.getFromIdx({pkEntity: entity.pk_entity ?? -1})
-    expect(result).not.to.be.undefined()
+    const res = await getWarEntityPreview(entity.pk_entity ?? -1, 0)
+    // const result = await s.index.getFromIdx({pkEntity: entity.pk_entity ?? -1})
+    expect(res.length).to.equal(1)
 
     mock.community_visibility.toolbox = false;
     await updateInfResource(mock.pk_entity ?? -1, mock)
 
     await wait(500)
-    const result2 = await s.index.getFromIdxWithTmsps({pkEntity: entity.pk_entity ?? -1})
-    expect(result2.deleted).not.to.be.undefined()
+    const res2 = await getWarEntityPreview(entity.pk_entity ?? -1, 0)
+    expect(res2.length).to.equal(0)
   })
 
 

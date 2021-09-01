@@ -47,6 +47,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/activationReportItem.ts
+model/allowedCommunityVisibility.ts
 model/analysisDefinition.ts
 model/analysisMapRequest.ts
 model/analysisMapResponse.ts
@@ -226,7 +227,6 @@ model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
 model/unMapCheckResponse.ts
 model/unmapColumnBody.ts
-model/visibilityRange.ts
 model/visibilityReport.ts
 model/warEntityPreview.ts
 model/warEntityPreviewPaginatedByPkReq.ts

@@ -10,12 +10,10 @@ export class SysConfigValueMock {
       viewType: {
         nestedResource: []
       },
-      communityVisibilityRange: {
-        min: { toolbox: true, dataApi: true, website: true },
-        max: { toolbox: true, dataApi: true, website: true },
-      },
-      projectVisibilityDefault: { dataApi: false, website: false },
-      communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+
+      projectVisibilityDefault: {dataApi: false, website: false},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
     },
     classesByBasicType: {
       8: {
@@ -25,18 +23,12 @@ export class SysConfigValueMock {
         viewType: {
           entityPreview: TrueEnum.true
         },
-        communityVisibilityRange: {
-          min: { toolbox: true, dataApi: true, website: true },
-          max: { toolbox: true, dataApi: true, website: true },
-        },
-        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
       },
       9: {
-        communityVisibilityRange: {
-          min: { toolbox: true, dataApi: false, website: false },
-          max: { toolbox: true, dataApi: true, website: true },
-        },
-        communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
+        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
       },
       30: {
         formControlType: {
@@ -45,11 +37,8 @@ export class SysConfigValueMock {
         viewType: {
           entityPreview: TrueEnum.true
         },
-        communityVisibilityRange: {
-          min: { toolbox: true, dataApi: true, website: true },
-          max: { toolbox: true, dataApi: true, website: true },
-        },
-        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
       }
     },
     'classes': {
@@ -155,11 +144,8 @@ export class SysConfigValueMock {
         'excludedFromEntities': true
       },
       635: {
-        communityVisibilityRange: {
-          min: { toolbox: false, dataApi: false, website: false },
-          max: { toolbox: false, dataApi: false, website: false },
-        },
-        communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+        communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
+        communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
       },
       '657': {
         'viewType': {
@@ -253,55 +239,55 @@ export class SysConfigValueMock {
       'incomingProperties': {
         '1111': {
           'comment': 'has appellation for language',
-          'formSections': { 'basic': { 'position': 2 } },
-          'viewSections': { 'basic': { 'position': 2 } }
+          'formSections': {'basic': {'position': 2}},
+          'viewSections': {'basic': {'position': 2}}
         },
         '1782': {
           'comment': 'has identification – P18',
-          'formSections': { 'metadata': { 'hidden': true } },
-          'viewSections': { 'metadata': { 'position': 9 } }
+          'formSections': {'metadata': {'hidden': true}},
+          'viewSections': {'metadata': {'position': 9}}
         },
         '1499': {
           'comment': 'has to be preferred to',
-          'formSections': { 'metadata': { 'hidden': true } },
-          'viewSections': { 'metadata': { 'position': 11 } }
+          'formSections': {'metadata': {'hidden': true}},
+          'viewSections': {'metadata': {'position': 11}}
         }
       },
       'outgoingProperties': {
         '4': {
           'comment': 'has time-span (When)',
-          'formSections': { 'basic': { 'position': 7 } },
+          'formSections': {'basic': {'position': 7}},
           'isHasTimeSpanShortCut': true
         },
         '145': {
           'comment': 'during (When)',
-          'formSections': { 'basic': { 'position': 8 } },
+          'formSections': {'basic': {'position': 8}},
           'isHasTimeSpanShortCut': true
         },
         '1760': {
           'comment': 'has web address (is web addess of) – P16',
-          'formSections': { 'basic': { 'position': 5 } }
+          'formSections': {'basic': {'position': 5}}
         },
         '1761': {
           'comment': 'has short title',
-          'formSections': { 'basic': { 'position': 1 } }
+          'formSections': {'basic': {'position': 1}}
         },
         '1762': {
           'comment': 'P18 has definition (is definition of)',
-          'formSections': { 'basic': { 'position': 4 } }
+          'formSections': {'basic': {'position': 4}}
         },
         '1763': {
           'comment': 'P19 has comment (is comment about)',
-          'formSections': { 'basic': { 'position': 6 } }
+          'formSections': {'basic': {'position': 6}}
         },
         '1499': {
           'comment': 'has to be merged with',
-          'formSections': { 'basic': { 'position': 10 } }
+          'formSections': {'basic': {'position': 10}}
         }
       },
       'hasTypeSubproperties': {
         'comment': 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-        'formSections': { 'basic': { 'position': 3 } },
+        'formSections': {'basic': {'position': 3}},
       }
     },
     'addProperty': [

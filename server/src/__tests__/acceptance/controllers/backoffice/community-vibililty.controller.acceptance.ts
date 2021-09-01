@@ -1,24 +1,24 @@
 import {Client, expect} from '@loopback/testlab';
-import {LoginResponse} from '../../../controllers/account.controller';
-import {VisibilityReport} from '../../../controllers/community-visibility.controller';
-import {CommunityVisibilityOptions} from '../../../models/sys-config/sys-config-community-visibility-options';
-import {GeovistoryServer} from '../../../server';
-import {createDfhApiClass} from '../../helpers/atomic/dfh-api-class.helper';
-import {createInfLanguage} from '../../helpers/atomic/inf-language.helper';
-import {createInfResource} from '../../helpers/atomic/inf-resource.helper';
-import {linkAccountToProject} from '../../helpers/atomic/pub-account_project_rel.helper';
-import {createSysSystemConfig} from '../../helpers/atomic/sys-system-config.helper';
-import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
-import {InfLanguageMock} from '../../helpers/data/gvDB/InfLanguageMock';
-import {InfResourceMock} from '../../helpers/data/gvDB/InfResourceMock';
-import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
-import {createAccountVerified} from '../../helpers/generic/account.helper';
-import {createProject1} from '../../helpers/graphs/project.helper';
-import {setupApplication} from '../../helpers/gv-server-helpers';
-import {cleanDb} from '../../helpers/meta/clean-db.helper';
+import {LoginResponse} from '../../../../controllers/account.controller';
+import {VisibilityReport} from '../../../../controllers/backoffice/community-visibility.controller';
+import {CommunityVisibilityOptions} from '../../../../models/sys-config/sys-config-community-visibility-options';
+import {GeovistoryServer} from '../../../../server';
+import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
+import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
+import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
+import {createSysSystemConfig} from '../../../helpers/atomic/sys-system-config.helper';
+import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
+import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
+import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
+import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
+import {createAccountVerified} from '../../../helpers/generic/account.helper';
+import {createProject1} from '../../../helpers/graphs/project.helper';
+import {setupApplication} from '../../../helpers/gv-server-helpers';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 
-describe('CommunityVisibiliyController', () => {
+describe('CommunityVisibilityController', () => {
   let server: GeovistoryServer;
   let client: Client;
   let accountInProject: number;
@@ -55,10 +55,7 @@ describe('CommunityVisibiliyController', () => {
       await createSysSystemConfig({
         classes: {
           [21]: {
-            communityVisibilityRange: {
-              min: {toolbox: false, dataApi: true, website: true},
-              max: {toolbox: false, dataApi: true, website: true}
-            }
+            communityVisibilityRange: {toolbox: [false], dataApi: [true], website: [true]},
           }
         },
         specialFields: {}
@@ -70,7 +67,7 @@ describe('CommunityVisibiliyController', () => {
 
 
       expect(res.body[0].conflicts.find(k => k.channel === 'toolbox')?.conflicts).to.equal(1)
-      expect(res.body[0].conflicts.find(k => k.channel === 'dataapi')?.conflicts).to.equal(1)
+      expect(res.body[0].conflicts.find(k => k.channel === 'dataApi')?.conflicts).to.equal(1)
       expect(res.body[0].conflicts.find(k => k.channel === 'website')?.conflicts).to.equal(1)
     })
 

@@ -5,9 +5,10 @@ import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import {get, HttpErrors, post, requestBody} from '@loopback/rest';
-import {Roles} from '../components/authorization';
-import {Postgres1DataSource} from '../datasources/postgres1.datasource';
-import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
+import {Roles} from '../../components/authorization';
+import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {SysConfigValue} from '../../models/sys-config/sys-config-value.model';
+import {modelToJsonSchema} from '../../utils/get-json-schema';
 export interface NumericIndex {[key: number]: true;}
 
 export const SYS_CONFIG_KEY = 'SYS_CONFIG';
@@ -105,4 +106,12 @@ export class SysConfigController {
     }
     return valueObjectClasses
   }
+
+
+  @get('get-system-config-json-schema')
+  async getSystemConfigJsonSchema(): Promise<object> {
+    return modelToJsonSchema(SysConfigValue, {});
+  }
 }
+
+

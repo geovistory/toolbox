@@ -12,10 +12,10 @@ import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
 import {DatNamespaceRepository, InfLanguageRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository} from '../../repositories';
 import {SysSystemRelevantClassRepository} from '../../repositories/sys-system-relevant-class.repository';
 import {mergeSchemaModifier} from '../../utils/helpers';
+import {SysConfigController} from '../backoffice/sys-config.controller';
 import {DfhPropertyController} from '../data-model/dfh-property.controller';
 import {FindDataModelController} from '../data-model/find-data-model.controller';
 import {FindProjectDataController} from '../project-data/find-project-data.controller';
-import {SysConfigController} from '../sys-config.controller';
 
 @tags('project configuration')
 export class FindProjectConfigController {

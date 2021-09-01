@@ -1,4 +1,5 @@
 export * from './activationReportItem';
+export * from './allowedCommunityVisibility';
 export * from './analysisDefinition';
 export * from './analysisMapRequest';
 export * from './analysisMapResponse';
@@ -177,7 +178,6 @@ export * from './timeCzmlValue';
 export * from './timePrimitiveWithCal';
 export * from './unMapCheckResponse';
 export * from './unmapColumnBody';
-export * from './visibilityRange';
 export * from './visibilityReport';
 export * from './warEntityPreview';
 export * from './warEntityPreviewPaginatedByPkReq';

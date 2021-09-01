@@ -5,13 +5,13 @@ import {inject} from '@loopback/core';
 import {get, param, post, tags} from '@loopback/openapi-v3';
 import {model, property} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
-import {groupBy, uniq} from 'ramda';
-import {Roles} from '../components/authorization';
-import {Postgres1DataSource} from '../datasources/postgres1.datasource';
-import {CommunityVisibilityOptions} from '../models/sys-config/sys-config-community-visibility-options';
-import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
-import {VisibilityRange} from '../models/sys-config/sys-config-visibility-range';
-import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
+import {groupBy} from 'ramda';
+import {Roles} from '../../components/authorization';
+import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
+import {SysConfigValue} from '../../models/sys-config/sys-config-value.model';
+import {AllowedCommunityVisibility} from '../../models/sys-config/sys-config-visibility-range';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {VisibilityController} from './visibility.controller';
 
 interface BasicTypeLookup {[pkClass: number]: number};
@@ -23,15 +23,17 @@ class CommunityVisibilityConflicts {
 };
 @model()
 export class VisibilityReport {
-  @property({type: VisibilityRange}) visibilityRange: VisibilityRange
-  @property({type: VisibilityRange}) visibilityDefault: CommunityVisibilityOptions
   @property() classId: number;
+  @property() label: string;
+  @property() entitiesCount: number;
+  @property({type: AllowedCommunityVisibility}) allowedVisibility: AllowedCommunityVisibility
+  @property({type: CommunityVisibilityOptions}) defaultVisibility: CommunityVisibilityOptions
   @property.array(CommunityVisibilityConflicts) conflicts: CommunityVisibilityConflicts[]
   @property() totalConflicts: number
 }
 
 @tags('community visibility')
-export class CommunityVisibiliyController {
+export class CommunityVisibilityController {
 
   systemConfig?: SysConfigValue;
   basicTypeLookup?: BasicTypeLookup;
@@ -68,17 +70,12 @@ export class CommunityVisibiliyController {
     await this.visibilityController.initializeConfiguration()
     const classes = this.visibilityController.allClasses ?? [];
 
-    // const report = []
 
-    // const channels: (keyof CommunityVisibilityOptions)[] = ['toolbox', 'website', 'dataApi']
+
     const q = new SqlBuilderLb4Models(this.datasource);
-
     const allowedVisibliities = classes.map(k => {
-      const visibilityRange = this.visibilityController.getCommunityVisibilityRange(k.pk_class)
-      const tlbx = uniq([visibilityRange.max.toolbox, visibilityRange.min.toolbox])
-      const dapi = uniq([visibilityRange.max.dataApi, visibilityRange.min.dataApi])
-      const webs = uniq([visibilityRange.max.website, visibilityRange.min.website])
-      return ` (${k.pk_class}, ARRAY[${tlbx}], ARRAY[${dapi}], ARRAY[${webs}]) `
+      const x = this.visibilityController.getAllowedCommunityVisibility(k.pk_class)
+      return ` (${k.pk_class}, ARRAY[${x.toolbox}], ARRAY[${x.dataApi}], ARRAY[${x.website}]) `
     }).join(',\n')
 
     q.sql = `WITH tw1 AS (
@@ -155,99 +152,42 @@ export class CommunityVisibiliyController {
       select *
       from tw2`
 
-    const queryResult = await q.execute<{fk_class: number, channel: string, conflicting_value: boolean | null, conflicts: number}[]>();
+    const queryResult = await q.execute<{fk_class: number, channel: keyof AllowedCommunityVisibility, conflicting_value: boolean | null, conflicts: number}[]>();
 
 
     const res: VisibilityReport[] = []
-    const grouped = groupBy((c => c.fk_class.toString()), queryResult);
-    for (const key in grouped) {
-      if (Object.prototype.hasOwnProperty.call(grouped, key)) {
-        const classId = parseInt(key, 10)
-        const allowedVisibilityRange = this.visibilityController.getCommunityVisibilityRange(classId)
-        const visibilityDefault = this.visibilityController.getCommunityVisibilityDefault(classId)
-        let totalConflicts = 0;
-        const konflicts: CommunityVisibilityConflicts[] = grouped[key].map(k => {
-          const {channel, conflicts, conflicting_value} = k
-          totalConflicts = totalConflicts + conflicts;
-          return {channel, conflicts, conflicting_value}
+
+    const countPerClass = await this.getEntityCountPerClass()
+    const labelPerClass = await this.getLabelPerClass()
+    const conflictsPerClass = groupBy((c => c.fk_class.toString()), queryResult);
+
+
+    for (const key in countPerClass) {
+      const classId = parseInt(key, 10)
+      const entitiesCount = countPerClass[key];
+      const label = labelPerClass[key];
+      const allowedVisibility = this.visibilityController.getAllowedCommunityVisibility(classId)
+      const defaultVisibility = this.visibilityController.getDefaultCommunityVisibility(classId)
+      let totalConflicts = 0;
+      let conflicts: CommunityVisibilityConflicts[] = []
+      // add conflicts
+      if (Object.prototype.hasOwnProperty.call(conflictsPerClass, key)) {
+        conflicts = conflictsPerClass[key].map(k => {
+          totalConflicts = totalConflicts + k.conflicts;
+          return {channel: k.channel, conflicts: k.conflicts, conflicting_value: k.conflicting_value}
         });
-        const classReport: VisibilityReport = {
-          classId,
-          visibilityRange: allowedVisibilityRange,
-          visibilityDefault,
-          conflicts: konflicts,
-          totalConflicts
-        }
-        res.push(classReport);
       }
+      const classReport: VisibilityReport = {
+        classId,
+        entitiesCount,
+        label,
+        allowedVisibility,
+        defaultVisibility,
+        conflicts,
+        totalConflicts
+      }
+      res.push(classReport);
     }
-
-    // for (const k of classes) {
-    //   const visibilityRange = this.visibilityController.getCommunityVisibilityRange(k.pk_class)
-    //   const reportForClass: VisibilityReport = {
-    //     classId: k.pk_class,
-    //     allowedVisibilityRange: visibilityRange,
-    //     toolbox: {
-    //       conflictingTrue: 0,
-    //       conflictingFalse: 0,
-    //       conflictingUndefined: 0,
-    //       totalConflicts: 0
-    //     },
-    //     dataApi: {
-    //       conflictingTrue: 0,
-    //       conflictingFalse: 0,
-    //       conflictingUndefined: 0,
-    //       totalConflicts: 0
-    //     },
-    //     website: {
-    //       conflictingTrue: 0,
-    //       conflictingFalse: 0,
-    //       conflictingUndefined: 0,
-    //       totalConflicts: 0
-    //     }
-    //   }
-
-    //   for (const channel of channels) {
-
-    //     if (visibilityRange.max[channel] === false) {
-    //       // channel visbility must not be true
-    //       const q = new SqlBuilderLb4Models(this.datasource)
-    //       q.sql = `
-    //         select count(*) from information.resource
-    //         where (community_visibility->'${channel}')::boolean = true
-    //         and fk_class = ${q.addParam(k.pk_class)}
-    //       `
-    //       const res = await q.execute<{count: string}[]>()
-    //       reportForClass[channel].conflictingTrue = parseInt(res[0].count);
-    //     }
-    //     if (visibilityRange.min[channel] === true) {
-    //       // channel visbility must not be false
-    //       const q = new SqlBuilderLb4Models(this.datasource)
-    //       q.sql = `
-    //         select count(*) from information.resource
-    //         where (community_visibility->'${channel}')::boolean = false
-    //         and fk_class = ${q.addParam(k.pk_class)}
-    //       `
-    //       const res = await q.execute<{count: string}[]>()
-    //       reportForClass[channel].conflictingFalse = parseInt(res[0].count);
-    //     }
-    //     // channel visibility must not be undefined
-    //     const q = new SqlBuilderLb4Models(this.datasource)
-    //     q.sql = `
-    //       select count(*) from information.resource
-    //       where (community_visibility->'${channel}')::boolean is null
-    //       and fk_class = ${q.addParam(k.pk_class)}
-    //     `
-    //     const res = await q.execute<{count: string}[]>()
-    //     reportForClass[channel].conflictingUndefined = parseInt(res[0].count);
-    //     reportForClass[channel].totalConflicts = reportForClass[channel].conflictingTrue +
-    //       reportForClass[channel].conflictingFalse +
-    //       reportForClass[channel].conflictingUndefined;
-
-    //   }
-
-    //   report.push(reportForClass)
-    // }
 
     return res.sort((a, b) => (a.classId - b.classId))
   }
@@ -260,7 +200,7 @@ export class CommunityVisibiliyController {
   @authorize({allowedRoles: [Roles.SYS_ADMIN]})
   async update(
     @param.query.number('classId', {required: true}) classId: number,
-    @param.query.string('channel', {required: true}) channel: keyof CommunityVisibilityOptions,
+    @param.query.string('channel', {required: true}) channel: string,
     @param.query.boolean('onlyConflicting', {required: true, description: 'if true, only values which are confliciting witch allowed community visibility are updated, else all.'}) onlyConflicting: boolean,
     @param.query.boolean('newValue', {required: true}) newValue: boolean,
   ): Promise<void> {
@@ -269,8 +209,8 @@ export class CommunityVisibiliyController {
       throw new HttpErrors.UnprocessableEntity('channel must be one of: toolbox, dataApi, website')
     }
     await this.visibilityController.initializeConfiguration()
-    const range = this.visibilityController.getCommunityVisibilityRange(classId)
-    const allowedVals = [range.min[channel], range.max[channel]]
+    const range = this.visibilityController.getAllowedCommunityVisibility(classId)
+    const allowedVals = range[channel as keyof AllowedCommunityVisibility]
 
     const q = new SqlBuilderLb4Models(this.datasource)
     q.sql = `
@@ -291,6 +231,33 @@ export class CommunityVisibiliyController {
     await q.execute()
   }
 
+
+  async getEntityCountPerClass(): Promise<{[classId: number]: number}> {
+    const q = new SqlBuilderLb4Models(this.datasource)
+    q.sql = `Select fk_class, count(pk_entity)::int
+    FROM information.resource
+    GROUP BY fk_class;`
+    const qres = await q.execute<{fk_class: number, count: number}[]>()
+    const res: {[classId: number]: number} = {}
+    for (const item of qres) {
+      res[item.fk_class] = item.count
+    }
+    return res
+  }
+  async getLabelPerClass(): Promise<{[classId: number]: string}> {
+    const q = new SqlBuilderLb4Models(this.datasource)
+    q.sql = `SELECT DISTINCT ON (fk_class)
+    fk_class, label
+    FROM data_for_history.v_label
+    WHERE fk_class IS NOT NULL
+    AND "type" = 'label'`
+    const qres = await q.execute<{fk_class: number, label: string}[]>()
+    const res: {[classId: number]: string} = {}
+    for (const item of qres) {
+      res[item.fk_class] = item.label
+    }
+    return res
+  }
 
 }
 

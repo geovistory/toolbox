@@ -1,6 +1,6 @@
-import {testdb} from '../testdb';
+import {SYS_CONFIG_KEY} from '../../../controllers/backoffice/sys-config.controller';
 import {SysConfigValue} from '../../../models/sys-config/sys-config-value.model';
-import {SYS_CONFIG_KEY} from '../../../controllers/sys-config.controller';
+import {testdb} from '../testdb';
 
 export async function createSysSystemConfig(config: SysConfigValue) {
   await testdb.execute(

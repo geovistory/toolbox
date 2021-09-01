@@ -4,8 +4,13 @@
 <div class="gv-scroll-y-container">
 
   <div class="klass" *ngFor="let item of report">
-    <div>entities of class <strong>{{item.classId}}</strong> have <strong>{{item.totalConflicts}}</strong> conflicts
-    </div>
+    <h2><a href="https://ontome.net/class/{{item.classId}}" target="_blank">{{item.label}}
+        ({{item.classId}})</a>
+    </h2>
+    <div>entities count: {{item.entitiesCount}} </div>
+    <div>allowed community visibility: {{item.allowedVisibility|json}}</div>
+    <div>default community visibility: {{item.defaultVisibility|json}}</div>
+    <div>conflicts in community visibility: <strong>{{item.totalConflicts}}</strong></div>
     <div class="conflict" *ngFor="let conflict of item.conflicts">
       <strong>{{conflict.conflicts}}</strong> entities have the not allowed value
       <strong> {{conflict.conflicting_value|json}}</strong> in the community visibility for

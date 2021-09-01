@@ -132,7 +132,7 @@ export const deleteSql = `
                 SELECT t2.pk_entity "pkEntity"
                 FROM information.resource t2
                 WHERE t2.tmsp_last_modification >= $1
-                AND (t2.community_visibility->'toolbox')::boolean=false
+                AND (t2.community_visibility->'toolbox')::boolean IS DISTINCT FROM true
             ),
             tw2 AS (
                 DELETE FROM war.entity_preview

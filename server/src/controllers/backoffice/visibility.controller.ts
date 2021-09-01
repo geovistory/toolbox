@@ -1,12 +1,12 @@
 import {inject} from '@loopback/core';
 import {repository} from '@loopback/repository';
-import {SysConfigController} from '.';
-import {DfhClass} from '../models/dfh-class.model';
-import {SysConfigValue} from '../models/sys-config';
-import {CommunityVisibilityOptions} from '../models/sys-config/sys-config-community-visibility-options';
-import {ProjectVisibilityOptions} from '../models/sys-config/sys-config-project-visibility-options';
-import {VisibilityRange} from '../models/sys-config/sys-config-visibility-range';
-import {DfhClassRepository} from '../repositories';
+import {SysConfigController} from '..';
+import {DfhClass} from '../../models/dfh-class.model';
+import {SysConfigValue} from '../../models/sys-config';
+import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
+import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
+import {AllowedCommunityVisibility} from '../../models/sys-config/sys-config-visibility-range';
+import {DfhClassRepository} from '../../repositories';
 
 interface ClassLookup {[pkClass: number]: DfhClass};
 
@@ -47,7 +47,7 @@ export class VisibilityController {
     this.classLookup = await this.getClassLookup()
   }
 
-  getCommunityVisibilityDefault(fkClass = -1): CommunityVisibilityOptions {
+  getDefaultCommunityVisibility(fkClass = -1): CommunityVisibilityOptions {
     if (!this.classLookup) throw new Error('classLookup is not set')
     if (!this.systemConfig) throw new Error('systemConfig is not set')
     const basicType = this.classLookup[fkClass]?.basic_type ?? -1;
@@ -56,7 +56,7 @@ export class VisibilityController {
     return getCommunityVisibilityDefault(this.systemConfig, fkClass, basicType)
   }
 
-  getCommunityVisibilityRange(fkClass = -1): VisibilityRange {
+  getAllowedCommunityVisibility(fkClass = -1): AllowedCommunityVisibility {
     if (!this.classLookup) throw new Error('classLookup is not set')
     if (!this.systemConfig) throw new Error('systemConfig is not set')
     const basicType = this.classLookup[fkClass]?.basic_type ?? -1;
@@ -96,15 +96,12 @@ export function getCommunityVisibilityDefault(sysConfig: SysConfigValue, pkClass
  * @param basicTypeId the basic_type of the class
  * @returns the community visibility range according to system config or a fallback value.
  */
-export function getCommunityVisibilityRange(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): VisibilityRange {
+export function getCommunityVisibilityRange(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): AllowedCommunityVisibility {
 
   return sysConfig?.classes?.[pkClass]?.communityVisibilityRange ??
     sysConfig?.classesByBasicType?.[basicTypeId]?.communityVisibilityRange ??
     sysConfig?.classesDefault?.communityVisibilityRange ??
-  {
-    min: {toolbox: true, dataApi: true, website: true},
-    max: {toolbox: true, dataApi: true, website: true}
-  };
+    {toolbox: [true], dataApi: [true], website: [true]};
 }
 
 

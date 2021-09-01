@@ -9,14 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CommunityVisibilityOptions } from './communityVisibilityOptions';
 
 
-/**
- * If present, defines a visibility range for class instances.
- */
-export interface VisibilityRange { 
-    min: CommunityVisibilityOptions;
-    max: CommunityVisibilityOptions;
+export interface AllowedCommunityVisibility { 
+    toolbox: Array<boolean>;
+    dataApi: Array<boolean>;
+    website: Array<boolean>;
 }
 

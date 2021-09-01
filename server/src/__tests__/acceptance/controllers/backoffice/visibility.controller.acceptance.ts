@@ -1,17 +1,17 @@
 import {expect} from '@loopback/testlab';
-import {getCommunityVisibilityDefault, getProjectVisibilityDefault, VisibilityController} from '../../../controllers/visibility.controller';
-import {SysConfigValue} from '../../../models/sys-config/sys-config-value.model';
-import {GeovistoryServer} from '../../../server';
-import {createDfhApiClass} from '../../helpers/atomic/dfh-api-class.helper';
-import {createInfLanguage} from '../../helpers/atomic/inf-language.helper';
-import {linkAccountToProject} from '../../helpers/atomic/pub-account_project_rel.helper';
-import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
-import {InfLanguageMock} from '../../helpers/data/gvDB/InfLanguageMock';
-import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
-import {createAccountVerified} from '../../helpers/generic/account.helper';
-import {createProject1} from '../../helpers/graphs/project.helper';
-import {setupApplication} from '../../helpers/gv-server-helpers';
-import {cleanDb} from '../../helpers/meta/clean-db.helper';
+import {getCommunityVisibilityDefault, getProjectVisibilityDefault, VisibilityController} from '../../../../controllers/backoffice/visibility.controller';
+import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
+import {GeovistoryServer} from '../../../../server';
+import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
+import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
+import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
+import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
+import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
+import {createAccountVerified} from '../../../helpers/generic/account.helper';
+import {createProject1} from '../../../helpers/graphs/project.helper';
+import {setupApplication} from '../../../helpers/gv-server-helpers';
+import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 describe('VisibilityController', () => {
   let server: GeovistoryServer;
@@ -40,7 +40,7 @@ describe('VisibilityController', () => {
       await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
       const createProjectDataController: VisibilityController = await server.lbApp.get('controllers.VisibilityController')
       const lookup = await createProjectDataController.getClassLookup()
-      expect(lookup[21]).to.equal(8)
+      expect(lookup[21].basic_type).to.equal(8)
     })
   })
   describe('getCommunityVisibilityDefault()', () => {

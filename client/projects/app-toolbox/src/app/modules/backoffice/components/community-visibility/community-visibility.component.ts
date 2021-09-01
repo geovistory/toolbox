@@ -9,19 +9,19 @@ import { CommunityVisibilityService, VisibilityReport } from '@kleiolab/lib-sdk-
 export class CommunityVisibilityComponent implements OnInit {
   report: VisibilityReport[]
   updating = false
-  constructor(public commVis: CommunityVisibilityService) { }
+  constructor(private commVis: CommunityVisibilityService) { }
 
   ngOnInit(): void {
     this.load()
   }
 
   async load() {
-    this.report = await this.commVis.communityVisibiliyControllerReportConflicts().toPromise()
+    this.report = await this.commVis.communityVisibilityControllerReportConflicts().toPromise()
   }
 
   async updateVisibility(classId: number, channel: string, onlyConflicting: boolean, newValue: boolean) {
     this.updating = true
-    await this.commVis.communityVisibiliyControllerUpdate(classId, channel, onlyConflicting, newValue).toPromise()
+    await this.commVis.communityVisibilityControllerUpdate(classId, channel, onlyConflicting, newValue).toPromise()
     this.load()
     this.updating = false
   }

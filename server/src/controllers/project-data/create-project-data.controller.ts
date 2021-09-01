@@ -20,7 +20,7 @@ import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubj
 import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
 import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
-import {VisibilityController} from '../visibility.controller';
+import {VisibilityController} from '../backoffice/visibility.controller';
 
 @tags('project data')
 export class CreateProjectDataController {
@@ -197,7 +197,7 @@ export class CreateProjectDataController {
   async createResourceAndProjectRel(resourceWithRels: PartialDeep<InfResourceWithRelations>, fkProject: number) {
     const {pk_entity, fk_class} = resourceWithRels;
 
-    const community_visibility: CommunityVisibilityOptions = this.visibilityController.getCommunityVisibilityDefault(fk_class);
+    const community_visibility: CommunityVisibilityOptions = this.visibilityController.getDefaultCommunityVisibility(fk_class);
     const createdResource = await this.infResourceRepository.create({
       pk_entity,
       fk_class,
