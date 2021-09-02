@@ -1,24 +1,27 @@
-<div class="gv-row mb-3 hit" matTooltip="{{moreDetails ? 'Click to see more details about this entity' : ''}}"
-  [matTooltipPosition]="'right'">
+<div class="gv-row-center mb-3 hit" matTooltip="{{moreDetails ? 'Click to see more details about this entity' : ''}}"
+  [matTooltipPosition]="'right'" [ngClass]="{'selected': selected}" (click)="more()">
 
-  <!-- Already in project icon -->
-  <div class="gv-column" style="margin-right: 10px">
-    <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
-    <mat-icon class="gv-settings-color" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
-  </div>
+  <div class="hit-left-part">
+    <!-- Already in project icon -->
+    <div class="gv-col-center" style="margin-right: 10px">
+      <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
+      <mat-icon class="gv-settings-color" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
+    </div>
 
-  <!-- Entity description -->
-  <div class="gv-column">
-    <div class="mat-body-1 no-margin gv-one-liner">{{entityPreview.entity_label}}</div>
+    <!-- Entity description -->
+    <div class="gv-col-center">
+      <div class="mat-body-1 no-margin gv-one-liner">{{entityPreview.entity_label}}</div>
 
-    <div class="mat-caption mat-text-secondary ellipsis" style="overflow:hidden">
-      ID {{entityPreview.pk_entity}} - {{hit.full_text_headline}}
+      <div class="mat-caption mat-text-secondary ellipsis" style="overflow:hidden">
+        ID {{entityPreview.pk_entity}} - {{hit.full_text_headline}}
+      </div>
     </div>
   </div>
 
   <!-- Options -->
-  <div class="gv-column ml-2" style="justify-content: center;">
-    <mat-icon svgIcon="chevron-right" *ngIf="moreDetails" (click)="more()"></mat-icon>
+  <div class="gv-col-center ml-2" style="justify-content: center;">
+    <mat-icon svgIcon="chevron-right" *ngIf="moreDetails && !selected"></mat-icon>
+    <mat-icon *ngIf="!(moreDetails && !selected)"></mat-icon>
   </div>
 
 </div>

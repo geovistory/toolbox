@@ -24,6 +24,7 @@ export class EntityAddExistingHitComponent implements OnInit {
   *   default = false
   */
   @Input() repositorySearch: boolean;
+  @Input() selected: boolean;
   @Output() onMore: EventEmitter<number> = new EventEmitter();
 
   headlineItems: Array<string> = [];

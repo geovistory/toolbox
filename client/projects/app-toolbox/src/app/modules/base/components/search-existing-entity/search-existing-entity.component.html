@@ -1,40 +1,62 @@
-<!-- Title -->
-<div class="col-center">
-  <div class="mat-body-2 row-center" style="margin: 0 0 0 0">Existing {{className}} entities</div>
-  <span class="text-muted row-center" *ngIf="!searchActive">filtered by: {{searchString$|async}}</span>
-</div>
+<div class="gv-fh gv-col-space-between">
 
-<!-- Search box -->
-<ng-container *ngIf="searchActive">
-  <mat-form-field appearance="outline" class="mt-3">
-    <mat-label>Search</mat-label>
-    <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
-      (keyup)="searchString$.next($any($event).target.value)">
-  </mat-form-field>
-</ng-container>
+  <div class="gv-col-start">
 
-<div *ngIf="hitsFound">
-  <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async) === 0 && searchString.length >= minSearchStringLength"
-    class="text-muted">
-    Nothing there.
-  </h5>
+    <!-- filtered by -->
+    <ng-container *ngIf="mode=='filtered'">
+      <div class="gv-col-center loc-mat-input-height">
+        <span class="gv-row-center text-muted" *ngIf="mode == 'filtered'">filtered by: {{searchString$|async}}</span>
+      </div>
+    </ng-container>
 
-  <div *ngIf="(loading$ | async)"><i class="fa fa-pulse fa-spinner"></i> Searching...</div>
+    <!-- Search input & back button -->
+    <div *ngIf="mode == 'searchAndBack'" class="gv-row-start">
 
-  <div *ngIf="!(loading$ | async)">
-    <mat-list>
-      <mat-list-item *ngFor="let hit of (hits$ | async)" style="height: auto; ">
-        <gv-entity-add-existing-hit [hit]="hit" [moreDetails]="true" (onMore)="onMoreClick($event)">
-        </gv-entity-add-existing-hit>
-      </mat-list-item>
-    </mat-list>
+      <!-- Back button -->
+      <div class="gv-col-start">
+        <button mat-button *ngIf="mode=='searchAndBack'" class="loc-input-height" (click)="onBackClick()">
+          <mat-icon svgIcon="arrow-left"></mat-icon>
+          Back
+        </button>
+      </div>
 
-    <div class="mt-4">
-      <div class="col">
-        <mat-paginator *ngIf="(collectionSize$ | async) > limit" class="row-center" [length]="(collectionSize$ | async)"
-          [pageSize]="limit" aria-label="Select page" [hidePageSize]="true" (page)="pageChange($event)">
-        </mat-paginator>
+      <!-- Search input -->
+      <mat-form-field appearance="outline" class="loc-search-input ml-3 mr-3">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
+          (keyup)="searchString$.next($any($event).target.value)">
+      </mat-form-field>
+    </div>
+
+    <!-- List -->
+    <div *ngIf="hitsFound" class="gv-row-center">
+
+      <!-- List is empty-->
+      <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async)===0 && searchString.length>= minSearchStringLength"
+        class="text-muted mt-3">
+        Nothing there.
+      </h5>
+
+      <!-- List is searching -->
+      <div *ngIf="(loading$ | async)"><i class="fa fa-pulse fa-spinner"></i> Searching...</div>
+
+      <!-- List is not empty -->
+      <div *ngIf="!(loading$ | async) && (collectionSize$ | async)!==0">
+        <mat-list>
+          <mat-list-item *ngFor="let hit of (hits$ | async)" class="gv-height-auto">
+            <gv-entity-add-existing-hit class="gv-fw" [hit]="hit" [selected]="hit.pk_entity == selected"
+              [moreDetails]="true" (onMore)="onMoreClick($event)">
+            </gv-entity-add-existing-hit>
+          </mat-list-item>
+        </mat-list>
       </div>
     </div>
+  </div>
+
+  <!-- Paginator -->
+  <div class="mt-4 gv-row-center">
+    <mat-paginator *ngIf="(collectionSize$ | async) > limit" class="gv-row-center" [length]="(collectionSize$ | async)"
+      [pageSize]="limit" aria-label="Select page" [hidePageSize]="true" (page)="pageChange($event)">
+    </mat-paginator>
   </div>
 </div>

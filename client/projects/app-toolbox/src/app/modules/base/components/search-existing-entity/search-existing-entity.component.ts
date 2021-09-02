@@ -14,10 +14,15 @@ export interface DisableIfHasStatement {
   maxQuantity: number
 }
 
+export enum SearchExistingEntityListMode {
+  filtered = 'filtered',
+  searchAndBack = 'searchAndBack'
+}
+
 @Component({
   selector: 'gv-search-existing-entity',
   templateUrl: './search-existing-entity.component.html',
-  styleUrls: ['./search-existing-entity.component.css']
+  styleUrls: ['./search-existing-entity.component.scss']
 })
 export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -27,11 +32,12 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   className: string;
 
   @Input() pkClass: number;
-  @Input() searchActive = true;
+  @Input() mode: string = SearchExistingEntityListMode.filtered;
   @Input() searchString$: Subject<string>; // string or '' (can be used to filter the list from the outside)
   @Input() disableIfHasStatement: DisableIfHasStatement;
 
   @Output() onMore = new EventEmitter<number>();
+  @Output() onBack = new EventEmitter();
 
   // select observables of substore properties
   loading$ = new BehaviorSubject<boolean>(false);
@@ -51,6 +57,8 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   limit = 5; // max number of results on a page
   page = 1; // current page
 
+  // current selection
+  selected: number;
 
   constructor(
     private entityPreviewApi: WarEntityPreviewControllerService,
@@ -162,7 +170,13 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   }
 
   onMoreClick(pkEntity: number) {
+    this.selected = pkEntity;
     this.onMore.emit(pkEntity);
+  }
+
+  onBackClick() {
+    this.selected = -1;
+    this.onBack.emit();
   }
 
   searchStringChange(term: string) {

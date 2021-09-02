@@ -3036,14 +3036,64 @@ gv-importer {
   }
 }
 
-.gv-row {
+
+// About columns
+.gv-col {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+}
+
+.gv-col-center {
+  @extend .gv-col;
   justify-content: center;
 }
 
-.gv-column {
+.gv-col-space-between {
+  @extend .gv-col;
+  justify-content: space-between;
+}
+
+// About rows
+.gv-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.gv-row-center {
+  @extend .gv-row;
   justify-content: center;
+}
+
+.gv-row-space-between {
+  @extend .gv-row;
+  justify-content: space-between;
+}
+
+.gv-row-start {
+  @extend .gv-row;
+  justify-content: start;
+}
+
+
+// About widths
+.gv-fw {
+  width: 100%
+}
+
+.gv-width-auto {
+  width: auto;
+}
+
+// About heights
+.gv-fh {
+  height: 100%;
+}
+
+.gv-height-auto {
+  height: auto;
+}
+
+// about overflows
+.gv-ovf-auto {
+  overflow: auto;
 }

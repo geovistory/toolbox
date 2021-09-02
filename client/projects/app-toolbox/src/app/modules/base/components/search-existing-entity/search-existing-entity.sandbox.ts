@@ -69,8 +69,6 @@ class WarEntityPreviewControllerServiceMock {
         const beginIndex = (warEntityPreviewSearchExistingReq.page - 1) * pageSize;
         const endIndex = beginIndex + pageSize;
 
-        console.log(beginIndex, endIndex)
-
         return of({
             totalCount: data.length,
             data: data.slice(beginIndex, endIndex)
@@ -109,7 +107,7 @@ export default sandboxOf(SearchExistingEntityComponent, {
 
                 [pkClass]="pkClass"
                 [searchString$]="searchString$"
-                [searchActive]="false"
+                [mode]="'filtered'"
 
                 (onAddExisting)="onNotInProjectClicked($event)"
                 (onOpenExisting)="onAlreadyInProjectClicked($event)">
@@ -125,7 +123,7 @@ export default sandboxOf(SearchExistingEntityComponent, {
 
                 [pkClass]="pkClass"
                 [searchString$]="searchString$"
-                [searchActive]="true"
+                [mode]="'searchAndBack'"
 
                 (onAddExisting)="onNotInProjectClicked($event)"
                 (onOpenExisting)="onAlreadyInProjectClicked($event)">

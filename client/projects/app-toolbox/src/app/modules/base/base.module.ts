@@ -48,6 +48,7 @@ import { PropertiesTreeSectionComponent } from './components/properties-tree-sec
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
+import { SliderComponent } from './components/slider/slider.component';
 import { SubfieldDialogComponent } from './components/subfield-dialog/subfield-dialog.component';
 import { SubfieldComponent } from './components/subfield/subfield.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
@@ -92,7 +93,7 @@ const components = [
   FieldLabelComponent,
   EntityWithFieldsComponent,
   EntityFieldComponent,
-
+  SliderComponent
 ]
 
 const baseModules = [

@@ -3,7 +3,7 @@ import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
+import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
@@ -14,7 +14,6 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { equals, flatten, groupBy, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -182,6 +181,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   previousHasNames: Array<string> = [];
   previousFocusName = '';
 
+  classLabel = '';
+
   constructor(
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
@@ -195,6 +196,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     if (!this.pkClass && !(this.field && this.targetClass)) throw new Error('You must provide a pkClass or a field+targetClass as @Input() on FormCreateEntityComponent');
+
+    this.c.pipeClassLabel(this.pkClass).subscribe(label => this.classLabel = label);
 
     if (this.initVal$) {
       this.initVal$.subscribe(b => {
@@ -215,7 +218,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       rootFormGroup$: of({ data }),
       getChildNodeConfigs: this.getChildNodeConfigs
     }, this.destroy$)
-
 
     this.formFactory$.pipe(
       first(), takeUntil(this.destroy$)
@@ -410,7 +412,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                     ?.object_appellation?.quill_doc?.ops.map(op => op.insert).join('').slice(0, -1)) ?? [];
 
                 let focusName = curHasNames.find(name => !this.previousHasNames.some(old => old == name));
-                if (!focusName) focusName = this.previousFocusName;
+                if (!curHasNames[0]) focusName = '';
+                if (focusName == undefined) focusName = this.previousFocusName;
                 else this.previousFocusName = focusName;
 
                 this.previousHasNames = curHasNames;
@@ -766,6 +769,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       combineLatest([upsert$, ...addEntities$])
         .pipe(takeUntil(this.destroy$))
         .subscribe(([res]: [GvSchemaModifier]) => {
+          console.log(JSON.stringify(res))
           if (res) {
             if (value.resource) {
               if (!res.positive.inf.resource.length) throw new Error('bad result')

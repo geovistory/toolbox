@@ -1,0 +1,14 @@
+.loc-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  box-sizing: content-box;
+
+  height: 100%;
+  width: 50%;
+}
+
+.divider {
+  width: 1px;
+}

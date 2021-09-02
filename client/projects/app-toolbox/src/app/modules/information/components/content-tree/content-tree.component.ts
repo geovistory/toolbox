@@ -416,9 +416,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.service.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       this.m.openModalCreateOrAddEntity({
-        notInProjectClickBehavior: 'addToProject',
-        alreadyInProjectBtnText: 'Select',
-        notInProjectBtnText: 'Add',
         classAndTypePk: {
           pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
           pkType: undefined

@@ -35,6 +35,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
   scope$: Observable<GvFieldPageScope>
 
   searchString$ = new Subject<string>();
+  selectedPkEntity: number;
 
   classAndTypePk: ClassAndTypePk;
   alreadyInProjectBtnText: string;
@@ -57,7 +58,6 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     private dataService: ReduxMainService,
     private paginationService: PaginationService
   ) {
-
     this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
 
     this.classAndTypePk = { pkClass: data.targetClass, pkType: undefined }
@@ -184,12 +184,16 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.searchString$.next(term)
   }
 
-  onMoreClick(pkEntity: number) {
-
-  }
-
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  onMoreClick(pkEntity: number) {
+    this.selectedPkEntity = pkEntity;
+  }
+
+  onBackClick() {
+    this.selectedPkEntity = undefined;
   }
 }

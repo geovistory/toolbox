@@ -3,7 +3,6 @@ import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { SchemaObject } from '@kleiolab/lib-redux';
 import { GvFieldProperty, InfResource } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -17,9 +16,6 @@ import { CtrlEntityModel } from '../ctrl-entity.component';
 export interface CtrlEntityDialogData {
   classAndTypePk: ClassAndTypePk;
   pkUiContext: number;
-  alreadyInProjectBtnText: string
-  notInProjectBtnText: string
-  notInProjectClickBehavior: NotInProjectClickBehavior
   hiddenProperty: GvFieldProperty
   initVal$: Observable<CtrlEntityModel>
   showAddList: boolean
@@ -53,13 +49,10 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
   classAndTypePk: ClassAndTypePk;
   pkUiContext: number;
-  alreadyInProjectBtnText: string;
-  notInProjectBtnText: string;
-  notInProjectClickBehavior: NotInProjectClickBehavior;
-
 
   // input element on the right side
   searchInput: string;
+  selectedPkEntity: number;
 
   // actual search str
   searchString$ = new BehaviorSubject<string>('');
@@ -80,9 +73,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   ) {
     this.classAndTypePk = data.classAndTypePk
     this.pkUiContext = data.pkUiContext
-    this.alreadyInProjectBtnText = data.alreadyInProjectBtnText
-    this.notInProjectBtnText = data.notInProjectBtnText
-    this.notInProjectClickBehavior = data.notInProjectClickBehavior
 
     this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.resource : null))
 
@@ -95,9 +85,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     if (!this.classAndTypePk || !this.classAndTypePk.pkClass) throw new Error('You must provide classAndTypePk as Component @Input().')
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
-    if (!this.notInProjectClickBehavior) throw Error('please provide a notInProjectClickBehavior')
 
     this.classLabel$ = this.c.pipeClassLabel(this.classAndTypePk.pkClass)
     this.classType$ = this.p.dfh$.class$.by_pk_class$.key(this.classAndTypePk.pkClass).pipe(
@@ -118,34 +105,34 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   }
 
 
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onNotInProjectClicked(pkEntity: number) {
-    if (this.notInProjectClickBehavior == 'selectOnly') {
-      this.onCreateOrAdd({
-        action: 'notInProjectClicked',
-        pkEntity,
-        pkClass: this.classAndTypePk.pkClass
-      })
-    }
-    else if (this.notInProjectClickBehavior == 'addToProject') {
-      this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
-        this.onCreateOrAdd({
-          action: 'added',
-          pkEntity,
-          pkClass: this.classAndTypePk.pkClass
-        })
-      })
-    }
-  }
+  // // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
+  // onNotInProjectClicked(pkEntity: number) {
+  //   if (this.notInProjectClickBehavior == 'selectOnly') {
+  //     this.onCreateOrAdd({
+  //       action: 'notInProjectClicked',
+  //       pkEntity,
+  //       pkClass: this.classAndTypePk.pkClass
+  //     })
+  //   }
+  //   else if (this.notInProjectClickBehavior == 'addToProject') {
+  //     this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
+  //       this.onCreateOrAdd({
+  //         action: 'added',
+  //         pkEntity,
+  //         pkClass: this.classAndTypePk.pkClass
+  //       })
+  //     })
+  //   }
+  // }
 
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onAlreadyInProjectClicked(pkEntity: number) {
-    this.onCreateOrAdd({
-      action: 'alreadyInProjectClicked',
-      pkEntity,
-      pkClass: this.classAndTypePk.pkClass
-    })
-  }
+  // // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
+  // onAlreadyInProjectClicked(pkEntity: number) {
+  //   this.onCreateOrAdd({
+  //     action: 'alreadyInProjectClicked',
+  //     pkEntity,
+  //     pkClass: this.classAndTypePk.pkClass
+  //   })
+  // }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
   onCreated(entity: InfResource) {
@@ -160,10 +147,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
   onCreateOrAdd(res) {
     this.dialogRef.close(res);
-  }
-
-  closeAddForm() {
-    this.dialogRef.close();
   }
 
   // When user confirms that the form is filled
@@ -188,6 +171,10 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   }
 
   onMoreClick(pkEntity: number) {
+    this.selectedPkEntity = pkEntity;
+  }
 
+  onBackClick() {
+    this.selectedPkEntity = undefined;
   }
 }

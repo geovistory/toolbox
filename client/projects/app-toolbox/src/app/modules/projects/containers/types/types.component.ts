@@ -195,9 +195,6 @@ export class TypesComponent implements OnInit, OnDestroy {
   onAddOrCreate() {
 
     this.m.openModalCreateOrAddEntity({
-      alreadyInProjectBtnText: 'Edit',
-      notInProjectClickBehavior: 'addToProject',
-      notInProjectBtnText: 'Add',
       classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
       pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
     })

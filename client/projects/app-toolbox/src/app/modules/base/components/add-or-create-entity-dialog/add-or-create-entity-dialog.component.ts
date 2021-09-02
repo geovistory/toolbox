@@ -3,7 +3,6 @@ import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ClassAndTypePk, ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { SchemaObject } from '@kleiolab/lib-redux';
 import { InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
@@ -13,9 +12,6 @@ import { filter, map } from 'rxjs/operators';
 export interface AddOrCreateEntityDialogData {
   classAndTypePk: ClassAndTypePk;
   pkUiContext: number;
-  alreadyInProjectBtnText: string
-  notInProjectBtnText: string
-  notInProjectClickBehavior: NotInProjectClickBehavior
 }
 
 export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
@@ -42,13 +38,10 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
 
   classAndTypePk: ClassAndTypePk;
   pkUiContext: number;
-  alreadyInProjectBtnText: string;
-  notInProjectBtnText: string;
-  notInProjectClickBehavior: NotInProjectClickBehavior;
-
 
   // input element on the right side
   searchInput: string;
+  selectedPkEntity: number;
 
   // actual search str
   searchString$ = new Subject<string>();
@@ -67,9 +60,6 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
   ) {
     this.classAndTypePk = data.classAndTypePk
     this.pkUiContext = data.pkUiContext
-    this.alreadyInProjectBtnText = data.alreadyInProjectBtnText
-    this.notInProjectBtnText = data.notInProjectBtnText
-    this.notInProjectClickBehavior = data.notInProjectClickBehavior
   }
 
 
@@ -78,9 +68,6 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     if (!this.classAndTypePk || !this.classAndTypePk.pkClass) throw new Error('You must provide classAndTypePk as Component @Input().')
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
-    if (!this.notInProjectClickBehavior) throw Error('please provide a notInProjectClickBehavior')
 
     this.classLabel$ = this.c.pipeClassLabel(this.classAndTypePk.pkClass)
     this.classType$ = this.p.dfh$.class$.by_pk_class$.key(this.classAndTypePk.pkClass).pipe(
@@ -103,34 +90,34 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
   }
 
 
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onNotInProjectClicked(pkEntity: number) {
-    if (this.notInProjectClickBehavior == 'selectOnly') {
-      this.onCreateOrAdd({
-        action: 'notInProjectClicked',
-        pkEntity,
-        pkClass: this.classAndTypePk.pkClass
-      })
-    }
-    else if (this.notInProjectClickBehavior == 'addToProject') {
-      this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
-        this.onCreateOrAdd({
-          action: 'added',
-          pkEntity,
-          pkClass: this.classAndTypePk.pkClass
-        })
-      })
-    }
-  }
+  // // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
+  // onNotInProjectClicked(pkEntity: number) {
+  //   if (this.notInProjectClickBehavior == 'selectOnly') {
+  //     this.onCreateOrAdd({
+  //       action: 'notInProjectClicked',
+  //       pkEntity,
+  //       pkClass: this.classAndTypePk.pkClass
+  //     })
+  //   }
+  //   else if (this.notInProjectClickBehavior == 'addToProject') {
+  //     this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
+  //       this.onCreateOrAdd({
+  //         action: 'added',
+  //         pkEntity,
+  //         pkClass: this.classAndTypePk.pkClass
+  //       })
+  //     })
+  //   }
+  // }
 
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onAlreadyInProjectClicked(pkEntity: number) {
-    this.onCreateOrAdd({
-      action: 'alreadyInProjectClicked',
-      pkEntity,
-      pkClass: this.classAndTypePk.pkClass
-    })
-  }
+  // // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
+  // onAlreadyInProjectClicked(pkEntity: number) {
+  //   this.onCreateOrAdd({
+  //     action: 'alreadyInProjectClicked',
+  //     pkEntity,
+  //     pkClass: this.classAndTypePk.pkClass
+  //   })
+  // }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
   onCreated(entity: InfResource | InfStatement) {
@@ -139,9 +126,6 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
       pkEntity: entity.pk_entity,
       pkClass: this.classAndTypePk.pkClass
     })
-  }
-
-  onMoreClick(pkEntity: number) {
   }
 
   onCreateOrAdd(res) {
@@ -156,5 +140,13 @@ export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  onMoreClick(pkEntity: number) {
+    this.selectedPkEntity = pkEntity;
+  }
+
+  onBackClick() {
+    this.selectedPkEntity = undefined;
   }
 }
