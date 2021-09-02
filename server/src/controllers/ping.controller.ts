@@ -9,9 +9,11 @@ import {TColFilter} from '../components/query/q-table-page';
 import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
 import {GvSubentityFieldTargetViewType} from '../models/field/gv-subentity-field-target-view-type';
 import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
+import {ClassConfig} from '../models/sys-config/sys-config-class-config';
+import {CommunityVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-community-visibility-options';
 import {SysConfigFieldDisplay} from '../models/sys-config/sys-config-field-display.model';
 import {SysConfigFieldsOfSourceClass} from '../models/sys-config/sys-config-fields-of-source-class.model';
-import {ClassConfig} from './sys-config-class-config';
+import {ProjectVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-project-visibility-options';
 
 /**
  * OpenAPI response for ping()
@@ -187,6 +189,25 @@ export class PingController {
   xQuillOperationWithRelations() { }
 
 
+  @post('/CommunityVisibilityOptionsWithRelations', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': CommunityVisibilityOptionsWithRelations}}}
+      }
+    }
+  })
+  xCommunityVisibilityOptionsWithRelations() { }
+
+  @post('/ProjectVisibilityOptionsWithRelations', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': ProjectVisibilityOptionsWithRelations}}}
+      }
+    }
+  })
+  xProjectVisibilityOptionsWithRelations() { }
 }
 
 

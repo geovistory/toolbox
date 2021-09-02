@@ -32,7 +32,7 @@ export class PClassFieldLabelService extends AggregatedDataService2<PClassFieldL
     depProProject: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, ProjectId, ProjectVal>
     depDfhPropertyLabel: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, DfhPropertyLabelId, DfhPropertyLabelVal>
     depProPropertyLabel: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, ProPropertyLabelId, ProPropertyLabelVal>
-    batchSize=100000;
+    batchSize = 100000;
 
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
@@ -222,7 +222,7 @@ export class PClassFieldLabelService extends AggregatedDataService2<PClassFieldL
     private completeReverseLabels(): (provTable: string) => string {
         return (provider) => `jsonb_build_object('label',
                     CASE WHEN t1."r_isOutgoing" = true THEN  ${provider}.val->>'label'
-                    ELSE '[reverse of: ' || (${provider}.val->>'label')::TEXT || ']'
+                    ELSE  ${provider}.val->>'inverseLabel'
                     END
                 )`;
     }

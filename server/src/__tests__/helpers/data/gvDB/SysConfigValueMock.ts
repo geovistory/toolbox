@@ -1,7 +1,45 @@
-import { SysConfigValue, TrueEnum } from '../../../../models';
+import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
+import {TrueEnum} from '../../../../models/sys-config/TrueEnum';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
+    "classesDefault": {
+      "viewType": {
+        "nestedResource": []
+      },
+      "formControlType": {
+        "entity": TrueEnum.true
+      },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      projectVisibilityDefault: {dataApi: false, website: false},
+    },
+    "classesByBasicType": {
+      "8": {
+        "viewType": {
+          "entityPreview": TrueEnum.true
+        },
+        "formControlType": {
+          "entity": TrueEnum.true
+        },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+      },
+      9: {
+        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
+        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+      },
+      "30": {
+        "viewType": {
+          "entityPreview": TrueEnum.true
+        },
+        "formControlType": {
+          "entity": TrueEnum.true
+        },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
+      }
+    },
     "classes": {
       "1": {
         "excludedFromEntities": true
@@ -116,6 +154,10 @@ export class SysConfigValueMock {
       "521": {
         "excludedFromEntities": true
       },
+      635: {
+        communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
+        communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      },
       "657": {
         "viewType": {
           "langString": TrueEnum.true
@@ -128,6 +170,7 @@ export class SysConfigValueMock {
         },
         "excludedFromEntities": true
       },
+
       "689": {
         "viewType": {
           "dimension": {
@@ -706,31 +749,7 @@ export class SysConfigValueMock {
         }
       }
     },
-    "classesDefault": {
-      "viewType": {
-        "nestedResource": []
-      },
-      "formControlType": {
-        "entity": TrueEnum.true
-      }
-    },
-    "classesByBasicType": {
-      "8": {
-        "viewType": {
-          "entityPreview": TrueEnum.true
-        },
-        "formControlType": {
-          "entity": TrueEnum.true
-        }
-      },
-      "30": {
-        "viewType": {
-          "entityPreview": TrueEnum.true
-        },
-        "formControlType": {
-          "entity": TrueEnum.true
-        }
-      }
-    }
+
   }
+
 }

@@ -1,31 +1,36 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { authenticate } from '@loopback/authentication';
-import { authorize } from '@loopback/authorization';
-import { inject } from '@loopback/core';
-import { tags } from '@loopback/openapi-v3';
-import { repository } from '@loopback/repository';
-import { getModelSchemaRef, HttpErrors, param, post, requestBody } from '@loopback/rest';
-import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
-import { concat, isEmpty, mergeDeepWith } from 'ramda';
-import { PartialDeep } from 'type-fest';
-import { Roles } from '../../components/authorization';
-import { QEntityAddToProject } from '../../components/query/q-entity-add-to-project';
-import { CLASS_PK_MANIFESTATION_SINGLETON } from '../../config';
-import { Postgres1DataSource } from '../../datasources/postgres1.datasource';
-import { InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel } from '../../models';
-import { GvSchemaModifier } from '../../models/gv-schema-modifier.model';
-import { InfStatementObjectFks } from '../../models/statement/InfStatementObjectFks';
-import { InfStatementObjectValues } from '../../models/statement/InfStatementObjectValues';
-import { InfStatementSubjectFks } from '../../models/statement/InfStatementSubjectFks';
-import { InfStatementSubjectValues } from '../../models/statement/InfStatementSubjectValues';
-import { DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository } from '../../repositories';
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
+import {inject} from '@loopback/core';
+import {tags} from '@loopback/openapi-v3';
+import {repository} from '@loopback/repository';
+import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {concat, isEmpty, mergeDeepWith} from 'ramda';
+import {PartialDeep} from 'type-fest';
+import {Roles} from '../../components/authorization';
+import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
+import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
+import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
+import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
+import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFks';
+import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
+import {InfStatementSubjectFks} from '../../models/statement/InfStatementSubjectFks';
+import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubjectValues';
+import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
+import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
+import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
+import {VisibilityController} from '../backoffice/visibility.controller';
 
 @tags('project data')
 export class CreateProjectDataController {
 
-  schemaModifier: GvSchemaModifier = { negative: {}, positive: {} };
+  schemaModifier: GvSchemaModifier = {negative: {}, positive: {}};
 
   constructor(
+    @inject('controllers.VisibilityController')
+    public visibilityController: VisibilityController,
     @repository(InfResourceRepository)
     public infResourceRepository: InfResourceRepository,
     @repository(InfStatementRepository)
@@ -34,10 +39,9 @@ export class CreateProjectDataController {
     public proInfoProjRelRepository: ProInfoProjRelRepository,
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
-    @inject(SecurityBindings.USER, { optional: true }) public user: UserProfile,
+    @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
     @repository(DatChunkRepository)
     public datChunkRepo: DatChunkRepository,
-
     @repository(InfAppellationRepository)
     public infAppellationRepo: InfAppellationRepository,
     @repository(InfLanguageRepository)
@@ -49,7 +53,7 @@ export class CreateProjectDataController {
     @repository(InfPlaceRepository)
     public infPlaceRepo: InfPlaceRepository,
     @repository(InfTimePrimitiveRepository)
-    public infTimePrimitiveRepo: InfTimePrimitiveRepository,
+    public infTimePrimitiveRepo: InfTimePrimitiveRepository
   ) { }
 
 
@@ -69,7 +73,7 @@ export class CreateProjectDataController {
     },
   })
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async upsertResources(
     @param.query.number('pkProject') pkProject: number,
     @requestBody({
@@ -77,13 +81,13 @@ export class CreateProjectDataController {
         'application/json': {
           schema: {
             type: 'array',
-            items: getModelSchemaRef(InfResource, { includeRelations: true }),
+            items: getModelSchemaRef(InfResource, {includeRelations: true}),
           }
         }
       },
     }) entities: InfResourceWithRelations[]
   ): Promise<GvSchemaModifier> {
-
+    await this.visibilityController.initializeConfiguration()
     const promisedEntities = entities.map(entity => this.findOrCreateResourceWithRelations(entity, pkProject))
     await Promise.all(promisedEntities)
     return this.schemaModifier
@@ -105,7 +109,7 @@ export class CreateProjectDataController {
     },
   })
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async upsertStatements(
     @param.query.number('pkProject') pkProject: number,
     @requestBody({
@@ -113,13 +117,13 @@ export class CreateProjectDataController {
         'application/json': {
           schema: {
             type: 'array',
-            items: getModelSchemaRef(InfStatement, { includeRelations: true }),
+            items: getModelSchemaRef(InfStatement, {includeRelations: true}),
           }
         }
       },
     }) statements: InfStatementWithRelations[]
   ): Promise<GvSchemaModifier> {
-
+    await this.visibilityController.initializeConfiguration()
     const promisedStmts = statements.map(stmt => this.findOrCreateStatementWithRelations(stmt, pkProject))
     await Promise.all(promisedStmts)
     return this.schemaModifier
@@ -181,12 +185,12 @@ export class CreateProjectDataController {
     const returnedResource = await this.infResourceRepository.findById(resourceWithRels.pk_entity);
     if (!returnedResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not find resource with id ${resourceWithRels.pk_entity}`)
     const override = resourceWithRels?.entity_version_project_rels?.[0] ?? {}
-    await this.upsertInfoProjRel(returnedResource.pk_entity, override, fkProject)
+    await this.upsertInfoProjRel(returnedResource.pk_entity, override, fkProject, returnedResource.fk_class)
 
 
     this.mergeSchemaModifier({
       positive: {
-        inf: { resource: [returnedResource] }
+        inf: {resource: [returnedResource]}
       }
     })
 
@@ -201,16 +205,22 @@ export class CreateProjectDataController {
    * @param fkProject the project to relate the entity to
    */
   async createResourceAndProjectRel(resourceWithRels: PartialDeep<InfResourceWithRelations>, fkProject: number) {
-    const { pk_entity, fk_class } = resourceWithRels;
-    const createdResource = await this.infResourceRepository.create({ pk_entity, fk_class });
+    const {pk_entity, fk_class} = resourceWithRels;
+
+    const community_visibility: CommunityVisibilityOptions = this.visibilityController.getDefaultCommunityVisibility(fk_class);
+    const createdResource = await this.infResourceRepository.create({
+      pk_entity,
+      fk_class,
+      community_visibility
+    });
     if (!createdResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not create resource ${JSON.stringify(resourceWithRels)}`)
 
     const override = resourceWithRels?.entity_version_project_rels?.[0] ?? {}
-    await this.upsertInfoProjRel(createdResource.pk_entity, override, fkProject)
+    await this.upsertInfoProjRel(createdResource.pk_entity, override, fkProject, createdResource.fk_class)
 
     this.mergeSchemaModifier({
       positive: {
-        inf: { resource: [createdResource] }
+        inf: {resource: [createdResource]}
       }
     })
 
@@ -219,13 +229,16 @@ export class CreateProjectDataController {
   }
 
 
-  private async upsertInfoProjRel(fkEntity: number, override: PartialDeep<ProInfoProjRel> = {}, fkProject: number) {
+  private async upsertInfoProjRel(fkEntity: number, override: PartialDeep<ProInfoProjRel> = {}, fkProject: number, fkClass?: number) {
+    let project_visibility: ProjectVisibilityOptions | undefined;
+    if (fkClass) project_visibility = this.visibilityController.getProjectVisibilityDefault(fkClass)
     const dataObject: PartialDeep<ProInfoProjRel> = {
       // defaults:
       fk_entity: fkEntity,
       is_in_project: true,
 
       // add visibility
+      project_visibility,
       // add fk_creator_project
       ...override,
 
@@ -235,7 +248,7 @@ export class CreateProjectDataController {
       fk_project: fkProject,
     }
     let projRel: ProInfoProjRel;
-    const existing = await this.proInfoProjRelRepository.findOne({ where: { fk_entity: fkEntity, fk_project: dataObject.fk_project } })
+    const existing = await this.proInfoProjRelRepository.findOne({where: {fk_entity: fkEntity, fk_project: dataObject.fk_project}})
     if (existing) {
       await this.proInfoProjRelRepository.updateById(existing.pk_entity, dataObject);
       projRel = await this.proInfoProjRelRepository.findById(existing.pk_entity);
@@ -246,7 +259,7 @@ export class CreateProjectDataController {
 
     this.mergeSchemaModifier({
       positive: {
-        pro: { info_proj_rel: [projRel] }
+        pro: {info_proj_rel: [projRel]}
       }
     })
   }
@@ -321,7 +334,7 @@ export class CreateProjectDataController {
     else if (stmt.subject_chunk && !isEmpty(stmt.subject_chunk)) {
       const created = await this.datChunkRepo.create(stmt.subject_chunk)
       stmtSubVal.subject_chunk = await this.datChunkRepo.findById(created.pk_entity)
-      this.mergeSchemaModifier({ positive: { dat: { chunk: [stmtSubVal.subject_chunk] } } })
+      this.mergeSchemaModifier({positive: {dat: {chunk: [stmtSubVal.subject_chunk]}}})
       stmtSubFk.fk_subject_data = stmtSubVal.subject_chunk.pk_entity
     }
 
@@ -333,7 +346,7 @@ export class CreateProjectDataController {
     else {
       throw new HttpErrors.UnprocessableEntity('Subject of statement not found: ' + JSON.stringify(stmt));
     }
-    return { fk: stmtSubFk, relatedModel: stmtSubVal }
+    return {fk: stmtSubFk, relatedModel: stmtSubVal}
   }
 
 
@@ -388,20 +401,20 @@ export class CreateProjectDataController {
 
     else if (stmt.object_place && !isEmpty(stmt.object_place)) {
       stmtObVal.object_place = await this.infPlaceRepo.create(stmt.object_place)
-      this.mergeSchemaModifier({ positive: { inf: { place: [stmtObVal.object_place] } } })
+      this.mergeSchemaModifier({positive: {inf: {place: [stmtObVal.object_place]}}})
       stmtObFk.fk_object_info = stmtObVal.object_place.pk_entity
     }
 
     else if (stmt.object_dimension && !isEmpty(stmt.object_dimension)) {
       stmtObVal.object_dimension = await this.infDimensionRepo.create(stmt.object_dimension)
-      this.mergeSchemaModifier({ positive: { inf: { dimension: [stmtObVal.object_dimension] } } })
+      this.mergeSchemaModifier({positive: {inf: {dimension: [stmtObVal.object_dimension]}}})
       stmtObFk.fk_object_info = stmtObVal.object_dimension.pk_entity
     }
 
     else if (stmt.object_appellation && !isEmpty(stmt.object_appellation)) {
       const created = await this.infAppellationRepo.create(stmt.object_appellation)
       stmtObVal.object_appellation = await this.infAppellationRepo.findById(created.pk_entity)
-      this.mergeSchemaModifier({ positive: { inf: { appellation: [stmtObVal.object_appellation] } } })
+      this.mergeSchemaModifier({positive: {inf: {appellation: [stmtObVal.object_appellation]}}})
       stmtObFk.fk_object_info = stmtObVal.object_appellation.pk_entity
     }
 
@@ -409,21 +422,21 @@ export class CreateProjectDataController {
       const dataObject = new InfLangString(stmt.object_lang_string).toDataObject()
       const created = await this.infLangStringRepo.create(dataObject)
       stmtObVal.object_lang_string = await this.infLangStringRepo.findById(created.pk_entity)
-      this.mergeSchemaModifier({ positive: { inf: { lang_string: [stmtObVal.object_lang_string] } } })
+      this.mergeSchemaModifier({positive: {inf: {lang_string: [stmtObVal.object_lang_string]}}})
 
       stmtObFk.fk_object_info = stmtObVal.object_lang_string.pk_entity
     }
 
     else if (stmt.object_language && !isEmpty(stmt.object_language)) {
       stmtObVal.object_language = await this.infLanguageRepo.findById(stmt.object_language.pk_entity)
-      this.mergeSchemaModifier({ positive: { inf: { language: [stmtObVal.object_language] } } })
+      this.mergeSchemaModifier({positive: {inf: {language: [stmtObVal.object_language]}}})
       stmtObFk.fk_object_info = stmtObVal.object_language.pk_entity
 
     }
 
     else if (stmt.object_time_primitive && !isEmpty(stmt.object_time_primitive)) {
       stmtObVal.object_time_primitive = await this.infTimePrimitiveRepo.create(stmt.object_time_primitive)
-      this.mergeSchemaModifier({ positive: { inf: { time_primitive: [stmtObVal.object_time_primitive] } } })
+      this.mergeSchemaModifier({positive: {inf: {time_primitive: [stmtObVal.object_time_primitive]}}})
 
       stmtObFk.fk_object_info = stmtObVal.object_time_primitive.pk_entity
     }
@@ -431,12 +444,12 @@ export class CreateProjectDataController {
     else if (stmt.object_chunk && !isEmpty(stmt.object_chunk)) {
       const created = await this.datChunkRepo.create(stmt.object_chunk)
       stmtObVal.object_chunk = await this.datChunkRepo.findById(created.pk_entity)
-      this.mergeSchemaModifier({ positive: { dat: { chunk: [stmtObVal.object_chunk] } } })
+      this.mergeSchemaModifier({positive: {dat: {chunk: [stmtObVal.object_chunk]}}})
       stmtObFk.fk_object_data = stmtObVal.object_chunk.pk_entity
     } else {
       throw new HttpErrors.UnprocessableEntity('Object of statement not found: ' + JSON.stringify(stmt));
     }
-    return { fk: stmtObFk, relatedModel: stmtObVal }
+    return {fk: stmtObFk, relatedModel: stmtObVal}
   }
 
 
@@ -459,6 +472,7 @@ export class CreateProjectDataController {
     this.schemaModifier = mergeDeepWith(concat, this.schemaModifier, ob)
   }
 
+
 }
 
 /**
@@ -473,7 +487,7 @@ function addOfF2Expression(resource: PartialDeep<InfResourceWithRelations>) {
     if (resource.fk_class === CLASS_PK_MANIFESTATION_SINGLETON) {
       resource.outgoing_statements = [
         ...(resource.outgoing_statements ?? []),
-        { fk_property: 1016, object_resource: { fk_class: 218 } },
+        {fk_property: 1016, object_resource: {fk_class: 218}},
       ];
     }
 
@@ -481,7 +495,7 @@ function addOfF2Expression(resource: PartialDeep<InfResourceWithRelations>) {
     else if (resource.fk_class === 219) {
       resource.incoming_statements = [
         ...(resource.incoming_statements ?? []),
-        { fk_property: 979, subject_resource: { fk_class: 218 } },
+        {fk_property: 979, subject_resource: {fk_class: 218}},
       ];
     }
 
@@ -489,7 +503,7 @@ function addOfF2Expression(resource: PartialDeep<InfResourceWithRelations>) {
     else if (resource.fk_class === 221) {
       resource.incoming_statements = [
         ...(resource.incoming_statements ?? []),
-        { fk_property: 1316, subject_resource: { fk_class: 218 } },
+        {fk_property: 1316, subject_resource: {fk_class: 218}},
       ];
     }
 
@@ -497,10 +511,12 @@ function addOfF2Expression(resource: PartialDeep<InfResourceWithRelations>) {
     else if (resource.fk_class === 502) {
       resource.incoming_statements = [
         ...(resource.incoming_statements ?? []),
-        { fk_property: 1305, subject_resource: { fk_class: 218 } },
+        {fk_property: 1305, subject_resource: {fk_class: 218}},
       ];
     }
 
   }
+
+
 }
 

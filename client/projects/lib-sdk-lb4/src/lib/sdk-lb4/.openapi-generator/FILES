@@ -6,6 +6,7 @@ api/account.service.ts
 api/accountData.service.ts
 api/analysis.service.ts
 api/api.ts
+api/communityVisibility.service.ts
 api/contentTree.service.ts
 api/datChunk.service.ts
 api/datChunkController.service.ts
@@ -46,6 +47,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/activationReportItem.ts
+model/allowedCommunityVisibility.ts
 model/analysisDefinition.ts
 model/analysisMapRequest.ts
 model/analysisMapResponse.ts
@@ -68,6 +70,9 @@ model/classConfig.ts
 model/colDef.ts
 model/columnName.ts
 model/columnNames.ts
+model/communityVisibilityConflicts.ts
+model/communityVisibilityOptions.ts
+model/communityVisibilityOptionsWithRelations.ts
 model/czmlSpatialValue.ts
 model/datChunk.ts
 model/datChunkFilter.ts
@@ -166,6 +171,8 @@ model/proTextProperty.ts
 model/profileActivationReport.ts
 model/profileDeactivationReport.ts
 model/projectPongRequest.ts
+model/projectVisibilityOptions.ts
+model/projectVisibilityOptionsWithRelations.ts
 model/pubAccount.ts
 model/queryDefinition.ts
 model/queryFilter.ts
@@ -220,6 +227,7 @@ model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
 model/unMapCheckResponse.ts
 model/unmapColumnBody.ts
+model/visibilityReport.ts
 model/warEntityPreview.ts
 model/warEntityPreviewPaginatedByPkReq.ts
 model/warEntityPreviewSearchExistingReq.ts

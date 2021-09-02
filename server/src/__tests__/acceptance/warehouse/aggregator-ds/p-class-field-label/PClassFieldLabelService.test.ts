@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import 'reflect-metadata';
 import {PClassFieldLabelId, PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
+import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
+import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
+import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
+import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -8,20 +13,15 @@ import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper'
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {createTypes} from '../../../../helpers/meta/model.helper';
-import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
+import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
+import {createTypes} from '../../../../helpers/meta/model.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {PPropertyService} from '../../../../../warehouse/primary-ds/property/PPropertyService';
-import {ProProjectService} from '../../../../../warehouse/primary-ds/ProProjectService';
-import {DfhPropertyLabelService} from '../../../../../warehouse/primary-ds/DfhPropertyLabelService';
-import {ProPropertyLabelService} from '../../../../../warehouse/primary-ds/ProPropertyLabelService';
-import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 
 const stubs: WarehouseStubs = {
     primaryDataServices: [
@@ -71,7 +71,7 @@ describe('PClassFieldLabelService', function () {
 
     it('should create incoming property label for en from ontome', async () => {
         const {prel, dfhProp} = await createDfhLabelMock();
-        const expected = '[reverse of: ' + DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label + ']'
+        const expected = DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_inverse_label
         const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_range,
