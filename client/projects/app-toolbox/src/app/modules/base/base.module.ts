@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DndModule } from 'ng2-dnd';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { ControlMessagesModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
@@ -12,6 +13,7 @@ import { OntoInfoModule } from 'projects/app-toolbox/src/app/shared/components/o
 import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.module';
 import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.module';
+import { EntityLabelConfigModule } from '../../shared/modules/entity-label-config/entity-label-config.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AddDialogComponent } from './components/add-dialog/add-dialog.component';
@@ -30,6 +32,9 @@ import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existenc
 import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
 import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dialog.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
+import { EntityCardHeaderComponent } from './components/entity-card-header/entity-card-header.component';
+import { EntityCardWrapperComponent } from './components/entity-card-wrapper/entity-card-wrapper.component';
+import { EntityCardComponent } from './components/entity-card/entity-card.component';
 import { EntityFieldComponent } from './components/entity-field/entity-field.component';
 import { EntityWithFieldsComponent } from './components/entity-with-fields/entity-with-fields.component';
 import { FgAppellationTeEnComponent } from './components/fg-appellation-te-en/fg-appellation-te-en.component';
@@ -93,12 +98,17 @@ const components = [
   FieldLabelComponent,
   EntityWithFieldsComponent,
   EntityFieldComponent,
-  SliderComponent
+  SliderComponent,
+  EntityCardComponent,
+  EntityCardWrapperComponent,
+  EntityCardHeaderComponent,
+
 ]
 
 const baseModules = [
   NgbModule, // TODO remove all dependencies and then the module
   CommonModule,
+  DndModule,
   ReactiveFormsModule,
   MaterialModule,
   EntityPreviewModule,
@@ -113,6 +123,7 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
+  EntityLabelConfigModule,
   // ReduxQueriesModule
 ]
 

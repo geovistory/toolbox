@@ -72,6 +72,12 @@ export class WarEntityPreviewTimeSpan {
 @model()
 export class WarEntityPreview extends Entity {
   @property({
+    type: 'string',
+    id: true,
+  })
+  key?: string;
+
+  @property({
     type: 'number',
     id: true,
   })

@@ -10,83 +10,9 @@
       <gv-detail-top-bar height="5rem" [openRightAreaBtn]="t.layoutMode=='left-only'"
         (openRight)="t.setLayoutMode('both')" *ngIf="(showHeader$ | async)">
 
-        <div class="summary">
-          <div class="summary-icon" dnd-draggable [dragData]="preview$ | async">
 
-            <mat-icon *ngIf="(iconType$ | async)==='expression-portion'" class="gv-source-color">folder
-            </mat-icon>
-
-            <span *ngIf="(iconType$ | async)==='source'"
-              class="icon gv-icon gv-icon-source gv-source-color align-self-center gv-icon-preview"></span>
-
-            <span *ngIf="(iconType$ | async)==='persistent-entity'"
-              class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-
-            <span *ngIf="(iconType$ | async)==='temporal-entity'"
-              class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
-
-          </div>
-          <div class="summary-texts">
-            <div class="ellipsis">
-              <h2 class="summary-entity-label ellipsis">
-                <span [matTooltip]="'Entity ' + pkEntity">
-                  <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
-                  {{(preview$|async)?.entity_label}}
-                </span>
-                <span class="ml-1 mat-caption mat-text-secondary">ID: {{pkEntity}}</span>
-              </h2>
-              <div class="summary-entity-label ellipsis">
-
-                <span class="mat-text-secondary">Class:</span>
-                <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
-                </gv-onto-class-info>
-                <span> {{classLabel$ | async}}</span>
-                <span *ngIf="(preview$|async)?.fk_type" class="mat-text-secondary">, Type: </span>
-                <span *ngIf="(preview$|async)?.fk_type"> {{(preview$|async)?.type_label}} </span>
-              </div>
-            </div>
-          </div>
-          <div class="summary-button">
-            <div fxFlex fxLayout="row" fxLayoutAlign="end center">
-              <button mat-icon-button [matMenuTriggerFor]="mainMenu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #mainMenu="matMenu" xPosition="before">
-
-                <!-- toggle onto info -->
-                <button mat-menu-item (click)="$event.stopPropagation();">
-                  <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggle('showOntoInfo');">
-                    Ontology Info
-                  </mat-slide-toggle>
-                </button>
-                <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
-                <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Settings for class {{classLabel$|async}}
-                </div>
-                <gv-entity-label-config-open-btn *ngIf="fkClass$|async" [fkClass]="fkClass$ | async">
-                  <button mat-menu-item *ngIf="!(isViewMode$ | async)">
-                    <mat-icon svgIcon="cogs"></mat-icon>
-                    <span>Configure Labels</span>
-                  </button>
-                </gv-entity-label-config-open-btn>
-                <button mat-menu-item (click)="openClassConfig()">
-                  <mat-icon svgIcon="cogs"></mat-icon>
-                  Configure Fields
-                </button>
-                <!-- remove -->
-                <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
-                <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
-                <button mat-menu-item (click)="openRemoveDialog();" *ngIf="!(isViewMode$ | async)">
-                  <mat-icon color="warn">delete</mat-icon>
-                  <span>Remove</span>
-                </button>
-
-              </mat-menu>
-            </div>
-
-          </div>
-        </div>
-
-
+        <gv-entity-card-header (removed)="close.emit()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+          [fkClass$]="fkClass$" [pkEntity]="pkEntity"></gv-entity-card-header>
       </gv-detail-top-bar>
       <gv-detail-content>
 
@@ -102,7 +28,8 @@
 
           <div class="gv-tile-body">
 
-            <gv-properties-tree [source]="source" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">
+            <gv-properties-tree *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+              [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
             </gv-properties-tree>
 
           </div>

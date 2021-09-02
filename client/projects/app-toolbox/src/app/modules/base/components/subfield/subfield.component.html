@@ -14,7 +14,7 @@
           <gv-onto-class-info class="mr-2" [pkClass]="item.targetClass" *ngIf="showOntoInfo$ | async">
           </gv-onto-class-info>
           <gv-entity-preview *ngIf="item.target.entityPreview; else teEn" [preview]="item.target.entityPreview"
-            [dragEnabled]="false" [openTabOnClick]="true">
+            [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)">
           </gv-entity-preview>
           <ng-template #teEn>
             <ng-container *ngIf="item.target.entity; else rest">
@@ -32,15 +32,23 @@
                 </button>
               </mat-menu>
 
-              <span class="font-xs text-muted class-label"
+              <span *ngIf="!(readonly$|async)" class="font-xs text-muted class-label"
                 [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity" [matMenuTriggerFor]="teEnMenu">
                 <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                 <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
                 {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
               </span>
+
+              <span *ngIf="(readonly$|async)" class="font-xs text-muted class-label"
+                [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity">
+                <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
+                <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
+                {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
+              </span>
+
               <gv-entity-with-fields [source]="{fkInfo:item.target.entity.pkEntity}"
                 [fkClass]="item.target.entity.fkClass" [showOntoInfo$]="showOntoInfo$"
-                [scope]="scope.notInProject ? {inRepo:true} : scope">
+                [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">
               </gv-entity-with-fields>
             </ng-container>
           </ng-template>
@@ -54,7 +62,7 @@
           </ng-template>
         </span>
 
-        <span class="right-col" *ngIf="!(addMode$|async)">
+        <span class="right-col" *ngIf="!(addMode$|async) && !(readonly$|async)">
           <mat-menu #appMenu="matMenu">
 
             <ng-container *ngIf="item.target.timeSpan; else entity">

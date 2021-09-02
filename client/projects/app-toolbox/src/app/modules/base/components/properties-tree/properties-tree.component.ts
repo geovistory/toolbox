@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService, SectionName } from '@kleiolab/lib-queries';
-import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 
 @Component({
@@ -22,8 +22,8 @@ export class PropertiesTreeComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  // @Input() appContext: number;
-  @Input() readonly$ = new BehaviorSubject(false);
+  @Input() scope: GvFieldPageScope;
+  @Input() readonly$: Observable<boolean>;
 
   basic = SectionName.basic;
   metadata = SectionName.metadata;
@@ -35,5 +35,14 @@ export class PropertiesTreeComponent implements OnInit {
     public p: ActiveProjectService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    const errors: string[] = []
+
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
+  }
 }
