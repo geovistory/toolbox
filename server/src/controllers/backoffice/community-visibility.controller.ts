@@ -103,8 +103,8 @@ export class CommunityVisibilityController {
         information.resource t1,
         tw1 t2
       where (
-          (t1.community_visibility->'toolbox')::boolean IS NULL OR
-          NOT ((t1.community_visibility->'toolbox')::boolean = ANY(t2.allowed_toolbox_visibility))
+          (t1.community_visibility->>'toolbox')::boolean IS NULL OR
+          NOT ((t1.community_visibility->>'toolbox')::boolean = ANY(t2.allowed_toolbox_visibility))
         )
       and t2.fk_class = t1.fk_class
       GROUP BY
@@ -122,8 +122,8 @@ export class CommunityVisibilityController {
         information.resource t1,
         tw1 t2
       where (
-          (t1.community_visibility->'dataApi')::boolean IS NULL OR
-          NOT ((t1.community_visibility->'dataApi')::boolean = ANY(t2.allowed_dataapi_visibility))
+          (t1.community_visibility->>'dataApi')::boolean IS NULL OR
+          NOT ((t1.community_visibility->>'dataApi')::boolean = ANY(t2.allowed_dataapi_visibility))
         )
       and t2.fk_class = t1.fk_class
       GROUP BY
@@ -141,8 +141,8 @@ export class CommunityVisibilityController {
         information.resource t1,
         tw1 t2
       where (
-          (t1.community_visibility->'website')::boolean IS NULL OR
-          NOT ((t1.community_visibility->'website')::boolean = ANY(t2.allowed_website_visibility))
+          (t1.community_visibility->>'website')::boolean IS NULL OR
+          NOT ((t1.community_visibility->>'website')::boolean = ANY(t2.allowed_website_visibility))
         )
       and t2.fk_class = t1.fk_class
       GROUP BY
@@ -223,8 +223,8 @@ export class CommunityVisibilityController {
       ${onlyConflicting ? `
       -- restrict to conflicting entities
       AND (
-                (t1.community_visibility->'${channel}')::boolean IS NULL OR
-                (t1.community_visibility->'${channel}')::boolean NOT IN (${q.addParams(allowedVals)})
+                (t1.community_visibility->>'${channel}')::boolean IS NULL OR
+                (t1.community_visibility->>'${channel}')::boolean NOT IN (${q.addParams(allowedVals)})
         )`: ''}
     )`
 
