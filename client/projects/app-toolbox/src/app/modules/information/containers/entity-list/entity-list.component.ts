@@ -81,8 +81,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
         this.p.setListType('')
 
         this.m.openModalCreateOrAddEntity({
-          classAndTypePk,
-          pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+          pkClass: classAndTypePk.pkClass
         }).subscribe(result => {
           this.p.addEntityTab(result.pkEntity, result.pkClass)
         })

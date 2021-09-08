@@ -17,9 +17,7 @@ export class EntityCardComponent implements OnInit {
   @Input() showOntoInfo$: BehaviorSubject<boolean>;
   @Input() readonly$: BehaviorSubject<boolean>;
 
-  constructor(
-  ) {
-  }
+  constructor() { }
 
   ngOnInit(): void {
     const errors: string[] = []
@@ -30,5 +28,4 @@ export class EntityCardComponent implements OnInit {
     if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
   }
-
 }

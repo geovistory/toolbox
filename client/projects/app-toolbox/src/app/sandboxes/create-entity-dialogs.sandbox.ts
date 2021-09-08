@@ -2,10 +2,9 @@ import { Component, Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, WareEntityPreviewPage, WarEntityPreview, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-queries';
+import { IconType, ReduxMainService } from '@kleiolab/lib-redux';
+import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreview, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -22,11 +21,12 @@ import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
+import { MockPaginationControllerForPropertiesTree } from 'projects/__test__/mock-services/MockPaginationControllerForPropertiesTree';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { BaseModule } from '../modules/base/base.module';
-import { AddDialogComponent, AddDialogData } from '../modules/base/components/add-dialog/add-dialog.component';
-import { AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData } from '../modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { AddEntityDialogComponent, AddEntityDialogData } from '../modules/base/components/add-entity-dialog/add-entity-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
 import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../modules/base/components/ctrl-entity/ctrl-entity.component';
 import { InitStateModule } from '../shared/components/init-state/init-state.module';
@@ -37,8 +37,8 @@ import { InitStateModule } from '../shared/components/init-state/init-state.modu
     selector: 'gv-sandbox-create-dialogs',
     template: `
     <button (click)="fromNewEntity()">From add new entity</button>
-    <button (click)="fromCard()">From a card</button>
-    <button (click)="fromField()">From a field dialog</button>
+    <button (click)="fromCard()">From view fields</button>
+    <button (click)="fromField()">From form fields</button>
     <div>
         <p>Dialog result:</p>
         <pre>{{result | json}}</pre>
@@ -60,23 +60,18 @@ export class SandBoxCreateDialogsComponent {
             CtrlEntityDialogComponent, {
             ...this.dialogSizing,
             data: {
+                pkClass: 21,
+                hiddenProperty: undefined,
                 initVal$: new BehaviorSubject<CtrlEntityModel>(null),
                 showAddList: true,
-                hiddenProperty: undefined,
                 disableIfHasStatement: undefined,
-                classAndTypePk: {
-                    pkClass: 21,
-                    pkType: undefined
-                },
                 defaultSearch: ''
-                ,
-                pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
             }
         }).afterClosed().subscribe(res => this.result = res)
     }
 
     fromCard() {
-        this.dialog.open<AddDialogComponent, AddDialogData>(AddDialogComponent, {
+        this.dialog.open<AddStatementDialogComponent, AddStatementDialogData>(AddStatementDialogComponent, {
             ...this.dialogSizing,
             data: {
                 field: {
@@ -89,12 +84,11 @@ export class SandBoxCreateDialogsComponent {
     }
 
     fromNewEntity() {
-        this.dialog.open<AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent>(
-            AddOrCreateEntityDialogComponent, {
+        this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateOrAddEntityEvent>(
+            AddEntityDialogComponent, {
             ...this.dialogSizing,
             data: {
-                classAndTypePk: { pkClass: 21, pkType: undefined },
-                pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
+                pkClass: 21,
             }
         }).afterClosed().subscribe(res => this.result = res)
     }
@@ -142,6 +136,8 @@ const appeTypeMock: GvPositiveSchemaObject = {
 /*****************************************************************************
  * MOCK services
  *****************************************************************************/
+
+
 /**
  * This service mocks the find-laguages REST API
  */
@@ -184,6 +180,18 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
         const preview = warEntityPreviews.find((x) => x?.pk_entity === pkEntity)
         return new BehaviorSubject(preview).pipe(delay(300))
     }
+}
+
+/**
+ * This service mocks the streamEntityPreview method
+ */
+@Injectable()
+export class InformationBasicPipesServiceMock extends InformationBasicPipesService {
+
+    pipeIconType(pkEntity: number): Observable<IconType> {
+        return of('persistent-entity')
+    }
+
 }
 
 class WarEntityPreviewControllerServiceMock {
@@ -249,6 +257,8 @@ export default sandboxOf(SandBoxCreateDialogsComponent, {
         { provide: WarEntityPreviewControllerService, useClass: WarEntityPreviewControllerServiceMock },
         { provide: LanguagesService, useClass: LanguagesServiceMock },
         { provide: ReduxMainService, useClass: ReduxMainServiceMock },
+        { provide: InformationBasicPipesService, useClass: InformationBasicPipesServiceMock },
+        { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForPropertiesTree },
     ]
 })
     .add('Create Entity Dialog | From a field (CtrlEntityComponent) ', {

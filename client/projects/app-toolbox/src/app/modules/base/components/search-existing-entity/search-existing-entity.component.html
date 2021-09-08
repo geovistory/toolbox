@@ -10,7 +10,7 @@
     </ng-container>
 
     <!-- Search input & back button -->
-    <div *ngIf="mode == 'searchAndBack'" class="gv-row-start">
+    <div *ngIf="mode == 'searchAndBack'" class="gv-row-start mr-3">
 
       <!-- Back button -->
       <div class="gv-col-start">
@@ -21,7 +21,7 @@
       </div>
 
       <!-- Search input -->
-      <mat-form-field appearance="outline" class="loc-search-input ml-3 mr-3">
+      <mat-form-field appearance="outline" class="loc-search-input ml-3">
         <mat-label>Search</mat-label>
         <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
           (keyup)="searchString$.next($any($event).target.value)">
@@ -29,7 +29,8 @@
     </div>
 
     <!-- List -->
-    <div *ngIf="hitsFound" class="gv-row-center">
+    <div *ngIf="hitsFound" class="gv-row-center gv-ovf-auto">
+      <!--  style="height:calc(100% - 89px)" 193px: 42px footer + 60px header + 89px mat input-->
 
       <!-- List is empty-->
       <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async)===0 && searchString.length>= minSearchStringLength"

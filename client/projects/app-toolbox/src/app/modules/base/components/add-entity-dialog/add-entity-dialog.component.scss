@@ -18,3 +18,13 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+::ng-deep .mat-tab-body-wrapper {
+  height: 100%
+}
+
+::ng-deep .mat-tab-body-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

@@ -1,6 +1,6 @@
 <!-- Field Header, in case there are multiple different lists in this field (inherited properties) -->
 
-<div *ngIf="field.isSpecialField==='has-type'" class="mat-tree-node field-node mat-border-bottom">
+<div *ngIf="field.isSpecialField==='has-type'" class="mat-tree-node field-node border">
   <div class="full-width">
 
     <div class="left-col field-margin-left">
@@ -75,12 +75,9 @@
 
     </div>
   </div>
-  <!-- <mat-divider *ngIf="!treeControl.isExpanded(field)"></mat-divider> -->
 </div>
 
 <span class="child-node" [hidden]="!treeControl?.isExpanded(field)">
-
-
   <div class="child-content">
     <gv-subfield [source]="source" [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
       [readonly$]="readonly$">
@@ -90,7 +87,4 @@
   <div class="child-no-content" *ngIf="!((itemsCount$ |async) > 0)">
     <div class="mat-elevation-z1"><i class="mat-text-secondary">No items</i></div>
   </div>
-
-  <!-- <mat-divider></mat-divider> -->
-
 </span>

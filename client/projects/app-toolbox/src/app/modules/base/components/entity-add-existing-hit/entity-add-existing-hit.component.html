@@ -1,11 +1,11 @@
-<div class="gv-row-center mb-3 hit" matTooltip="{{moreDetails ? 'Click to see more details about this entity' : ''}}"
-  [matTooltipPosition]="'right'" [ngClass]="{'selected': selected}" (click)="more()">
+<div class="gv-row-center mb-3 hit" [ngClass]="{'selected': selected}" (click)="more()">
 
-  <div class="hit-left-part">
+  <div class="hit-left-part ml-3">
     <!-- Already in project icon -->
-    <div class="gv-col-center" style="margin-right: 10px">
+    <div class="gv-col-center" style="margin-right: 10px"
+      matTooltip="{{isInProject ? 'Already in your project' : 'Not in your project'}}">
       <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
-      <mat-icon class="gv-settings-color" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
+      <mat-icon class="gv-settings-color mat-text-disabled" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
     </div>
 
     <!-- Entity description -->
@@ -19,8 +19,9 @@
   </div>
 
   <!-- Options -->
-  <div class="gv-col-center ml-2" style="justify-content: center;">
-    <mat-icon svgIcon="chevron-right" *ngIf="moreDetails && !selected"></mat-icon>
+  <div class="gv-col-center ml-2 mr-2" style="justify-content: center;"
+    matTooltip="{{moreDetails && !selected ? 'See more details' : ''}}">
+    <mat-icon class="mat-text-secondary" svgIcon="chevron-right" *ngIf="moreDetails && !selected"></mat-icon>
     <mat-icon *ngIf="!(moreDetails && !selected)"></mat-icon>
   </div>
 

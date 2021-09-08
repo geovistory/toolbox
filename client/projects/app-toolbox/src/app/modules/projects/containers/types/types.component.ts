@@ -195,8 +195,7 @@ export class TypesComponent implements OnInit, OnDestroy {
   onAddOrCreate() {
 
     this.m.openModalCreateOrAddEntity({
-      classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
-      pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
+      pkClass: this.pkClass
     })
 
       .subscribe(result => {

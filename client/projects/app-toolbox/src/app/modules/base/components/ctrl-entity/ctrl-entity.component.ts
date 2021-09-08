@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { GvFieldProperty, InfResourceWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -194,17 +193,12 @@ export class CtrlEntityComponent implements OnDestroy,
           width: this.showAddList ? '980px' : '500px',
           maxWidth: '100%',
           data: {
+            pkClass: this.pkClass,
+            hiddenProperty: this.property,
             initVal$: this.value$,
             showAddList: this.showAddList,
-            hiddenProperty: this.property,
             disableIfHasStatement: this.disableExistingWithStatement,
-            classAndTypePk: {
-              pkClass: this.pkClass,
-              pkType: undefined
-            },
-            defaultSearch: ''
-            ,
-            pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+            defaultSearch: '',
           }
         }
 

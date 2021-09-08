@@ -83,8 +83,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     this.p.setListType('')
 
     this.m.openModalCreateOrAddEntity({
-      classAndTypePk,
-      pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
+      pkClass: classAndTypePk.pkClass
     }).subscribe(result => {
       this.p.addEntityTab(result.pkEntity, result.pkClass)
     })

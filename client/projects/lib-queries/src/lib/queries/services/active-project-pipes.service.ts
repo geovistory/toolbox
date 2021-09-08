@@ -92,6 +92,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
    *
    * @param pkEntity
    * @param forceReload
+   * @param pkProject set to 0 to have the community version
    */
   streamEntityPreview(pkEntity: number, forceReload?: boolean, pkProject?: number): Observable<WarEntityPreview> {
 

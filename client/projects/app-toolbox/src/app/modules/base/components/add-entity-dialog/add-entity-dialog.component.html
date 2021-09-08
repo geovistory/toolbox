@@ -2,13 +2,13 @@
 
   <!-- Slide 1: header -->
   <div left-header class="mat-h2 loc-slider-header">
-    Define a new {{classLabel$|async}}...
+    Create a new {{classLabel$|async}}
   </div>
 
   <!-- Slide 1: body -->
   <div left-body class="gv-flex-fh gv-ovf-auto">
-    <gv-form-create-entity [pkClass]="(pkClass$ | async)" [hiddenProperty]="data.hiddenProperty" [hideTitle]="true"
-      [hideButtons]="true" [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
+    <gv-form-create-entity [pkClass]="(pkClass$ | async)" [hideTitle]="true" [hideButtons]="true"
+      (cancel)="closeAddForm()" (saved)="onCreated($event)" (searchString)="searchStringChange($event)" #f>
     </gv-form-create-entity>
   </div>
 
@@ -16,30 +16,28 @@
   <div left-footer class="loc-slider-footer mt-3">
     <div class="gv-col-space-between">
       <button mat-flat-button color="primary"
-        [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="onFormOk()">
-        <span *ngIf="!f?.saving">OK</span>
+        [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="f?.submit()">
+        <span *ngIf="!f?.saving">Create</span>
         <div *ngIf="f?.saving" style="margin: 6px;">
           <mat-spinner [diameter]="20"></mat-spinner>
         </div>
       </button>
     </div>
-
     <div class="gv-col-space-between">
-      <button mat-button type="button" class="ml-2 mr-2" (click)="dialogRef.close()">Cancel</button>
+      <button mat-button type="button" class="ml-2 mr-2" (click)="closeAddForm()">Cancel</button>
     </div>
   </div>
 
-
   <!-- Slide 2: header -->
-  <div center-header class="loc-slider-header mat-h2" *ngIf="data.showAddList">
+  <div center-header class="loc-slider-header mat-h2">
     ... or choose an existing {{classLabel$|async}}
   </div>
 
   <!-- Slide 2: body -->
   <div center-body class="gv-fh gv-col-start">
     <gv-search-existing-entity [pkClass]="(pkClass$ | async)" [searchString$]="searchString$"
-      [mode]="sliderView == 'right' ? 'searchAndBack' : 'filtered'" [disableIfHasStatement]="data.disableIfHasStatement"
-      (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
+      [mode]="sliderView == 'right' ? 'searchAndBack' : 'filtered'" (onMore)="onMoreClick($event)"
+      (onBack)="onBackClick()">
     </gv-search-existing-entity>
   </div>
 
@@ -52,8 +50,8 @@
           [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }" [readonly$]="entityCardReadOnly$">
         </gv-entity-card>
         <div class="gv-row-space-between mr-3 ml-3">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()">Select
-            Entity</button>
+          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="openEntity()">Open Entity in a new
+            tab</button>
           <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
         </div>
       </mat-tab>
@@ -62,12 +60,13 @@
         <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)" [pkClass$]="pkClass$"
           [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }" [readonly$]="entityCardReadOnly$"></gv-entity-card>
         <div class="gv-row-space-between mr-3 ml-3">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()">Select
-            Entity</button>
+          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="addEntityToProject()">
+            <span *ngIf="(selectedInProject$ | async)">Open Entity in a new tab</span>
+            <span *ngIf="!(selectedInProject$ | async)">Add Entity</span>
+          </button>
           <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
         </div>
       </mat-tab>
-
     </mat-tab-group>
   </div>
 </gv-slider>

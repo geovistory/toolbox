@@ -16,8 +16,8 @@ import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/trunca
 import { EntityLabelConfigModule } from '../../shared/modules/entity-label-config/entity-label-config.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
-import { AddDialogComponent } from './components/add-dialog/add-dialog.component';
-import { AddOrCreateEntityDialogComponent } from './components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
+import { AddStatementDialogComponent } from './components/add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
@@ -85,8 +85,8 @@ const components = [
   ClassesAndTypesSelectComponent,
   ChooseClassDialogComponent,
   ExistenceTimeHelpComponent,
-  AddDialogComponent,
-  AddOrCreateEntityDialogComponent,
+  AddStatementDialogComponent,
+  AddEntityDialogComponent,
   SearchExistingEntityComponent,
   EntityAddExistingHitComponent,
   FgPlaceComponent,

@@ -8,7 +8,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
-import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
@@ -145,7 +145,7 @@ export class FieldComponent implements OnInit {
     const targetTyp = field.targets[targetClass]
     const isValueLike = isValueObjectSubfield(targetTyp.viewType);
     const showAddList = (!isValueLike && !field.identityDefiningForTarget)
-    const data: AddDialogData = {
+    const data: AddStatementDialogData = {
       field: field,
       targetClass,
       source: this.source
@@ -156,11 +156,8 @@ export class FieldComponent implements OnInit {
       maxWidth: '100%',
       data,
     }
-    this.dialog.open(AddDialogComponent, config);
+    this.dialog.open(AddStatementDialogComponent, config);
   }
-
-
-
 
   toggle() {
     if (this.treeControl) {

@@ -416,11 +416,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.service.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       this.m.openModalCreateOrAddEntity({
-        classAndTypePk: {
-          pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
-          pkType: undefined
-        },
-        pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
+        pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION
       }).subscribe((result) => {
 
         this.service.loadResource(result.pkEntity, pkProject)
