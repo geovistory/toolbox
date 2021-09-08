@@ -1,6 +1,7 @@
-import {GvSubentitFieldPageReq, TrueEnum} from '../../../../models'
+import {GvSubentitFieldPageReq} from '../../../../models'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {TrueEnum} from '../../../../models/sys-config/TrueEnum'
 
 export namespace GvSubentityFieldPageReqMock {
 

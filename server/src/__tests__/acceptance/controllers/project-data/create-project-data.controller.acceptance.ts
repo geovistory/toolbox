@@ -2,13 +2,17 @@ import {DataObject} from '@loopback/repository/dist/common-types';
 import {Client, expect} from '@loopback/testlab';
 import {CLASS_PK_EXPRESSION, CLASS_PK_ITEM, CLASS_PK_MANIFESTATION_PRODUCT_TYPE, CLASS_PK_MANIFESTATION_SINGLETON, CLASS_PK_WEB_REQUEST, PROPERTY_PK_P4_IS_SERVER_RESPONSE_TO_REQUEST, PROPERTY_PK_P5_HAS_CARRIER_PROVIDED_BY, PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR, PROPERTY_PK_R4_CARRIERS_PROVIDED_BY} from '../../../../config';
 import {LoginResponse} from '../../../../controllers/account.controller';
-import {DatChunk, InfAppellation, InfDimension, InfLangString, InfPlace, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../../../models';
+import {DatChunk, InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../../../models';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
+import {ProjectVisibilityOptions} from '../../../../models/sys-config/sys-config-project-visibility-options';
 import {GeovistoryServer} from '../../../../server';
+import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
+import {createSysSystemConfig} from '../../../helpers/atomic/sys-system-config.helper';
 import {DatChunkMock} from '../../../helpers/data/gvDB/DatChunkMock';
+import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
@@ -16,7 +20,6 @@ import {createAccountVerified} from '../../../helpers/generic/account.helper';
 import {createProject1} from '../../../helpers/graphs/project.helper';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
-
 
 describe('CreateProjectDataController', () => {
   let server: GeovistoryServer;
@@ -427,6 +430,44 @@ describe('CreateProjectDataController', () => {
       expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(4)
       expect(res.body.positive.inf?.language?.length).to.equal(1)
     })
+
+    it('should create project relation with projectVisibilityDefault', async () => {
+      await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
+      const def: ProjectVisibilityOptions = {dataApi: false, website: true}
+      await createSysSystemConfig({
+        specialFields: {},
+        classesDefault: {},
+        classesByBasicType: {8: {projectVisibilityDefault: def}},
+        classes: {},
+      })
+      const params = {pkProject: ProProjectMock.PROJECT_1.pk_entity, }
+      const resource: Partial<InfResource> = {fk_class: 21}
+      const res: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res.body.positive.pro?.info_proj_rel?.[0]?.project_visibility).to.deepEqual(def)
+    })
+
+    it('should create resource with communityVisibilityDefault', async () => {
+      await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
+      const def = {toolbox: true, dataApi: false, website: true}
+      await createSysSystemConfig({
+        specialFields: {},
+        classesDefault: {},
+        classesByBasicType: {8: {communityVisibilityDefault: def}},
+        classes: {},
+      })
+      const params = {pkProject: ProProjectMock.PROJECT_1.pk_entity, }
+      const resource: Partial<InfResource> = {fk_class: 21}
+      const res: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res.body.positive.inf?.resource?.[0].community_visibility).to.deepEqual(def)
+    })
   })
 
   describe('POST /project-data/upsert-statements', () => {
@@ -502,6 +543,8 @@ describe('CreateProjectDataController', () => {
       expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(2)
       expect(res.body.positive.inf?.lang_string?.length).to.equal(1)
     })
+
+
   })
 
 

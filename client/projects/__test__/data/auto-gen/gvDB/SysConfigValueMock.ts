@@ -1,330 +1,736 @@
-import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
-    classesDefault: {
-      formControlType: {
-        entity: 'true'
+    "classes": {
+      "1": {
+        "excludedFromEntities": true
       },
-      viewType: {
-        nestedResource: []
+      "40": {
+        "viewType": {
+          "appellation": 'true'
+        },
+        "formControlType": {
+          "appellation": 'true'
+        },
+        "valueObjectType": {
+          "appellation": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "50": {
+        "excludedFromEntities": true
+      },
+      "51": {
+        "formControlType": {
+          "place": 'true'
+        },
+        "valueObjectType": {
+          "place": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "52": {
+        "viewType": {
+          "dimension": {
+            "measurementUnitClass": 56
+          }
+        },
+        "formControlType": {
+          "dimension": {
+            "measurementUnitClass": 56
+          }
+        },
+        "valueObjectType": {
+          "dimension": {
+            "measurementUnitClass": 56
+          }
+        },
+        "excludedFromEntities": true
+      },
+      "54": {
+        "viewType": {
+          "language": 'true'
+        },
+        "formControlType": {
+          "language": 'true'
+        },
+        "valueObjectType": {
+          "language": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "70": {
+        "excludedFromEntities": true
+      },
+      "218": {
+        "excludedFromEntities": true
+      },
+      "335": {
+        "viewType": {
+          "timePrimitive": 'true'
+        },
+        "formControlType": {
+          "timePrimitive": 'true'
+        },
+        "valueObjectType": {
+          "timePrimitive": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "339": {
+        "viewType": {
+          "appellation": 'true'
+        },
+        "formControlType": {
+          "appellation": 'true'
+        },
+        "valueObjectType": {
+          "appellation": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "365": {
+        "formControlType": {
+          "appellationTeEn": 'true'
+        }
+      },
+      "445": {
+        "excludedFromEntities": true
+      },
+      "454": {
+        "excludedFromEntities": true
+      },
+      "455": {
+        "excludedFromEntities": true
+      },
+      "456": {
+        "excludedFromEntities": true
+      },
+      "457": {
+        "excludedFromEntities": true
+      },
+      "518": {
+        "excludedFromEntities": true
+      },
+      "521": {
+        "excludedFromEntities": true
+      },
+      "657": {
+        "viewType": {
+          "langString": 'true'
+        },
+        "formControlType": {
+          "langString": 'true'
+        },
+        "valueObjectType": {
+          "langString": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "689": {
+        "viewType": {
+          "dimension": {
+            "measurementUnitClass": 690
+          }
+        },
+        "formControlType": {
+          "dimension": {
+            "measurementUnitClass": 690
+          }
+        },
+        "valueObjectType": {
+          "dimension": {
+            "measurementUnitClass": 690
+          }
+        },
+        "excludedFromEntities": true
+      },
+      "707": {
+        "excludedFromEntities": true
+      },
+      "709": {
+        "excludedFromEntities": true
+      },
+      "713": {
+        "excludedFromEntities": true
+      },
+      "716": {
+        "viewType": {
+          "dimension": {
+            "measurementUnitClass": 715
+          }
+        },
+        "formControlType": {
+          "dimension": {
+            "measurementUnitClass": 715
+          }
+        },
+        "valueObjectType": {
+          "dimension": {
+            "measurementUnitClass": 715
+          }
+        },
+        "excludedFromEntities": true
+      },
+      "717": {
+        "excludedFromEntities": true
+      },
+      "783": {
+        "excludedFromEntities": true
+      },
+      "784": {
+        "viewType": {
+          "langString": 'true'
+        },
+        "formControlType": {
+          "langString": 'true'
+        },
+        "valueObjectType": {
+          "langString": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "785": {
+        "viewType": {
+          "langString": 'true'
+        },
+        "formControlType": {
+          "langString": 'true'
+        },
+        "valueObjectType": {
+          "langString": 'true'
+        },
+        "excludedFromEntities": true
+      },
+      "868": {
+        "formControlType": {
+          "appellationTeEn": 'true'
+        }
       }
     },
-    classesByBasicType: {
-      [8]: {
-        formControlType: {
-          entity: 'true'
+    "addProperty": [
+      {
+        "comment": "add <has appellation> to all teEn, peIt and types except for appe for lang itself",
+        "isOutgoing": false,
+        "toSourceClass": {
+          "whereBasicTypeIn": [
+            8,
+            9,
+            30
+          ],
+          "wherePkClassNotIn": [
+            365,
+            21,
+            870
+          ]
         },
-        viewType: {
-          entityPreview: 'true'
-        }
+        "whereFkDomain": 365,
+        "wherePkProperty": 1111
       },
-      [30]: {
-        formControlType: {
-          entity: 'true'
+      {
+        "comment": "add <has definition> to all teEn, peIt and types",
+        "isOutgoing": true,
+        "toSourceClass": {
+          "whereBasicTypeIn": [
+            8,
+            9,
+            30
+          ],
+          "wherePkClassNotIn": [
+            870,
+            783
+          ]
         },
-        viewType: {
-          entityPreview: 'true'
-        }
+        "wherePkProperty": 1762
+      },
+      {
+        "comment": "add <has time span> to all teEn",
+        "isOutgoing": true,
+        "toSourceClass": {
+          "whereBasicTypeIn": [
+            9
+          ]
+        },
+        "wherePkProperty": 4
+      },
+      {
+        "comment": "add <has to be merged with> to a lot of classes",
+        "isOutgoing": true,
+        "toSourceClass": {
+          "all": true
+        },
+        "wherePkProperty": 1499,
+        "replaceTargetClassWithSourceClass": true
+      },
+      {
+        "comment": "add «same as URI (same as) – P20 -> crm:E42 Identifier» to all classes.",
+        "isOutgoing": true,
+        "whereFkRange": 41,
+        "toSourceClass": {
+          "all": true,
+          "wherePkClassNotIn": [
+            41,
+            783
+          ]
+        },
+        "wherePkProperty": 1842
       }
-    },
-
-    'classes': {
-      '365': {
-        formControlType: {
-          appellationTeEn: 'true'
-        }
-      },
-      '1': {
-        'excludedFromEntities': true
-      },
-      '40': {
-        'viewType': {
-          'appellation': 'true'
-        },
-        'formControlType': {
-          'appellation': 'true'
-        },
-        'valueObjectType': {
-          'appellation': 'true'
-        },
-        'excludedFromEntities': true
-      },
-      '50': {
-        'excludedFromEntities': true
-      },
-      '51': {
-        'valueObjectType': {
-          'place': 'true'
-        },
-        'formControlType': {
-          'place': 'true'
-        },
-        'excludedFromEntities': true
-      },
-      '52': {
-        'viewType': {
-          'dimension': {
-            'measurementUnitClass': 56
-          }
-        },
-        'formControlType': {
-          'dimension': {
-            'measurementUnitClass': 56
-          }
-        },
-        'valueObjectType': {
-          'dimension': {
-            'measurementUnitClass': 56
-          }
-        },
-        'excludedFromEntities': true
-      },
-      '54': {
-        'viewType': {
-          'language': 'true'
-        },
-        'valueObjectType': {
-          'language': 'true'
-        },
-        'formControlType': {
-          'language': 'true'
-        },
-        'excludedFromEntities': true
-      },
-      '70': {
-        'excludedFromEntities': true
-      },
-      '218': {
-        'excludedFromEntities': true
-      },
-      '335': {
-        'viewType': {
-          'timePrimitive': 'true'
-        },
-        'valueObjectType': {
-          'timePrimitive': 'true'
-        },
-        'formControlType': {
-          'timePrimitive': 'true'
-        },
-        'excludedFromEntities': true
-      },
-      '445': {
-        'excludedFromEntities': true
-      },
-      '454': {
-        'excludedFromEntities': true
-      },
-      '455': {
-        'excludedFromEntities': true
-      },
-      '456': {
-        'excludedFromEntities': true
-      },
-      '457': {
-        'excludedFromEntities': true
-      },
-      '518': {
-        'excludedFromEntities': true
-      },
-      '521': {
-        'excludedFromEntities': true
-      },
-      '657': {
-        'viewType': {
-          'langString': 'true'
-        },
-        'valueObjectType': {
-          'langString': 'true'
-        },
-        'formControlType': {
-          'langString': 'true'
-        },
-        'excludedFromEntities': true
-      },
-      '689': {
-        'viewType': {
-          'dimension': {
-            'measurementUnitClass': 690
-          }
-        },
-        'valueObjectType': {
-          'dimension': {
-            'measurementUnitClass': 690
-          }
-        },
-        'formControlType': {
-          'dimension': {
-            'measurementUnitClass': 690
-          }
-        },
-        'excludedFromEntities': true
-      },
-      '707': {
-        'excludedFromEntities': true
-      },
-      '709': {
-        'excludedFromEntities': true
-      },
-      '713': {
-        'excludedFromEntities': true
-      },
-      '716': {
-        'viewType': {
-          'dimension': {
-            'measurementUnitClass': 715
-          }
-        },
-        'valueObjectType': {
-          'dimension': {
-            'measurementUnitClass': 715
-          }
-        },
-        'formControlType': {
-          'dimension': {
-            'measurementUnitClass': 715
-          }
-        },
-        'excludedFromEntities': true
-      },
-      '717': {
-        'excludedFromEntities': true
-      },
-      '783': {
-        'excludedFromEntities': true
-      },
-      '784': {
-        'viewType': {
-          'langString': 'true'
-        },
-        'valueObjectType': {
-          'langString': 'true'
-        },
-        'formControlType': {
-          'langString': 'true'
-        },
-        'excludedFromEntities': true
-      },
-      '785': {
-        'viewType': {
-          'langString': 'true'
-        },
-        'valueObjectType': {
-          'langString': 'true'
-        },
-        'formControlType': {
-          'langString': 'true'
-        },
-        'excludedFromEntities': true
-      }
-    },
-    'specialFields': {
-      'incomingProperties': {
-        '1111': {
-          'comment': 'has appellation for language',
-          'formSections': { 'basic': { 'position': 2 } },
-          'viewSections': { 'basic': { 'position': 2 } }
-        },
-        '1782': {
-          'comment': 'has identification – P18',
-          'formSections': { 'metadata': { 'hidden': true } },
-          'viewSections': { 'metadata': { 'position': 9 } }
-        },
-        '1499': {
-          'comment': 'has to be preferred to',
-          'formSections': { 'metadata': { 'hidden': true } },
-          'viewSections': { 'metadata': { 'position': 11 } }
-        }
-      },
-      'outgoingProperties': {
-        '4': {
-          'comment': 'has time-span (When)',
-          'formSections': {
-            'basic': {
-              'position': 7
-            },
-            'simpleForm': {
-              'position': 1
+    ],
+    "specialFields": {
+      "bySourceClass": {
+        "41": {
+          "incomingProperties": {
+            "1111": {
+              "comment": "has appellation",
+              "formSections": {
+                "specific": {
+                  "hidden": true
+                },
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "specific": {
+                  "position": 1
+                }
+              }
             }
           },
-          'isHasTimeSpanShortCut': true
+          "outgoingProperties": {
+            "1762": {
+              "comment": "has definition",
+              "formSections": {
+                "specific": {
+                  "hidden": true
+                },
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 5
+                }
+              }
+            },
+            "1843": {
+              "comment": "has value",
+              "formSections": {
+                "basic": {
+                  "position": 1
+                },
+                "simpleForm": {
+                  "position": 1,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            }
+          }
         },
-        '145': {
-          'comment': 'during (When)',
-          'formSections': { 'basic': { 'position': 8 } },
-          'isHasTimeSpanShortCut': true
+        "219": {
+          "incomingProperties": {
+            "1111": {
+              "comment": "has appellation",
+              "formSections": {
+                "specific": {
+                  "position": 1
+                },
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "specific": {
+                  "position": 1
+                }
+              }
+            }
+          },
+          "outgoingProperties": {
+            "1": {
+              "comment": "is identified by (in GV: has bibliographic reference)",
+              "formSections": {
+                "basic": {
+                  "position": 1.5,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1.5
+                }
+              }
+            }
+          }
         },
-        '1760': {
-          'comment': 'has web address (is web addess of) – P16',
-          'formSections': { 'basic': { 'position': 5 } }
+        "220": {
+          "incomingProperties": {
+            "1844": {
+              "comment": "belongs to -> Beloning to a Collection",
+              "formSections": {
+                "basic": {
+                  "position": 2
+                },
+                "simpleForm": {
+                  "position": 1.5,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            }
+          }
         },
-        '1761': {
-          'comment': 'has short title',
-          'formSections': { 'basic': { 'position': 1 } }
+        "221": {
+          "incomingProperties": {
+            "1844": {
+              "comment": "belongs to -> Beloning to a Collection",
+              "formSections": {
+                "basic": {
+                  "position": 2
+                },
+                "simpleForm": {
+                  "position": 1.5,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            }
+          }
         },
-        '1762': {
-          'comment': 'P18 has definition (is definition of)',
-          'formSections': { 'basic': { 'position': 4 } }
+        "783": {
+          "incomingProperties": {
+            "1111": {
+              "comment": "has appellation",
+              "formSections": {
+                "specific": {
+                  "hidden": true
+                },
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "specific": {
+                  "position": 1
+                }
+              }
+            }
+          },
+          "outgoingProperties": {
+            "1843": {
+              "comment": "has value",
+              "formSections": {
+                "basic": {
+                  "position": 1
+                },
+                "simpleForm": {
+                  "position": 1,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            }
+          }
         },
-        '1763': {
-          'comment': 'P19 has comment (is comment about)',
-          'formSections': { 'basic': { 'position': 6 } }
+        "870": {
+          "outgoingProperties": {
+            "63": {
+              "comment": "has language",
+              "formSections": {
+                "basic": {
+                  "position": 2
+                },
+                "simpleForm": {
+                  "position": 2,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            },
+            "1843": {
+              "comment": "has value",
+              "formSections": {
+                "basic": {
+                  "position": 1
+                },
+                "simpleForm": {
+                  "position": 1,
+                  "controlsOnInit": 1
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            }
+          }
         },
-        '1499': {
-          'comment': 'has to be merged with',
-          'formSections': { 'basic': { 'position': 10 } }
+        "872": {
+          "outgoingProperties": {
+            "4": {
+              "comment": "has time-span (When)",
+              "formSections": {
+                "basic": {
+                  "position": 1
+                },
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              },
+              "isHasTimeSpanShortCut": true
+            },
+            "1111": {
+              "comment": "has appellation",
+              "formSections": {
+                "simpleForm": {
+                  "position": 2,
+                  "controlsOnInit": 1
+                }
+              }
+            },
+            "1762": {
+              "comment": "P18 has definition (is definition of)",
+              "formSections": {
+                "basic": {
+                  "position": 2
+                },
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            },
+            "1844": {
+              "comment": "belongs to -> Collection",
+              "formSections": {
+                "simpleForm": {
+                  "position": 1,
+                  "controlsOnInit": 1
+                }
+              }
+            }
+          }
         }
       },
-      'hasTypeSubproperties': {
-        'comment': 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-        'formSections': { 'basic': { 'position': 3 } },
+      "incomingProperties": {
+        "1111": {
+          "comment": "has appellation for language",
+          "formSections": {
+            "basic": {
+              "position": 1
+            },
+            "simpleForm": {
+              "position": 1
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 1
+            }
+          }
+        },
+        "1499": {
+          "comment": "has to be preferred to",
+          "formSections": {
+            "specific": {
+              "hidden": true
+            }
+          },
+          "viewSections": {
+            "metadata": {
+              "position": 11
+            }
+          }
+        }
+      },
+      "outgoingProperties": {
+        "4": {
+          "comment": "has time-span (When)",
+          "formSections": {
+            "basic": {
+              "position": 1
+            },
+            "simpleForm": {
+              "position": 1
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 1
+            }
+          },
+          "isHasTimeSpanShortCut": true
+        },
+        "145": {
+          "comment": "during (When)",
+          "formSections": {
+            "basic": {
+              "position": 8
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 8
+            }
+          },
+          "isHasTimeSpanShortCut": true
+        },
+        "1499": {
+          "comment": "has to be merged with",
+          "formSections": {
+            "specific": {
+              "hidden": true
+            }
+          },
+          "viewSections": {
+            "metadata": {
+              "position": 11
+            }
+          }
+        },
+        "1760": {
+          "comment": "has web address (is web addess of) – P16",
+          "formSections": {
+            "basic": {
+              "position": 5,
+              "controlsOnInit": 1
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 5
+            }
+          }
+        },
+        "1761": {
+          "comment": "has short title",
+          "formSections": {
+            "basic": {
+              "position": 1,
+              "controlsOnInit": 1
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 1
+            }
+          }
+        },
+        "1762": {
+          "comment": "P18 has definition (is definition of)",
+          "formSections": {
+            "basic": {
+              "position": 2
+            },
+            "simpleForm": {
+              "position": 2
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 2
+            }
+          }
+        },
+        "1763": {
+          "comment": "P19 has comment (is comment about)",
+          "formSections": {
+            "basic": {
+              "position": 6
+            }
+          },
+          "viewSections": {
+            "basic": {
+              "position": 6
+            }
+          }
+        },
+        "1842": {
+          "comment": "P20 same as URI (same as) -> crm:E42 Identifier",
+          "formSections": {
+            "metadata": {
+              "position": 9
+            }
+          },
+          "viewSections": {
+            "metadata": {
+              "position": 9
+            }
+          }
+        }
+      },
+      "hasTypeSubproperties": {
+        "comment": "all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)",
+        "formSections": {
+          "basic": {
+            "position": 3
+          }
+        },
+        "viewSections": {
+          "basic": {
+            "position": 3
+          }
+        }
       }
     },
-    'addProperty': [
-      {
-        'comment': 'add <has appellation> to all teEn, peIt and types except for appe for lang itself',
-        'wherePkProperty': 1111,
-        'whereFkDomain': 365,
-        'isOutgoing': false,
-        'toSourceClass': {
-          'wherePkClassNotIn': [365],
-          'whereBasicTypeIn': [8, 9, 30]
-        }
+    "classesDefault": {
+      "viewType": {
+        "nestedResource": []
       },
-      {
-        'comment': 'add <has definition> to all teEn, peIt and types',
-        'wherePkProperty': 1762,
-        'isOutgoing': true,
-        'toSourceClass': {
-          'whereBasicTypeIn': [8, 9, 30]
-        }
-      },
-      {
-        'comment': 'add <has time span> to all teEn',
-        'wherePkProperty': 4,
-        'isOutgoing': true,
-        'toSourceClass': {
-          'whereBasicTypeIn': [9]
-        }
-      },
-      {
-        'comment': 'add <has identification> to teEn, peIt and types',
-        'wherePkProperty': 1782,
-        'isOutgoing': false,
-        'toSourceClass': {
-          'whereBasicTypeIn': [8, 9, 30]
-        }
-      },
-      {
-        'comment': 'add <has to be merged with> to a lot of classes',
-        'wherePkProperty': 1499,
-        'isOutgoing': true,
-        'toSourceClass': {
-          'whereBasicTypeIn': [8, 9, 10, 30]
-        },
-        'replaceTargetClassWithSourceClass': true
+      "formControlType": {
+        "entity": 'true'
       }
-    ]
+    },
+    "classesByBasicType": {
+      "8": {
+        "viewType": {
+          "entityPreview": 'true'
+        },
+        "formControlType": {
+          "entity": 'true'
+        }
+      },
+      "30": {
+        "viewType": {
+          "entityPreview": 'true'
+        },
+        "formControlType": {
+          "entity": 'true'
+        }
+      }
+    }
   }
 }

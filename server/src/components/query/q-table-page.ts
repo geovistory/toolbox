@@ -3,7 +3,7 @@ import { without } from 'ramda';
 import { Postgres1DataSource } from '../../datasources';
 import { DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
 import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
-import { SysConfigValue } from '../../models/sys-config';
+import {SysConfigValue} from '../../models/sys-config/sys-config-value.model';
 import { logSql } from '../../utils/helpers';
 import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 import { registerType } from '../spec-enhancer/model.spec.enhancer';

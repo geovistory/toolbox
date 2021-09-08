@@ -4,17 +4,20 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
-import {get, HttpErrors, post, requestBody} from '@loopback/rest';
-import {Roles} from '../components/authorization';
-import {Postgres1DataSource} from '../datasources/postgres1.datasource';
-import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
+import {get, HttpErrors, post, requestBody, RestBindings, RestServer} from '@loopback/rest';
+import {Roles} from '../../components/authorization';
+import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {SysConfigValue} from '../../models/sys-config/sys-config-value.model';
 export interface NumericIndex {[key: number]: true;}
 
 export const SYS_CONFIG_KEY = 'SYS_CONFIG';
 
 @tags('system configuration')
 export class SysConfigController {
-  constructor(@inject('datasources.postgres1') private dataSource: Postgres1DataSource) { }
+  constructor(
+    @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
+    @inject(RestBindings.SERVER) private restServer: RestServer,
+  ) { }
 
   @get('get-system-config', {
     responses: {
@@ -105,4 +108,12 @@ export class SysConfigController {
     }
     return valueObjectClasses
   }
+
+
+  @get('get-open-api-json')
+  async getSystemConfigJsonSchema(): Promise<object> {
+    return this.restServer.getApiSpec();
+  }
 }
+
+

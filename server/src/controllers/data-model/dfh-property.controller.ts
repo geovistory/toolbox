@@ -5,14 +5,15 @@ import {repository} from '@loopback/repository';
 import {get, param, tags} from '@loopback/rest';
 import {values} from 'lodash';
 import {indexBy} from 'ramda';
+import {SysConfigController} from '..';
 import {Roles} from '../../components/authorization/keys';
 import {Postgres1DataSource} from '../../datasources';
-import {DfhProperty, SysConfigValue} from '../../models';
+import {DfhProperty} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
+import {SysConfigValue} from '../../models/sys-config';
 import {DfhPropertyRepository} from '../../repositories';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {SysConfigController} from '../sys-config.controller';
 import {FindDataModelController} from './find-data-model.controller';
 
 @tags('data model')

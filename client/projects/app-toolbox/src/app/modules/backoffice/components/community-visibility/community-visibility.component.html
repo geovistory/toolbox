@@ -1,0 +1,29 @@
+<button (click)="load()">Reload</button>
+
+<div *ngIf="report?.length===0">No Conflicts found!</div>
+<div class="gv-scroll-y-container">
+
+  <div class="klass" *ngFor="let item of report">
+    <h2><a href="https://ontome.net/class/{{item.classId}}" target="_blank">{{item.label}}
+        ({{item.classId}})</a>
+    </h2>
+    <div>entities count: {{item.entitiesCount}} </div>
+    <div>allowed community visibility: {{item.allowedVisibility|json}}</div>
+    <div>default community visibility: {{item.defaultVisibility|json}}</div>
+    <div>conflicts in community visibility: <strong>{{item.totalConflicts}}</strong></div>
+    <div class="conflict" *ngFor="let conflict of item.conflicts">
+      <strong>{{conflict.conflicts}}</strong> entities have the not allowed value
+      <strong> {{conflict.conflicting_value|json}}</strong> in the community visibility for
+      <strong>{{conflict.channel}}</strong>
+      &nbsp;
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,true,true)">set conflicting
+        to true</button>
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,true,false)">set
+        conflicting to false</button>
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,false,true)">set all of
+        class to true</button>
+      <button [disabled]="updating" (click)="updateVisibility(item.classId, conflict.channel,false,false)">set all of
+        class to false</button>
+    </div>
+  </div>
+</div>

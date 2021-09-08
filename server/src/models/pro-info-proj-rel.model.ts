@@ -1,15 +1,16 @@
-import {model, property, Entity} from '@loopback/repository';
-import {ProEntity} from '.';
-import {CalendarType} from '../warehouse/primary-ds/edge/edge.commons';
+import { Entity, model, property } from '@loopback/repository';
+import { ProEntity } from '.';
+import { CalendarType } from '../warehouse/primary-ds/edge/edge.commons';
+import { ProjectVisibilityOptions } from './sys-config/sys-config-project-visibility-options';
 
 @model({
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'projects', table: 'v_info_proj_rel'}
+    postgresql: { schema: 'projects', table: 'v_info_proj_rel' }
   }
 })
-export class ProInfoProjRel  extends Entity implements ProEntity {
+export class ProInfoProjRel extends Entity implements ProEntity {
 
   @property({
     type: 'number',
@@ -82,6 +83,11 @@ export class ProInfoProjRel  extends Entity implements ProEntity {
     // required: true,
   })
   fk_last_modifier: number;
+
+  @property({
+    type: ProjectVisibilityOptions,
+  })
+  project_visibility: ProjectVisibilityOptions;
 
   // Define well-known properties here
 

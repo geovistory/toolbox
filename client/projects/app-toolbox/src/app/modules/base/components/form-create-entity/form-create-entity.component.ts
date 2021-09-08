@@ -14,9 +14,9 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { equals, flatten, groupBy, sum, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
@@ -32,17 +32,10 @@ export interface FormArrayData {
   // rootArray where one static item is used by the formGroupFactory
   rootArray?: FormGroupData,
 
-  // wraps the whole form in a statement, where the new entity is subject or object
-  wrapperStatement?: {
-    field: Field
-    targetClass: number
-    targetType: SysConfigFormCtrlType
-  }
-
   // is a section of the form, containing gvFormFields
   gvFormSection?: {
-    parentProperty?: GvFieldProperty
     section: FieldSection
+    fields: Field[]
     initValue: InfResourceWithRelations
   }
 
@@ -60,6 +53,12 @@ export interface FormArrayData {
   removeHook?: (x: FormArrayData) => any
 }
 
+
+export interface FormCreateEntityValue {
+  resource?: InfResourceWithRelations;
+  statement?: InfStatementWithRelations;
+}
+
 export interface FormField {
   field: Field
   addItemsOnInit: number
@@ -68,10 +67,7 @@ export interface FormField {
 }
 
 interface FormGroupData {
-  pkClass?: number
-  field?: Field
-  targetClass?: number
-  targetClassLabel?: string
+  pkClass: number
 }
 export interface FormControlData {
   controlType: ControlType
@@ -120,7 +116,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Input() source: GvFieldSourceEntity;
   @Input() field: Field;
-  @Input() targetClass: number;
 
   @Input() hideButtons = false // : boolean;
   @Input() hideTitle: boolean;
@@ -195,22 +190,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    if (!this.pkClass && !(this.field && this.targetClass)) throw new Error('You must provide a pkClass or a field+targetClass as @Input() on FormCreateEntityComponent');
+    if (!this.pkClass) throw new Error('You must provide a pkClass');
 
     this.c.pipeClassLabel(this.pkClass).subscribe(label => this.classLabel = label);
 
     if (this.initVal$) {
       this.initVal$.subscribe(b => {
-        if (b) this.setAdvanced(true);
         this._initVal$.next(b)
       })
     }
 
     const data: FormGroupData = {
-      pkClass: this.pkClass,
-      field: this.field,
-      targetClass: this.targetClass,
-      targetClassLabel: this.field ? this.field.targets[this.targetClass].targetClassLabel : undefined
+      pkClass: this.pkClass
     }
 
     this.formFactory$ = this.formFactoryService.create<FormGroupData, FormArrayData, FormControlData, any>({
@@ -255,13 +246,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   getChildNodeConfigs = (n: LocalNodeConfig): Observable<LocalNodeConfig[]> => {
     if (n.group?.data) return this.getRootArray(n.group.data)
     else if (n.array) {
-      if (n.array?.data?.rootArray?.pkClass) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
-      else if (n.array?.data?.rootArray?.field) return this.getWrapperStatement(n.array?.data?.rootArray)
       const a = n.array
-      if (a.data.wrapperStatement) return this.getGvFormSections(a.data.wrapperStatement.targetClass, a.data.wrapperStatement.field);
-      else if (a.data.gvFormSection) return this.getGvFormFields(a)
-      else if (a.data.gvFormField) return this.getControlWrappers(a.data.gvFormField, a.initValue)
-      else if (a.data.controlWrapper) {
+      if (a?.data?.rootArray) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
+      if (a.data.gvFormSection) return this.getGvFormFields(a)
+      if (a.data.gvFormField) return this.getControlWrappers(a.data.gvFormField, a.initValue)
+      if (a.data.controlWrapper) {
         const w = a.data.controlWrapper
         return this.getLeafControl(w.targetType, w.targetClass, w.field, a.initValue)
       }
@@ -270,64 +259,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     console.error('no child node created for this nodeConfig:', n)
   }
 
-
-  /**
-   * wrap the whole form in a form node that maps child values into a InfStatementWithRelations
-   */
-  private getWrapperStatement(data: FormGroupData): Observable<LocalNodeConfig[]> {
-    this.hiddenProperty = data.field.property;
-    const n: LocalNodeConfig = {
-      array: {
-        placeholder: data.targetClassLabel,
-        data: {
-          wrapperStatement: {
-            field: data.field,
-            targetClass: data.targetClass,
-            targetType: data.field.targets[data.targetClass].formControlType
-          },
-          pkClass: null
-        },
-        mapValue: (items: GvSectionsModel[]): { statement?: Partial<InfStatementWithRelations> } => {
-          const item = items[0]
-          let statement: Partial<InfStatementWithRelations> = { ...item.statement ?? {} }
-          if (data.field.isOutgoing) {
-            // assign subject
-            statement.fk_subject_info = this.source.fkInfo;
-            statement.fk_subject_data = this.source.fkData;
-            statement.fk_subject_tables_cell = this.source.fkTablesCell;
-            statement.fk_subject_tables_row = this.source.fkTablesRow;
-            // assign object
-            if (item.resource) statement.object_resource = item.resource
-          } else {
-            // assign object
-            statement.fk_object_info = this.source.fkInfo;
-            statement.fk_object_data = this.source.fkData;
-            statement.fk_object_tables_cell = this.source.fkTablesCell;
-            statement.fk_object_tables_row = this.source.fkTablesRow;
-            // assign subject
-            if (item.resource) statement.subject_resource = item.resource
-          }
-
-          // assign property
-          statement = {
-            ...statement,
-            fk_property: data.field.property.fkProperty,
-            fk_property_of_property: data.field.property.fkPropertyOfProperty,
-          }
-          return { statement }
-
-        }
-      },
-    }
-    return of([n])
-  }
-
   private getRootArray(data: FormGroupData): Observable<LocalNodeConfig[]> {
+
     const n: LocalNodeConfig = {
       array: {
         placeholder: '',
         data: { rootArray: data },
-        mapValue: (items: { resource?: InfResourceWithRelations, statement?: InfStatementWithRelations }[]) => {
+        mapValue: (items?: FormCreateEntityValue[]): FormCreateEntityValue => {
           if (items?.[0]?.resource) {
             // merge the resources produced by each section
             const outgoing_statements: InfStatementWithRelations[] = []
@@ -337,119 +275,163 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               incoming_statements.push(...i.resource?.incoming_statements ?? [])
             })
             return { resource: { ...items[0].resource, outgoing_statements, incoming_statements } }
-          } else {
-            return items?.[0]
-          }
+
+          } else if (items?.[0]?.statement) return items[0]
+          else return {}
         }
       }
     }
     return of([n])
   }
 
-  // }
   /**
    * generate the top level sections of the form
    */
-  private getGvFormSections(pkClass: number, field?: Field): Observable<LocalNodeConfig[]> {
+  private getGvFormSections(pkClass: number): Observable<LocalNodeConfig[]> {
     return combineLatest([
-      // fetch the formControlType of class
+      this.advancedMode$,
+      this._initVal$,
       this.ss.dfh$.class$.by_pk_class$.key(pkClass),
-      this.c.pipeTargetTypesOfClass(pkClass, field?.targetMaxQuantity),
+      this.c.pipeTargetTypesOfClass(pkClass),
       this.c.pipeTableNameOfClass(pkClass),
       this.c.pipeClassLabel(pkClass),
-      this.advancedMode$,
-      this._initVal$
-    ]).pipe(auditTime(10), map(([klass, targets, parentModel, label, advancedMode, initVal]) => {
+    ]).pipe(
+      switchMap(([advancedMode, initVal, klass, targets, parentModel, label]) => {
 
-      const formControlType = targets.formControlType;
+        // if we don't create an entity but a value object
+        if (!targets.formControlType.entity) { // skip all the sections and wrap control directly
 
-      if (formControlType.entity || !field) { // generate a the generic form
-
-        const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
-        // initialize the sections
-        if (!advancedMode) {
-          const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
-          this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
-          this.sections = [this.simpleFormSection]
-        } else if (isPersistentItem) {
-          this.sections = [this.basicSection, this.metadataSection, this.specificSection]
-        } else {
-          this.sections = [this.specificSection, this.metadataSection, this.basicSection]
+          const c = this.getControlWrapper(this.field, pkClass);
+          c.array.addOnInit = 1;
+          const mapValue = (items: InfStatementWithRelations): GvSectionsModel => {
+            return { statement: items[0] ?? {} }
+          }
+          c.array.mapValue = mapValue
+          return of([c])
         }
-        // this.sections[0].expanded$.next(true)
-        // this.sections[1].expanded$.next(true)
+        else { // else create a form with sections and fields
 
-        // temp
-        // const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
-        // this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
-        // this.sections = [this.specificSection, this.metadataSection, this.basicSection, this.simpleFormSection];
-        // end temp
+          // initialize the correct sections
+          const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
+          if (!advancedMode) {
+            const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
+            this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
+            this.sections = [this.simpleFormSection]
+          } else if (isPersistentItem) {
+            this.sections = [this.basicSection, this.metadataSection, this.specificSection]
+          } else {
+            this.sections = [this.specificSection, this.metadataSection, this.basicSection]
+          }
+          // pipe the fields of each section
+          const sectionsWithFields$ = combineLatestOrEmpty(
+            this.sections.map(section => section.pipeFields(pkClass).pipe(
+              map(fields => {
+                return fields.filter(fDef => {
+                  // Q: is this field hidden?
+                  if (equals(fDef.property, this.hiddenProperty)) return false;
+                  return true;
+                })
+              }),
+              map(fields => ({ section, fields }))
+            ))
+          )
+
+          return sectionsWithFields$.pipe(
+            map(sectionsWithFields => {
+
+              // if simple mode
+              if (!advancedMode) {
+
+                // Q: does init val need advanced mode?
+                const requiredFieldKeys = []
+                for (const s of initVal?.incoming_statements ?? []) {
+                  requiredFieldKeys.push('in_' + s.fk_property + '_' + s.fk_property_of_property)
+                }
+                for (const s of initVal?.outgoing_statements ?? []) {
+                  requiredFieldKeys.push('out_' + s.fk_property + '_' + s.fk_property_of_property)
+                }
+                const existingFieldKeys = {}
+                for (const s of sectionsWithFields) {
+                  for (const field of s.fields) {
+                    const directionPrefix = field.isOutgoing ? 'out_' : 'in_'
+                    existingFieldKeys[directionPrefix + field.property.fkProperty + '_' + field.property.fkPropertyOfProperty] = true
+                  }
+                }
+                let needsAdvancedMode = false
+                for (const requiredFieldKey of requiredFieldKeys) {
+                  // check if init value requires fields not available in simple form
+                  if (!existingFieldKeys[requiredFieldKey]) {
+                    needsAdvancedMode = true
+                    break;
+                  }
+                }
+
+                // A: yes.
+                if (needsAdvancedMode) {
+                  // return empty array (which will stop the pipe) and then set to advanced mode
+                  setTimeout(() => this.advancedMode$.next(true))
+                  return [];
+                }
+              }
 
 
+              return sectionsWithFields.map(s => {
+                // then create the child nodes
+                const n: LocalNodeConfig = {
+                  id: U.uuid(),
+                  array: {
+                    isList: false,
+                    required: true,
+                    maxLength: 1,
+                    placeholder: label,
+                    data: {
+                      gvFormSection: {
+                        initValue: initVal,
+                        section: s.section,
+                        fields: s.fields
+                      },
+                      pkClass: pkClass,
+                    },
+                    mapValue: (items: InfResourceWithRelations[]): GvSectionsModel => {
 
-        const nodes: LocalNodeConfig[] = this.sections.map(section => {
-          const n: LocalNodeConfig = {
-            id: U.uuid(),
-            array: {
-              isList: false,
-              required: true,
-              maxLength: 1,
-              placeholder: label,
-              data: {
-                gvFormSection: {
-                  initValue: initVal,
-                  section
-                },
-                pkClass: pkClass,
-              },
-              mapValue: (items: InfResourceWithRelations[]): GvSectionsModel => {
+                      // fetch the appellation for language string
+                      const curHasNames = items.filter(it => it?.incoming_statements)?.[0]?.incoming_statements
+                        ?.filter(is => is.fk_property == 1111)
+                        ?.map(appe => appe.subject_resource.outgoing_statements
+                          ?.find(stm => stm.fk_property == 1113)
+                          ?.object_appellation?.quill_doc?.ops.map(op => op.insert).join('').slice(0, -1)) ?? [];
 
-                // fetch the appellation for language string
-                const curHasNames = items.filter(it => it?.incoming_statements)?.[0]?.incoming_statements
-                  ?.filter(is => is.fk_property == 1111)
-                  ?.map(appe => appe.subject_resource.outgoing_statements
-                    ?.find(stm => stm.fk_property == 1113)
-                    ?.object_appellation?.quill_doc?.ops.map(op => op.insert).join('').slice(0, -1)) ?? [];
+                      let focusName = curHasNames.find(name => !this.previousHasNames.some(old => old == name));
+                      if (!focusName) focusName = this.previousFocusName;
+                      else this.previousFocusName = focusName;
 
-                let focusName = curHasNames.find(name => !this.previousHasNames.some(old => old == name));
-                if (!curHasNames[0]) focusName = '';
-                if (focusName == undefined) focusName = this.previousFocusName;
-                else this.previousFocusName = focusName;
+                      this.previousHasNames = curHasNames;
 
-                this.previousHasNames = curHasNames;
+                      this.emitNewSearchString(focusName);
 
-                this.emitNewSearchString(focusName);
-
-                const result: InfResourceWithRelations = {} as InfResourceWithRelations;
-                items.forEach(item => {
-                  for (const key in item) {
-                    if (item.hasOwnProperty(key) && item[key].length > 0) {
-                      result[key] = [...(result[key] || []), ...item[key]];
+                      const result: InfResourceWithRelations = {} as InfResourceWithRelations;
+                      items.forEach(item => {
+                        for (const key in item) {
+                          if (item.hasOwnProperty(key) && item[key].length > 0) {
+                            result[key] = [...(result[key] || []), ...item[key]];
+                          }
+                        }
+                      })
+                      result.fk_class = pkClass
+                      if (parentModel == 'resource') return { resource: result }
+                      else console.error('this parent model is unsupported:', parentModel)
                     }
                   }
-                })
-                result.fk_class = pkClass
-                if (parentModel == 'resource') return { resource: result }
-                else console.error('this parent model is unsupported:', parentModel)
-              }
-            }
-          }
-          return n
-        })
-        return nodes
-      }
+                }
+                return n
+              })
+            })
+          )
 
-      // else we have control belonging to a field
+        }
 
-      const c = this.getControlWrapper(field, pkClass);
-      c.array.addOnInit = 1;
-      const mapValue = (items: InfStatementWithRelations): GvSectionsModel => {
-        return { statement: items[0] ?? {} }
-      }
-      c.array.mapValue = mapValue
-      return [c]
-
-    }));
+      })
+    );
 
   }
 
@@ -463,95 +445,72 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         filter(([klass]) => !!klass),
-        switchMap(([dfhClass]) => {
+        map(([dfhClass]) => {
 
-          /**
-           * Here we define different simple forms for TeEn / PeIt
-           */
-          const isPersistentItem = (dfhClass.basic_type === 8 || dfhClass.basic_type === 30);
-          // const section = arrayConfig.data.gvFormSection.section;
-          // if (isPersistentItem && section.key === 'basic') section.expanded$.next(true)
-          // else if (!isPersistentItem && section.key === 'specific') section.expanded$.next(true)
           const section = arrayConfig.data.gvFormSection.section;
+          const fields = arrayConfig.data.gvFormSection.fields;
           const initVal: any = arrayConfig.data.gvFormSection.initValue;
+          const isPersistentItem = (dfhClass.basic_type === 8 || dfhClass.basic_type === 30);
 
-          return section.pipeFields(dfhClass.pk_class).pipe(
-            map((fields) => fields.filter(fDef => {
-              // Q: is this field not circular?
-              const parentPropety = arrayConfig.data.gvFormSection.parentProperty?.fkProperty;
-              if (parentPropety === fDef.property.fkProperty) return false;
-              // Q: is this field hidden?
-              if (equals(fDef.property, this.hiddenProperty)) return false;
+          return fields.map(f => {
 
-              return true;
-            })
-            ),
-            switchMap((fields) => {
-              return combineLatestOrEmpty(fields.map(f => {
+            // make one definition required for each persistent item
+            if (isPersistentItem && f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+              f.targetMinQuantity = 1;
+              f.identityDefiningForSource = true;
+            }
+            let addItemsOnInit = 0;
+            if (isPersistentItem && f.isOutgoing === false && f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
+              addItemsOnInit = 1
+            }
 
-                // make one definition required for each persistent item
-                if (isPersistentItem && f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
-                  f.targetMinQuantity = 1;
-                  f.identityDefiningForSource = true;
-                }
-                let addItemsOnInit = 0;
-                if (isPersistentItem && f.isOutgoing === false && f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
-                  addItemsOnInit = 1
-                }
+            // Add default controls to some properties according to the config
+            if (f.display.formSections?.[section.key]?.controlsOnInit) {
+              addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
+            }
 
-                // Add default controls to some properties according to the config
-                if (f.display.formSections?.[section.key]?.controlsOnInit) {
-                  addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
-                }
+            const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
+            const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
 
-                const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
-                const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
-
-
-                const n: LocalNodeConfig = {
-                  array: {
-                    data: {
-                      gvFormField: {
-                        minLength,
-                        maxLength,
-                        field: f,
-                        addItemsOnInit
-                      },
-                      pkClass: undefined,
-                    },
-                    initValue: this.getInitValueForFieldNode(f, initVal?.resource ?? initVal),
-                    placeholder: f.label,
-                    required: this.ctrlRequired(f),
-                    validators: [
-                      (control: FormArray): { [key: string]: any } | null => {
-                        const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
-                        return length >= minLength
-                          ? null : { 'minLength': { value: control.value, minLength } }
-                      },
-                      (control: FormArray): { [key: string]: any } | null => {
-                        const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
-                        return length <= maxLength
-                          ? null : { 'maxLength': { value: control.value, maxLength } }
-                      }
-                    ],
-                    mapValue: (x) => {
-                      const items = flatten(x) // Flattens the values of the lists of this field
-                      const key = getStatementKey(f.isOutgoing)
-                      return { [key]: items }
-                    },
+            const n: LocalNodeConfig = {
+              array: {
+                data: {
+                  gvFormField: {
+                    minLength,
+                    maxLength,
+                    field: f,
+                    addItemsOnInit
                   },
-                  id: U.uuid()
-                };
-                return of(n)
-              })
+                  pkClass: undefined,
+                },
+                initValue: this.getInitValueForFieldNode(f, initVal?.resource ?? initVal),
+                placeholder: f.label,
+                required: this.ctrlRequired(f),
+                validators: [
+                  (control: FormArray): { [key: string]: any } | null => {
+                    const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                    return length >= minLength
+                      ? null : { 'minLength': { value: control.value, minLength } }
+                  },
+                  (control: FormArray): { [key: string]: any } | null => {
+                    const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                    return length <= maxLength
+                      ? null : { 'maxLength': { value: control.value, maxLength } }
+                  }
+                ],
+                mapValue: (x) => {
+                  const items = flatten(x) // Flattens the values of the lists of this field
+                  const key = getStatementKey(f.isOutgoing)
+                  return { [key]: items }
+                },
+              },
+              id: U.uuid()
+            };
+            return n
+          })
 
-              )
-            }));
         })
       )
-
-
-
   }
 
   /**
@@ -752,32 +711,21 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   save() {
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const addEntities$ = uniq(this.resourcesToAdd).map(pkEntity => this.s1.api.addEntityToProject(pkProject, pkEntity))
       const value = this.formFactory.formGroupFactory.valueChanges$.value
       let upsert$: Observable<GvSchemaModifier>;
       if (value.resource) {
         upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
       }
-      else if (value.statement) {
-        upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
-      }
       else {
         throw new Error(`Submitting ${value} is not implemented`);
       }
 
-
-      combineLatest([upsert$, ...addEntities$])
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(([res]: [GvSchemaModifier]) => {
-          console.log(JSON.stringify(res))
+      upsert$.pipe(takeUntil(this.destroy$))
+        .subscribe((res: GvSchemaModifier) => {
           if (res) {
             if (value.resource) {
               if (!res.positive.inf.resource.length) throw new Error('bad result')
               this.saved.emit(res.positive.inf.resource[0])
-            }
-            if (value.statement) {
-              if (!res.positive.inf.statement.length) throw new Error('bad result')
-              this.saved.emit(res.positive.inf.statement[0])
             }
             this.saving = false;
           }
@@ -1126,12 +1074,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                 if (field.isOutgoing) {
                   // assign object
-                  if (val.pkEntity) statement.fk_object_info = val.pkEntity;
+                  if (val.pkEntity) statement.object_resource = { pk_entity: val.pkEntity, fk_class: targetClass };
                   else if (val.resource) statement.object_resource = val.resource
 
                 } else {
                   // assign subject
-                  if (val.pkEntity) statement.fk_subject_info = val.pkEntity;
+                  if (val.pkEntity) statement.subject_resource = { pk_entity: val.pkEntity, fk_class: targetClass };
                   else if (val.resource) statement.subject_resource = val.resource
                 }
 

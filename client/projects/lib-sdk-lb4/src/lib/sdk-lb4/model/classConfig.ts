@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { GvFieldTargetViewType } from './gvFieldTargetViewType';
+import { AllowedCommunityVisibility } from './allowedCommunityVisibility';
 import { SysConfigFormCtrlType } from './sysConfigFormCtrlType';
 import { SysConfigValueObjectType } from './sysConfigValueObjectType';
 
@@ -22,5 +23,8 @@ export interface ClassConfig {
     formControlType?: SysConfigFormCtrlType;
     valueObjectType?: SysConfigValueObjectType;
     excludedFromEntities?: boolean;
+    communityVisibilityRange?: AllowedCommunityVisibility;
+    communityVisibilityDefault?: AllowedCommunityVisibility;
+    projectVisibilityDefault?: AllowedCommunityVisibility;
 }
 

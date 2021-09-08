@@ -14,7 +14,7 @@
   <div class="gv-col-center">
     <mat-icon color="primary" class="inside-width-center ml-2" style="font-size: 20px; height: 20px; cursor: pointer;"
       (click)="addItemInField(
-      formField.field, formField.field.targetClasses[0])" *ngIf="targetClasses.length===1 && length < maxLength">
+      formField.field, targetClasses[0].pkClass)" *ngIf="targetClasses.length===1 && length < maxLength">
       add
     </mat-icon>
 
