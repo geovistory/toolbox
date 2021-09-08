@@ -80,7 +80,7 @@ WITH tw1 AS (
     FROM
     projects.info_proj_rel t1
     JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity
-        AND (t2.community_visibility->'toolbox')::boolean=true
+        AND (t2.community_visibility->>'toolbox')::boolean=true
     JOIN data_for_history.v_class t3 ON t2.fk_class = t3.pk_class
         AND t1.tmsp_last_modification >=  $1
 
@@ -94,7 +94,7 @@ WITH tw1 AS (
     FROM information.resource t2
 	JOIN data_for_history.v_class t3 ON t2.fk_class = t3.pk_class
     WHERE t2.tmsp_last_modification >=  $1
-        AND (t2.community_visibility->'toolbox')::boolean=true
+        AND (t2.community_visibility->>'toolbox')::boolean=true
     ),
     tw2 AS (
         INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
@@ -132,7 +132,7 @@ export const deleteSql = `
                 SELECT t2.pk_entity "pkEntity"
                 FROM information.resource t2
                 WHERE t2.tmsp_last_modification >= $1
-                AND (t2.community_visibility->'toolbox')::boolean IS DISTINCT FROM true
+                AND (t2.community_visibility->>'toolbox')::boolean IS DISTINCT FROM true
             ),
             tw2 AS (
                 DELETE FROM war.entity_preview
