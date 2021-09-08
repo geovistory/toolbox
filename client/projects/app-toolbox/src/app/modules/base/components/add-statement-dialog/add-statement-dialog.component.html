@@ -14,7 +14,7 @@
 
     <!-- Slide 1: body -->
     <div left-body class="gv-flex-fh gv-ovf-auto">
-        <gv-form-create-entity [field]="data.field" [targetClass]="data.targetClass" [source]="data.source"
+        <gv-form-create-entity [field]="data.field" [pkClass]="data.targetClass" [source]="data.source"
             [hideTitle]="true" [hideButtons]="true" (saved)="onSaved()" [hideButtons]="true" #f>
         </gv-form-create-entity>
     </div>
