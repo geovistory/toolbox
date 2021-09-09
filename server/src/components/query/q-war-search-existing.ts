@@ -62,7 +62,9 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
 
         -- repo versions
         select *
-        from war.entity_preview t1
+        from
+          tw0 t0,
+          war.entity_preview t1
         WHERE t1.fk_project IS NULL
         ${tsSearchString ? `
         AND (
@@ -78,7 +80,9 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
 
         -- project versions
         select *
-        from war.entity_preview t1
+        from
+          tw0 t0,
+          war.entity_preview t1
         where t1.project= ${this.addParam(pkProject)}
         ${tsSearchString ? `
         AND (
