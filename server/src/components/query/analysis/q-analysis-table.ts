@@ -3,7 +3,8 @@ import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
 import {AnalysisTableRow} from '../../../models/analysis/analysis-table-response.model';
 import {ColDef, QueryDefinition} from '../../../models/pro-analysis.model';
 import {WarEntityPreview} from '../../../models/war-entity-preview.model';
-import {ColDefWithAliases, QAnalysisBase, QueryNode, QueryNodeWithAlias} from './q-analysis-base';
+import {logSql} from '../../../utils/helpers';
+import {ColDefWithAliases, LeftTable, QAnalysisBase, QueryNode, QueryPathSegmentWithAlias} from './q-analysis-base';
 
 
 
@@ -32,7 +33,7 @@ export class QAnalysisTable extends QAnalysisBase {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     // create froms and selects according to column definition
@@ -62,6 +63,7 @@ export class QAnalysisTable extends QAnalysisBase {
         ${this.offset}
         `;
 
+    logSql(this.sql, this.params)
     return this.execute<AnalysisTableRow[]>()
   }
 
@@ -74,52 +76,56 @@ export class QAnalysisTable extends QAnalysisBase {
       queryPathWithAlias: undefined
     }
     if (column?.queryPath && !column.ofRootTable) {
-      let thisTableAlias: string;
+      let leftEntityTable: LeftTable = {table: leftTableAlias, fk: 'pk_entity'}
+      let leftStatementTables: LeftTable[] = []
       const pathLength = column.queryPath.length;
       colWithAliases.queryPathWithAlias = column.queryPath.map((segment, i) => {
         // if this is the last segment and targets to a value object...
         if (i === pathLength - 1 && this.containsValueClass(segment)) {
           // .. we don't need to join another table and thus return segment
           // with left table alias
-          const node: QueryNodeWithAlias = {
+          const res: QueryPathSegmentWithAlias = {
             ...segment,
-            _tableAlias: leftTableAlias
+            _statementTables: leftStatementTables
           };
-          return node
+          return res;
         }
 
-        thisTableAlias = this.addTableAlias();
-        const node: QueryNodeWithAlias = {
-          ...segment,
-          _tableAlias: thisTableAlias
-        };
 
         // JOIN statements
         if (this.isStatementsJoin(segment)) {
-          this.joinStatements(
-            node,
-            leftTableAlias,
-            thisTableAlias,
+          leftStatementTables = this.joinStatements(
+            segment,
+            leftEntityTable,
             fkProject,
             this.froms
           );
+          const res: QueryPathSegmentWithAlias = {
+            ...segment,
+            _statementTables: leftStatementTables
+          };
+          return res;
         }
+        // JOIN values
+
+        // JOIN entities
         else if (this.isEntitesJoin(segment)) {
-
-          // JOIN entities
-          this.joinEntities(
-            node,
-            leftTableAlias,
-            thisTableAlias,
+          leftEntityTable = this.joinEntities(
+            segment,
+            leftStatementTables,
             fkProject,
             this.froms
           );
+          const res: QueryPathSegmentWithAlias = {
+            ...segment,
+            _entityTable: leftEntityTable
+          };
+          return res
         }
-
-        leftTableAlias = thisTableAlias;
-
-        return node;
-
+        else {
+          const res: QueryPathSegmentWithAlias = segment;
+          return res;
+        }
       });
     }
     return colWithAliases
@@ -149,23 +155,23 @@ export class QAnalysisTable extends QAnalysisBase {
     const segment = this.getLastQPathSegment(column);
     if (!segment) return
 
-    if (this.containsValueClass(segment)) {
+    if (this.containsValueClass(segment) && segment._statementTables) {
       // TODO: Add a statement to the object value ({timePrimitive:..., statement:...})
       this.selects.push(`jsonb_build_object(
         'values', COALESCE(json_agg(distinct jsonb_build_object(
-          'pkStatement' , ${segment._tableAlias}.pk_entity,
-          'fkSubjectInfo', ${segment._tableAlias}.fk_subject_info,
-          'fkObjectInfo', ${segment._tableAlias}.fk_object_info,
-		      'value',  ${segment._tableAlias}.object_info_value
+          'pkStatement' , COALESCE(${segment._statementTables.map(t => `${t.table}.pk_entity`).join(',')}),
+          'fkSubjectInfo', COALESCE(${segment._statementTables.map(t => `${t.table}.fk_subject_info`).join(',')}),
+          'fkObjectInfo', COALESCE(${segment._statementTables.map(t => `${t.table}.fk_object_info`).join(',')}),
+		      'value', COALESCE(${segment._statementTables.map(t => `${t.table}.object_info_value`).join(',')})
         ))
-        FILTER (WHERE ${segment._tableAlias}.object_info_value IS NOT NULL), '[]')
+        FILTER (WHERE COALESCE(${segment._statementTables.map(t => `${t.table}.object_info_value`).join(',')}) IS NOT NULL), '[]')
       ) AS "${column.id}"`);
     }
-    else if (!this.isStatementsJoin(segment) && this.isEntitesJoin(segment)) {
+    else if (!this.isStatementsJoin(segment) && this.isEntitesJoin(segment) && segment._entityTable) {
       this.selects.push(`jsonb_build_object(
         'entities', COALESCE(json_agg( distinct
-          ${this.createBuildObject(segment._tableAlias, WarEntityPreview.definition)}
-        ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]')
+          ${this.createBuildObject(segment._entityTable?.table, WarEntityPreview.definition)}
+        ) FILTER (WHERE ${segment._entityTable?.table}.pk_entity IS NOT NULL), '[]')
       ) AS "${column.id}"`);
     }
   }

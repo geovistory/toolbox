@@ -1,8 +1,8 @@
 import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
 import {ChartLine} from '../../../models/analysis/analysis-time-chart-response.model';
 import {QueryDefinition} from '../../../models/pro-analysis.model';
-import {ColDefWithAliases, QAnalysisBase} from './q-analysis-base';
 import {WarEntityPreview} from '../../../models/war-entity-preview.model';
+import {ColDefWithAliases, QAnalysisBase} from './q-analysis-base';
 
 
 
@@ -30,7 +30,7 @@ export class QAnalysisTime extends QAnalysisBase {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     // create froms and selects according to column definition
