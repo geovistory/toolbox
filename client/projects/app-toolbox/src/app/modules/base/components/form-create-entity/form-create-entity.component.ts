@@ -407,7 +407,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                       this.previousHasNames = curHasNames;
 
-                      this.emitNewSearchString(focusName);
+                      this.emitNewSearchString(curHasNames[0] ? focusName : '');
 
                       const result: InfResourceWithRelations = {} as InfResourceWithRelations;
                       items.forEach(item => {
