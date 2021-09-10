@@ -1,6 +1,7 @@
 import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
 import {QueryDefinition} from '../../../models/pro-analysis.model';
-import {QAnalysisBase, ColDefWithAliases} from './q-analysis-base';
+import {logSql} from '../../../utils/helpers';
+import {ColDefWithAliases, QAnalysisBase} from './q-analysis-base';
 
 
 
@@ -37,7 +38,7 @@ export class QAnalysisCount extends QAnalysisBase {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     this.sql = `
@@ -55,18 +56,7 @@ export class QAnalysisCount extends QAnalysisBase {
       FROM
         ${this.joinFroms(this.froms)}
         `;
-
-    // console.log('params', this.params);
-    // let forLog = this.sql;
-    // this.params.forEach((param, i) => {
-    //   const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g');
-    //   forLog = forLog.replace(replaceStr, param);
-    // });
-    // console.log(`
-    //     "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
-    //     ${sqlFormatter.format(forLog, { language: 'pl/sql' })}
-
-    //     `);
+    logSql(this.sql, this.params)
 
     const res = await this.execute<{count: number}[]>()
     return res?.[0]?.count ?? 0;
