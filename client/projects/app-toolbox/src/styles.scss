@@ -8,6 +8,7 @@
 */
 
 @use '~@angular/material' as mat;
+@use '~@angular/material/core/theming/palette' as mat-palettes;
 @import "./assets/scss/bootstrap";
 $font-size-xs: 0.68rem;
 label {
@@ -2461,14 +2462,62 @@ $backgound: map-get($app-theme, background);
   color: rgba(black, 0.87);
 }
 
-.mat-bg-grey-50 {
-  background-color: map_get(mat.$grey-palette, 50);
-}
+/**
+* Custom gray palette
+*/
+$gv-grey-palette: (
+  50: #f7f8fb,
+  100: #eeeff6,
+  //#f5f5f5,
+  200: #e5e9f0,
+  300: #d4dade,
+  400: #b7c2c8,
+  500: #9aaab1,
+  600: #68747b,
+  700: #4e5d65,
+  800: #374348,
+  900: #21282b,
+  A100: #f5f5f5,
+  A200: #e5e9f0,
+  A400: #b7c2c8,
+  A700: #4e5d65,
+  contrast: (
+    50: mat-palettes.$dark-primary-text,
+    100: mat-palettes.$dark-primary-text,
+    200: mat-palettes.$dark-primary-text,
+    300: mat-palettes.$dark-primary-text,
+    400: mat-palettes.$light-primary-text,
+    500: mat-palettes.$light-primary-text,
+    600: mat-palettes.$light-primary-text,
+    700: mat-palettes.$light-primary-text,
+    800: mat-palettes.$light-primary-text,
+    900: mat-palettes.$light-primary-text,
+    A100: mat-palettes.$dark-primary-text,
+    A200: mat-palettes.$dark-primary-text,
+    A400: mat-palettes.$light-primary-text,
+    A700: mat-palettes.$light-primary-text,
+  ),
+);
 
-.mat-bg-grey-100 {
-  background-color: map_get(mat.$grey-palette, 100);
-}
+$color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
+  "A400", "A700";
 
+@mixin mat-bg($palette, $prefix, $id) {
+  .mat-bg-#{$prefix}-#{$id} {
+    background-color: map_get($palette, $id);
+    $contrast-map: map_get($palette, "contrast");
+    color: map_get($contrast-map, $id);
+  }
+}
+@each $id in $color-ids {
+  @include mat-bg($gv-grey-palette, "grey", $id);
+}
+@each $id in $color-ids {
+  @include mat-bg($app-primary, "primary", $id);
+}
+@each $id in $color-ids {
+  @include mat-bg($app-accent, "accent", $id);
+}
 /*
 * theme colors for svg strokes
 */
