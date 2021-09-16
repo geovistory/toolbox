@@ -5,7 +5,8 @@ import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } fro
 import { GvFieldPageScope, GvFieldSourceEntity, InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 
 export interface AddEntityDialogData {
@@ -110,11 +111,12 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     this.dialogRef.close();
   }
 
-  onMoreClick(pkEntity: number) {
+  onMoreClick(hit: HitPreview) {
     // add to the WS stream and fetch repo and project version
-    this.ap.streamEntityPreview(pkEntity)
+    this.ap.streamEntityPreview(hit.pk_entity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + pkEntity).pipe(
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
+      filter(item => !!item),
       map(item => !!item.fk_project),
       startWith(false)
     )
@@ -122,12 +124,12 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     if (this.sliderView != 'right') {
       this.sliderView = 'right';
       setTimeout(() => {
-        this.selectedPkEntity$.next(pkEntity);
+        this.selectedPkEntity$.next(hit.pk_entity);
       }, 350)
     } else {
       this.selectedPkEntity$.next(undefined)
       setTimeout(() => {
-        this.selectedPkEntity$.next(pkEntity);
+        this.selectedPkEntity$.next(hit.pk_entity);
       }, 0)
     }
   }

@@ -87,17 +87,20 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     const obs$ = combineLatest([
       // pipe source class
-      this.s.dfh$.class$.by_pk_class$.key(pkClass),
+      this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(tap(x => console.log('aaa this.s.dfh$.class$.by_pk_class$$'))), // freezing bug log
       // pipe outgoing properties
-      this.s.dfh$.property$.by_has_domain$.key(pkClass).pipe(map(indexed => values(indexed))),
+      this.s.dfh$.property$.by_has_domain$.key(pkClass).pipe(map(indexed => values(indexed))).pipe(tap(x => console.log('aaa this.s.dfh$.property$.by_has_domain$$'))), // freezing bug log
       // pipe ingoing properties
-      this.s.dfh$.property$.by_has_range$.key(pkClass).pipe(map(indexed => values(indexed))),
+      this.s.dfh$.property$.by_has_range$.key(pkClass).pipe(map(indexed => values(indexed))).pipe(tap(x => console.log('aaa  this.s.dfh$.property$.by_has_range$$'))), // freezing bug log
       // pipe sys config
-      this.s.sys$.config$.main$.pipe(filter(x => !!x)),
+      this.s.sys$.config$.main$.pipe(filter(x => !!x)).pipe(tap(x => console.log('aaa   this.s.sys$.config$.main$$'))), // freezing bug log
       // pipe enabled profiles
-      this.pipeProfilesEnabledByProject()
+      this.pipeProfilesEnabledByProject().pipe(tap(x => console.log('aaa pipeProfilesEnabledByProject$'))), // freezing bug log
     ]).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
+
+        console.log('aaa is it crazy?') // freezing bug log
+
         const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
         );
@@ -204,6 +207,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @cache({ refCount: false })
   public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
 
+    console.log('PipeSection:', pkClass, displayType, section, noNesting) // freezing bug log
+
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
         // filter the fields that are deprecated
@@ -239,6 +244,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
      * - the basic fields + simple form for PeIt
      */
   public pipeSimpleForm(pkClass: number, basicType: 'TeEn' | 'PeIt'): Observable<Field[]> {
+
+    console.log('pipeSimpleForm:', pkClass, basicType) // freezing bug log
+
     const sectionName = basicType == 'PeIt' ? SectionName.basic : SectionName.specific;
     const fields1$ = this.pipeSection(pkClass, DisplayType.form, sectionName);
     const fields2$ = this.pipeSection(pkClass, DisplayType.form, SectionName.simpleForm);

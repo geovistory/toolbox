@@ -52,8 +52,13 @@
           [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }" [readonly$]="entityCardReadOnly$">
         </gv-entity-card>
         <div class="gv-row-space-between mr-3 ml-3">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()">Select
-            Entity</button>
+
+          <div class="ml-2 mr-2" [matTooltip]="selectButtonTooltip">
+            <button *ngIf="selectButtonDisabled" mat-button type="button" color="primary" (click)="selectEntity()"
+              disabled>Select Entity</button>
+          </div>
+          <button *ngIf="!selectButtonDisabled" mat-button type="button" color="primary" class="ml-2 mr-2"
+            (click)="selectEntity()">Select Entity</button>
           <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
         </div>
       </mat-tab>
@@ -62,8 +67,14 @@
         <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)" [pkClass$]="pkClass$"
           [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }" [readonly$]="entityCardReadOnly$"></gv-entity-card>
         <div class="gv-row-space-between mr-3 ml-3">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()">Select
-            Entity</button>
+
+          <div class="ml-2 mr-2" [matTooltip]="selectButtonTooltip">
+            <button *ngIf="selectButtonDisabled" mat-button type="button" color="primary" (click)="selectEntity()"
+              disabled>Select Entity</button>
+          </div>
+
+          <button *ngIf="!selectButtonDisabled" mat-button type="button" color="primary" class="ml-2 mr-2"
+            (click)="selectEntity()">Select Entity</button>
           <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
         </div>
       </mat-tab>

@@ -148,11 +148,13 @@ export class FieldComponent implements OnInit {
     const data: AddStatementDialogData = {
       field: field,
       targetClass,
-      source: this.source
+      source: this.source,
+      hiddenProperty: this.field.property
     };
     const config: MatDialogConfig = {
       height: 'calc(100% - 30px)',
-      width: showAddList ? '980px' : '500px',
+      // width: showAddList ? '980px' : '500px',
+      width: '980px',
       maxWidth: '100%',
       data,
     }

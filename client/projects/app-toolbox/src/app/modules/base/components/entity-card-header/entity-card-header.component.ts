@@ -42,8 +42,8 @@ export class EntityCardHeaderComponent implements OnInit {
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true, this.pkProject)
     this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
     this.iconType$ = this.b.pipeIconType(this.pkEntity)
-
   }
+
   openClassConfig() {
     combineLatest([this.p.pkProject$, this.fkClass$]).pipe(
       first(([pro, kla]) => !!pro && !!kla),

@@ -2,12 +2,13 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTargetClass, WarSelector } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldSourceEntity, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToWarFieldChangeId } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
+import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 export interface AddStatementDialogData {
   field: Field;
@@ -15,6 +16,7 @@ export interface AddStatementDialogData {
 
   // primary key of the source entity
   source: GvFieldSourceEntity;
+  hiddenProperty: GvFieldProperty
 }
 
 @Component({
@@ -27,12 +29,15 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
   pkClass_target$: Observable<number>;
   pkClass_target: number;
+  pkClass_source$: Observable<number>;
+  sourceEntityLabel$: Observable<string>;
   fieldWithOneTarget: Field;
   fieldTargetClass: FieldTargetClass;
   loading$ = new BehaviorSubject(false);
 
   // for titles
   classLabel$: Observable<string>;
+  classLabel_source$: Observable<string>;
   pkEntity_source: number;
 
   // for the slider
@@ -66,6 +71,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     this.pkClass_target$ = of(data.targetClass);
     this.pkClass_target = data.targetClass;
     this.pkEntity_source = data.source.fkInfo;
+    this.pkClass_source$ = of(data.field.sourceClass)
 
     // restrict the add dialog to only one class
     this.fieldTargetClass = this.data.field.targets[this.data.targetClass]
@@ -77,8 +83,20 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // class label
+
+    // source entity label
+    this.sourceEntityLabel$ = this.ap.streamEntityPreview(this.pkEntity_source)
+      .pipe(
+        map(ep => ep.entity_label),
+        takeUntil(this.destroy$)
+      )
+
+    // class labels
     this.classLabel$ = this.pkClass_target$.pipe(
+      switchMap(pkClass => this.c.pipeClassLabel(pkClass)),
+      takeUntil(this.destroy$)
+    );
+    this.classLabel_source$ = this.pkClass_source$.pipe(
       switchMap(pkClass => this.c.pipeClassLabel(pkClass)),
       takeUntil(this.destroy$)
     );
@@ -92,6 +110,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       map(pkEntity => (pkEntity ? { fkInfo: pkEntity } : undefined)),
       takeUntil(this.destroy$)
     )
+
   }
 
   /**
@@ -117,19 +136,19 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
   onSelect() {
     this.loading$.next(true)
-    const f = this.fieldWithOneTarget;
+    const ff = this.fieldWithOneTarget;
 
     // create the statement to add
     const r: Partial<InfStatementWithRelations> = {}
-    if (f.isOutgoing) {
+    if (ff.isOutgoing) {
       r.fk_subject_info = this.data.source.fkInfo
       r.object_resource = { pk_entity: this.selectedPkEntity$.value, fk_class: this.pkClass_target }
     } else {
       r.fk_object_info = this.data.source.fkInfo
       r.subject_resource = { pk_entity: this.selectedPkEntity$.value, fk_class: this.pkClass_target }
     }
-    r.fk_property = f.property.fkProperty;
-    r.fk_property_of_property = f.property.fkPropertyOfProperty;
+    r.fk_property = ff.property.fkProperty;
+    r.fk_property_of_property = ff.property.fkPropertyOfProperty;
 
     this.dataService.upsertInfStatementsWithRelations(this.pkProject, [r])
       .pipe(takeUntil(this.destroy$))
@@ -141,11 +160,11 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  onMoreClick(pkEntity: number) {
+  onMoreClick(hit: HitPreview) {
     // add to the WS stream and fetch repo and project version
-    this.ap.streamEntityPreview(pkEntity)
+    this.ap.streamEntityPreview(hit.pk_entity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + pkEntity).pipe(
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
       map(item => !!item.fk_project),
       startWith(false)
     )
@@ -153,12 +172,12 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     if (this.sliderView != 'right') {
       this.sliderView = 'right';
       setTimeout(() => {
-        this.selectedPkEntity$.next(pkEntity);
+        this.selectedPkEntity$.next(hit.pk_entity);
       }, 350)
     } else {
       this.selectedPkEntity$.next(undefined)
       setTimeout(() => {
-        this.selectedPkEntity$.next(pkEntity);
+        this.selectedPkEntity$.next(hit.pk_entity);
       }, 0)
     }
   }

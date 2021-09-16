@@ -36,7 +36,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   @Input() searchString$: Subject<string>; // string or '' (can be used to filter the list from the outside)
   @Input() disableIfHasStatement: DisableIfHasStatement;
 
-  @Output() onMore = new EventEmitter<number>();
+  @Output() onMore = new EventEmitter<HitPreview>();
   @Output() onBack = new EventEmitter();
 
   // select observables of substore properties
@@ -169,9 +169,9 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     return (this.limit * (this.page - 1)) + 1;
   }
 
-  onMoreClick(pkEntity: number) {
-    this.selected = pkEntity;
-    this.onMore.emit(pkEntity);
+  onMoreClick(hit: HitPreview) {
+    this.selected = hit.pk_entity;
+    this.onMore.emit(hit);
   }
 
   onBackClick() {

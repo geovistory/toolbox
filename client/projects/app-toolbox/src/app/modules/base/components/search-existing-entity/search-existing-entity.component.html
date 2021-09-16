@@ -24,7 +24,7 @@
       <mat-form-field appearance="outline" class="loc-search-input ml-3">
         <mat-label>Search</mat-label>
         <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
-          (keyup)="searchString$.next($any($event).target.value)">
+          (keyup)="searchStringChange($any($event).target.value)">
       </mat-form-field>
     </div>
 

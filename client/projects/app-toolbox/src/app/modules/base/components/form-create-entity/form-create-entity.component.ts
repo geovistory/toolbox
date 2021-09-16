@@ -16,7 +16,7 @@ import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-facto
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
@@ -288,13 +288,14 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * generate the top level sections of the form
    */
   private getGvFormSections(pkClass: number): Observable<LocalNodeConfig[]> {
+    console.log('aaa aaaaaaaaa')// freezing bug log
     return combineLatest([
-      this.advancedMode$,
-      this._initVal$,
-      this.ss.dfh$.class$.by_pk_class$.key(pkClass),
-      this.c.pipeTargetTypesOfClass(pkClass),
-      this.c.pipeTableNameOfClass(pkClass),
-      this.c.pipeClassLabel(pkClass),
+      this.advancedMode$.pipe(tap(x => console.log('aaa advancedMode$'))), // freezing bug log
+      this._initVal$.pipe(tap(x => console.log('aaa _initVal$'))), // freezing bug log
+      this.ss.dfh$.class$.by_pk_class$.key(pkClass).pipe(tap(x => console.log('aaa by_pk_class$'))), // freezing bug log
+      this.c.pipeTargetTypesOfClass(pkClass).pipe(tap(x => console.log('aaa pipeTargetTypesOfClass$'))), // freezing bug log
+      this.c.pipeTableNameOfClass(pkClass).pipe(tap(x => console.log('aaa pipeTableNameOfClass$'))), // freezing bug log
+      this.c.pipeClassLabel(pkClass).pipe(distinctUntilChanged(), tap(x => console.log('aaa pipeClassLabel$', pkClass, x))), // freezing bug log
     ]).pipe(
       switchMap(([advancedMode, initVal, klass, targets, parentModel, label]) => {
 
@@ -322,10 +323,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           } else {
             this.sections = [this.specificSection, this.metadataSection, this.basicSection]
           }
+          console.log('aaa sections: ', this.sections) // freezing bug log
+
           // pipe the fields of each section
           const sectionsWithFields$ = combineLatestOrEmpty(
             this.sections.map(section => section.pipeFields(pkClass).pipe(
               map(fields => {
+                // console.log('aaa section', pkClass, section) // freezing bug log
                 return fields.filter(fDef => {
                   // Q: is this field hidden?
                   if (equals(fDef.property, this.hiddenProperty)) return false;
@@ -336,8 +340,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             ))
           )
 
+
+
+
+          // const nb = 0 // freezing bug log
+          // if (this.sections[nb]) this.sections[nb].pipeFields(pkClass).subscribe(() => console.log('section', nb)) // freezing bug log
+          // console.log(this.sections) // freezing bug log
+
+
           return sectionsWithFields$.pipe(
             map(sectionsWithFields => {
+
+              console.log('aaa ---') // freezing bug log
 
               // if simple mode
               if (!advancedMode) {
@@ -374,6 +388,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 }
               }
 
+
+              // console.log('aaa place2') // freezing bug log
 
               return sectionsWithFields.map(s => {
                 // then create the child nodes
@@ -692,7 +708,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private emitNewSearchString(str: string) {
-    // this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
     this.searchString.emit(str);
   }
 
@@ -709,16 +724,20 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   save() {
-
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       const value = this.formFactory.formGroupFactory.valueChanges$.value
       let upsert$: Observable<GvSchemaModifier>;
+
       if (value.resource) {
         upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
-      }
-      else {
-        throw new Error(`Submitting ${value} is not implemented`);
-      }
+
+      } else if (value.statement) {
+        if (this.field.isOutgoing) value.statement.fk_subject_info = this.source.fkInfo;
+        else value.statement.fk_object_info = this.source.fkInfo;
+        upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
+
+      } else throw new Error(`Submitting ${value} is not implemented`);
+
 
       upsert$.pipe(takeUntil(this.destroy$))
         .subscribe((res: GvSchemaModifier) => {

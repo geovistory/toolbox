@@ -2,11 +2,12 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
-import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfResource } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { HitPreview } from '../../entity-add-existing-hit/entity-add-existing-hit.component';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
 import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
@@ -61,6 +62,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   entityCardReadOnly$ = new BehaviorSubject(true);
   entityCardScope: GvFieldPageScope;
   source$: Observable<GvFieldSourceEntity>;
+  selectButtonDisabled: boolean;
+  selectButtonTooltip: string;
 
   @ViewChild(FormCreateEntityComponent, { static: true }) createEntity: FormCreateEntityComponent;
 
@@ -70,7 +73,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     private c: ConfigurationPipesService,
     public dialogRef: MatDialogRef<CtrlEntityDialogComponent, CtrlEntityModel>,
     @Inject(MAT_DIALOG_DATA) public data: CtrlEntityDialogData,
-    private warSelector: WarSelector
+    private warSelector: WarSelector,
+    private entityPreviewApi: WarEntityPreviewControllerService,
   ) {
 
     // input checking
@@ -85,6 +89,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
 
   ngOnInit() {
+
     // class label
     this.classLabel$ = this.pkClass$.pipe(
       switchMap(pkClass => this.c.pipeClassLabel(pkClass)),
@@ -135,24 +140,28 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     }
   }
 
-  onMoreClick(pkEntity: number) {
+  onMoreClick(hit: HitPreview) {
     // add to the WS stream and fetch repo and project version
-    this.ap.streamEntityPreview(pkEntity)
+    this.ap.streamEntityPreview(hit.pk_entity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + pkEntity).pipe(
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
+      filter(item => !!item),
       map(item => !!item.fk_project),
       startWith(false)
     )
 
+    this.selectButtonDisabled = hit.btnDisabled;
+    this.selectButtonTooltip = hit.btnTooltip;
+
     if (this.sliderView != 'right') {
       this.sliderView = 'right';
       setTimeout(() => {
-        this.selectedPkEntity$.next(pkEntity);
+        this.selectedPkEntity$.next(hit.pk_entity);
       }, 350)
     } else {
       this.selectedPkEntity$.next(undefined)
       setTimeout(() => {
-        this.selectedPkEntity$.next(pkEntity);
+        this.selectedPkEntity$.next(hit.pk_entity);
       }, 0)
     }
   }

@@ -25,7 +25,7 @@ export class EntityAddExistingHitComponent implements OnInit {
   */
   @Input() repositorySearch: boolean;
   @Input() selected: boolean;
-  @Output() onMore: EventEmitter<number> = new EventEmitter();
+  @Output() onMore: EventEmitter<HitPreview> = new EventEmitter();
 
   headlineItems: Array<string> = [];
   isInProject: boolean;
@@ -62,7 +62,7 @@ export class EntityAddExistingHitComponent implements OnInit {
   }
 
   more() {
-    this.onMore.emit(this.hit.pk_entity)
+    this.onMore.emit(this.hit)
   }
 
 }
