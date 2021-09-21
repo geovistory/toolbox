@@ -121,7 +121,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   search() {
     const req: WarEntityPreviewSearchExistingReq = {
       projectId: this.pkProject,
-      searchString: this.searchString,
+      searchString: this.searchString.trim(),
       pkClasses: [this.pkClass],
       limit: this.limit,
       page: this.page,

@@ -29,7 +29,7 @@
     </div>
 
     <!-- List -->
-    <div *ngIf="hitsFound" class="gv-row-center gv-ovf-auto">
+    <div *ngIf="hitsFound" class="gv-fw gv-row-center gv-ovf-auto">
       <!--  style="height:calc(100% - 89px)" 193px: 42px footer + 60px header + 89px mat input-->
 
       <!-- List is empty-->
@@ -42,7 +42,7 @@
       <div *ngIf="(loading$ | async)"><i class="fa fa-pulse fa-spinner"></i> Searching...</div>
 
       <!-- List is not empty -->
-      <div *ngIf="!(loading$ | async) && (collectionSize$ | async)!==0">
+      <div *ngIf="!(loading$ | async) && (collectionSize$ | async)!==0" class="gv-fw">
         <mat-list>
           <mat-list-item *ngFor="let hit of (hits$ | async)" class="gv-height-auto">
             <gv-entity-add-existing-hit class="gv-fw" [hit]="hit" [selected]="hit.pk_entity == selected"
