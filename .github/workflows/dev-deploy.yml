@@ -32,7 +32,7 @@ jobs:
       - name: Install npm dependencies for server
         run: |
           cd server
-          npm install --production=false
+          npm install --production=true
           cd ..
 
       - name: Build client
