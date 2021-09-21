@@ -26,13 +26,14 @@ jobs:
       - name: Install npm dependencies for client
         run: |
           cd client
-          npm install --production=false
+          npm install --production=true
           cd ..
 
       - name: Install npm dependencies for server
         run: |
           cd server
-          npm install --production=false
+          nvm use 12.8.1
+          npm install --production=true
           cd ..
 
       - name: Build client
