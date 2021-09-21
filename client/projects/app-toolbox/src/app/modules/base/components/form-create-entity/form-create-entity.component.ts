@@ -16,7 +16,7 @@ import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-facto
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
@@ -288,14 +288,28 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * generate the top level sections of the form
    */
   private getGvFormSections(pkClass: number): Observable<LocalNodeConfig[]> {
-    console.log('aaa aaaaaaaaa')// freezing bug log
+    // console.log('aaa aaaaaaaaa')// freezing bug log
     return combineLatest([
-      this.advancedMode$.pipe(tap(x => console.log('aaa advancedMode$'))), // freezing bug log
-      this._initVal$.pipe(tap(x => console.log('aaa _initVal$'))), // freezing bug log
-      this.ss.dfh$.class$.by_pk_class$.key(pkClass).pipe(tap(x => console.log('aaa by_pk_class$'))), // freezing bug log
-      this.c.pipeTargetTypesOfClass(pkClass).pipe(tap(x => console.log('aaa pipeTargetTypesOfClass$'))), // freezing bug log
-      this.c.pipeTableNameOfClass(pkClass).pipe(tap(x => console.log('aaa pipeTableNameOfClass$'))), // freezing bug log
-      this.c.pipeClassLabel(pkClass).pipe(distinctUntilChanged(), tap(x => console.log('aaa pipeClassLabel$', pkClass, x))), // freezing bug log
+      this.advancedMode$,
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa advancedMode$'))),
+      this._initVal$,
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa _initVal$'))),
+      this.ss.dfh$.class$.by_pk_class$.key(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa by_pk_class$'))),
+      this.c.pipeTargetTypesOfClass(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa pipeTargetTypesOfClass$'))),
+      this.c.pipeTableNameOfClass(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa pipeTableNameOfClass$'))),
+      this.c.pipeClassLabel(pkClass).pipe(
+        distinctUntilChanged(),
+        // freezing bug log
+        //  tap(x => console.log('aaa pipeClassLabel$', pkClass, x))
+      ),
     ]).pipe(
       switchMap(([advancedMode, initVal, klass, targets, parentModel, label]) => {
 
@@ -323,7 +337,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           } else {
             this.sections = [this.specificSection, this.metadataSection, this.basicSection]
           }
-          console.log('aaa sections: ', this.sections) // freezing bug log
+          // console.log('aaa sections: ', this.sections) // freezing bug log
 
           // pipe the fields of each section
           const sectionsWithFields$ = combineLatestOrEmpty(
@@ -351,7 +365,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           return sectionsWithFields$.pipe(
             map(sectionsWithFields => {
 
-              console.log('aaa ---') // freezing bug log
+              // console.log('aaa ---') // freezing bug log
 
               // if simple mode
               if (!advancedMode) {

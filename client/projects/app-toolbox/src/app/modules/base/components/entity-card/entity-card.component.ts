@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -8,7 +8,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Component({
   selector: 'gv-entity-card',
   templateUrl: './entity-card.component.html',
-  styleUrls: ['./entity-card.component.scss']
+  styleUrls: ['./entity-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityCardComponent implements OnInit {
   @Input() source: GvFieldSourceEntity

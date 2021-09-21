@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InformationBasicPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
@@ -14,7 +14,8 @@ import { ProjectEditComponent } from '../../../projects/containers/project-edit/
 @Component({
   selector: 'gv-entity-card-wrapper',
   templateUrl: './entity-card-wrapper.component.html',
-  styleUrls: ['./entity-card-wrapper.component.scss']
+  styleUrls: ['./entity-card-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityCardWrapperComponent implements OnInit {
   pkProject: number;

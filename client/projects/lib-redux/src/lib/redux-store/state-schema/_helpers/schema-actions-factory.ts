@@ -23,8 +23,8 @@ export interface LoadPageSucceededMeta { pks: number[], count: number, page: GvF
 
 export interface ActionResultObservable<Model> { pending$: Observable<boolean>, resolved$: Observable<SucceedActionMeta<Model>>, key: string }
 
+type Payload = null
 export type FluxActionObservable<Payload, Meta> = ActionsObservable<FluxStandardAction<Payload, Meta>>
-
 
 
 /**
@@ -32,203 +32,159 @@ export type FluxActionObservable<Payload, Meta> = ActionsObservable<FluxStandard
  * M: Model for whitch the Actions are produced
  */
 
-export class SchemaActionsFactory<Payload, Model> {
+export class SchemaActionsFactory<Model> {
 
-  load: (suffix?: string, pk?: number) => ActionResultObservable<Model>;
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public actionPrefix: string,
+    public modelName: string
+  ) {
+  }
+
+  load(suffix: string = '', pk?: number): ActionResultObservable<Model> {
+    const addPending = U.uuid()
+    const action: FluxStandardAction<Payload, LoadActionMeta> = {
+      type: this.actionPrefix + '.' + this.modelName + '::LOAD' + (suffix ? '::' + suffix : ''),
+      meta: { addPending, pk },
+      payload: null,
+    };
+    this.ngRedux.dispatch(action)
+    return {
+      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+      resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+      key: addPending
+    };
+  }
+
+  loadSucceeded(items: Model[], removePending: string, pk?: number): void {
+    const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::LOAD_SUCCEEDED',
+      meta: { items, removePending, pk },
+      payload: null
+    })
+    this.ngRedux.dispatch(action)
+  }
 
   /**
-   * @param pk is used for facetting
+   * Call the Redux Action to upsert model instances.
    */
-  loadSucceeded: (items: Model[], removePending: string, pk?: number) => void;
+  upsert(items: Partial<Model>[], pk?: number): ActionResultObservable<Partial<Model>> {
+    const addPending = U.uuid();
+    const action: FluxStandardAction<Payload, ModifyActionMeta<Partial<Model>>> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::UPSERT',
+      meta: { items, addPending, pk },
+      payload: null
+    })
+    this.ngRedux.dispatch(action)
+    return {
+      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+      resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+      key: addPending
+    };
+  }
 
-  /**
-   * @param pk is used for facetting
-   */
-  upsert: (items: Partial<Model>[], pk?: number) => ActionResultObservable<Model>;
-
-  /**
-   * @param pk is used for facetting
-   */
-  upsertSucceeded: (items: Model[], removePending: string, pk?: number) => void;
-
-  /**
-   * @param pk is used for facetting
-   */
-  delete: (items: Model[], pk?: number) => ActionResultObservable<Model>;
-
-  /**
-   * @param pk is used for facetting
-   */
-  deleteSucceeded: (items: Model[], removePending: string, pk?: number) => void;
-
-  /**
-   * @param pk is used for facetting
-   */
-  failed: (error, removePending: string, pk?: number) => void;
-
-
-  /**
-   * @param pk is used for facetting
-   */
-  loadPage: (page: GvFieldPage, pk?: number) => void;
-
-  /**
- * @param pk is used for facetting
- */
-  loadPageSucceeded: (pks: number[], count: number, page: GvFieldPage, pk?: number) => void;
-  loadPageFailed: (page: GvFieldPage, pk?: number) => void;
+  upsertSucceeded(items: Model[], removePending: string, pk?: number): void {
+    const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::UPSERT_SUCCEEDED',
+      meta: { items, removePending, pk },
+      payload: null
+    })
+    this.ngRedux.dispatch(action)
+  }
 
   /**
    * this action is not model specific but pendingKey specific.
-   * Reducer will add whole meta part to the resolved key.
+   * Reducer will add whole meta part to the resolved key
    */
-  succeeded: (items: Model[], removePending: string, pk?: number) => void;
-
-  actionPrefix: string;
-  modelName: string;
-
-  constructor(public ngRedux: NgRedux<IAppState>) {
+  succeeded(items: Model[], removePending: string, pk?: number): void {
+    const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
+      type: 'general::UPSERT_SUCCEEDED',
+      meta: { items, removePending, pk },
+      payload: null
+    })
+    this.ngRedux.dispatch(action)
   }
 
 
-  createCrudActions(actionPrefix: string, modelName: string): SchemaActionsFactory<Payload, Model> {
-    this.actionPrefix = actionPrefix;
-    this.modelName = modelName;
-
-    this.load = (suffix: string = '', pk?: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + (suffix ? '::' + suffix : ''),
-        meta: { addPending, pk },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
-        key: addPending
-      };
-    }
-
-    this.loadSucceeded = (items: Model[], removePending: string, pk?: number) => {
-      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD_SUCCEEDED',
-        meta: { items, removePending, pk },
-        payload: null
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-    /**
-     * Call the Redux Action to upsert model instances.
-     */
-    this.upsert = (items: Model[], pk?: number) => {
-      const addPending = U.uuid();
-      const action: FluxStandardAction<Payload, ModifyActionMeta<Model>> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::UPSERT',
-        meta: { items, addPending, pk },
-        payload: null
-      })
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
-        key: addPending
-      };
-    }
-
-    this.upsertSucceeded = (items: Model[], removePending: string, pk?: number) => {
-      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::UPSERT_SUCCEEDED',
-        meta: { items, removePending, pk },
-        payload: null
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-    /**
-     * this action is not model specific but pendingKey specific.
-     * Reducer will add whole meta part to the resolved key
-     */
-    this.succeeded = (items: Model[], removePending: string, pk?: number) => {
-      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
-        type: 'general::UPSERT_SUCCEEDED',
-        meta: { items, removePending, pk },
-        payload: null
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-
-    /**
-    * Call the Redux Action to delete model instances.
-    */
-    this.delete = (items: Model[], pk?: number) => {
-      const addPending = U.uuid();
-      const action: FluxStandardAction<Payload, ModifyActionMeta<Model>> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::DELETE',
-        meta: { items, addPending, pk },
-        payload: null
-      })
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
-
-    this.deleteSucceeded = (items: Model[], removePending: string, pk?: number) => {
-      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::DELETE_SUCCEEDED',
-        meta: { items, removePending, pk },
-        payload: null
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-
-
-    this.failed = (error, removePending: string, pk?: number) => {
-      const action: FluxStandardAction<Payload, FailActionMeta> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::FAILED',
-        meta: { removePending, pk },
-        payload: null,
-        error,
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-
-    this.loadPage = (page: GvFieldPage, pk?: number) => {
-      const action: FluxStandardAction<Payload, LoadPageMeta> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE',
-        meta: { page, pk },
-        payload: null,
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-    this.loadPageSucceeded = (pks: number[], count: number, page: GvFieldPage, pk?: number) => {
-      const action: FluxStandardAction<Payload, LoadPageSucceededMeta> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
-        meta: { page, pks, count, pk },
-        payload: null,
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-    this.loadPageFailed = (page: GvFieldPage, pk?: number) => {
-      const action: FluxStandardAction<Payload, LoadPageMeta> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_FAILED',
-        meta: { page, pk },
-        payload: null,
-      })
-      this.ngRedux.dispatch(action)
-    }
-
-    return this;
+  /**
+  * Call the Redux Action to delete model instances.
+  */
+  delete(items: Model[], pk?: number): ActionResultObservable<Model> {
+    const addPending = U.uuid();
+    const action: FluxStandardAction<Payload, ModifyActionMeta<Model>> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::DELETE',
+      meta: { items, addPending, pk },
+      payload: null
+    })
+    this.ngRedux.dispatch(action)
+    return {
+      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+      resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]).pipe(filter(x => !!x)),
+      key: addPending
+    };
   }
+
+  deleteSucceeded(items: Model[], removePending: string, pk?: number): void {
+    this.ngRedux.dispatch(this.deleteSucceededAction(items, removePending, pk))
+  }
+
+  deleteSucceededAction(items: Model[], removePending: string, pk?: number): FluxStandardAction<Payload, SucceedActionMeta<Model>> {
+    return {
+      type: this.actionPrefix + '.' + this.modelName + '::DELETE_SUCCEEDED',
+      meta: { items, removePending, pk },
+      payload: null
+    }
+  }
+
+  failed(error, removePending: string, pk?: number): void {
+    const action: FluxStandardAction<Payload, FailActionMeta> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::FAILED',
+      meta: { removePending, pk },
+      payload: null,
+      error,
+    })
+    this.ngRedux.dispatch(action)
+  }
+
+
+  loadPage(page: GvFieldPage, pk?: number): void {
+    const action: FluxStandardAction<Payload, LoadPageMeta> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE',
+      meta: { page, pk },
+      payload: null,
+    })
+    this.ngRedux.dispatch(action)
+  }
+
+  loadPageSucceeded(pks: number[], count: number, page: GvFieldPage, pk?: number): void {
+    const action: FluxStandardAction<Payload, LoadPageSucceededMeta> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
+      meta: { page, pks, count, pk },
+      payload: null,
+    })
+    this.ngRedux.dispatch(action)
+  }
+
+  loadPageSucceededAction(pks: number[], count: number, page: GvFieldPage, pk?: number):
+    FluxStandardAction<Payload, LoadPageSucceededMeta> {
+    return {
+      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
+      meta: { page, pks, count, pk },
+      payload: null,
+    }
+  }
+
+
+  loadPageFailed(page: GvFieldPage, pk?: number): void {
+    const action: FluxStandardAction<Payload, LoadPageMeta> = ({
+      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_FAILED',
+      meta: { page, pk },
+      payload: null,
+    })
+    this.ngRedux.dispatch(action)
+  }
+
 
 }
 

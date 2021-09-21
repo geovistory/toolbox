@@ -29,6 +29,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.appeHasAppeString,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -38,6 +39,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>
@@ -52,6 +54,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.presenceWasAtPlace,
       source: { fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -61,6 +64,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>
@@ -76,6 +80,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.accountOfJourneyHasDuration,
       source: { fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -85,6 +90,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>
@@ -100,6 +106,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.manifestationSingletonHasShortTitle,
       source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -110,6 +117,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           [addMode$]="addMode$"
           ></gv-subfield>
@@ -129,6 +137,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.appeTeEnUsedInLanguage,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -138,6 +147,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>
@@ -152,6 +162,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.appeTeEnIsAppeOfPerson,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       scope: inProjectScope,
       // schemaObjects: [
       //   GvSchemaObjectMock.basicClassesAndProperties,
@@ -166,6 +177,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>
@@ -180,6 +192,7 @@ export default sandboxOf(SubfieldComponent, {
       field: FieldMock.personHasAppeTeEn,
       source: { fkInfo: InfResourceMock.PERSON_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [
@@ -200,6 +213,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           [addMode$]="addMode$"
           ></gv-subfield>
@@ -228,6 +242,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>
@@ -257,6 +272,7 @@ export default sandboxOf(SubfieldComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
+          [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
           ></gv-subfield>
       </div>

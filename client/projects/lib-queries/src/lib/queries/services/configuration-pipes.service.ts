@@ -5,8 +5,8 @@ import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyB
 import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { Profiles } from '../models/Profiles';
 import { SpecialFieldType } from '../models/SpecialFieldType';
@@ -87,19 +87,29 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     const obs$ = combineLatest([
       // pipe source class
-      this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(tap(x => console.log('aaa this.s.dfh$.class$.by_pk_class$$'))), // freezing bug log
+      this.s.dfh$.class$.by_pk_class$.key(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa this.s.dfh$.class$.by_pk_class$$'))),
       // pipe outgoing properties
-      this.s.dfh$.property$.by_has_domain$.key(pkClass).pipe(map(indexed => values(indexed))).pipe(tap(x => console.log('aaa this.s.dfh$.property$.by_has_domain$$'))), // freezing bug log
+      this.s.dfh$.property$.by_has_domain$.key(pkClass).pipe(map(indexed => values(indexed))),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa this.s.dfh$.property$.by_has_domain$$'))),
       // pipe ingoing properties
-      this.s.dfh$.property$.by_has_range$.key(pkClass).pipe(map(indexed => values(indexed))).pipe(tap(x => console.log('aaa  this.s.dfh$.property$.by_has_range$$'))), // freezing bug log
+      this.s.dfh$.property$.by_has_range$.key(pkClass).pipe(map(indexed => values(indexed))),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa  this.s.dfh$.property$.by_has_range$$'))),
       // pipe sys config
-      this.s.sys$.config$.main$.pipe(filter(x => !!x)).pipe(tap(x => console.log('aaa   this.s.sys$.config$.main$$'))), // freezing bug log
+      this.s.sys$.config$.main$.pipe(filter(x => !!x)),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa   this.s.sys$.config$.main$$'))),
       // pipe enabled profiles
-      this.pipeProfilesEnabledByProject().pipe(tap(x => console.log('aaa pipeProfilesEnabledByProject$'))), // freezing bug log
+      this.pipeProfilesEnabledByProject(),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa pipeProfilesEnabledByProject$'))),
     ]).pipe(
       switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
 
-        console.log('aaa is it crazy?') // freezing bug log
+        // console.log('aaa is it crazy?') // freezing bug log
 
         const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
@@ -109,11 +119,19 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         return combineLatest([
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, noNesting),
+          // freezing bug log
+          // .pipe(tap(x => console.log('aaa   pipePropertiesToSubfields out'))),
           this.pipePropertiesToSubfields(inP, false, enabledProfiles, noNesting),
+          // freezing bug log
+          // .pipe(tap(x => console.log('aaa   pipePropertiesToSubfields in'))),
           this.pipeFieldConfigs(pkClass),
+          // freezing bug log
+          // .pipe(tap(x => console.log('aaa   pipeFieldConfigs'))),
         ]).pipe(
           map(([subfields1, subfields2, fieldConfigs]) => {
             const subfields = [...subfields1, ...subfields2]
+            // console.log('aaa is it crazy? 2') // freezing bug log
+
 
             const fieldConfigIdx = indexBy((x) => [
               (x.fk_domain_class || x.fk_range_class),
@@ -207,7 +225,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @cache({ refCount: false })
   public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
 
-    console.log('PipeSection:', pkClass, displayType, section, noNesting) // freezing bug log
+    // console.log('PipeSection:', pkClass, displayType, section, noNesting) // freezing bug log
 
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       map(fields => fields
@@ -245,7 +263,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
      */
   public pipeSimpleForm(pkClass: number, basicType: 'TeEn' | 'PeIt'): Observable<Field[]> {
 
-    console.log('pipeSimpleForm:', pkClass, basicType) // freezing bug log
+    // console.log('pipeSimpleForm:', pkClass, basicType) // freezing bug log
 
     const sectionName = basicType == 'PeIt' ? SectionName.basic : SectionName.specific;
     const fields1$ = this.pipeSection(pkClass, DisplayType.form, sectionName);
@@ -392,32 +410,36 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
     // console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
-    const first = of('field not piped after 10s').pipe(
-      delay(1000),
-      map(_ => {
-        throw new Error(`Error: the `);
-      })
-    );
+    // const first = of('field not piped after 10s').pipe(
+    //   delay(1000),
+    //   map(_ => {
+    //     throw new Error(`Error: the `);
+    //   })
+    // );
 
     return combineLatest([
-      this.pipeClassLabel(sourceClass).pipe(tap(x => {
-        // console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
-
-        return x
-      })),
-      this.pipeClassLabel(targetClass).pipe(tap(x => {
-        // console.log('pppp found targetClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
-
-        return x
-      })),
-      this.pipeTargetTypesOfClass(targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting).pipe(tap(x => {
-        // console.log('pppp found targetTypeOfClass: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
-        return x
-      })),
-      this.pipeFieldLabel(sourceClass, isOutgoing, p.pk_property).pipe(tap(x => {
-        // console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
-        return x
-      })),
+      this.pipeClassLabel(sourceClass),
+      //        .pipe(tap(x => {
+      //          console.log('pppp found sourceClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
+      //
+      //          return x
+      //        })),
+      this.pipeClassLabel(targetClass),
+      //        .pipe(tap(x => {
+      //          console.log('pppp found targetClassLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
+      //
+      //          return x
+      //        })),
+      this.pipeTargetTypesOfClass(targetClass, targetMaxQuantity, p.pk_property, isOutgoing, noNesting),
+      //        .pipe(tap(x => {
+      //          console.log('pppp found targetTypeOfClass: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
+      //          return x
+      //        })),
+      this.pipeFieldLabel(sourceClass, isOutgoing, p.pk_property),
+      //        .pipe(tap(x => {
+      //          console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
+      //          return x
+      //        })),
     ])
       .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label]
       ) => {
@@ -478,9 +500,17 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
     const obs$ = combineLatest([
       this.s.sys$.config$.main$.pipe(filter(x => !!x)),
-      this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(i => !!i))
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa .sys$.config$.main$'))),
+      this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(i => !!i)),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa dfh$.class$.by_pk_class$'))),
     ]).pipe(
-      switchMap(([sysConfig, klass]) => this.pipeTargetTypes(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting))
+      switchMap(([sysConfig, klass]) => this.pipeTargetTypes(sysConfig, klass, targetMaxQuantity, pkProperty, isOutgoing, noNesting),
+        // freezing bug log
+        // .pipe(tap(x => console.log('aaa pipeTargetTypes'))),
+
+      )
     )
     return this.cache('pipeTargetTypesOfClass', obs$, ...arguments)
 
@@ -652,7 +682,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   pipeClassLabel(pkClass?: number): Observable<string> {
     const obs$ = combineLatest([
       this.a.pkProject$,
-      this.a.pipeActiveDefaultLanguage()
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa   pkProject$'))),
+      this.a.pipeActiveDefaultLanguage(),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa   pkProject$'))),
     ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
@@ -730,6 +764,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       }).pipe(map((item) => {
         if (!item) return undefined;
         const origin: LabelOrigin = 'of project in project lang';
+        // console.log('aaa pipeProTextProperty 1') // freezing bug log
         return { origin, text: item.string }
       })),
 
@@ -745,6 +780,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       }).pipe(map((item) => {
         if (!item) return undefined;
         const origin: LabelOrigin = 'of default project in project lang';
+        // console.log('aaa pipeProTextProperty 2') // freezing bug log
+
         return { origin, text: item.string }
       })),
 
@@ -760,6 +797,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       }).pipe(map((item) => {
         if (!item) return undefined;
         const origin: LabelOrigin = 'of default project in english';
+        // console.log('aaa pipeProTextProperty 3') // freezing bug log
+
         return { origin, text: item.string }
       })),
 
@@ -772,6 +811,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       }).pipe(map((item) => {
         if (!item) return undefined;
         const origin: LabelOrigin = 'of ontome in project lang';
+        // console.log('aaa pipeDfhLabel 1') // freezing bug log
+
         return { origin, text: item.label }
       })),
 
@@ -784,6 +825,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       }).pipe(map((item) => {
         if (!item) return undefined;
         const origin: LabelOrigin = 'of ontome in english';
+        // console.log('aaa pipeDfhLabel 2') // freezing bug log
+
         return { origin, text: item.label }
       })),
     ])
@@ -824,6 +867,12 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }): Observable<DfhLabel> {
     const key = dfhLabelByFksKey(d)
     return this.s.dfh$.label$.by_fks$.key(key)
+    // freezing bug log
+    // .pipe(
+    //   tap(x => console.log('aaa   .dfh$.label$.by_fks$ before distinctUntilChanged', key, d, x)),
+    //   distinctUntilChanged((x, y) => x?.label === y?.label),
+    //   tap(x => console.log('aaa   .dfh$.label$.by_fks$ after distinctUntilChanged', key, d, x))
+    // )
   }
 
   /**

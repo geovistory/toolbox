@@ -38,7 +38,7 @@ export class MockPaginationControllerForPropertiesTree {
   subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvFieldPageReq): Observable<GvPaginationObject> {
     // this.resetIdBase();
     console.log('REST API called: subfieldPageControllerLoadSubfieldPage')
-    return new BehaviorSubject(this.generateData(gvLoadSubfieldPageReq)).pipe(delay(250))
+    return new BehaviorSubject(this.generateData(gvLoadSubfieldPageReq)).pipe(delay(500 + Math.random() * 500))
 
   }
   private resetIdBase() {

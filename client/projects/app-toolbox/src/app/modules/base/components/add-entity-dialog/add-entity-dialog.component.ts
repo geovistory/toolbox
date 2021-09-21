@@ -127,10 +127,10 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
         this.selectedPkEntity$.next(hit.pk_entity);
       }, 350)
     } else {
-      this.selectedPkEntity$.next(undefined)
-      setTimeout(() => {
-        this.selectedPkEntity$.next(hit.pk_entity);
-      }, 0)
+      this.selectedPkEntity$.next(hit.pk_entity);
+      // this.selectedPkEntity$.next(undefined)
+      // setTimeout(() => {
+      // }, 0)
     }
   }
 

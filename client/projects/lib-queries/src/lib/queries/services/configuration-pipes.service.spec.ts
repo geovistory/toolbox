@@ -490,7 +490,7 @@ describe('ConfigurationPipeService', () => {
 
     });
 
-    fit('nested fields should be of type entityPreview, not nestedResource', (done) => {
+    it('nested fields should be of type entityPreview, not nestedResource', (done) => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv
         (

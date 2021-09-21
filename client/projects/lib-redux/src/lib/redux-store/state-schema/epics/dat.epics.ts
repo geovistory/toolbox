@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DatChunkApi, DatColumn, DatColumnApi, DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, SchemaObject } from '@kleiolab/lib-sdk-lb3';
+import { DatChunkApi, DatColumnApi, DatDigitalApi, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
+import { DatColumn, DatDigital, DatNamespace, SchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadColumnsOfTableAction } from '../actions/dat.actions';
