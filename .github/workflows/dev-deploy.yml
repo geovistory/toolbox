@@ -17,6 +17,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: dev-deploy
+  
+      - name: versions
+        run: |
+          npm -v
+          node -v
 
       - name: Get the new code
         run: |
