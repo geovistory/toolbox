@@ -80,7 +80,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
         this.p.setListType('')
 
-        this.m.openModalCreateOrAddEntity({
+        this.m.openAddEntityDialog({
           pkClass: classAndTypePk.pkClass
         }).subscribe(result => {
           this.p.addEntityTab(result.pkEntity, result.pkClass)

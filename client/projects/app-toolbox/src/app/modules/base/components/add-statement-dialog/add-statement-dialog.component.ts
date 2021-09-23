@@ -2,13 +2,14 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTargetClass, WarSelector } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { fieldToWarFieldChangeId } from '../../base.helpers';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
+import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
 
 export interface AddStatementDialogData {
   field: Field;
@@ -34,6 +35,13 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
   fieldWithOneTarget: Field;
   fieldTargetClass: FieldTargetClass;
   loading$ = new BehaviorSubject(false);
+  scope$: Observable<GvFieldPageScope>
+
+  // if the entity already has a statement in another project
+  alreadyHas$: Observable<boolean>;
+  alreadyHasB$ = new BehaviorSubject(false);
+  addMode$ = new BehaviorSubject(true);
+  readonly$ = new BehaviorSubject(true);
 
   // for titles
   classLabel$: Observable<string>;
@@ -80,6 +88,9 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       ...this.data.field,
       targets: { [this.data.targetClass]: this.fieldTargetClass }
     }
+
+    // for the already existing statements
+    this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
   }
 
   ngOnInit() {
@@ -110,6 +121,28 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       map(pkEntity => (pkEntity ? { fkInfo: pkEntity } : undefined)),
       takeUntil(this.destroy$)
     )
+
+    // get count from rest api first
+    this.alreadyHas$ =
+      combineLatest([this.p.pkProject$, this.alreadyHasB$]).pipe(
+        first(),
+        switchMap(([pkProject, alreadyHas]) => {
+          if (alreadyHas) return of(0);
+          const req: GvFieldPageReq = {
+            pkProject,
+            targets: fieldToGvFieldTargets(this.fieldWithOneTarget),
+            page: fieldToFieldPage(this.fieldWithOneTarget, this.data.source, { notInProject: pkProject }, 0, 0)
+          }
+          return this.paginationApi.subfieldPageControllerLoadSubfieldPage(req).pipe(
+            map(res => res.subfieldPages[0].count)
+          )
+        }),
+        map(c => c !== 0),
+        shareReplay(),
+        startWith()
+      )
+
+
 
   }
 
@@ -155,6 +188,47 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       .subscribe(x => this.onSaved());
   }
 
+
+  // onSubmit(resource: Partial<InfResource>) {
+  onSubmit(f: FormCreateEntityComponent) {
+    if (!f.checkValidation()) return;
+
+    this.loading$.next(true)
+    const value = f.formFactory.formGroupFactory.valueChanges$.value;
+    let statement: Partial<InfStatementWithRelations> = {}
+
+    if (value.resource) {
+      // create the statement to add
+      if (this.fieldWithOneTarget.isOutgoing) {
+        statement.fk_subject_info = this.data.source.fkInfo;
+        statement.object_resource = value.resource;
+      } else {
+        statement.fk_object_info = this.data.source.fkInfo
+        statement.subject_resource = value.resource;
+      }
+      statement.fk_property = this.fieldWithOneTarget.property.fkProperty;
+      statement.fk_property_of_property = this.fieldWithOneTarget.property.fkPropertyOfProperty;
+    } else {
+      statement = value.statement
+      if (this.fieldWithOneTarget.isOutgoing) statement.fk_subject_info = this.data.source.fkInfo;
+      else statement.fk_object_info = this.data.source.fkInfo
+    }
+
+    this.dataService.upsertInfStatementsWithRelations(this.pkProject, [statement])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(x => this.onSaved());
+  }
+
+  /*
+  onSubmit(value)
+  if value.ressource wrap it as in onSelect
+  else pass directly to upsert
+  */
+
+  onNext() {
+    this.alreadyHasB$.next(false);
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
@@ -165,7 +239,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     this.ap.streamEntityPreview(hit.pk_entity)
 
     this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
-      map(item => !!item.fk_project),
+      map(item => !!item?.fk_project),
       startWith(false)
     )
 

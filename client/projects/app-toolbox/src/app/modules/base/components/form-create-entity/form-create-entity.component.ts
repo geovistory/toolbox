@@ -737,6 +737,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkValidation(): boolean {
+    this.submitted = true
+    if (!this.formFactory.formGroup.valid) {
+      const f = this.formFactory.formGroup.controls.childControl as FormArray;
+      U.recursiveMarkAsTouched(f)
+    }
+
+    return this.formFactory.formGroup.valid;
+  }
+
   save() {
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       const value = this.formFactory.formGroupFactory.valueChanges$.value

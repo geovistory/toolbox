@@ -151,7 +151,10 @@
   <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
 
 
-  <div *ngIf="addMode$|async" class="my-3">
+  <div *ngIf="addMode$|async" class="my-3 gv-row-end">
+    <button type="button" mat-button (click)="close.emit()">Cancel</button>
+    <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
+      (click)="next.emit()">Create new</button>
     <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button color="primary"
       class="mr-2" (click)="add()">
       <ng-container *ngIf="!(adding$|async)">
@@ -161,9 +164,6 @@
         <mat-spinner [diameter]="20"></mat-spinner>
       </div>
     </button>
-    <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
-      (click)="next.emit()">Create new</button>
-    <button type="button" mat-button (click)="close.emit()">Cancel</button>
   </div>
 
 

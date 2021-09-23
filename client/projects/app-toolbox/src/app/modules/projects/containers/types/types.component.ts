@@ -194,7 +194,7 @@ export class TypesComponent implements OnInit, OnDestroy {
   */
   onAddOrCreate() {
 
-    this.m.openModalCreateOrAddEntity({
+    this.m.openAddEntityDialog({
       pkClass: this.pkClass
     })
 

@@ -3074,6 +3074,11 @@ gv-importer {
   justify-content: start;
 }
 
+.gv-row-end {
+  @extend .gv-row;
+  justify-content: end;
+}
+
 
 // About widths
 .gv-fw {

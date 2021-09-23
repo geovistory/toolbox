@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { AddEntityDialogComponent, AddEntityDialogData, CreateEntityEvent } from '../components/add-entity-dialog/add-entity-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../components/add-statement-dialog/add-statement-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class BaseModalsService {
   /**
    * Returns an observable that emits the added entity
    */
-  openModalCreateOrAddEntity(config: AddEntityDialogData) {
+  openAddEntityDialog(config: AddEntityDialogData) {
     const observable = new Subject<CreateEntityEvent>();
 
     // this.ngRedux.dispatch(this.actions.openAddForm(config));
@@ -37,6 +38,21 @@ export class BaseModalsService {
       });
 
     return observable;
+  }
+
+
+  /**
+   * Returns an observable that emits the added statement
+   */
+  openAddStatementDialog(config: AddStatementDialogData) {
+    this.dialog.open<AddStatementDialogComponent, AddStatementDialogData>(
+      AddStatementDialogComponent,
+      {
+        height: 'calc(100% - 30px)',
+        width: '980px',
+        maxWidth: '100%',
+        data: config
+      })
   }
 
 }

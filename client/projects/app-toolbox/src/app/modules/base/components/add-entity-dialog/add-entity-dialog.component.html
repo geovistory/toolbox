@@ -51,11 +51,6 @@
             [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }" [readonly$]="entityCardReadOnly$">
           </gv-entity-card>
         </ng-container>
-        <div class="gv-row-space-between mr-3 ml-3">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="openEntity()">Open Entity in a new
-            tab</button>
-          <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
-        </div>
       </mat-tab>
 
       <mat-tab label="Community version" class="gv-fh gv-col-space-between">
@@ -64,14 +59,26 @@
             [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }" [readonly$]="entityCardReadOnly$">
           </gv-entity-card>
         </ng-container>
-        <div class="gv-row-space-between mr-3 ml-3">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="addEntityToProject()">
-            <span *ngIf="(selectedInProject$ | async)">Open Entity in a new tab</span>
-            <span *ngIf="!(selectedInProject$ | async)">Add Entity</span>
-          </button>
-          <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
-        </div>
       </mat-tab>
     </mat-tab-group>
   </div>
+
+  <!-- Slide 3: footer -->
+  <div right-footer class="mat-h2">
+    <div class="gv-row-space-between mr-3 ml-3">
+      <!-- Not in the project -->
+      <button *ngIf="!(selectedInProject$ | async)" mat-button type="button" color="primary" class="ml-2 mr-2"
+        (click)="addEntityToProject()">
+        Add Entity
+      </button>
+      <!-- Is in the project -->
+      <button *ngIf="(selectedInProject$ | async)" mat-button type="button" color="primary" class="ml-2 mr-2"
+        (click)="openEntity()">
+        Open Entity in a new tab
+      </button>
+      <!-- Cancel button -->
+      <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
+    </div>
+  </div>
+
 </gv-slider>

@@ -82,7 +82,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
     this.p.setListType('')
 
-    this.m.openModalCreateOrAddEntity({
+    this.m.openAddEntityDialog({
       pkClass: classAndTypePk.pkClass
     }).subscribe(result => {
       this.p.addEntityTab(result.pkEntity, result.pkClass)
