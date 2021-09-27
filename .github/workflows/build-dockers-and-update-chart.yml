@@ -217,7 +217,7 @@ jobs:
       - name: Invoke workflow in geovistory-charts to make a pre production release
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: make-pre-production-release
+          workflow: update-release-files
           repo: kleiolab/geovistory-charts
           ref: ${{needs.extract-metadata.outputs.release_environment}}
           token: ${{ secrets.KLEIOLAB_PRIVATE_REPOS_PAT }}
