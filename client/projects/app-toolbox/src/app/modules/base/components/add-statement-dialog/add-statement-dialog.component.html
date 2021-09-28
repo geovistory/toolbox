@@ -3,14 +3,15 @@
         Existing information found in other projects!
     </span>
     <span class="mat-body1 loc-dialog-title">
-        About: Geographical Place Aachen DE – is localisation of – Localisation
+        About: {{classLabel_source$ | async}} {{sourceEntityLabel$ | async}} – {{data.field.label}} –
+        {{classLabel_target$ | async}}
     </span>
-    <span class="mat-body1 loc-dialog-title">
+    <span class="mat-body1 loc-dialog-title mt-3 mb-3">
         Select and add items from the list below or create a new item.
     </span>
-    <gv-subfield class="gv-fh" [source]="data.source" [field]="fieldWithOneTarget" [scope]="scope$|async"
-        [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$" (close)="onClose()"
-        (next)="onNext()"></gv-subfield>
+    <gv-subfield class="gv-fh gv-col-space-between" [source]=" data.source" [field]="fieldWithOneTarget"
+        [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$"
+        (close)="onClose()" (next)="onNext()"></gv-subfield>
 </ng-container>
 
 <ng-container *ngIf="(alreadyHas$ | async) === false">

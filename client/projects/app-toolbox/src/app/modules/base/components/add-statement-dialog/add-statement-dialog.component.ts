@@ -5,7 +5,7 @@ import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
@@ -39,13 +39,14 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
   // if the entity already has a statement in another project
   alreadyHas$: Observable<boolean>;
-  alreadyHasB$ = new BehaviorSubject(false);
+  next$ = new BehaviorSubject(false);
   addMode$ = new BehaviorSubject(true);
   readonly$ = new BehaviorSubject(true);
 
   // for titles
   classLabel$: Observable<string>;
   classLabel_source$: Observable<string>;
+  classLabel_target$: Observable<string>;
   pkEntity_source: number;
 
   // for the slider
@@ -111,6 +112,10 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       switchMap(pkClass => this.c.pipeClassLabel(pkClass)),
       takeUntil(this.destroy$)
     );
+    this.classLabel_target$ = this.pkClass_target$.pipe(
+      switchMap(pkClass => this.c.pipeClassLabel(pkClass)),
+      takeUntil(this.destroy$)
+    );
 
     // pkProject
     this.p.pkProject$.pipe(takeUntil(this.destroy$))
@@ -124,10 +129,10 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
     // get count from rest api first
     this.alreadyHas$ =
-      combineLatest([this.p.pkProject$, this.alreadyHasB$]).pipe(
-        first(),
-        switchMap(([pkProject, alreadyHas]) => {
-          if (alreadyHas) return of(0);
+      combineLatest([this.p.pkProject$, this.next$]).pipe(
+        // first(),
+        switchMap(([pkProject, next]) => {
+          if (next) return of(0);
           const req: GvFieldPageReq = {
             pkProject,
             targets: fieldToGvFieldTargets(this.fieldWithOneTarget),
@@ -142,6 +147,8 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
         startWith()
       )
 
+    this.alreadyHas$.subscribe(r => console.log('1', r))
+    this.next$.subscribe(r => console.log('2', r))
 
 
   }
@@ -219,14 +226,9 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       .subscribe(x => this.onSaved());
   }
 
-  /*
-  onSubmit(value)
-  if value.ressource wrap it as in onSelect
-  else pass directly to upsert
-  */
 
   onNext() {
-    this.alreadyHasB$.next(false);
+    this.next$.next(true);
   }
 
   ngOnDestroy() {
