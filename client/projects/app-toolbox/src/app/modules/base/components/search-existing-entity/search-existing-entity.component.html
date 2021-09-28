@@ -2,6 +2,12 @@
 
   <div class="gv-col-start">
 
+    <!-- Project entities only -->
+    <div class="gv-row-center mb-3">
+      <mat-checkbox class="mat-text-secondary" [(ngModel)]="projectOnly" (change)="search()">Project entities only
+      </mat-checkbox>
+    </div>
+
     <!-- filtered by -->
     <ng-container *ngIf="mode=='filtered'">
       <div class="gv-col-center loc-mat-input-height">

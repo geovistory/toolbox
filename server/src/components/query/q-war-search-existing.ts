@@ -1,17 +1,17 @@
-import {model, property} from '@loopback/repository';
-import {WareEntityPreviewPage} from '../../controllers';
-import {Postgres1DataSource} from '../../datasources';
-import {InfStatement} from '../../models';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import { model, property } from '@loopback/repository';
+import { WareEntityPreviewPage } from '../../controllers';
+import { Postgres1DataSource } from '../../datasources';
+import { InfStatement } from '../../models';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 @model()
 class SearchExistingRelatedStatementFilter {
-  @property({type: String, required: true}) key: 'fk_property' | 'fk_property_of_property';
-  @property({required: true}) value: number;
+  @property({ type: String, required: true }) key: 'fk_property' | 'fk_property_of_property';
+  @property({ required: true }) value: number;
 };
 
 @model()
 export class SearchExistingRelatedStatement {
-  @property({type: String, required: true}) relateBy: 'fk_object_info' | 'fk_subject_info'
+  @property({ type: String, required: true }) relateBy: 'fk_object_info' | 'fk_subject_info'
   @property() filter: SearchExistingRelatedStatementFilter
 }
 
@@ -37,6 +37,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
     offset: number,
     entityType?: string,
     relatedStatement?: SearchExistingRelatedStatement,
+    projectOnly?: boolean
   ) {
 
 
@@ -60,23 +61,25 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       ),
       te1 AS (
 
-        -- repo versions
-        select *
-        from
-          tw0 t0,
-          war.entity_preview t1
-        WHERE t1.fk_project IS NULL
-        ${tsSearchString ? `
-        AND (
-          t1.ts_vector @@ t0.q
-          OR
-          t1.pk_entity::text = ${this.addParam(searchString)}
-        )
-        ` : ''}
-        ${whereEntityType}
-        ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
+        ${projectOnly ? '' : `
+          -- repo versions
+          select *
+          from
+            tw0 t0,
+            war.entity_preview t1
+          WHERE t1.fk_project IS NULL
+          ${tsSearchString ? `
+          AND (
+            t1.ts_vector @@ t0.q
+            OR
+            t1.pk_entity::text = ${this.addParam(searchString)}
+          )
+          ` : ''}
+          ${whereEntityType}
+          ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
 
-        UNION ALL
+          UNION ALL
+        `}
 
         -- project versions
         select *

@@ -50,6 +50,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   // For search
   searchString = '';
   minSearchStringLength = 0;
+  projectOnly = false
 
   // Pagination
   collectionSize: number; // number of search results
@@ -125,7 +126,8 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
       pkClasses: [this.pkClass],
       limit: this.limit,
       page: this.page,
-      relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined
+      relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined,
+      projectOnly: this.projectOnly
     }
     if (this.disableIfHasStatement) {
       this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)

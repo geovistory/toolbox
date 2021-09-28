@@ -1,17 +1,17 @@
-import {inject, Subscription} from '@loopback/core';
-import {Fields} from '@loopback/filter';
-import {model, property, repository} from '@loopback/repository';
-import {HttpErrors, post, requestBody} from '@loopback/rest';
-import {Socket} from 'socket.io';
-import {QWarEntityPreviewSearchExisiting, SearchExistingRelatedStatement} from '../components/query/q-war-search-existing';
-import {Postgres1DataSource} from '../datasources';
-import {ws} from '../decorators/websocket.decorator';
-import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations} from '../models';
-import {Streams} from '../realtime/streams/streams';
-import {AddToStreamMsg, WebsocketControllerBase} from '../realtime/websockets/websocker-controller-base';
-import {WarEntityPreviewRepository} from '../repositories';
-import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
-import {EntitySearchHit} from './EntitySearchHit';
+import { inject, Subscription } from '@loopback/core';
+import { Fields } from '@loopback/filter';
+import { model, property, repository } from '@loopback/repository';
+import { HttpErrors, post, requestBody } from '@loopback/rest';
+import { Socket } from 'socket.io';
+import { QWarEntityPreviewSearchExisiting, SearchExistingRelatedStatement } from '../components/query/q-war-search-existing';
+import { Postgres1DataSource } from '../datasources';
+import { ws } from '../decorators/websocket.decorator';
+import { WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations } from '../models';
+import { Streams } from '../realtime/streams/streams';
+import { AddToStreamMsg, WebsocketControllerBase } from '../realtime/websockets/websocker-controller-base';
+import { WarEntityPreviewRepository } from '../repositories';
+import { SqlBuilderLb4Models } from '../utils/sql-builders/sql-builder-lb4-models';
+import { EntitySearchHit } from './EntitySearchHit';
 
 
 
@@ -39,23 +39,24 @@ const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
 
 }
 @model() export class WarEntityPreviewSearchReq {
-  @property({required: true}) projectId: number
-  @property({required: true}) searchString: string
-  @property.array(Number, {required: true}) pkClasses: number[]
-  @property({required: true}) limit: number
-  @property({required: true}) page: number
+  @property({ required: true }) projectId: number
+  @property({ required: true }) searchString: string
+  @property.array(Number, { required: true }) pkClasses: number[]
+  @property({ required: true }) limit: number
+  @property({ required: true }) page: number
   @property() entityType?: string
 }
 @model() export class WarEntityPreviewSearchExistingReq extends WarEntityPreviewSearchReq {
   @property() relatedStatement?: SearchExistingRelatedStatement
+  @property() projectOnly: boolean
 }
 
 
 @model() export class WarEntityPreviewPaginatedByPkReq {
-  @property({required: true}) pkProject: number
-  @property.array(Number, {required: true}) pkEntities: number[]
-  @property({required: true}) limit: number
-  @property({required: true}) offset: number
+  @property({ required: true }) pkProject: number
+  @property.array(Number, { required: true }) pkEntities: number[]
+  @property({ required: true }) limit: number
+  @property({ required: true }) offset: number
 }
 
 /**
@@ -168,7 +169,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   @ws.subscribe('addToStream')
   async handleAddToStream(data: AddToStreamMsg) {
 
-    const {ids} = this.handleExtendStream(data)
+    const { ids } = this.handleExtendStream(data)
     // const ids = ids.map(id => parseInt(id))
     // Query and emit requested previews
     const allItems = await this.findByKey(ids)
@@ -198,7 +199,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     this.saveLeave();
   }
 
-  private sanitizeAddToStreamMsg(data: AddToStreamMsg): {pkProject: number, ids: string[]} {
+  private sanitizeAddToStreamMsg(data: AddToStreamMsg): { pkProject: number, ids: string[] } {
     return {
       pkProject: data.pkProject,
       ids: this.sanitizeNumberArray(data.pks)
@@ -241,7 +242,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
       fields: includeFieldsForStream,
       where: {
         and: [
-          {key: {inq: ids}},
+          { key: { inq: ids } },
         ]
       }
     });
@@ -260,8 +261,8 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
       fields: includeFieldsForStream,
       where: {
         and: [
-          {tmsp_last_modification: {eq: tsmpLastModification}},
-          {key: {inq: ids}}
+          { tmsp_last_modification: { eq: tsmpLastModification } },
+          { key: { inq: ids } }
         ]
       }
     });
@@ -365,7 +366,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     responses: {
       '200': {
         description: 'Array of WarEntityPreview model instances',
-        content: {'application/json': {schema: {'x-ts-type': WareEntityPreviewPage}}},
+        content: { 'application/json': { schema: { 'x-ts-type': WareEntityPreviewPage } } },
       },
     },
   })
@@ -373,7 +374,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     @requestBody() req: WarEntityPreviewSearchExistingReq
   ): Promise<WareEntityPreviewPage> {
 
-    const {tsSearchString, offset, limit} = this.prepareSearchInputs(req.limit, req.page, req.searchString);
+    const { tsSearchString, offset, limit } = this.prepareSearchInputs(req.limit, req.page, req.searchString);
 
     const q = new SqlBuilderLb4Models(this.dataSource)
 
@@ -446,7 +447,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     responses: {
       '200': {
         description: 'Array of WarEntityPreview model instances',
-        content: {'application/json': {schema: {'x-ts-type': WareEntityPreviewPage}}},
+        content: { 'application/json': { schema: { 'x-ts-type': WareEntityPreviewPage } } },
       },
     },
   })
@@ -455,7 +456,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   ): Promise<WareEntityPreviewPage> {
     const i = this.prepareSearchInputs(req.limit, req.page, req.searchString)
     const q = new QWarEntityPreviewSearchExisiting(this.dataSource)
-    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement)
+    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement, req.projectOnly)
   }
 
   @post('/war-entity-previews/paginated-list-by-pks', {
@@ -478,8 +479,8 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   async paginatedListByPks(
     @requestBody() req: WarEntityPreviewPaginatedByPkReq
   ): Promise<WarEntityPreview[]> {
-    const {pkProject, pkEntities, offset} = req;
-    let {limit} = req;
+    const { pkProject, pkEntities, offset } = req;
+    let { limit } = req;
 
     if (!limit) limit = 10;
     if (limit > 200) limit = 200;
@@ -536,7 +537,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         })
         .join(' & ')
       : '';
-    return {tsSearchString, offset, limit};
+    return { tsSearchString, offset, limit };
   }
 
 
