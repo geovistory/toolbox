@@ -238,3 +238,11 @@ jobs:
               "toolboxTag":"${{needs.extract-metadata.outputs.toolbox_sha}}", 
               "webserverTag":"${{needs.extract-metadata.outputs.webserver_sha}}" 
             }
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Done building docker images"
+          description: "Build and upload docker images to GitHub Packages"
+          color: 0x0000ff
+          username: GitHub Actions
