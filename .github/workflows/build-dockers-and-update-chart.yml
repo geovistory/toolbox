@@ -29,7 +29,7 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
-          title: "Build and upload images"
+          title: "Start building docker images"
           description: "Build and upload docker images to GitHub Packages"
           color: 0x0000ff
           username: GitHub Actions
