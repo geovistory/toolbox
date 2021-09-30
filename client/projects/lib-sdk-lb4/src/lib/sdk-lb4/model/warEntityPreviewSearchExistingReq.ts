@@ -20,6 +20,6 @@ export interface WarEntityPreviewSearchExistingReq {
     page: number;
     entityType?: string;
     relatedStatement?: SearchExistingRelatedStatement;
-    projectOnly?: boolean;
+    scope?: string;
 }
 

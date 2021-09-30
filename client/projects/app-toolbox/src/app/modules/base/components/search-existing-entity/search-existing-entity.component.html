@@ -1,46 +1,36 @@
-<div class="gv-fh gv-col-space-between">
+<gv-hbf-panel>
 
-  <div class="gv-col-start">
+  <div header class="gv-fw">
 
-    <!-- Project entities only -->
-    <div class="gv-row-center mb-3">
-      <mat-checkbox class="mat-text-secondary" [(ngModel)]="projectOnly" (change)="search()">Project entities only
-      </mat-checkbox>
-    </div>
-
-    <!-- filtered by -->
-    <ng-container *ngIf="mode=='filtered'">
-      <div class="gv-col-center loc-mat-input-height">
-        <span class="gv-row-center text-muted" *ngIf="mode == 'filtered'">filtered by: {{searchString$|async}}</span>
-      </div>
-    </ng-container>
-
-    <!-- Search input & back button -->
-    <div *ngIf="mode == 'searchAndBack'" class="gv-row-start mr-3">
-
-      <!-- Back button -->
-      <div class="gv-col-start">
-        <button mat-button *ngIf="mode=='searchAndBack'" class="loc-input-height" (click)="onBackClick()">
-          <mat-icon svgIcon="arrow-left"></mat-icon>
-          Back
-        </button>
-      </div>
-
-      <!-- Search input -->
-      <mat-form-field appearance="outline" class="loc-search-input ml-3">
+    <!-- Search input & Project entities only -->
+    <div class="gv-row-space-between gv-fw">
+      <mat-form-field appearance="outline" class="grow-mr-24">
         <mat-label>Search</mat-label>
         <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
           (keyup)="searchStringChange($any($event).target.value)">
       </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-160">
+        <mat-label>Where</mat-label>
+        <mat-select (selectionChange)="changeScope($event.value)" [value]="scope$|async">
+          <!-- Options has to match SearchScope enum defined in component.ts -->
+          <mat-option value="everywhere">everywhere</mat-option>
+          <mat-option value="in project">in your project</mat-option>
+          <!-- <mat-option value="outside project">outside your project</mat-option> -->
+        </mat-select>
+      </mat-form-field>
+
     </div>
+  </div>
+
+  <div body class="gv-ovf-auto">
 
     <!-- List -->
-    <div *ngIf="hitsFound" class="gv-fw gv-row-center gv-ovf-auto">
+    <div class="gv-fw gv-row-center gv-ovf-auto">
       <!--  style="height:calc(100% - 89px)" 193px: 42px footer + 60px header + 89px mat input-->
 
       <!-- List is empty-->
-      <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async)===0 && searchString.length>= minSearchStringLength"
-        class="text-muted mt-3">
+      <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async)===0" class="text-muted mt-3">
         Nothing there.
       </h5>
 
@@ -60,10 +50,18 @@
     </div>
   </div>
 
-  <!-- Paginator -->
-  <div class="mt-4 gv-row-center">
+  <ng-container footer>
+
+    <!-- Back button -->
+    <button mat-button [ngStyle]="{'visibility': mode=='mode2' ? 'inherit' : 'hidden'}" (click)="onBackClick()">
+      <mat-icon svgIcon="arrow-left"></mat-icon>
+      Back
+    </button>
+
+    <!-- Paginator -->
     <mat-paginator *ngIf="(collectionSize$ | async) > limit" class="gv-row-center" [length]="(collectionSize$ | async)"
       [pageSize]="limit" aria-label="Select page" [hidePageSize]="true" (page)="pageChange($event)">
     </mat-paginator>
-  </div>
-</div>
+  </ng-container>
+
+</gv-hbf-panel>

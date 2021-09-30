@@ -1,5 +1,5 @@
 <ng-container *ngIf="(alreadyHas$ | async) === true">
-    <span class="mat-h2 loc-dialog-title">
+    <span class="mat-h2 loc-dialog-title top-dialog-padding">
         Existing information found in other projects!
     </span>
     <span class="mat-body1 loc-dialog-title">
@@ -21,79 +21,102 @@
     </span>
 
     <gv-slider class="gv-fh" [slide]="sliderView">
-        <!-- Slide 1: header -->
-        <div left-header class="loc-slider-header mat-h2">
-            ... a new {{this.fieldTargetClass.targetClassLabel}}
-        </div>
 
-        <!-- Slide 1: body -->
-        <div left-body class="gv-flex-fh gv-ovf-auto">
-            <gv-form-create-entity [field]="data.field" [pkClass]="data.targetClass" [source]="data.source"
-                [hideTitle]="true" [hideButtons]="true" [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
-                (searchString)="searchStringChange($event)" #f>
-            </gv-form-create-entity>
-        </div>
+        <!-- SLIDE 1 -->
+        <ng-container left>
+            <gv-hbf-panel>
 
-        <!-- Slide 1: footer -->
-        <div left-footer class="loc-slider-footer mt-3">
-            <div class="gv-col-space-between">
-                <button mat-flat-button color="primary"
-                    [disabled]="(f.submitted && f?.formFactory?.formGroup.invalid) || (loading$ | async)"
-                    (click)="onSubmit(f)">
-                    <span *ngIf="!(loading$ | async)">OK</span>
-                    <div *ngIf="loading$ | async" style="margin: 6px;">
-                        <mat-spinner [diameter]="20"></mat-spinner>
+                <!-- header -->
+                <ng-container header>
+                    <span class="mat-h2">... a new {{this.fieldTargetClass.targetClassLabel}}</span>
+                </ng-container>
+
+                <!-- body -->
+                <ng-container body>
+                    <gv-form-create-entity class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
+                        [source]="data.source" [hideTitle]="true" [hideButtons]="true"
+                        [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
+                        (searchString)="searchStringChange($event)" #f>
+                    </gv-form-create-entity>
+                </ng-container>
+
+                <!-- footer -->
+                <ng-container footer>
+                    <div class="gv-col-space-between">
+                        <button mat-flat-button color="primary"
+                            [disabled]="(f.submitted && f?.formFactory?.formGroup.invalid) || (loading$ | async)"
+                            (click)="onSubmit(f)">
+                            <span *ngIf="!(loading$ | async)">OK</span>
+                            <div *ngIf="loading$ | async" style="margin: 6px;">
+                                <mat-spinner [diameter]="20"></mat-spinner>
+                            </div>
+                        </button>
                     </div>
-                </button>
-            </div>
 
-            <div class="gv-col-space-between">
-                <button mat-button type="button" class="ml-2 mr-2" (click)="dialogRef.close()">Cancel</button>
-            </div>
-        </div>
+                    <div class="gv-col-space-between">
+                        <button mat-button type="button" class="ml-2 mr-2" (click)="dialogRef.close()">Cancel</button>
+                    </div>
+                </ng-container>
 
-        <!-- Slide 2: header -->
-        <div center-header class="loc-slider-header mat-h2">
-            ... an existing {{this.fieldTargetClass.targetClassLabel}}
-        </div>
+            </gv-hbf-panel>
+        </ng-container>
 
-        <!-- Slide 2: body -->
-        <div center-body class="gv-fh gv-col-start">
-            <gv-search-existing-entity [pkClass]="(pkClass_target$ | async)" [searchString$]="searchString$"
-                [mode]="sliderView == 'right' ? 'searchAndBack' : 'filtered'" (onMore)="onMoreClick($event)"
-                (onBack)="onBackClick()">
-            </gv-search-existing-entity>
-        </div>
 
-        <!-- Slide 3: body -->
-        <div right-body class="gv-fh">
-            <mat-tab-group mat-align-tabs="center" [selectedIndex]="(selectedInProject$ | async) ? 0 : 1" class="gv-fh">
-                <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
-                    <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
-                        [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }"
-                        [readonly$]="entityCardReadOnly$">
-                    </gv-entity-card>
-                </mat-tab>
+        <!-- SLIDE 2 -->
+        <ng-container center>
+            <gv-hbf-panel [footer]="false">
 
-                <mat-tab label="Community version" class="gv-fh gv-col-space-between">
-                    <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
-                        [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }"
-                        [readonly$]="entityCardReadOnly$">
-                    </gv-entity-card>
-                </mat-tab>
-            </mat-tab-group>
-        </div>
+                <!-- header -->
+                <ng-container header>
+                    <span class="mat-h2">... an existing {{this.fieldTargetClass.targetClassLabel}}</span>
+                </ng-container>
 
-        <!-- Slide 3: footer -->
-        <div right-footer class="mat-h2">
-            <div class="gv-row-space-between mr-3 ml-3">
-                <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="onSelect()">
-                    <span *ngIf="(selectedInProject$ | async)">Select</span>
-                    <span *ngIf="!(selectedInProject$ | async)">Add to project and select</span>
-                </button>
-                <button mat-button type="button" class="ml-2 mr-2" (click)="onClose()">Cancel</button>
-            </div>
-        </div>
+                <!-- body -->
+                <ng-container body>
+                    <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass_target$ | async)"
+                        [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
+                        (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
+                    </gv-search-existing-entity>
+                </ng-container>
+
+            </gv-hbf-panel>
+        </ng-container>
+
+
+        <!-- SLIDE 3 -->
+        <ng-container right>
+            <gv-hbf-panel [header]="false">
+
+                <!-- body -->
+                <ng-container body>
+                    <mat-tab-group mat-align-tabs="center" [selectedIndex]="(selectedInProject$ | async) ? 0 : 1"
+                        class="gv-fh">
+                        <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
+                            <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
+                                [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$"
+                                [scope]="{ inProject: pkProject }" [readonly$]="entityCardReadOnly$">
+                            </gv-entity-card>
+                        </mat-tab>
+
+                        <mat-tab label="Community version" class="gv-fh gv-col-space-between">
+                            <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
+                                [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }"
+                                [readonly$]="entityCardReadOnly$">
+                            </gv-entity-card>
+                        </mat-tab>
+                    </mat-tab-group>
+                </ng-container>
+
+                <!-- footer -->
+                <ng-container footer>
+                    <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="onSelect()">
+                        <span *ngIf="(selectedInProject$ | async)">Select</span>
+                        <span *ngIf="!(selectedInProject$ | async)">Add to project and select</span>
+                    </button>
+                    <button mat-button type="button" class="ml-2 mr-2" (click)="onClose()">Cancel</button>
+                </ng-container>
+            </gv-hbf-panel>
+        </ng-container>
+
     </gv-slider>
-
 </ng-container>

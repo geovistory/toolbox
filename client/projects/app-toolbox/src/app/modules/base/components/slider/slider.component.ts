@@ -38,6 +38,7 @@ import { Component, Input } from '@angular/core';
 export class SliderComponent {
 
     @Input() slide?: 'left' | 'right' = 'left';
+    @Input() right: ''
 
     constructor() { }
 

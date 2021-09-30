@@ -158,6 +158,7 @@ export class FieldComponent implements OnInit {
       width: '980px',
       maxWidth: '100%',
       data,
+      panelClass: 'gv-no-padding',
     }
     this.dialog.open(AddStatementDialogComponent, config);
   }

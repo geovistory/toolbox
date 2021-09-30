@@ -192,6 +192,7 @@ export class CtrlEntityComponent implements OnDestroy,
           height: 'calc(100% - 30px)',
           width: this.showAddList ? '980px' : '500px',
           maxWidth: '100%',
+          panelClass: 'gv-no-padding',
           data: {
             pkClass: this.pkClass,
             hiddenProperty: this.property,
