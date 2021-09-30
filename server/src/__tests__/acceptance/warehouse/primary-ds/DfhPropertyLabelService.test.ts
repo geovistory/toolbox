@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
+import 'reflect-metadata';
+import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {DfhPropertyLabelId, DfhPropertyLabelService} from '../../../../warehouse/primary-ds/DfhPropertyLabelService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
-import {WarehouseStubs} from '../../../../warehouse/createWarehouse';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait} from '../../../helpers/warehouse-helpers';
 const stubs: WarehouseStubs = {
-  primaryDataServices:[DfhPropertyLabelService],
-  aggDataServices:[]
+  primaryDataServices: [DfhPropertyLabelService],
+  aggDataServices: []
 }
 describe('DfhPropertyLabelService', () => {
 
@@ -39,19 +38,19 @@ describe('DfhPropertyLabelService', () => {
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx(id),
-      compare:(val)=>val?.label===DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label
+      compare: (val) => val?.label === DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label
     })
   })
 
   it('should update property label', async () => {
-    const c = await createDfhApiProperty({dfh_property_label: 'Foo'})
+    const c = await createDfhApiProperty({dfh_property_label: 'Foo', dfh_property_inverse_label: 'has Foo'})
 
     const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: 18889}
 
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx(id),
-      compare:(val)=>val?.label==='Foo'
+      compare: (val) => val?.label === 'Foo' && val?.inverseLabel === 'has Foo'
     })
 
     const c2 = await updateDfhApiProperty(c.pk_entity as any, {dfh_property_label: 'Bar'})
@@ -60,7 +59,7 @@ describe('DfhPropertyLabelService', () => {
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx(id),
-      compare:(val)=>val?.label==='Bar'
+      compare: (val) => val?.label === 'Bar'
     })
   })
 
@@ -70,7 +69,7 @@ describe('DfhPropertyLabelService', () => {
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx(id),
-      compare:(val)=>val?.label==='Foo'
+      compare: (val) => val?.label === 'Foo'
     })
 
     await deleteDfhApiProperty(c.pk_entity as any)
@@ -79,7 +78,7 @@ describe('DfhPropertyLabelService', () => {
     await searchUntilSatisfy({
       notifier$: s.afterChange$,
       getFn: () => s.index.getFromIdx(id),
-      compare:(val)=>val?.label==='Foo'
+      compare: (val) => val?.label === 'Foo'
     })
 
   })

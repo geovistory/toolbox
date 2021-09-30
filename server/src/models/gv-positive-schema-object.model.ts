@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository';
-import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage,  InfPlace, InfStatement, InfResource,  InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty, SysConfigValue, DfhProfile } from '.';
+import { DatDigital, DfhApiProfile, DfhClass, DfhLabel, DfhProperty, InfAppellation, InfDimension, InfLangString, InfLanguage,  InfPlace, InfStatement, InfResource,  InfTimePrimitive, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty,  DfhProfile } from '.';
 import { DatClassColumnMapping } from './dat-class-column-mapping.model';
 import { DatColumn } from './dat-column.model';
 import { DatTextProperty } from './dat-text-property.model';
@@ -10,6 +10,7 @@ import { SysSystemRelevantClass } from './sys-system-relevant-class.model';
 import { WarEntityPreview } from './war-entity-preview.model';
 import {DatChunk} from './dat-chunk.model';
 import {DatNamespace} from './dat-namespace.model';
+import {SysConfigValue} from './sys-config/sys-config-value.model';
 
 
 @model()
@@ -55,7 +56,7 @@ export class WarObject {
 export class DfhObject {
   @property.array(DfhProfile) profile?: DfhProfile[];
   @property.array(DfhClass) klass?: DfhClass[];
-  @property.array(DfhProperty) property?: DfhProperty[];
+  @property.array(DfhProperty) property?: Partial<DfhProperty>[];
   @property.array(DfhLabel) label?: DfhLabel[];
 }
 

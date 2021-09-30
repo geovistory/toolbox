@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ProjectVisibilityOptionsWithRelations } from './projectVisibilityOptionsWithRelations';
 
 
 /**
@@ -28,5 +29,6 @@ export interface ProInfoProjRelWithRelations {
     ord_num_of_text_property?: number;
     fk_creator?: number;
     fk_last_modifier?: number;
+    project_visibility?: ProjectVisibilityOptionsWithRelations;
 }
 

@@ -1,0 +1,27 @@
+<div class="gv-flex-fh">
+    <div [@leftRight]="slide">
+
+        <div class="loc-panel">
+            <ng-content select="[left-header]"></ng-content>
+            <ng-content select="[left-body]"></ng-content>
+            <ng-content select="[left-footer]"></ng-content>
+        </div>
+
+        <mat-divider [vertical]="true" class="divider" [@divider]="slide=='left' ? 'on' : 'off'"></mat-divider>
+
+        <div class="loc-panel">
+            <ng-content select="[center-header]"></ng-content>
+            <ng-content select="[center-body]"></ng-content>
+            <ng-content select="[center-footer]"></ng-content>
+        </div>
+
+        <mat-divider [vertical]="true" class="divider" [@divider]="slide=='right' ? 'on' : 'off'"></mat-divider>
+
+        <div class="loc-panel">
+            <ng-content select="[right-header]"></ng-content>
+            <ng-content select="[right-body]"></ng-content>
+            <ng-content select="[right-footer]"></ng-content>
+        </div>
+
+    </div>
+</div>

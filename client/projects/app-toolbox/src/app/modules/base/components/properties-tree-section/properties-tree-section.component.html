@@ -1,0 +1,21 @@
+<ng-container *ngIf="(tree$ | async)?.length > 0">
+  <div class="mat-list-base subheader">
+    <h3 class="d-flex mat-text-secondary">{{toPascalCase(section)}} fields
+      <mat-slide-toggle class="mat-body show-empty-toggle" [(ngModel)]="showEmptyFields">Show empty fields
+      </mat-slide-toggle>
+    </h3>
+  </div>
+  <mat-divider></mat-divider>
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-properties-tree" [trackBy]="trackBy">
+    <mat-nested-tree-node *matTreeNodeDef="let node">
+
+      <gv-field #field
+        [hidden]="(showEmptyFields === false || node.allSubfieldsRemovedFromAllProfiles) && !(field.itemsCount$ | async)"
+        [field]="node" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
+        [source]="source" [scope]="scope">
+      </gv-field>
+
+    </mat-nested-tree-node>
+  </mat-tree>
+  <mat-divider></mat-divider>
+</ng-container>

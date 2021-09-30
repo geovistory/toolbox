@@ -1,31 +1,28 @@
-<div class="gv-search-hit">
-  <div class="gv-search-hit-header">
-    <div class="d-flex">
-      <div class="gv-grow-1">
-        <gv-entity-preview [preview]="entityPreview" [dragEnabled]="false" [showId]="true"></gv-entity-preview>
-      </div>
-      <div class="d-flex">
-        <div class="gv-search-hit-is-in-project" *ngIf="isInProject">
-          Already in your project
-        </div>
-        <div class="gv-search-hit-project-count text-right">
-          <i class="fa fa-check"></i> {{projectsCount}} {{projectsCount === 1 ? 'project' : 'projects'}}
-        </div>
+<div class="gv-row-center mb-3 hit" [ngClass]="{'selected': selected}" (click)="more()">
+
+  <div class="hit-left-part ml-3">
+    <!-- Already in project icon -->
+    <div class="gv-col-center" style="margin-right: 10px"
+      matTooltip="{{isInProject ? 'Already in your project' : 'Not in your project'}}">
+      <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
+      <mat-icon class="gv-settings-color mat-text-disabled" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
+    </div>
+
+    <!-- Entity description -->
+    <div class="gv-col-center">
+      <div class="mat-body-1 no-margin gv-one-liner">{{entityPreview.entity_label}}</div>
+
+      <div class="mat-caption mat-text-secondary ellipsis" style="overflow:hidden">
+        ID {{entityPreview.pk_entity}} - {{hit.full_text_headline}}
       </div>
     </div>
   </div>
-  <div class="d-flex">
-    <div class="gv-grow-1">
-      <div class="gv-search-hit-body text-muted">
-        <i class="gv-search-hit-property" [innerHtml]="hit.full_text_headline">
-        </i>
-      </div>
-    </div>
-    <div [matTooltip]="hit.btnTooltip">
-      <button type="button" name="button" (click)="open()" mat-flat-button color="primary" [disabled]="hit.btnDisabled"
-        [matTooltip]="hit.btnTooltip" *ngIf="isInProject">{{alreadyInProjectBtnText}}</button>
-      <button type="button" name="button" (click)="add()" mat-flat-button color="primary" [disabled]="hit.btnDisabled"
-        [matTooltip]="hit.btnTooltip" *ngIf="!isInProject">{{notInProjectBtnText}}</button>
-    </div>
+
+  <!-- Options -->
+  <div class="gv-col-center ml-2 mr-2" style="justify-content: center;"
+    matTooltip="{{moreDetails && !selected ? 'See more details' : ''}}">
+    <mat-icon class="mat-text-secondary" svgIcon="chevron-right" *ngIf="moreDetails && !selected"></mat-icon>
+    <mat-icon *ngIf="!(moreDetails && !selected)"></mat-icon>
   </div>
+
 </div>

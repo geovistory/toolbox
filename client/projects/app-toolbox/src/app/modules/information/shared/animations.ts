@@ -1,10 +1,10 @@
 import {
-  trigger,
-  state,
-  style,
   animate,
-  transition,
-  keyframes
+
+  keyframes, state,
+  style,
+
+  transition, trigger
 } from '@angular/animations';
 
 export const slideInOut = trigger('slideInOut',
@@ -41,3 +41,23 @@ export const slideInOut = trigger('slideInOut',
       })
     ])))
   ]);
+
+export const openClose = trigger('openClose', [
+  state('open', style({
+    height: '*',
+    overflow: 'hidden',
+  })),
+  state('closed', style({
+    height: '0',
+    overflow: 'hidden',
+  })),
+  transition('open <=> closed', [
+    animate('300ms ease-out')
+  ]),
+  transition('* => closed', [
+    animate('0s')
+  ]),
+  transition('* => open', [
+    animate('0s')
+  ]),
+])

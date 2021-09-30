@@ -35,8 +35,7 @@ export class QfFormArrayComponent implements OnInit, OnDestroy {
   }
 
   get parentIsArraySubgroup() {
-    const parent = this.formArrayFactory.parent
-    return parent.factoryType === 'array' && (parent.config.data as QfFormArrayData).arraySubgroup;
+    return this.formArrayFactory?.parent?.arrayFactory?.config?.data?.arraySubgroup ? true : false
   }
 
   get conditionCanHaveChildren() {
@@ -87,9 +86,8 @@ export class QfFormArrayComponent implements OnInit, OnDestroy {
   removeSubfilter(i: number) {
     this.formArrayFactory.remove(i)
 
-    if (this.childrenLength() == 1 && this.formArrayFactory.parent.factoryType === 'array') {
-      const parent = this.formArrayFactory.parent as QfFormArrayFactory
-      parent.removeLastChild()
+    if (this.childrenLength() == 1 && this.formArrayFactory.parent.arrayFactory) {
+      this.formArrayFactory.parent.arrayFactory.removeLastChild()
     }
     // else if (
     //   this.formArrayFactory.childConfigs.filter(c => !!c.array).length === 1 &&

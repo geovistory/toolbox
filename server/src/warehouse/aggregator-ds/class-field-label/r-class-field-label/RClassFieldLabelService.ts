@@ -28,7 +28,7 @@ export class RClassFieldLabelService extends AggregatedDataService2<RClassFieldI
     // providers = RClassFieldLabelProviders;
     depDfhPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, DfhPropertyLabelId, DfhPropertyLabelVal>
     depProPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, ProPropertyLabelId, ProPropertyLabelVal>
-    batchSize=100000;
+    batchSize = 100000;
     constructor(
         @Inject(forwardRef(() => Warehouse)) wh: Warehouse,
         @Inject(forwardRef(() => RPropertyService)) rProperty: RPropertyService,
@@ -107,7 +107,7 @@ export class RClassFieldLabelService extends AggregatedDataService2<RClassFieldI
     private completeReverseLabels(): (provTable: string) => string {
         return (provider) => `jsonb_build_object('label',
                     CASE WHEN t1."r_isOutgoing" = true THEN  ${provider}.val->>'label'
-                    ELSE '[reverse of: ' || (${provider}.val->>'label')::TEXT || ']'
+                    ELSE ${provider}.val->>'inverseLabel'
                     END
                 )`;
     }

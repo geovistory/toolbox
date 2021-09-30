@@ -11,7 +11,10 @@ export class SysStatusSocket extends Socket {
 
     super({
       url: c.createNamespaceUrl('SysStatus'),
-      options: { path: c.path }
+      options: {
+        ...c.config.options,
+        path: c.path
+      }
     });
 
   }

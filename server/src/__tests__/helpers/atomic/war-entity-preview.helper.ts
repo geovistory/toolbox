@@ -1,6 +1,6 @@
-import {testdb} from "../testdb";
-import {WarEntityPreviewWithFulltext, WarEntityPreviewId} from '../../../models';
+import {WarEntityPreviewId, WarEntityPreviewWithFulltext} from '../../../models';
 import {WarEntityPreviewRepository} from '../../../repositories';
+import {testdb} from "../testdb";
 
 export function createWarEntityPreviewRepo() {
   return new WarEntityPreviewRepository(
@@ -12,7 +12,7 @@ export async function createWarEntityPreview(entityPreview: Partial<WarEntityPre
   return createWarEntityPreviewRepo().create(entityPreview);
 }
 
-export async function getWarEntityPreview(pkEntity: number, fkProject?: number) {
+export async function getWarEntityPreview(pkEntity: number, fkProject = 0) {
   return createWarEntityPreviewRepo().find({
     where: {
       and: [

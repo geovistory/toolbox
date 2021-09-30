@@ -10,12 +10,15 @@ import { createInfAppellation } from '../atomic/inf-appellation.helper';
 import { createInfDimension } from '../atomic/inf-dimension.helper';
 import { createInfLangString } from '../atomic/inf-lang-string.helper';
 import { createInfPlace } from '../atomic/inf-place.helper';
-import { createInfStatement } from '../atomic/inf-statement.helper';
 import { createInfResource } from '../atomic/inf-resource.helper';
+import { createInfStatement } from '../atomic/inf-statement.helper';
 import { createInfTimePrimitive } from '../atomic/inf-time-primitive.helper';
+import { createProClassFieldConfig } from '../atomic/pro-class-field-config.helper';
 import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper';
 import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
+import { createProProject } from '../atomic/pro-project.helper';
 import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
+import { createSysSystemConfig } from '../atomic/sys-system-config.helper';
 import { createCellTable_old, createTabCell } from '../atomic/tab-cell-X.helper';
 import { createRowTable, createTabRow } from '../atomic/tab-row.helper';
 import { DatChunkMock } from '../data/gvDB/DatChunkMock';
@@ -31,17 +34,22 @@ import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
 import { InfResourceMock } from '../data/gvDB/InfResourceMock';
 import { InfStatementMock } from '../data/gvDB/InfStatementMock';
+import { ProClassFieldConfigMock } from '../data/gvDB/ProClassFieldConfigMock';
 import { ProProjectMock } from '../data/gvDB/ProProjectMock';
 import { PubAccountMock } from '../data/gvDB/PubAccountMock';
+import { SysConfigValueMock } from '../data/gvDB/SysConfigValueMock';
 import { TabCellXMock } from '../data/gvDB/TabCellXMock';
 import { TabRowMock } from '../data/gvDB/TabRowMock';
+import { PROFILE_12_BIOGRAPHICAL_BA_2021_06_30 } from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
+import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from '../data/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
 import { createDigital } from '../generic/digital.helper';
 import { createFactoid, createFactoidMapping } from '../generic/factoid.helper';
 import { createCity } from '../generic/geo-place.helper';
+import { createOntomeProfileMock } from '../generic/ontomeprofile.helper';
 import { createSource } from '../generic/source.helper';
 import { createCell, createColumn, createColumnMapping, createRow, createTable, mapCell } from '../generic/table.helper';
 import { getIndex } from '../meta/index.helper';
-import { createModel } from '../meta/model.helper';
+import { createLanguages, createTypes } from '../meta/model.helper';
 import { createGaetanMuck } from './account.helper';
 import { createBunchOfPersons } from './person.helper';
 import { createSandBoxProject } from './project.helper';
@@ -50,15 +58,36 @@ import { createBunchOfSources } from './source.helper';
 
 export async function forFeatureX() {
 
-    const { profiles } = await createModel()
+    await createTypes();
+    await createLanguages();
+    await createSysSystemConfig(SysConfigValueMock.SYS_CONFIC_VALID);
 
     //create account, namespace and project
     await createSandBoxProject();
     await createGaetanMuck();
     await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.SANDBOX_PROJECT);
 
+    /****************************************************************************
+     * OntoME data
+     ***************************************************************************/
+
+    const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_08_24)
+    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30)
     // add profiles to project
-    await addProfilesToProject(ProProjectMock.SANDBOX_PROJECT.pk_entity, profiles.map(p => p.dfh_pk_profile))
+    await addProfilesToProject(ProProjectMock.SANDBOX_PROJECT.pk_entity, [profileGeovBasics.profile.dfh_pk_profile, profileBibliograp.profile.dfh_pk_profile,])
+
+    /****************************************************************************
+    * Project Default Configuration Project
+    ***************************************************************************/
+
+    // Project Default Configuration Project
+    await createProProject(ProProjectMock.DEFAULT_PROJECT);
+
+    // Project Default Configuration Project >  Class Field Config
+    await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1111_IS_APPE_OF)
+    await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME)
+
+    await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.DEFAULT_PROJECT);
 
     //create out of project digital
     await createDatDigital(DatDigitalMock.DIGITAL_OUT);

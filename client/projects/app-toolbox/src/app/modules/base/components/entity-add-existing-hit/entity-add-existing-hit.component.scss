@@ -1,0 +1,30 @@
+.hit {
+    cursor: pointer;
+
+    justify-content: space-between;
+
+    height: 75px;
+    margin-bottom: 10px;
+}
+
+.hit-left-part {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.no-margin {
+    margin: 0 0 0 0
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
+ }
+
+ .selected {
+    background-color: rgba(0, 125, 255, 0.08)
+ }

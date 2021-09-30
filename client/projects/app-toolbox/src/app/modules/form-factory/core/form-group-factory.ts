@@ -1,11 +1,11 @@
 import { FormGroup } from '@angular/forms';
-import { Subject, asyncScheduler } from 'rxjs';
+import { asyncScheduler, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { FormFactoryGlobal } from "../services/FormFactoryGlobal";
-import { FormArrayConfig } from "../services/FormArrayConfig";
-import { FormGroupConfig } from "../services/FormGroupConfig";
-import { FormFactory } from "./form-factory";
+import { FormArrayConfig } from '../services/FormArrayConfig';
+import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
+import { FormGroupConfig } from '../services/FormGroupConfig';
 import { FormArrayFactory } from './form-array-factory';
+import { FormFactory } from './form-factory';
 import { AbstractControlFactory, FactoryType } from './form-factory.models';
 
 
@@ -43,7 +43,7 @@ export class FormGroupFactory extends AbstractControlFactory {
 
       this.globalConfig.root = this
 
-      if (this.childConfig) this.child = new FormArrayFactory(this.globalConfig, this.childConfig, this.level + 1, this);
+      if (this.childConfig) this.child = new FormArrayFactory(this.globalConfig, this.childConfig, this.level + 1, { groupFactory: this });
 
       if (this.child) this.control = this.globalConfig.fb.group({ 'childControl': this.child.control });
 

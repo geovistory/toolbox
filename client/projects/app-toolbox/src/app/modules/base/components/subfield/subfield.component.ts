@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
@@ -26,7 +26,8 @@ import { TimeSpanService } from '../../services/time-span.service';
 @Component({
   selector: 'gv-subfield',
   templateUrl: './subfield.component.html',
-  styleUrls: ['./subfield.component.scss']
+  styleUrls: ['./subfield.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubfieldComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -34,6 +35,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
+  @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
 
@@ -81,6 +83,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     if (!this.field) errors.push('@Input() subfield is required.');
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
@@ -108,7 +111,8 @@ export class SubfieldComponent implements OnInit, OnDestroy {
                 targetClasses: [DfhConfig.CLASS_PK_TIME_PRIMITIVE],
                 targets: {
                   [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: {
-                    listType: { timePrimitive: 'true' },
+                    viewType: { timePrimitive: 'true' },
+                    formControlType: { timePrimitive: 'true' },
                     removedFromAllProfiles: false,
                     targetClass: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
                     targetClassLabel: ''
@@ -120,7 +124,10 @@ export class SubfieldComponent implements OnInit, OnDestroy {
           )
         }
         for (const field of fields) {
+          // freezing bug
+          // if (field.property.fkProperty === 1762 && field.sourceClass === 21) {
           this.pag.addPageLoaderFromField(pkProject, field, this.source, limit, offset, until$, this.scope);
+          // }
         }
       }),
       // Piping from store

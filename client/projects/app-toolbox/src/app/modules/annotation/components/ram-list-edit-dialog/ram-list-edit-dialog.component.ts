@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { Field, FieldBase, Subfield } from '@kleiolab/lib-queries';
+import { Field, FieldBase } from '@kleiolab/lib-queries';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
 import { BehaviorSubject } from 'rxjs';
@@ -34,13 +34,13 @@ const fieldBase: FieldBase = {
   isHasTypeField: false,
   isTimeSpanShortCutField: false
 }
-const listDef: Subfield = {
-  ...fieldBase,
-  listType: { langString: 'true' },
-  targetClass: 657,
-  targetClassLabel: 'Reference',
-  removedFromAllProfiles: false,
-}
+// const listDef: Subfield = {
+//   ...fieldBase,
+//   listType: { langString: 'true' },
+//   targetClass: 657,
+//   targetClassLabel: 'Reference',
+//   removedFromAllProfiles: false,
+// }
 
 /**
  * Field at reference, property of property
@@ -49,11 +49,12 @@ const listDef: Subfield = {
 export const fieldAtReferencePoP: Field = {
   ...fieldBase,
   targetClasses: [657],
-  placeOfDisplay: {},
+  display: {},
   allSubfieldsRemovedFromAllProfiles: false,
   targets: {
     657: {
-      listType: { langString: 'true' },
+      viewType: { langString: 'true' },
+      formControlType: { langString: 'true' },
       targetClass: 657,
       targetClassLabel: 'Reference',
       removedFromAllProfiles: false,

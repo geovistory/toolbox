@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Field, InformationPipesService, SubfieldPage } from '@kleiolab/lib-queries';
+import { Field, GvFieldTargets, InformationPipesService, SubfieldPage } from '@kleiolab/lib-queries';
 import { GvFieldPage, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
+import { values } from 'ramda';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { fieldToGvFieldTargets } from '../../base.helpers';
 import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/subfield-dialog.component';
 
 @Component({
@@ -16,6 +16,7 @@ export class EntityFieldComponent implements OnInit {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity
   @Input() scope: GvFieldPageScope
+  @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   isCircular = false;
   page$: Observable<SubfieldPage>
@@ -25,6 +26,13 @@ export class EntityFieldComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const errors: string[] = []
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
     const page: GvFieldPage = {
       source: this.source,
       property: this.field.property,
@@ -33,10 +41,17 @@ export class EntityFieldComponent implements OnInit {
       offset: 0,
       scope: this.scope,
     }
-    this.page$ = this.i.pipeFieldPage(page, fieldToGvFieldTargets(this.field), this.field.isTimeSpanShortCutField)
+    this.page$ = this.i.pipeFieldPage(page, this.getFieldTargets(this.field), this.field.isTimeSpanShortCutField)
 
   }
 
+  getFieldTargets(field: Field): GvFieldTargets {
+    const res: GvFieldTargets = {}
+    values(field.targets).forEach(t => {
+      res[t.targetClass] = t.viewType.nestedResource ? { entityPreview: 'true' } : t.viewType
+    })
+    return res
+  }
 
   openList() {
     this.page$.pipe(first()).subscribe((subentityPage) => {

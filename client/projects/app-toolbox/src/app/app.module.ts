@@ -45,7 +45,7 @@ import { KeysModule } from './shared/pipes/keys.module';
 
 // TODO: check if this can stay.
 const socketIoConfig: SocketIoConfig = { url: environment.apiUrl, options: {} };
-const socketsConfig: SocketsConfig = { baseUrl: environment.apiUrl };
+const socketsConfig: SocketsConfig = { baseUrl: environment.apiUrl, options: { autoConnect: true } };
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'standard'

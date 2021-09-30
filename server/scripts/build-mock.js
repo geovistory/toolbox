@@ -16,6 +16,11 @@ const pathMappings = [
     toPathMock:
       __dirname + '/../../client/projects/__test__/data/auto-gen/api-responses',
   },
+  {
+    fromPathMock: __dirname + '/../src/__tests__/helpers/data/ontome-profiles/',
+    toPathMock:
+      __dirname + '/../../client/projects/__test__/data/auto-gen/ontome-profiles',
+  },
 ];
 
 // if I am correct, these MOCK are usefull only for the backend
@@ -109,7 +114,7 @@ function autoGenFiles(from, to, type) {
       content,
       'SysConfigValueObjectType',
       'TrueEnum',
-      "'${param}' as unknown as SysConfigValueObjectType.AppellationEnum",
+      "'${param}'",
     );
 
     content = treatEnumSpecial(

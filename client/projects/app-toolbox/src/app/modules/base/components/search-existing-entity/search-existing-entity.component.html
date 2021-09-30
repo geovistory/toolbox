@@ -1,42 +1,63 @@
-<div *ngIf="hitsFound">
-  <div class="card">
-    <div class="card-body">
-      <!-- <div class="row">
-        <div class="col-7"> -->
-      <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async) > 0">Are you looking for one of those?</h5>
-      <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async) === 0 && searchString.length >= minSearchStringLength"
-        class="text-muted">
+<div class="gv-fh gv-col-space-between">
+
+  <div class="gv-col-start">
+
+    <!-- filtered by -->
+    <ng-container *ngIf="mode=='filtered'">
+      <div class="gv-col-center loc-mat-input-height">
+        <span class="gv-row-center text-muted" *ngIf="mode == 'filtered'">filtered by: {{searchString$|async}}</span>
+      </div>
+    </ng-container>
+
+    <!-- Search input & back button -->
+    <div *ngIf="mode == 'searchAndBack'" class="gv-row-start mr-3">
+
+      <!-- Back button -->
+      <div class="gv-col-start">
+        <button mat-button *ngIf="mode=='searchAndBack'" class="loc-input-height" (click)="onBackClick()">
+          <mat-icon svgIcon="arrow-left"></mat-icon>
+          Back
+        </button>
+      </div>
+
+      <!-- Search input -->
+      <mat-form-field appearance="outline" class="loc-search-input ml-3">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
+          (keyup)="searchStringChange($any($event).target.value)">
+      </mat-form-field>
+    </div>
+
+    <!-- List -->
+    <div *ngIf="hitsFound" class="gv-fw gv-row-center gv-ovf-auto">
+      <!--  style="height:calc(100% - 89px)" 193px: 42px footer + 60px header + 89px mat input-->
+
+      <!-- List is empty-->
+      <h5 *ngIf="!(loading$ | async) && (collectionSize$ | async)===0 && searchString.length>= minSearchStringLength"
+        class="text-muted mt-3">
         Nothing there.
       </h5>
 
+      <!-- List is searching -->
       <div *ngIf="(loading$ | async)"><i class="fa fa-pulse fa-spinner"></i> Searching...</div>
 
-      <div *ngIf="!(loading$ | async)">
-        <div class="row mt-3">
-          <div class="col">
-            <div class="gv-search-hits">
-              <gv-entity-add-existing-hit *ngFor="let hit of (persistentItems$ | async)"
-                [alreadyInProjectBtnText]="alreadyInProjectBtnText" [notInProjectBtnText]="notInProjectBtnText"
-                [hit]="hit" (onAdd)="onAdd($event)" (onOpen)="onOpen($event)">
-              </gv-entity-add-existing-hit>
-            </div>
-          </div>
-        </div>
-        <div class="row mt-5">
-          <div class="col">
-            <ngb-pagination *ngIf="(collectionSize$ | async) > limit" [maxSize]="3"
-              [collectionSize]="(collectionSize$ | async)" [(page)]="page" (pageChange)="pageChange()"
-              [pageSize]="limit" aria-label="Default pagination"></ngb-pagination>
-            <span class="gv-search-hits-count mt-2" *ngIf="!(loading$ | async) && (collectionSize$ | async) > 0">
-              <span *ngIf="(collectionSize$ | async) > limit">
-                {{hitsFrom()}}-{{hitsTo$|async}} of
-              </span>
-              {{(collectionSize$ | async)}} {{((collectionSize$ | async) == 1 ? 'suggestion' : 'suggestions')}}
-            </span>
-          </div>
-        </div>
+      <!-- List is not empty -->
+      <div *ngIf="!(loading$ | async) && (collectionSize$ | async)!==0" class="gv-fw">
+        <mat-list>
+          <mat-list-item *ngFor="let hit of (hits$ | async)" class="gv-height-auto">
+            <gv-entity-add-existing-hit class="gv-fw" [hit]="hit" [selected]="hit.pk_entity == selected"
+              [moreDetails]="true" (onMore)="onMoreClick($event)">
+            </gv-entity-add-existing-hit>
+          </mat-list-item>
+        </mat-list>
       </div>
-
     </div>
+  </div>
+
+  <!-- Paginator -->
+  <div class="mt-4 gv-row-center">
+    <mat-paginator *ngIf="(collectionSize$ | async) > limit" class="gv-row-center" [length]="(collectionSize$ | async)"
+      [pageSize]="limit" aria-label="Select page" [hidePageSize]="true" (page)="pageChange($event)">
+    </mat-paginator>
   </div>
 </div>

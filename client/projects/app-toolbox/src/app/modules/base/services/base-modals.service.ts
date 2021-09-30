@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AddOrCreateEntityDialogData, CreateOrAddEntityEvent, AddOrCreateEntityDialogComponent } from '../components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { AddEntityDialogComponent, AddEntityDialogData, CreateEntityEvent } from '../components/add-entity-dialog/add-entity-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../components/add-statement-dialog/add-statement-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,13 @@ export class BaseModalsService {
   /**
    * Returns an observable that emits the added entity
    */
-  openModalCreateOrAddEntity(config: AddOrCreateEntityDialogData) {
-    const observable = new Subject<CreateOrAddEntityEvent>();
+  openAddEntityDialog(config: AddEntityDialogData) {
+    const observable = new Subject<CreateEntityEvent>();
 
     // this.ngRedux.dispatch(this.actions.openAddForm(config));
 
-    this.dialog.open<AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent>(
-      AddOrCreateEntityDialogComponent,
+    this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateEntityEvent>(
+      AddEntityDialogComponent,
       {
         // height: '90%',
         // width: '90%',
@@ -37,6 +38,21 @@ export class BaseModalsService {
       });
 
     return observable;
+  }
+
+
+  /**
+   * Returns an observable that emits the added statement
+   */
+  openAddStatementDialog(config: AddStatementDialogData) {
+    this.dialog.open<AddStatementDialogComponent, AddStatementDialogData>(
+      AddStatementDialogComponent,
+      {
+        height: 'calc(100% - 30px)',
+        width: '980px',
+        maxWidth: '100%',
+        data: config
+      })
   }
 
 }

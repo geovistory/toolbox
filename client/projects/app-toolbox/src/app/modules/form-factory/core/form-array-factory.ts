@@ -15,6 +15,9 @@ export interface FormArrayChild<C, A, Ch> extends AbstractControlFactory {
   arrayFactory?: FormArrayFactory<C, A, Ch>,
   childFactory?: FormChildFactory<Ch>
 }
+export interface ParentFactory<C, A, Ch> {
+  groupFactory?: FormGroupFactory, arrayFactory?: FormArrayFactory<C, A, Ch>
+}
 /**
  * Factory for a formArray, being an intermediate node of the nested form
  *
@@ -36,7 +39,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     public globalConfig: FormFactoryGlobal<any, any, any, any>,
     public config: FormArrayConfig<A>,
     public level: number,
-    public parent: FormGroupFactory | FormArrayFactory<C, A, Ch>
+    public parent: ParentFactory<C, A, Ch>
   ) {
     super()
 
@@ -53,6 +56,8 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     })
     if (!defaultChildConfigs$) console.error('no defaultChildConfigs$ created for ', this.config)
     const defaultChildConfig$ = defaultChildConfigs$.pipe(map(cs => cs[0]))
+
+    // console.log('aaa -1', this.config.data) // freezing bug log
 
     if (!childNodes$) console.error('no childNodes$ created for ', this.config)
     /**
@@ -159,9 +164,9 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     let controlFactory: FormControlFactory<C>;
     let arrayFactory: FormArrayFactory<C, A, Ch>;
     let portalFactory: FormChildFactory<Ch>;
-    if (i.array) arrayFactory = new FormArrayFactory(this.globalConfig, i.array, this.level + 1, this)
-    if (i.control) controlFactory = new FormControlFactory(this.globalConfig, i.control, this.level + 1, this)
-    if (i.childFactory) portalFactory = new FormChildFactory(this.globalConfig, i.childFactory, this.level + 1, this)
+    if (i.array) arrayFactory = new FormArrayFactory(this.globalConfig, i.array, this.level + 1, { arrayFactory: this })
+    if (i.control) controlFactory = new FormControlFactory(this.globalConfig, i.control, this.level + 1, { arrayFactory: this })
+    if (i.childFactory) portalFactory = new FormChildFactory(this.globalConfig, i.childFactory, this.level + 1, { arrayFactory: this })
     const factory = controlFactory ?? arrayFactory ?? portalFactory
     return {
       childFactory: portalFactory,

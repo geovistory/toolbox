@@ -1,0 +1,18 @@
+.loc-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  box-sizing: content-box;
+
+  height: 100%;
+
+  flex-basis: auto;
+  width: calc(100% / 3);
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.divider {
+  width: 1px;
+}

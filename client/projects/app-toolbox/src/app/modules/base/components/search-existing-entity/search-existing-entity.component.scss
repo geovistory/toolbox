@@ -1,0 +1,28 @@
+// overwright mat-list-item height, in order to have nice entity list
+::ng-deep .mat-list-item {
+    height: auto !important;
+}
+// overwright mat-list-item-content padding, in order to have nice entity list
+::ng-deep .mat-list-item-content {
+    padding: 0 !important;
+}
+
+// overwrite paginator height, in prder to be centered with other element
+// here this paginator plays the role of a footer for the slide
+::ng-deep .mat-paginator-container {
+    min-height: 42px !important;
+}
+
+.loc-search-input {
+    width: 90%
+}
+
+// To match height of material inputs
+.loc-input-height {
+    height: 60px;
+    margin-top: 4px;
+}
+.loc-mat-input-height {
+    height: 89px;
+    margin-top: 4px;
+}

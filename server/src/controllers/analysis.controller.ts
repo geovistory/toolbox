@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
@@ -23,7 +22,7 @@ import {AnalysisTimeChartResponse, ChartLine} from '../models/analysis/analysis-
 import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
 import {ProAnalysisRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
-import {SysConfigController} from './sys-config.controller';
+import {SysConfigController} from './backoffice/sys-config.controller';
 
 
 

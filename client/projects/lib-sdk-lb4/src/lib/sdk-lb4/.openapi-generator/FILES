@@ -6,6 +6,7 @@ api/account.service.ts
 api/accountData.service.ts
 api/analysis.service.ts
 api/api.ts
+api/communityVisibility.service.ts
 api/contentTree.service.ts
 api/datChunk.service.ts
 api/datChunkController.service.ts
@@ -46,6 +47,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/activationReportItem.ts
+model/allowedCommunityVisibility.ts
 model/analysisDefinition.ts
 model/analysisMapRequest.ts
 model/analysisMapResponse.ts
@@ -68,6 +70,9 @@ model/classConfig.ts
 model/colDef.ts
 model/columnName.ts
 model/columnNames.ts
+model/communityVisibilityConflicts.ts
+model/communityVisibilityOptions.ts
+model/communityVisibilityOptionsWithRelations.ts
 model/czmlSpatialValue.ts
 model/datChunk.ts
 model/datChunkFilter.ts
@@ -85,6 +90,7 @@ model/datObject.ts
 model/datTextProperty.ts
 model/deactivationReportItem.ts
 model/deleteRowResponse.ts
+model/dfhApiProfile.ts
 model/dfhClass.ts
 model/dfhLabel.ts
 model/dfhObject.ts
@@ -106,16 +112,16 @@ model/gvFieldPageReq.ts
 model/gvFieldPageScope.ts
 model/gvFieldProperty.ts
 model/gvFieldSourceEntity.ts
+model/gvFieldTargetViewType.ts
 model/gvNegativeSchemaObject.ts
 model/gvPaginationObject.ts
 model/gvPositiveSchemaObject.ts
 model/gvSchemaModifier.ts
 model/gvSubentitFieldPageReq.ts
 model/gvSubentityFieldPage.ts
+model/gvSubentityFieldTargetViewType.ts
 model/gvSubentityFieldTargets.ts
-model/gvSubentityTargetType.ts
 model/gvSubfieldPageInfo.ts
-model/gvTargetType.ts
 model/header.ts
 model/httpErrorModel.ts
 model/httpErrorObjectModel.ts
@@ -165,6 +171,8 @@ model/proTextProperty.ts
 model/profileActivationReport.ts
 model/profileDeactivationReport.ts
 model/projectPongRequest.ts
+model/projectVisibilityOptions.ts
+model/projectVisibilityOptionsWithRelations.ts
 model/pubAccount.ts
 model/queryDefinition.ts
 model/queryFilter.ts
@@ -183,6 +191,8 @@ model/role.ts
 model/schemaObject.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts
+model/section.ts
+model/sections.ts
 model/signupRequest.ts
 model/signupResponse.ts
 model/signupValidationError.ts
@@ -191,8 +201,8 @@ model/sysClassHasTypeProperty.ts
 model/sysConfigAddProperty.ts
 model/sysConfigAddPropertyForClass.ts
 model/sysConfigFieldDisplay.ts
-model/sysConfigFieldPosition.ts
 model/sysConfigFieldsOfSourceClass.ts
+model/sysConfigFormCtrlType.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
 model/sysConfigValueObjectType.ts
@@ -217,6 +227,7 @@ model/timeCzmlValue.ts
 model/timePrimitiveWithCal.ts
 model/unMapCheckResponse.ts
 model/unmapColumnBody.ts
+model/visibilityReport.ts
 model/warEntityPreview.ts
 model/warEntityPreviewPaginatedByPkReq.ts
 model/warEntityPreviewSearchExistingReq.ts

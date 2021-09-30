@@ -1,14 +1,12 @@
 import { CdkPortalOutlet, ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ComponentRef, InjectionToken } from '@angular/core';
-import { FormGroup, ValidatorFn, Validators, FormControl, AbstractControl } from "@angular/forms";
-import { QueryFilterComponent } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
-import { Subject, ReplaySubject } from 'rxjs';
-import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
-import { FormFactoryGlobal } from "../services/FormFactoryGlobal";
-import { FormChildFactoryConfig } from "../services/FormChildFactoryConfig";
-import { FormArrayFactory } from './form-array-factory';
+import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { ReplaySubject, Subject } from 'rxjs';
+import { filter, first, switchMap, takeUntil } from 'rxjs/operators';
+import { FormChildFactoryConfig } from '../services/FormChildFactoryConfig';
+import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
+import { ParentFactory } from './form-array-factory';
 import { AbstractControlFactory, FactoryType, FormFactoryComponent } from './form-factory.models';
-import { FormGroupFactory } from './form-group-factory';
 
 export const CONTAINER_DATA = new InjectionToken<{}>('CONTAINER_DATA');
 
@@ -28,7 +26,7 @@ export class FormChildFactory<Ch> extends AbstractControlFactory {
     public globalConfig: FormFactoryGlobal<any, any, any, any>,
     public config: FormChildFactoryConfig<Ch>,
     private level: number,
-    private parent?: FormGroupFactory | FormArrayFactory<any, any, Ch>
+    private parent?: ParentFactory<any, any, Ch>
   ) {
     super()
     this.validators = config.required ? [Validators.required, ...(config.validators || [])] : config.validators

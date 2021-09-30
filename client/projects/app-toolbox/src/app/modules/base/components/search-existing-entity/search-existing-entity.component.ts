@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -12,99 +14,92 @@ export interface DisableIfHasStatement {
   maxQuantity: number
 }
 
+export enum SearchExistingEntityListMode {
+  filtered = 'filtered',
+  searchAndBack = 'searchAndBack'
+}
+
 @Component({
   selector: 'gv-search-existing-entity',
   templateUrl: './search-existing-entity.component.html',
-  styleUrls: ['./search-existing-entity.component.css']
+  styleUrls: ['./search-existing-entity.component.scss']
 })
 export class SearchExistingEntityComponent implements OnInit, OnDestroy {
-
-  // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // // local store of this component
-  // localStore: ObservableStore<SearchExistingEntity>;
+  pkProject: number;
+  pkNamespace: number;
+  className: string;
 
-  // path to the substore
-  // @Input() basePath: string[];
-
-  @Input() alreadyInProjectBtnText: string;
-  @Input() notInProjectBtnText: string;
   @Input() pkClass: number;
-  @Input() searchString$: Observable<string>;
+  @Input() mode: string = SearchExistingEntityListMode.filtered;
+  @Input() searchString$: Subject<string>; // string or '' (can be used to filter the list from the outside)
   @Input() disableIfHasStatement: DisableIfHasStatement;
+
+  @Output() onMore = new EventEmitter<HitPreview>();
+  @Output() onBack = new EventEmitter();
 
   // select observables of substore properties
   loading$ = new BehaviorSubject<boolean>(false);
 
   // Hits
-  persistentItems$ = new BehaviorSubject<HitPreview[]>([]);
-
-  // Total count of hits
-  collectionSize$ = new BehaviorSubject<number>(0);
-
-  @Output() onAddExisting = new EventEmitter<number>();
-  @Output() onOpenExisting = new EventEmitter<number>();
-
-  // Search
-  pkProject: number;
-  searchString = '';
-  minSearchStringLength = 0;
-  pkNamespace: number;
-
-  // Pagination
-  collectionSize: number; // number of search results
-  limit = 3; // max number of results on a page
-  page = 1; // current page
-
+  hits$ = new BehaviorSubject<HitPreview[]>([]);
   hitsFound = false;
   hitsTo$: Observable<number>;
 
-  constructor(
-    // protected rootEpics: RootEpics,
-    // private epics: SearchExistingEntityAPIEpics,
-    // public ngRedux: NgRedux<IAppState>,
-    private entityPreviewApi: WarEntityPreviewControllerService,
-    private p: ActiveProjectService
-  ) {
-  }
+  // For search
+  searchString = '';
+  minSearchStringLength = 0;
 
-  // getBasePath = () => this.basePath;
+  // Pagination
+  collectionSize: number; // number of search results
+  collectionSize$ = new BehaviorSubject<number>(0);
+  limit = 5; // max number of results on a page
+  page = 1; // current page
+
+  // current selection
+  selected: number;
+
+  constructor(
+    private entityPreviewApi: WarEntityPreviewControllerService,
+    private p: ActiveProjectService,
+    private c: ConfigurationPipesService
+  ) { }
 
   ngOnInit() {
-    // this.localStore = this.ngRedux.configureSubStore(this.basePath, peItSearchExistingReducer);
-    // this.rootEpics.addEpic(this.epics.createEpics(this));
-
+    // input validation
     if (!this.pkClass) throw Error('please provide a pkClass')
     if (typeof this.pkClass !== 'number') throw Error('pkClass is not a number')
     if (!this.searchString$) throw Error('please provide a searchString$')
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
 
+    // get class label
+    this.c.pipeClassLabel(this.pkClass).subscribe(name => this.className = name);
 
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.pkProject = pkProject;
+    // update entity list
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$))
+      .subscribe(pkProject => {
+        this.pkProject = pkProject;
 
-      this.searchString$.pipe(
-        debounceTime(400),
-        takeUntil(this.destroy$)
-      ).subscribe(newValue => {
-        this.searchString = newValue;
-        if (newValue.length >= this.minSearchStringLength) {
-          this.page = 1;
-          this.search();
-        } else {
-          this.persistentItems$.next([])
-          this.collectionSize$.next(0)
-        }
-      });
-    })
+        this.searchString$.pipe(debounceTime(400), takeUntil(this.destroy$))
+          .subscribe(newValue => {
+            this.searchString = newValue;
+            if (newValue.length >= this.minSearchStringLength) {
+              this.page = 1;
+              this.search();
+            } else {
+              this.hits$.next([])
+              this.collectionSize$.next(0)
+            }
+          });
+      })
 
     // set hitsFound true, once there are some hits
-    this.persistentItems$.pipe(takeUntil(this.destroy$)).subscribe((i) => {
-      if (i && i.length > 0) this.hitsFound = true
-    })
+    this.hits$.pipe(takeUntil(this.destroy$))
+      .subscribe((i) => {
+        if (i && i.length > 0) this.hitsFound = true
+      })
 
+    // for pagination
     this.hitsTo$ = this.collectionSize$.pipe(
       map(collectionSize => {
         const upper = (this.limit * (this.page - 1)) + this.limit;
@@ -118,22 +113,21 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  pageChange() {
+  pageChange(event: PageEvent) {
+    this.page = event.pageIndex + 1;
     this.search()
   }
 
   search() {
-    const relatedStatement = !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined;
     const req: WarEntityPreviewSearchExistingReq = {
       projectId: this.pkProject,
-      searchString: this.searchString,
+      searchString: this.searchString.trim(),
       pkClasses: [this.pkClass],
       limit: this.limit,
       page: this.page,
-      relatedStatement: relatedStatement
+      relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined
     }
     if (this.disableIfHasStatement) {
-
       this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
         .subscribe((result) => {
           const res: EntitySearchHit[] = result.data;
@@ -148,20 +142,20 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
                 : ''
             }
           })
-          this.persistentItems$.next(hits)
+          this.hits$.next(hits)
           this.collectionSize$.next(result.totalCount)
         }, error => {
-          this.persistentItems$.next([])
+          this.hits$.next([])
           this.collectionSize$.next(0)
         })
     } else {
       this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
         .subscribe((result) => {
           const res: EntitySearchHit[] = result.data;
-          this.persistentItems$.next(res)
+          this.hits$.next(res)
           this.collectionSize$.next(result.totalCount)
         }, error => {
-          this.persistentItems$.next([])
+          this.hits$.next([])
           this.collectionSize$.next(0)
         })
 
@@ -175,14 +169,17 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     return (this.limit * (this.page - 1)) + 1;
   }
 
-
-  onAdd(pkEntity: number) {
-    this.onAddExisting.emit(pkEntity)
+  onMoreClick(hit: HitPreview) {
+    this.selected = hit.pk_entity;
+    this.onMore.emit(hit);
   }
 
-  onOpen(pkEntity: number) {
-    this.onOpenExisting.emit(pkEntity)
+  onBackClick() {
+    this.selected = -1;
+    this.onBack.emit();
   }
 
-
+  searchStringChange(term: string) {
+    this.searchString$.next(term)
+  }
 }

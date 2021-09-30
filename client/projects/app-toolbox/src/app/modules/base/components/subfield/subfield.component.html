@@ -1,273 +1,172 @@
 <ng-container *ngIf="(items$|async)?.length">
-  <!-- <ng-container *ngIf="field.listType.temporalEntity; else simple">
+  <div [ngClass]="{'gv-fh': (addMode$|async)}">
+    <ng-container>
+      <div *ngFor="let item of (items$ | async); let i = index;" class="literal-item"
+        [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}">
+        <div class="full-width">
 
-    <table class="mat-table bg-transparent w-100">
-      <thead>
-        <tr class="mat-header-row">
-          <th class="mat-header-cell add-cell" *ngIf="addMode$|async">
+          <span class="checkbox-col" *ngIf="addMode$|async">
+            <ng-container *ngTemplateOutlet="selectionUI;context:{item:item}">
+            </ng-container>
+          </span>
 
-          </th>
-          <th class="mat-header-cell class-cell gv-fade-out-right">
-          </th>
-          <ng-container *ngFor="let headerCell of visibleDataColumns$ |async">
-            <th class="mat-header-cell gv-fade-out-right">
-              <gv-onto-property-info class="mr-2" [pkProperty]="headerCell.pkProperty" *ngIf="showOntoInfo$ | async">
-              </gv-onto-property-info>
-              {{headerCell.name}}
-            </th>
-          </ng-container>
-          <th class="mat-header-cell action-cell" *ngIf="!(addMode$|async)">
+
+
+          <span class="left-col">
+            <gv-onto-class-info class="mr-2" [pkClass]="item.targetClass" *ngIf="showOntoInfo$ | async">
+            </gv-onto-class-info>
+            <gv-entity-preview *ngIf="item.target.entityPreview; else teEn" [preview]="item.target.entityPreview"
+              [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)">
+            </gv-entity-preview>
+            <ng-template #teEn>
+              <ng-container *ngIf="item.target.entity; else rest">
+
+                <mat-menu #teEnMenu="matMenu">
+                  <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
+                    (click)="openInNewTabFromEntity(item.target.entity)">
+                    <mat-icon>tab</mat-icon>
+                    Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
+                  </button>
+                  <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
+                    (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
+                    <mat-icon>add</mat-icon>
+                    Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
+                  </button>
+                </mat-menu>
+
+                <span *ngIf="!(readonly$|async)" class="font-xs text-muted class-label"
+                  [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity" [matMenuTriggerFor]="teEnMenu">
+                  <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
+                  <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
+                  {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
+                </span>
+
+                <span *ngIf="(readonly$|async)" class="font-xs text-muted class-label"
+                  [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity">
+                  <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
+                  <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
+                  {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
+                </span>
+
+                <gv-entity-with-fields [source]="{fkInfo:item.target.entity.pkEntity}"
+                  [fkClass]="item.target.entity.fkClass" [showOntoInfo$]="showOntoInfo$"
+                  [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">
+                </gv-entity-with-fields>
+              </ng-container>
+            </ng-template>
+            <ng-template #rest>
+              <div class="ellipsis">
+                {{item.targetLabel}}
+                <span *ngIf="!item.targetLabel && item.target.timeSpan" class="mat-text-secondary">
+                  No temporal information
+                </span>
+              </div>
+            </ng-template>
+          </span>
+
+          <span class="right-col" *ngIf="!(addMode$|async) && !(readonly$|async)">
             <mat-menu #appMenu="matMenu">
 
-              <div class="dropdown-header">Columns</div>
+              <ng-container *ngIf="item.target.timeSpan; else entity">
+                <button mat-menu-item (click)="openTimespanModal(item.target.timeSpan)">
+                  <mat-icon>edit</mat-icon>
+                  Edit
+                </button>
+                <mat-divider></mat-divider>
+              </ng-container>
+              <ng-template #entity>
+                <ng-container *ngIf="item.target.entity; else normal">
+                  <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
+                    (click)="openInNewTabFromEntity(item.target.entity)">
+                    <mat-icon>tab</mat-icon>
+                    Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
+                  </button>
+                  <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
+                    (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
+                    <mat-icon>add</mat-icon>
+                    Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
+                  </button>
 
-              <button *ngFor="let column of (dataColumns$ | async)" mat-menu-item
-                (click)="toggleCol(column.id); $event.stopPropagation(); ">
-                <mat-checkbox color="accent" [checked]="((dataColumnsVisibility$ | async ) || {})[column.id]">
-                  {{column.name}}
-                </mat-checkbox>
-              </button>
+                  <button mat-menu-item (click)="markAsFavorite(item)">
+                    <mat-icon>star</mat-icon>
+                    Mark As Favorite
+                  </button>
 
-            </mat-menu>
+                  <mat-divider></mat-divider>
+                  <div class="dropdown-header">Danger Zone</div>
+                  <button mat-menu-item (click)="removeEntity(item)">
+                    <mat-icon color="warn">delete</mat-icon>
+                    <span>Remove</span>
+                  </button>
 
-            <button mat-icon-button [matMenuTriggerFor]="appMenu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-
-        <tr class="mat-row" *ngFor="let row of (items$ | async)">
-
-          <td class="mat-cell add-cell" *ngIf="addMode$|async">
-            <ng-container *ngTemplateOutlet="selectionUI;context:{item:row}"> </ng-container>
-          </td>
-
-          <td class="mat-cell class-cell gv-fade-out-right">
-            <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="field.targetClass">
-            </gv-onto-class-info>
-            <span class="font-xs text-muted" [matTooltip]="'Temporal Entity ' + row?.target?.entity?.pkEntity">
-              <i *ngIf="row.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
-              <i *ngIf="row.ordNum===0" class="gv-entity-color fa fa-star"></i>
-              {{field.targetClassLabel}}
-            </span>
-            <span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2">
-              {{row?.target?.entity?.pkEntity}}</span>
-          </td>
-          <ng-container *ngFor="let cell of row.target.entity.fields">
-            <td class="mat-cell gv-fade-out-right"
-              *ngIf="((dataColumnsVisibility$ | async ) || {} )[getColId(cell.field)]">
-              <gv-field-label class="mat-caption mat-text-secondary d-block" [fkProperty]="cell.field.fkProperty"
-                [fkSourceClass]="field.targetClass" [isOutgoing]="cell.field.isOutgoing"></gv-field-label>
-
-              <span *ngIf="fieldMap[getColId(cell.field)].entityPreview; else default">
-                <gv-entity-preview *ngIf="cell.statements[0]" [dragEnabled]="false" [openTabOnClick]="true"
-                  [preview]="cell.statements[0].target.entityPreview"></gv-entity-preview>
-              </span>
-              <ng-template #default>
-                {{cell?.statements[0]?.targetLabel}}
+                </ng-container>
               </ng-template>
 
-              <a href *ngIf="cell?.count > 1" class="gv-passive-link small" (click)="openList(cell)">
-                ({{cell?.count }})
-              </a>
-            </td>
-          </ng-container>
-          <td class="mat-cell action-cell" *ngIf="!(addMode$|async)">
-            <mat-menu #teEnMenu="matMenu">
 
-              <button mat-menu-item *ngIf="row?.projRel?.is_in_project"
-                (click)="openInNewTab(row.target.entity.pkEntity)">
-                <mat-icon>tab</mat-icon>
-                Open {{field.targetClassLabel}} in new Tab
-              </button>
-              <button mat-menu-item *ngIf="!row?.projRel?.is_in_project"
-                (click)="addAndOpenInNewTabFromEntity(row.target.entity)">
-                <mat-icon>add</mat-icon>
-                Add {{field.targetClassLabel}} to project and open
-              </button>
+              <ng-template #normal>
 
-              <button mat-menu-item (click)="markAsFavorite(row)">
-                <mat-icon>star</mat-icon>
-                Mark As Favorite
-              </button>
+                <ng-container *ngIf="item.target.langString">
+                  <button mat-menu-item (click)="openPopup(item)">
+                    <mat-icon svgIcon="aritem-expand-all"></mat-icon>
+                    <span>Open in popup</span>
+                  </button>
+                  <mat-divider></mat-divider>
+                </ng-container>
 
-              <mat-divider></mat-divider>
-              <div class="dropdown-header">Danger Zone</div>
-              <button mat-menu-item (click)="removeEntity(row)">
-                <mat-icon color="warn">delete</mat-icon>
-                <span>Remove</span>
-              </button>
+                <ng-container *ngIf="item.target.entityPreview">
+                  <button mat-menu-item *ngIf="item.target.entityPreview.fk_project"
+                    (click)="openInNewTabFromPreview(item.target.entityPreview)">
+                    <mat-icon>tab</mat-icon>
+                    Open {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} in new Tab
+                  </button>
+                  <button mat-menu-item *ngIf="!item.target.entityPreview.fk_project"
+                    (click)="addAndOpenInNewTabFromPreview(item.target.entityPreview)">
+                    <mat-icon>add</mat-icon>
+                    Add {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} to project and open
+                  </button>
 
-            </mat-menu>
-            <button mat-icon-button aria-label="Actions on table row" [matMenuTriggerFor]="teEnMenu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </ng-container>
-
-  <ng-template #simple> -->
-  <ng-container>
-    <div *ngFor="let item of (items$ | async); let i = index;" class="literal-item">
-      <div class="full-width ">
-
-        <span class="checkbox-col" *ngIf="addMode$|async">
-          <ng-container *ngTemplateOutlet="selectionUI;context:{item:item}">
-          </ng-container>
-        </span>
+                  <mat-divider></mat-divider>
+                </ng-container>
 
 
-
-        <span class="left-col">
-          <gv-onto-class-info class="mr-2" [pkClass]="item.targetClass" *ngIf="showOntoInfo$ | async">
-          </gv-onto-class-info>
-          <gv-entity-preview *ngIf="item.target.entityPreview; else teEn" [preview]="item.target.entityPreview"
-            [dragEnabled]="false" [openTabOnClick]="true">
-          </gv-entity-preview>
-          <ng-template #teEn>
-            <ng-container *ngIf="item.target.entity; else rest">
-
-              <mat-menu #teEnMenu="matMenu">
-                <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
-                  (click)="openInNewTabFromEntity(item.target.entity)">
-                  <mat-icon>tab</mat-icon>
-                  Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
-                </button>
-                <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
-                  (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
-                  <mat-icon>add</mat-icon>
-                  Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
-                </button>
-              </mat-menu>
-
-              <span class="font-xs text-muted class-label"
-                [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity" [matMenuTriggerFor]="teEnMenu">
-                <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
-                <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
-                {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
-              </span>
-              <gv-entity-with-fields [source]="{fkInfo:item.target.entity.pkEntity}"
-                [fkClass]="item.target.entity.fkClass" [showOntoInfo$]="showOntoInfo$"
-                [scope]="scope.notInProject ? {inRepo:true} : scope">
-              </gv-entity-with-fields>
-            </ng-container>
-          </ng-template>
-          <ng-template #rest>
-            <div class="ellipsis">
-              {{item.targetLabel}}
-              <span *ngIf="!item.targetLabel && item.target.timeSpan" class="mat-text-secondary">
-                No temporal information
-              </span>
-            </div>
-          </ng-template>
-        </span>
-
-        <span class="right-col" *ngIf="!(addMode$|async)">
-          <mat-menu #appMenu="matMenu">
-
-            <ng-container *ngIf="item.target.timeSpan; else entity">
-              <button mat-menu-item (click)="openTimespanModal(item.target.timeSpan)">
-                <mat-icon>edit</mat-icon>
-                Edit
-              </button>
-              <mat-divider></mat-divider>
-            </ng-container>
-            <ng-template #entity>
-              <ng-container *ngIf="item.target.entity; else normal">
-                <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
-                  (click)="openInNewTabFromEntity(item.target.entity)">
-                  <mat-icon>tab</mat-icon>
-                  Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
-                </button>
-                <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
-                  (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
-                  <mat-icon>add</mat-icon>
-                  Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
-                </button>
-
-                <button mat-menu-item (click)="markAsFavorite(item)">
-                  <mat-icon>star</mat-icon>
-                  Mark As Favorite
-                </button>
-
-                <mat-divider></mat-divider>
                 <div class="dropdown-header">Danger Zone</div>
-                <button mat-menu-item (click)="removeEntity(item)">
+                <button mat-menu-item (click)="remove(item)">
                   <mat-icon color="warn">delete</mat-icon>
                   <span>Remove</span>
                 </button>
 
-              </ng-container>
-            </ng-template>
+              </ng-template>
+            </mat-menu>
 
-
-            <ng-template #normal>
-
-              <ng-container *ngIf="item.target.langString">
-                <button mat-menu-item (click)="openPopup(item)">
-                  <mat-icon svgIcon="aritem-expand-all"></mat-icon>
-                  <span>Open in popup</span>
-                </button>
-                <mat-divider></mat-divider>
-              </ng-container>
-
-              <ng-container *ngIf="item.target.entityPreview">
-                <button mat-menu-item *ngIf="item.target.entityPreview.fk_project"
-                  (click)="openInNewTabFromPreview(item.target.entityPreview)">
-                  <mat-icon>tab</mat-icon>
-                  Open {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} in new Tab
-                </button>
-                <button mat-menu-item *ngIf="!item.target.entityPreview.fk_project"
-                  (click)="addAndOpenInNewTabFromPreview(item.target.entityPreview)">
-                  <mat-icon>add</mat-icon>
-                  Add {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} to project and open
-                </button>
-
-                <mat-divider></mat-divider>
-              </ng-container>
-
-
-              <div class="dropdown-header">Danger Zone</div>
-              <button mat-menu-item (click)="remove(item)">
-                <mat-icon color="warn">delete</mat-icon>
-                <span>Remove</span>
-              </button>
-
-            </ng-template>
-          </mat-menu>
-
-          <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-        </span>
+            <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </span>
+        </div>
+        <mat-divider *ngIf="!(addMode$|async)"></mat-divider>
       </div>
-      <mat-divider></mat-divider>
+    </ng-container>
+    <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="pageIndex$ | async"
+      [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]=true [hidden]="(itemsCount$ | async) <= 5"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+    <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
+  </div>
+
+  <div *ngIf="addMode$|async" class="gv-row-space-between">
+    <div class="gv-row-center">
+      <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button color="primary"
+        class="mr-2" (click)="add()">
+        <ng-container *ngIf="!(adding$|async)">
+          Add selected ({{selectedCount$|async}})
+        </ng-container>
+        <div *ngIf="(adding$|async)" style="margin: 6px;">
+          <mat-spinner [diameter]="20"></mat-spinner>
+        </div>
+      </button>
+      <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
+        (click)="next.emit()">Create new</button>
     </div>
-  </ng-container>
-  <!-- </ng-template> -->
-  <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="pageIndex$ | async"
-    [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]=true [hidden]="(itemsCount$ | async) <= 5"
-    (page)="onPageChange($event)">
-  </mat-paginator>
-  <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
-
-
-  <div *ngIf="addMode$|async" class="my-3">
-    <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button color="primary"
-      class="mr-2" (click)="add()">
-      <ng-container *ngIf="!(adding$|async)">
-        Add selected ({{selectedCount$|async}})
-      </ng-container>
-      <div *ngIf="(adding$|async)" style="margin: 6px;">
-        <mat-spinner [diameter]="20"></mat-spinner>
-      </div>
-    </button>
-    <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
-      (click)="next.emit()">Create new</button>
     <button type="button" mat-button (click)="close.emit()">Cancel</button>
   </div>
 

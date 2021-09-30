@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType } from '@kleiolab/lib-queries';
 import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Observable, Subject } from 'rxjs';
@@ -36,6 +36,9 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   shouldDeleteCustomConfig = false;
   submitted = false;
 
+  // The max number of fields contributing to entity label
+  maxLabelFieldNumber = 10;
+
 
   constructor(
     public dialogRef: MatDialogRef<EntityLabelConfigDialogComponent>,
@@ -52,7 +55,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
       'labelParts': this.labelParts
     })
 
-    this.fields$ = c.pipeBasicAndSpecificFields(data.fkClass).pipe(
+    this.fields$ = c.pipeAllSections(data.fkClass, DisplayType.view).pipe(
       map(items => {
         return items
           .map(item => {

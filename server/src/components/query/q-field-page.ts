@@ -2,9 +2,10 @@ import {ModelDefinition} from '@loopback/repository';
 import {keys} from 'lodash';
 import {equals, groupBy, uniq} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
-import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvPaginationStatementFilter, GvTargetType, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, TrueEnum, WarEntityPreview} from '../../models';
+import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldTargetViewType, GvPaginationObject, GvPaginationStatementFilter, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../../models';
 import {GvFieldTargets} from '../../models/field/gv-field-targets';
 import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-positive-schema-object.model';
+import {TrueEnum} from '../../models/sys-config/TrueEnum';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
@@ -48,7 +49,7 @@ type StatementTargetMeta = {
   tableName: string,
   objectWith: string[],
 }
-type GvTargetTypeKey = keyof Omit<GvTargetType, 'textProperty'>;
+type GvTargetTypeKey = keyof GvFieldTargetViewType
 
 type Config = {
   [key in GvTargetTypeKey]: StatementTargetMeta
@@ -81,7 +82,7 @@ export class QFieldPage extends SqlBuilderLb4Models {
         resource: [],
       },
       dat: {
-        namespace:[],
+        namespace: [],
         class_column_mapping: [],
         text_property: [],
         chunk: [],

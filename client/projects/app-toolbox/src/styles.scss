@@ -160,6 +160,10 @@ button:focus {
   -webkit-mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
 }
+.gv-fade-out-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
+}
 .gv-word-wrap-break-word {
   word-wrap: break-word;
   white-space: unset !important;
@@ -3031,3 +3035,72 @@ gv-importer {
     padding-bottom: 0;
   }
 }
+
+
+// About columns
+.gv-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.gv-col-center {
+  @extend .gv-col;
+  justify-content: center;
+}
+
+.gv-col-space-between {
+  @extend .gv-col;
+  justify-content: space-between;
+}
+
+// About rows
+.gv-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.gv-row-center {
+  @extend .gv-row;
+  justify-content: center;
+}
+
+.gv-row-space-between {
+  @extend .gv-row;
+  justify-content: space-between;
+}
+
+.gv-row-start {
+  @extend .gv-row;
+  justify-content: start;
+}
+
+.gv-row-end {
+  @extend .gv-row;
+  justify-content: end;
+}
+
+
+// About widths
+.gv-fw {
+  width: 100%
+}
+
+.gv-width-auto {
+  width: auto;
+}
+
+// About heights
+.gv-fh {
+  height: 100%;
+}
+
+.gv-height-auto {
+  height: auto;
+}
+
+// about overflows
+.gv-ovf-auto {
+  overflow: auto;
+}
+
+@import "~jsoneditor/dist/jsoneditor.min.css";

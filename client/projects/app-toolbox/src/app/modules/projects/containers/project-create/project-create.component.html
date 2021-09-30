@@ -9,10 +9,16 @@
     <div class="col-6">
       <h2>Create a new project</h2>
 
-      <p>
-        Your new project will be limited to one user (you). If you want to add more team members to the project, please
-        contact us info@kleiolab.ch
-      </p>
+      <mat-card class="mb-4">
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-icon color="primary">info</mat-icon>
+          </div>
+          <mat-card-subtitle> New projects are limited to one user (you). If you need more team members
+            on the project, please contact us info@kleiolab.ch </mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
       <ng-template #rt let-r="result" let-t="term">
         {{ r.notes}}
         <small class="text-muted">{{ r.iso6391}}</small>

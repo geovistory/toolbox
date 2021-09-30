@@ -1,5 +1,5 @@
-import { DatChunk, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
+import { DatChunk, InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { EntityDetail } from './active-project/entity-detail';
 import { ProjectSettingsData } from './active-project/project-settings-data.models';

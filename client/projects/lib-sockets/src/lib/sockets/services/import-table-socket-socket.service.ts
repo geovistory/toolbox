@@ -12,7 +12,10 @@ export class ImportTableSocket extends Socket {
 
     super({
       url: c.createNamespaceUrl('ImportTable'),
-      options: { path: c.path }
+      options: {
+        ...c.config.options,
+        path: c.path
+      }
     });
 
     this.connected = true;

@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SysConfigFieldPosition } from './sysConfigFieldPosition';
+import { Sections } from './sections';
 
 
 export interface SysConfigFieldDisplay { 
     comment?: string;
-    displayInBasicFields?: SysConfigFieldPosition;
+    formSections?: Sections;
+    viewSections?: Sections;
     isHasTimeSpanShortCut?: boolean;
-    hidden?: boolean;
 }
 

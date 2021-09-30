@@ -1,33 +1,25 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DfhConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { SchemaObject } from '@kleiolab/lib-redux';
-import { GvFieldProperty, InfResource } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
+import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, first, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { HitPreview } from '../../entity-add-existing-hit/entity-add-existing-hit.component';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
 import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
-
 export interface CtrlEntityDialogData {
-  classAndTypePk: ClassAndTypePk;
-  pkUiContext: number;
-  alreadyInProjectBtnText: string
-  notInProjectBtnText: string
-  notInProjectClickBehavior: NotInProjectClickBehavior
+  pkClass: number;
   hiddenProperty: GvFieldProperty
   initVal$: Observable<CtrlEntityModel>
   showAddList: boolean
   disableIfHasStatement: DisableIfHasStatement,
   defaultSearch: string;
 }
-
-export interface ClassAndTypePk { pkClass: number, pkType: number }
 
 export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
 export type NotInProjectClickBehavior = 'addToProject' | 'selectOnly';
@@ -38,113 +30,88 @@ export interface CreateOrAddEntityEvent {
   pkClass: number
 }
 
-
-
 @Component({
   selector: 'gv-ctrl-entity-dialog',
   templateUrl: './ctrl-entity-dialog.component.html',
   styleUrls: ['./ctrl-entity-dialog.component.scss']
 })
 export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
-
-  // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
+  pkClass$: Observable<number>;
+  pkClass: number;
 
-  classAndTypePk: ClassAndTypePk;
-  pkUiContext: number;
-  alreadyInProjectBtnText: string;
-  notInProjectBtnText: string;
-  notInProjectClickBehavior: NotInProjectClickBehavior;
-
-
-  // input element on the right side
-  searchInput: string;
-
-  // actual search str
-  searchString$ = new BehaviorSubject<string>('');
-
+  // for titles
   classLabel$: Observable<string>;
 
-  classType$: Observable<string>;
+  // for the slider
+  sliderView: 'right' | 'left' = 'left';
 
+  // for the form-create-entity
   initVal$: Observable<InfResource>
+
+  // for the search-entity-list
+  searchInput: string;
+  searchString$ = new BehaviorSubject<string>('');
+  selectedPkEntity$ = new BehaviorSubject<number>(undefined);
+  selectedInProject$: Observable<boolean>;
+
+  // for entity card
+  pkProject: number;
+  showOntoInfo$ = new BehaviorSubject(false);
+  entityCardReadOnly$ = new BehaviorSubject(true);
+  entityCardScope: GvFieldPageScope;
+  source$: Observable<GvFieldSourceEntity>;
+  selectButtonDisabled: boolean;
+  selectButtonTooltip: string;
 
   @ViewChild(FormCreateEntityComponent, { static: true }) createEntity: FormCreateEntityComponent;
 
   constructor(
     private p: ActiveProjectService,
+    private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
     public dialogRef: MatDialogRef<CtrlEntityDialogComponent, CtrlEntityModel>,
-    @Inject(MAT_DIALOG_DATA) public data: CtrlEntityDialogData
+    @Inject(MAT_DIALOG_DATA) public data: CtrlEntityDialogData,
+    private warSelector: WarSelector,
+    private entityPreviewApi: WarEntityPreviewControllerService,
   ) {
-    this.classAndTypePk = data.classAndTypePk
-    this.pkUiContext = data.pkUiContext
-    this.alreadyInProjectBtnText = data.alreadyInProjectBtnText
-    this.notInProjectBtnText = data.notInProjectBtnText
-    this.notInProjectClickBehavior = data.notInProjectClickBehavior
 
-    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.resource : null))
+    // input checking
+    if (!data.pkClass) throw new Error('You must provide classAndTypePk to this dialog')
+
+    this.pkClass$ = of(data.pkClass);
+    this.pkClass = data.pkClass;
+    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.resource : null));
 
     if (this.data.defaultSearch) this.searchString$.next(this.data.defaultSearch);
   }
 
 
   ngOnInit() {
-    // this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddEntityReducer);
-    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    if (!this.classAndTypePk || !this.classAndTypePk.pkClass) throw new Error('You must provide classAndTypePk as Component @Input().')
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
-    if (!this.notInProjectClickBehavior) throw Error('please provide a notInProjectClickBehavior')
+    // class label
+    this.classLabel$ = this.pkClass$.pipe(
+      switchMap(pkClass => this.c.pipeClassLabel(pkClass)),
+      takeUntil(this.destroy$)
+    );
 
-    this.classLabel$ = this.c.pipeClassLabel(this.classAndTypePk.pkClass)
-    this.classType$ = this.p.dfh$.class$.by_pk_class$.key(this.classAndTypePk.pkClass).pipe(
-      filter(klass => !!klass),
-      map(klass => {
-        const systype = klass.basic_type;
-        if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || systype === 30) return 'peIt';
-        else return 'teEnt';
-      })
+    // pkProject
+    this.p.pkProject$.pipe(takeUntil(this.destroy$))
+      .subscribe(n => this.pkProject = n);
+
+    // create the source for the gv-entity-card
+    this.source$ = this.selectedPkEntity$.pipe(
+      map(pkEntity => (pkEntity ? { fkInfo: pkEntity } : undefined)),
+      takeUntil(this.destroy$)
     )
   }
 
   /**
    * gets called on change of the search string.
    */
-  searchStringChange(term: string) {
-    this.searchString$.next(term)
-  }
-
-
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onNotInProjectClicked(pkEntity: number) {
-    if (this.notInProjectClickBehavior == 'selectOnly') {
-      this.onCreateOrAdd({
-        action: 'notInProjectClicked',
-        pkEntity,
-        pkClass: this.classAndTypePk.pkClass
-      })
-    }
-    else if (this.notInProjectClickBehavior == 'addToProject') {
-      this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
-        this.onCreateOrAdd({
-          action: 'added',
-          pkEntity,
-          pkClass: this.classAndTypePk.pkClass
-        })
-      })
-    }
-  }
-
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onAlreadyInProjectClicked(pkEntity: number) {
-    this.onCreateOrAdd({
-      action: 'alreadyInProjectClicked',
-      pkEntity,
-      pkClass: this.classAndTypePk.pkClass
-    })
+  searchStringChange(newStr: string) {
+    this.searchString$.next(newStr)
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
@@ -152,38 +119,69 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.onCreateOrAdd({
       action: 'created',
       pkEntity: entity.pk_entity,
-      pkClass: this.classAndTypePk.pkClass
+      pkClass: this.pkClass
     })
   }
-
-
 
   onCreateOrAdd(res) {
     this.dialogRef.close(res);
   }
 
-  closeAddForm() {
-    this.dialogRef.close();
-  }
-
   // When user confirms that the form is filled
   onFormOk() {
     this.createEntity.submitted = true
+
     if (this.createEntity.formFactory.formGroup.valid) {
-      this.p.dfh$.class$.by_pk_class$.key(this.classAndTypePk.pkClass).pipe(
-        first(i => !!i)
-      ).subscribe((klass) => {
-        const value: CtrlEntityModel = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
-        this.dialogRef.close(value)
-      })
+      const value: CtrlEntityModel = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
+      this.dialogRef.close(value)
     } else {
       const f = this.createEntity.formFactory.formGroup.controls.childControl as FormArray;
       U.recursiveMarkAsTouched(f)
     }
   }
 
+  onMoreClick(hit: HitPreview) {
+    // add to the WS stream and fetch repo and project version
+    this.ap.streamEntityPreview(hit.pk_entity)
+
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
+      filter(item => !!item),
+      map(item => !!item.fk_project),
+      startWith(false)
+    )
+
+    this.selectButtonDisabled = hit.btnDisabled;
+    this.selectButtonTooltip = hit.btnTooltip;
+
+    if (this.sliderView != 'right') {
+      this.sliderView = 'right';
+      setTimeout(() => {
+        this.selectedPkEntity$.next(hit.pk_entity);
+      }, 350)
+    } else {
+      this.selectedPkEntity$.next(undefined)
+      setTimeout(() => {
+        this.selectedPkEntity$.next(hit.pk_entity);
+      }, 0)
+    }
+  }
+
+  onBackClick() {
+    this.sliderView = 'left';
+    this.selectedPkEntity$.next(undefined);
+  }
+
+  selectEntity() {
+    this.dialogRef.close({ pkEntity: this.selectedPkEntity$.value });
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
 }

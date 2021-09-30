@@ -3,8 +3,7 @@ import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, Vi
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState, RootEpics, SucceedActionMeta, TabBase } from '@kleiolab/lib-redux';
-import { DatChunk, DatDigital } from '@kleiolab/lib-sdk-lb3';
-import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { DatDigital, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { getSpecificVersion, latestVersion } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
@@ -343,7 +342,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
             fk_entity_version: digital.entity_version,
             fk_namespace: digital.fk_namespace,
             quill_doc: this.quillDocForChunk(selectedDelta)
-          } as DatChunk
+          }
         });
 
         this.p.ramBoxLeft$.next('select-text');

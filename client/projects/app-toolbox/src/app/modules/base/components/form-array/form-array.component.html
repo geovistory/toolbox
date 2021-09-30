@@ -1,102 +1,53 @@
-<ng-container *ngIf="formArrayFactory.config.data.lists">
-  <div class="gv-full-with">
-    <div class="left-col">
-      <span class="mat-h3 mb-0">
-        {{formArrayFactory?.config.placeholder}}
-        <span matTooltip="Required" *ngIf="formArrayFactory.config.required"> * </span>
-        <span class="ml-1 mat-caption mat-text-secondary">
-          ({{length}})
-        </span>
+<ng-container *ngIf="!(formArrayFactory.children.length == 0 && data.gvFormSection)">
+  <h2 *ngIf="data.gvFormSection?.section?.showHeader$|async" class="title mt-3"
+    (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">
+    <span>
+      {{data.gvFormSection?.section?.label}}
+      <span class="mat-caption mat-error" style="display: inline-block;"
+        *ngIf="control.touched && control.invalid">Error!</span>
+    </span>
+    <mat-icon class="icon" [svgIcon]="data.gvFormSection.section.expanded$.value ? 'chevron-up' : 'chevron-down'">
+    </mat-icon>
+  </h2>
 
-        <span class="ml-1 mat-caption mat-text-warn"
-          *ngIf="formArrayFactory.control.touched && formArrayFactory.control.hasError('maxLength')">
-          Max. {{formArrayFactory.control.getError('maxLength').maxLength}} item(s) allowed
-        </span>
-        <span class="ml-1 mat-caption mat-text-warn"
-          *ngIf="formArrayFactory.control.touched && formArrayFactory.control.hasError('minLength')">
-          At least {{formArrayFactory.control.getError('minLength').minLength}} item(s) required
-        </span>
-      </span>
-    </div>
+  <gv-form-field-header [formField]="data.gvFormField" [length]="length" [maxLength]="maxLength" [control]="control"
+    [formArrayFactory]="formArrayFactory"></gv-form-field-header>
 
-    <button class="right-col" mat-icon-button (click)="addItemInField(
-      formArrayFactory.config.data.lists.fieldDefinition,
-      formArrayFactory.config.data.lists.fieldDefinition.targetClasses[0])"
-      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.targetClasses.length===1"
-      [disabled]="length>=maxLength">
-      <mat-icon>add</mat-icon>
-    </button>
+  <div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
 
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col"
-      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.targetClasses.length>1">
-      <mat-icon>add</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item *ngFor="let pkClass of formArrayFactory.config.data.lists.fieldDefinition.targetClasses "
-        (click)="addItemInField(formArrayFactory.config.data.lists.fieldDefinition, pkClass)">
-        {{formArrayFactory.config.data.lists.fieldDefinition.targets[pkClass]?.targetClassLabel}}
-      </button>
-    </mat-menu>
-  </div>
+    <ng-container *ngFor="let child of formArrayFactory.children; let i=index" trackBy="trackByFn">
 
-</ng-container>
+      <gv-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" [ngClass]="{
+      'is-field': child.arrayFactory?.config?.data.gvFormField,
+      'is-section': child.arrayFactory?.config?.data.gvFormSection
+    }" class="left-col">
+      </gv-form-array>
 
+      <div *ngIf="child.controlFactory || child.childFactory" class="gv-full-with is-control">
 
-<!-- {{minLength}}/{{maxLength}} -->
-<div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with " [ngClass]="{
-    'is-list-item':formArrayFactory?.config.isList,
-    'is-field': child?.arrayFactory?.config?.data.lists,
-    'hide-field-title': child?.arrayFactory?.config.data.hideFieldTitle,
-    'is-ctrl-target-class': child?.controlFactory?.config.data?.controlType === 'ctrl-target-class',
-    'bg-gray-100': child?.controlFactory?.config.data?.controlType === 'ctrl-target-class'
-}">
+        <!-- This is adding the 'leaf' of the form via template: a form-control like input, ect. -->
+        <gv-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
+        </gv-form-control>
 
-  <!--
+        <!-- This is adding the 'leaf' of the form via portal: a fg-* -->
+        <div *ngIf="child.childFactory" class="left-col">
+          <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
+            (attached)="child.childFactory.attached($any($event), $any(outlet))">
+          </ng-template>
+        </div>
 
-  <mat-card class="left-col mat-elevation-z5">
-    <mat-card-content class="gv-full-with">
-      <span class="card–class-info mat-caption mat-text-secondary">
-        <i class="gv-entity-color fa fa-star-o"></i>
-      </span>
-      <ng-container *ngTemplateOutlet="noWrap"></ng-container>
-    </mat-card-content>
-  </mat-card> -->
-
-
-  <!-- <ng-template #noWrap> -->
-  <!-- <div style="flex: 1 0 100%;" *ngIf="isCtrlTargetClass(child)">
-      <div class="gv-full-with">
-        <ng-container *ngTemplateOutlet="title; context:{
-        'placeholder':child?.config.placeholder,
-        'count': child?.children?.length || 0,
-        'showAddBtn': showAddBtn,
-        'required': child.config.required
-      }"></ng-container>
-
+        <div class="gv-col-center ml-2" style="padding-bottom: 1.34375em">
+          <mat-icon class="mat-text-primary inside-width-center" style="font-size: 20px; height: 20px; cursor: pointer;"
+            (click)="remove(i)" [hidden]="!showRemoveBtn(child)">
+            close
+          </mat-icon>
+          <mat-icon class="mat-text-secondary inside-width-center" style="font-size: 20px; height: 20px;"
+            [hidden]="showRemoveBtn(child)">
+          </mat-icon>
+        </div>
 
       </div>
-    </div>
- -->
-
-
-
-  <gv-form-array class="left-col" *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory">
-  </gv-form-array>
-  <gv-form-control class="left-col" *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory">
-  </gv-form-control>
-  <div class="left-col" *ngIf="child.childFactory">
-    <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
-      (attached)="child.childFactory.attached($any($event), $any(outlet))">
-    </ng-template>
-  </div>
-
-  <!-- </ng-template> -->
-
-  <div class="right-col rmv-btn" *ngIf="showRemoveBtn(child)">
-    <button mat-icon-button (click)="remove(i)">
-      <mat-icon>remove</mat-icon>
-    </button>
-    <!-- {{parentLength}} of {{parentMinLength}}/{{parentMaxLength}} -->
+    </ng-container>
 
   </div>
-</div>
+</ng-container>

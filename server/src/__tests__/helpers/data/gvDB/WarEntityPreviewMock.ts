@@ -104,5 +104,42 @@ export class WarEntityPreviewMock {
         entity_label: 'Chapter 2',
         entity_type: 'peIt',
     })
+
+    static readonly APPE_IN_LANG_TYPE_FIRST_NAME: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.APPE_IN_LANG_TYPE_FIRST_NAME,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_630_APPELLATION_IN_A_LANGUAGE_TYPE.dfh_class_label,
+        entity_label: 'First Name',
+        entity_type: 'peIt',
+    })
+
+    static readonly APPE_IN_LANG_TYPE_LAST_NAME: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.APPE_IN_LANG_TYPE_LAST_NAME,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_630_APPELLATION_IN_A_LANGUAGE_TYPE.dfh_class_label,
+        entity_label: 'Last Name',
+        entity_type: 'peIt',
+    })
+
+    static readonly VOLUME_UNIT_CUBIC_METER: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.VOLUME_UNIT_CUBIC_METER,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_class_label,
+        entity_label: 'Cubic Meter',
+        entity_type: 'peIt',
+    })
+
+    static readonly GEO_PLACE_TYPE_CITY: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.GEO_PLACE_TYPE_CITY,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_class_label,
+        entity_label: 'City',
+        entity_type: 'peIt',
+    })
+
 }
 

@@ -9,6 +9,7 @@ import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
 import {PartialDeep} from 'type-fest';
 import {Roles} from '../../components/authorization';
+import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
 import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
@@ -17,7 +18,10 @@ import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFk
 import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
 import {InfStatementSubjectFks} from '../../models/statement/InfStatementSubjectFks';
 import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubjectValues';
+import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
+import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
+import {VisibilityController} from '../backoffice/visibility.controller';
 
 @tags('project data')
 export class CreateProjectDataController {
@@ -25,6 +29,8 @@ export class CreateProjectDataController {
   schemaModifier: GvSchemaModifier = {negative: {}, positive: {}};
 
   constructor(
+    @inject('controllers.VisibilityController')
+    public visibilityController: VisibilityController,
     @repository(InfResourceRepository)
     public infResourceRepository: InfResourceRepository,
     @repository(InfStatementRepository)
@@ -36,7 +42,6 @@ export class CreateProjectDataController {
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
     @repository(DatChunkRepository)
     public datChunkRepo: DatChunkRepository,
-
     @repository(InfAppellationRepository)
     public infAppellationRepo: InfAppellationRepository,
     @repository(InfLanguageRepository)
@@ -48,7 +53,7 @@ export class CreateProjectDataController {
     @repository(InfPlaceRepository)
     public infPlaceRepo: InfPlaceRepository,
     @repository(InfTimePrimitiveRepository)
-    public infTimePrimitiveRepo: InfTimePrimitiveRepository,
+    public infTimePrimitiveRepo: InfTimePrimitiveRepository
   ) { }
 
 
@@ -82,7 +87,7 @@ export class CreateProjectDataController {
       },
     }) entities: InfResourceWithRelations[]
   ): Promise<GvSchemaModifier> {
-
+    await this.visibilityController.initializeConfiguration()
     const promisedEntities = entities.map(entity => this.findOrCreateResourceWithRelations(entity, pkProject))
     await Promise.all(promisedEntities)
     return this.schemaModifier
@@ -118,7 +123,7 @@ export class CreateProjectDataController {
       },
     }) statements: InfStatementWithRelations[]
   ): Promise<GvSchemaModifier> {
-
+    await this.visibilityController.initializeConfiguration()
     const promisedStmts = statements.map(stmt => this.findOrCreateStatementWithRelations(stmt, pkProject))
     await Promise.all(promisedStmts)
     return this.schemaModifier
@@ -133,12 +138,21 @@ export class CreateProjectDataController {
     // manage adding of hidden F2 Expression for sources
     addOfF2Expression(resource);
 
-    // find or create the resource and its project relations
-    const promisedResource = resource.pk_entity ?
-      this.findResourceAndUpsertProjectRel(resource, project) :
-      this.createResourceAndProjectRel(resource, project);
+    let returnedResource;
+    if (resource.pk_entity) {
+      // find the resource and its project relations
+      returnedResource = await this.findResourceAndUpsertProjectRel(resource, project);
+      // add the entity with the additionnal statements
+      if (returnedResource.entity_version_project_rels?.[0].is_in_project !== false) {
+        const q = new QEntityAddToProject(this.datasource)
+        await q.query(project, resource.pk_entity, parseInt(this.user[securityId]),)
+      }
+    } else {
+      // create the resource and its project relations
+      returnedResource = await this.createResourceAndProjectRel(resource, project);
+    }
 
-    const returnedResource = await promisedResource;
+
     if (!returnedResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not find or create resource with id ${resource.pk_entity}`)
 
     // find or create the statements and their project relations
@@ -171,7 +185,7 @@ export class CreateProjectDataController {
     const returnedResource = await this.infResourceRepository.findById(resourceWithRels.pk_entity);
     if (!returnedResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not find resource with id ${resourceWithRels.pk_entity}`)
     const override = resourceWithRels?.entity_version_project_rels?.[0] ?? {}
-    await this.upsertInfoProjRel(returnedResource.pk_entity, override, fkProject)
+    await this.upsertInfoProjRel(returnedResource.pk_entity, override, fkProject, returnedResource.fk_class)
 
 
     this.mergeSchemaModifier({
@@ -192,11 +206,17 @@ export class CreateProjectDataController {
    */
   async createResourceAndProjectRel(resourceWithRels: PartialDeep<InfResourceWithRelations>, fkProject: number) {
     const {pk_entity, fk_class} = resourceWithRels;
-    const createdResource = await this.infResourceRepository.create({pk_entity, fk_class});
+
+    const community_visibility: CommunityVisibilityOptions = this.visibilityController.getDefaultCommunityVisibility(fk_class);
+    const createdResource = await this.infResourceRepository.create({
+      pk_entity,
+      fk_class,
+      community_visibility
+    });
     if (!createdResource?.pk_entity) throw new HttpErrors.NotAcceptable(`Could not create resource ${JSON.stringify(resourceWithRels)}`)
 
     const override = resourceWithRels?.entity_version_project_rels?.[0] ?? {}
-    await this.upsertInfoProjRel(createdResource.pk_entity, override, fkProject)
+    await this.upsertInfoProjRel(createdResource.pk_entity, override, fkProject, createdResource.fk_class)
 
     this.mergeSchemaModifier({
       positive: {
@@ -209,13 +229,16 @@ export class CreateProjectDataController {
   }
 
 
-  private async upsertInfoProjRel(fkEntity: number, override: PartialDeep<ProInfoProjRel> = {}, fkProject: number) {
+  private async upsertInfoProjRel(fkEntity: number, override: PartialDeep<ProInfoProjRel> = {}, fkProject: number, fkClass?: number) {
+    let project_visibility: ProjectVisibilityOptions | undefined;
+    if (fkClass) project_visibility = this.visibilityController.getProjectVisibilityDefault(fkClass)
     const dataObject: PartialDeep<ProInfoProjRel> = {
       // defaults:
       fk_entity: fkEntity,
       is_in_project: true,
 
       // add visibility
+      project_visibility,
       // add fk_creator_project
       ...override,
 
@@ -449,6 +472,7 @@ export class CreateProjectDataController {
     this.schemaModifier = mergeDeepWith(concat, this.schemaModifier, ob)
   }
 
+
 }
 
 /**
@@ -456,7 +480,7 @@ export class CreateProjectDataController {
  *
  * @param resource
  */
-function addOfF2Expression(resource:PartialDeep<InfResourceWithRelations>) {
+function addOfF2Expression(resource: PartialDeep<InfResourceWithRelations>) {
   if (!resource.pk_entity) {
 
     // Add F2 Expression, if this is a F4 Manifestation Singleton
@@ -492,5 +516,7 @@ function addOfF2Expression(resource:PartialDeep<InfResourceWithRelations>) {
     }
 
   }
+
+
 }
 

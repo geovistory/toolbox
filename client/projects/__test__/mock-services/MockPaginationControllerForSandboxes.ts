@@ -81,6 +81,9 @@ export class MockPaginationControllerForSandboxes {
     else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
       return this.generateDataForTimeSpan(gvLoadSubfieldPageReq.page);
     }
+    else if (values(gvLoadSubfieldPageReq.targets)[0].typeItem) {
+      return this.generateDataForEntityPreview(gvLoadSubfieldPageReq.page);
+    }
     throw new Error('mock not implemented for this request');
 
   }
@@ -518,9 +521,23 @@ export class MockPaginationControllerForSandboxes {
     const paginatedStatements: number[] = []
     const statements: OmitEntity<InfStatement>[] = []
     const entityPreviews: OmitEntity<WarEntityPreview>[] = []
+    const resources: OmitEntity<InfResource>[] = []
     const projRels: OmitEntity<ProInfoProjRel>[] = []
 
     for (let i = offset; i < (offset + limit); i++) {
+      const resource: OmitEntity<InfResource> = {
+        pk_entity: this.warEntityPreviewSerial + i,
+        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+      }
+      resources.push(resource)
+      const projRel1: OmitEntity<ProInfoProjRel> = {
+        pk_entity: this.proInfoProjRelSerial + i,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        fk_entity: resource.pk_entity,
+        fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+        is_in_project: true
+      }
+      projRels.push(projRel1)
       const entityPreview: OmitEntity<WarEntityPreview> = {
         pk_entity: this.warEntityPreviewSerial + i,
         fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
@@ -561,6 +578,7 @@ export class MockPaginationControllerForSandboxes {
       schemas: {
         inf: {
           statement: statements,
+          resource: resources
         },
         pro: {
           info_proj_rel: projRels

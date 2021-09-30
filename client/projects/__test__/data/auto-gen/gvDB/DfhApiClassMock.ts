@@ -1,4 +1,4 @@
-import {DfhApiClass} from "./local-model.helpers"
+import { DfhApiClass } from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -583,6 +583,108 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "C2"
+  }
+  static readonly EN_630_APPELLATION_IN_A_LANGUAGE_TYPE: DfhApiClass = {
+    "pk_entity": 6943,
+    "dfh_pk_class": 630,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Appellation in a language type",
+    "dfh_fk_namespace": 3,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of the C7 Appellation in a language (Temporal Entity) class.",
+    "tmsp_last_modification": "2021-06-16T15:05:55.324026+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C12"
+  }
+
+  static readonly EN_716_VOLUME: DfhApiClass = {
+    "pk_entity": 14561,
+    "dfh_pk_class": 716,
+    "dfh_basic_type": 10,
+    "dfh_fk_profile": 34,
+    "dfh_class_label": "Volume",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Archaeological excavations",
+    "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+    "dfh_basic_type_label": "Region",
+    "dfh_class_scope_note": "Amount of space that an object fills or a container has",
+    "tmsp_last_modification": "2021-06-08T21:24:55.882507+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C20"
+  }
+  static readonly EN_723_COMPONENT: DfhApiClass = {
+    "pk_entity": 6865,
+    "dfh_pk_class": 723,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 21,
+    "dfh_class_label": "Component",
+    "dfh_fk_namespace": 74,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Intellectual and literary life",
+    "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "A constituent part, an element or ingredient.",
+    "tmsp_last_modification": "2021-07-07T17:13:06.226726+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C6"
+  }
+
+  static readonly EN_715_VOLUME_MEASUREMENT_UNIT: DfhApiClass = {
+    "pk_entity": 6284,
+    "dfh_pk_class": 715,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 20,
+    "dfh_class_label": "Volume measurement unit",
+    "dfh_fk_namespace": 110,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Physical man-made objects and basic information about them",
+    "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "A measurement unit of volume, like pint, liter, gallon, etc.",
+    "tmsp_last_modification": "2021-05-07T09:03:43.210785+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C19"
+  }
+  static readonly EN_1_CRM_ENTITY: DfhApiClass = {
+    "pk_entity": 4795,
+    "dfh_pk_class": 1,
+    "dfh_basic_type": 0,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "CRM Entity",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": null,
+    "dfh_class_scope_note": "This class comprises all things in the universe of discourse of the CIDOC Conceptual Reference Model.\r\n\r\nIt is an abstract concept providing for three general properties:\r\nIdentification by name or appellation, and in particular by a preferred identifier\r\nClassification by type, allowing further refinement of the specific subclass an instance belongs to\r\nAttachment of free text for the expression of anything not captured by formal properties\r\n\r\nWith the exception of E59 Primitive Value, all other classes within the CRM are directly or indirectly specialisations of E1 CRM Entity.",
+    "tmsp_last_modification": "2021-08-13T12:12:42.85426+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E1"
 }
 }
 

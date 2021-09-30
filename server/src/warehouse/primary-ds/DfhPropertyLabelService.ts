@@ -1,12 +1,12 @@
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface DfhPropertyLabelId {
     pkProperty: number
     language: number
 }
-export interface DfhPropertyLabelVal {label: string};
+export interface DfhPropertyLabelVal {label: string, inverseLabel: string};
 export const dfhPropertyLabelIdKeyDef: KeyDefinition[] = [
     {name: 'pkProperty', type: 'integer'},
     {name: 'language', type: 'integer'}
@@ -222,7 +222,10 @@ const updateSql = `
     SELECT DISTINCT ON (dfh_pk_property, t2.fk_entity)
         t1.dfh_pk_property "pkProperty",
         t2.fk_entity "language",
-        jsonb_build_object('label', t1.dfh_property_label) val
+        jsonb_build_object(
+            'label', t1.dfh_property_label,
+            'inverseLabel', t1.dfh_property_inverse_label
+        ) val
     FROM
         data_for_history.api_property t1,
         tw1 t2

@@ -1,13 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { EntitySearchHit, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 
-import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
 
 export interface HitPreview extends EntitySearchHit {
   btnDisabled?: boolean
   btnTooltip?: string
 }
-
 
 @Component({
   selector: 'gv-entity-add-existing-hit',
@@ -17,13 +15,7 @@ export interface HitPreview extends EntitySearchHit {
 export class EntityAddExistingHitComponent implements OnInit {
 
   @Input() hit: HitPreview;
-
-
-  @Input() alreadyInProjectBtnText: string;
-  @Input() notInProjectBtnText: string;
-
-
-
+  @Input() moreDetails: boolean;
   /**
   * flag to indicate if this search hit is in the context of a project-wide
   * search or in a repository-wide search.
@@ -32,10 +24,8 @@ export class EntityAddExistingHitComponent implements OnInit {
   *   default = false
   */
   @Input() repositorySearch: boolean;
-
-  @Output() onAdd: EventEmitter<number> = new EventEmitter();
-  @Output() onOpen: EventEmitter<number> = new EventEmitter();
-  @Output() onSelect: EventEmitter<number> = new EventEmitter();
+  @Input() selected: boolean;
+  @Output() onMore: EventEmitter<HitPreview> = new EventEmitter();
 
   headlineItems: Array<string> = [];
   isInProject: boolean;
@@ -49,9 +39,6 @@ export class EntityAddExistingHitComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
-
     this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
 
     if (this.hit.fk_project) {
@@ -74,27 +61,8 @@ export class EntityAddExistingHitComponent implements OnInit {
     }
   }
 
-  add() {
-    this.onAdd.emit(this.hit.pk_entity)
-  }
-
-  open() {
-    this.onOpen.emit(this.hit.pk_entity)
-  }
-
-  select() {
-    this.onSelect.emit(this.hit.pk_entity)
-  }
-
-
-  linkClicked() {
-    if (!this.repositorySearch) {
-      if (this.isInProject) {
-        this.open();
-      } else {
-        this.add();
-      }
-    }
+  more() {
+    this.onMore.emit(this.hit)
   }
 
 }

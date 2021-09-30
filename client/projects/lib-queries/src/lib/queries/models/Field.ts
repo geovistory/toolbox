@@ -1,6 +1,5 @@
-import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
+import { ProClassFieldConfig, SysConfigFieldDisplay } from '@kleiolab/lib-sdk-lb4';
 import { FieldBase } from './FieldBase';
-import { FieldPlaceOfDisplay } from './FieldPosition';
 import { FieldTargetClass } from './FieldTargetClass';
 import { SpecialFieldType } from './SpecialFieldType';
 /**
@@ -22,7 +21,7 @@ import { SpecialFieldType } from './SpecialFieldType';
  */
 export interface Field extends FieldBase {
   // defines where the field is being displayed
-  placeOfDisplay: FieldPlaceOfDisplay;
+  display: SysConfigFieldDisplay
   // configuration of the field (containing position in list), given by the project or the default-configuration-project
   fieldConfig?: ProClassFieldConfig;
   // the target classes of the field (if is outgoing range else domain)

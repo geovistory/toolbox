@@ -50,10 +50,6 @@ export * from './pro-tables-config.model';
 // analysis models
 export * from './analysis'
 
-
-// sys-config models
-export * from './sys-config'
-
 // field models
 export * from './field'
 

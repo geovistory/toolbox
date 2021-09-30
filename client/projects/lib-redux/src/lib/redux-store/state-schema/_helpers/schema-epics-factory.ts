@@ -10,7 +10,7 @@ export class SchemaEpicsFactory<Payload, Model> {
   constructor(
     public actionPrefix: string,
     public modelName: string,
-    public actions: SchemaActionsFactory<Payload, Model>,
+    public actions: SchemaActionsFactory<Model>,
     public notifications: NotificationsAPIActions) { }
 
 

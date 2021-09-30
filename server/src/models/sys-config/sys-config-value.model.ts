@@ -1,9 +1,47 @@
 import {model, property} from '@loopback/repository';
-import {SysConfigSpecialFields} from './sys-config-special-fields.model';
-import {ClassesIndex} from "./sys-config-classes-index";
-import {TrueEnum} from './TrueEnum';
 import {SysConfigAddProperty} from './sys-config-add-property';
+import {ClassConfig} from './sys-config-class-config';
+import {ClassesIndex} from "./sys-config-classes-index";
+import {SysConfigSpecialFields} from './sys-config-special-fields.model';
+import {TrueEnum} from './TrueEnum';
 const example: SysConfigValue = {
+  classesDefault: {
+    formControlType: {
+      entity: TrueEnum.true
+    },
+    viewType: {
+      nestedResource: []
+    },
+    communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+    projectVisibilityDefault: {dataApi: false, website: false},
+    communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+  },
+  classesByBasicType: {
+    8: {
+      formControlType: {
+        entity: TrueEnum.true
+      },
+      viewType: {
+        entityPreview: TrueEnum.true
+      },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+    },
+    9: {
+      communityVisibilityRange: {toolbox: [true], dataApi: [false, true], website: [false, true]},
+      communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+    },
+    30: {
+      formControlType: {
+        entity: TrueEnum.true
+      },
+      viewType: {
+        entityPreview: TrueEnum.true
+      },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+    }
+  },
   classes: {
     40: {
       valueObjectType: {
@@ -36,40 +74,44 @@ const example: SysConfigValue = {
       valueObjectType: {
         langString: TrueEnum.true
       }
+    },
+    635: {
+      communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
     }
   },
   specialFields: {
     incomingProperties: {
       1761: {
         comment: 'has short title',
-        displayInBasicFields: {position: 1}
+        formSections: {basic: {position: 1}}
       },
       1111: {
         comment: 'has appellation for language',
-        displayInBasicFields: {position: 2}
+        formSections: {basic: {position: 2}}
       },
       1762: {
         comment: 'P18 has definition (is definition of)',
-        displayInBasicFields: {position: 4}
+        formSections: {basic: {position: 4}}
       },
       1760: {
         comment: 'has web address (is web addess of) – P16',
-        displayInBasicFields: {position: 5}
+        formSections: {basic: {position: 5}}
       },
       1763: {
         comment: 'P19 has comment (is comment about)',
-        displayInBasicFields: {position: 6}
+        formSections: {basic: {position: 6}}
       },
     },
     outgoingProperties: {
       [4]: {
         comment: 'has time-span (When)',
-        displayInBasicFields: {position: 1000}
+        formSections: {basic: {position: 1000}}
       }
     },
     hasTypeSubproperties: {
       comment: 'all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)',
-      displayInBasicFields: {position: 3}
+      formSections: {basic: {position: 3}}
     },
     bySourceClass: {
       '502': {
@@ -77,9 +119,7 @@ const example: SysConfigValue = {
         outgoingProperties: {
           1760: {
             comment: "has web address (is web addess of) – P16",
-            displayInBasicFields: {
-              position: 5
-            }
+            formSections: {basic: {position: 5}}
           }
         }
       }
@@ -105,6 +145,12 @@ const example: SysConfigValue = {
 })
 
 export class SysConfigValue {
+
+  @property({type: ClassConfig})
+  classesDefault?: ClassConfig;
+
+  @property({type: ClassesIndex})
+  classesByBasicType?: ClassesIndex;
 
   @property({type: ClassesIndex, required: true})
   classes: ClassesIndex;

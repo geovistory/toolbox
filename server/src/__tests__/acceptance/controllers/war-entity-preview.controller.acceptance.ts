@@ -6,12 +6,11 @@
 
 import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
-import {GeovistoryServer} from '../../../server';
-import {createWarEntityPreview, deleteWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
-import {cleanDb} from '../../helpers/meta/clean-db.helper';
-import {setupApplication} from '../../helpers/gv-server-helpers';
-import {wait} from '../../helpers/warehouse-helpers';
 import {WarEntityPreviewWithFulltext} from "../../../models/war-entity-preview-with-full-text.model";
+import {GeovistoryServer} from '../../../server';
+import {createWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
+import {setupApplication} from '../../helpers/gv-server-helpers';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
 
 const pEvent = require('p-event');
 
@@ -43,7 +42,8 @@ describe('WarEntityPreviewController', () => {
         const url = server.url;
         const socketClient = io(`${url}/WarEntityPreview`);
         // add to stream
-        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [entityPreview.pk_entity]});
+        const key = entityPreview.fk_project + '_' + entityPreview.pk_entity;
+        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [key]});
 
         // wait for response of server being received by client
         const reply = await pEvent(socketClient, 'entityPreview');
@@ -59,7 +59,8 @@ describe('WarEntityPreviewController', () => {
         const url = server.url;
         const socketClient = io(`${url}/WarEntityPreview`);
         // add to stream
-        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [entityPreview.pk_entity]});
+        const key = entityPreview.fk_project + '_' + entityPreview.pk_entity;
+        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [key]});
 
         // wait for response of server being received by client
         const reply = await pEvent(socketClient, 'entityPreview');
@@ -71,21 +72,22 @@ describe('WarEntityPreviewController', () => {
 
       });
 
-      it('should return project version, then repo version', async () => {
-        const url = server.url;
-        const socketClient = io(`${url}/WarEntityPreview`);
-        // add to stream
-        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [entityPreview.pk_entity]});
+      // it('should return project version, then repo version', async () => {
+      //   const url = server.url;
+      //   const socketClient = io(`${url}/WarEntityPreview`);
+      //   // add to stream
+      //   const key = entityPreview.fk_project + '_' + entityPreview.pk_entity;
+      //   socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [entityPreview.pk_entity]});
 
-        // wait for response of server being received by client
-        const reply = await pEvent(socketClient, 'entityPreview');
+      //   // wait for response of server being received by client
+      //   const reply = await pEvent(socketClient, 'entityPreview');
 
-        socketClient.close();
+      //   socketClient.close();
 
-        // check if the entity preview has fk_class
-        expect(reply).to.have.key('fk_class');
+      //   // check if the entity preview has fk_class
+      //   expect(reply).to.have.key('fk_class');
 
-      });
+      // });
     })
 
     describe('test the stream', () => {
@@ -103,12 +105,13 @@ describe('WarEntityPreviewController', () => {
         socketClient.close();
       })
       it('should return versions project and keep project after repo update', async () => {
+        const repoKey = 0 + '_' + pkEntity1
+        const projectKey = pkProject + '_' + pkEntity1
         // add to stream
-        socketClient.emit('addToStream', {pkProject, pks: [pkEntity1]});
-        await wait(10)
+        socketClient.emit('addToStream', {pkProject, pks: [repoKey, projectKey]});
 
         // add repo variant
-        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
+        createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: undefined,
           entity_label: 'foo repo',
@@ -116,7 +119,7 @@ describe('WarEntityPreviewController', () => {
           fk_class: 21,
         }))
         // add project variant
-        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
+        createWarEntityPreview(new WarEntityPreviewWithFulltext({
           pk_entity: pkEntity1,
           fk_project: pkProject,
           entity_label: 'foo',
@@ -125,8 +128,12 @@ describe('WarEntityPreviewController', () => {
         }))
 
         // check the entity preview
-        let reply = await pEvent(socketClient, 'entityPreview');
-        expect(reply.entity_label).to.equal('foo');
+        const emit1 = await pEvent(socketClient, 'entityPreview');
+        const emit2= await pEvent(socketClient, 'entityPreview');
+        expect([emit1,emit2].find(e=>e.entity_label==='foo')).not.to.be.undefined();
+        expect([emit1,emit2].find(e=>e.entity_label==='foo repo')).not.to.be.undefined();
+
+        let reply;
 
         // update repo variant
         updateWarEntityPreview({pk_entity: pkEntity1, fk_project: null},
@@ -141,50 +148,12 @@ describe('WarEntityPreviewController', () => {
         })
         // check the entity preview
         reply = await pEvent(socketClient, 'entityPreview');
-        expect(reply.entity_label).to.equal('foo');
+        expect(reply.entity_label).to.equal('foo repo 2');
         // check the entity preview
         reply = await pEvent(socketClient, 'entityPreview');
         expect(reply.entity_label).to.equal('foo project 2');
       });
-      it('should return versions of repo -> project -> repo', async () => {
-        // add to stream
-        socketClient.emit('addToStream', {pkProject, pks: [pkEntity1]});
-        await wait(10)
 
-        // add repo variant
-        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
-          pk_entity: pkEntity1,
-          fk_project: undefined,
-          entity_label: 'foo repo',
-          project: 0,
-          fk_class: 21,
-        }))
-
-        // check the entity preview
-        let reply = await pEvent(socketClient, 'entityPreview');
-        expect(reply.entity_label).to.equal('foo repo');
-
-        // add project variant
-        await createWarEntityPreview(new WarEntityPreviewWithFulltext({
-          pk_entity: pkEntity1,
-          fk_project: pkProject,
-          entity_label: 'foo',
-          project: pkProject,
-          fk_class: 21,
-        }))
-
-        // check the entity preview
-        reply = await pEvent(socketClient, 'entityPreview');
-        expect(reply.entity_label).to.equal('foo');
-
-        // remove project variant
-        await deleteWarEntityPreview({pk_entity: pkEntity1, fk_project: pkProject})
-
-        // check the entity preview
-        reply = await pEvent(socketClient, 'entityPreview');
-        expect(reply.entity_label).to.equal('foo repo');
-
-      });
 
     })
 

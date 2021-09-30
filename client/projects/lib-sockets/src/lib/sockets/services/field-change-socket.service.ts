@@ -11,7 +11,10 @@ export class FieldChangeSocket extends Socket {
 
     super({
       url: c.createNamespaceUrl(FieldChangeSocket.NAMESPACE),
-      options: { path: c.path }
+      options: {
+        ...c.config.options,
+        path: c.path
+      }
     });
 
   }

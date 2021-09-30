@@ -1,15 +1,16 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelectorsService, Subfield } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
-import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
+import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 
@@ -20,7 +21,8 @@ interface SubfieldWithItemCount extends Subfield {
 @Component({
   selector: 'gv-field',
   templateUrl: './field.component.html',
-  styleUrls: ['./field.component.scss']
+  styleUrls: ['./field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldComponent implements OnInit {
 
@@ -31,12 +33,12 @@ export class FieldComponent implements OnInit {
   @Input() treeControl: NestedTreeControl<Field>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
+  @Input() scope: GvFieldPageScope;
 
 
   // listsWithCounts$: Observable<SubfieldWithItemCount[]>
   showAddButton$
   itemsCount$: Observable<number>;
-  scope$: Observable<GvFieldPageScope>;
 
   constructor(
     public t: PropertiesTreeService,
@@ -47,9 +49,7 @@ export class FieldComponent implements OnInit {
     public inf: InfActions,
     public dialog: MatDialog,
   ) {
-    this.scope$ = this.ap.pkProject$.pipe(map(pkProject => {
-      return { inProject: pkProject }
-    }))
+
   }
 
 
@@ -58,16 +58,24 @@ export class FieldComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    const errors: string[] = []
+    if (!this.field) errors.push('@Input() field is required.');
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.treeControl) errors.push('@Input() treeControl is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
+
     if (this.field.isSpecialField === 'time-span') {
       this.itemsCount$ = of(1);
     } else {
-      this.itemsCount$ = this.scope$.pipe(
-        switchMap(
-          (scope) => this.s.inf$.statement$.pagination$
-            .pipeCount(fieldToFieldId(this.field, this.source, scope))
-        ),
-        shareReplay({ refCount: true, bufferSize: 1 })
-      )
+      this.itemsCount$ = this.s.inf$.statement$.pagination$
+        .pipeCount(fieldToFieldId(this.field, this.source, this.scope)).pipe(
+          shareReplay({ refCount: true, bufferSize: 1 })
+        )
     }
 
     // const limit = temporalEntityListDefaultLimit
@@ -90,23 +98,6 @@ export class FieldComponent implements OnInit {
      */
     if (this.field.isSpecialField !== 'has-type') {
 
-      //   this.listsWithCounts$ = combineLatest(this.field.listDefinitions.map(l => {
-      //     let obs$: Observable<number>;
-      //     if (l.listType.temporalEntity || l.listType.entityPreview) {
-      //       obs$ = this.p.inf$.statement$.pagination$.pipeCount(subfieldToSubfieldId(l, this.pkEntity, { inProject: pkProject }))
-      //     } else {
-      //       obs$ = this.i.pipeListLength(l, this.pkEntity)
-      //     }
-      //     return obs$.pipe(
-      //       map((itemsCount) => ({ ...l, itemsCount }))
-      //     )
-      //   })).pipe(
-      //     map(lists => lists.filter((list: SubfieldWithItemCount) => list.itemsCount > 0)),
-      //     shareReplay({ refCount: true, bufferSize: 1 }),
-      //   )
-
-      //   this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
-
 
       this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
         .pipe(map(([n, r]) => {
@@ -118,29 +109,21 @@ export class FieldComponent implements OnInit {
           return true;
         }))
     }
-    // else {
-    //   this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.field.property.pkProperty, this.field.isOutgoing).pipe(
-    //     map(hasTypeStatement => hasTypeStatement ? 1 : 0)
-    //   )
-    // }
 
-    // })
   }
 
   addClick() {
     if (this.field.isSpecialField === 'time-span') {
-      // TODO
-      // this.i.pipeItemTimeSpan(this.pkEntity).pipe(first(), takeUntil(this.destroy$)).subscribe(item => {
-      //   // this.timeSpan.openModal(item, this.pkEntity)
-      // })
+      return;
     }
+    const targetClasses = getFormTargetClasses(this.field)
     // More than one target class?
-    else if (this.field.targetClasses && this.field.targetClasses.length > 1) {
+    if (targetClasses.length > 1) {
 
       // Let the user select target class first
 
       const data: ChooseClassDialogData = {
-        pkClasses: this.field.targetClasses,
+        pkClasses: targetClasses.map(t => t.targetClass),
         title: 'Choose a class'
       }
       this.dialog.open(ChooseClassDialogComponent, { data })
@@ -154,31 +137,30 @@ export class FieldComponent implements OnInit {
     // Only one target class!
     else {
 
-      const targetClass = this.field.targetClasses[0];
+      const targetClass = targetClasses[0].targetClass;
       this.openAddDialog(this.field, targetClass);
     }
   }
 
   private openAddDialog(field: Field, targetClass: number) {
     const targetTyp = field.targets[targetClass]
-    const isValueLike = isValueObjectSubfield(targetTyp.listType);
+    const isValueLike = isValueObjectSubfield(targetTyp.viewType);
     const showAddList = (!isValueLike && !field.identityDefiningForTarget)
-    const data: AddDialogData = {
+    const data: AddStatementDialogData = {
       field: field,
       targetClass,
-      source: this.source
+      source: this.source,
+      hiddenProperty: this.field.property
     };
     const config: MatDialogConfig = {
       height: 'calc(100% - 30px)',
-      width: showAddList ? '980px' : '500px',
+      // width: showAddList ? '980px' : '500px',
+      width: '980px',
       maxWidth: '100%',
       data,
     }
-    this.dialog.open(AddDialogComponent, config);
+    this.dialog.open(AddStatementDialogComponent, config);
   }
-
-
-
 
   toggle() {
     if (this.treeControl) {

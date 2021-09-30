@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {values} from 'lodash';
 import {keys} from 'ramda';
-import { testdb } from "../testdb";
+import {testdb} from "../testdb";
 
 /**
  * These helpers are independent of any loopback 4 repository
@@ -56,6 +56,7 @@ const templateNew: NewDfhApiProperty = {
   "dfh_namespace_uri": null,
   "dfh_profile_label": "Geovistory Basics",
   "dfh_property_label": "refers to name",
+  "dfh_property_inverse_label": "is name of",
   "dfh_property_range": 40,
   "requested_language": "en",
   "dfh_namespace_label": "HistDMI generic classes and properties – ongoing",
@@ -90,6 +91,7 @@ interface NewDfhApiProperty {
   dfh_pk_property: number,
   dfh_property_label_language: string,
   dfh_property_label: string,
+  dfh_property_inverse_label: string,
   dfh_property_scope_note_language: string,
   dfh_property_scope_note: string,
   dfh_is_inherited: boolean,

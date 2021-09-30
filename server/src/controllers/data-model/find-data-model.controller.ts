@@ -11,7 +11,7 @@ import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {DfhClass} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {SysConfigController} from '../sys-config.controller';
+import {SysConfigController} from '../backoffice/sys-config.controller';
 
 @tags('data model')
 export class FindDataModelController {
@@ -84,7 +84,7 @@ export class FindDataModelController {
     WHERE t1.fk_profile = t2.dfh_fk_profile
     AND t3.pk_class = t2.dfh_pk_class
     `;
-    const classes=await q.execute<DfhClass[]>()
+    const classes = await q.execute<DfhClass[]>()
     return {positive: {dfh: {klass: classes}}, negative: {}}
 
   }

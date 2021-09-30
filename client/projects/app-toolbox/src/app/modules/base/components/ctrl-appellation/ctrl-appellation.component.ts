@@ -16,6 +16,40 @@ export type CtrlAppellationModel = InfAppellation;
 
 })
 export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlAppellationModel> {
+  static nextId = 0;
+
+  model: CtrlAppellationModel;
+
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
+  @Output() textChange = new EventEmitter<string>();
+
+  @ViewChild(QuillEditComponent) quillEditComponent: QuillEditComponent;
+
+  autofilled?: boolean;
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+  stateChanges = new Subject<void>();
+  focused = false;
+  controlType = 'ctrl-appellation';
+  id = `ctrl-appellation-${CtrlAppellationComponent.nextId++}`;
+  describedBy = '';
+
+  errorState = false;
+  private _placeholder: string;
+  private _required = false;
+  private _disabled = false;
+
+
+
+
+
+  /*****
+   * SPECIFIC IMPLEMENTATIONS
+   */
+
+  quillDoc: QuillDoc;
+  fkClass: number
 
   get empty() {
     return this.model ? false : true;
@@ -63,39 +97,6 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
 
     this.onChange(this.model)
   }
-  static nextId = 0;
-
-  model: CtrlAppellationModel;
-
-  @Output() blur = new EventEmitter<void>();
-  @Output() focus = new EventEmitter<void>();
-
-  @ViewChild(QuillEditComponent) quillEditComponent: QuillEditComponent;
-
-  autofilled?: boolean;
-  // emits true on destroy of this component
-  destroy$ = new Subject<boolean>();
-  stateChanges = new Subject<void>();
-  focused = false;
-  controlType = 'ctrl-appellation';
-  id = `ctrl-appellation-${CtrlAppellationComponent.nextId++}`;
-  describedBy = '';
-
-  errorState = false;
-  private _placeholder: string;
-  private _required = false;
-  private _disabled = false;
-
-
-
-
-
-  /*****
-   * SPECIFIC IMPLEMENTATIONS
-   */
-
-  quillDoc: QuillDoc;
-  fkClass: number
   onChange = (_: any) => { };
   onTouched = () => { };
 
@@ -109,6 +110,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   }
 
   valueChange(quillDoc: QuillDoc) {
+    this.textChange.emit(quillDoc.ops.map(e => e.insert).join(''));
 
     this.value = {
       ...this.value,
@@ -167,6 +169,10 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   onFocus() {
     this.focus.emit()
     this.focused = true;
+  }
+
+  keydown(event) {
+    console.log(event)
   }
 
 }
