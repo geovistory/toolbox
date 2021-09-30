@@ -24,6 +24,7 @@ jobs:
       warehouse_sha: ${{steps.warehouse_sha.outputs.sha}}  
       toolbox_sha: ${{steps.toolbox_sha.outputs.sha}}  
     steps:
+           
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
@@ -34,15 +35,15 @@ jobs:
         run: echo ::set-output name=branch::$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})
         id: extract_branch
         
-      - name: Extract release environment [test|stag|prod] 
+      - name: Extract release environment [dev|stag|prod|mpoc] 
         id: release_env
         run: |
           case ${{steps.extract_branch.outputs.branch}} in
             k8s)
-              echo ::set-output name=environment::'test'
+              echo ::set-output name=environment::'dev'
               ;;
             dev)
-              echo ::set-output name=environment::'test'
+              echo ::set-output name=environment::'dev'
               ;;
             master)
               echo ::set-output name=environment::'stag'
@@ -110,6 +111,15 @@ jobs:
                webserver sha: ${{steps.webserver_sha.outputs.sha}} \
                webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  \
                release environment: ${{steps.release_env.outputs.environment}}
+               
+      # send discord notification to devops channel
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+        uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
+        with:
+          args: '{{ GITHUB_REPOSITORY }}@{{steps.extract_branch.outputs.branch}}: Started Workflow {{GITHUB_WORKFLOW}} \n see: https://github.com/{{ GITHUB_REPOSITORY }}/actions'
+
         
   build-and-push-webserver:
     runs-on: ubuntu-latest
@@ -209,7 +219,7 @@ jobs:
           tags: ghcr.io/kleiolab/geovistory-toolbox:${{needs.extract-metadata.outputs.toolbox_sha}}
  
  
-  update-geovistory-catalog:
+  update-geovistory-charts:
     runs-on: ubuntu-latest
     if: always()
     needs: [extract-metadata, build-and-push-webserver, build-and-push-toolbox, build-and-push-warehouse]
