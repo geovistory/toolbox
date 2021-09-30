@@ -24,32 +24,21 @@ jobs:
       warehouse_sha: ${{steps.warehouse_sha.outputs.sha}}  
       toolbox_sha: ${{steps.toolbox_sha.outputs.sha}}  
     steps:
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Build and upload images"
+          description: "Build and upload docker images to GitHub Packages"
+          color: 0x0000ff
+          username: GitHub Actions
+
       - name: Extract branch name
         shell: bash
         run: echo ::set-output name=branch::$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})
         id: extract_branch
-        
-      - uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
-          title: "Deploy"
-          description: "Build docker images and deploy to GitHub Packages"
-          color: 0x0000ff
-          username: GitHub Actions
-      # send discord notification to devops channel
-      - name: Discord notification
-        uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
-          DISCORD_EMBEDS: |
-             [{
-                "title": "Started Workflow **{{GITHUB_WORKFLOW}}**",
-                "description": "on branch: ${{steps.extract_branch.outputs.branch}}, see [here]("https://github.com/{{ GITHUB_REPOSITORY }}/actions)"
-              }]
-        with:
-          args: ''
-     
+    
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
