@@ -24,25 +24,35 @@ jobs:
       warehouse_sha: ${{steps.warehouse_sha.outputs.sha}}  
       toolbox_sha: ${{steps.toolbox_sha.outputs.sha}}  
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
         with:
-            fetch-depth: 0
-            
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Start building docker images"
+          description: "Build and upload docker images to GitHub Packages"
+          color: 0x0000ff
+          username: GitHub Actions
+
       - name: Extract branch name
         shell: bash
         run: echo ::set-output name=branch::$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})
         id: extract_branch
+    
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+            fetch-depth: 0            
         
-      - name: Extract release environment [test|stag|prod] 
+      - name: Extract release environment [dev|stag|prod|mpoc] 
         id: release_env
         run: |
           case ${{steps.extract_branch.outputs.branch}} in
             k8s)
-              echo ::set-output name=environment::'test'
+              echo ::set-output name=environment::'dev'
               ;;
             dev)
-              echo ::set-output name=environment::'test'
+              echo ::set-output name=environment::'dev'
               ;;
             master)
               echo ::set-output name=environment::'stag'
@@ -110,6 +120,7 @@ jobs:
                webserver sha: ${{steps.webserver_sha.outputs.sha}} \
                webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  \
                release environment: ${{steps.release_env.outputs.environment}}
+               
         
   build-and-push-webserver:
     runs-on: ubuntu-latest
@@ -141,7 +152,6 @@ jobs:
           context: server
           push: true
           tags: ghcr.io/kleiolab/geovistory-webserver:${{needs.extract-metadata.outputs.webserver_sha}}
- 
  
        
   build-and-push-warehouse:
@@ -209,7 +219,7 @@ jobs:
           tags: ghcr.io/kleiolab/geovistory-toolbox:${{needs.extract-metadata.outputs.toolbox_sha}}
  
  
-  update-geovistory-catalog:
+  update-geovistory-charts:
     runs-on: ubuntu-latest
     if: always()
     needs: [extract-metadata, build-and-push-webserver, build-and-push-toolbox, build-and-push-warehouse]
@@ -228,3 +238,11 @@ jobs:
               "toolboxTag":"${{needs.extract-metadata.outputs.toolbox_sha}}", 
               "webserverTag":"${{needs.extract-metadata.outputs.webserver_sha}}" 
             }
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Done building docker images"
+          description: "Build and upload docker images to GitHub Packages"
+          color: 0x0000ff
+          username: GitHub Actions
