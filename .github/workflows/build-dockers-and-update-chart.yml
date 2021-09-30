@@ -28,6 +28,15 @@ jobs:
         shell: bash
         run: echo ::set-output name=branch::$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})
         id: extract_branch
+        
+      - uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Deploy"
+          description: "Build docker images and deploy to GitHub Packages"
+          color: 0x0000ff
+          username: GitHub Actions
       # send discord notification to devops channel
       - name: Discord notification
         uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
