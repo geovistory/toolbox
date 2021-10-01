@@ -7,7 +7,7 @@ name: Build, push, deploy
 # events but only for the dev branch
 on:
   push:
-    branches: [k8s] # for production, change this to [dev, master]
+    branches: [dev, master] # for production, change this to [dev, master]
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -48,9 +48,6 @@ jobs:
         id: release_env
         run: |
           case ${{steps.extract_branch.outputs.branch}} in
-            k8s)
-              echo ::set-output name=environment::'dev'
-              ;;
             dev)
               echo ::set-output name=environment::'dev'
               ;;
