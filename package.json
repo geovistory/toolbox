@@ -12,7 +12,7 @@
   "main": "index.js",
   "engines": {
     "node": "12.8.1",
-    "npm": "6.13.2"
+    "npm": "7.16.0"
   },
   "cacheDirectories": [
     "server/node_modules",
