@@ -13,16 +13,11 @@
     min-height: 42px !important;
 }
 
-.loc-search-input {
-    width: 90%
+.w-160 {
+    width: 160px
 }
 
-// To match height of material inputs
-.loc-input-height {
-    height: 60px;
-    margin-top: 4px;
-}
-.loc-mat-input-height {
-    height: 89px;
-    margin-top: 4px;
+.grow-mr-24 {
+    flex-grow: 1;
+    margin-right: 24px;
 }

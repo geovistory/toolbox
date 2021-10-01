@@ -59,6 +59,7 @@ export class SandBoxCreateDialogsComponent {
     this.dialog.open<CtrlEntityDialogComponent, CtrlEntityDialogData, CtrlEntityModel>(
       CtrlEntityDialogComponent, {
       ...this.dialogSizing,
+      panelClass: 'gv-no-padding',
       data: {
         pkClass: 21,
         hiddenProperty: undefined,
@@ -73,6 +74,7 @@ export class SandBoxCreateDialogsComponent {
   fromCard() {
     this.dialog.open<AddStatementDialogComponent, AddStatementDialogData>(AddStatementDialogComponent, {
       ...this.dialogSizing,
+      panelClass: 'gv-no-padding',
       data: {
         field: {
           'sourceClass': 61, 'sourceClassLabel': 'Birth', 'sourceMaxQuantity': 1, 'sourceMinQuantity': 1, 'targetMinQuantity': 0, 'targetMaxQuantity': -1, 'label': 'brought into life', 'isHasTypeField': false, 'isTimeSpanShortCutField': false, 'property': { 'fkProperty': 86 }, 'isOutgoing': true, 'identityDefiningForSource': true, 'identityDefiningForTarget': false, 'ontoInfoLabel': 'P98', 'ontoInfoUrl': 'https://ontome.net/property/86', 'allSubfieldsRemovedFromAllProfiles': false, 'targetClasses': [21], 'display': { 'formSections': { 'specific': { 'position': null } }, 'viewSections': { 'specific': { 'position': null } } }, 'isSpecialField': false, 'targets': { '21': { 'viewType': { 'entityPreview': 'true' }, 'formControlType': { 'entity': 'true' }, 'removedFromAllProfiles': false, 'targetClass': 21, 'targetClassLabel': 'Person' } }

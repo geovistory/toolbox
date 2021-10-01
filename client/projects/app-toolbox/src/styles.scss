@@ -3103,4 +3103,13 @@ gv-importer {
   overflow: auto;
 }
 
+// for mat-dialog reset padding
+.gv-no-padding mat-dialog-container {
+  padding: 0
+}
+
+.gv-text-align-center {
+  text-align: center;
+}
+
 @import "~jsoneditor/dist/jsoneditor.min.css";

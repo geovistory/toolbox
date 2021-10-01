@@ -28,3 +28,15 @@
   flex-direction: column;
   justify-content: space-between;
 }
+
+gv-form-create-entity {
+  padding: 0 24px 0 24px;
+}
+
+mat-tab-group {
+  padding: 24px 0 0 0;
+}
+
+::ng-deep .loc-body .loc-header  {
+  padding-top: 0 !important
+}

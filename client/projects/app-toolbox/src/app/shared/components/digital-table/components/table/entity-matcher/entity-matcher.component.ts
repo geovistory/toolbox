@@ -70,6 +70,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           height: 'calc(100% - 30px)',
           width: '980px',
           maxWidth: '100%',
+          panelClass: 'gv-no-padding',
           data: {
             initVal$: new BehaviorSubject(undefined),
             showAddList: true,

@@ -1,16 +1,16 @@
 .loc-panel {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
 
   box-sizing: content-box;
 
   height: 100%;
-
-  flex-basis: auto;
+  
   width: calc(100% / 3);
   flex-grow: 1;
   flex-shrink: 0;
+  flex-basis: auto;
 }
 
 .divider {

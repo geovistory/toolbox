@@ -3,8 +3,9 @@ import { PageEvent } from '@angular/material/paginator';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
+import { equals } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 export interface DisableIfHasStatement {
@@ -15,8 +16,14 @@ export interface DisableIfHasStatement {
 }
 
 export enum SearchExistingEntityListMode {
-  filtered = 'filtered',
-  searchAndBack = 'searchAndBack'
+  mode1 = 'mode1',
+  mode2 = 'mode2'
+}
+
+export enum SearchScope {
+  everywhere = 'everywhere',
+  inProject = 'in project',
+  // outsideProject = 'outside project'
 }
 
 @Component({
@@ -32,7 +39,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   className: string;
 
   @Input() pkClass: number;
-  @Input() mode: string = SearchExistingEntityListMode.filtered;
+  @Input() mode: string = SearchExistingEntityListMode.mode1;
   @Input() searchString$: Subject<string>; // string or '' (can be used to filter the list from the outside)
   @Input() disableIfHasStatement: DisableIfHasStatement;
 
@@ -43,19 +50,16 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   loading$ = new BehaviorSubject<boolean>(false);
 
   // Hits
-  hits$ = new BehaviorSubject<HitPreview[]>([]);
-  hitsFound = false;
-  hitsTo$: Observable<number>;
+  hits$: Observable<HitPreview[]>;
 
   // For search
-  searchString = '';
-  minSearchStringLength = 0;
+  scope$ = new BehaviorSubject<SearchScope>(SearchScope.everywhere);
 
   // Pagination
   collectionSize: number; // number of search results
-  collectionSize$ = new BehaviorSubject<number>(0);
+  collectionSize$: Observable<number>
   limit = 5; // max number of results on a page
-  page = 1; // current page
+  page$ = new BehaviorSubject<number>(1);
 
   // current selection
   selected: number;
@@ -75,63 +79,43 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     // get class label
     this.c.pipeClassLabel(this.pkClass).subscribe(name => this.className = name);
 
-    // update entity list
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$))
-      .subscribe(pkProject => {
-        this.pkProject = pkProject;
 
-        this.searchString$.pipe(debounceTime(400), takeUntil(this.destroy$))
-          .subscribe(newValue => {
-            this.searchString = newValue;
-            if (newValue.length >= this.minSearchStringLength) {
-              this.page = 1;
-              this.search();
-            } else {
-              this.hits$.next([])
-              this.collectionSize$.next(0)
-            }
-          });
-      })
-
-    // set hitsFound true, once there are some hits
-    this.hits$.pipe(takeUntil(this.destroy$))
-      .subscribe((i) => {
-        if (i && i.length > 0) this.hitsFound = true
-      })
-
-    // for pagination
-    this.hitsTo$ = this.collectionSize$.pipe(
-      map(collectionSize => {
-        const upper = (this.limit * (this.page - 1)) + this.limit;
-        return upper > collectionSize ? collectionSize : upper;
-      })
+    // reset the page on each change of pkProject, searchString and/or scope if we are not on page 1
+    const filterParams$ = combineLatest([this.p.pkProject$, this.searchString$.pipe(debounceTime(400)), this.scope$]).pipe(
+      tap(() => { if (this.page$.value !== 1) this.page$.next(1) })
     )
-  }
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
+    // all params needed for api call
+    const params$ = combineLatest([filterParams$, this.page$]).pipe(
+      debounceTime(0),
+      distinctUntilChanged(equals), // because of filterParams$ and page$ can both emit at the same time (see l.86)
+      map(([params, page]) => ({
+        pkProject: params[0],
+        searchString: params[1],
+        scope: params[2],
+        page
+      }))
+    )
 
-  pageChange(event: PageEvent) {
-    this.page = event.pageIndex + 1;
-    this.search()
-  }
-
-  search() {
-    const req: WarEntityPreviewSearchExistingReq = {
-      projectId: this.pkProject,
-      searchString: this.searchString.trim(),
-      pkClasses: [this.pkClass],
-      limit: this.limit,
-      page: this.page,
-      relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined
-    }
-    if (this.disableIfHasStatement) {
-      this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
-        .subscribe((result) => {
-          const res: EntitySearchHit[] = result.data;
-
+    // the api call
+    const result$ = params$.pipe(
+      tap(() => this.loading$.next(true)),
+      switchMap(({ pkProject, searchString, page, scope }) => {
+        const req: WarEntityPreviewSearchExistingReq = {
+          projectId: pkProject,
+          searchString: searchString.trim(),
+          pkClasses: [this.pkClass],
+          limit: this.limit,
+          page: page,
+          relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined,
+          scope
+        }
+        return this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req);
+      }),
+      map(resp => {
+        this.loading$.next(false)
+        if (this.disableIfHasStatement) {
+          const res: EntitySearchHit[] = resp.data;
           const hits: HitPreview[] = res.map(r => {
             const btnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
             return {
@@ -142,31 +126,31 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
                 : ''
             }
           })
-          this.hits$.next(hits)
-          this.collectionSize$.next(result.totalCount)
-        }, error => {
-          this.hits$.next([])
-          this.collectionSize$.next(0)
-        })
-    } else {
-      this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
-        .subscribe((result) => {
-          const res: EntitySearchHit[] = result.data;
-          this.hits$.next(res)
-          this.collectionSize$.next(result.totalCount)
-        }, error => {
-          this.hits$.next([])
-          this.collectionSize$.next(0)
-        })
+          return {
+            hits,
+            collectionSize: resp.totalCount
+          }
+        } else {
+          return {
+            hits: resp.data,
+            collectionSize: resp.totalCount
+          }
+        }
+      }),
+      shareReplay()
+    )
 
-
-    }
-
-
+    this.hits$ = result$.pipe(map(obj => obj.hits), startWith([]))
+    this.collectionSize$ = result$.pipe(map(obj => obj.collectionSize), startWith(0))
   }
 
-  hitsFrom() {
-    return (this.limit * (this.page - 1)) + 1;
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+  pageChange(event: PageEvent) {
+    this.page$.next(event.pageIndex + 1);
   }
 
   onMoreClick(hit: HitPreview) {
@@ -181,5 +165,10 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
 
   searchStringChange(term: string) {
     this.searchString$.next(term)
+  }
+
+  changeScope(value: SearchScope) {
+    if (value != this.scope$.value) this.page$.next(1)
+    this.scope$.next(value);
   }
 }

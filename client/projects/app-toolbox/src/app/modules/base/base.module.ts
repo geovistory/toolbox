@@ -48,6 +48,7 @@ import { FormControlComponent } from './components/form-control/form-control.com
 import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
 import { FormFieldHeaderComponent } from './components/form-field-header/form-field-header.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
+import { HbfPanelComponent } from './components/hbf-panel/hbf-panel.component';
 import { PropertiesTreeDialogComponent } from './components/properties-tree-dialog/properties-tree-dialog.component';
 import { PropertiesTreeSectionComponent } from './components/properties-tree-section/properties-tree-section.component';
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
@@ -99,6 +100,7 @@ const components = [
   EntityWithFieldsComponent,
   EntityFieldComponent,
   SliderComponent,
+  HbfPanelComponent,
   EntityCardComponent,
   EntityCardWrapperComponent,
   EntityCardHeaderComponent,

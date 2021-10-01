@@ -48,6 +48,7 @@ const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
 }
 @model() export class WarEntityPreviewSearchExistingReq extends WarEntityPreviewSearchReq {
   @property() relatedStatement?: SearchExistingRelatedStatement
+  @property() scope: string
 }
 
 
@@ -455,7 +456,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   ): Promise<WareEntityPreviewPage> {
     const i = this.prepareSearchInputs(req.limit, req.page, req.searchString)
     const q = new QWarEntityPreviewSearchExisiting(this.dataSource)
-    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement)
+    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement, req.scope)
   }
 
   @post('/war-entity-previews/paginated-list-by-pks', {

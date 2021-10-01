@@ -150,7 +150,6 @@
       [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]=true [hidden]="(itemsCount$ | async) <= 5"
       (page)="onPageChange($event)">
     </mat-paginator>
-    <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
   </div>
 
   <div *ngIf="addMode$|async" class="gv-row-space-between">
