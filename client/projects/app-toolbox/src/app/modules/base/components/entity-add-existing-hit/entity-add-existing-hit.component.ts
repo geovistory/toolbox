@@ -34,7 +34,7 @@ export class EntityAddExistingHitComponent implements OnInit {
 
   entityPreview: WarEntityPreview;
 
-
+  text: string;
 
   constructor() { }
 
@@ -59,6 +59,8 @@ export class EntityAddExistingHitComponent implements OnInit {
       type_label: this.hit.type_label,
       time_span: this.hit.time_span
     }
+
+    this.text = 'ID ' + this.entityPreview.pk_entity + ' - ' + this.hit.full_text_headline
   }
 
   more() {

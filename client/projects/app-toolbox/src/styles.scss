@@ -3048,6 +3048,16 @@ gv-importer {
   justify-content: center;
 }
 
+.gv-col-start {
+  @extend .gv-col;
+  justify-content: start;
+}
+
+.gv-col-end {
+  @extend .gv-col;
+  justify-content: end;
+}
+
 .gv-col-space-between {
   @extend .gv-col;
   justify-content: space-between;

@@ -20,7 +20,7 @@
         {{data.field.label}}
     </span>
 
-    <gv-slider class="gv-fh" [slide]="sliderView">
+    <gv-slider class="gv-fh" [slide]="data.valueTarget ? 'center' : sliderView">
 
         <!-- SLIDE 1 -->
         <ng-container left>
@@ -63,7 +63,7 @@
 
 
         <!-- SLIDE 2 -->
-        <ng-container center>
+        <ng-container center *ngIf="!data.valueTarget">
             <gv-hbf-panel [footer]="false">
 
                 <!-- header -->
@@ -84,7 +84,7 @@
 
 
         <!-- SLIDE 3 -->
-        <ng-container right>
+        <ng-container right *ngIf="!data.valueTarget">
             <gv-hbf-panel [header]="false">
 
                 <!-- body -->

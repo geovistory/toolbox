@@ -30,3 +30,19 @@
   flex-direction: row;
   align-items: center;
 }
+
+.loc-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.loc-pkEntity {
+  white-space: nowrap;
+}
+
+.loc-title {
+  align-items: baseline;
+}

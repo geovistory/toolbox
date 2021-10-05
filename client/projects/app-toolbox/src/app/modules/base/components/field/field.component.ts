@@ -144,18 +144,18 @@ export class FieldComponent implements OnInit {
 
   private openAddDialog(field: Field, targetClass: number) {
     const targetTyp = field.targets[targetClass]
-    const isValueLike = isValueObjectSubfield(targetTyp.viewType);
-    const showAddList = (!isValueLike && !field.identityDefiningForTarget)
+    const valueTarget = isValueObjectSubfield(targetTyp.viewType);
+    const showAddList = (!valueTarget && !field.identityDefiningForTarget)
     const data: AddStatementDialogData = {
       field: field,
       targetClass,
+      valueTarget,
       source: this.source,
       hiddenProperty: this.field.property
     };
     const config: MatDialogConfig = {
       height: 'calc(100% - 30px)',
-      // width: showAddList ? '980px' : '500px',
-      width: '980px',
+      width: valueTarget ? '500px' : '980px',
       maxWidth: '100%',
       data,
       panelClass: 'gv-no-padding',

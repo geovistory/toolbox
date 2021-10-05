@@ -44,7 +44,8 @@ export default sandboxOf(EntityAddExistingHitComponent, {
                 // first_second?: string;
                 // last_second?: string;
                 // tmsp_last_modification?: string;
-                full_text_headline: '\'Alberti\', \'Alberto di Gaspare Alberti (da Venezia, secretario del Senato)\', \'domino\', Has localisation: \'Alberto di Gaspare\'',
+                // full_text_headline: '\'Alberti\', \'Alberto di Gaspare Alberti (da Venezia, secretario del Senato)\', \'domino\', Has localisation: \'Alberto di Gaspare\'',
+                full_text_headline: 'CENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTERCENTER',
                 // class_label_headline?: string,
                 // entity_label_headline?: string,
                 // type_label_headline?: string,
@@ -81,24 +82,27 @@ export default sandboxOf(EntityAddExistingHitComponent, {
         template: `
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
 
-    <i style="display: flex; display-direction:row; justify-content: center;">In Project</i>
     <div class="d-flex justify-content-center mt-2 mb-5">
-        <div style="width:480px;" class="d-flex mr-5">
-            <gv-entity-add-existing-hit
-                [hit]="hit1"
-                [moreDetails]="true"
-            ></gv-entity-add-existing-hit>
-        </div>
-    </div>
-
-    <i style="display: flex; display-direction:row; justify-content: center;">Out of Project</i>
-    <div class="d-flex justify-content-center mt-2 mb-5">
-        <div style="width:480px;" class="d-flex mr-5">
-            <gv-entity-add-existing-hit
-                [hit]="hit1"
-                [moreDetails]="false"
-            ></gv-entity-add-existing-hit>
-        </div>
+        <mat-list style="width:480px;">
+            <mat-list-item style="height:auto;">
+                <gv-entity-add-existing-hit
+                    [hit]="hit1"
+                    [moreDetails]="true"
+                ></gv-entity-add-existing-hit>
+            </mat-list-item>
+            <mat-list-item style="height:auto;">
+                <gv-entity-add-existing-hit
+                    [hit]="hit1"
+                    [moreDetails]="true"
+                ></gv-entity-add-existing-hit>
+            </mat-list-item>
+            <mat-list-item style="height:auto;">
+                <gv-entity-add-existing-hit
+                    [hit]="hit2"
+                    [moreDetails]="true"
+                ></gv-entity-add-existing-hit>
+            </mat-list-item>
+        </mat-list>
     </div>
     `
     })

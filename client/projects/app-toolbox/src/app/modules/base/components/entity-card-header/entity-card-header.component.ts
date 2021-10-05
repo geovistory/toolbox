@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { IconType } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
 
 @Component({
@@ -33,6 +33,7 @@ export class EntityCardHeaderComponent implements OnInit {
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
     private ap: ActiveProjectPipesService,
+    private c: ConfigurationPipesService,
 
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
@@ -40,8 +41,11 @@ export class EntityCardHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true, this.pkProject)
-    this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+
     this.iconType$ = this.b.pipeIconType(this.pkEntity)
+
+    if (this.fkClass$) this.classLabel$ = this.fkClass$.pipe(switchMap(fkClass => this.c.pipeClassLabel(fkClass)))
+    else this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
   }
 
   openClassConfig() {
