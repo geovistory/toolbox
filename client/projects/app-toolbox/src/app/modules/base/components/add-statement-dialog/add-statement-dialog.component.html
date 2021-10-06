@@ -14,13 +14,20 @@
         (close)="onClose()" (next)="onNext()"></gv-subfield>
 </ng-container>
 
-<ng-container *ngIf="(alreadyHas$ | async) === false">
-    <span class="mat-h2 loc-dialog-title">
-        {{classLabel_source$ | async}} – {{sourceEntityLabel$ | async}}
-        {{data.field.label}}
+
+<div class="gv-col gv-fh" *ngIf="(alreadyHas$ | async) === false">
+    <span class="gv-col-center mat-h2 " style="margin-top:1rem">
+        <span class="loc-dialog-title">Add...</span>
+        <span class="mat-caption mat-text-secondary loc-dialog-title">
+            {{classLabel_source$ | async}} – {{sourceEntityLabel$ | async}}
+            &nbsp;<mat-icon svgIcon="arrow-right"></mat-icon>&nbsp;
+            {{data.field.label}}
+        </span>
     </span>
 
-    <gv-slider class="gv-fh" [slide]="data.valueTarget ? 'center' : sliderView">
+    <mat-divider></mat-divider>
+
+    <gv-slider class="gv-fh" [slide]="data.valueTarget ? 'center' : sliderView" style="height:'calc(100% - 89px)'">
 
         <!-- SLIDE 1 -->
         <ng-container left>
@@ -109,7 +116,7 @@
 
                 <!-- footer -->
                 <ng-container footer>
-                    <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="onSelect()">
+                    <button mat-flat-button type="button" color="primary" class="ml-2 mr-2" (click)="onSelect()">
                         <span *ngIf="(selectedInProject$ | async)">Select</span>
                         <span *ngIf="!(selectedInProject$ | async)">Add to project and select</span>
                     </button>
@@ -119,4 +126,4 @@
         </ng-container>
 
     </gv-slider>
-</ng-container>
+</div>

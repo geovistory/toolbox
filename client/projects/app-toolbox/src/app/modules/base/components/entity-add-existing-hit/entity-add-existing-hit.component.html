@@ -3,7 +3,8 @@
   <!-- Already in project icon -->
   <div class="loc-left gv-col-center" matTooltip="{{isInProject ? 'Already in your project' : 'Not in your project'}}">
     <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
-    <mat-icon class="gv-settings-color mat-text-disabled" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
+    <mat-icon class="gv-settings-color mat-text-disabled" *ngIf="!isInProject" svgIcon="check-circle-outline">
+    </mat-icon>
   </div>
 
   <!-- Entity description -->

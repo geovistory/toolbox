@@ -80,7 +80,7 @@
       <ng-container footer>
         <!-- Select button -->
         <div [matTooltip]="selectButtonTooltip">
-          <button mat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()"
+          <button mat-flat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()"
             [disabled]="selectButtonDisabled">
             Select Entity
           </button>
@@ -93,47 +93,3 @@
   </ng-container>
 
 </gv-slider>
-
-
-<!-- 
-
-<gv-slider class="gv-fh" [slide]="sliderView">
-
-  <div right-body class="gv-fh">
-    <mat-tab-group mat-align-tabs="center" [selectedIndex]="(selectedInProject$ | async) ? 0 : 1" class="gv-fh">
-
-      <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
-        <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)" [pkClass$]="pkClass$"
-          [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }" [readonly$]="entityCardReadOnly$">
-        </gv-entity-card>
-        <div class="gv-row-space-between mr-3 ml-3">
-
-          <div class="ml-2 mr-2" [matTooltip]="selectButtonTooltip">
-            <button *ngIf="selectButtonDisabled" mat-button type="button" color="primary" (click)="selectEntity()"
-              disabled>Select Entity</button>
-          </div>
-          <button *ngIf="!selectButtonDisabled" mat-button type="button" color="primary" class="ml-2 mr-2"
-            (click)="selectEntity()">Select Entity</button>
-          <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
-        </div>
-      </mat-tab>
-
-      <mat-tab label="Community version" class="gv-fh gv-col-space-between">
-        <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)" [pkClass$]="pkClass$"
-          [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }" [readonly$]="entityCardReadOnly$"></gv-entity-card>
-        <div class="gv-row-space-between mr-3 ml-3">
-
-          <div class="ml-2 mr-2" [matTooltip]="selectButtonTooltip">
-            <button *ngIf="selectButtonDisabled" mat-button type="button" color="primary" (click)="selectEntity()"
-              disabled>Select Entity</button>
-          </div>
-
-          <button *ngIf="!selectButtonDisabled" mat-button type="button" color="primary" class="ml-2 mr-2"
-            (click)="selectEntity()">Select Entity</button>
-          <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
-        </div>
-      </mat-tab>
-
-    </mat-tab-group>
-  </div>
-</gv-slider> -->
