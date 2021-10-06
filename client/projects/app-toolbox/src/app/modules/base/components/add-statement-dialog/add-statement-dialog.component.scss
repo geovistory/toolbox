@@ -65,3 +65,25 @@ mat-tab-group {
 ::ng-deep .loc-body .loc-header  {
   padding-top: 0 !important
 }
+
+.loc-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loc-title-left {
+  flex-grow: 1;
+  text-align: end;
+}
+.loc-title-right {
+  flex-grow: 1;
+}
+
+.loc-arrow-icon {
+  transform:scale(0.7)
+}
+
+.loc-align-center {
+  align-items: center;
+}
