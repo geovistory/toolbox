@@ -1,0 +1,6 @@
+<mat-form-field appearance="outline">
+    <mat-label>Choose a a class</mat-label>
+    <mat-select (selectionChange)="onChange.emit($event.value)">
+        <mat-option value="option1">Option 1</mat-option>
+    </mat-select>
+</mat-form-field>
