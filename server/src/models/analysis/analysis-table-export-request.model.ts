@@ -1,6 +1,7 @@
-import {model, property} from '@loopback/repository';
-import {AnalysisDefinition} from '..';
-export enum TableExportFileType {'json' = 'json', 'csv' = 'csv'}
+import { model, property } from '@loopback/repository';
+import { AnalysisDefinition } from '../pro-analysis.model';
+
+export enum TableExportFileType { 'json' = 'json', 'csv' = 'csv' }
 
 @model()
 export class AnalysisTableExportRequest {

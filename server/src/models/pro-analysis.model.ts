@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {Entity, model, property} from '@loopback/repository';
-import {ProEntity} from '.';
-import {ProProject} from './pro-project.model';
-import {PubAccount} from './pub-account.model';
+import { Entity, model, property } from '@loopback/repository';
+import { ProEntity } from '.';
+import { ProProject } from './pro-project.model';
+import { PubAccount } from './pub-account.model';
 
 export enum Operator {
   'IS' = 'IS',
@@ -55,7 +55,7 @@ export class QueryPathSegment {
   })
   type?: QueryPathSegmentType;
 
-  @property({type: QueryPathSegmentData})
+  @property({ type: QueryPathSegmentData })
   data: QueryPathSegmentData
 }
 
@@ -87,7 +87,7 @@ export class ColDef {
   label?: string;
 
   // identifier for the column
-  @property({required: true, id: true, generated: false})
+  @property({ required: true, id: true, generated: false })
   id: string;
 
   @property.array(QueryPathSegment)
@@ -141,30 +141,30 @@ export class QueryFilter {
   @property.array(QueryFilter)
   children?: QueryFilter[]
 
-  @property({type: QueryFilterData, required: true})
+  @property({ type: QueryFilterData, required: true })
   data: QueryFilterData
 
 }
 @model()
 export class TimeChartContQueryDef {
-  @property({type: QueryFilter, required: true})
+  @property({ type: QueryFilter, required: true })
   filter: QueryFilter;
-  @property.array(ColDef, {required: true})
+  @property.array(ColDef, { required: true })
   columns: ColDef[];
 }
 
 @model()
 export class QueryDefinition {
-  @property({type: QueryFilter, required: true})
+  @property({ type: QueryFilter, required: true })
   filter: QueryFilter
 
-  @property.array(ColDef, {required: true})
+  @property.array(ColDef, { required: true })
   columns: ColDef[]
 
-  @property({type: 'number'})
+  @property({ type: 'number' })
   limit?: number
 
-  @property({type: 'number'})
+  @property({ type: 'number' })
   offset?: number
 }
 
@@ -180,10 +180,10 @@ class TimeChartContVisualSettings {
 
 @model()
 export class TimeChartContLine {
-  @property({type: TimeChartContVisualSettings, required: true})
+  @property({ type: TimeChartContVisualSettings, required: true })
   visualizationDefinition: TimeChartContVisualSettings;
 
-  @property({type: TimeChartContQueryDef, required: true})
+  @property({ type: TimeChartContQueryDef, required: true })
   queryDefinition: TimeChartContQueryDef;
 
 }
@@ -195,7 +195,7 @@ export class TimeChartContLine {
 @model()
 export class AnalysisDefinition {
   // for analysis types table and map
-  @property({type: QueryDefinition})
+  @property({ type: QueryDefinition })
   queryDefinition?: QueryDefinition;
 
   // for analysis type time chart
@@ -209,7 +209,7 @@ export class AnalysisDefinition {
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'projects', table: 'analysis'}
+    postgresql: { schema: 'projects', table: 'analysis' }
   }
 })
 export class ProAnalysis extends Entity implements ProEntity {
@@ -231,7 +231,7 @@ export class ProAnalysis extends Entity implements ProEntity {
   @property({
     type: 'string',
     required: false,
-    jsonSchema: {nullable: true}
+    jsonSchema: { nullable: true }
   })
   description?: string;
 
@@ -256,7 +256,7 @@ export class ProAnalysis extends Entity implements ProEntity {
   @property({
     type: 'number',
     required: false,
-    jsonSchema: {nullable: true}
+    jsonSchema: { nullable: true }
   })
   fk_last_modifier?: number;
 
