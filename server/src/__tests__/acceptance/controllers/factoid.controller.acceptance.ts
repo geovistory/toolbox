@@ -169,6 +169,7 @@ describe('FactoidController', () => {
                 title: 'Person 1 in the union',
                 comment: 'this is the person 1',
                 properties: [{
+                    pkEntity: 0,
                     pkProperty: 1111,
                     isOutgoing: false,
                     pkColumn: DatColumnMock.COL_NAMES.pk_entity,
@@ -176,17 +177,20 @@ describe('FactoidController', () => {
                     default: { appellation: { string: 'Default person name', fk_class: 40 } }
                 }]
             }, {
+                pkEntity: 0,
                 pkDigital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
                 pkClass: 633, // union
                 title: 'Person 1 in the union',
                 comment: 'this is the person 1',
                 properties: [{
+                    pkEntity: 0,
                     pkProperty: 1436, //has partner
                     isOutgoing: true,
                     pkColumn: DatColumnMock.COL_RND1.pk_entity,
                     comment: "Union - has partner 1",
                     default: { resource: { pk_entity: InfResourceMock.ALBERT_IV.pk_entity } }
                 }, {
+                    pkEntity: 0,
                     pkProperty: 1435, //stemmed from
                     isOutgoing: false,
                     pkColumn: DatColumnMock.COL_PEOPLE.pk_entity,
@@ -282,6 +286,10 @@ describe('FactoidController', () => {
         it('The factoid property mapping should be correctly saved in data.factoid_property_mapping (created, updated, deleted, not touched)', async () => {
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdIn })).body.lb4Token;
             const res1 = await client.post(path).set('Authorization', jwt).query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkTable: FMs1.pkTable }).send(FMs1);
+
+            FMs2.mappings[1].pkEntity = res1.body.mappings[1].pkEntity;
+            FMs2.mappings[1].properties[0].pkEntity = res1.body.mappings[1].properties[0].pkEntity;
+
             const res2 = await client.post(path).set('Authorization', jwt).query({ pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkTable: FMs2.pkTable }).send(FMs2);
 
             const result1 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res2.body.mappings[0].pkEntity);
@@ -290,7 +298,8 @@ describe('FactoidController', () => {
             expect(result1[0].fk_factoid_mapping).to.equal(res2.body.mappings[0].pkEntity)
             expect(result1[0].is_outgoing).to.equal(FMs2.mappings[0].properties[0].isOutgoing)
             expect(result1[0].comment).to.equal(FMs2.mappings[0].properties[0].comment)
-            const result2 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res2.body.mappings[1].pkEntity);
+            const result2 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res1.body.mappings[1].pkEntity);
+            expect(result2[0].pk_entity).to.equal(res1.body.mappings[1].properties[0].pkEntity)
             expect(result2[0].fk_property).to.equal(FMs2.mappings[1].properties[0].pkProperty)
             expect(result2[0].fk_column).to.equal(FMs2.mappings[1].properties[0].pkColumn)
             expect(result2[0].fk_factoid_mapping).to.equal(res2.body.mappings[1].pkEntity)

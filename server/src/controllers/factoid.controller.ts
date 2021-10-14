@@ -8,6 +8,7 @@ import { Roles } from '../components/authorization';
 import { QFactoidsFromEntity } from '../components/query/q-factoids-from-entity';
 import { Postgres1DataSource } from '../datasources';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfTimePrimitive } from '../models';
+import { DatFactoidMapping } from '../models/dat-factoid-mapping.model';
 import { DatFactoidPropertyMapping } from '../models/dat-factoid-property-mapping.model';
 import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
 import { SysConfigValue } from '../models/sys-config/sys-config-value.model';
@@ -299,7 +300,7 @@ export class FactoidController {
     @requestBody({ required: true }) factoidMappings: DigitalFactoidMapping
   ): Promise<DigitalFactoidMapping> {
 
-    // does the digital existst?
+    // does the digital exist?
     const digital = await this.datDigitalRepository.find({ where: { pk_entity: pkTable } })
     if (digital.length == 0) throw new HttpErrors.UnprocessableEntity('The table does not exists');
 
@@ -312,21 +313,34 @@ export class FactoidController {
     }
 
     // delete all current factoid mappings and property mappings
-    currentFPM.forEach(fpm => this.datFactoidPropertyMappingRepository.delete(fpm))
-    currentFM.forEach(fm => this.datFactoidMappingRepository.delete(fm))
+    // exept for the one with fk_entity in it (we trust the incoming json)
+    currentFPM.forEach(fpm => {
+      if (!fpm.pk_entity) this.datFactoidPropertyMappingRepository.delete(fpm)
+    })
+    currentFM.forEach(fm => {
+      if (!fm.pk_entity) this.datFactoidMappingRepository.delete(fm)
+    })
 
     // create new factoid mapping and factoid property mappings
     for (const fm of factoidMappings.mappings) {
-      const newFM = await this.datFactoidMappingRepository.create({
+      const datFactMapp = new DatFactoidMapping({
+        pk_entity: fm.pkEntity,
         fk_digital: fm.pkDigital,
         fk_class: fm.pkClass,
         title: fm.title,
         comment: fm.comment
       })
 
+      let newFM: DatFactoidMapping;
+      if (fm.pkEntity) {
+        this.datFactoidMappingRepository.update(datFactMapp);
+        newFM = await this.datFactoidMappingRepository.findById(fm.pkEntity);
+      } else newFM = await this.datFactoidMappingRepository.create(datFactMapp);
+
       for (const fpm of fm.properties) {
         const theDefault = await this.getOrCreateDefault(fpm);
-        await this.datFactoidPropertyMappingRepository.create({
+        const datFactPropMapp = new DatFactoidPropertyMapping({
+          pk_entity: fpm.pkEntity,
           fk_property: fpm.pkProperty,
           fk_column: fpm.pkColumn,
           fk_factoid_mapping: newFM.pk_entity,
@@ -334,6 +348,9 @@ export class FactoidController {
           fk_default: theDefault?.pk_entity,
           comment: fpm.comment
         })
+
+        if (fpm.pkEntity) await this.datFactoidPropertyMappingRepository.update(datFactPropMapp);
+        else await this.datFactoidPropertyMappingRepository.create(datFactPropMapp);
       }
     }
     return this.getDigitalFactoidMapping(pkProject, pkTable);

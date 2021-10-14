@@ -21,19 +21,19 @@ export class DatFactoidMapping extends Entity {
     type: 'number',
     required: true,
   })
-  fk_digital: number;
+  fk_digital?: number;
 
   @property({
     type: 'string',
     required: true,
   })
-  title: string;
+  title?: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  comment: string;
+  comment?: string;
 
 
   // Define well-known properties here
