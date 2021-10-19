@@ -40,9 +40,9 @@ import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
+import { ClassDropdownModule } from './shared/components/class-dropdown/class-dropdown.module';
 import { LoadingBarModule } from './shared/components/loading-bar/loading-bar.module';
 import { KeysModule } from './shared/pipes/keys.module';
-import { ClassDropdownComponent } from './class-dropdown/class-dropdown.component';
 
 // TODO: check if this can stay.
 const socketIoConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -134,8 +134,7 @@ registerLocaleData(localeDeCh);
 // Own imports
 @NgModule({
   declarations: [
-    AppComponent,
-    ClassDropdownComponent,
+    AppComponent
   ],
   imports: [
     // angular modules
@@ -185,7 +184,8 @@ registerLocaleData(localeDeCh);
     AccountModule,
     ValidationDirectivesModule,
     UserFeedbackModule,
-    LoadingBarModule
+    LoadingBarModule,
+    ClassDropdownModule
   ],
   providers: [
     ActiveAccountService,

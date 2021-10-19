@@ -1,6 +1,6 @@
 <mat-form-field appearance="outline">
-    <mat-label>Choose a a class</mat-label>
+    <mat-label>Choose a class</mat-label>
     <mat-select (selectionChange)="onChange.emit($event.value)">
-        <mat-option value="option1">Option 1</mat-option>
+        <mat-option *ngFor="let aClass of (classes$|async)" value="{{aClass.pkClass}}">{{aClass.label}}</mat-option>
     </mat-select>
 </mat-form-field>

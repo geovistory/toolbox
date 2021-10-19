@@ -103,8 +103,7 @@ const components = [
   HbfPanelComponent,
   EntityCardComponent,
   EntityCardWrapperComponent,
-  EntityCardHeaderComponent,
-
+  EntityCardHeaderComponent
 ]
 
 const baseModules = [
@@ -125,7 +124,7 @@ const baseModules = [
   QuillOpsToStrModule,
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
-  EntityLabelConfigModule,
+  EntityLabelConfigModule
   // ReduxQueriesModule
 ]
 

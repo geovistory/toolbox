@@ -12,6 +12,7 @@ import { ClassDropdownComponent } from './class-dropdown.component';
     MatButtonModule,
     MaterialModule
   ],
-  declarations: [ClassDropdownComponent]
+  declarations: [ClassDropdownComponent],
+  exports: [ClassDropdownComponent]
 })
 export class ClassDropdownModule { }
