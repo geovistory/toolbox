@@ -1,0 +1,11 @@
+<mat-form-field *ngIf="!selected" appearance="outline">
+    <mat-label>Choose a property</mat-label>
+    <mat-select (selectionChange)="select($event.value)">
+        <mat-option *ngFor="let f of (fields$|async)" [value]="f">{{f.label}}</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<ng-container *ngIf="!!selected">
+    <gv-onto-property-info [pkProperty]="selected.property.fkProperty"></gv-onto-property-info>
+    <span class="mat-body-2 ml-3">{{selected.label}}</span>
+</ng-container>
