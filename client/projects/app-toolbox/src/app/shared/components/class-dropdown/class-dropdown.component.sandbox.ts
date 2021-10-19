@@ -12,7 +12,7 @@ import { ClassDropdownModule } from './class-dropdown.module';
 class ConfigurationPipesServiceMock {
     pipeClassesEnabledByProjectProfiles(): Observable<Partial<DfhClass>[]> {
         return of([
-            { pk_class: 21 },
+            { pk_class: 21, basic_type: 8 },
             { pk_class: 61 },
             { pk_class: 63 },
             { pk_class: 566 }
