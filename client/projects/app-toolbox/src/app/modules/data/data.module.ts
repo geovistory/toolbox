@@ -14,6 +14,7 @@ import { InfoDialogModule } from '../../shared/components/info-dialog/info-dialo
 import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy-clipboard.module';
 import { BaseModule } from '../base/base.module';
 import { QuillModule } from '../quill';
+import { ColumnMappingComponent } from './components/column-mapping/column-mapping.component';
 import { FactoidPropertyDisplayComponent } from './components/factoids/factoid-property-display/factoid-property-display.component';
 import { ImporterComponent } from './components/importer/importer.component';
 import { TableConfigDialogComponent } from './components/table-config-dialog/table-config-dialog.component';
@@ -41,7 +42,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     InfoDialogModule
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent],
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent],
 })
 export class DataModule { }
