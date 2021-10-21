@@ -577,9 +577,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         return of({ fk_class: relObj.fk_class, statement: s })
       } else {
         // --> else get related entity preview and its class
-        return this.ap.streamEntityPreview(isOutgoing ? s.fk_object_info : s.fk_subject_info).pipe(
+
+        // related can also be in ressource so:
+        let pkEntity;
+        if (isOutgoing) pkEntity = s.fk_object_info ?? s.object_resource.pk_entity;
+        else pkEntity = s.fk_subject_info ?? s.subject_resource.pk_entity;
+
+        return this.ap.streamEntityPreview(pkEntity).pipe(
           map(preview => ({ fk_class: preview.fk_class, statement: s }))
         )
+
+        // return this.ap.streamEntityPreview(isOutgoing ? s.fk_object_info : s.fk_subject_info).pipe(
+        //   map(preview => ({ fk_class: preview.fk_class, statement: s }))
+        // )
       }
     })
     // add a list, where initial statements are available
