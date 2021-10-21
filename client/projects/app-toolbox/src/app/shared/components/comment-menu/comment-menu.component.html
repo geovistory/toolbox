@@ -1,0 +1,13 @@
+<mat-icon class="loc-pointer" style="color: inherit" [matMenuTriggerFor]="menu">notes</mat-icon>
+
+<mat-menu #menu="matMenu">
+    <mat-form-field appearance="outline">
+        <mat-label>{{title}}</mat-label>
+        <textarea (click)="$event.stopPropagation();" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="5" cdkAutosizeMaxRows="5" [(ngModel)]="content"></textarea>
+    </mat-form-field>
+
+    <div class="gv-row-end">
+        <button class="btn btn-primary" (click)="validate()">Save</button>
+    </div>
+</mat-menu>
