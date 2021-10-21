@@ -15,6 +15,7 @@ import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy
 import { BaseModule } from '../base/base.module';
 import { QuillModule } from '../quill';
 import { ColumnMappingComponent } from './components/column-mapping/column-mapping.component';
+import { DefaultValueEntityComponent } from './components/default-value-entity/default-value-entity.component';
 import { FactoidPropertyDisplayComponent } from './components/factoids/factoid-property-display/factoid-property-display.component';
 import { ImporterComponent } from './components/importer/importer.component';
 import { TableConfigDialogComponent } from './components/table-config-dialog/table-config-dialog.component';
@@ -39,10 +40,10 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     BaseModule,
     DragDropModule,
     CopyClipboardModule,
-    InfoDialogModule
+    InfoDialogModule,
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent],
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, DefaultValueEntityComponent],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, DefaultValueEntityComponent],
 })
 export class DataModule { }
