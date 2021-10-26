@@ -132,7 +132,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
     const hasOnly = (key: number[], d: CtrlTimeSpanDialogResult): boolean => {
       const others = omit(key.map(k => k.toString()), d)
       for (const i of values(others)) {
-        if (i.julianDay) return false
+        if (i.julian_day) return false
       }
       return true
     }

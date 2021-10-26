@@ -23,24 +23,6 @@ export class TimeSpanUtil {
   p81b?: TimePrimitive; // begin of the end | right inner bound | surely to
   p82b?: TimePrimitive; // end of the end | right outer bound | not after
 
-
-  get earliestDay() {
-
-    if (this.isEmpty()) return null;
-
-    let min = Number.POSITIVE_INFINITY;
-
-    this.tpKeys.forEach(key => {
-      if (this[key]) {
-        const current = this[key].julianDay;
-        // if this timePrimitive is earlier than min, set this as new min
-        min = current < min ? current : min;
-      }
-    })
-
-    return min;
-  }
-
   /**
   * get the earliest and latest TimePrimitive of given array of TimePrimitives
   *
@@ -82,6 +64,24 @@ export class TimeSpanUtil {
     if (d['151']) x['p81b'] = d['151'];
     if (d['153']) x['p82b'] = d['153'];
     return new TimeSpanUtil(x)
+  }
+
+
+  get earliestDay() {
+
+    if (this.isEmpty()) return null;
+
+    let min = Number.POSITIVE_INFINITY;
+
+    this.tpKeys.forEach(key => {
+      if (this[key]) {
+        const current = this[key].julian_day;
+        // if this timePrimitive is earlier than min, set this as new min
+        min = current < min ? current : min;
+      }
+    })
+
+    return min;
   }
 
   constructor(data?: WarEntityPreviewTimeSpan) {

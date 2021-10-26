@@ -13,24 +13,24 @@ export class TimePrimitive {
   // Last day of the era before christ
   readonly LAST_DAY_BC = 1721422;
 
-  julianDay: number;
+  julian_day: number;
   duration: TimePrimitiveWithCal.DurationEnum;
   calendar: TimePrimitiveWithCal.CalendarEnum; // the calendar initialy used by user to create time primitive
 
   constructor(data?: TimePrimitiveWithCal) {
     Object.assign(this, data);
-    if ((data as any).julian_day) this.julianDay = (data as any).julian_day
+    if ((data as any).julian_day) this.julian_day = (data as any).julian_day
   }
 
   getGregorianDateTime(): GregorianDateTime {
     const g = new GregorianDateTime()
-    g.fromJulianDay(this.julianDay);
+    g.fromJulianDay(this.julian_day);
     return g;
   }
 
   getJulianDateTime(): JulianDateTime {
     const j = new JulianDateTime()
-    j.fromJulianDay(this.julianDay);
+    j.fromJulianDay(this.julian_day);
     return j;
   }
 
@@ -63,7 +63,7 @@ export class TimePrimitive {
    */
   getDateFormatString(granularity: Granularity): string {
 
-    if (this.julianDay <= this.LAST_DAY_BC) {
+    if (this.julian_day <= this.LAST_DAY_BC) {
       switch (granularity) {
         case '1 year':
           return 'y GG';
@@ -114,7 +114,7 @@ export class TimePrimitive {
    * TODO: integrate time
   */
   getJulianSecond(): number {
-    return this.julianDay * 60 * 60 * 24;
+    return this.julian_day * 60 * 60 * 24;
   }
 
 

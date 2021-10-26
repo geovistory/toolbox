@@ -101,7 +101,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
     return this.model;
   }
   set value(value: CtrlModel | null) {
-    if (!value || !value.calendar || !value.julianDay || !value.duration) {
+    if (!value || !value.calendar || !value.julian_day || !value.duration) {
       this.model = undefined
     }
     else {
@@ -185,7 +185,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
 
         this.value = {
           ...this.value,
-          julianDay: this.julianDay,
+          julian_day: this.julianDay,
           duration: this.duration,
           calendar: this.calendar
         }
@@ -223,19 +223,19 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
 
   writeValue(value: CtrlModel | null): void {
-    const { calendar, duration, julianDay } = value ?? {}
-    this.value = { calendar, duration, julianDay };
+    const { calendar, duration, julian_day } = value ?? {}
+    this.value = { calendar, duration, julian_day };
     if (value) {
       if (value.calendar) {
         this.calendar = value.calendar;
         this.calendarGivenByWriteValue = true;
       }
       if (value.duration) this.duration = value.duration as Granularity;
-      if (value.julianDay) this.julianDay = value.julianDay;
+      if (value.julian_day) this.julianDay = value.julian_day;
 
       const timePrimitive = new TimePrimitive({
         calendar: this.calendar,
-        julianDay: this.julianDay,
+        julian_day: this.julianDay,
         duration: this.duration,
       })
       const dt = timePrimitive.getDateTime(this.calendar);

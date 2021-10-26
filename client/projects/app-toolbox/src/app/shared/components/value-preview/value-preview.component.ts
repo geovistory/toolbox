@@ -59,8 +59,8 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
 
   stringifyJulianDate(timePrim: TimePrimitiveWithCal): string {
     let date;
-    if (timePrim.calendar == 'julian') date = new JulianDateTime().fromJulianDay(timePrim.julianDay);
-    else date = new GregorianDateTime().fromJulianDay(timePrim.julianDay)
+    if (timePrim.calendar == 'julian') date = new JulianDateTime().fromJulianDay(timePrim.julian_day);
+    else date = new GregorianDateTime().fromJulianDay(timePrim.julian_day)
     let result = date.day + '';
     result += date.day === 1 ? 'st ' : date.day === 2 ? 'nd ' : date.day === 3 ? 'rd ' : 'th ';
     result += ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
