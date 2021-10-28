@@ -93,7 +93,7 @@ export class TimeSpanService {
       }],
       object_time_primitive: {
         duration: t.duration,
-        julian_day: t.julian_day,
+        julian_day: t.julianDay,
         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
       },
       ...{} as any
@@ -114,7 +114,7 @@ export class TimeSpanService {
         const t: TimePrimitiveWithCal = {
           calendar: i.calendar,
           duration: i.duration,
-          julian_day: i.julian_day
+          julianDay: i.julianDay
         }
         timePrimitives[pkProperty] = t
       }
@@ -138,7 +138,7 @@ export class TimeSpanService {
           tp: {
             calendar: i.calendar,
             duration: i.duration,
-            julian_day: i.julian_day
+            julianDay: i.julianDay
           },
           r
         }

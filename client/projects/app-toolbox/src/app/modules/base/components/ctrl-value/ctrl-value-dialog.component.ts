@@ -119,7 +119,7 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
       this.timeprimitive.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((nv: TimePrimitiveWithCal) => {
         if (nv === undefined) return;
         this.newValue.object_time_primitive = {
-          julian_day: nv.julian_day,
+          julian_day: nv.julianDay,
           duration: nv.duration,
           fk_class: this.data.pkClass
         };

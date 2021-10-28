@@ -571,8 +571,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         s.object_place ||
         s.object_lang_string ||
         s.subject_resource ||
-        s.object_dimension ||
-        s.object_time_primitive;
+        s.object_dimension;
       if (relObj) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language, .dimension
         return of({ fk_class: relObj.fk_class, statement: s })
@@ -829,7 +828,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               ],
               fk_property: parseInt(key, 10),
               object_time_primitive: {
-                julian_day: timePrim.julian_day,
+                julian_day: timePrim.julianDay,
                 duration: timePrim.duration,
                 fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
               }
@@ -1178,7 +1177,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
             object_time_primitive: {
-              julian_day: timePrim.julian_day,
+              julian_day: timePrim.julianDay,
               duration: timePrim.duration,
               fk_class: targetClass,
             },

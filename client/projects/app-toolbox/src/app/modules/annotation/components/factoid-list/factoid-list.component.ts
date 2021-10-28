@@ -114,7 +114,7 @@ export class FactoidListComponent implements OnInit, OnDestroy {
       ]).pipe(
         map(([tp, ipr]) => {
           const t: TimePrimitiveWithCal = {
-            julian_day: tp.julian_day,
+            julianDay: tp.julian_day,
             duration: tp.duration as TimePrimitiveWithCal.DurationEnum,
             calendar: ipr?.calendar as TimePrimitiveWithCal.CalendarEnum,
           }

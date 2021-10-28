@@ -100,7 +100,7 @@ export class InformationBasicPipesService {
               map(ipr => {
                 const y: TimePrimitiveWithCal = {
                   calendar: (ipr.calendar ? ipr.calendar : 'gregorian') as CalendarType,
-                  julian_day: infTimePrimitive.julian_day,
+                  julianDay: infTimePrimitive.julian_day,
                   duration: infTimePrimitive.duration as Granularity
                 }
                 return y;
