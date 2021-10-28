@@ -5,7 +5,7 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
 import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
+import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
@@ -571,7 +571,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         s.object_place ||
         s.object_lang_string ||
         s.subject_resource ||
-        s.object_dimension;
+        s.object_dimension ||
+        s.object_time_primitive;
       if (relObj) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language, .dimension
         return of({ fk_class: relObj.fk_class, statement: s })
@@ -800,7 +801,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     for (let i = 0; i < initStmts.length; i++) {
       const element = initStmts[i];
       const calendar = element?.entity_version_project_rels?.[0].calendar
-      initValue[element.fk_property] = { ...element.object_time_primitive, calendar }
+      initValue[element.fk_property] = {
+        duration: element?.object_time_primitive?.duration,
+        julianDay: element?.object_time_primitive?.julian_day,
+        fk_class: element?.object_time_primitive?.fk_class,
+        calendar
+      }
     }
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     const controlConfig: LocalNodeConfig = {
@@ -818,7 +824,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
           const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
-            const timePrim: TimePrimitiveWithCal = v[key]
+            const timePrim: TimeSpanResult = v[key]
             const statement: InfStatementWithRelations = {
               entity_version_project_rels: [
                 {
