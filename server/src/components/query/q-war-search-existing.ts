@@ -93,7 +93,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       -- this ensures we allways search in the full repo full-text (finds more)
       -- and it includes the information, whether the entity is in project or not
       tw0 AS (
-        SELECT  to_tsquery(${this.addParam(tsSearchString)}) q
+        SELECT  to_tsquery(${tsSearchString === '' ? "''" : tsSearchString}) q
       ),
       te1 AS (
         ${froms.join(' UNION ALL ')}
