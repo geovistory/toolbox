@@ -422,6 +422,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)).subscribe(field => {
         this.m.openAddStatementDialog({
           field,
+          valueTarget: false,
           targetClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
           source: { fkInfo: pkParent },
           hiddenProperty: {}

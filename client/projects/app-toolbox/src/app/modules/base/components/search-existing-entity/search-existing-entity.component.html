@@ -41,9 +41,13 @@
       <div *ngIf="!(loading$ | async) && (collectionSize$ | async)!==0" class="gv-fw">
         <mat-list>
           <mat-list-item *ngFor="let hit of (hits$ | async)" class="gv-height-auto">
-            <gv-entity-add-existing-hit class="gv-fw" [hit]="hit" [selected]="hit.pk_entity == selected"
-              [moreDetails]="true" (onMore)="onMoreClick($event)">
+            <gv-entity-add-existing-hit [pkEntity]="hit.pkEntity" [title]="hit.title" [description]="hit.description"
+              [isInProject]="hit.isInProject" [numberOfProject]="hit.numberOfProject" [selected]="hit.selected"
+              [confirmBtnText]="hit.confirmBtnText" [confirmBtnDisabled]="hit.confirmBtnDisabled"
+              [confirmBtnTooltip]="hit.confirmBtnTooltip" style="width:100%" (showDetailsOfEntity)="onMoreClick(hit)"
+              (hideDetailsOfEntity)="onBackClick()" (confirm)="onConfirmClick(hit.pkEntity,hit.isInProject)">
             </gv-entity-add-existing-hit>
+            <mat-divider></mat-divider>
           </mat-list-item>
         </mat-list>
       </div>

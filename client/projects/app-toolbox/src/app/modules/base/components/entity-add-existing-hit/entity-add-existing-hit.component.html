@@ -1,27 +1,30 @@
-<div class="gv-row-center mb-3 hit loc-content" [ngClass]="{'selected': selected}" (click)="more()">
-
-  <div class="hit-left-part">
-    <!-- Already in project icon -->
-    <div class="gv-col-center" style="margin-right: 10px"
-      matTooltip="{{isInProject ? 'Already in your project' : 'Not in your project'}}">
-      <mat-icon class="gv-settings-color" color="accent" *ngIf="isInProject" svgIcon="check-circle-outline"></mat-icon>
-      <mat-icon class="gv-settings-color mat-text-disabled" *ngIf="!isInProject" svgIcon="circle-outline"></mat-icon>
-    </div>
-
-    <!-- Entity description -->
-    <div class="gv-col-center">
-      <div class="mat-body-1 no-margin gv-one-liner">{{entityPreview.entity_label}}</div>
-
-      <div class="mat-caption mat-text-secondary ellipsis" style="overflow:hidden">
-        ID {{entityPreview.pk_entity}} - {{hit.full_text_headline}}
+<div class="loc-container" [ngClass]="{
+  'mat-bg-primary-50':selected,
+  'mat-bg-gray-100-on-hover':!selected
+}">
+  <div class="gv-pointer" (click)="onToggleDetailsOfEntity(selected)"
+    [matTooltip]="selected?'Hide details':'Show details'">
+    <div class="loc-first-line">
+      <div class="loc-title mat-body-1">
+        {{title}}
+      </div>
+      <div class="loc-meta mat-caption mat-text-secondary" [matTooltip]="metaTooltipText">
+        <mat-icon [svgIcon]="isInProject?'check-all':'check'" class="mat-icon-caption"
+          [ngClass]="{'mat-text-secondary':!isInProject, 'mat-text-accent':isInProject}"></mat-icon>
+        {{numberOfProject}}
       </div>
     </div>
+    <div class="loc-description mat-caption mat-text-secondary">
+      <span [innerHTML]="composedDescription"></span>
+    </div>
   </div>
-
-  <!-- Options -->
-  <button mat-icon-button matTooltip="{{moreDetails && !selected ? 'See more details' : ''}}"
-    [ngStyle]="{'visibility': (moreDetails && !selected) ? 'inherit' : 'hidden'}">
-    <mat-icon class="mat-text-secondary" svgIcon="chevron-right"></mat-icon>
-  </button>
-
+  <div class="loc-footer">
+    <!-- <button class="loc-footer-item" *ngIf="selected" mat-button color=primary (click)="onHideDetailsOfEntity()">Hide
+      details</button>
+    <button class="loc-footer-item" *ngIf="!selected" mat-button color=primary (click)="onShowDetailsOfEntity()">Show
+      details</button> -->
+    <div class="loc-footer-item" [matTooltip]="confirmBtnTooltip">
+      <button mat-button color=primary [disabled]="confirmBtnDisabled" (click)="onConfirm()">{{confirmBtnText}}</button>
+    </div>
+  </div>
 </div>

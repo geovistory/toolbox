@@ -1,11 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntitySearchHit, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 
 
-export interface HitPreview extends EntitySearchHit {
-  btnDisabled?: boolean
-  btnTooltip?: string
+export interface EntityAddExistingHit {
+  pkEntity: number;
+  title: string;
+  description: string;
+  isInProject: boolean;
+  numberOfProject: number;
+  selected: boolean;
+  confirmBtnText: string;
+  confirmBtnDisabled: boolean
+  confirmBtnTooltip: string
 }
+
+
 
 @Component({
   selector: 'gv-entity-add-existing-hit',
@@ -14,55 +22,46 @@ export interface HitPreview extends EntitySearchHit {
 })
 export class EntityAddExistingHitComponent implements OnInit {
 
-  @Input() hit: HitPreview;
-  @Input() moreDetails: boolean;
-  /**
-  * flag to indicate if this search hit is in the context of a project-wide
-  * search or in a repository-wide search.
-  *   false = project-wide
-  *   true = repository-wide
-  *   default = false
-  */
-  @Input() repositorySearch: boolean;
+  @Input() pkEntity: number;
+  @Input() title: string;
+  @Input() description: string;
+  @Input() isInProject: boolean;
+  @Input() numberOfProject: number;
+
   @Input() selected: boolean;
-  @Output() onMore: EventEmitter<HitPreview> = new EventEmitter();
+  @Input() confirmBtnText: string;
+  @Input() confirmBtnDisabled: boolean;
+  @Input() confirmBtnTooltip: string
 
-  headlineItems: Array<string> = [];
-  isInProject: boolean;
+  @Output() showDetailsOfEntity: EventEmitter<number> = new EventEmitter();
+  @Output() hideDetailsOfEntity: EventEmitter<number> = new EventEmitter();
+  @Output() confirm: EventEmitter<number> = new EventEmitter();
 
-  projectsCount: number;
+  showDetailsTooltip = 'Show details'
+  hideDetailsTooltip = 'Hide details'
 
-  entityPreview: WarEntityPreview;
-
-
+  metaTooltipText: string;
+  composedDescription: string
 
   constructor() { }
 
   ngOnInit() {
-    this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
+    this.metaTooltipText = `This entity is in ${this.numberOfProject} ${this.isInProject ? '' : 'other'} ${this.numberOfProject === 1 ?
+      'project' :
+      'projects'}${this.isInProject ?
+        ', including yours' : `, and not in yours`
+      }.`;
 
-    if (this.hit.fk_project) {
-      this.isInProject = true;
-    } else {
-      this.repositorySearch = true;
-      this.isInProject = false;
-    }
-
-    this.entityPreview = {
-      pk_entity: this.hit.pk_entity,
-      fk_project: this.hit.fk_project,
-      project: this.hit.project,
-      fk_class: this.hit.fk_class,
-      entity_label: this.hit.entity_label,
-      entity_type: this.hit.entity_type,
-      class_label: this.hit.class_label,
-      type_label: this.hit.type_label,
-      time_span: this.hit.time_span
-    }
+    this.composedDescription = `ID ${this.pkEntity} – ${this.description}`
   }
 
-  more() {
-    this.onMore.emit(this.hit)
+  onToggleDetailsOfEntity(selected: boolean) {
+    if (selected) this.hideDetailsOfEntity.emit(this.pkEntity)
+    else this.showDetailsOfEntity.emit(this.pkEntity)
+  }
+
+  onConfirm() {
+    this.confirm.emit(this.pkEntity)
   }
 
 }

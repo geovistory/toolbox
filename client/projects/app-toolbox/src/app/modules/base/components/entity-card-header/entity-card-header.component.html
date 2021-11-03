@@ -15,12 +15,12 @@
 </div>
 <div class="card-header-texts">
   <div class="ellipsis">
-    <h2 class="card-header-entity-label ellipsis">
-      <span [matTooltip]="'Entity ' + pkEntity">
+    <h2 class="card-header-entity-label gv-row-start loc-title">
+      <span [matTooltip]="'Entity ' + pkEntity" class="loc-ellipsis">
         <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
         {{(preview$|async)?.entity_label}}
       </span>
-      <span class="ml-1 mat-caption mat-text-secondary">ID: {{pkEntity}}</span>
+      <span class="ml-1 mat-caption mat-text-secondary loc-pkEntity gv-col-center">ID: {{pkEntity}}</span>
     </h2>
     <div class="card-header-entity-label ellipsis">
 

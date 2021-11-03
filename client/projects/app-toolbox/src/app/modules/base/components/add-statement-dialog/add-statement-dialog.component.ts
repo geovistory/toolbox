@@ -8,12 +8,13 @@ import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
-import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
+import { SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
 
 export interface AddStatementDialogData {
   field: Field;
-  targetClass: number
+  targetClass: number;
+  valueTarget: boolean;
 
   // primary key of the source entity
   source: GvFieldSourceEntity;
@@ -165,38 +166,15 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     this.paginationService.reloadPagesOfField(fieldId);
   }
 
-  onClose() {
-    this.dialogRef.close()
-  }
 
-  onSaved() {
-    this.triggerPageReloads(this.pkProject, this.data.source.fkInfo, this.data.field)
-    this.onClose()
-  }
-
-  onSelect() {
-    this.loading$.next(true)
-    const ff = this.fieldWithOneTarget;
-
-    // create the statement to add
-    const r: Partial<InfStatementWithRelations> = {}
-    if (ff.isOutgoing) {
-      r.fk_subject_info = this.data.source.fkInfo
-      r.object_resource = { pk_entity: this.selectedPkEntity$.value, fk_class: this.pkClass_target }
-    } else {
-      r.fk_object_info = this.data.source.fkInfo
-      r.subject_resource = { pk_entity: this.selectedPkEntity$.value, fk_class: this.pkClass_target }
-    }
-    r.fk_property = ff.property.fkProperty;
-    r.fk_property_of_property = ff.property.fkPropertyOfProperty;
-
-    this.dataService.upsertInfStatementsWithRelations(this.pkProject, [r])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(x => this.onSaved());
-  }
-
-
-  // onSubmit(resource: Partial<InfResource>) {
+  /**
+   * On submit of the 1st slide
+   *
+   * upserts a statement, where the new resource or value given by
+   * the form, is the target
+   * @param f
+   * @returns
+   */
   onSubmit(f: FormCreateEntityComponent) {
     if (!f.checkValidation()) return;
 
@@ -226,21 +204,70 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       .subscribe(x => this.onSaved());
   }
 
+  /**
+   * On select existing from the 2nd slide
+   */
+  onSelectExisting(d: SeachExistingEntityConfirmEvent) {
+    this.upsertSelected(d.pkEntity)
+  }
+
+  /**
+   * On select existing from the 3rd slide
+   */
+  onSelect() {
+    const pkEntity = this.selectedPkEntity$.value;
+    this.upsertSelected(pkEntity);
+  }
+
+  /**
+   * upserts a statement, where the selected existing entity is the target
+   * @param pkEntity
+   */
+  private upsertSelected(pkEntity: number) {
+    this.loading$.next(true)
+    const ff = this.fieldWithOneTarget;
+    // create the statement to add
+    const r: Partial<InfStatementWithRelations> = {};
+    if (ff.isOutgoing) {
+      r.fk_subject_info = this.data.source.fkInfo;
+      r.object_resource = { pk_entity: pkEntity, fk_class: this.pkClass_target };
+    } else {
+      r.fk_object_info = this.data.source.fkInfo;
+      r.subject_resource = { pk_entity: pkEntity, fk_class: this.pkClass_target };
+    }
+    r.fk_property = ff.property.fkProperty;
+    r.fk_property_of_property = ff.property.fkPropertyOfProperty;
+
+    this.dataService.upsertInfStatementsWithRelations(this.pkProject, [r])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(x => this.onSaved());
+  }
+
 
   onNext() {
     this.next$.next(true);
   }
+
+  onClose() {
+    this.dialogRef.close()
+  }
+
+  onSaved() {
+    this.triggerPageReloads(this.pkProject, this.data.source.fkInfo, this.data.field)
+    this.onClose()
+  }
+
 
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
 
-  onMoreClick(hit: HitPreview) {
+  onMoreClick(d: SeachExistingEntityMoreEvent) {
     // add to the WS stream and fetch repo and project version
-    this.ap.streamEntityPreview(hit.pk_entity)
+    this.ap.streamEntityPreview(d.pkEntity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
       map(item => !!item?.fk_project),
       startWith(false)
     )
@@ -248,12 +275,12 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     if (this.sliderView != 'right') {
       this.sliderView = 'right';
       setTimeout(() => {
-        this.selectedPkEntity$.next(hit.pk_entity);
+        this.selectedPkEntity$.next(d.pkEntity);
       }, 350)
     } else {
       this.selectedPkEntity$.next(undefined)
       setTimeout(() => {
-        this.selectedPkEntity$.next(hit.pk_entity);
+        this.selectedPkEntity$.next(d.pkEntity);
       }, 0)
     }
   }

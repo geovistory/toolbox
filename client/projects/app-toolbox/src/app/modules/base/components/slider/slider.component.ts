@@ -27,6 +27,16 @@ import { Component, Input } from '@angular/core';
                     'margin-left': '-50%'
                 })
             ),
+            state(
+                'center',
+                style({
+                    'box-sizing': 'border-box',
+                    height: '100%',
+                    display: 'flex',
+                    width: '300%',
+                    'margin-left': '0'
+                })
+            ),
             transition('left <=> right', [group([query('.divider', style({ opacity: 1 })), animate('300ms ease-out')])])
         ]),
         trigger('divider', [
@@ -37,7 +47,7 @@ import { Component, Input } from '@angular/core';
 })
 export class SliderComponent {
 
-    @Input() slide?: 'left' | 'right' = 'left';
+    @Input() slide?: 'left' | 'right' | 'center' = 'left';
     @Input() right: ''
 
     constructor() { }

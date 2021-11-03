@@ -7,9 +7,8 @@ import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { HitPreview } from '../../entity-add-existing-hit/entity-add-existing-hit.component';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
-import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
+import { DisableIfHasStatement, SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
 export interface CtrlEntityDialogData {
@@ -140,28 +139,28 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     }
   }
 
-  onMoreClick(hit: HitPreview) {
+  onMoreClick(d: SeachExistingEntityMoreEvent) {
     // add to the WS stream and fetch repo and project version
-    this.ap.streamEntityPreview(hit.pk_entity)
+    this.ap.streamEntityPreview(d.pkEntity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
       filter(item => !!item),
       map(item => !!item.fk_project),
       startWith(false)
     )
 
-    this.selectButtonDisabled = hit.btnDisabled;
-    this.selectButtonTooltip = hit.btnTooltip;
+    this.selectButtonDisabled = d.hit.confirmBtnDisabled;
+    this.selectButtonTooltip = d.hit.confirmBtnTooltip;
 
     if (this.sliderView != 'right') {
       this.sliderView = 'right';
       setTimeout(() => {
-        this.selectedPkEntity$.next(hit.pk_entity);
+        this.selectedPkEntity$.next(d.pkEntity);
       }, 350)
     } else {
       this.selectedPkEntity$.next(undefined)
       setTimeout(() => {
-        this.selectedPkEntity$.next(hit.pk_entity);
+        this.selectedPkEntity$.next(d.pkEntity);
       }, 0)
     }
   }
@@ -171,6 +170,16 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.selectedPkEntity$.next(undefined);
   }
 
+  /**
+   * on select existing entity from 2nd slide
+   */
+  onSelectExisting(d: SeachExistingEntityConfirmEvent) {
+    this.dialogRef.close({ pkEntity: d.pkEntity });
+  }
+
+  /**
+  * on select existing entity from 3rd slide
+  */
   selectEntity() {
     this.dialogRef.close({ pkEntity: this.selectedPkEntity$.value });
   }

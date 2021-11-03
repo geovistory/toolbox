@@ -148,7 +148,9 @@ export class CtrlEntityComponent implements OnDestroy,
 
     this.entityPreview$ = this.value$.pipe(switchMap(val => {
 
-      if (val && val.pkEntity) return this.ap.streamEntityPreview(val.pkEntity)
+      if (val && (val.pkEntity || val.resource.pk_entity)) {
+        return this.ap.streamEntityPreview(val.pkEntity ?? val.resource.pk_entity)
+      }
       else if (val && (val.resource)) {
         return combineLatest(
           this.s.dfh$.class$.by_pk_class$.key(this.pkClass),

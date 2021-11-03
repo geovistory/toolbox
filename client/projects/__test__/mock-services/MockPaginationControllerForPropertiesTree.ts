@@ -567,8 +567,8 @@ export class MockPaginationControllerForPropertiesTree {
         entity_label: 'Jack the foo ' + (pkEntity),
         class_label: 'Person',
         entity_type: 'peIt',
-        project: page.scope.inProject,
-        fk_project: page.scope.inProject
+        project: page.scope.inProject ?? 0,
+        fk_project: page.scope.inProject ?? 0
       }
       entityPreviews.push(entityPreview)
 

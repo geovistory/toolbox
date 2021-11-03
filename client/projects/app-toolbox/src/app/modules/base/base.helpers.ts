@@ -11,6 +11,7 @@ import { first } from 'rxjs/internal/operators/first';
  * @param subfieldType
  */
 export function isValueObjectSubfield(subfieldType: GvFieldTargetViewType): boolean {
+  // temp here
   if (subfieldType.appellation) return true
   else if (subfieldType.language) return true
   else if (subfieldType.place) return true

@@ -11,9 +11,8 @@
 
       <!-- body -->
       <ng-container body>
-        <gv-form-create-entity class="gv-ovf-auto" [pkClass]="(pkClass$ | async)" [hideTitle]="true"
-          [hideButtons]="true" (cancel)="closeAddForm()" (saved)="onCreated($event)"
-          (searchString)="searchStringChange($event)" #f>
+        <gv-form-create-entity [pkClass]="(pkClass$ | async)" [hideTitle]="true" [hideButtons]="true"
+          (cancel)="closeAddForm()" (saved)="onCreated($event)" (searchString)="searchStringChange($event)" #f>
         </gv-form-create-entity>
       </ng-container>
 
@@ -46,7 +45,10 @@
       <ng-container body>
         <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass$ | async)"
           [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
-          (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
+          [confirmBtnTextInProject]="'Open'" [confirmBtnTextNotInProject]="'Add and Open'"
+          [confirmBtnTooltipInProject]="'Open in new tab'"
+          [confirmBtnTooltiptNotInProject]="'add to your project and open in new tab'" (onMore)="onMoreClick($event)"
+          (onBack)="onBackClick()" (onConfirm)="onConfirmClick($event)">
         </gv-search-existing-entity>
       </ng-container>
 
@@ -83,21 +85,6 @@
         </mat-tab-group>
       </ng-container>
 
-      <!-- footer -->
-      <ng-container footer>
-        <!-- Not in the project -->
-        <button *ngIf="!(selectedInProject$ | async)" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
-          (click)="addEntityToProject()">
-          Add Entity
-        </button>
-        <!-- Is in the project -->
-        <button *ngIf="(selectedInProject$ | async)" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
-          (click)="openEntity()">
-          Open Entity in a new tab
-        </button>
-        <!-- Cancel button -->
-        <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
-      </ng-container>
     </gv-hbf-panel>
   </ng-container>
 

@@ -6,7 +6,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
+import { EntityAddExistingHit } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 export interface DisableIfHasStatement {
   sourceClassLabel: string
@@ -26,6 +26,16 @@ export enum SearchScope {
   // outsideProject = 'outside project'
 }
 
+export interface SeachExistingEntityConfirmEvent {
+  pkEntity: number;
+  isInProject: boolean;
+}
+
+export interface SeachExistingEntityMoreEvent {
+  pkEntity: number;
+  hit: EntityAddExistingHit;
+}
+
 @Component({
   selector: 'gv-search-existing-entity',
   templateUrl: './search-existing-entity.component.html',
@@ -42,15 +52,21 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   @Input() mode: string = SearchExistingEntityListMode.mode1;
   @Input() searchString$: Subject<string>; // string or '' (can be used to filter the list from the outside)
   @Input() disableIfHasStatement: DisableIfHasStatement;
+  @Input() confirmBtnTextInProject: string;
+  @Input() confirmBtnTextNotInProject: string;
+  @Input() confirmBtnTooltipInProject: string;
+  @Input() confirmBtnTooltiptNotInProject: string;
 
-  @Output() onMore = new EventEmitter<HitPreview>();
+
+  @Output() onMore = new EventEmitter<SeachExistingEntityMoreEvent>();
   @Output() onBack = new EventEmitter();
+  @Output() onConfirm = new EventEmitter<SeachExistingEntityConfirmEvent>();
 
   // select observables of substore properties
   loading$ = new BehaviorSubject<boolean>(false);
 
   // Hits
-  hits$: Observable<HitPreview[]>;
+  hits$: Observable<EntityAddExistingHit[]>;
 
   // For search
   scope$ = new BehaviorSubject<SearchScope>(SearchScope.everywhere);
@@ -62,7 +78,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   page$ = new BehaviorSubject<number>(1);
 
   // current selection
-  selected: number;
+  selected$ = new BehaviorSubject<number>(-1);
 
   constructor(
     private entityPreviewApi: WarEntityPreviewControllerService,
@@ -98,7 +114,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     )
 
     // the api call
-    const result$ = params$.pipe(
+    const page$ = params$.pipe(
       tap(() => this.loading$.next(true)),
       switchMap(({ pkProject, searchString, page, scope }) => {
         const req: WarEntityPreviewSearchExistingReq = {
@@ -112,30 +128,37 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
         }
         return this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req);
       }),
-      map(resp => {
-        this.loading$.next(false)
-        if (this.disableIfHasStatement) {
-          const res: EntitySearchHit[] = resp.data;
-          const hits: HitPreview[] = res.map(r => {
-            const btnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
-            return {
-              ...r,
-              btnDisabled,
-              btnTooltip: btnDisabled ?
-                `This ${r.class_label} can't be selected because it is already related to ${r.related_statements.length} ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`
-                : ''
-            }
-          })
-          return {
-            hits,
-            collectionSize: resp.totalCount
+      tap(() => this.loading$.next(false)),
+    )
+
+    const result$ = combineLatest([page$, this.selected$]).pipe(
+      map(([resp, selected]) => {
+        const res: EntitySearchHit[] = resp.data;
+        const hits: EntityAddExistingHit[] = res.map(r => {
+          const isInProject = !!r.fk_project
+          const confirmBtnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
+          const confirmBtnTooltip = confirmBtnDisabled ?
+            `This ${r.class_label} can't be selected because it is already related to ${r.related_statements.length} ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`
+            : isInProject ? this.confirmBtnTooltipInProject : this.confirmBtnTooltiptNotInProject;
+
+          const hit: EntityAddExistingHit = {
+            pkEntity: r.pk_entity,
+            title: r.entity_label,
+            confirmBtnText: isInProject ? this.confirmBtnTextInProject : this.confirmBtnTextNotInProject,
+            confirmBtnDisabled,
+            confirmBtnTooltip,
+            description: r.full_text_headline,
+            isInProject,
+            numberOfProject: r.projects.length,
+            selected: r.pk_entity === selected,
           }
-        } else {
-          return {
-            hits: resp.data,
-            collectionSize: resp.totalCount
-          }
+          return hit
+        })
+        return {
+          hits,
+          collectionSize: resp.totalCount
         }
+
       }),
       shareReplay()
     )
@@ -153,16 +176,19 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     this.page$.next(event.pageIndex + 1);
   }
 
-  onMoreClick(hit: HitPreview) {
-    this.selected = hit.pk_entity;
-    this.onMore.emit(hit);
+  onMoreClick(hit: EntityAddExistingHit) {
+    this.selected$.next(hit.pkEntity);
+    this.onMore.emit({ pkEntity: hit.pkEntity, hit });
   }
 
   onBackClick() {
-    this.selected = -1;
+    this.selected$.next(-1);
     this.onBack.emit();
   }
 
+  onConfirmClick(pkEntity: number, isInProject: boolean) {
+    this.onConfirm.emit({ pkEntity, isInProject })
+  }
   searchStringChange(term: string) {
     this.searchString$.next(term)
   }

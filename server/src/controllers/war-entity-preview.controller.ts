@@ -10,6 +10,7 @@ import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRela
 import {Streams} from '../realtime/streams/streams';
 import {AddToStreamMsg, WebsocketControllerBase} from '../realtime/websockets/websocker-controller-base';
 import {WarEntityPreviewRepository} from '../repositories';
+import {logSql} from '../utils/helpers';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {EntitySearchHit} from './EntitySearchHit';
 
@@ -378,6 +379,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
 
     const q = new SqlBuilderLb4Models(this.dataSource)
 
+
     q.sql = `
       WITH tw1 AS (
           select
@@ -388,7 +390,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
           ts_headline(type_label, q) as type_label_headline,
           count(pk_entity) OVER() AS total_count
           from war.entity_preview t1,
-          to_tsquery(${q.addParam(tsSearchString)}) q
+          to_tsquery(${tsSearchString === '' ? "''" : tsSearchString}) q
           WHERE 1=1
           ${tsSearchString
         ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
@@ -436,7 +438,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         LEFT JOIN count ON true;
         `;
 
-    // if (log) logSql(q.sql, q.params);
+    logSql(q.sql, q.params);
 
     return q.executeAndReturnFirstData<WareEntityPreviewPage>()
   }
@@ -527,16 +529,21 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     }
 
     const offset = limit * (page - 1);
-
-    const tsSearchString = searchString ?
-      searchString
+    let tsSearchString = '';
+    if (searchString) {
+      tsSearchString = searchString
         .trim()
+        .replace(/'/g, ' ') // replace single quote with a space
+        .replace(/ +(?= )/g, '') // replace multiple spaces with a single space
         .split(' ')
+        .filter(part => part.length > 0)
         .map((word) => {
-          return word + ':*';
+          return `'"${word}"':*`;
         })
         .join(' & ')
-      : '';
+    }
+    if (tsSearchString.length > 0) tsSearchString = `$$${tsSearchString}$$`
+
     return {tsSearchString, offset, limit};
   }
 

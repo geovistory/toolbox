@@ -7,7 +7,7 @@
 * Bootstrap variables are customized in ./assets/scss/bootstrap-variables.scss
 */
 
-@use '~@angular/material' as mat;
+@use "~@angular/material" as mat;
 @import "./assets/scss/bootstrap";
 $font-size-xs: 0.68rem;
 label {
@@ -2446,10 +2446,12 @@ $mat-color-secondary-text: mat.get-color-from-palette(
   color: $mat-color-secondary-text;
 }
 
-$backgound: map-get($app-theme, background);
-
 .mat-bg-primary {
   background-color: $mat-color-primary;
+}
+
+.mat-bg-primary-50 {
+  background-color: map-get($app-primary, 50);
 }
 
 .mat-bg-accent {
@@ -2470,6 +2472,10 @@ $backgound: map-get($app-theme, background);
 }
 
 .mat-bg-grey-100 {
+  background-color: map_get(mat.$grey-palette, 100);
+}
+
+.mat-bg-gray-100-on-hover:hover {
   background-color: map_get(mat.$grey-palette, 100);
 }
 
@@ -2560,6 +2566,17 @@ mat-icon.mat-icon-sm,
     width: 18px;
   }
 }
+
+mat-icon.mat-icon-caption {
+  font-size: 12px;
+  height: 13px;
+  width: 13px;
+  svg {
+    height: 13px;
+    width: 13px;
+  }
+}
+
 /**
 * fix for inproper alignement
 * see: https://www.npmjs.com/package/@mdi/angular-material
@@ -3036,7 +3053,6 @@ gv-importer {
   }
 }
 
-
 // About columns
 .gv-col {
   display: flex;
@@ -3046,6 +3062,16 @@ gv-importer {
 .gv-col-center {
   @extend .gv-col;
   justify-content: center;
+}
+
+.gv-col-start {
+  @extend .gv-col;
+  justify-content: start;
+}
+
+.gv-col-end {
+  @extend .gv-col;
+  justify-content: end;
 }
 
 .gv-col-space-between {
@@ -3079,10 +3105,9 @@ gv-importer {
   justify-content: end;
 }
 
-
 // About widths
 .gv-fw {
-  width: 100%
+  width: 100%;
 }
 
 .gv-width-auto {
@@ -3105,7 +3130,7 @@ gv-importer {
 
 // for mat-dialog reset padding
 .gv-no-padding mat-dialog-container {
-  padding: 0
+  padding: 0;
 }
 
 .gv-text-align-center {
