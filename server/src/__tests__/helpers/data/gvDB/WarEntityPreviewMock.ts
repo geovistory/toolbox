@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import {WarEntityPreview, CalendarType, Granularity} from '../../../../models'
-import {ProProjectMock} from './ProProjectMock'
+import {CalendarType, Granularity, WarEntityPreview} from '../../../../models'
 import {DfhApiClassMock} from './DfhApiClassMock'
-import {InfLangStringMock} from './InfLangStringMock'
-import {OmitEntity} from './local-model.helpers'
 import {InfAppellationMock} from './InfAppellationMock'
+import {InfLangStringMock} from './InfLangStringMock'
 import {InfResourceMock} from './InfResourceMock'
+import {OmitEntity} from './local-model.helpers'
+import {ProProjectMock} from './ProProjectMock'
 
 /**
  * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400
@@ -138,6 +138,15 @@ export class WarEntityPreviewMock {
         project: ProProjectMock.PROJECT_1.pk_entity,
         class_label: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_class_label,
         entity_label: 'City',
+        entity_type: 'peIt',
+    })
+
+    static readonly GEO_PLACE_TYPE_VILLAGE: OmitEntity<WarEntityPreview> = ({
+        ...InfResourceMock.GEO_PLACE_TYPE_VILLAGE,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_class_label,
+        entity_label: 'Village',
         entity_type: 'peIt',
     })
 

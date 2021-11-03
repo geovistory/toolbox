@@ -247,4 +247,10 @@ export class InfResourceMock {
   })
 
 
+  static readonly GEO_PLACE_TYPE_VILLAGE: OmitEntity<InfResource> = ({
+    pk_entity: 4023,
+    fk_class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+
 }

@@ -3,3 +3,31 @@
   width: 100%;
   cursor: text;
 }
+
+.mat-filter {
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-size: inherit;
+  box-shadow: none;
+  border-radius: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.mat-filter input {
+  padding: 16px 16px 16px 16px;
+}
+
+.mat-filter-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  border: 0;
+  color: gray;
+  background-color: unset;
+  width: 100%;
+}
