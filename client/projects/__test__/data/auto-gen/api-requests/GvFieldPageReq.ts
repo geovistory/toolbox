@@ -1,10 +1,10 @@
-import {GvFieldPageReq, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
-import {ProProjectMock} from '../gvDB/ProProjectMock'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
-import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
-import {InfResourceMock} from '../gvDB/InfResourceMock'
-import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
+import { GvFieldPageReq } from '@kleiolab/lib-sdk-lb4';
+import { DfhApiClassMock } from '../gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from '../gvDB/DfhApiPropertyMock';
+import { InfResourceMock } from '../gvDB/InfResourceMock';
+import { InfStatementMock } from '../gvDB/InfStatementMock';
+import { ProProjectMock } from '../gvDB/ProProjectMock';
+import { GvSubentityFieldPageReqMock } from './GvSubentityFieldPageReq';
 
 export namespace GvFieldPageReqMock {
 
@@ -12,11 +12,11 @@ export namespace GvFieldPageReqMock {
   export const person1HasAppeTeEn: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     page: {
-      source: {fkInfo: InfStatementMock.NAME_1_TO_PERSON.fk_object_info},
-      property: {fkProperty: InfStatementMock.NAME_1_TO_PERSON.fk_property},
+      source: { fkInfo: InfStatementMock.NAME_1_TO_PERSON.fk_object_info },
+      property: { fkProperty: InfStatementMock.NAME_1_TO_PERSON.fk_property },
       isOutgoing: false,
 
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     },
@@ -27,7 +27,7 @@ export namespace GvFieldPageReqMock {
             ...GvSubentityFieldPageReqMock.appeTeEnRefersToName,
             page: {
               ...GvSubentityFieldPageReqMock.appeTeEnRefersToName.page,
-              ...{limit: 1, offset: 0}
+              ...{ limit: 1, offset: 0 }
             }
           }
         ]
@@ -43,10 +43,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info},
-      property: {fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property},
+      source: { fkInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info },
+      property: { fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     }
@@ -59,10 +59,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info},
-      property: {fkProperty: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property},
+      source: { fkInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info },
+      property: { fkProperty: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 1,
       offset: 0,
     }
@@ -76,10 +76,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property},
+      source: { fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity },
+      property: { fkProperty: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     }
@@ -96,10 +96,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property},
+      source: { fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity },
+      property: { fkProperty: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     }
@@ -112,10 +112,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property},
+      source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
+      property: { fkProperty: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     }
@@ -130,10 +130,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfResourceMock.NAMING_1.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property},
+      source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
+      property: { fkProperty: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     }
@@ -148,10 +148,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN.dfh_pk_property},
+      source: { fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity },
+      property: { fkProperty: DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 7,
       offset: 0
     }
@@ -165,10 +165,10 @@ export namespace GvFieldPageReqMock {
       }
     },
     page: {
-      source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+      source: { fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity },
+      property: { fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property },
       isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      scope: { inProject: ProProjectMock.PROJECT_1.pk_entity },
       limit: 1,
       offset: 0
     }

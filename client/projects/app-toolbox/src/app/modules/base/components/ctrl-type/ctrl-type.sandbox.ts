@@ -21,9 +21,24 @@ import { CtrlTypeComponent } from './ctrl-type.component';
  *****************************************************************************/
 // mock entity previews (used below in ActiveProjectPipesServiceMock)
 const geoPlaceTypeMock: GvPositiveSchemaObject = {
-  inf: { resource: [InfResourceMock.GEO_PLACE_TYPE_CITY] },
-  war: { entity_preview: [WarEntityPreviewMock.GEO_PLACE_TYPE_CITY] },
-  pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_CITY_TYPE] }
+  inf: {
+    resource: [
+      InfResourceMock.GEO_PLACE_TYPE_CITY,
+      InfResourceMock.GEO_PLACE_TYPE_VILLAGE
+    ]
+  },
+  war: {
+    entity_preview: [
+      WarEntityPreviewMock.GEO_PLACE_TYPE_CITY,
+      WarEntityPreviewMock.GEO_PLACE_TYPE_VILLAGE
+    ]
+  },
+  pro: {
+    info_proj_rel: [
+      ProInfoProjRelMock.PROJ_1_CITY_TYPE,
+      ProInfoProjRelMock.PROJ_1_VILLAGE_TYPE,
+    ]
+  }
 }
 
 // mock schema objects to initialize sandboxes below

@@ -2,9 +2,9 @@
 import {ProInfoProjRel} from '@kleiolab/lib-sdk-lb4';
 import {InfResourceMock} from './InfResourceMock';
 import {InfStatementMock} from './InfStatementMock';
+import {OmitEntity} from './local-model.helpers';
 import {ProProjectMock} from './ProProjectMock';
 import {PubAccountMock} from './PubAccountMock';
-import {OmitEntity} from './local-model.helpers';
 
 /**
  * pk_entity prefixed with 200
@@ -329,4 +329,13 @@ export class ProInfoProjRelMock {
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })
+
+  static readonly PROJ_1_VILLAGE_TYPE: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2040,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfResourceMock.GEO_PLACE_TYPE_VILLAGE.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
 }
