@@ -6,7 +6,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, InfResource, InfStatement } from
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
+import { SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
 
 
 export interface AddEntityDialogData {
@@ -111,11 +111,11 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     this.dialogRef.close();
   }
 
-  onMoreClick(hit: HitPreview) {
+  onMoreClick(d: SeachExistingEntityMoreEvent) {
     // add to the WS stream and fetch repo and project version
-    this.ap.streamEntityPreview(hit.pk_entity)
+    this.ap.streamEntityPreview(d.pkEntity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + hit.pk_entity).pipe(
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
       filter(item => !!item),
       map(item => !!item.fk_project),
       startWith(false)
@@ -124,10 +124,10 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     if (this.sliderView != 'right') {
       this.sliderView = 'right';
       setTimeout(() => {
-        this.selectedPkEntity$.next(hit.pk_entity);
+        this.selectedPkEntity$.next(d.pkEntity);
       }, 350)
     } else {
-      this.selectedPkEntity$.next(hit.pk_entity);
+      this.selectedPkEntity$.next(d.pkEntity);
       // this.selectedPkEntity$.next(undefined)
       // setTimeout(() => {
       // }, 0)
@@ -137,6 +137,12 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
   onBackClick() {
     this.sliderView = 'left';
     this.selectedPkEntity$.next(undefined);
+  }
+
+  onConfirmClick(d: { pkEntity: number, isInProject: boolean }) {
+    this.selectedPkEntity$.next(d.pkEntity)
+    if (d.isInProject) this.openEntity()
+    else this.addEntityToProject()
   }
 
   openEntity() {

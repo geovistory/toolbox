@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-queries';
 import { IconType, ReduxMainService } from '@kleiolab/lib-redux';
-import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreview, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -23,7 +23,6 @@ import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockPaginationControllerForPropertiesTree } from 'projects/__test__/mock-services/MockPaginationControllerForPropertiesTree';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
 import { BaseModule } from '../modules/base/base.module';
 import { AddEntityDialogComponent, AddEntityDialogData } from '../modules/base/components/add-entity-dialog/add-entity-dialog.component';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
@@ -36,9 +35,9 @@ import { InitStateModule } from '../shared/components/init-state/init-state.modu
 @Component({
   selector: 'gv-sandbox-create-dialogs',
   template: `
-    <button (click)="fromNewEntity()">From add new entity</button>
-    <button (click)="fromCard()">From view fields</button>
-    <button (click)="fromField()">From form fields</button>
+    <button (click)="fromNewEntity()">Create Entity Dialog</button>
+    <button (click)="fromCard()">Create Statement Dialog</button>
+    <button (click)="fromField()">Ctrl Entity Dialog</button>
     <div>
         <p>Dialog result:</p>
         <pre>{{result | json}}</pre>
@@ -76,6 +75,7 @@ export class SandBoxCreateDialogsComponent {
       ...this.dialogSizing,
       panelClass: 'gv-no-padding',
       data: {
+        valueTarget: false,
         field: {
           'sourceClass': 61, 'sourceClassLabel': 'Birth', 'sourceMaxQuantity': 1, 'sourceMinQuantity': 1, 'targetMinQuantity': 0, 'targetMaxQuantity': -1, 'label': 'brought into life', 'isHasTypeField': false, 'isTimeSpanShortCutField': false, 'property': { 'fkProperty': 86 }, 'isOutgoing': true, 'identityDefiningForSource': true, 'identityDefiningForTarget': false, 'ontoInfoLabel': 'P98', 'ontoInfoUrl': 'https://ontome.net/property/86', 'allSubfieldsRemovedFromAllProfiles': false, 'targetClasses': [21], 'display': { 'formSections': { 'specific': { 'position': null } }, 'viewSections': { 'specific': { 'position': null } } }, 'isSpecialField': false, 'targets': { '21': { 'viewType': { 'entityPreview': 'true' }, 'formControlType': { 'entity': 'true' }, 'removedFromAllProfiles': false, 'targetClass': 21, 'targetClassLabel': 'Person' } }
         },
@@ -90,6 +90,7 @@ export class SandBoxCreateDialogsComponent {
     this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateOrAddEntityEvent>(
       AddEntityDialogComponent, {
       ...this.dialogSizing,
+      panelClass: 'gv-no-padding',
       data: {
         pkClass: 21,
       }
@@ -103,15 +104,21 @@ export class SandBoxCreateDialogsComponent {
  *********************************************************
  ********************/
 // mock entity previews (used below in ActiveProjectPipesServiceMock)
-const warEntityPreviews = [
-  WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
-  WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
-  WarEntityPreviewMock.PERSON_1,
-  WarEntityPreviewMock.BIRTH_ZWINGLI,
-  WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER
-]
+const warEntityPreviews: GvPositiveSchemaObject = {
+  war: {
+    entity_preview: [
+      WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
+      WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
+      WarEntityPreviewMock.PERSON_1,
+      WarEntityPreviewMock.BIRTH_ZWINGLI,
+      WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER
+    ]
+  }
+}
+
 // mock schema objects to initialize sandboxes below
 const initialSchemaObects = [
+
   createCrmAsGvPositiveSchema({
     ontoMocks: [
       PROFILE_5_GEOVISTORY_BASI_2021_06_30, // add basics profile
@@ -157,7 +164,7 @@ class LanguagesServiceMock {
 }
 
 @Injectable()
-class ReduxMainServiceMock {
+class ReduxMainServiceMock extends ReduxMainService {
   upsertInfResourcesWithRelations(pkProject: number, infResourceWithRelations: InfResourceWithRelations[])
     : Observable<GvSchemaModifier> {
     alert('InfResource Upserted')
@@ -178,11 +185,11 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
   pkProject$ = new BehaviorSubject(ProProjectMock.PROJECT_1.pk_entity)
   datNamespaces$ = new BehaviorSubject([DatNamespaceMock.SANDBOX_NAMESPACE])
 
-  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
-    // const previews = values(WarEntityPreviewMock) as WarEntityPreview[]
-    const preview = warEntityPreviews.find((x) => x?.pk_entity === pkEntity)
-    return new BehaviorSubject(preview).pipe(delay(300))
-  }
+  // streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
+  //   // const previews = values(WarEntityPreviewMock) as WarEntityPreview[]
+  //   const preview = warEntityPreviews.find((x) => x?.pk_entity === pkEntity)
+  //   return new BehaviorSubject(preview).pipe(delay(300))
+  // }
 }
 
 /**

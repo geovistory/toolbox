@@ -1,46 +1,52 @@
 .loc-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+}
+.loc-first-line {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 13px 16px 0 16px;
+  .loc-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .loc-meta {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    height: 75px;
-
-    cursor: pointer;
-    padding: 0 24px;
-    margin-bottom: 10px;
+    align-items: flex-start;
+    padding: 0px;
+    .mat-icon {
+      padding-top: 2px;
+    }
+  }
 }
 
-.loc-left{
-    margin-right: 10px;
-}
-  
-.loc-center{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
+.loc-description {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 1px 16px 0 16px;
+  height: 46px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 
-.loc-right{
-    margin-left: 10px;
-}
+.loc-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 0px 8px 8px;
 
-.loc-no-margin {
-    margin: 0 0 0 0
+  .loc-footer-item ~ .loc-footer-item {
+    margin-left: 8px;
+  }
 }
-
-.loc-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* number of lines to show */
-    -webkit-box-orient: vertical;
-}
-
-.loc-selected {
-    background-color: rgba(0, 125, 255, 0.08)
-}
-
-::ng-deep .mat-list-item-content {
-    display:block !important;
-}
-  

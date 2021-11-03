@@ -1,5 +1,5 @@
 .loc-header {
-  padding: 24px 24px 0 24px;
+  padding: 16px 16px 0 16px;
   flex: 0 0 60px;
   overflow: hidden;
 
@@ -10,15 +10,15 @@
 
 .loc-body {
   flex: 1 1 auto;
-  overflow: hidden;
+  overflow: auto;
 
   display: flex;
   flex-direction: column;
 }
 
 .loc-footer {
-  padding: 0 24px 24px 24px; 
-  flex: 0 0 60px;
+  padding: 0 16px 16px 16px;
+  flex: 0 0 52px;
   overflow: hidden;
 
   display: flex;
@@ -29,13 +29,13 @@
 // if the footer or the header is not present, does not have a margin inbetween.
 // similar to: put margin bottom to the header AND put margin top to the footer
 .loc-item ~ .loc-item {
-  margin-top: 24px
+  margin-top: 16px;
 }
 
 :host {
   display: flex;
   flex-direction: column;
-  justify-content: start;  
+  justify-content: start;
 
   height: 100%;
 }

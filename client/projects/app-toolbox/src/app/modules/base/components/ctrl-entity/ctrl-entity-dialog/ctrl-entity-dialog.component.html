@@ -45,7 +45,9 @@
       <ng-container body>
         <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass$ | async)"
           [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
-          [disableIfHasStatement]="data.disableIfHasStatement" (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
+          [confirmBtnTextInProject]="'Select'" [confirmBtnTextNotInProject]="'Select'"
+          [disableIfHasStatement]="data.disableIfHasStatement" (onConfirm)="onSelectExisting($event)"
+          (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
         </gv-search-existing-entity>
       </ng-container>
 
@@ -76,19 +78,6 @@
         </mat-tab-group>
       </ng-container>
 
-      <!-- footer -->
-      <ng-container footer>
-        <!-- Select button -->
-        <div [matTooltip]="selectButtonTooltip">
-          <button mat-flat-button type="button" color="primary" class="ml-2 mr-2" (click)="selectEntity()"
-            [disabled]="selectButtonDisabled">
-            Select Entity
-          </button>
-        </div>
-
-        <!-- Cancel button -->
-        <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
-      </ng-container>
     </gv-hbf-panel>
   </ng-container>
 
