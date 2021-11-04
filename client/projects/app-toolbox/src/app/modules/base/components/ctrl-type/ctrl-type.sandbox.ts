@@ -1,10 +1,13 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4/public-api';
+import { GvPositiveSchemaObject, InfResource, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
+import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
+import { OmitEntity } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 import { ProInfoProjRelMock } from 'projects/__test__/data/auto-gen/gvDB/ProInfoProjRelMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
+import { PubAccountMock } from 'projects/__test__/data/auto-gen/gvDB/PubAccountMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
 import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
@@ -20,6 +23,7 @@ import { CtrlTypeComponent } from './ctrl-type.component';
  * MOCK data
  *****************************************************************************/
 // mock entity previews (used below in ActiveProjectPipesServiceMock)
+
 const geoPlaceTypeMock: GvPositiveSchemaObject = {
   inf: {
     resource: [
@@ -39,6 +43,34 @@ const geoPlaceTypeMock: GvPositiveSchemaObject = {
       ProInfoProjRelMock.PROJ_1_VILLAGE_TYPE,
     ]
   }
+}
+
+
+for (let i = 0; i < 20; i++) {
+  const pkEntity = 490000 + i;
+  const resource: OmitEntity<InfResource> = ({
+    pk_entity: pkEntity,
+    fk_class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
+    community_visibility: { toolbox: true, dataApi: true, website: true }
+  })
+  const preview: OmitEntity<WarEntityPreview> = ({
+    ...resource,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    project: ProProjectMock.PROJECT_1.pk_entity,
+    class_label: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_class_label,
+    entity_label: 'Type ' + pkEntity,
+    entity_type: 'peIt',
+  })
+  const projRel: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 290000 + i,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: pkEntity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+  geoPlaceTypeMock.inf.resource.push(resource)
+  geoPlaceTypeMock.war.entity_preview.push(preview)
+  geoPlaceTypeMock.pro.info_proj_rel.push(projRel)
 }
 
 // mock schema objects to initialize sandboxes below
@@ -78,7 +110,7 @@ export default sandboxOf(CtrlTypeComponent, {
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                   <mat-form-field class="w-100">
-                    <gv-ctrl-type [pkTypedClass]="363" [pkTypeClass]="364" placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-type>
+                    <gv-ctrl-type [showPrimaryAction]="true" [primaryActionText]="'Advanced dialog...'" [pkTypedClass]="363" [pkTypeClass]="364" placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-type>
                     <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
                   </mat-form-field>
                 </form>

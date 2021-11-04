@@ -33,6 +33,13 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   @Input() pkTypedClass: number;
   @Input() autoopen: boolean;
 
+  @Input() showPrimaryAction: boolean;
+  @Input() primaryActionText: string;
+
+
+
+  @Output() primaryAction = new EventEmitter()
+
   autofilled?: boolean;
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();

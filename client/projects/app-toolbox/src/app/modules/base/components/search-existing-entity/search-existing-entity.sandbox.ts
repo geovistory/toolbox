@@ -128,7 +128,7 @@ export default sandboxOf(SearchExistingEntityComponent, {
                 [pkClass]="pkClass"
                 [searchString$]="searchString$"
                 [mode]="'searchAndBack'"
-                [confirmBtnTextEntityInProject]="'Open'"
+                [confirmBtnTextInProject]="'Open'"
                 [confirmBtnTextNotInProject]="'Add and open'"
                 (onAddExisting)="onNotInProjectClicked($event)"
                 (onOpenExisting)="onAlreadyInProjectClicked($event)">

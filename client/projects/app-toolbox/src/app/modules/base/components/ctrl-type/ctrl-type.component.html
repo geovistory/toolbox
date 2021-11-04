@@ -1,8 +1,8 @@
 <mat-select [value]="value$|async" (selectionChange)="onSelect($event)" (openedChange)="menuToggled($event)"
   [placeholder]="placeholder">
 
-  <div class="mat-filter">
-    <input #search class="mat-filter-input mat-text-secondary" [placeholder]="'Filter'" autofocus="true"
+  <div class="loc-filter">
+    <input #search class="loc-filter-input mat-text-secondary" [placeholder]="'Filter'" autofocus="true"
       autocomplete="off" (keyup)="onFilter($event)" [value]="filter$|async">
     <mat-divider></mat-divider>
   </div>
@@ -10,4 +10,8 @@
     <span *ngIf="node.pkType"> {{node.label}} </span>
     <i *ngIf="!node.pkType"> {{node.label}} </i>
   </mat-option>
+  <!-- <div *ngIf="showPrimaryAction" class="loc-actions">
+    <mat-divider></mat-divider>
+    <button mat-button color="primary" (click)="primaryAction.emit()">{{primaryActionText}}</button>
+  </div> -->
 </mat-select>
