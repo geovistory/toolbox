@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import 'reflect-metadata';
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
+import 'reflect-metadata';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
-import {REntityTimeSpan, REntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
+import {REntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
 import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
 import {REntityService} from '../../../../../warehouse/primary-ds/entity/REntityService';
@@ -11,22 +11,24 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
-import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfResource} from '../../../../helpers/atomic/inf-resource.helper';
+import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfResourceMock} from '../../../../helpers/data/gvDB/InfResourceMock';
+import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
+import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {WarEntityPreviewTimeSpan, CalendarType, Granularity} from '../../../../../models';
+import {CalendarType} from '../../../../../models/entity-preview/CalendarType';
+import {Granularity} from '../../../../../models/entity-preview/Granularity';
+import {WarEntityPreviewTimeSpan} from '../../../../../models/entity-preview/WarEntityPreviewTimeSpan';
 const rEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,

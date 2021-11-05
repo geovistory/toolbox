@@ -1,6 +1,6 @@
 import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PoolClient} from 'pg';
-import {WarEntityPreviewTimeSpan} from '../../../../models';
+import {WarEntityPreviewTimeSpan} from '../../../../models/entity-preview/WarEntityPreviewTimeSpan';
 import {AggregatedDataService2} from '../../../base/classes/AggregatedDataService2';
 import {AggregatorSqlBuilder, CustomValSql} from '../../../base/classes/AggregatorSqlBuilder';
 import {DependencyIndex} from '../../../base/classes/DependencyIndex';

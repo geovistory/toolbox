@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/camelcase */
 
-import {CalendarType, Granularity, WarEntityPreview} from '../../../../models'
+import {WarEntityPreview} from '../../../../models'
+import {CalendarType} from '../../../../models/entity-preview/CalendarType'
+import {Granularity} from '../../../../models/entity-preview/Granularity'
 import {DfhApiClassMock} from './DfhApiClassMock'
 import {InfAppellationMock} from './InfAppellationMock'
 import {InfLangStringMock} from './InfLangStringMock'

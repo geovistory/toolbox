@@ -16,29 +16,6 @@ export class SubfieldPageController {
     public datasource: Postgres1DataSource,
   ) { }
 
-  // @post('subfield-page/alternative-leaf-items', {
-  //   responses: {
-  //     '200': {
-  //       description: "Get PaginationObject to build a list of leaf items not (yet) in project.",
-  //       content: {
-  //         'application/json': {
-  //           schema: {
-  //             'x-ts-type': GvPaginationObject,
-  //           }
-  //         }
-  //       },
-  //     },
-  //   },
-  // })
-  // @authenticate('basic')
-  // @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
-  // async alternativeLeafItems(
-  //   @requestBody() req: GvPaginationAlternativeLeafItemsReq
-  // ): Promise<GvPaginationObject> {
-  //   const q = new QAlternativeLeafItems(this.datasource)
-  //   return q.query(req.pkProject, req.filterObject, req.limit, req.offset)
-  // }
-
   @post('subfield-page/load-subfield-page', {
     responses: {
       '200': {
@@ -62,27 +39,34 @@ export class SubfieldPageController {
     const results: GvPaginationObject[] = []
     const res = await new QFieldPage(this.datasource).query(req)
 
-    if (res.schemas.inf?.resource?.length) {
-      const subPageQueries: Promise<GvPaginationObject[]>[] = []
-      res.schemas.inf?.resource.forEach(e => {
-        const source: GvFieldSourceEntity = {fkInfo: e.pk_entity as number};
-        const fkClass = e.fk_class as number;
-        const targetType = req.targets[fkClass]
-        if (targetType?.nestedResource?.length) {
-          const subreqs = targetType.nestedResource as GvSubentitFieldPageReq[]
-          const scope = req.page.scope.notInProject ? {inRepo: true} : req.page.scope
-          subPageQueries.push(this.querySubfields(
-            req.pkProject,
-            source,
-            subreqs,
-            scope
-          ))
-        }
-      })
+    const subPageQueries: Promise<GvPaginationObject[]>[] = []
 
+    for (const subfieldPageInfo of res.subfieldPages) {
+      for (const statementWT of subfieldPageInfo.paginatedStatements) {
+        const e = statementWT.target.entity;
+        if (e) {
+          const source: GvFieldSourceEntity = {fkInfo: e.pkEntity};
+          const fkClass = e.fkClass;
+          const targetType = req.targets[fkClass]
+          if (targetType?.nestedResource?.length) {
+            const subreqs = targetType.nestedResource as GvSubentitFieldPageReq[]
+            const scope = req.page.scope.notInProject ? {inRepo: true} : req.page.scope
+            subPageQueries.push(this.querySubfields(
+              req.pkProject,
+              source,
+              subreqs,
+              scope
+            ))
+          }
+        }
+      }
+    }
+
+    if (subPageQueries.length) {
       const r = await Promise.all(subPageQueries)
       results.push(...flatten(r))
     }
+
     let result = res
     for (const obj of results) {
       result = mergeDeepWith(concat, result, obj)

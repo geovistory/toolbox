@@ -6,6 +6,7 @@ import {get, param, post, Request, requestBody, ResponseObject, RestBindings} fr
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Roles} from '../components/authorization/keys';
 import {TColFilter} from '../components/query/q-table-page';
+import {StatementWithTarget} from '../models/field-response/gv-statement-with-target';
 import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
 import {GvSubentityFieldTargetViewType} from '../models/field/gv-subentity-field-target-view-type';
 import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
@@ -208,6 +209,17 @@ export class PingController {
     }
   })
   xProjectVisibilityOptionsWithRelations() { }
+
+
+  @post('/StatementWithTarget', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': StatementWithTarget}}}
+      }
+    }
+  })
+  xStatementWithTarget() { }
 }
 
 

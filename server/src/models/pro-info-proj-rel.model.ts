@@ -1,13 +1,13 @@
-import { Entity, model, property } from '@loopback/repository';
-import { ProEntity } from '.';
-import { CalendarType } from '../warehouse/primary-ds/edge/edge.commons';
-import { ProjectVisibilityOptions } from './sys-config/sys-config-project-visibility-options';
+import {Entity, model, property} from '@loopback/repository';
+import {ProEntity} from '.';
+import {CalendarType} from '../warehouse/primary-ds/edge/edge.commons';
+import {ProjectVisibilityOptions} from './sys-config/sys-config-project-visibility-options';
 
 @model({
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: { schema: 'projects', table: 'v_info_proj_rel' }
+    postgresql: {schema: 'projects', table: 'v_info_proj_rel'}
   }
 })
 export class ProInfoProjRel extends Entity implements ProEntity {
@@ -93,7 +93,7 @@ export class ProInfoProjRel extends Entity implements ProEntity {
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<ProInfoProjRel>) {
     super(data);
