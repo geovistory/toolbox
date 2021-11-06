@@ -7,6 +7,6 @@ import {StatementWithTarget} from './gv-statement-with-target';
 export class GvSubfieldPageInfo {
   @property({type: GvFieldPage, required: true}) page: GvFieldPage;
   @property({required: true}) count: number;
-  @property.array('StatementWithTarget', {required: true}) paginatedStatements: StatementWithTarget[];
+  @property.array(StatementWithTarget, {required: true}) paginatedStatements: StatementWithTarget[];
   @property() validFor?: Date;
 }

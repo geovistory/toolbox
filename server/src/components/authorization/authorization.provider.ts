@@ -4,15 +4,16 @@ import {
 
   AuthorizationDecision, AuthorizationMetadata, Authorizer
 } from '@loopback/authorization';
-import { Provider } from "@loopback/core";
-import { repository } from '@loopback/repository';
-import { RequestContext } from '@loopback/rest';
-import { isInteger } from 'lodash';
-import { DatDigitalRepository, DatNamespaceRepository, PubAccountProjectRelRepository } from '../../repositories';
-import { PubRoleMappingRepository } from '../../repositories/pub-role-mapping.repository';
-import { SqlBuilderBase } from '../../utils/sql-builders/sql-builder-base';
-import { testdb } from '../../__tests__/helpers/testdb';
-import { Roles } from './keys';
+import {Provider} from "@loopback/core";
+import {repository} from '@loopback/repository';
+import {RequestContext} from '@loopback/rest';
+import {isInteger} from 'lodash';
+import {uniq} from 'ramda';
+import {DatDigitalRepository, DatNamespaceRepository, PubAccountProjectRelRepository} from '../../repositories';
+import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
+import {SqlBuilderBase} from '../../utils/sql-builders/sql-builder-base';
+import {testdb} from '../../__tests__/helpers/testdb';
+import {Roles} from './keys';
 
 export class AuthorizationProvider implements Provider<Authorizer> {
   /**
@@ -71,8 +72,8 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
-        'account_id': { eq: accountId },
-        'fk_project': { eq: pkProject }
+        'account_id': {eq: accountId},
+        'fk_project': {eq: pkProject}
       }
     })
 
@@ -91,9 +92,9 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     const adminRoleMapping = await this.pubRoleMappingRepo.findOne({
       where: {
         and: [
-          { roleid: 1 }, // system admin role
-          { principalid: accountId },
-          { principaltype: 'USER' }
+          {roleid: 1}, // system admin role
+          {principalid: accountId},
+          {principaltype: 'USER'}
         ]
       }
     })
@@ -136,7 +137,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
-        and: [{ 'account_id': accountId, 'fk_project': namespace.fk_project }]
+        and: [{'account_id': accountId, 'fk_project': namespace.fk_project}]
       }
     })
 
@@ -174,6 +175,12 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     if (typeof pkProject === 'number') {
       if (isInteger(pkProject)) return pkProject;
     };
+
+    // if we have a request for multiple items of the same project, allow them
+    if (Array.isArray(request?.body)) {
+      const pks = uniq(request.body.map(item => item.pkProject ?? item.pk_project));
+      if (pks.length === 1) return pks[0];
+    }
   }
 
   private extractPkNamespace(context: AuthorizationContext) {

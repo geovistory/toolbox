@@ -1,12 +1,10 @@
 import {ReferenceObject, SchemaObject, SchemasObject} from '@loopback/rest';
-import ajv from 'ajv';
+import Ajv, {ErrorObject, ValidateFunction} from 'ajv';
 import {path} from 'ramda';
 import {GeovistoryApplication} from '../../application';
 const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
 
 
-
-interface TypeValidator<M> {validator: ajv.ValidateFunction, tsType: M}
 
 /**
  * Validate the value against validator.
@@ -17,12 +15,12 @@ interface TypeValidator<M> {validator: ajv.ValidateFunction, tsType: M}
 export async function applyValidator<M>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any,
-  validate: ajv.ValidateFunction
+  validate: ValidateFunction
 ): Promise<M> {
 
-  let validationErrors: ajv.ErrorObject[] = [];
+  let validationErrors: ErrorObject[] = [];
   try {
-    await validate(value);
+    validate(value);
     return value;
   } catch (error) {
     validationErrors = error.errors;
@@ -42,17 +40,17 @@ export async function applyValidator<M>(
 * @param globalSchemas - Global schemas
 * @param ajvInst - An instance of Ajv
 */
-export async function createValidator<M>(
+export async function createValidator(
   tsType: Function,
   app: GeovistoryApplication,
-  options: {array?:true} = {}
-): Promise<ajv.ValidateFunction> {
+  options: {array?: true} = {}
+): Promise<ValidateFunction> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tsname = tsType.name
   const referenceObect: ReferenceObject = {$ref: '#/components/schemas/' + tsname}
   const globalSchemas = (await app.restServer.getApiSpec()).components?.schemas ?? {}
 
-  const ajvInst = new ajv();
+  const ajvInst = new Ajv();
 
   const jsonSchema = convertToJsonSchema(referenceObect);
 
@@ -80,14 +78,14 @@ function convertToJsonSchema(openapiSchema: SchemaObject) {
 }
 
 function buildErrorDetails(
-  validationErrors: ajv.ErrorObject[],
+  validationErrors: ErrorObject[],
   value: unknown
 ) {
   return validationErrors.map(
-    (e: ajv.ErrorObject) => {
-      const givenValueAtPath = path([e.dataPath], value)
+    (e: ErrorObject) => {
+      const givenValueAtPath = path([e.schemaPath], value)
       return {
-        path: e.dataPath,
+        path: e.schemaPath,
         code: e.keyword,
         message: e.message ?? `must pass validation rule ${e.keyword}`,
         info: e.params,

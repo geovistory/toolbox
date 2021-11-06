@@ -1,4 +1,4 @@
-import {GvFieldPage, GvPaginationObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, ProInfoProjRel, WarEntityPreview} from '../../../../models'
+import {GvFieldPage, GvPaginationObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../../../../models'
 import {CalendarType} from '../../../../models/entity-preview/CalendarType'
 import {Granularity} from '../../../../models/entity-preview/Granularity'
 import {StatementWithTarget} from '../../../../models/field-response/gv-statement-with-target'
@@ -21,19 +21,48 @@ import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
 
 function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel: OmitEntity<ProInfoProjRel>, accountId = 1001, target: SatementTarget): StatementWithTarget {
   const isOutgoing = GvFieldPageReqMock.appeTeEnRefersToName.page.isOutgoing
+
+  let targetLabel = ''
+  if (target.appellation) {
+    targetLabel = target.appellation?.string ?? ''
+  }
+  else if (target.dimension) {
+    targetLabel = `${target.dimension.dimension.numeric_value} ${target.dimension?.unitPreview?.entity_label}` // todo add  ${unitPreview.entity_label}
+  }
+  else if (target.langString) {
+    targetLabel = `${target.langString.langString.string} (${target.langString.language.iso6391})` // todo add
+  }
+  else if (target.language) {
+    targetLabel = `${target.language.notes ?? target.language.iso6391}` // todo add  (${language.iso6391})
+  }
+  else if (target.entityPreview) {
+    targetLabel = `${target.entityPreview.entity_label}`
+  }
+  else if (target.resource) {
+    targetLabel = `${target.resource.pk_entity}` // todo
+  }
+  else if (target.timePrimitive) {
+    targetLabel = `'to do'` // todo
+  }
+  else if (target.place) {
+    targetLabel = `WGS84: ${target.place.lat}°, ${target.place.long}°`    // todo
+  }
   return {
     isOutgoing,
-    ordNum: 0,
+    ordNum: isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain,
     statement,
     target,
     targetClass: target.appellation?.fk_class ??
-      target.dimension?.fk_class ??
-      target.entity?.fkClass ??
+      target.dimension?.dimension.fk_class ??
+      target.resource?.fk_class ??
       target.entityPreview?.fk_class ??
-      target.langString?.fk_class ??
+      target.langString?.langString?.fk_class ??
+      target.language?.fk_class ??
       target.place?.fk_class ??
-      (target.timePrimitive ? 54 : target.timeSpan ? 4 : 0),
-    targetLabel: InfAppellationMock.JACK_THE_FOO.string as string,
+      (target.timePrimitive ? 54 :
+        //  target.timeSpan ? 4 :
+        0),
+    targetLabel,
     projRel
   }
 }
@@ -45,7 +74,14 @@ export namespace GvPaginationObjectMock {
         page: GvFieldPageReqMock.appeTeEnRefersToName.page,
         count: 1,
         paginatedStatements: [
-
+          createStatementWithTarget(
+            InfStatementMock.NAME_1_TO_APPE,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
+            }
+          )
         ],
       }
     ]
@@ -80,10 +116,7 @@ export namespace GvPaginationObjectMock {
             ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
-              entity: {
-                fkClass: InfResourceMock.PERSON_1.fk_class,
-                pkEntity: InfResourceMock.PERSON_1.pk_entity as number,
-              },
+              resource: InfResourceMock.PERSON_1 as InfResource,
               entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
             }
           )
@@ -120,8 +153,10 @@ export namespace GvPaginationObjectMock {
             ProInfoProjRelMock.PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
-              dimension: InfDimensionMock.ONE_MONTH as InfDimension,
-              entityPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH as WarEntityPreview
+              dimension: {
+                dimension: InfDimensionMock.ONE_MONTH as InfDimension,
+                unitPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH as WarEntityPreview
+              }
             }
           )],
       }
@@ -139,8 +174,10 @@ export namespace GvPaginationObjectMock {
             ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
-              langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER as InfLangString,
-              language: InfLanguageMock.ENGLISH as InfLanguage
+              langString: {
+                langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER as InfLangString,
+                language: InfLanguageMock.ENGLISH as InfLanguage
+              }
             }
           )],
       }
@@ -159,9 +196,12 @@ export namespace GvPaginationObjectMock {
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               timePrimitive: {
-                duration: InfTimePrimitiveMock.TP_2.duration as Granularity,
-                julianDay: InfTimePrimitiveMock.TP_2.julian_day,
-                calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as CalendarType,
+                infTimePrimitive: InfTimePrimitiveMock.TP_2 as InfTimePrimitive,
+                timePrimitive: {
+                  duration: InfTimePrimitiveMock.TP_2.duration as Granularity,
+                  julianDay: InfTimePrimitiveMock.TP_2.julian_day,
+                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as CalendarType,
+                }
               }
             }
           )
@@ -198,11 +238,15 @@ export namespace GvPaginationObjectMock {
             InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
             ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
             PubAccountMock.GAETAN_VERIFIED.id,
+
             {
               timePrimitive: {
-                duration: InfTimePrimitiveMock.TP_5.duration as Granularity,
-                julianDay: InfTimePrimitiveMock.TP_5.julian_day,
-                calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as CalendarType,
+                infTimePrimitive: InfTimePrimitiveMock.TP_5 as InfTimePrimitive,
+                timePrimitive: {
+                  duration: InfTimePrimitiveMock.TP_5.duration as Granularity,
+                  julianDay: InfTimePrimitiveMock.TP_5.julian_day,
+                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as CalendarType,
+                }
               }
             }
           )
@@ -229,9 +273,12 @@ export namespace GvPaginationObjectMock {
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               timePrimitive: {
-                duration: InfTimePrimitiveMock.TP_4.duration as Granularity,
-                julianDay: InfTimePrimitiveMock.TP_4.julian_day,
-                calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as CalendarType,
+                infTimePrimitive: InfTimePrimitiveMock.TP_4 as InfTimePrimitive,
+                timePrimitive: {
+                  duration: InfTimePrimitiveMock.TP_4.duration as Granularity,
+                  julianDay: InfTimePrimitiveMock.TP_4.julian_day,
+                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as CalendarType,
+                }
               }
             }
           )
@@ -260,10 +307,7 @@ export namespace GvPaginationObjectMock {
             ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
-              entity: {
-                fkClass: InfResourceMock.PERSON_1.fk_class,
-                pkEntity: InfResourceMock.PERSON_1.pk_entity as number,
-              },
+              resource: InfResourceMock.PERSON_1 as InfResource,
               entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
             }
           )

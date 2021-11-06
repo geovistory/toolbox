@@ -1,22 +1,40 @@
 import {model, property} from '@loopback/repository';
-import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, WarEntityPreview} from '..';
+import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfTimePrimitive, WarEntityPreview} from '..';
 import {TimePrimitiveWithCal} from '../entity-preview/TimePrimitiveWithCal';
 import {StatementTargetEntity} from "./StatementTargetEntity";
-import {StatementTargetTimeSpan} from "./StatementTargetTimeSpan";
 
 
 
 
 
 @model()
+export class SatementTargetDimension {
+  @property({type: InfDimension, required: true}) dimension: InfDimension;
+  @property({type: WarEntityPreview}) unitPreview?: WarEntityPreview;
+}
+
+@model()
+export class SatementTargetLangString {
+  @property({type: InfLangString, required: true}) langString: InfLangString;
+  @property({type: InfLanguage, required: true}) language: InfLanguage;
+}
+
+@model()
+export class SatementTargeTimePrimitive {
+  @property({type: InfLangString, required: true}) infTimePrimitive: InfTimePrimitive;
+  @property({type: TimePrimitiveWithCal, required: true}) timePrimitive?: TimePrimitiveWithCal;
+}
+
+@model()
 export class SatementTarget {
   @property({type: WarEntityPreview}) entityPreview?: WarEntityPreview;
   @property({type: InfAppellation}) appellation?: InfAppellation;
-  @property({type: InfDimension}) dimension?: InfDimension;
-  @property({type: InfLangString}) langString?: InfLangString;
+  @property({type: SatementTargetDimension}) dimension?: SatementTargetDimension;
+  @property({type: InfLangString}) langString?: SatementTargetLangString;
   @property({type: InfLanguage}) language?: InfLanguage;
-  @property({type: TimePrimitiveWithCal}) timePrimitive?: TimePrimitiveWithCal;
+  @property({type: TimePrimitiveWithCal}) timePrimitive?: SatementTargeTimePrimitive;
   @property({type: InfPlace}) place?: InfPlace;
-  @property({type: StatementTargetTimeSpan}) timeSpan?: StatementTargetTimeSpan;
-  @property({type: StatementTargetEntity}) entity?: StatementTargetEntity;
+  // @property({type: StatementTargetTimeSpan}) timeSpan?: StatementTargetTimeSpan;
+  // @property({type: Object}) timeSpan?: object;
+  @property({type: StatementTargetEntity}) resource?: InfResource;
 }
