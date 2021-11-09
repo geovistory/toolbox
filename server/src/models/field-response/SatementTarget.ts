@@ -26,8 +26,13 @@ export class SatementTargeTimePrimitive {
 }
 
 @model()
+export class SatementTargetEntity {
+  @property({type: InfResource, required: true}) resource: InfResource;
+  @property({type: WarEntityPreview, required: true}) entityPreview?: WarEntityPreview;
+}
+
+@model()
 export class SatementTarget {
-  @property({type: WarEntityPreview}) entityPreview?: WarEntityPreview;
   @property({type: InfAppellation}) appellation?: InfAppellation;
   @property({type: SatementTargetDimension}) dimension?: SatementTargetDimension;
   @property({type: InfLangString}) langString?: SatementTargetLangString;
@@ -36,5 +41,5 @@ export class SatementTarget {
   @property({type: InfPlace}) place?: InfPlace;
   // @property({type: StatementTargetTimeSpan}) timeSpan?: StatementTargetTimeSpan;
   // @property({type: Object}) timeSpan?: object;
-  @property({type: StatementTargetEntity}) resource?: InfResource;
+  @property({type: StatementTargetEntity}) entity?: SatementTargetEntity;
 }

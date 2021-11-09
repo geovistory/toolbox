@@ -39,9 +39,10 @@ interface ObjectWiths {
   }
   subfieldPages: string[];
 };
+type ResTargetKey = keyof SatementTarget
 
 
-type StatementTargetMeta = {
+type ModelConfig = {
   modelDefinition: ModelDefinition,
   modelPk: string,
   projectFk?: string
@@ -51,17 +52,31 @@ type StatementTargetMeta = {
   tableName: string,
   objectWith: string[],
   createLabelSql: string
-  statementTargetKey: keyof SatementTarget
 }
 type GvTargetTypeKey = keyof GvFieldTargetViewType
 
-type Config = {
-  [key in GvTargetTypeKey]: StatementTargetMeta
+type ReqToResTargetMap = {
+  [key in GvTargetTypeKey]: ResTargetKey
 }
 
-type ModelToFindClassConfig = {
-  [key in GvTargetTypeKey]: StatementTargetMeta[]
+type Models = {
+  appellation: ModelConfig
+  place: ModelConfig
+  language: ModelConfig
+  dimension: ModelConfig
+  langString: ModelConfig
+  timePrimitive: ModelConfig
+  resource: ModelConfig
+  entityPreview: ModelConfig
 }
+type ModelKey = keyof Models
+type ResTargetModelMap = {
+  [key in ResTargetKey]: ModelKey
+}
+
+// type ModelToFindClassConfig = {
+//   [key in GvTargetTypeKey]: StatementTargetMeta[]
+// }
 
 interface JoinTargetSqls {
   join: string;
@@ -137,15 +152,40 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   }
 
   subentityWiths = []
+  reqResMap: ReqToResTargetMap;
 
-  config: Config;
-  tableToFindOriginalItems: ModelToFindClassConfig
+  modelConfig: Models;
+
+  resTargetModelMap: ResTargetModelMap
+
+  // tableToFindOriginalItems: ModelToFindClassConfig
   constructor(
     public dataSource: Postgres1DataSource,
   ) {
     super(dataSource)
 
-    this.config = {
+    this.reqResMap = {
+      appellation: 'appellation',
+      language: 'language',
+      dimension: 'dimension',
+      langString: 'langString',
+      place: 'place',
+      timePrimitive: 'timePrimitive',
+      nestedResource: 'entity',
+      timeSpan: 'entity',
+      entityPreview: 'entity',
+      typeItem: 'entity',
+    }
+    this.resTargetModelMap = {
+      appellation: 'appellation',
+      language: 'language',
+      dimension: 'dimension',
+      langString: 'langString',
+      place: 'place',
+      timePrimitive: 'timePrimitive',
+      entity: 'resource',
+    }
+    this.modelConfig = {
       appellation: {
         modelDefinition: InfAppellation.definition,
         modelPk: 'pk_entity',
@@ -154,8 +194,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.appellation',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.appellation,
-        createLabelSql: 'string',
-        statementTargetKey: 'appellation'
+        createLabelSql: 'string'
       },
       language: {
         modelDefinition: InfLanguage.definition,
@@ -165,8 +204,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.language',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.language,
-        createLabelSql: 'notes',
-        statementTargetKey: 'language'
+        createLabelSql: 'notes'
       },
       dimension: {
         modelDefinition: InfDimension.definition,
@@ -176,8 +214,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.dimension',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.dimension,
-        createLabelSql: `concat_ws(' ', x.numeric_value, u.entity_label)`,
-        statementTargetKey: 'dimension'
+        createLabelSql: `concat_ws(' ', x.numeric_value, u.entity_label)`
       },
       langString: {
         modelDefinition: InfLangString.definition,
@@ -187,8 +224,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.lang_string',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.lang_string,
-        createLabelSql: `concat(x.string, ' (', l.iso6391, ')' )`,
-        statementTargetKey: 'langString'
+        createLabelSql: `concat(x.string, ' (', l.iso6391, ')' )`
       },
       place: {
         modelDefinition: InfPlace.definition,
@@ -198,8 +234,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.v_place',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.place,
-        createLabelSql: `concat('WGS84: ', lat, '°, ', long, '°')`,
-        statementTargetKey: 'place'
+        createLabelSql: `concat('WGS84: ', lat, '°, ', long, '°')`
       },
       timePrimitive: {
         modelDefinition: InfTimePrimitive.definition,
@@ -209,10 +244,9 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.time_primitive',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.time_primitive,
-        createLabelSql: `'todo'`,
-        statementTargetKey: 'timePrimitive'
+        createLabelSql: `'todo'`
       },
-      nestedResource: {
+      resource: {
         modelDefinition: InfResource.definition,
         modelPk: 'pk_entity',
         statementObjectFk: 'fk_object_info',
@@ -220,45 +254,19 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
         tableName: 'information.resource',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.resource,
-        createLabelSql: `null`,
-        statementTargetKey: 'resource'
-      },
-      timeSpan: {
-        modelDefinition: InfResource.definition,
-        modelPk: 'pk_entity',
-        statementObjectFk: 'fk_object_info',
-        statementSubjectFk: 'fk_subject_info',
-        tableName: 'information.resource',
-        classFk: 'fk_class',
-        objectWith: this.objectWiths.schemas.inf.resource,
-        createLabelSql: `'todo'`,
-        // remark: timespan is normally translated to multiple pages targeting timePrimitive
-        statementTargetKey: 'resource'
+        createLabelSql: `null`
       },
       entityPreview: {
         modelDefinition: WarEntityPreview.definition,
         modelPk: 'pk_entity',
-        projectFk: 'fk_project',
-        statementObjectFk: 'fk_object_info',
-        statementSubjectFk: 'fk_subject_info',
-        tableName: 'war.entity_preview',
-        classFk: 'fk_class',
-        objectWith: this.objectWiths.schemas.war.entity_preview,
-        createLabelSql: `entity_label`,
-        statementTargetKey: 'entityPreview'
-      },
-      typeItem: {
-        modelDefinition: WarEntityPreview.definition,
-        modelPk: 'pk_entity',
-        projectFk: 'fk_project',
         statementObjectFk: 'fk_object_info',
         statementSubjectFk: 'fk_subject_info',
         tableName: 'war.entity_preview',
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.war.entity_preview,
         createLabelSql: `'todo'`,
-        statementTargetKey: 'entityPreview'
-      },
+        projectFk: 'fk_project'
+      }
     }
     // const configResource: StatementTargetMeta = {
     //   modelDefinition: InfResource.definition,
@@ -270,26 +278,26 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
     //   objectWith: this.objectWiths.schemas.inf.resource
     // }
 
-    this.tableToFindOriginalItems = {
-      appellation: [this.config.appellation],
-      place: [this.config.place],
-      dimension: [this.config.dimension],
-      langString: [this.config.langString],
-      language: [this.config.language],
-      nestedResource: [this.config.nestedResource],
-      timeSpan: [this.config.timeSpan],
-      timePrimitive: [this.config.timePrimitive],
-      typeItem: [
-        // list all models that can be represented by typeItem
-        this.config.nestedResource,
-        // configResource
-      ],
-      entityPreview: [
-        // list all models that can be represented by entityPreview
-        this.config.nestedResource,
-        // configResource
-      ],
-    }
+    // this.tableToFindOriginalItems = {
+    //   appellation: [this.config.appellation],
+    //   place: [this.config.place],
+    //   dimension: [this.config.dimension],
+    //   langString: [this.config.langString],
+    //   language: [this.config.language],
+    //   nestedResource: [this.config.nestedResource],
+    //   timeSpan: [this.config.timeSpan],
+    //   timePrimitive: [this.config.timePrimitive],
+    //   typeItem: [
+    //     // list all models that can be represented by typeItem
+    //     this.config.nestedResource,
+    //     // configResource
+    //   ],
+    //   entityPreview: [
+    //     // list all models that can be represented by entityPreview
+    //     this.config.nestedResource,
+    //     // configResource
+    //   ],
+    // }
   }
 
 
@@ -438,18 +446,20 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
     targets: GvFieldTargets,
     stmtTable: string
   ) {
-    const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
-    const classesByTarget = groupBy((t) => t.target, targetArray)
-    const configs: {meta: StatementTargetMeta[], classes: number[]}[] = [];
+    const reqTargetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
+    const classesByTarget = groupBy((t) => t.target, reqTargetArray)
+    const configs: {meta: ModelConfig, classes: number[]}[] = [];
     keys(classesByTarget).forEach((key) => {
-      const meta = this.tableToFindOriginalItems[key as GvTargetTypeKey]
+      const resTarget = this.reqResMap[key as GvTargetTypeKey]
+      const modelKey = this.resTargetModelMap[resTarget]
+      const meta = this.modelConfig[modelKey]
       if (!meta) throw new Error("tableToFindClass missing for: " + key);
       const classes = classesByTarget[key].map(val => parseInt(val.fkClass))
       configs.push({meta, classes})
     })
     const join = `
     JOIN LATERAL (
-      ${configs.map(config => config.meta.map(m => `
+      ${configs.map(config => [config.meta].map(m => `
       SELECT ${m.modelPk} pk_entity, ${m.classFk} fk_class
       FROM ${m.tableName}
       WHERE ${m.modelPk} = ${stmtTable}.${p.isOutgoing ? m.statementObjectFk : m.statementSubjectFk}
@@ -569,51 +579,32 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   } {
 
     const sqls: JoinTargetSqls[] = []
-    const targetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
-    const targetTypes: GvTargetTypeKey[] = uniq(targetArray.map(t => t.target))
+    const reqTargetArray = keys(targets).map((key) => ({fkClass: key, target: keys(targets[parseInt(key)])[0] as GvTargetTypeKey}))
+    const reqTargetTypes: GvTargetTypeKey[] = uniq(reqTargetArray.map(t => t.target))
+    for (const reqTargetType of reqTargetTypes) {
+      const resTargetKey = this.reqResMap[reqTargetType]
+      const modelKey = this.resTargetModelMap[resTargetKey]
+      const modelConfig = this.modelConfig[modelKey]
+      if (!modelConfig) throw new Error("This subfield type is not implemented: " + reqTargetType);
+      if (resTargetKey === 'dimension') {
+        sqls.push(this.joinDimension(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey));
+        continue;
+      }
+      else if (resTargetKey === 'langString') {
+        sqls.push(this.joinLangString(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey));
+        continue;
+      }
+      else if (resTargetKey === 'timePrimitive') {
+        sqls.push(this.joinTimePrimitive(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey, tProjRel));
+        continue;
+      }
+      else if (resTargetKey === 'entity') {
+        sqls.push(this.joinEntity(page.isOutgoing, tStatements, page.scope, resTargetKey));
+        continue;
+      }
 
-    for (const targetType of targetTypes) {
-      const config = this.config[targetType]
-      if (!config) throw new Error("This subfield type is not implemented: " + targetType);
-      if (targetType === 'dimension') {
-        sqls.push(this.joinDimension(page.isOutgoing, tStatements, config, page.scope));
-        continue;
-      }
-      else if (targetType === 'langString') {
-        sqls.push(this.joinLangString(page.isOutgoing, tStatements, config, page.scope));
-        continue;
-      }
-      else if (targetType === 'timePrimitive') {
-        sqls.push(this.joinTimePrimitive(page.isOutgoing, tStatements, config, page.scope, tProjRel));
-        continue;
-      }
-
-      const join = this.joinSimpleTarget(page.isOutgoing, tStatements, config, page.scope)
+      const join = this.joinSimpleTarget(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey)
       sqls.push(join)
-
-
-      // else if (targetType === 'nestedResource' && page.scope.inProject) sqls.push(this.joinProjRel(page.scope, x.tw))
-
-      /**
-       * joins the original item represented by the entity preview.
-       * E.g.: if the entityPreview is from a resource,
-       * it joins the resource.
-       *
-       * This may is handy, because the entityPreview may be missing for two reasons:
-       * - the entityPreview not yet generated by the warehous at time of querying
-       * - the entityPreview is not available for the requested project, since the
-       *   entity is not in the project
-       *
-       * The original item may then be used to get the fk_class of the item
-       * independent from the entityPreview
-       */
-      if (config.modelDefinition === WarEntityPreview.definition) {
-        const originSpec = this.tableToFindOriginalItems[targetType]
-        for (const origConf of originSpec) {
-          const join2 = this.joinSimpleTarget(page.isOutgoing, tStatements, origConf, page.scope)
-          sqls.push(join2)
-        }
-      }
     }
 
 
@@ -631,11 +622,12 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   private joinSimpleTarget(
     isOutgoing: boolean,
     tStatements: string,
-    spec: StatementTargetMeta,
+    spec: ModelConfig,
     scope: GvFieldPageScope,
+    resTargetKey: ResTargetKey
   ): JoinTargetSqls {
 
-    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql, statementTargetKey} = spec
+    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql} = spec
     const tAlias = this.nextT
     let whereProject = ''
     if (spec.projectFk) {
@@ -659,7 +651,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
 
     return {
       join,
-      selectTarget: `'${statementTargetKey}', ${tAlias}.obj`,
+      selectTarget: `'${resTargetKey}', ${tAlias}.obj`,
       selectTargetLabel: `${tAlias}.target_label`,
       selectTargetClass: `${tAlias}.fk_class`,
     }
@@ -669,11 +661,12 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   private joinDimension(
     isOutgoing: boolean,
     tStatements: string,
-    spec: StatementTargetMeta,
+    spec: ModelConfig,
     scope: GvFieldPageScope,
+    resTargetKey: ResTargetKey
   ): JoinTargetSqls {
 
-    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql, statementTargetKey} = spec
+    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql} = spec
     const tAlias = this.nextT
     let whereProject = ''
     if (spec.projectFk) {
@@ -688,21 +681,21 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
               x.${classFk} fk_class,
               json_strip_nulls(json_build_object(
                 'dimension', ${this.createBuildObject('x', modelDefinition)},
-                'unitPreview', ${this.createBuildObject('u', this.config.entityPreview.modelDefinition)}
+                'unitPreview', ${this.createBuildObject('u', this.modelConfig.entityPreview.modelDefinition)}
               )) obj,
               ${createLabelSql} as target_label
 
             FROM
               ${tableName} x,
-              ${this.config.entityPreview.tableName} u
+              ${this.modelConfig.entityPreview.tableName} u
             WHERE x.${modelPk} = ${tStatements}.${isOutgoing ? statementObjectFk : statementSubjectFk}
-            AND x.fk_measurement_unit = u.${this.config.entityPreview.modelPk}
+            AND x.fk_measurement_unit = u.${this.modelConfig.entityPreview.modelPk}
             ${whereProject}
       ) AS ${tAlias} ON true `;
 
     return {
       join,
-      selectTarget: `'${statementTargetKey}', ${tAlias}.obj`,
+      selectTarget: `'${resTargetKey}', ${tAlias}.obj`,
       selectTargetLabel: `${tAlias}.target_label`,
       selectTargetClass: `${tAlias}.fk_class`,
     }
@@ -711,11 +704,12 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   private joinLangString(
     isOutgoing: boolean,
     tStatements: string,
-    spec: StatementTargetMeta,
+    spec: ModelConfig,
     scope: GvFieldPageScope,
+    resTargetKey: ResTargetKey
   ): JoinTargetSqls {
 
-    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql, statementTargetKey} = spec
+    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql} = spec
     const tAlias = this.nextT
     let whereProject = ''
     if (spec.projectFk) {
@@ -730,21 +724,21 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
               x.${classFk} fk_class,
               json_strip_nulls(json_build_object(
                 'langString', ${this.createBuildObject('x', modelDefinition)},
-                'language', ${this.createBuildObject('l', this.config.language.modelDefinition)}
+                'language', ${this.createBuildObject('l', this.modelConfig.language.modelDefinition)}
               )) obj,
               ${createLabelSql} as target_label
 
             FROM
               ${tableName} x,
-              ${this.config.language.tableName} l
+              ${this.modelConfig.language.tableName} l
             WHERE x.${modelPk} = ${tStatements}.${isOutgoing ? statementObjectFk : statementSubjectFk}
-            AND x.fk_language = l.${this.config.language.modelPk}
+            AND x.fk_language = l.${this.modelConfig.language.modelPk}
             ${whereProject}
       ) AS ${tAlias} ON true `;
 
     return {
       join,
-      selectTarget: `'${statementTargetKey}', ${tAlias}.obj`,
+      selectTarget: `'${resTargetKey}', ${tAlias}.obj`,
       selectTargetLabel: `${tAlias}.target_label`,
       selectTargetClass: `${tAlias}.fk_class`,
     }
@@ -754,12 +748,13 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   private joinTimePrimitive(
     isOutgoing: boolean,
     tStatements: string,
-    spec: StatementTargetMeta,
+    spec: ModelConfig,
     scope: GvFieldPageScope,
+    resTargetKey: ResTargetKey,
     tProjRel: string
   ): JoinTargetSqls {
 
-    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql, statementTargetKey} = spec
+    const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql} = spec
     const tAlias = this.nextT
     let whereProject = ''
     if (spec.projectFk) {
@@ -790,7 +785,63 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
 
     return {
       join,
-      selectTarget: `'${statementTargetKey}', ${tAlias}.obj`,
+      selectTarget: `'${resTargetKey}', ${tAlias}.obj`,
+      selectTargetLabel: `${tAlias}.target_label`,
+      selectTargetClass: `${tAlias}.fk_class`,
+    }
+  }
+
+
+
+  private joinEntity(
+    isOutgoing: boolean,
+    tStatements: string,
+    scope: GvFieldPageScope,
+    resTargetKey: ResTargetKey,
+  ): JoinTargetSqls {
+
+    const re = this.modelConfig.resource
+    const ep = this.modelConfig.entityPreview
+    const tAlias = this.nextT
+
+    const join = `
+         -- ${re.tableName}
+        LEFT JOIN LATERAL (
+            SELECT
+              re.${re.modelPk} AS pk_entity,
+              re.${re.classFk} AS fk_class,
+              json_strip_nulls(json_build_object(
+                'resource', ${this.createBuildObject('re', re.modelDefinition)},
+                'entityPreview', ${scope.inProject ?
+        `           COALESCE(
+                      ${this.createBuildObject('ep2', ep.modelDefinition)},
+                      ${this.createBuildObject('ep1', ep.modelDefinition)}
+                      )` :
+        `            ${this.createBuildObject('ep1', ep.modelDefinition)}`}
+              )) AS obj,
+              ${scope.inProject ?
+        `        COALESCE(ep2.entity_label, ep1.entity_label)` :
+        `        ep1.entity_label`} AS target_label
+            FROM
+              ${re.tableName} re
+            -- community version of entity preview
+            LEFT JOIN ${ep.tableName} ep1
+              ON ep1.${ep.modelPk} = ${tStatements}.${isOutgoing ? ep.statementObjectFk : ep.statementSubjectFk}
+              AND ep1.${ep.projectFk} IS NULL
+            ${scope.inProject ?
+        ` -- project version of entity preview
+            LEFT JOIN ${ep.tableName} ep2
+              ON ep2.${ep.modelPk} = ${tStatements}.${isOutgoing ? ep.statementObjectFk : ep.statementSubjectFk}
+              AND ep2.${ep.projectFk} = ${scope.inProject}    `
+        : ''
+      }
+            WHERE re.${re.modelPk} = ${tStatements}.${isOutgoing ? re.statementObjectFk : re.statementSubjectFk}
+
+      ) AS ${tAlias} ON true `;
+
+    return {
+      join,
+      selectTarget: `'${resTargetKey}', ${tAlias}.obj`,
       selectTargetLabel: `${tAlias}.target_label`,
       selectTargetClass: `${tAlias}.fk_class`,
     }

@@ -95,6 +95,14 @@ describe('SubfieldPageController', () => {
         .expect(200);
       checkPaginationObject(res.body, GvPaginationObjectMock.manifSingletonHasShortTitleMurderer);
     });
+    it('should return field page for shipVoyageAtSomeTimeWithin (targetType: timePrimirive)', async () => {
+      await SubfieldHelper.shipVoyageAtSomeTimeWithin()
+      const res = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send([GvFieldPageReqMock.shipVoyageAtSomeTimeWithin])
+        .expect(200);
+      expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
+    });
     it('should return field page for shipVoyageHasTimeSpan (targetType: timeSpan)', async () => {
       await SubfieldHelper.shipVoyageHasTimeSpan()
       const res = await client.post('/subfield-page/load-subfield-page')

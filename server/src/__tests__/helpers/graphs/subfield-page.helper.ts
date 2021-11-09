@@ -1,25 +1,25 @@
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
+import {createInfDimension} from '../atomic/inf-dimension.helper';
+import {createInfLangString} from '../atomic/inf-lang-string.helper';
 import {createInfLanguage} from '../atomic/inf-language.helper';
+import {createInfPlace} from '../atomic/inf-place.helper';
+import {createInfResource} from '../atomic/inf-resource.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
+import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
 import {createProInfoProjRel} from '../atomic/pro-info-proj-rel.helper';
+import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
+import {InfDimensionMock} from '../data/gvDB/InfDimensionMock';
+import {InfLangStringMock} from '../data/gvDB/InfLangStringMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
+import {InfPlaceMock} from '../data/gvDB/InfPlaceMock';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {InfTimePrimitiveMock} from '../data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../data/gvDB/ProInfoProjRelMock';
+import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
 import {addAccountToProject, createAccountVerified} from '../generic/account.helper';
 import {createProject1} from './project.helper';
-import {InfPlaceMock} from '../data/gvDB/InfPlaceMock';
-import {createInfPlace} from '../atomic/inf-place.helper';
-import {InfDimensionMock} from '../data/gvDB/InfDimensionMock';
-import {createInfDimension} from '../atomic/inf-dimension.helper';
-import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
-import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
-import {createInfLangString} from '../atomic/inf-lang-string.helper';
-import {InfLangStringMock} from '../data/gvDB/InfLangStringMock';
-import {InfTimePrimitiveMock} from '../data/gvDB/InfTimePrimitiveMock';
-import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
-import {createInfResource} from '../atomic/inf-resource.helper';
-import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 
 /**
  * mock data for testing subgield page queries

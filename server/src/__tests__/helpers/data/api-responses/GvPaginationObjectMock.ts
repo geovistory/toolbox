@@ -35,14 +35,11 @@ function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel:
   else if (target.language) {
     targetLabel = `${target.language.notes ?? target.language.iso6391}` // todo add  (${language.iso6391})
   }
-  else if (target.entityPreview) {
-    targetLabel = `${target.entityPreview.entity_label}`
-  }
-  else if (target.resource) {
-    targetLabel = `${target.resource.pk_entity}` // todo
+  else if (target.entity) {
+    targetLabel = `${target.entity.entityPreview?.entity_label}`
   }
   else if (target.timePrimitive) {
-    targetLabel = `'to do'` // todo
+    targetLabel = `todo` // todo
   }
   else if (target.place) {
     targetLabel = `WGS84: ${target.place.lat}°, ${target.place.long}°`    // todo
@@ -54,14 +51,12 @@ function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel:
     target,
     targetClass: target.appellation?.fk_class ??
       target.dimension?.dimension.fk_class ??
-      target.resource?.fk_class ??
-      target.entityPreview?.fk_class ??
+      target.entity?.resource.fk_class ??
       target.langString?.langString?.fk_class ??
       target.language?.fk_class ??
       target.place?.fk_class ??
-      (target.timePrimitive ? 54 :
-        //  target.timeSpan ? 4 :
-        0),
+      target.timePrimitive?.infTimePrimitive.fk_class ??
+      -1,
     targetLabel,
     projRel
   }
@@ -116,8 +111,10 @@ export namespace GvPaginationObjectMock {
             ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
-              resource: InfResourceMock.PERSON_1 as InfResource,
-              entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
+              entity: {
+                resource: InfResourceMock.PERSON_1 as InfResource,
+                entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
+              }
             }
           )
         ],
@@ -307,8 +304,10 @@ export namespace GvPaginationObjectMock {
             ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
-              resource: InfResourceMock.PERSON_1 as InfResource,
-              entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
+              entity: {
+                resource: InfResourceMock.NAMING_1 as InfResource,
+                entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
+              }
             }
           )
         ],

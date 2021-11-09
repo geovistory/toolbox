@@ -70,7 +70,7 @@ export class SubfieldPageController {
 
     for (const subfieldPageInfo of res.subfieldPages) {
       for (const statementWT of subfieldPageInfo.paginatedStatements) {
-        const e = statementWT.target?.resource;
+        const e = statementWT.target.entity?.resource;
         if (e) {
           const source: GvFieldSourceEntity = {fkInfo: e.pk_entity};
           const fkClass = e.fk_class;
