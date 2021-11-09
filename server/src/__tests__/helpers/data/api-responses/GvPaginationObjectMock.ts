@@ -19,8 +19,7 @@ import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {PubAccountMock} from '../gvDB/PubAccountMock'
 import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
 
-function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel: OmitEntity<ProInfoProjRel>, accountId = 1001, target: SatementTarget): StatementWithTarget {
-  const isOutgoing = GvFieldPageReqMock.appeTeEnRefersToName.page.isOutgoing
+function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel: OmitEntity<ProInfoProjRel>, accountId = 1001, target: SatementTarget, isOutgoing: boolean): StatementWithTarget {
 
   let targetLabel = ''
   if (target.appellation) {
@@ -75,7 +74,8 @@ export namespace GvPaginationObjectMock {
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
-            }
+            },
+            true
           )
         ],
       }
@@ -93,7 +93,8 @@ export namespace GvPaginationObjectMock {
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               language: InfLanguageMock.ENGLISH as InfLanguage
-            }
+            },
+            true
           )
         ],
       }
@@ -115,7 +116,8 @@ export namespace GvPaginationObjectMock {
                 resource: InfResourceMock.PERSON_1 as InfResource,
                 entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
               }
-            }
+            },
+            true
           )
         ],
       }
@@ -133,7 +135,8 @@ export namespace GvPaginationObjectMock {
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               place: InfPlaceMock.PLACE_123 as InfPlace,
-            }
+            },
+            true
           )
         ],
       }
@@ -154,7 +157,8 @@ export namespace GvPaginationObjectMock {
                 dimension: InfDimensionMock.ONE_MONTH as InfDimension,
                 unitPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH as WarEntityPreview
               }
-            }
+            },
+            true
           )],
       }
     ],
@@ -175,7 +179,8 @@ export namespace GvPaginationObjectMock {
                 langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER as InfLangString,
                 language: InfLanguageMock.ENGLISH as InfLanguage
               }
-            }
+            },
+            true
           )],
       }
     ]
@@ -200,7 +205,8 @@ export namespace GvPaginationObjectMock {
                   calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as CalendarType,
                 }
               }
-            }
+            },
+            true
           )
         ],
       }
@@ -245,7 +251,8 @@ export namespace GvPaginationObjectMock {
                   calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as CalendarType,
                 }
               }
-            }
+            },
+            true
           )
         ],
       },
@@ -277,7 +284,8 @@ export namespace GvPaginationObjectMock {
                   calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as CalendarType,
                 }
               }
-            }
+            },
+            true
           )
         ],
       },
@@ -296,7 +304,10 @@ export namespace GvPaginationObjectMock {
   export const personHasAppeTeEn: GvPaginationObject = {
     subfieldPages: [
       {
-        page: GvFieldPageReqMock.person1HasAppeTeEn.page,
+        page: {
+          ...GvFieldPageReqMock.person1HasAppeTeEn.page,
+          isOutgoing: false,
+        },
         count: 1,
         paginatedStatements: [
           createStatementWithTarget(
@@ -308,12 +319,16 @@ export namespace GvPaginationObjectMock {
                 resource: InfResourceMock.NAMING_1 as InfResource,
                 entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
               }
-            }
+            },
+            false
           )
         ],
       },
       {
-        page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
+        page: {
+          ...GvFieldPageReqMock.appeTeEnRefersToName.page,
+          limit: 1
+        },
         count: 1,
         paginatedStatements: [
           createStatementWithTarget(
@@ -322,7 +337,8 @@ export namespace GvPaginationObjectMock {
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
-            }
+            },
+            true
           )
         ],
       },

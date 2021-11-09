@@ -97,6 +97,7 @@ export namespace SubfieldHelper {
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
     await createInfResource(InfResourceMock.PERSON_1)
     await createInfResource(InfResourceMock.NAMING_1)
+    await createWarEntityPreview(WarEntityPreviewMock.NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
