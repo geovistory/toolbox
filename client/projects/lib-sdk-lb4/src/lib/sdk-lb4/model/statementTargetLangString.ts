@@ -9,10 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfLangString } from './infLangString';
+import { InfLanguage } from './infLanguage';
 
 
-export interface ProjectVisibilityOptionsWithRelations { 
-    dataApi: boolean;
-    website: boolean;
+export interface StatementTargetLangString { 
+    langString: InfLangString;
+    language: InfLanguage;
 }
 

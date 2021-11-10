@@ -9,14 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { StatementWithTarget } from './statementWithTarget';
-import { GvFieldPage } from './gvFieldPage';
+import { InfResource } from './infResource';
+import { WarEntityPreview } from './warEntityPreview';
 
 
-export interface GvSubfieldPageInfo { 
-    page: GvFieldPage;
-    count: number;
-    paginatedStatements: Array<StatementWithTarget>;
-    validFor?: string;
+export interface StatementTargetEntity { 
+    resource: InfResource;
+    entityPreview: WarEntityPreview;
 }
 

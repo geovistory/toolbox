@@ -1,6 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 import {ProEntity} from '.';
-import {CalendarType} from '../warehouse/primary-ds/edge/edge.commons';
+import {overrideType} from '../components/spec-enhancer/model.spec.enhancer';
+import {CalendarType} from './enums/CalendarType';
 import {ProjectVisibilityOptions} from './sys-config/sys-config-project-visibility-options';
 
 @model({
@@ -55,6 +56,9 @@ export class ProInfoProjRel extends Entity implements ProEntity {
 
   @property({
     type: 'string',
+    jsonSchema: {
+      enum: Object.values(CalendarType),
+    },
   })
   calendar?: CalendarType;
 
@@ -108,3 +112,4 @@ export type ProInfoProjRelWithRelations = ProInfoProjRel & ProInfoProjRelRelatio
 
 
 
+overrideType(ProInfoProjRel) // TODO: remove this, when loopback 3 is completely removed

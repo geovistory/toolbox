@@ -1,7 +1,7 @@
 
 import {WarStatement} from '../../../../models'
-import {CalendarType} from '../../../../models/entity-preview/CalendarType'
-import {Granularity} from '../../../../models/entity-preview/Granularity'
+import {CalendarType} from '../../../../models/enums/CalendarType'
+import {Granularity} from '../../../../models/enums/Granularity'
 import {DfhApiClassMock} from './DfhApiClassMock'
 import {DfhApiPropertyMock} from './DfhApiPropertyMock'
 import {ProProjectMock} from './ProProjectMock'

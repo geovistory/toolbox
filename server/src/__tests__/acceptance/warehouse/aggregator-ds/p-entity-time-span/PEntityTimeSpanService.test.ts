@@ -1,9 +1,9 @@
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
 import 'reflect-metadata';
-import {CalendarType} from '../../../../../models/entity-preview/CalendarType';
-import {Granularity} from '../../../../../models/entity-preview/Granularity';
 import {WarEntityPreviewTimeSpan} from '../../../../../models/entity-preview/WarEntityPreviewTimeSpan';
+import {CalendarType} from '../../../../../models/enums/CalendarType';
+import {Granularity} from '../../../../../models/enums/Granularity';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';

@@ -1,6 +1,4 @@
 import {GvFieldPage, GvPaginationObject, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../../../../models'
-import {CalendarType} from '../../../../models/entity-preview/CalendarType'
-import {Granularity} from '../../../../models/entity-preview/Granularity'
 import {StatementWithTarget} from '../../../../models/field-response/gv-statement-with-target'
 import {SatementTarget} from '../../../../models/field-response/SatementTarget'
 import {GvFieldPageReqMock} from '../api-requests/GvFieldPageReq'
@@ -12,14 +10,14 @@ import {InfLanguageMock} from '../gvDB/InfLanguageMock'
 import {InfPlaceMock} from '../gvDB/InfPlaceMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
+import {DEFAULT_CAL, DEFAULT_DURATION, InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
 import {DfhApiProperty, OmitEntity} from '../gvDB/local-model.helpers'
 import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
 import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {PubAccountMock} from '../gvDB/PubAccountMock'
 import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
 
-function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel: OmitEntity<ProInfoProjRel>, accountId = 1001, target: SatementTarget, isOutgoing: boolean): StatementWithTarget {
+export function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel: OmitEntity<ProInfoProjRel>, accountId = 1001, target: SatementTarget, isOutgoing: boolean): StatementWithTarget {
 
   let targetLabel = ''
   if (target.appellation) {
@@ -200,9 +198,9 @@ export namespace GvPaginationObjectMock {
               timePrimitive: {
                 infTimePrimitive: InfTimePrimitiveMock.TP_2 as InfTimePrimitive,
                 timePrimitive: {
-                  duration: InfTimePrimitiveMock.TP_2.duration as Granularity,
+                  duration: InfTimePrimitiveMock.TP_2.duration ?? DEFAULT_DURATION,
                   julianDay: InfTimePrimitiveMock.TP_2.julian_day,
-                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as CalendarType,
+                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar ?? DEFAULT_CAL,
                 }
               }
             },
@@ -246,9 +244,9 @@ export namespace GvPaginationObjectMock {
               timePrimitive: {
                 infTimePrimitive: InfTimePrimitiveMock.TP_5 as InfTimePrimitive,
                 timePrimitive: {
-                  duration: InfTimePrimitiveMock.TP_5.duration as Granularity,
+                  duration: InfTimePrimitiveMock.TP_5.duration ?? DEFAULT_DURATION,
                   julianDay: InfTimePrimitiveMock.TP_5.julian_day,
-                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as CalendarType,
+                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar ?? DEFAULT_CAL,
                 }
               }
             },
@@ -279,9 +277,9 @@ export namespace GvPaginationObjectMock {
               timePrimitive: {
                 infTimePrimitive: InfTimePrimitiveMock.TP_4 as InfTimePrimitive,
                 timePrimitive: {
-                  duration: InfTimePrimitiveMock.TP_4.duration as Granularity,
+                  duration: InfTimePrimitiveMock.TP_4.duration ?? DEFAULT_DURATION,
                   julianDay: InfTimePrimitiveMock.TP_4.julian_day,
-                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as CalendarType,
+                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar ?? DEFAULT_CAL,
                 }
               }
             },

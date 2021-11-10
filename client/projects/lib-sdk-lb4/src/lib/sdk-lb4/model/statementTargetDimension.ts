@@ -9,14 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { QuillOperationWithRelations } from './quillOperationWithRelations';
+import { InfDimension } from './infDimension';
+import { WarEntityPreview } from './warEntityPreview';
 
 
-/**
- * (tsType: QuillDocWithRelations, schemaOptions: { includeRelations: true })
- */
-export interface QuillDocWithRelations { 
-    latestId?: number;
-    ops?: Array<QuillOperationWithRelations>;
+export interface StatementTargetDimension { 
+    dimension: InfDimension;
+    unitPreview?: WarEntityPreview;
 }
 

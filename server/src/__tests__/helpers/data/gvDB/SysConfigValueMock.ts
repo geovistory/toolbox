@@ -1,5 +1,5 @@
+import {TrueEnum} from '../../../../models/enums/TrueEnum';
 import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
-import {TrueEnum} from '../../../../models/sys-config/TrueEnum';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {

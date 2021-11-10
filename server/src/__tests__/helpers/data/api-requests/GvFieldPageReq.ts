@@ -1,11 +1,11 @@
 import {GvFieldPageReq} from '../../../../models'
-import {ProProjectMock} from '../gvDB/ProProjectMock'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {TrueEnum} from '../../../../models/enums/TrueEnum'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
+import {InfStatementMock} from '../gvDB/InfStatementMock'
+import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
-import {TrueEnum} from '../../../../models/sys-config/TrueEnum'
 
 export namespace GvFieldPageReqMock {
 

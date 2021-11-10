@@ -12,7 +12,7 @@
 import { InfStatementWithRelations } from './infStatementWithRelations';
 import { DatNamespaceWithRelations } from './datNamespaceWithRelations';
 import { DatDigitalWithRelations } from './datDigitalWithRelations';
-import { QuillDocWithRelations } from './quillDocWithRelations';
+import { QuillDoc } from './quillDoc';
 
 
 /**
@@ -20,7 +20,7 @@ import { QuillDocWithRelations } from './quillDocWithRelations';
  */
 export interface DatChunkWithRelations { 
     pk_entity?: number;
-    quill_doc?: QuillDocWithRelations;
+    quill_doc?: QuillDoc;
     string?: string;
     fk_entity_version: number;
     fk_text: number;

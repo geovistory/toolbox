@@ -3,9 +3,9 @@ import {keys} from 'lodash';
 import {equals, groupBy, uniq} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
 import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldTargetViewType, GvPaginationObject, GvPaginationStatementFilter, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../../models';
+import {TrueEnum} from '../../models/enums/TrueEnum';
 import {GvFieldTargets} from '../../models/field/gv-field-targets';
 import {DatObject, DfhObject, InfObject, ProObject, SysObject, WarObject} from '../../models/gv-positive-schema-object.model';
-import {TrueEnum} from '../../models/sys-config/TrueEnum';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 

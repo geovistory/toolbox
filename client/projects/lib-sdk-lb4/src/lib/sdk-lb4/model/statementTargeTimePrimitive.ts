@@ -9,13 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { QuillAttributes } from './quillAttributes';
+import { TimePrimitiveWithCal } from './timePrimitiveWithCal';
+import { InfLangString } from './infLangString';
 
 
-export interface QuillOperationWithRelations { 
-    insert?: string;
-    _delete?: number;
-    retain?: number;
-    attributes?: QuillAttributes;
+export interface StatementTargeTimePrimitive { 
+    infTimePrimitive: InfLangString;
+    timePrimitive: TimePrimitiveWithCal;
 }
 

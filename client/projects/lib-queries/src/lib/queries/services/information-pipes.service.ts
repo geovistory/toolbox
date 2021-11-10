@@ -3,19 +3,18 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldTargetViewType, InfStatement, TimePrimitiveWithCal, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
+import { GvFieldPage, GvFieldTargetViewType, GvSubfieldPageInfo, InfStatement, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { spyTag } from '../decorators/method-decorators';
-import { infTimePrimToTimePrimWithCal } from '../functions/functions';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
 import { GvFieldTargets } from '../models/FieldTargets';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
-import { StatementProjRel, StatementTarget, StatementWithTarget, SubentitySubfieldPage, SubfieldPage } from '../models/StatementWithTarget';
+import { StatementProjRel, SubfieldPage } from '../models/StatementWithTarget';
 import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { ConfigurationPipesService, DisplayType, HasTypePropertyInfo } from './configuration-pipes.service';
@@ -86,246 +85,234 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
       })
     }
   }
-  /**
-   * pipe the target of given statment
-   * @param stmt InfStatement to be completed with target
-   * @param page page for which we are piping this stuff
-   * @param subfieldType type of subfield for which we pipe this stuff
-   */
-  pipeTargetOfStatement(stmt: InfStatement, page: GvFieldPage, targets: GvFieldTargets): Observable<StatementTarget> {
-    const isOutgoing = page.isOutgoing
-    const targetInfo = isOutgoing ? stmt.fk_object_info : stmt.fk_subject_info;
-    // here you could add targetData or targetCell
+  // /**
+  //  * pipe the target of given statment
+  //  * @param stmt InfStatement to be completed with target
+  //  * @param page page for which we are piping this stuff
+  //  * @param subfieldType type of subfield for which we pipe this stuff
+  //  */
+  // pipeTargetOfStatement(stmt: InfStatement, page: GvFieldPage, targets: GvFieldTargets): Observable<StatementTarget> {
+  //   const isOutgoing = page.isOutgoing
+  //   const targetInfo = isOutgoing ? stmt.fk_object_info : stmt.fk_subject_info;
+  //   // here you could add targetData or targetCell
 
 
-    return this.s.inf$.getModelOfEntity$(targetInfo).pipe(
-      filter(x => !!x),
-      switchMap(item => {
-        const subfieldType: GvFieldTargetViewType = targets[item.fkClass]
-        if (subfieldType.appellation) {
-          return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            map(appellation => {
-              const stmtTarget: StatementTarget = {
-                statement: stmt,
-                isOutgoing,
-                targetLabel: appellation.string,
-                targetClass: appellation.fk_class,
-                target: {
-                  appellation
-                }
-              }
-              return stmtTarget
-            })
-          )
-        }
-        else if (subfieldType.place) {
-          return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            map(place => {
-              const stmtTarget: StatementTarget = {
-                statement: stmt,
-                isOutgoing,
-                targetLabel: `WGS84: ${place.lat}°, ${place.long}°`,
-                targetClass: place.fk_class,
-                target: {
-                  place
-                }
-              }
-              return stmtTarget
-            })
-          )
-        }
-        else if (subfieldType.dimension) {
-          return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            switchMap(dimension => {
-              return this.p.streamEntityPreview(dimension.fk_measurement_unit)
-                .pipe(
-                  map(
-                    unitPreview => {
-                      const stmtTarget: StatementTarget = {
-                        statement: stmt,
-                        isOutgoing,
-                        targetLabel: `${dimension.numeric_value} ${unitPreview.entity_label}`,
-                        targetClass: dimension.fk_class,
-                        target: {
-                          dimension
-                        }
-                      }
-                      return stmtTarget
+  //   return this.s.inf$.getModelOfEntity$(targetInfo).pipe(
+  //     filter(x => !!x),
+  //     switchMap(item => {
+  //       const subfieldType: GvFieldTargetViewType = targets[item.fkClass]
+  //       if (subfieldType.appellation) {
+  //         return this.s.inf$.appellation$.by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           map(appellation => {
+  //             const stmtTarget: StatementTarget = {
+  //               statement: stmt,
+  //               isOutgoing,
+  //               targetLabel: appellation.string,
+  //               targetClass: appellation.fk_class,
+  //               target: {
+  //                 appellation
+  //               }
+  //             }
+  //             return stmtTarget
+  //           })
+  //         )
+  //       }
+  //       else if (subfieldType.place) {
+  //         return this.s.inf$.place$.by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           map(place => {
+  //             const stmtTarget: StatementTarget = {
+  //               statement: stmt,
+  //               isOutgoing,
+  //               targetLabel: `WGS84: ${place.lat}°, ${place.long}°`,
+  //               targetClass: place.fk_class,
+  //               target: {
+  //                 place
+  //               }
+  //             }
+  //             return stmtTarget
+  //           })
+  //         )
+  //       }
+  //       else if (subfieldType.dimension) {
+  //         return this.s.inf$.dimension$.by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           switchMap(dimension => {
+  //             return this.p.streamEntityPreview(dimension.fk_measurement_unit)
+  //               .pipe(
+  //                 map(
+  //                   unitPreview => {
+  //                     const stmtTarget: StatementTarget = {
+  //                       statement: stmt,
+  //                       isOutgoing,
+  //                       targetLabel: `${dimension.numeric_value} ${unitPreview.entity_label}`,
+  //                       targetClass: dimension.fk_class,
+  //                       target: {
+  //                         dimension
+  //                       }
+  //                     }
+  //                     return stmtTarget
 
-                    }
-                  )
-                )
-            })
-          )
-        }
-        else if (subfieldType.langString) {
-          return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            switchMap(langString => {
-              return this.s.inf$.language$.by_pk_entity$.key(langString.fk_language)
-                .pipe(
-                  map(
-                    language => {
-                      const stmtTarget: StatementTarget = {
-                        statement: stmt,
-                        isOutgoing,
-                        targetLabel: `${langString.string} (${language.iso6391})`,
-                        targetClass: langString.fk_class,
-                        target: {
-                          langString
-                        }
-                      }
-                      return stmtTarget
+  //                   }
+  //                 )
+  //               )
+  //           })
+  //         )
+  //       }
+  //       else if (subfieldType.langString) {
+  //         return this.s.inf$.lang_string$.by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           switchMap(langString => {
+  //             return this.s.inf$.language$.by_pk_entity$.key(langString.fk_language)
+  //               .pipe(
+  //                 map(
+  //                   language => {
+  //                     const stmtTarget: StatementTarget = {
+  //                       statement: stmt,
+  //                       isOutgoing,
+  //                       targetLabel: `${langString.string} (${language.iso6391})`,
+  //                       targetClass: langString.fk_class,
+  //                       target: {
+  //                         langString
+  //                       }
+  //                     }
+  //                     return stmtTarget
 
-                    }
-                  )
-                )
-            })
-          )
-        }
-        else if (subfieldType.language) {
-          return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            map(language => {
-              const stmtTarget: StatementTarget = {
-                statement: stmt,
-                isOutgoing,
-                targetLabel: `${language.notes || language.iso6391}`,
-                targetClass: language.fk_class,
-                target: {
-                  language
-                }
-              }
-              return stmtTarget
-            })
-          )
-        }
-        else if (subfieldType.entityPreview || subfieldType.typeItem) {
-          return this.p.streamEntityPreview(targetInfo).pipe(
-            filter(x => !!x),
-            map(entityPreview => {
-              const stmtTarget: StatementTarget = {
-                statement: stmt,
-                isOutgoing,
-                targetLabel: `${entityPreview.entity_label}`,
-                targetClass: entityPreview.fk_class,
-                target: {
-                  entityPreview
-                }
-              }
-              return stmtTarget
-            })
-          )
-        }
+  //                   }
+  //                 )
+  //               )
+  //           })
+  //         )
+  //       }
+  //       else if (subfieldType.language) {
+  //         return this.s.inf$.language$.by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           map(language => {
+  //             const stmtTarget: StatementTarget = {
+  //               statement: stmt,
+  //               isOutgoing,
+  //               targetLabel: `${language.notes || language.iso6391}`,
+  //               targetClass: language.fk_class,
+  //               target: {
+  //                 language
+  //               }
+  //             }
+  //             return stmtTarget
+  //           })
+  //         )
+  //       }
+  //       else if (subfieldType.entityPreview || subfieldType.typeItem) {
+  //         return this.p.streamEntityPreview(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           map(entityPreview => {
+  //             const stmtTarget: StatementTarget = {
+  //               statement: stmt,
+  //               isOutgoing,
+  //               targetLabel: `${entityPreview.entity_label}`,
+  //               targetClass: entityPreview.fk_class,
+  //               target: {
+  //                 entityPreview
+  //               }
+  //             }
+  //             return stmtTarget
+  //           })
+  //         )
+  //       }
 
-        else if (subfieldType.nestedResource) {
+  //       else if (subfieldType.nestedResource) {
 
-          return this.s.inf$.resource$._by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            map(temporalEntity => {
-              const stmtTarget: StatementTarget = {
-                statement: stmt,
-                isOutgoing,
-                targetLabel: ``,
-                targetClass: temporalEntity.fk_class,
-                target: {
-                  entity: {
-                    pkEntity: temporalEntity.pk_entity,
-                    fkClass: temporalEntity.fk_class
-                  }
-                }
-              }
-              return stmtTarget
-            })
-          )
-        }
+  //         return this.s.inf$.resource$._by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           map(temporalEntity => {
+  //             const stmtTarget: StatementTarget = {
+  //               statement: stmt,
+  //               isOutgoing,
+  //               targetLabel: ``,
+  //               targetClass: temporalEntity.fk_class,
+  //               target: {
+  //                 entity: {
+  //                   pkEntity: temporalEntity.pk_entity,
+  //                   fkClass: temporalEntity.fk_class
+  //                 }
+  //               }
+  //             }
+  //             return stmtTarget
+  //           })
+  //         )
+  //       }
 
-        else if (subfieldType.timePrimitive) {
-          return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(
-            filter(x => !!x),
-            switchMap(timePrimitive => {
-              // get calendar
-              let cal$: Observable<TimePrimitiveWithCal.CalendarEnum>
-              if (page.scope.inProject) {
-                cal$ = this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(page.scope.inProject + '_' + stmt.pk_entity)
-                  .pipe(
-                    map(
-                      infoProjRel => infoProjRel.calendar as TimePrimitiveWithCal.CalendarEnum
-                    )
-                  )
-              }
-              else {
-                cal$ = new BehaviorSubject(stmt.community_favorite_calendar as TimePrimitiveWithCal.CalendarEnum)
-              }
-              // pipe target time primitive of stmt
-              return cal$.pipe(
-                map(
-                  cal => {
-                    const timePrimWithCal = infTimePrimToTimePrimWithCal(timePrimitive, cal)
-                    const stmtTarget: StatementTarget = {
-                      statement: stmt,
-                      isOutgoing,
-                      targetLabel: this.timePrimitivePipe.transform(timePrimWithCal),
-                      targetClass: timePrimitive.fk_class,
-                      target: {
-                        timePrimitive: timePrimWithCal
-                      }
-                    }
-                    return stmtTarget
+  //       else if (subfieldType.timePrimitive) {
+  //         return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(
+  //           filter(x => !!x),
+  //           switchMap(timePrimitive => {
+  //             // get calendar
+  //             let cal$: Observable<TimePrimitiveWithCal.CalendarEnum>
+  //             if (page.scope.inProject) {
+  //               cal$ = this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(page.scope.inProject + '_' + stmt.pk_entity)
+  //                 .pipe(
+  //                   map(
+  //                     infoProjRel => infoProjRel.calendar as TimePrimitiveWithCal.CalendarEnum
+  //                   )
+  //                 )
+  //             }
+  //             else {
+  //               cal$ = new BehaviorSubject(stmt.community_favorite_calendar as TimePrimitiveWithCal.CalendarEnum)
+  //             }
+  //             // pipe target time primitive of stmt
+  //             return cal$.pipe(
+  //               map(
+  //                 cal => {
+  //                   const timePrimWithCal = infTimePrimToTimePrimWithCal(timePrimitive, cal)
+  //                   const stmtTarget: StatementTarget = {
+  //                     statement: stmt,
+  //                     isOutgoing,
+  //                     targetLabel: this.timePrimitivePipe.transform(timePrimWithCal),
+  //                     targetClass: timePrimitive.fk_class,
+  //                     target: {
+  //                       timePrimitive: timePrimWithCal
+  //                     }
+  //                   }
+  //                   return stmtTarget
 
-                  }
-                )
-              )
-            })
-          )
-        }
+  //                 }
+  //               )
+  //             )
+  //           })
+  //         )
+  //       }
 
-        throw new Error(`No implementation found for subfieldType ${JSON.stringify(subfieldType)}`);
-      })
-    )
+  //       throw new Error(`No implementation found for subfieldType ${JSON.stringify(subfieldType)}`);
+  //     })
+  //   )
 
 
-  }
+  // }
 
-  /**
-   * pipe target and projRel of the given statement
-   */
-  pipeStatementWithTarget(stmt: InfStatement, page: GvFieldPage, targets: GvFieldTargets): Observable<StatementWithTarget> {
+  // /**
+  //  * pipe target and projRel of the given statement
+  //  */
+  // pipeStatementWithTarget(stmt: InfStatement, page: GvFieldPage, targets: GvFieldTargets): Observable<StatementWithTarget> {
 
-    return combineLatest(
-      this.pipeTargetOfStatement(stmt, page, targets),
-      this.pipeProjRelOfStatement(stmt, page)
-    ).pipe(
-      map(([target, projRel]) => ({ ...target, ...projRel }))
-    )
-  }
+  //   return combineLatest(
+  //     this.pipeTargetOfStatement(stmt, page, targets),
+  //     this.pipeProjRelOfStatement(stmt, page)
+  //   ).pipe(
+  //     map(([target, projRel]) => ({ ...target, ...projRel }))
+  //   )
+  // }
 
   pipeFieldPage(page: GvFieldPage, targets: GvFieldTargets, isTimeSpanShortCutField: boolean): Observable<SubfieldPage> {
     if (isTimeSpanShortCutField) {
       // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
-      return this.pipeTimeSpan(page)
+      // return this.pipeTimeSpan(page)
+      return of({ count: 0, statements: [] })
     }
     else {
       // get the statments of that page
-      return combineLatest(
+      return combineLatest([
         this.s.inf$.statement$.pagination$.pipeCount(page),
-        this.s.inf$.statement$.pagination$.pipePage(page)
-          .pipe(
-            switchMap(
-              pkStmts => combineLatestOrEmpty(
-                pkStmts.map(pkStmt => this.s.inf$.statement$.by_pk_entity$.key(pkStmt)
-                  // for each statement, depending on the subfieldType, load the corresponding target
-                  .pipe(
-                    filter(stmt => !!stmt),
-                    switchMap(stmt => this.pipeStatementWithTarget(stmt, page, targets))
-                  )
-                )
-              )
-            ),
-          )
+        this.s.inf$.statement$.pagination$.pipePage(page)]
       ).pipe(
         map(([count, statements]) => ({ count, statements }))
       )
@@ -333,7 +320,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
 
   }
 
-  private pipeTimeSpan(page: GvFieldPage) {
+  private pipeTimeSpan(page: GvFieldPage): Observable<GvSubfieldPageInfo[]> {
     const virtualStatementToTimeSpan = { fk_object_info: page.source.fkInfo };
     // const targets: GvFieldTargets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
 
@@ -364,53 +351,53 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
         }
         return this.pipeFieldPage(nestedPage, trgts, false).pipe(
           map(({ count, statements }) => {
-            const { limit, offset, ...s } = nestedPage;
-            const subentitySubfieldPage: SubentitySubfieldPage = {
-              subfield: s,
+            const subentitySubfieldPage: GvSubfieldPageInfo = {
+              page: nestedPage,
               count,
-              statements
+              paginatedStatements: statements
             }
             return subentitySubfieldPage
           })
         )
       })
+    return combineLatestOrEmpty(subentityPages$);
 
 
-    return combineLatestOrEmpty(subentityPages$)
-      .pipe(
-        map(
-          subfields => {
-            const timeSpanPreview: WarEntityPreviewTimeSpan = {}
-            subfields.forEach(s => {
-              if (s.statements[0]) {
-                const st = s.statements[0]
-                const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[st.statement.fk_property]
-                timeSpanPreview[key] = st.target.timePrimitive
-              }
-            })
-            const stmtTarget: StatementTarget = {
-              statement: virtualStatementToTimeSpan,
-              isOutgoing: page.isOutgoing,
-              targetLabel: this.timeSpanPipe.transform(new TimeSpanUtil(timeSpanPreview)),
-              targetClass: DfhConfig.ClASS_PK_TIME_SPAN,
-              target: {
-                timeSpan: {
-                  preview: timeSpanPreview,
-                  subfields
-                }
-              }
-            }
-            return stmtTarget
-          }
-        )
-      ).pipe(map(stmtTarget => {
-        const stmtWT: StatementWithTarget = {
-          ...stmtTarget,
-          projRel: undefined,
-          ordNum: undefined
-        };
-        return { count: 1, statements: [stmtWT] };
-      }));
+    // return combineLatestOrEmpty(subentityPages$)
+    //   .pipe(
+    //     map(
+    //       subfields => {
+    //         const timeSpanPreview: WarEntityPreviewTimeSpan = {}
+    //         subfields.forEach(s => {
+    //           if (s.paginatedStatements[0]) {
+    //             const st = s.paginatedStatements[0]
+    //             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[st.statement.fk_property]
+    //             timeSpanPreview[key] = st.target.timePrimitive
+    //           }
+    //         })
+    //         const stmtTarget: StatementWithTarget = {
+    //           statement: virtualStatementToTimeSpan,
+    //           isOutgoing: page.isOutgoing,
+    //           targetLabel: this.timeSpanPipe.transform(new TimeSpanUtil(timeSpanPreview)),
+    //           targetClass: DfhConfig.ClASS_PK_TIME_SPAN,
+    //           target: {
+    //             timeSpan: {
+    //               preview: timeSpanPreview,
+    //               subfields
+    //             }
+    //           }
+    //         }
+    //         return stmtTarget
+    //       }
+    //     )
+    //   ).pipe(map(stmtTarget => {
+    //     const stmtWT: StatementWithTarget = {
+    //       ...stmtTarget,
+    //       projRel: undefined,
+    //       ordNum: undefined
+    //     };
+    //     return { count: 1, statements: [stmtWT] };
+    //   }));
   }
 
 

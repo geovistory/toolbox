@@ -1,7 +1,7 @@
 
 import {WarEntityPreview} from '../../../../models'
-import {CalendarType} from '../../../../models/entity-preview/CalendarType'
-import {Granularity} from '../../../../models/entity-preview/Granularity'
+import {CalendarType} from '../../../../models/enums/CalendarType'
+import {Granularity} from '../../../../models/enums/Granularity'
 import {DfhApiClassMock} from './DfhApiClassMock'
 import {InfAppellationMock} from './InfAppellationMock'
 import {InfLangStringMock} from './InfLangStringMock'

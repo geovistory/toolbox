@@ -1,7 +1,9 @@
 import {model, property} from '@loopback/repository';
+import {InfResource, WarEntityPreview} from '..';
+
 
 @model()
 export class StatementTargetEntity {
-  @property({required: true}) pkEntity: number;
-  @property({required: true}) fkClass: number;
+  @property({type: InfResource, required: true}) resource: InfResource;
+  @property({type: WarEntityPreview, required: true}) entityPreview?: WarEntityPreview;
 }

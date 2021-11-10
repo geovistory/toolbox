@@ -1,7 +1,5 @@
 import { infTimePrimToTimePrimWithCal } from '@kleiolab/lib-queries';
-import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { StatementWithTarget } from 'projects/lib-queries/src/lib/queries/models/StatementWithTarget';
-import { DfhApiClassMock } from './auto-gen/gvDB/DfhApiClassMock';
+import { StatementWithTarget, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { InfAppellationMock } from './auto-gen/gvDB/InfAppellationMock';
 import { InfDimensionMock } from './auto-gen/gvDB/InfDimensionMock';
 import { InfLangStringMock } from './auto-gen/gvDB/InfLangStringMock';
@@ -41,13 +39,10 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON.ord_num_of_domain,
     isOutgoing: false,
-    targetLabel: '',
+    targetLabel: 'Jack the foo',
     targetClass: InfResourceMock.NAMING_1.fk_class,
     target: {
-      entity: {
-        pkEntity: InfResourceMock.NAMING_1.pk_entity,
-        fkClass: InfResourceMock.NAMING_1.fk_class,
-      }
+      entity: { resource: InfResourceMock.NAMING_1, entityPreview: WarEntityPreviewMock.NAMING_1 }
     }
   }
   export const madridsPresenceWasAtPlace: StatementWithTarget = {
@@ -69,7 +64,7 @@ export namespace StatementWithTargetMock {
     targetLabel: `${InfDimensionMock.ONE_MONTH.numeric_value} ${WarEntityPreviewMock.TIME_UNIT_ONE_MONTH.entity_label}`,
     targetClass: InfDimensionMock.ONE_MONTH.fk_class,
     target: {
-      dimension: InfDimensionMock.ONE_MONTH
+      dimension: { dimension: InfDimensionMock.ONE_MONTH, unitPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH }
     }
   }
   export const manifSingletonHasShortTitleMurderer: StatementWithTarget = {
@@ -80,7 +75,10 @@ export namespace StatementWithTargetMock {
     targetLabel: `${InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER.string} (${InfLanguageMock.ENGLISH.iso6391})`,
     targetClass: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER.fk_class,
     target: {
-      langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER
+      langString: {
+        langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER,
+        language: InfLanguageMock.ENGLISH
+      }
     }
   }
   export const shipVoyageAtSomeTimeWithin: StatementWithTarget = {
@@ -88,13 +86,16 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: `Oct 31, 1756`,
+    targetLabel: 'todo', //`Oct 31, 1756`,
     targetClass: InfTimePrimitiveMock.TP_2.fk_class,
     target: {
-      timePrimitive: infTimePrimToTimePrimWithCal(
-        InfTimePrimitiveMock.TP_2,
-        ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as TimePrimitiveWithCal.CalendarEnum
-      )
+      timePrimitive: {
+        timePrimitive: infTimePrimToTimePrimWithCal(
+          InfTimePrimitiveMock.TP_2,
+          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as TimePrimitiveWithCal.CalendarEnum
+        ),
+        infTimePrimitive: InfTimePrimitiveMock.TP_2
+      }
     }
   }
 
@@ -103,13 +104,16 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: `Oct 31, 1756`,
+    targetLabel: 'todo', //`Oct 31, 1756`,
     targetClass: InfTimePrimitiveMock.TP_5.fk_class,
     target: {
-      timePrimitive: infTimePrimToTimePrimWithCal(
-        InfTimePrimitiveMock.TP_5,
-        ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as TimePrimitiveWithCal.CalendarEnum
-      )
+      timePrimitive: {
+        timePrimitive: infTimePrimToTimePrimWithCal(
+          InfTimePrimitiveMock.TP_5,
+          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as TimePrimitiveWithCal.CalendarEnum
+        ),
+        infTimePrimitive: InfTimePrimitiveMock.TP_5
+      }
     }
   }
   export const shipVoyageBeginOfEnd: StatementWithTarget = {
@@ -117,161 +121,165 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: `Oct 31, 1756`,
+    targetLabel: 'todo', //`Oct 31, 1756`,
     targetClass: InfTimePrimitiveMock.TP_4.fk_class,
-    target: {
-      timePrimitive: infTimePrimToTimePrimWithCal(
-        InfTimePrimitiveMock.TP_4,
-        ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as TimePrimitiveWithCal.CalendarEnum
-      )
-    }
-  }
-
-  export const shipVoyageHasTimeSpan: StatementWithTarget = {
-    statement: { fk_object_info: InfResourceMock.SHIP_VOYAGE.pk_entity }, // InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
-    projRel: undefined, // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
-    ordNum: undefined, // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.ord_num_of_range,
-    isOutgoing: true,
-    targetLabel: `Oct 23, 1756 – Nov 2, 1756`,
-    targetClass: DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class,
-    target: {
-      timeSpan: {
-        subfields: [
-          {
-            subfield: {
-              property: { fkProperty: 71 },
-              isOutgoing: true,
-              source: { fkInfo: 4004 },
-              scope: {
-                inProject: 3001
-              }
-            },
-            count: 0,
-            statements: []
-          },
-          {
-            subfield: {
-              property: { fkProperty: 72 },
-              isOutgoing: true,
-              source: { fkInfo: 4004 },
-              scope: {
-                inProject: 3001
-              }
-            },
-            count: 0,
-            statements: []
-          },
-          {
-            subfield: {
-              property: { fkProperty: 150 },
-              isOutgoing: true,
-              source: { fkInfo: 4004 },
-              scope: {
-                inProject: 3001
-              }
-            },
-            count: 0,
-            statements: []
-          },
-          {
-            subfield: {
-              property: { fkProperty: 151 },
-              isOutgoing: true,
-              source: { fkInfo: 4004 },
-              scope: {
-                inProject: 3001
-              }
-            },
-            count: 1,
-            statements: [{
-              ordNum: undefined,
-              statement: {
-                pk_entity: 3009,
-                fk_subject_info: 4004,
-                fk_property: 151,
-                fk_object_info: 6004
-              },
-              isOutgoing: true,
-              targetLabel: 'Nov 2, 1756',
-              targetClass: 335,
-              target: {
-                timePrimitive: {
-                  julianDay: 2362732,
-                  duration: '1 day',
-                  calendar: 'gregorian'
-                }
-              },
-              projRel: {
-                pk_entity: 2015,
-                fk_project: 3001,
-                fk_entity: 3009,
-                calendar: 'gregorian',
-                fk_last_modifier: 1001,
-                is_in_project: true
-              }
-            }]
-          },
-          {
-            subfield: {
-              property: { fkProperty: 152 },
-              isOutgoing: true,
-              source: { fkInfo: 4004 },
-              scope: {
-                inProject: 3001
-              }
-            },
-            count: 1,
-            statements: [{
-              ordNum: undefined,
-              statement: {
-                pk_entity: 3010,
-                fk_subject_info: 4004,
-                fk_property: 152,
-                fk_object_info: 6005
-              },
-              isOutgoing: true,
-              targetLabel: 'Oct 23, 1756',
-              targetClass: 335,
-              target: {
-                timePrimitive: {
-                  julianDay: 2362733,
-                  duration: '1 day',
-                  calendar: 'julian'
-                }
-              },
-              projRel: {
-                pk_entity: 2016,
-                fk_project: 3001,
-                fk_entity: 3010,
-                calendar: 'julian',
-                fk_last_modifier: 1001,
-                is_in_project: true
-              }
-            }]
-          },
-          {
-            subfield: {
-              property: { fkProperty: 153 },
-              isOutgoing: true,
-              source: { fkInfo: 4004 },
-              scope: {
-                inProject: 3001
-              }
-            },
-            count: 0,
-            statements: []
-          }],
-        preview: {
-          p82a: infTimePrimToTimePrimWithCal(
-            InfTimePrimitiveMock.TP_5,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as TimePrimitiveWithCal.CalendarEnum
-          ),
-          p81b: infTimePrimToTimePrimWithCal(
-            InfTimePrimitiveMock.TP_4,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as TimePrimitiveWithCal.CalendarEnum
-          )
-        }
+    target:
+    {
+      timePrimitive: {
+        timePrimitive: infTimePrimToTimePrimWithCal(
+          InfTimePrimitiveMock.TP_4,
+          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as TimePrimitiveWithCal.CalendarEnum
+        ),
+        infTimePrimitive: InfTimePrimitiveMock.TP_4
       }
     }
   }
+
+  //   export const shipVoyageHasTimeSpan: StatementWithTarget = {
+  //     statement: { fk_object_info: InfResourceMock.SHIP_VOYAGE.pk_entity }, // InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
+  //     projRel: undefined, // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
+  //     ordNum: undefined, // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.ord_num_of_range,
+  //     isOutgoing: true,
+  //     targetLabel: `Oct 23, 1756 – Nov 2, 1756`,
+  //     targetClass: DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class,
+  //     target: {
+  //       timeSpan: {
+  //         subfields: [
+  //           {
+  //             subfield: {
+  //               property: { fkProperty: 71 },
+  //               isOutgoing: true,
+  //               source: { fkInfo: 4004 },
+  //               scope: {
+  //                 inProject: 3001
+  //               }
+  //             },
+  //             count: 0,
+  //             statements: []
+  //           },
+  //           {
+  //             subfield: {
+  //               property: { fkProperty: 72 },
+  //               isOutgoing: true,
+  //               source: { fkInfo: 4004 },
+  //               scope: {
+  //                 inProject: 3001
+  //               }
+  //             },
+  //             count: 0,
+  //             statements: []
+  //           },
+  //           {
+  //             subfield: {
+  //               property: { fkProperty: 150 },
+  //               isOutgoing: true,
+  //               source: { fkInfo: 4004 },
+  //               scope: {
+  //                 inProject: 3001
+  //               }
+  //             },
+  //             count: 0,
+  //             statements: []
+  //           },
+  //           {
+  //             subfield: {
+  //               property: { fkProperty: 151 },
+  //               isOutgoing: true,
+  //               source: { fkInfo: 4004 },
+  //               scope: {
+  //                 inProject: 3001
+  //               }
+  //             },
+  //             count: 1,
+  //             statements: [{
+  //               ordNum: undefined,
+  //               statement: {
+  //                 pk_entity: 3009,
+  //                 fk_subject_info: 4004,
+  //                 fk_property: 151,
+  //                 fk_object_info: 6004
+  //               },
+  //               isOutgoing: true,
+  //               targetLabel: 'Nov 2, 1756',
+  //               targetClass: 335,
+  //               target: {
+  //                 timePrimitive: {
+  //                   julianDay: 2362732,
+  //                   duration: '1 day',
+  //                   calendar: 'gregorian'
+  //                 }
+  //               },
+  //               projRel: {
+  //                 pk_entity: 2015,
+  //                 fk_project: 3001,
+  //                 fk_entity: 3009,
+  //                 calendar: 'gregorian',
+  //                 fk_last_modifier: 1001,
+  //                 is_in_project: true
+  //               }
+  //             }]
+  //           },
+  //           {
+  //             subfield: {
+  //               property: { fkProperty: 152 },
+  //               isOutgoing: true,
+  //               source: { fkInfo: 4004 },
+  //               scope: {
+  //                 inProject: 3001
+  //               }
+  //             },
+  //             count: 1,
+  //             statements: [{
+  //               ordNum: undefined,
+  //               statement: {
+  //                 pk_entity: 3010,
+  //                 fk_subject_info: 4004,
+  //                 fk_property: 152,
+  //                 fk_object_info: 6005
+  //               },
+  //               isOutgoing: true,
+  //               targetLabel: 'Oct 23, 1756',
+  //               targetClass: 335,
+  //               target: {
+  //                 timePrimitive: {
+  //                   julianDay: 2362733,
+  //                   duration: '1 day',
+  //                   calendar: 'julian'
+  //                 }
+  //               },
+  //               projRel: {
+  //                 pk_entity: 2016,
+  //                 fk_project: 3001,
+  //                 fk_entity: 3010,
+  //                 calendar: 'julian',
+  //                 fk_last_modifier: 1001,
+  //                 is_in_project: true
+  //               }
+  //             }]
+  //           },
+  //           {
+  //             subfield: {
+  //               property: { fkProperty: 153 },
+  //               isOutgoing: true,
+  //               source: { fkInfo: 4004 },
+  //               scope: {
+  //                 inProject: 3001
+  //               }
+  //             },
+  //             count: 0,
+  //             statements: []
+  //           }],
+  //         preview: {
+  //           p82a: infTimePrimToTimePrimWithCal(
+  //             InfTimePrimitiveMock.TP_5,
+  //             ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as TimePrimitiveWithCal.CalendarEnum
+  //           ),
+  //           p81b: infTimePrimToTimePrimWithCal(
+  //             InfTimePrimitiveMock.TP_4,
+  //             ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as TimePrimitiveWithCal.CalendarEnum
+  //           )
+  //         }
+  //       }
+  //     }
+  //   }
 }

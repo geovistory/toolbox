@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ProInfoProjRel, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfResourceWithRelations, InfStatementWithRelations, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvSchemaActions } from '../actions/schema.actions';
@@ -121,8 +121,8 @@ export class ReduxMainService {
     return this.schemaActions.loadGvSchemaModifier(call$)
   }
 
-  loadFieldPage(req: GvFieldPageReq): Observable<GvPaginationObject> {
-    const call$ = this.pag.subfieldPageControllerLoadSubfieldPage(req)
+  loadFieldPage(reqs: GvFieldPageReq[]): Observable<GvPaginationObject> {
+    const call$ = this.pag.subfieldPageControllerLoadSubfieldPages(reqs)
     return this.schemaActions.loadGvPaginationObject(call$)
   }
 

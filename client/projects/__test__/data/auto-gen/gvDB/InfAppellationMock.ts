@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {InfAppellation} from '@kleiolab/lib-sdk-lb4';
+import {QuillDoc} from '@kleiolab/lib-sdk-lb4';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
@@ -88,7 +88,7 @@ export class InfAppellationMock {
   })
 }
 
-export function createQuillDoc(string: string) {
+export function createQuillDoc(string: string): QuillDoc {
   return {
     latestId: string.length + 1,
     ops: [

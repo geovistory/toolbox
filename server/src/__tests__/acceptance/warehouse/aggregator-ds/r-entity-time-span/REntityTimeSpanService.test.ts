@@ -2,6 +2,9 @@
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
 import 'reflect-metadata';
+import {WarEntityPreviewTimeSpan} from '../../../../../models/entity-preview/WarEntityPreviewTimeSpan';
+import {CalendarType} from '../../../../../models/enums/CalendarType';
+import {Granularity} from '../../../../../models/enums/Granularity';
 import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
 import {REntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
 import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
@@ -26,9 +29,6 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
 import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {CalendarType} from '../../../../../models/entity-preview/CalendarType';
-import {Granularity} from '../../../../../models/entity-preview/Granularity';
-import {WarEntityPreviewTimeSpan} from '../../../../../models/entity-preview/WarEntityPreviewTimeSpan';
 const rEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
         REntityService,

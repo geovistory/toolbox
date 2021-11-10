@@ -35,9 +35,9 @@ export namespace SubfieldPageMock {
     statements: [StatementWithTargetMock.shipVoyageAtSomeTimeWithin]
   }
 
-  export const shipVoyageHasTimeSpan: SubfieldPage = {
-    count: 1,
-    statements: [StatementWithTargetMock.shipVoyageHasTimeSpan]
-  }
+  // export const shipVoyageHasTimeSpan: SubfieldPage = {
+  //   count: 1,
+  //   statements: [StatementWithTargetMock.shipVoyageHasTimeSpan]
+  // }
 
 }

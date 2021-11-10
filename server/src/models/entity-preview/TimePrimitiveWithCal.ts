@@ -1,6 +1,6 @@
 import {model, property} from '@loopback/repository';
-import {CalendarType} from "./CalendarType";
-import {Granularity} from "./Granularity";
+import {CalendarType} from "../enums/CalendarType";
+import {Granularity} from "../enums/Granularity";
 
 @model()
 export class TimePrimitiveWithCal {

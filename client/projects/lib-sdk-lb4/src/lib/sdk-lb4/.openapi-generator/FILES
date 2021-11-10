@@ -172,7 +172,6 @@ model/profileActivationReport.ts
 model/profileDeactivationReport.ts
 model/projectPongRequest.ts
 model/projectVisibilityOptions.ts
-model/projectVisibilityOptionsWithRelations.ts
 model/pubAccount.ts
 model/queryDefinition.ts
 model/queryFilter.ts
@@ -181,13 +180,12 @@ model/queryPathSegment.ts
 model/queryPathSegmentData.ts
 model/quillAttributes.ts
 model/quillDoc.ts
-model/quillDocWithRelations.ts
 model/quillOperation.ts
-model/quillOperationWithRelations.ts
 model/relatedProfile.ts
 model/resetPasswordRequest.ts
 model/responseWithMsg.ts
 model/role.ts
+model/satementTarget.ts
 model/schemaObject.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts
@@ -196,6 +194,11 @@ model/sections.ts
 model/signupRequest.ts
 model/signupResponse.ts
 model/signupValidationError.ts
+model/statementTargeTimePrimitive.ts
+model/statementTargetDimension.ts
+model/statementTargetEntity.ts
+model/statementTargetLangString.ts
+model/statementWithTarget.ts
 model/sysClassField.ts
 model/sysClassHasTypeProperty.ts
 model/sysConfigAddProperty.ts
@@ -232,6 +235,7 @@ model/warEntityPreview.ts
 model/warEntityPreviewPaginatedByPkReq.ts
 model/warEntityPreviewSearchExistingReq.ts
 model/warEntityPreviewTimeSpan.ts
+model/warEntityPreviewWithFulltext.ts
 model/warFieldChange.ts
 model/warFieldChangeAddToStream.ts
 model/warFieldChangeId.ts

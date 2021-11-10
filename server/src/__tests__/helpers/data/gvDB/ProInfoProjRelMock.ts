@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {ProInfoProjRel} from '../../../../models';
+import {CalendarType} from '../../../../models/enums/CalendarType';
 import {InfResourceMock} from './InfResourceMock';
 import {InfStatementMock} from './InfStatementMock';
 import {OmitEntity} from './local-model.helpers';
@@ -114,7 +114,7 @@ export class ProInfoProjRelMock {
     pk_entity: 2012,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1.pk_entity,
-    calendar: 'gregorian', // or 'julian'
+    calendar: CalendarType.gregorian, // or 'julian'
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true
@@ -124,7 +124,7 @@ export class ProInfoProjRelMock {
     pk_entity: 2013,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.pk_entity,
-    calendar: 'gregorian', // or 'julian'
+    calendar: CalendarType.gregorian, // or 'julian'
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true
@@ -134,7 +134,7 @@ export class ProInfoProjRelMock {
     pk_entity: 2014,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3.pk_entity,
-    calendar: 'gregorian', // or 'julian'
+    calendar: CalendarType.gregorian, // or 'julian'
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true
@@ -144,7 +144,7 @@ export class ProInfoProjRelMock {
     pk_entity: 2015,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.pk_entity,
-    calendar: 'gregorian', // or 'julian'
+    calendar: CalendarType.gregorian, // or 'julian'
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true
@@ -154,7 +154,7 @@ export class ProInfoProjRelMock {
     pk_entity: 2016,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.pk_entity,
-    calendar: 'julian', // or 'gregorian'
+    calendar: CalendarType.julian, // or 'gregorian'
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true
@@ -164,7 +164,7 @@ export class ProInfoProjRelMock {
     pk_entity: 2017,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.SHIP_VOYAGE_END_OF_THE_END_TP_6.pk_entity,
-    calendar: 'julian', // or 'gregorian'
+    calendar: CalendarType.julian, // or 'gregorian'
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true

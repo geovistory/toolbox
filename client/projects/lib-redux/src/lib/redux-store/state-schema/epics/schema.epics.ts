@@ -104,7 +104,6 @@ export class SchemaEpics {
               p.paginatedStatements, p.count, p.page, store.value.activeProject.pk_project
             ))
             return of<FluxStandardAction<any, any>>(
-              this.schemaObjectService.getStoreSchemaObjectGvAction(data.schemas),
               ...pageLoadedActions,
               this.loadingBarActions.removeJobAction
             )

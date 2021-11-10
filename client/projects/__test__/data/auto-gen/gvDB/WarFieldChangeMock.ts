@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {WarFieldChangeId} from '../../../../models/war-field-change-id.model'
-import {WarFieldChange} from '../../../../models/war-field-change.model'
+import {WarFieldChangeId} from '@kleiolab/lib-sdk-lb4';
+import {WarFieldChange} from '@kleiolab/lib-sdk-lb4';
 import {OmitEntity} from './local-model.helpers'
 
 /**

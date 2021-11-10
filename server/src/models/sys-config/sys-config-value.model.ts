@@ -1,9 +1,9 @@
 import {model, property} from '@loopback/repository';
+import {TrueEnum} from '../enums/TrueEnum';
 import {SysConfigAddProperty} from './sys-config-add-property';
 import {ClassConfig} from './sys-config-class-config';
 import {ClassesIndex} from "./sys-config-classes-index";
 import {SysConfigSpecialFields} from './sys-config-special-fields.model';
-import {TrueEnum} from './TrueEnum';
 const example: SysConfigValue = {
   classesDefault: {
     formControlType: {

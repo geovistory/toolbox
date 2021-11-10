@@ -3,6 +3,8 @@ import {Client, expect} from '@loopback/testlab';
 import {CLASS_PK_EXPRESSION, CLASS_PK_ITEM, CLASS_PK_MANIFESTATION_PRODUCT_TYPE, CLASS_PK_MANIFESTATION_SINGLETON, CLASS_PK_WEB_REQUEST, PROPERTY_PK_P4_IS_SERVER_RESPONSE_TO_REQUEST, PROPERTY_PK_P5_HAS_CARRIER_PROVIDED_BY, PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR, PROPERTY_PK_R4_CARRIERS_PROVIDED_BY} from '../../../../config';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {DatChunk, InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../../../models';
+import {CalendarType} from '../../../../models/enums/CalendarType';
+import {Granularity} from '../../../../models/enums/Granularity';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
 import {ProjectVisibilityOptions} from '../../../../models/sys-config/sys-config-project-visibility-options';
 import {GeovistoryServer} from '../../../../server';
@@ -211,11 +213,11 @@ describe('CreateProjectDataController', () => {
             fk_property: 1,
             object_time_primitive: new InfTimePrimitive({
               fk_class: 2,
-              duration: '1 year',
+              duration: Granularity['1 year'],
               julian_day: 123456,
             }),
             entity_version_project_rels: [
-              new ProInfoProjRel({calendar: 'julian'})
+              new ProInfoProjRel({calendar: CalendarType.julian})
             ]
           }
         ]
@@ -232,7 +234,7 @@ describe('CreateProjectDataController', () => {
       expect(res.body.positive.inf?.resource?.length).to.equal(1)
       expect(res.body.positive.inf?.statement?.length).to.equal(1)
       expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(2)
-      expect(res.body.positive.pro?.info_proj_rel?.filter(r => r.calendar === 'julian').length).to.equal(1)
+      expect(res.body.positive.pro?.info_proj_rel?.filter(r => r.calendar === CalendarType.julian).length).to.equal(1)
       expect(res.body.positive.inf?.time_primitive?.length).to.equal(1)
     })
 
@@ -250,7 +252,7 @@ describe('CreateProjectDataController', () => {
               quill_doc: DatChunkMock.RUDOLF.quill_doc
             }),
             entity_version_project_rels: [
-              new ProInfoProjRel({calendar: 'julian'})
+              new ProInfoProjRel({calendar: CalendarType.julian})
             ]
           }
         ]

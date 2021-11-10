@@ -8,8 +8,8 @@ import {QFieldPage2} from '../../components/query/q-field-page-2';
 import {registerType} from '../../components/spec-enhancer/model.spec.enhancer';
 import {Postgres1DataSource} from '../../datasources';
 import {GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvSubentitFieldPageReq} from '../../models';
+import {TrueEnum} from '../../models/enums/TrueEnum';
 import {GvFieldSourceEntity} from '../../models/field/gv-field-source-entity';
-import {TrueEnum} from '../../models/sys-config/TrueEnum';
 
 export class SubfieldPageController {
   constructor(

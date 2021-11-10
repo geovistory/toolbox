@@ -90,10 +90,10 @@ export class SubfieldPageControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPaginationObject>;
-    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPaginationObject>>;
-    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPaginationObject>>;
-    public subfieldPageControllerLoadSubfieldPage(gvFieldPageReq?: GvFieldPageReq, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public subfieldPageControllerLoadSubfieldPages(gvFieldPageReq?: Array<GvFieldPageReq>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPaginationObject>;
+    public subfieldPageControllerLoadSubfieldPages(gvFieldPageReq?: Array<GvFieldPageReq>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPaginationObject>>;
+    public subfieldPageControllerLoadSubfieldPages(gvFieldPageReq?: Array<GvFieldPageReq>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPaginationObject>>;
+    public subfieldPageControllerLoadSubfieldPages(gvFieldPageReq?: Array<GvFieldPageReq>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 

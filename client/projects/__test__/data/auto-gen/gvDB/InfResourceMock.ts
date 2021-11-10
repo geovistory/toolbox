@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {InfResource} from '@kleiolab/lib-sdk-lb4';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';

@@ -1,4 +1,5 @@
-import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import {TrueEnum} from '../enums/TrueEnum';
+import {SysConfigValue} from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -7,36 +8,36 @@ export class SysConfigValueMock {
         "nestedResource": []
       },
       "formControlType": {
-        "entity": 'true'
+        "entity": TrueEnum.true
       },
-      communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
-      communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
-      projectVisibilityDefault: { dataApi: false, website: false },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      projectVisibilityDefault: {dataApi: false, website: false},
     },
     "classesByBasicType": {
       "8": {
         "viewType": {
-          "entityPreview": 'true'
+          "entityPreview": TrueEnum.true
         },
         "formControlType": {
-          "entity": 'true'
+          "entity": TrueEnum.true
         },
-        communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
-        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
       },
       9: {
-        communityVisibilityRange: { toolbox: [true], dataApi: [true, false], website: [true, false] },
-        communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
+        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
       },
       "30": {
         "viewType": {
-          "entityPreview": 'true'
+          "entityPreview": TrueEnum.true
         },
         "formControlType": {
-          "entity": 'true'
+          "entity": TrueEnum.true
         },
-        communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
-        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true }
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
       }
     },
     "classes": {
@@ -45,13 +46,13 @@ export class SysConfigValueMock {
       },
       "40": {
         "viewType": {
-          "appellation": 'true'
+          "appellation": TrueEnum.true
         },
         "formControlType": {
-          "appellation": 'true'
+          "appellation": TrueEnum.true
         },
         "valueObjectType": {
-          "appellation": 'true'
+          "appellation": TrueEnum.true
         },
         "excludedFromEntities": true
       },
@@ -60,10 +61,10 @@ export class SysConfigValueMock {
       },
       "51": {
         "formControlType": {
-          "place": 'true'
+          "place": TrueEnum.true
         },
         "valueObjectType": {
-          "place": 'true'
+          "place": TrueEnum.true
         },
         "excludedFromEntities": true
       },
@@ -87,13 +88,13 @@ export class SysConfigValueMock {
       },
       "54": {
         "viewType": {
-          "language": 'true'
+          "language": TrueEnum.true
         },
         "formControlType": {
-          "language": 'true'
+          "language": TrueEnum.true
         },
         "valueObjectType": {
-          "language": 'true'
+          "language": TrueEnum.true
         },
         "excludedFromEntities": true
       },
@@ -105,31 +106,31 @@ export class SysConfigValueMock {
       },
       "335": {
         "viewType": {
-          "timePrimitive": 'true'
+          "timePrimitive": TrueEnum.true
         },
         "formControlType": {
-          "timePrimitive": 'true'
+          "timePrimitive": TrueEnum.true
         },
         "valueObjectType": {
-          "timePrimitive": 'true'
+          "timePrimitive": TrueEnum.true
         },
         "excludedFromEntities": true
       },
       "339": {
         "viewType": {
-          "appellation": 'true'
+          "appellation": TrueEnum.true
         },
         "formControlType": {
-          "appellation": 'true'
+          "appellation": TrueEnum.true
         },
         "valueObjectType": {
-          "appellation": 'true'
+          "appellation": TrueEnum.true
         },
         "excludedFromEntities": true
       },
       "365": {
         "formControlType": {
-          "appellationTeEn": 'true'
+          "appellationTeEn": TrueEnum.true
         }
       },
       "445": {
@@ -154,18 +155,18 @@ export class SysConfigValueMock {
         "excludedFromEntities": true
       },
       635: {
-        communityVisibilityRange: { toolbox: [false], dataApi: [false], website: [false] },
-        communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+        communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
+        communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
       },
       "657": {
         "viewType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "formControlType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "valueObjectType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "excludedFromEntities": true
       },
@@ -223,31 +224,31 @@ export class SysConfigValueMock {
       },
       "784": {
         "viewType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "formControlType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "valueObjectType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "excludedFromEntities": true
       },
       "785": {
         "viewType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "formControlType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "valueObjectType": {
-          "langString": 'true'
+          "langString": TrueEnum.true
         },
         "excludedFromEntities": true
       },
       "868": {
         "formControlType": {
-          "appellationTeEn": 'true'
+          "appellationTeEn": TrueEnum.true
         }
       }
     },
