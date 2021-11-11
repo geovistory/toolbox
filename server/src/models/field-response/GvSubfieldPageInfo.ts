@@ -1,11 +1,11 @@
 import {model, property} from '@loopback/repository';
-import {GvFieldPage} from '../field/gv-field-page';
+import {GvFieldPageReq} from '../field/gv-field-page-req';
 import {StatementWithTarget} from './gv-statement-with-target';
 
 
 @model()
 export class GvSubfieldPageInfo {
-  @property({type: GvFieldPage, required: true}) page: GvFieldPage;
+  @property({type: GvFieldPageReq, required: true}) req: GvFieldPageReq;
   @property({required: true}) count: number;
   @property.array(StatementWithTarget, {required: true}) paginatedStatements: StatementWithTarget[];
   @property() validFor?: Date;

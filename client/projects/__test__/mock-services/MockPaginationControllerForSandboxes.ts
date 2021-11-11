@@ -68,19 +68,19 @@ export class MockPaginationControllerForSandboxes {
 
   generateData(gvLoadSubfieldPageReq?: GvFieldPageReq): GvPaginationObject {
     if (values(gvLoadSubfieldPageReq.targets)[0].appellation) {
-      return this.generateDataForAppe(gvLoadSubfieldPageReq.page);
+      return this.generateDataForAppe(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].place) {
-      return this.generateDataForPlace(gvLoadSubfieldPageReq.page);
+      return this.generateDataForPlace(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].dimension) {
-      return this.generateDataForDimension(gvLoadSubfieldPageReq.page);
+      return this.generateDataForDimension(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].langString) {
-      return this.generateDataForLangString(gvLoadSubfieldPageReq.page);
+      return this.generateDataForLangString(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].language) {
-      return this.generateDataForLanguage(gvLoadSubfieldPageReq.page);
+      return this.generateDataForLanguage(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].nestedResource) {
       return this.generateDataForEntity(gvLoadSubfieldPageReq);
@@ -99,7 +99,8 @@ export class MockPaginationControllerForSandboxes {
   }
 
 
-  generateDataForAppe(page: GvFieldPage): GvPaginationObject {
+  generateDataForAppe(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
@@ -133,7 +134,7 @@ export class MockPaginationControllerForSandboxes {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
@@ -143,7 +144,8 @@ export class MockPaginationControllerForSandboxes {
   }
 
 
-  generateDataForPlace(page: GvFieldPage): GvPaginationObject {
+  generateDataForPlace(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
@@ -182,7 +184,7 @@ export class MockPaginationControllerForSandboxes {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
@@ -192,7 +194,8 @@ export class MockPaginationControllerForSandboxes {
   }
 
 
-  generateDataForTimePrimitive(page: GvFieldPage): GvPaginationObject {
+  generateDataForTimePrimitive(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
@@ -233,7 +236,7 @@ export class MockPaginationControllerForSandboxes {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
@@ -242,7 +245,8 @@ export class MockPaginationControllerForSandboxes {
     return paginationObject
   }
 
-  generateDataForDimension(page: GvFieldPage): GvPaginationObject {
+  generateDataForDimension(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
@@ -280,7 +284,7 @@ export class MockPaginationControllerForSandboxes {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
@@ -289,7 +293,8 @@ export class MockPaginationControllerForSandboxes {
     return paginationObject
   }
 
-  generateDataForLangString(page: GvFieldPage): GvPaginationObject {
+  generateDataForLangString(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
@@ -330,7 +335,7 @@ export class MockPaginationControllerForSandboxes {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
@@ -340,7 +345,8 @@ export class MockPaginationControllerForSandboxes {
     return paginationObject
   }
 
-  generateDataForLanguage(page: GvFieldPage): GvPaginationObject {
+  generateDataForLanguage(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
@@ -374,7 +380,7 @@ export class MockPaginationControllerForSandboxes {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
@@ -385,16 +391,16 @@ export class MockPaginationControllerForSandboxes {
 
 
   generateDataForEntity(
-    mainReq: GvFieldPageReq,
+    req: GvFieldPageReq,
   ): GvPaginationObject {
-    const page = mainReq.page
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
     const paginatedStatements: StatementWithTarget[] = []
     const subfieldPages: GvSubfieldPageInfo[] = [
       {
-        page,
+        req,
         count: count,
         paginatedStatements
       }
@@ -437,7 +443,7 @@ export class MockPaginationControllerForSandboxes {
 
     // Do the subfields
     for (const resource of paginatedStatements.filter(s => s.target.entity).map(s => s.target.entity.resource)) {
-      for (const teEnSubfield of mainReq.targets[resource.fk_class].nestedResource) {
+      for (const teEnSubfield of req.targets[resource.fk_class].nestedResource) {
         // increase the id base for subfields
         this.increaseIdBase(100000 + offset)
 
@@ -447,7 +453,7 @@ export class MockPaginationControllerForSandboxes {
           scope: page.scope
         }
         const subReq: GvFieldPageReq = {
-          pkProject: mainReq.pkProject,
+          pkProject: req.pkProject,
           page: p,
           targets: teEnSubfield.targets
         }
@@ -460,7 +466,8 @@ export class MockPaginationControllerForSandboxes {
   }
 
 
-  // generateDataForEntityPreview(page: GvFieldPage): GvPaginationObject {
+  // generateDataForEntityPreview(req: GvFieldPageReq): GvPaginationObject {
+  //   const page = req.page
   //   const limit = page.limit
   //   const offset = page.offset
   //   const count = 3;

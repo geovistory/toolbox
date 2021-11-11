@@ -12,6 +12,7 @@ import {AuthorizationPolicyComponent} from './components/authorization';
 import {JWTBindings, JWTComponent, JWTComponentConfig} from './components/jwt';
 import {BasicAuthenticationStrategy} from './components/jwt/basic-authentication.strategy';
 import {DefaultFactory, InvokeFactory, LOGGER_LEVEL, LoggingBindings, LoggingComponent, LoggingComponentConfig} from './components/logger';
+import {SpecEnhancerComponent} from './components/spec-enhancer/spec-enhancer.component';
 import {Postgres1DataSource} from './datasources/postgres1.datasource';
 import {log} from './middleware/log.middleware';
 import {Streams} from './realtime/streams/streams';
@@ -20,7 +21,6 @@ import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
 import {NodeENV} from './utils/code.utils';
-import {SpecEnhancerComponent} from './components/spec-enhancer/spec-enhancer.component';
 
 
 export class GeovistoryApplication extends BootMixin(

@@ -42,6 +42,10 @@ export async function main() {
   await server.boot();
   await server.start();
 
+  // setInterval(() => {
+  //   console.log('ram used: ', Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100)
+  // }, 500)
+
   console.log(`Server is running at ${server.url}`);
 }
 

@@ -10,9 +10,10 @@
   </div>
   <!-- value of field -->
   <ng-container *ngFor="let statementWT of (page$|async)?.statements">
-    <ng-container *ngIf="statementWT.target.entityPreview; else default">
+    <ng-container *ngIf="statementWT.target.entity; else default">
       <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)"
-        [preview]="statementWT.target.entityPreview" [matTooltip]="statementWT.target.entityPreview.entity_label">
+        [preview]="statementWT.target.entity.entityPreview"
+        [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
       </gv-entity-preview>
     </ng-container>
     <ng-template #default>

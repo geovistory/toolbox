@@ -1,5 +1,4 @@
 // start:ng42.barrel
-export * from '../enums/TrueEnum';
 export * from './sys-config-classes-index';
 export * from './sys-config-dimension-value-object-type';
 export * from './sys-config-field-display.model';

@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 import { StatementWithTarget } from './statementWithTarget';
-import { GvFieldPage } from './gvFieldPage';
+import { GvFieldPageReq } from './gvFieldPageReq';
 
 
 export interface GvSubfieldPageInfo { 
-    page: GvFieldPage;
+    req: GvFieldPageReq;
     count: number;
     paginatedStatements: Array<StatementWithTarget>;
     validFor?: string;

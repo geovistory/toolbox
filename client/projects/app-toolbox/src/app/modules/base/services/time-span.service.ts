@@ -133,7 +133,7 @@ export class TimeSpanService {
       const p = s.subfield.property.fkProperty
       if (s.statements.length > 0) {
         const r = s.statements[0].statement
-        const i = s.statements[0].target.timePrimitive;
+        const i = s.statements[0].target.timePrimitive.timePrimitive;
         old[p] = {
           tp: {
             calendar: i.calendar,

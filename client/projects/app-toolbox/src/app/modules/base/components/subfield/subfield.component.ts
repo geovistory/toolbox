@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, Field, InformationPipesService, StatementTargetEntity, StatementTargetTimeSpan, StatementWithTarget } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, Field, InformationPipesService, StatementTargetTimeSpan } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, InfResource, ProInfoProjRel, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -79,6 +79,8 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const d = new Date()
+    console.log(`SubfieldComponent Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
     const errors: string[] = []
     if (!this.field) errors.push('@Input() subfield is required.');
     if (!this.source) errors.push('@Input() pkEntity is required.');
@@ -124,10 +126,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
           )
         }
         for (const field of fields) {
-          // freezing bug
-          // if (field.property.fkProperty === 1762 && field.sourceClass === 21) {
           this.pag.addPageLoaderFromField(pkProject, field, this.source, limit, offset, until$, this.scope);
-          // }
         }
       }),
       // Piping from store
@@ -235,15 +234,15 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   openTimespanModal(x: StatementTargetTimeSpan) {
     this.timeSpan.openModal(x, this.source.fkInfo)
   }
-  openInNewTabFromEntity(e: StatementTargetEntity) {
-    this.p.addEntityTab(e.pkEntity, e.fkClass)
+  openInNewTabFromEntity(e: InfResource) {
+    this.p.addEntityTab(e.pk_entity, e.fk_class)
   }
   openInNewTabFromPreview(e: WarEntityPreview) {
     this.p.addEntityTab(e.pk_entity, e.fk_class)
   }
 
-  addAndOpenInNewTabFromEntity(e: StatementTargetEntity) {
-    this.addAndOpenInNewTab(e.pkEntity, e.fkClass)
+  addAndOpenInNewTabFromEntity(e: InfResource) {
+    this.addAndOpenInNewTab(e.pk_entity, e.fk_class)
   }
   addAndOpenInNewTabFromPreview(e: WarEntityPreview) {
     this.addAndOpenInNewTab(e.pk_entity, e.fk_class)
@@ -327,7 +326,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   removeEntity(item: StatementWithTarget) {
     this.p.pkProject$.pipe(first()).subscribe(pkProject => {
       // remove the related temporal entity
-      this.p.removeEntityFromProject(item.target.entity.pkEntity, () => {
+      this.p.removeEntityFromProject(item.target.entity.resource.pk_entity, () => {
         // remove the statement
         this.dataService.removeInfEntitiesFromProject([item.statement.pk_entity], pkProject)
       })
@@ -354,7 +353,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
         .filter(s => s.target.entity)
         .map(s => {
           // get pk of target entity
-          const pkEntity = s.target.entity.pkEntity
+          const pkEntity = s.target.entity.resource.pk_entity
 
           // create api call
           return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)

@@ -138,7 +138,7 @@ export class MockPaginationControllerForPropertiesTree {
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req: mainReq,
           count: count,
           paginatedStatements
         }

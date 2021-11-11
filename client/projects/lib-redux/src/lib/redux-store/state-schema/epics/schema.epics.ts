@@ -101,7 +101,7 @@ export class SchemaEpics {
         mergeMap((action: GvPaginationObjectAction) => action.payload.pipe(
           mergeMap(data => {
             const pageLoadedActions = data.subfieldPages.map(p => this.infActions.statement.loadPageSucceededAction(
-              p.paginatedStatements, p.count, p.page, store.value.activeProject.pk_project
+              p.paginatedStatements, p.count, p.req.page, store.value.activeProject.pk_project
             ))
             return of<FluxStandardAction<any, any>>(
               ...pageLoadedActions,

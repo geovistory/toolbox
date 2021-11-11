@@ -3,10 +3,19 @@ import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
 import { ReduxMainService, subfieldIdToString } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarFieldChange, WarFieldChangeAddToStream, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { FieldChangeSocket } from '@kleiolab/lib-sockets';
-import { Observable, Subject } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { indexBy } from 'ramda';
+import { interval, Observable, Subject } from 'rxjs';
+import { bufferWhen, filter, first } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../base.helpers';
 
+
+interface Loader {
+  refCount: number; // the number of references / subscribers that currently watch the page
+  until$: Subject<any>; // an observable for that emits, as soon as the page loader is not needed anymore
+  req: GvFieldPageReq;
+  fieldChangeId: string;
+  isUpToDateUntil?: Date; // the date, for which the loaded page data is valid (this is a date returned by the backend)
+}
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +27,7 @@ export class PaginationService {
    * pageLoaders maps pageIdString (crteated form GvFieldId + limit + offset)
    * to an object holding information about the state of the pageLoader
    */
-  private pageLoaders = new Map<string, {
-    refCount: number, // the number of references / subscribers that currently watch the page
-    until$: Subject<any>, // an observable for that emits, as soon as the page loader is not needed anymore
-    req: GvFieldPageReq,
-    fieldChangeId: string,
-    isUpToDateUntil?: Date, // the date, for which the loaded page data is valid (this is a date returned by the backend)
-    // warFieldChangeId: WarFieldChangeId
-    // loadEvent$: Subject<any>
-  }>()
+  private pageLoaders = new Map<string, Loader>()
 
   /**
   * fieldChangeListeners maps a fieldChangeIdString (created from WarFieldChangeId)
@@ -40,11 +41,19 @@ export class PaginationService {
     pageIds: string[]
   }>()
 
+  addLoader$ = new Subject<{ loader: Loader, pageIdString: string, takeUntil$: Observable<any> }>()
+  loadQueue$: Observable<{ loader: Loader, pageIdString: string, takeUntil$: Observable<any> }[]>
   constructor(
     private ap: ActiveProjectPipesService,
     private dataService: ReduxMainService,
     private fieldChangeSocket: FieldChangeSocket
   ) {
+    this.loadQueue$ = this.addLoader$.pipe(
+      bufferWhen(() => interval(100)),
+      filter((events) => events.length > 0)
+    )
+    this.subscribeToPageLoadRequests()
+
     // listen to field changes
     this.fieldChangeSocket.fromEvent<WarFieldChange>('fieldChange')
       .subscribe(fieldChange => {
@@ -90,9 +99,9 @@ export class PaginationService {
         if (pl && (
           // is there no date on the page loader, or
           (!pl.isUpToDateUntil ||
-          // is ther no fieldChangeDate, or
-          !fieldChangedDate || // is the date of the page loader older than the fieldChangeDate?
-          pl.isUpToDateUntil < fieldChangedDate))) {
+            // is ther no fieldChangeDate, or
+            !fieldChangedDate || // is the date of the page loader older than the fieldChangeDate?
+            pl.isUpToDateUntil < fieldChangedDate))) {
           // load page
           this.loadPage(pageLoaderId);
         }
@@ -129,7 +138,7 @@ export class PaginationService {
       this.addFieldLoader(pageIdString, fcIdString, fieldPageReq);
 
       // load the page
-      if (loadOnInit) this.loadPageAndAddSubfieldListeners(pageIdString, fieldPageReq, takeUntil$);
+      if (loadOnInit) this.loadPageAndAddSubfieldListeners(pageIdString, takeUntil$);
 
     } else {
       this.increaseFieldLoaderRefCount(pageIdString);
@@ -260,7 +269,9 @@ export class PaginationService {
     const loader = this.pageLoaders.get(pageIdString)
     if (loader && loader.req) {
       // load page into redux store
-      this.dataService.loadFieldPage(loader.req).pipe(first()).subscribe(
+      const d = new Date()
+      console.log(`loadFieldPage Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
+      this.dataService.loadFieldPage([loader.req]).pipe(first()).subscribe(
         response => {
           // set the updatedFor of the loader
           this.pageLoaders.set(pageIdString, {
@@ -274,50 +285,64 @@ export class PaginationService {
     }
 
   }
+  subscribeToPageLoadRequests() {
+    this.loadQueue$.subscribe((items) => {
+      const reqs = items.map(item => item.loader.req)
+      const options = indexBy((i) => i.pageIdString, items)
+      this.dataService.loadFieldPage(reqs).pipe(first()).subscribe(
+        res => {
+          res.subfieldPages.forEach(fieldpage => {
+            const { pageIdString } = this.parseFieldPageRequest(fieldpage.req)
+            const item = options[pageIdString]
+            // set the isUpToDateUntil of the loader
+            this.pageLoaders.set(pageIdString, {
+              ...item.loader,
+              isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
+            })
 
-  private loadPageAndAddSubfieldListeners(pageIdString: string, req: GvFieldPageReq, takeUntil$: Observable<any>) {
+            fieldpage.paginatedStatements.forEach(stmt => {
+              const e = stmt.target?.entity?.resource;
+              if (e) {
+                const source: GvFieldSourceEntity = { fkInfo: e.pk_entity };
+                const fkClass = e.fk_class;
+
+                const targetType = fieldpage.req.targets[fkClass]
+
+                if (targetType?.nestedResource?.length) {
+                  const subreqs = targetType.nestedResource
+                  const scope = fieldpage.req.page.scope.notInProject ? { inRepo: true } : fieldpage.req.page.scope
+                  subreqs.forEach(subReq => {
+                    if (!subReq.page.isCircular) { }
+                    const { isCircular, ...p } = subReq.page
+                    const page: GvFieldPage = {
+                      ...p,
+                      scope,
+                      source
+                    };
+                    const targets = subReq.targets;
+                    const r: GvFieldPageReq = {
+                      page,
+                      targets,
+                      pkProject: fieldpage.req.pkProject
+                    }
+                    this.addPageLoader(r, item.takeUntil$, false)
+                  })
+                }
+              }
+            })
+          })
+
+        }
+      );
+    })
+  }
+  private loadPageAndAddSubfieldListeners(pageIdString: string, takeUntil$: Observable<any>) {
     const loader = this.pageLoaders.get(pageIdString)
     if (loader && loader.req) {
       // load page into redux store
-      this.dataService.loadFieldPage(loader.req).pipe(first()).subscribe(
-        res => {
-          // set the updatedFor of the loader
-          this.pageLoaders.set(pageIdString, {
-            ...loader,
-            isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
-          })
-
-          if (res.schemas.inf && res.schemas.inf.resource && res.schemas.inf.resource.length) {
-
-            res.schemas.inf.resource.forEach(e => {
-              const source: GvFieldSourceEntity = { fkInfo: e.pk_entity as number };
-              const fkClass = e.fk_class as number;
-              const targetType = req.targets[fkClass]
-
-              if (targetType && targetType.nestedResource && targetType.nestedResource.length) {
-                const subreqs = targetType.nestedResource
-                const scope = req.page.scope.notInProject ? { inRepo: true } : req.page.scope
-                subreqs.forEach(subReq => {
-                  if (!subReq.page.isCircular) { }
-                  const { isCircular, ...p } = subReq.page
-                  const page: GvFieldPage = {
-                    ...p,
-                    scope,
-                    source
-                  };
-                  const targets = subReq.targets;
-                  const r: GvFieldPageReq = {
-                    page,
-                    targets,
-                    pkProject: req.pkProject
-                  }
-                  this.addPageLoader(r, takeUntil$, false)
-                })
-              }
-            })
-          }
-        }
-      );
+      const d = new Date()
+      console.log(`loadFieldPage Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
+      this.addLoader$.next({ loader, pageIdString, takeUntil$ })
     }
 
   }

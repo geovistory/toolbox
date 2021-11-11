@@ -117,6 +117,7 @@ describe('SubfieldPageController', () => {
         .set('Authorization', lb4Token)
         .send([GvFieldPageReqMock.person1HasAppeTeEn])
         .expect(200);
+      console.log(JSON.stringify(res.body))
       expect(res.body).to.containDeep(GvPaginationObjectMock.personHasAppeTeEn);
     });
 
@@ -142,9 +143,9 @@ function checkPaginationObject(result: GvPaginationObject, expected: GvPaginatio
   );
 
   expect(
-    result.subfieldPages[0].page
+    result.subfieldPages[0].req
   ).to.containDeep(
-    expected.subfieldPages[0].page
+    expected.subfieldPages[0].req
   );
 
   expect(

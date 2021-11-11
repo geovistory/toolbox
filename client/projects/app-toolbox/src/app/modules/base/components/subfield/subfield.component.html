@@ -15,41 +15,43 @@
           <span class="left-col">
             <gv-onto-class-info class="mr-2" [pkClass]="item.targetClass" *ngIf="showOntoInfo$ | async">
             </gv-onto-class-info>
-            <gv-entity-preview *ngIf="item.target.entityPreview; else teEn" [preview]="item.target.entityPreview"
-              [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)">
+            <gv-entity-preview *ngIf="field.targets[item.targetClass].viewType.entityPreview; else teEn"
+              [pkEntity]="item.target.entity.resource.pk_entity" [dragEnabled]="false"
+              [openTabOnClick]="!(readonly$|async)">
             </gv-entity-preview>
             <ng-template #teEn>
               <ng-container *ngIf="item.target.entity; else rest">
 
                 <mat-menu #teEnMenu="matMenu">
                   <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
-                    (click)="openInNewTabFromEntity(item.target.entity)">
+                    (click)="openInNewTabFromEntity(item.target.entity.resource)">
                     <mat-icon>tab</mat-icon>
-                    Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
+                    Open {{field.targets[item.target.entity.resource.fk_class]?.targetClassLabel}} in new Tab
                   </button>
                   <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
-                    (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
+                    (click)="addAndOpenInNewTabFromEntity(item.target.entity.resource)">
                     <mat-icon>add</mat-icon>
-                    Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
+                    Add {{field.targets[item.target.entity.resource.fk_class]?.targetClassLabel}} to project and open
                   </button>
                 </mat-menu>
 
                 <span *ngIf="!(readonly$|async)" class="font-xs text-muted class-label"
-                  [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity" [matMenuTriggerFor]="teEnMenu">
+                  [matTooltip]="'Temporal Entity ' + item.target.entity.resource.pk_entity"
+                  [matMenuTriggerFor]="teEnMenu">
                   <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                   <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
-                  {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
+                  {{field.targets[item.target.entity.resource.fk_class]?.targetClassLabel}}
                 </span>
 
                 <span *ngIf="(readonly$|async)" class="font-xs text-muted class-label"
-                  [matTooltip]="'Temporal Entity ' + item.target.entity.pkEntity">
+                  [matTooltip]="'Temporal Entity ' + item.target.entity.resource.pk_entity">
                   <i *ngIf="item.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
                   <i *ngIf="item.ordNum===0" class="gv-entity-color fa fa-star"></i>
-                  {{field.targets[item.target.entity.fkClass]?.targetClassLabel}}
+                  {{field.targets[item.target.entity.resource.fk_class]?.targetClassLabel}}
                 </span>
 
-                <gv-entity-with-fields [source]="{fkInfo:item.target.entity.pkEntity}"
-                  [fkClass]="item.target.entity.fkClass" [showOntoInfo$]="showOntoInfo$"
+                <gv-entity-with-fields [source]="{fkInfo:item.target.entity.resource.pk_entity}"
+                  [fkClass]="item.target.entity.resource.fk_class" [showOntoInfo$]="showOntoInfo$"
                   [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">
                 </gv-entity-with-fields>
               </ng-container>
@@ -57,9 +59,10 @@
             <ng-template #rest>
               <div class="ellipsis">
                 {{item.targetLabel}}
-                <span *ngIf="!item.targetLabel && item.target.timeSpan" class="mat-text-secondary">
+                <!-- TODO TimeSpan -->
+                <!-- <span *ngIf="!item.targetLabel && item.target.timeSpan" class="mat-text-secondary">
                   No temporal information
-                </span>
+                </span> -->
               </div>
             </ng-template>
           </span>
@@ -67,24 +70,27 @@
           <span class="right-col" *ngIf="!(addMode$|async) && !(readonly$|async)">
             <mat-menu #appMenu="matMenu">
 
-              <ng-container *ngIf="item.target.timeSpan; else entity">
+              <!-- TODO TimeSpan -->
+              <ng-container *ngIf="false; else entity"> </ng-container>
+              <!-- <ng-container *ngIf="item.target.timeSpan; else entity">
+
                 <button mat-menu-item (click)="openTimespanModal(item.target.timeSpan)">
                   <mat-icon>edit</mat-icon>
                   Edit
                 </button>
                 <mat-divider></mat-divider>
-              </ng-container>
+              </ng-container> -->
               <ng-template #entity>
                 <ng-container *ngIf="item.target.entity; else normal">
                   <button mat-menu-item *ngIf="item?.projRel?.is_in_project"
-                    (click)="openInNewTabFromEntity(item.target.entity)">
+                    (click)="openInNewTabFromEntity(item.target.entity.resource)">
                     <mat-icon>tab</mat-icon>
-                    Open {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} in new Tab
+                    Open {{field.targets[item.target.entity.resource.fk_class]?.targetClassLabel}} in new Tab
                   </button>
                   <button mat-menu-item *ngIf="!item?.projRel?.is_in_project"
-                    (click)="addAndOpenInNewTabFromEntity(item.target.entity)">
+                    (click)="addAndOpenInNewTabFromEntity(item.target.entity.resource)">
                     <mat-icon>add</mat-icon>
-                    Add {{field.targets[item.target.entity.fkClass]?.targetClassLabel}} to project and open
+                    Add {{field.targets[item.target.entity.resource.fk_class]?.targetClassLabel}} to project and open
                   </button>
 
                   <button mat-menu-item (click)="markAsFavorite(item)">
@@ -113,16 +119,17 @@
                   <mat-divider></mat-divider>
                 </ng-container>
 
-                <ng-container *ngIf="item.target.entityPreview">
-                  <button mat-menu-item *ngIf="item.target.entityPreview.fk_project"
-                    (click)="openInNewTabFromPreview(item.target.entityPreview)">
+                <ng-container *ngIf="item.target.entity">
+                  <button mat-menu-item *ngIf="item.target.entity?.entityPreview.fk_project"
+                    (click)="openInNewTabFromPreview(item.target.entity?.entityPreview)">
                     <mat-icon>tab</mat-icon>
-                    Open {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} in new Tab
+                    Open {{field.targets[item.target.entity?.entityPreview.fk_class]?.targetClassLabel}} in new Tab
                   </button>
-                  <button mat-menu-item *ngIf="!item.target.entityPreview.fk_project"
-                    (click)="addAndOpenInNewTabFromPreview(item.target.entityPreview)">
+                  <button mat-menu-item *ngIf="!item.target.entity?.entityPreview.fk_project"
+                    (click)="addAndOpenInNewTabFromPreview(item.target.entity?.entityPreview)">
                     <mat-icon>add</mat-icon>
-                    Add {{field.targets[item.target.entityPreview.fk_class]?.targetClassLabel}} to project and open
+                    Add {{field.targets[item.target.entity?.entityPreview.fk_class]?.targetClassLabel}} to project and
+                    open
                   </button>
 
                   <mat-divider></mat-divider>

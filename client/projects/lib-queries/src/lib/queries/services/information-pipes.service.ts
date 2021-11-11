@@ -3,7 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldTargetViewType, GvSubfieldPageInfo, InfStatement, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, InfStatement, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -320,85 +320,85 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
 
   }
 
-  private pipeTimeSpan(page: GvFieldPage): Observable<GvSubfieldPageInfo[]> {
-    const virtualStatementToTimeSpan = { fk_object_info: page.source.fkInfo };
-    // const targets: GvFieldTargets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
+  // private pipeTimeSpan(page: GvFieldPage): Observable<GvSubfieldPageInfo[]> {
+  //   const virtualStatementToTimeSpan = { fk_object_info: page.source.fkInfo };
+  //   // const targets: GvFieldTargets = { [DfhConfig.ClASS_PK_TIME_SPAN]: { timeSpan: 'true' } }
 
-    // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
+  //   // console.log('subfieldType.temporalEntity.length', subfieldType.temporalEntity.length)
 
-    // for each of these subfields
-    const subentityPages$ = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE
-      .map(fkProperty => {
+  //   // for each of these subfields
+  //   const subentityPages$ = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE
+  //     .map(fkProperty => {
 
-        // console.log('subentity subfield for targetInfo', targetInfo)
+  //       // console.log('subentity subfield for targetInfo', targetInfo)
 
-        // create page:GvSubfieldPage
-        const scope = page.scope.notInProject ? { inRepo: true } : page.scope
+  //       // create page:GvSubfieldPage
+  //       const scope = page.scope.notInProject ? { inRepo: true } : page.scope
 
-        const nestedPage: GvFieldPage = {
-          property: { fkProperty },
-          isOutgoing: true,
-          limit: 1,
-          offset: 0,
-          source: page.source,
-          scope,
-        }
-        const subfType: GvFieldTargetViewType = {
-          timePrimitive: 'true'
-        }
-        const trgts = {
-          [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: subfType
-        }
-        return this.pipeFieldPage(nestedPage, trgts, false).pipe(
-          map(({ count, statements }) => {
-            const subentitySubfieldPage: GvSubfieldPageInfo = {
-              page: nestedPage,
-              count,
-              paginatedStatements: statements
-            }
-            return subentitySubfieldPage
-          })
-        )
-      })
-    return combineLatestOrEmpty(subentityPages$);
+  //       const nestedPage: GvFieldPage = {
+  //         property: { fkProperty },
+  //         isOutgoing: true,
+  //         limit: 1,
+  //         offset: 0,
+  //         source: page.source,
+  //         scope,
+  //       }
+  //       const subfType: GvFieldTargetViewType = {
+  //         timePrimitive: 'true'
+  //       }
+  //       const trgts = {
+  //         [DfhConfig.CLASS_PK_TIME_PRIMITIVE]: subfType
+  //       }
+  //       return this.pipeFieldPage(nestedPage, trgts, false).pipe(
+  //         map(({ count, statements }) => {
+  //           const subentitySubfieldPage: GvSubfieldPageInfo = {
+  //             page: nestedPage,
+  //             count,
+  //             paginatedStatements: statements
+  //           }
+  //           return subentitySubfieldPage
+  //         })
+  //       )
+  //     })
+  //   return combineLatestOrEmpty(subentityPages$);
 
 
-    // return combineLatestOrEmpty(subentityPages$)
-    //   .pipe(
-    //     map(
-    //       subfields => {
-    //         const timeSpanPreview: WarEntityPreviewTimeSpan = {}
-    //         subfields.forEach(s => {
-    //           if (s.paginatedStatements[0]) {
-    //             const st = s.paginatedStatements[0]
-    //             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[st.statement.fk_property]
-    //             timeSpanPreview[key] = st.target.timePrimitive
-    //           }
-    //         })
-    //         const stmtTarget: StatementWithTarget = {
-    //           statement: virtualStatementToTimeSpan,
-    //           isOutgoing: page.isOutgoing,
-    //           targetLabel: this.timeSpanPipe.transform(new TimeSpanUtil(timeSpanPreview)),
-    //           targetClass: DfhConfig.ClASS_PK_TIME_SPAN,
-    //           target: {
-    //             timeSpan: {
-    //               preview: timeSpanPreview,
-    //               subfields
-    //             }
-    //           }
-    //         }
-    //         return stmtTarget
-    //       }
-    //     )
-    //   ).pipe(map(stmtTarget => {
-    //     const stmtWT: StatementWithTarget = {
-    //       ...stmtTarget,
-    //       projRel: undefined,
-    //       ordNum: undefined
-    //     };
-    //     return { count: 1, statements: [stmtWT] };
-    //   }));
-  }
+  //   // return combineLatestOrEmpty(subentityPages$)
+  //   //   .pipe(
+  //   //     map(
+  //   //       subfields => {
+  //   //         const timeSpanPreview: WarEntityPreviewTimeSpan = {}
+  //   //         subfields.forEach(s => {
+  //   //           if (s.paginatedStatements[0]) {
+  //   //             const st = s.paginatedStatements[0]
+  //   //             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[st.statement.fk_property]
+  //   //             timeSpanPreview[key] = st.target.timePrimitive
+  //   //           }
+  //   //         })
+  //   //         const stmtTarget: StatementWithTarget = {
+  //   //           statement: virtualStatementToTimeSpan,
+  //   //           isOutgoing: page.isOutgoing,
+  //   //           targetLabel: this.timeSpanPipe.transform(new TimeSpanUtil(timeSpanPreview)),
+  //   //           targetClass: DfhConfig.ClASS_PK_TIME_SPAN,
+  //   //           target: {
+  //   //             timeSpan: {
+  //   //               preview: timeSpanPreview,
+  //   //               subfields
+  //   //             }
+  //   //           }
+  //   //         }
+  //   //         return stmtTarget
+  //   //       }
+  //   //     )
+  //   //   ).pipe(map(stmtTarget => {
+  //   //     const stmtWT: StatementWithTarget = {
+  //   //       ...stmtTarget,
+  //   //       projRel: undefined,
+  //   //       ordNum: undefined
+  //   //     };
+  //   //     return { count: 1, statements: [stmtWT] };
+  //   //   }));
+  // }
 
 
 
