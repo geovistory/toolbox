@@ -4,24 +4,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService, StatementTargetTimeSpan } from '@kleiolab/lib-queries';
-import { InfActions, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
+import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, InfResource, ProInfoProjRel, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
-
-// interface DataCol {
-//   name: string;
-//   id: string;
-//   pkProperty: number;
-//   subfieldType: GvTargetType;
-// }
 
 @Component({
   selector: 'gv-subfield',
@@ -55,10 +48,6 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   @Output() next = new EventEmitter()
   adding$ = new BehaviorSubject(false)
 
-  // dataColumnsVisibility$ = new BehaviorSubject<{ [key: string]: boolean; }>({});
-  // dataColumns$: Observable<DataCol[]>
-  // visibleDataColumns$: Observable<DataCol[]>
-  // subfieldMap: { [key: string]: GvSubentitySubfieldType; }
   targetIsUnique: boolean;
 
   constructor(
@@ -66,7 +55,6 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     private ap: ActiveProjectPipesService,
     private dialog: MatDialog,
     private pag: PaginationService,
-    private inf: InfActions,
     private i: InformationPipesService,
     private timeSpan: TimeSpanService,
     private s: SchemaService,
@@ -80,7 +68,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const d = new Date()
-    console.log(`SubfieldComponent Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
+    // console.log(`SubfieldComponent Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
     const errors: string[] = []
     if (!this.field) errors.push('@Input() subfield is required.');
     if (!this.source) errors.push('@Input() pkEntity is required.');
@@ -92,12 +80,22 @@ export class SubfieldComponent implements OnInit, OnDestroy {
 
     this.targetIsUnique = this.field.identityDefiningForTarget && this.field.targetMaxQuantity == 1;
 
-    const pagination$ = combineLatest(this.limit$, this.offset$, this.ap.pkProject$)
-      .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
+    const pagination$ = combineLatest([
+      this.limit$,
+      this.offset$,
+      this.ap.pkProject$
+    ]).pipe(shareReplay({ refCount: true, bufferSize: 1 }));
     const nextPage$ = new Subject();
     const until$ = merge(nextPage$, this.destroy$);
 
+    /**
+     * For UX-Performance: trigger field load with limit 0 to get the total count of statements
+     * in that field (without the need to query nested fields)
+     */
+    this.loadFieldCount(until$);
+
     const page$ = pagination$.pipe(
+      delay(0),
       distinctUntilChanged(equals),
       // Loading from rest api (using service that avoids reloads of the same page)
       tap(([limit, offset, pkProject]) => {
@@ -157,45 +155,12 @@ export class SubfieldComponent implements OnInit, OnDestroy {
       startWith(0)
     )
 
-    // if (this.subfield.listType.temporalEntity) {
-    //   this.subfieldMap = mapObjIndexed<GvSubentitFieldPageReq, GvSubentitySubfieldType>(
-    //     (val, key, obj) => val.subfieldType,
-    //     indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
-    //   );
-    //   const dataColMap = mapObjIndexed<GvSubentitFieldPageReq, boolean>(
-    //     (val, key, obj) => {
-    //       // hideCircularField on init
-    //       if (val.page.isCircular) return false
-    //       return true
-    //     },
-    //     indexBy((l) => this.getColId(l.page), this.subfield.listType.temporalEntity)
-    //   );
-    //   this.dataColumnsVisibility$.next(dataColMap)
-    //   this.dataColumns$ = combineLatest(
-    //     this.subfield.listType.temporalEntity.map(subentityField => {
-    //       const page = subentityField.page;
-    //       const domain = page.isOutgoing ? this.subfield.targetClass : null
-    //       const range = page.isOutgoing ? null : this.subfield.targetClass
-    //       return this.c.pipeFieldLabel(page.fkProperty, domain, range)
-    //         .pipe(
-    //           map(fieldLabel => {
-    //             return {
-    //               id: this.getColId(page),
-    //               name: fieldLabel,
-    //               pkProperty: page.fkProperty,
-    //               subfieldType: subentityField.subfieldType
-    //             }
-    //           })
-    //         )
-    //     })
-    //   )
-    //   this.visibleDataColumns$ = combineLatest(this.dataColumnsVisibility$, this.dataColumns$).pipe(
-    //     map(
-    //       ([colMap, all]) => all.filter(column => colMap[column.id])
-    //     )
-    //   )
-    // }
+  }
 
+  private loadFieldCount(until$: Observable<unknown>) {
+    this.ap.pkProject$.pipe(first()).subscribe(pkProject => {
+      this.pag.addPageLoaderFromField(pkProject, this.field, this.source, 0, 0, until$, this.scope);
+    });
   }
 
   onPageChange(e: PageEvent) {
@@ -203,9 +168,6 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     this.limit$.next(e.pageSize)
   }
 
-  // openInNewTab(item: EntityPreviewItem) {
-  //   this.p.addEntityTab(item.preview.pk_entity, item.preview.fk_class)
-  // }
 
   openPopup(item: StatementWithTarget) {
     const data: ConfirmDialogData = {
@@ -254,25 +216,6 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   }
 
 
-  // add() {
-  //   if (this.field.listType.temporalEntity) {
-  //     this.addTeEn()
-  //   } else {
-
-  //     // collect selected statements
-  //     const statements: InfStatement[] = values(this.selected)
-  //     this.ap.pkProject$.pipe(first()).subscribe(
-  //       // upsert them in db
-  //       pkProject => this.inf.statement.upsert(statements, pkProject).resolved$
-  //         .pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-  //           // put them in store
-  //           this.s.storeSchemaObjectGv({ inf: { statement: statements } }, undefined)
-  //           this.close.emit()
-  //         })
-  //     )
-  //   }
-
-  // }
   toggleSelection(stmtWT: StatementWithTarget) {
     const id = stmtWT.statement.pk_entity
     if (!this.allowMultiSelect) this.selected = {}
@@ -284,40 +227,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
     this.selection.toggle(stmtWT.statement.pk_entity)
   }
 
-  /**
-   * For TemporalEntity view
-   */
 
-  // toggleCol(colId: string) {
-  //   // this.dataColumnsVisibility$.pipe(first()).subscribe(colMap => {
-
-  //   // });
-  //   setTimeout(() => {
-
-  //     const colMap = this.dataColumnsVisibility$.value
-  //     this.dataColumnsVisibility$.next({
-  //       ...colMap,
-  //       [colId]: !colMap[colId]
-  //     });
-  //   })
-  // }
-  // openList(subentityPage: SubentitySubfieldPage) {
-  //   const data: SubfieldDialogData = {
-  //     sourceClass: this.subfield.targetClass,
-  //     fkProperty: subentityPage.subfield.fkProperty,
-  //     targetClass: subentityPage.subfield.targetClass,
-  //     isOutgoing: subentityPage.subfield.isOutgoing,
-  //     sourceEntity: subentityPage.subfield.fkSourceEntity,
-  //     scope: this.scope,
-  //     showOntoInfo$: this.showOntoInfo$,
-  //   }
-  //   // const pkEntities = cell.items.map(i => cell.isOutgoing ? i.statement.fk_object_info : i.statement.fk_subject_info)
-  //   // this.listDialog.open(true, pkEntities, 'Items')
-  //   this.dialog.open(SubfieldDialogComponent, {
-  //     data
-  //   })
-  //   // throw new Error('TODO');
-  // }
   markAsFavorite(item: StatementWithTarget) {
     this.p.pkProject$.pipe(first()).subscribe(pkProject => {
       this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)
@@ -396,17 +306,11 @@ export class SubfieldComponent implements OnInit, OnDestroy {
   }
 
 
-  /**
-  * End of TemporalEntity view
-  */
-
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-  // getColId(page: GvSubentityFieldPage | GvFieldId): string {
-  //   return page.fkProperty + '_' + page.isOutgoing + '_' + page.targetClass
-  // }
+
 }
 
 

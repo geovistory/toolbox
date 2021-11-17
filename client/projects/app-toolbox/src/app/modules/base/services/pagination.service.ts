@@ -43,16 +43,30 @@ export class PaginationService {
 
   addLoader$ = new Subject<{ loader: Loader, pageIdString: string, takeUntil$: Observable<any> }>()
   loadQueue$: Observable<{ loader: Loader, pageIdString: string, takeUntil$: Observable<any> }[]>
+
+  addReloader$ = new Subject<{ loader: Loader, pageIdString: string }>()
+  reloadQueue$: Observable<{ loader: Loader, pageIdString: string }[]>
+
   constructor(
     private ap: ActiveProjectPipesService,
     private dataService: ReduxMainService,
     private fieldChangeSocket: FieldChangeSocket
   ) {
-    this.loadQueue$ = this.addLoader$.pipe(
-      bufferWhen(() => interval(100)),
-      filter((events) => events.length > 0)
-    )
+    this.loadQueue$ = this.addLoader$
+      // .pipe(map(x => [x]))
+      .pipe(
+        bufferWhen(() => interval(0)),
+        filter((events) => events.length > 0)
+      )
+    this.reloadQueue$ = this.addReloader$
+      // .pipe(map(x => [x]))
+      .pipe(
+        // map(r => [r])
+        bufferWhen(() => interval(0)),
+        filter((events) => events.length > 0)
+      )
     this.subscribeToPageLoadRequests()
+    this.subscribeToPageReloadRequests()
 
     // listen to field changes
     this.fieldChangeSocket.fromEvent<WarFieldChange>('fieldChange')
@@ -94,16 +108,18 @@ export class PaginationService {
     const fcListener = this.fieldChangeListeners.get(fieldChangeId)
     if (fcListener && fcListener.pageIds.length) {
       // iterate over all pageLoaders that are affected by the fieldChangeDate
-      fcListener.pageIds.forEach(pageLoaderId => {
-        const pl = this.pageLoaders.get(pageLoaderId);
-        if (pl && (
+      fcListener.pageIds.forEach(pageIdString => {
+        const loader = this.pageLoaders.get(pageIdString);
+        if (loader && (
           // is there no date on the page loader, or
-          (!pl.isUpToDateUntil ||
+          (!loader.isUpToDateUntil ||
             // is ther no fieldChangeDate, or
             !fieldChangedDate || // is the date of the page loader older than the fieldChangeDate?
-            pl.isUpToDateUntil < fieldChangedDate))) {
+            loader.isUpToDateUntil < fieldChangedDate))) {
           // load page
-          this.loadPage(pageLoaderId);
+          if (loader && loader.req) {
+            this.addReloader$.next({ loader, pageIdString })
+          }
         }
       });
     }
@@ -265,25 +281,25 @@ export class PaginationService {
     return { pageIdString, fieldPage, pkProject, fieldTargets, source, scope, limit, offset };
   }
 
-  private loadPage(pageIdString: string) {
-    const loader = this.pageLoaders.get(pageIdString)
-    if (loader && loader.req) {
-      // load page into redux store
-      const d = new Date()
-      console.log(`loadFieldPage Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
-      this.dataService.loadFieldPage([loader.req]).pipe(first()).subscribe(
-        response => {
-          // set the updatedFor of the loader
-          this.pageLoaders.set(pageIdString, {
-            ...loader,
-            isUpToDateUntil: new Date(response.subfieldPages[0].validFor)
+  subscribeToPageReloadRequests() {
+    this.reloadQueue$.subscribe((items) => {
+      const reqs = items.map(item => item.loader.req)
+      const options = indexBy((i) => i.pageIdString, items)
+      this.dataService.loadFieldPage(reqs).pipe(first()).subscribe(
+        res => {
+          res.subfieldPages.forEach(fieldpage => {
+            const { pageIdString } = this.parseFieldPageRequest(fieldpage.req)
+            const item = options[pageIdString]
+            // set the isUpToDateUntil of the loader
+            this.pageLoaders.set(pageIdString, {
+              ...item.loader,
+              isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
+            })
           })
 
         }
       );
-
-    }
-
+    })
   }
   subscribeToPageLoadRequests() {
     this.loadQueue$.subscribe((items) => {
@@ -339,9 +355,6 @@ export class PaginationService {
   private loadPageAndAddSubfieldListeners(pageIdString: string, takeUntil$: Observable<any>) {
     const loader = this.pageLoaders.get(pageIdString)
     if (loader && loader.req) {
-      // load page into redux store
-      const d = new Date()
-      console.log(`loadFieldPage Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
       this.addLoader$.next({ loader, pageIdString, takeUntil$ })
     }
 

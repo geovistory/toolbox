@@ -15,7 +15,8 @@
           <span class="left-col">
             <gv-onto-class-info class="mr-2" [pkClass]="item.targetClass" *ngIf="showOntoInfo$ | async">
             </gv-onto-class-info>
-            <gv-entity-preview *ngIf="field.targets[item.targetClass].viewType.entityPreview; else teEn"
+            <gv-entity-preview
+              *ngIf="field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem ; else teEn"
               [pkEntity]="item.target.entity.resource.pk_entity" [dragEnabled]="false"
               [openTabOnClick]="!(readonly$|async)">
             </gv-entity-preview>
