@@ -909,7 +909,7 @@ gv-tile-header {
 * Properties Tree
 ****************************/
 
-.gv-properties-tree {
+.gv-view-sections {
   .tree-invisible {
     display: none;
   }
@@ -2330,6 +2330,39 @@ $gv-mat-teal: (
   ),
 );
 
+$gv-gray: (
+  50: #f7f8fb,
+  100: #eeeff6,
+  200: #e5e9f0,
+  300: #d4dade,
+  400: #b7c2c8,
+  500: #9aaab1,
+  600: #68747b,
+  700: #4e5d65,
+  800: #374348,
+  900: #21282b,
+  A100: #eeeff6,
+  A200: #e5e9f0,
+  A400: #b7c2c8,
+  A700: #4e5d65,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: rgba(black, 0.87),
+  ),
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
@@ -2467,16 +2500,22 @@ $mat-color-secondary-text: mat.get-color-from-palette(
   color: rgba(black, 0.87);
 }
 
-.mat-bg-grey-50 {
-  background-color: map_get(mat.$grey-palette, 50);
-}
-
-.mat-bg-grey-100 {
-  background-color: map_get(mat.$grey-palette, 100);
+$shades: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, A100, A200, A400, A700;
+/*
+* mat-bg-grey-x utils
+* example: .mat-bg-grey-300 -> sets background and color of grey 300
+*/
+$grey-contrast: map_get($gv-gray, contrast);
+@each $shade in $shades {
+  .mat-bg-grey-#{$shade} {
+    background-color: map_get($gv-gray, $shade);
+    color: map_get($grey-contrast, $shade);
+  }
 }
 
 .mat-bg-gray-100-on-hover:hover {
-  background-color: map_get(mat.$grey-palette, 100);
+  background-color: map_get($gv-gray, 100);
+  color: map_get($grey-contrast, 100);
 }
 
 /*

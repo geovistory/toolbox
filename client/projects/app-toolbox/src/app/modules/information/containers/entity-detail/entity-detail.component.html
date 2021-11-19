@@ -28,9 +28,9 @@
 
           <div class="gv-tile-body">
 
-            <gv-properties-tree *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+            <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
               [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
-            </gv-properties-tree>
+            </gv-view-sections>
 
           </div>
 

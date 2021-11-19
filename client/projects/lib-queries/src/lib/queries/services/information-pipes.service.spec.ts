@@ -5,15 +5,15 @@ import { SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvFieldPageReq';
+import { FieldPageMock } from 'projects/__test__/data/FieldPageMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { SubfieldPageMock } from 'projects/__test__/data/SubfieldPageMock';
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, take, takeUntil, toArray } from 'rxjs/operators';
-import { SubfieldPage } from '../models/StatementWithTarget';
+import { FieldPage } from '../models/FieldPage';
 import { InformationPipesService } from './information-pipes.service';
 
 describe('InformationPipesService', () => {
@@ -53,7 +53,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnHasAppe]
+      const expectedSequence: FieldPage[] = [FieldPageMock.appeTeEnHasAppe]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -72,7 +72,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.madridsPresenceWasAtPlace]
+      const expectedSequence: FieldPage[] = [FieldPageMock.madridsPresenceWasAtPlace]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -91,7 +91,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.journyeHasDuration]
+      const expectedSequence: FieldPage[] = [FieldPageMock.journyeHasDuration]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -111,7 +111,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.manifSingletonHasShortTitleMurderer]
+      const expectedSequence: FieldPage[] = [FieldPageMock.manifSingletonHasShortTitleMurderer]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -131,7 +131,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnUsedInLanguage]
+      const expectedSequence: FieldPage[] = [FieldPageMock.appeTeEnUsedInLanguage]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -150,7 +150,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.shipVoyageAtSomeTimeWithin]
+      const expectedSequence: FieldPage[] = [FieldPageMock.shipVoyageAtSomeTimeWithin]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -174,7 +174,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: SubfieldPage[] = [SubfieldPageMock.person1HasAppeTeEn]
+      const expectedSequence: FieldPage[] = [FieldPageMock.person1HasAppeTeEn]
 
       q$.pipe(take(1), toArray())
         .subscribe(
@@ -232,7 +232,7 @@ describe('InformationPipesService', () => {
         )
 
         // testing number of events happening within 100ms
-        const expectedSequence: SubfieldPage[] = [SubfieldPageMock.person1HasAppeTeEn]
+        const expectedSequence: FieldPage[] = [FieldPageMock.person1HasAppeTeEn]
         const t$ = new Subject()
         setTimeout(() => t$.next(), 300)
         q$.pipe(
@@ -253,31 +253,31 @@ describe('InformationPipesService', () => {
     });
 
 
-    xit('should return subfield page for subfieldType timeSpan', (done) => {
-      // seeding data
-      setAppState(ngRedux, IAppStateMock.stateProject1)
-      const req = GvFieldPageReqMock.shipVoyageHasTimeSpan
-      dataService.loadFieldPage([req])
-      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
-      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.modelOfShipVoyage, 0)
-      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
-      schemaService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, 0)
+    // xit('should return subfield page for subfieldType timeSpan', (done) => {
+    //   // seeding data
+    //   setAppState(ngRedux, IAppStateMock.stateProject1)
+    //   const req = GvFieldPageReqMock.shipVoyageHasTimeSpan
+    //   dataService.loadFieldPage([req])
+    //   schemaService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
+    //   schemaService.storeSchemaObjectGv(GvSchemaObjectMock.modelOfShipVoyage, 0)
+    //   schemaService.storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
+    //   schemaService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, 0)
 
 
-      // using pipe
-      const q$ = service.pipeFieldPage(req.page, req.targets, true)
+    //   // using pipe
+    //   const q$ = service.pipeFieldPage(req.page, req.targets, true)
 
-      // testing pipe
-      // const expectedSequence: SubfieldPage[] = [SubfieldPageMock.shipVoyageHasTimeSpan]
+    //   // testing pipe
+    //   // const expectedSequence: FieldPage[] = [SubfieldPageMock.shipVoyageHasTimeSpan]
 
-      // q$.pipe(take(1), toArray())
-      //   .subscribe(
-      //     actualSequence => {
-      //       expect(actualSequence).toEqual(expectedSequence)
-      //     },
-      //     null,
-      //     done);
-    });
+    //   // q$.pipe(take(1), toArray())
+    //   //   .subscribe(
+    //   //     actualSequence => {
+    //   //       expect(actualSequence).toEqual(expectedSequence)
+    //   //     },
+    //   //     null,
+    //   //     done);
+    // });
 
 
   })
@@ -292,7 +292,7 @@ describe('InformationPipesService', () => {
     const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
     // testing pipe
-    const expectedSequence: SubfieldPage[] = [SubfieldPageMock.appeTeEnHasAppe]
+    const expectedSequence: FieldPage[] = [FieldPageMock.appeTeEnHasAppe]
     q$.pipe(take(1), toArray())
       .subscribe(
         actualSequence => {

@@ -27,9 +27,9 @@ export class MockPaginatedStatementsControllerService {
     else if (values(gvLoadSubfieldPageReq[0].targets)[0].timePrimitive) {
       return new BehaviorSubject(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
     }
-    else if (values(gvLoadSubfieldPageReq[0].targets)[0].timeSpan) {
-      return new BehaviorSubject(GvPaginationObjectMock.shipVoyageHasTimeSpan);
-    }
+    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].timeSpan) {
+    //   return new BehaviorSubject(GvPaginationObjectMock.shipVoyageHasTimeSpan);
+    // }
 
     throw new Error('mock not implemented for this request');
 

@@ -5,7 +5,7 @@ import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyB
 import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { Profiles } from '../models/Profiles';
@@ -17,7 +17,7 @@ import { SchemaSelectorsService } from './schema-selectors.service';
 
 export enum DisplayType { form = 'form', view = 'view' }
 // export type SectionNameType = keyof Sections
-export enum SectionName { basic = 'basic', metadata = 'metadata', specific = 'specific', simpleForm = 'simpleForm' }
+export enum SectionName { basic = 'basic', timeSpan = 'timeSpan', metadata = 'metadata', specific = 'specific', simpleForm = 'simpleForm' }
 
 
 // this is the
@@ -320,6 +320,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   * - basic fields
   * - metadata fields
   * - specific fields
+  * - timeSpan fields
   */
   // @spyTag
   // @cache({ refCount: false })
@@ -328,15 +329,24 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       this.pipeSection(pkClass, displayType, SectionName.basic, noNesting),
       this.pipeSection(pkClass, displayType, SectionName.metadata, noNesting),
       this.pipeSection(pkClass, displayType, SectionName.specific, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.timeSpan, noNesting),
     ])
       .pipe(
-        map(([a, b, c]) => [...a, ...b, ...c])
+        map(([a, b, c, d]) => [...a, ...b, ...c, ...d])
       )
     return this.cache('pipeAllSections', obs$, ...arguments)
   }
 
+  pipeSections(pkClass: number, displayType: DisplayType, sectionNames: SectionName[], noNesting = false): Observable<Field[]> {
+    if (sectionNames.length === 0) return of([]);
+    const obs$ = combineLatest(
+      sectionNames.map(sectionName => this.pipeSection(pkClass, displayType, sectionName, noNesting))
+    ).pipe(
+      map((x) => flatten<Field>(x))
+    )
+    return this.cache('pipeSections', obs$, ...arguments)
+  }
 
-  // @cache({ refCount: false })
   pipePropertiesToSubfields(
     properties: DfhProperty[],
     isOutgoing: boolean,
@@ -353,37 +363,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
 
-  // @cache({ refCount: false })
-  pipeSubfieldIdToSubfield(
-    sourceClass: number,
-    property: number,
-    targetClass: number,
-    isOutgoing: boolean,
-    noNesting = false
-  ): Observable<Subfield> {
-
-    const domain = isOutgoing ? sourceClass : targetClass;
-    const range = isOutgoing ? targetClass : sourceClass;
-    const obs$ = combineLatest([
-      this.s.dfh$.property$.pk_property__has_domain__has_range$.key([property, domain, range].join('_'))
-        .pipe(filter(x => {
-          return !!x
-        })),
-
-      this.pipeProfilesEnabledByProject().pipe(filter(x => {
-        return !!x
-      })),
-    ]).pipe(
-      switchMap(([dfhProp, enabledProfiles]) => this.pipeSubfield(
-        isOutgoing,
-        dfhProp,
-        enabledProfiles,
-        noNesting
-      ))
-    )
-    return this.cache('pipeSubfieldIdToSubfield', obs$, ...arguments)
-
-  }
 
 
   private pipeSubfield(
@@ -459,7 +438,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           targetMaxQuantity,
           label,
           isHasTypeField: o && p.is_has_type_subproperty,
-          isTimeSpanShortCutField: targetTypes.viewType.timeSpan ? true : false,
+          isTimeSpanShortCutField: false,
           property: { fkProperty: p.pk_property },
           isOutgoing: o,
           identityDefiningForSource: o ? p.identity_defining : false,
@@ -536,17 +515,17 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
     const isTimeSpanShortCutField = sysConfOfProp?.[pkProperty]?.isHasTimeSpanShortCut ?? false;
 
-    /**
-     * Particular Case 1: the field is time span field
-     */
-    if (isTimeSpanShortCutField) {
-      return res({ timeSpan: 'true' }, { timeSpan: 'true' })
-    }
+    // /**
+    //  * Particular Case 1: the field is time span field
+    //  */
+    // if (isTimeSpanShortCutField) {
+    //   return res({ timeSpan: 'true' }, { timeSpan: 'true' })
+    // }
 
     /**
      * Particular Case 2: the field is has type field
      */
-    else if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
+    if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
       return res({ typeItem: 'true' }, { typeItem: 'true' })
     }
 

@@ -1,5 +1,5 @@
 import { GvFieldPage, GvFieldPageReq, GvPaginationObject, GvSubfieldPageInfo, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, StatementTargetDimension, StatementTargetEntity, StatementTargeTimePrimitive, StatementTargetLangString, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { concat, mergeDeepWith, values } from 'ramda';
+import { concat, keys, mergeDeepWith, values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { createStatementWithTarget } from '../data/auto-gen/api-responses/GvPaginationObjectMock';
@@ -88,11 +88,14 @@ export class MockPaginationControllerForSandboxes {
     else if (values(gvLoadSubfieldPageReq.targets)[0].entityPreview) {
       return this.generateDataForEntity(gvLoadSubfieldPageReq);
     }
-    else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
-      return this.generateDataForTimeSpan(gvLoadSubfieldPageReq);
-    }
+    // else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
+    //   return this.generateDataForTimeSpan(gvLoadSubfieldPageReq);
+    // }
     else if (values(gvLoadSubfieldPageReq.targets)[0].typeItem) {
       return this.generateDataForEntity(gvLoadSubfieldPageReq);
+    }
+    else if (values(gvLoadSubfieldPageReq.targets)[0].timePrimitive) {
+      return this.generateDataForTimePrimitive(gvLoadSubfieldPageReq);
     }
     throw new Error('mock not implemented for this request');
 
@@ -219,7 +222,7 @@ export class MockPaginationControllerForSandboxes {
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
         fk_subject_info: page.source.fkInfo,
-        fk_property: DfhApiPropertyMock.EN_148_WAS_AT.dfh_pk_property,
+        fk_property: page.property.fkProperty,
         fk_object_info: infTimePrimitive.pk_entity,
       }
       const projRel: OmitEntity<ProInfoProjRel> = {
@@ -411,7 +414,8 @@ export class MockPaginationControllerForSandboxes {
     for (let i = offset; i < (offset + limit); i++) {
       const resource: OmitEntity<InfResource> = {
         pk_entity: this.infTemporalEntitySerial + i,
-        fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+        fk_class: parseInt(keys(req.targets)[0].toString())
+        // fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
       }
       const entity: StatementTargetEntity = {
         resource: resource,
@@ -426,7 +430,8 @@ export class MockPaginationControllerForSandboxes {
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
         fk_subject_info: resource.pk_entity,
-        fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property,
+        fk_property: req.page.property.fkProperty,
+        // fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property,
         fk_object_info: page.source.fkInfo,
       }
       const projRel: OmitEntity<ProInfoProjRel> = {
@@ -443,7 +448,8 @@ export class MockPaginationControllerForSandboxes {
 
     // Do the subfields
     for (const resource of paginatedStatements.filter(s => s.target.entity).map(s => s.target.entity.resource)) {
-      for (const teEnSubfield of req.targets[resource.fk_class].nestedResource) {
+      const nestedResource = req.targets[resource.fk_class]?.nestedResource ?? []
+      for (const teEnSubfield of nestedResource) {
         // increase the id base for subfields
         this.increaseIdBase(100000 + offset)
 

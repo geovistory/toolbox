@@ -368,4 +368,42 @@ export class ProInfoProjRelMock {
     project_visibility: {website: true, dataApi: true},
     is_in_project: true
   })
+
+  static readonly PROJ_1_VILLAGE_TYPE: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2040,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfResourceMock.GEO_PLACE_TYPE_VILLAGE.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_NAME_2_TO_APPE: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2041,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.NAME_2_TO_APPE.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_NAME_2_TO_PERSON: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2042,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.NAME_2_TO_PERSON.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_HABS_EMP_CARRIERS_PROVIDED_BY: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2043,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
+
+
 }

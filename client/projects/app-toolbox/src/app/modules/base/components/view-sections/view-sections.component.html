@@ -1,0 +1,24 @@
+<gv-view-time-span-section-header [body]="b" [section]="s1">
+  <span title>Time Span</span>
+</gv-view-time-span-section-header>
+<gv-view-time-span-section-body #b [section]="s1">
+  <gv-view-time-span-item [section]="s1" #ts class="mat-bg-grey-50"> </gv-view-time-span-item>
+  <gv-view-section-body #s1 [source]="source" [scope]="scope" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$"
+    [readonly$]="readonly$" [section]='timeSpan'>
+  </gv-view-section-body>
+</gv-view-time-span-section-body>
+
+<gv-view-section-header [section]="s2"><span title>Basics</span></gv-view-section-header>
+<gv-view-section-body #s2 [source]="source" [scope]="scope" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$"
+  [readonly$]="readonly$" [section]='basic'>
+</gv-view-section-body>
+
+<gv-view-section-header [section]="s3"><span title>Metadata</span></gv-view-section-header>
+<gv-view-section-body #s3 [source]="source" [scope]="scope" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$"
+  [readonly$]="readonly$" [section]='metadata'>
+</gv-view-section-body>
+
+<gv-view-section-header [section]="s4"><span title>Specific fields</span></gv-view-section-header>
+<gv-view-section-body #s4 [source]="source" [scope]="scope" [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$"
+  [readonly$]="readonly$" [section]='specific'>
+</gv-view-section-body>

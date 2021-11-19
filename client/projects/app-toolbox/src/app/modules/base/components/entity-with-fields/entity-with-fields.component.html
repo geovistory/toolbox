@@ -2,6 +2,8 @@
   {{source.fkInfo}}</span>
 
 
+<gv-entity-field-time-span *ngIf="(timeSpanFields$|async).length>0" [source]="source" [scope]="scope">
+</gv-entity-field-time-span>
 <gv-entity-field *ngFor="let field of (fields$|async)" [field]="field" [source]="source" [scope]="scope"
   [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
 

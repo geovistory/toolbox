@@ -50,7 +50,12 @@ export async function createValidator(
   const referenceObect: ReferenceObject = {$ref: '#/components/schemas/' + tsname}
   const globalSchemas = (await app.restServer.getApiSpec()).components?.schemas ?? {}
 
-  const ajvInst = new Ajv();
+  const ajvInst = new Ajv({
+    $data: true,
+  })
+  ajvInst.addKeyword('components');
+  ajvInst.addKeyword('x-typescript-type');
+
 
   const jsonSchema = convertToJsonSchema(referenceObect);
 

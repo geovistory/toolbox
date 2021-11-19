@@ -153,7 +153,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
   */
   createTimeSpanForm() {
 
-    const formParts$ = this.c.pipeSection(50, DisplayType.form, SectionName.specific).pipe(
+    const formParts$ = this.c.pipeSection(50, DisplayType.form, SectionName.timeSpan).pipe(
       debounceTime(20),
       map(fields => fields.filter(f => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(f.property.fkProperty))),
       mergeMap(fields => {

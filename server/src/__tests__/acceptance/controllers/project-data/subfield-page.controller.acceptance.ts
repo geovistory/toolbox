@@ -53,6 +53,24 @@ describe('SubfieldPageController', () => {
         .expect(200);
       checkPaginationObject(res.body, GvPaginationObjectMock.appeTeEnHasAppeVt);
     });
+    it('should return count 1 even when limit 0', async () => {
+      await SubfieldHelper.appeTeEnRefersToName()
+      const tmpl = GvFieldPageReqMock.appeTeEnRefersToName
+      const req = {...tmpl, page: {...tmpl.page, limit: 0}}
+      const res = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send([req])
+        .expect(200);
+      expect((res.body as GvPaginationObject).subfieldPages[0].count).to.equal(1)
+    });
+    it('should return empty page', async () => {
+      // await SubfieldHelper.appeTeEnRefersToName() We don't seed data!
+      const res = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send([GvFieldPageReqMock.appeTeEnRefersToName])
+        .expect(200);
+      expect(res.body).to.containDeep(GvPaginationObjectMock.appeTeEnHasAppeVtEmpty);
+    });
 
     it('should return field page for appeTeEnUsedInLanguage (targetType: language)', async () => {
       await SubfieldHelper.appeTeEnUsedInLanguage()
@@ -103,22 +121,59 @@ describe('SubfieldPageController', () => {
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
     });
-    it('should return field page for shipVoyageHasTimeSpan (targetType: timeSpan)', async () => {
-      await SubfieldHelper.shipVoyageHasTimeSpan()
-      const res = await client.post('/subfield-page/load-subfield-page')
-        .set('Authorization', lb4Token)
-        .send([GvFieldPageReqMock.shipVoyageHasTimeSpan])
-        .expect(200);
-      expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageHasTimeSpan);
-    });
+    // it('should return field page for shipVoyageHasTimeSpan (targetType: timeSpan)', async () => {
+    //   await SubfieldHelper.shipVoyageHasTimeSpan()
+    //   const res = await client.post('/subfield-page/load-subfield-page')
+    //     .set('Authorization', lb4Token)
+    //     .send([GvFieldPageReqMock.shipVoyageHasTimeSpan])
+    //     .expect(200);
+    //   expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageHasTimeSpan);
+    // });
     it('should return field page for personHasAppeTeEn (targetType: temporalEntity)', async () => {
       await SubfieldHelper.personHasAppeTeEn()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
         .send([GvFieldPageReqMock.person1HasAppeTeEn])
         .expect(200);
-      console.log(JSON.stringify(res.body))
       expect(res.body).to.containDeep(GvPaginationObjectMock.personHasAppeTeEn);
+    });
+
+    it('should return field pages for personHasTwoAppeTeEn (targetType: temporalEntity)', async () => {
+      await SubfieldHelper.personHasTwoAppeTeEn()
+      const res = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send([GvFieldPageReqMock.person1HasAppeTeEn])
+        .expect(200);
+      expect((res.body as GvPaginationObject).subfieldPages.length).to.equal(3)
+
+      expect((res.body as GvPaginationObject).subfieldPages[0].count)
+        .to.equal(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0].count)
+
+      expect((res.body as GvPaginationObject).subfieldPages[0].req)
+        .to.deepEqual(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0].req)
+
+      expect((res.body as GvPaginationObject).subfieldPages[0].paginatedStatements)
+        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0].paginatedStatements)
+
+      expect((res.body as GvPaginationObject).subfieldPages[0])
+        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0])
+
+      expect((res.body as GvPaginationObject).subfieldPages[1])
+        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[1])
+
+      expect((res.body as GvPaginationObject).subfieldPages[2].count)
+        .to.equal(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2].count)
+
+      expect((res.body as GvPaginationObject).subfieldPages[2].req)
+        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2].req)
+
+      expect((res.body as GvPaginationObject).subfieldPages[2].paginatedStatements)
+        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2].paginatedStatements)
+
+      expect((res.body as GvPaginationObject).subfieldPages[2])
+        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2])
+
+      expect(res.body).to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn);
     });
 
     it('should return field page with a timestamp', async () => {

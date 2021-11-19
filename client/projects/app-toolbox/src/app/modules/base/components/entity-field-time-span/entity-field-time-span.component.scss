@@ -1,0 +1,11 @@
+.loc-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loc-main {
+  white-space: nowrap;
+  padding: 4px 0 4px 40px;
+  width: 200px;
+  overflow: hidden;
+}

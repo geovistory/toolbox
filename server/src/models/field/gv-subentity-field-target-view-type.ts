@@ -39,12 +39,6 @@ export class GvSubentityFieldTargetViewType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   typeItem?: TrueEnum;
 
-  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  timeSpan?: TrueEnum;
-
-  // // TODO remove
-  // @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  // textProperty?: TrueEnum;
 }
 
 

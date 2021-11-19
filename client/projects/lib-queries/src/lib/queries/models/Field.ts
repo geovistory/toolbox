@@ -26,8 +26,6 @@ export interface Field extends FieldBase {
   fieldConfig?: ProClassFieldConfig;
   // the target classes of the field (if is outgoing range else domain)
   targetClasses: number[];
-  // // subfields (they share the source class and property but have different target class and thus list type)
-  // listDefinitions: Subfield[];
   // true if all subfields are removed from all profiles activated by the project
   allSubfieldsRemovedFromAllProfiles: boolean;
   // special fields are not using the default subfield approach to show/edit data

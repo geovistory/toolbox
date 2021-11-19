@@ -168,5 +168,25 @@ export class WarEntityPreviewMock {
         entity_type: 'teEn',
     })
 
+    static readonly NAMING_2: OmitEntity<WarEntityPreview> = ({
+        pk_entity: InfResourceMock.NAMING_2.pk_entity,
+        fk_class: InfResourceMock.NAMING_2.fk_class,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_365_NAMING.dfh_class_label,
+        entity_label: 'Jack',
+        entity_type: 'teEn',
+    })
+
+    static readonly HABS_EMP_EXPR: OmitEntity<WarEntityPreview> = ({
+        pk_entity: InfResourceMock.HABS_EMP_EXPR.pk_entity,
+        fk_class: InfResourceMock.HABS_EMP_EXPR.fk_class,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_218_EXPRESSION.dfh_class_label,
+        entity_label: 'Expression of Habs-Empire',
+        entity_type: 'peIt',
+    })
+
 }
 

@@ -1,0 +1,9 @@
+<div [hidden]="!(p.timeSpanPreview$|async|timeSpan)" class="loc-main">
+  <!-- small header of field -->
+  <div class="mat-caption mat-text-secondary d-flex">
+    Time span
+  </div>
+  <!-- value of field -->
+  <gv-view-time-span-item-preview #p [scope]="scope" [source]="source">
+  </gv-view-time-span-item-preview>
+</div>

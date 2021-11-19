@@ -1,14 +1,7 @@
 <ng-container *ngIf="!(formArrayFactory.children.length == 0 && data.gvFormSection)">
-  <h2 *ngIf="data.gvFormSection?.section?.showHeader$|async" class="title mt-3"
-    (click)="data.gvFormSection.section.expanded$.next(!data.gvFormSection.section.expanded$.value)">
-    <span>
-      {{data.gvFormSection?.section?.label}}
-      <span class="mat-caption mat-error" style="display: inline-block;"
-        *ngIf="control.touched && control.invalid">Error!</span>
-    </span>
-    <mat-icon class="icon" [svgIcon]="data.gvFormSection.section.expanded$.value ? 'chevron-up' : 'chevron-down'">
-    </mat-icon>
-  </h2>
+
+  <gv-form-section-header *ngIf="data.gvFormSection?.section?.showHeader$|async" [section]="data.gvFormSection.section"
+    [control]="control"></gv-form-section-header>
 
   <gv-form-field-header [formField]="data.gvFormField" [length]="length" [maxLength]="maxLength" [control]="control"
     [formArrayFactory]="formArrayFactory"></gv-form-field-header>

@@ -108,12 +108,12 @@ export namespace FieldMock {
     [{ class: DfhApiClassMock.EN_21_PERSON, viewType: { entityPreview: 'true' }, formControlType: { entity: 'true' } }],
     true,
   )
-  export const appeHasTimeSpan: Field = createField(
-    DfhApiClassMock.EN_365_NAMING,
-    DfhApiPropertyMock.EN_4_HAS_TIME_SPAN,
-    [{ class: DfhApiClassMock.EN_50_TIME_SPAN, viewType: { timeSpan: 'true' }, formControlType: { timeSpan: 'true' } }],
-    true,
-  )
+  // export const appeHasTimeSpan: Field = createField(
+  //   DfhApiClassMock.EN_365_NAMING,
+  //   DfhApiPropertyMock.EN_4_HAS_TIME_SPAN,
+  //   [{ class: DfhApiClassMock.EN_50_TIME_SPAN, viewType: { timeSpan: 'true' }, formControlType: { timeSpan: 'true' } }],
+  //   true,
+  // )
 
   export const personHasAppeTeEn: Field = createField(
     DfhApiClassMock.EN_21_PERSON,
@@ -125,7 +125,7 @@ export namespace FieldMock {
           fieldToSubentityFieldReq(appeHasAppeString, false),
           fieldToSubentityFieldReq(appeTeEnUsedInLanguage, false),
           fieldToSubentityFieldReq(appeTeEnIsAppeOfPerson, true),
-          fieldToSubentityFieldReq(appeHasTimeSpan, false),
+          // fieldToSubentityFieldReq(appeHasTimeSpan, false),
         ]
       },
       formControlType: { appellationTeEn: 'true' }
@@ -201,24 +201,6 @@ export function createFieldBase(
   }
   return base
 }
-// export function createField(
-//   source: DfhApiClass,
-//   property: DfhApiProperty,
-//   target: DfhApiClass,
-//   isOutgoing: boolean,
-//   subfieldType: GvTargetType
-// ): Field {
-
-//   const base = createFieldBase(source, property, isOutgoing)
-
-//   return {
-//     ...base,
-//     listType: subfieldType,
-//     targetClass: target.dfh_pk_class,
-//     targetClassLabel: target.dfh_class_label,
-//     removedFromAllProfiles: false,
-//   }
-// }
 
 
 function createField(

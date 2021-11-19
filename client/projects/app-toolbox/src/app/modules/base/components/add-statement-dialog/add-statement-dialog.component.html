@@ -6,12 +6,12 @@
     About: {{classLabel_source$ | async}} {{sourceEntityLabel$ | async}} – {{data.field.label}} –
     {{classLabel_target$ | async}}
   </span>
-  <span class="mat-body1 loc-subfield-title">
+  <span class="mat-body1 loc-field-title">
     Select and add items from the list below or create a new item.
   </span>
-  <gv-subfield class="gv-fh gv-col-space-between" [source]=" data.source" [field]="fieldWithOneTarget"
+  <gv-view-field-body class="gv-fh gv-col-space-between" [source]=" data.source" [field]="fieldWithOneTarget"
     [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$"
-    (close)="onClose()" (next)="onNext()"></gv-subfield>
+    (close)="onClose()" (next)="onNext()"></gv-view-field-body>
 </ng-container>
 
 

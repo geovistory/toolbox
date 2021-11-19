@@ -1,0 +1,3 @@
+<div *ngIf="(section.fields$|async).length>0" [@openClose]="(showBody$|async) ? 'open' : 'closed'">
+  <ng-content></ng-content>
+</div>

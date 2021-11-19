@@ -71,6 +71,7 @@ interface DirectedProperty {
 
 interface FinalSelectSpec {
   fkProperty: number,
+  isOutgoing: boolean,
   sourceClasses: number[]
   _req: GvFieldPageReq // only for the final result
 }
@@ -128,7 +129,6 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       place: 'place',
       timePrimitive: 'timePrimitive',
       nestedResource: 'entity',
-      timeSpan: 'entity',
       entityPreview: 'entity',
       typeItem: 'entity',
     }
@@ -240,7 +240,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     this.mainSql(reqs.map(req => this.transformReq(req)), {sourceEntities});
     // const t1 = performance.now()
     // console.log(`Call to QFieldPage3 queryFields->mainSql, took ms `, t1 - t0)
-    // logSql(this.sql, this.params)
+    logSql(this.sql, this.params, 'qfields-')
 
     // const t2 = performance.now()
     const p = await this.execute<{data: GvSubfieldPageInfo}[]>()
@@ -273,11 +273,10 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
 
     // MANY PROPS
     const joinSubquery = this.joinSubquery(sourceSubquery.tw, directedProps,)
-    const groupBySubquery = this.groupBySubquery(joinSubquery.tw)
     const finalSelecSpecs = transformFinalSpecs(directedProps)
     const pageInfoSubquery = this.pageInfoSubquery(
       sourceSubquery.tw,
-      groupBySubquery.tw,
+      joinSubquery.tw,
       finalSelecSpecs,
       isNested
     )
@@ -287,11 +286,10 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       WITH
       ${sourceSubquery.sql},
       ${joinSubquery.sql},
-      ${groupBySubquery.sql},
       ${pageInfoSubquery.sql}
       ${finalSelect}
     `;
-    logSql(this.sql, this.params)
+    // logSql(this.sql, this.params)
 
 
   }
@@ -358,18 +356,22 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     ${tw} AS (
       SELECT
         t2.fk_source,
-        t2.fk_target,
         t2.fk_property,
-        t2.stmt_with_target,
-        t2.count,
-        t2.data as nested
+        t2.is_outgoing,
+        COALESCE(jsonb_agg(t2.stmt_with_target) FILTER (WHERE t2.stmt_with_target IS NOT NULL), '[]'::jsonb) paginatedStatements,
+        jsonb_agg(t2."data") FILTER (WHERE t2."data" IS NOT NULL) nested,
+        t2.count
       FROM
-       -- from entity
-       ${sourceTw} t1
-      -- join entity with statements on source class, property and (target-model + target-classes)
+       ${sourceTw} t1 -- entities
       JOIN LATERAL (
+        -- join statements
         ${joinStatementsOfProperty}
-      ) AS t2 ON true
+      ) AS t2 ON t1.pk_entity = t2.fk_source
+      GROUP BY
+        fk_source,
+        fk_property,
+        is_outgoing,
+        count
     )
     `
 
@@ -403,14 +405,24 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     const sql = `
     (
      WITH paginatedStmtWithTarget AS (
-        -- join entity with statements on property ${property}
-        SELECT *, count(*) OVER (PARTITION BY fk_source)
-        FROM (
+        -- join entity with statements on property  ${isOutgoing ? 'outgoing' : 'incoming'} ${property.fkProperty}
+        WITH allStmts AS (
           ${statementsWithTarget}
-        ) AS partitioned
-        -- WHERE stmt_with_target->'targetLabel' %ilike 'foo'
-        LIMIT ${this.addParam(limit)}
-        OFFSET ${this.addParam(offset)}
+        )
+        SELECT
+          t1.pk_entity as fk_source,
+          ${this.addParam(property.fkProperty)} as fk_property,
+          ${this.addParam(isOutgoing)}::boolean as is_outgoing,
+          filteredStmts.fk_target,
+          filteredStmts.stmt_with_target,
+          c.count
+        FROM (
+            TABLE allStmts
+            -- WHERE stmt_with_target->'targetLabel' %ilike 'foo'
+            LIMIT ${this.addParam(limit)}
+            OFFSET ${this.addParam(offset)}
+          ) AS filteredStmts
+        RIGHT  JOIN (SELECT count(*) FROM allStmts) AS c(count) ON true
       )
 
       ${this.joinNestedRequestsSql(directedProperty.nestedReqs)}
@@ -585,7 +597,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       sqls.push(this.joinTargetLangString(isOutgoing, tStatements, modelConfig, resTargetKey));
     }
     else if (resTargetKey === 'timePrimitive') {
-      sqls.push(this.joinTargetTimePrimitive(isOutgoing, tStatements, modelConfig, resTargetKey, tProjRel));
+      sqls.push(this.joinTargetTimePrimitive(isOutgoing, tStatements, modelConfig, resTargetKey, tProjRel, scope));
     }
     else if (resTargetKey === 'entity') {
       sqls.push(this.joinTargetEntity(isOutgoing, tStatements, scope, resTargetKey));
@@ -720,7 +732,8 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     tStatements: string,
     spec: ModelConfig,
     resTargetKey: ResTargetKey,
-    tProjRel: string
+    tProjRel: string,
+    scope: GvFieldPageScope
   ): JoinTargetSqls {
 
     const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql} = spec
@@ -736,7 +749,9 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
                 'timePrimitive', json_build_object(
                   'duration', x.duration,
                   'julianDay', x.julian_day,
-                  'calendar', coalesce(${tProjRel}.calendar, ${tStatements}.community_favorite_calendar)
+                  'calendar', ${scope.inProject ?
+        `             coalesce(${tProjRel}.calendar, ${tStatements}.community_favorite_calendar)` :
+        `             ${tStatements}.community_favorite_calendar`}
                 )
               )) obj,
               ${createLabelSql} as target_label
@@ -814,28 +829,9 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
    *****************************************************************************/
 
 
-  groupBySubquery(joinSubqueryTw: string) {
-    const tw = this.nextWith;
-    const sql = `
-    -- group paginated statements by source
-    ${tw} AS (
-      SELECT
-        fk_source,
-        fk_property,
-        count,
-        jsonb_agg(
-          stmt_with_target
-        ) target
-      from ${joinSubqueryTw}
-      Group by fk_source, fk_property, count
-    )
-    `
-    return {sql, tw}
-  }
-
   pageInfoSubquery(
     sourceSubqueryTw: string,
-    groupBySubqueryTw: string,
+    joinSubqueryTw: string,
     finalSelectSpecs: FinalSelectSpec[],
     isNested: boolean
   ) {
@@ -843,8 +839,9 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     const finalSelect = finalSelectSpecs
       .map(x => this.paginationInfoPerSourceAndProperty(
         sourceSubqueryTw,
-        groupBySubqueryTw,
+        joinSubqueryTw,
         x.fkProperty,
+        x.isOutgoing,
         x.sourceClasses,
         x._req
       ))
@@ -855,8 +852,6 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       ${finalSelect}
     )
     `
-
-
     this.pageInfoTws.push(tw)
 
     return {sql, tw}
@@ -867,6 +862,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     sourceSubqueryTw: string,
     groupBySubqueryTw: string,
     fkProperty: number,
+    isOutgoing: boolean,
     sourceClasses: number[],
     req: GvFieldPageReq
   ): string {
@@ -881,13 +877,14 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
                 to_jsonb(${sourceSubqueryTw}.pk_entity)
               ),
         'count', COALESCE(${groupBySubqueryTw}.count,0),
-        'paginatedStatements', COALESCE(${groupBySubqueryTw}.target, '[]'::jsonb)
+        'paginatedStatements', COALESCE(${groupBySubqueryTw}.paginatedStatements, '[]'::jsonb)
       ) "data",
 			${sourceSubqueryTw}.pk_entity
     FROM ${sourceSubqueryTw}
     LEFT JOIN ${groupBySubqueryTw}
       on ${groupBySubqueryTw}.fk_source = ${sourceSubqueryTw}.pk_entity
-      AND ${groupBySubqueryTw}.fk_property = ${fkProperty}
+      AND ${groupBySubqueryTw}.fk_property = ${this.addParam(fkProperty)}
+      AND ${groupBySubqueryTw}.is_outgoing = ${this.addParam(isOutgoing)}
       ${sourceClasses.length ?
         `WHERE ${sourceSubqueryTw}.fk_class IN (${this.addParams(sourceClasses)})`
         : ''}
@@ -961,6 +958,7 @@ function transformFinalSpecs(directedProps: DirectedProperty[]): FinalSelectSpec
     const s: FinalSelectSpec = {
       _req: d._req,
       fkProperty: d.property.fkProperty ?? d.property.fkPropertyOfProperty ?? -1,
+      isOutgoing: d.isOutgoing,
       sourceClasses
     }
     return s

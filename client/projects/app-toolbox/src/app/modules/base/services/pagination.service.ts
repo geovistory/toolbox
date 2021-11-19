@@ -126,6 +126,19 @@ export class PaginationService {
   }
 
   /**
+   * Wrapper around addPageLoader, skipping the api call
+   * @param fieldPageReq
+   * @param takeUntil$
+   * @returns
+   */
+  public listenToPageUpdates(
+    fieldPageReq: GvFieldPageReq,
+    takeUntil$: Observable<any>,
+  ) {
+    return this.addPageLoader(fieldPageReq, takeUntil$, false)
+  }
+
+  /**
    *
    * @param fieldPageReq
    * @param takeUntil$
@@ -310,42 +323,44 @@ export class PaginationService {
           res.subfieldPages.forEach(fieldpage => {
             const { pageIdString } = this.parseFieldPageRequest(fieldpage.req)
             const item = options[pageIdString]
-            // set the isUpToDateUntil of the loader
-            this.pageLoaders.set(pageIdString, {
-              ...item.loader,
-              isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
-            })
+            if (item) {
+              // set the isUpToDateUntil of the loader
+              this.pageLoaders.set(pageIdString, {
+                ...item.loader,
+                isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
+              })
+            }
 
-            fieldpage.paginatedStatements.forEach(stmt => {
-              const e = stmt.target?.entity?.resource;
-              if (e) {
-                const source: GvFieldSourceEntity = { fkInfo: e.pk_entity };
-                const fkClass = e.fk_class;
+            // fieldpage.paginatedStatements.forEach(stmt => {
+            //   const e = stmt.target?.entity?.resource;
+            //   if (e) {
+            //     const source: GvFieldSourceEntity = { fkInfo: e.pk_entity };
+            //     const fkClass = e.fk_class;
 
-                const targetType = fieldpage.req.targets[fkClass]
+            //     const targetType = fieldpage.req.targets[fkClass]
 
-                if (targetType?.nestedResource?.length) {
-                  const subreqs = targetType.nestedResource
-                  const scope = fieldpage.req.page.scope.notInProject ? { inRepo: true } : fieldpage.req.page.scope
-                  subreqs.forEach(subReq => {
-                    if (!subReq.page.isCircular) { }
-                    const { isCircular, ...p } = subReq.page
-                    const page: GvFieldPage = {
-                      ...p,
-                      scope,
-                      source
-                    };
-                    const targets = subReq.targets;
-                    const r: GvFieldPageReq = {
-                      page,
-                      targets,
-                      pkProject: fieldpage.req.pkProject
-                    }
-                    this.addPageLoader(r, item.takeUntil$, false)
-                  })
-                }
-              }
-            })
+            //     if (targetType?.nestedResource?.length) {
+            //       const subreqs = targetType.nestedResource
+            //       const scope = fieldpage.req.page.scope.notInProject ? { inRepo: true } : fieldpage.req.page.scope
+            //       subreqs.forEach(subReq => {
+            //         if (!subReq.page.isCircular) { }
+            //         const { isCircular, ...p } = subReq.page
+            //         const page: GvFieldPage = {
+            //           ...p,
+            //           scope,
+            //           source
+            //         };
+            //         const targets = subReq.targets;
+            //         const r: GvFieldPageReq = {
+            //           page,
+            //           targets,
+            //           pkProject: fieldpage.req.pkProject
+            //         }
+            //         this.addPageLoader(r, item.takeUntil$, false)
+            //       })
+            //     }
+            //   }
+            // })
           })
 
         }
@@ -367,7 +382,7 @@ export class PaginationService {
     limit,
     offset,
     takeUntil$: Observable<any>,
-    scope: GvFieldPageScope
+    scope: GvFieldPageScope,
   ) {
     const req: GvFieldPageReq = {
       pkProject,

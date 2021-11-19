@@ -172,7 +172,6 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
       place: 'place',
       timePrimitive: 'timePrimitive',
       nestedResource: 'entity',
-      timeSpan: 'entity',
       entityPreview: 'entity',
       typeItem: 'entity',
     }
@@ -587,23 +586,23 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
       const modelConfig = this.modelConfig[modelKey]
       if (!modelConfig) throw new Error("This subfield type is not implemented: " + reqTargetType);
       if (resTargetKey === 'dimension') {
-        sqls.push(this.joinDimension(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey));
+        sqls.push(this.joinTargetDimension(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey));
         continue;
       }
       else if (resTargetKey === 'langString') {
-        sqls.push(this.joinLangString(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey));
+        sqls.push(this.joinTargetLangString(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey));
         continue;
       }
       else if (resTargetKey === 'timePrimitive') {
-        sqls.push(this.joinTimePrimitive(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey, tProjRel));
+        sqls.push(this.joinTargetTimePrimitive(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey, tProjRel));
         continue;
       }
       else if (resTargetKey === 'entity') {
-        sqls.push(this.joinEntity(page.isOutgoing, tStatements, page.scope, resTargetKey));
+        sqls.push(this.joinTargetEntity(page.isOutgoing, tStatements, page.scope, resTargetKey));
         continue;
       }
 
-      const join = this.joinSimpleTarget(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey)
+      const join = this.joinTargetSimple(page.isOutgoing, tStatements, modelConfig, page.scope, resTargetKey)
       sqls.push(join)
     }
 
@@ -619,7 +618,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
     return {join, selectTarget, selectTargetLabel, selectTargetClass}
   }
 
-  private joinSimpleTarget(
+  private joinTargetSimple(
     isOutgoing: boolean,
     tStatements: string,
     spec: ModelConfig,
@@ -658,7 +657,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   }
 
 
-  private joinDimension(
+  private joinTargetDimension(
     isOutgoing: boolean,
     tStatements: string,
     spec: ModelConfig,
@@ -701,7 +700,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
     }
   }
 
-  private joinLangString(
+  private joinTargetLangString(
     isOutgoing: boolean,
     tStatements: string,
     spec: ModelConfig,
@@ -745,7 +744,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
   }
 
 
-  private joinTimePrimitive(
+  private joinTargetTimePrimitive(
     isOutgoing: boolean,
     tStatements: string,
     spec: ModelConfig,
@@ -793,7 +792,7 @@ export class QFieldPage2 extends SqlBuilderLb4Models {
 
 
 
-  private joinEntity(
+  private joinTargetEntity(
     isOutgoing: boolean,
     tStatements: string,
     scope: GvFieldPageScope,

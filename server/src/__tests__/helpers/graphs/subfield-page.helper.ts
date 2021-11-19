@@ -103,6 +103,28 @@ export namespace SubfieldHelper {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
   }
 
+  export async function personHasTwoAppeTeEn() {
+    await createInfResource(InfResourceMock.PERSON_1)
+    await createInfResource(InfResourceMock.NAMING_1)
+    await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
+    await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
+    await createWarEntityPreview(WarEntityPreviewMock.NAMING_1)
+    await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
+
+    await createInfResource(InfResourceMock.NAMING_2)
+    await createWarEntityPreview(WarEntityPreviewMock.NAMING_2)
+    await createInfStatement(InfStatementMock.NAME_2_TO_PERSON)
+    await createInfStatement(InfStatementMock.NAME_2_TO_APPE)
+    await createInfAppellation(InfAppellationMock.JACK)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON)
+
+
+
+  }
+
   export async function makeProject1() {
     const accountId = await createAccountVerified('gaetan.muck@kleiolab.ch', 'testtest1');
     await createInfLanguage(InfLanguageMock.GERMAN);

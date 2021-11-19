@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>
+  {{data.title}}
+</h1>
+<div mat-dialog-content>
+  <gv-view-field-body [field]="data.field" [source]="data.source" [scope]="data.scope"
+    [showOntoInfo$]="data.showOntoInfo$">
+  </gv-view-field-body>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]>Close</button>
+</div>

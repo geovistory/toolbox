@@ -1,6 +1,6 @@
 import {ModelDefinition} from '@loopback/repository';
 import {keys} from 'lodash';
-import {equals, groupBy, uniq} from 'ramda';
+import {groupBy, uniq} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
 import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldTargetViewType, GvPaginationObject, GvPaginationStatementFilter, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../../models';
 import {TrueEnum} from '../../models/enums/TrueEnum';
@@ -192,15 +192,6 @@ export class QFieldPage extends SqlBuilderLb4Models {
         classFk: 'fk_class',
         objectWith: this.objectWiths.schemas.inf.resource
       },
-      timeSpan: {
-        modelDefinition: InfResource.definition,
-        modelPk: 'pk_entity',
-        statementObjectFk: 'fk_object_info',
-        statementSubjectFk: 'fk_subject_info',
-        tableName: 'information.resource',
-        classFk: 'fk_class',
-        objectWith: this.objectWiths.schemas.inf.resource
-      },
       entityPreview: {
         modelDefinition: WarEntityPreview.definition,
         modelPk: 'pk_entity',
@@ -239,7 +230,6 @@ export class QFieldPage extends SqlBuilderLb4Models {
       langString: [this.config.langString],
       language: [this.config.language],
       nestedResource: [this.config.nestedResource],
-      timeSpan: [this.config.timeSpan],
       timePrimitive: [this.config.timePrimitive],
       typeItem: [
         // list all models that can be represented by typeItem
@@ -289,11 +279,11 @@ export class QFieldPage extends SqlBuilderLb4Models {
 
   createSelects(req: GvFieldPageReq) {
 
-    if (equals(req.targets, {50: {timeSpan: TrueEnum.true}})) {
+    // if (equals(req.targets, {50: {timeSpan: TrueEnum.true}})) {
 
-      const requests = this.createTimeSpanFieldRequests(req)
-      return requests.map(request => this.createSelectForPage(request)).join(',\n')
-    }
+    //   const requests = this.createTimeSpanFieldRequests(req)
+    //   return requests.map(request => this.createSelectForPage(request)).join(',\n')
+    // }
 
     return this.createSelectForPage(req);
   }

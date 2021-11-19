@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService, StatementTargetTimeSpan } from '@kleiolab/lib-queries';
+import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
-import { InfStatement, InfStatementWithRelations, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, InfStatement, InfStatementWithRelations, StatementWithTarget, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
 import { combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { CtrlTimeSpanDialogComponent } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+
+export interface SubentitySubfieldPage {
+  subfield: GvFieldId;
+  count: number;
+  statements: Array<StatementWithTarget>
+}
+export interface StatementTargetTimeSpan {
+  subfields: SubentitySubfieldPage[],
+  preview: WarEntityPreviewTimeSpan
+}
 
 @Injectable({
   providedIn: 'root'

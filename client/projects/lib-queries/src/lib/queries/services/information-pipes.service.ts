@@ -6,15 +6,15 @@ import { IAppState } from '@kleiolab/lib-redux';
 import { GvFieldPage, InfStatement, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
-import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
+import { combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { spyTag } from '../decorators/method-decorators';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
+import { FieldPage } from '../models/FieldPage';
 import { GvFieldTargets } from '../models/FieldTargets';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
-import { StatementProjRel, SubfieldPage } from '../models/StatementWithTarget';
 import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { ConfigurationPipesService, DisplayType, HasTypePropertyInfo } from './configuration-pipes.service';
@@ -62,29 +62,29 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   }
 
 
-  /**
-   * pipe the project relation of given statment, if the scope of this page is inProject
-   * @param stmt InfStatement to be completed with projRel
-   * @param page page for which we are piping this stuff
-   */
-  pipeProjRelOfStatement(stmt: InfStatement, page: GvFieldPage): Observable<StatementProjRel> {
-    if (page.scope.inProject) {
-      return this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
-        .key(page.scope.inProject + '_' + stmt.pk_entity).pipe(
-          map(
-            projRel => ({
-              projRel,
-              ordNum: page.isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain
-            })
-          )
-        )
-    } else {
-      return new BehaviorSubject({
-        projRel: undefined,
-        ordNum: 0
-      })
-    }
-  }
+  // /**
+  //  * pipe the project relation of given statment, if the scope of this page is inProject
+  //  * @param stmt InfStatement to be completed with projRel
+  //  * @param page page for which we are piping this stuff
+  //  */
+  // pipeProjRelOfStatement(stmt: InfStatement, page: GvFieldPage): Observable<StatementProjRel> {
+  //   if (page.scope.inProject) {
+  //     return this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
+  //       .key(page.scope.inProject + '_' + stmt.pk_entity).pipe(
+  //         map(
+  //           projRel => ({
+  //             projRel,
+  //             ordNum: page.isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain
+  //           })
+  //         )
+  //       )
+  //   } else {
+  //     return new BehaviorSubject({
+  //       projRel: undefined,
+  //       ordNum: 0
+  //     })
+  //   }
+  // }
   // /**
   //  * pipe the target of given statment
   //  * @param stmt InfStatement to be completed with target
@@ -302,7 +302,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   //   )
   // }
 
-  pipeFieldPage(page: GvFieldPage, targets: GvFieldTargets, isTimeSpanShortCutField: boolean): Observable<SubfieldPage> {
+  pipeFieldPage(page: GvFieldPage, targets: GvFieldTargets, isTimeSpanShortCutField: boolean): Observable<FieldPage> {
     if (isTimeSpanShortCutField) {
       // if timeSpan make a short cut: produce a virtual statementWithTarget from entity to timeSpan
       // return this.pipeTimeSpan(page)

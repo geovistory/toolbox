@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, TableName } from '@kleiolab/lib-queries';
 import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
@@ -163,6 +163,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     label: 'Metadata Fields',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.metadata)
   }
+  timeSpanSection: FieldSection = {
+    showHeader$: new BehaviorSubject(true),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.timeSpan,
+    label: 'Time Span',
+    pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.timeSpan)
+  }
   simpleFormSection: FieldSection = {
     showHeader$: new BehaviorSubject(false),
     expanded$: new BehaviorSubject(true),
@@ -185,7 +192,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     private ss: SchemaSelectorsService,
     public ap: ActiveProjectPipesService,
     public s1: SchemaService,
-    private s2: SchemaSelectorsService,
   ) { }
 
   ngOnInit() {
@@ -329,13 +335,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           // initialize the correct sections
           const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
           if (!advancedMode) {
-            const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
-            this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
-            this.sections = [this.simpleFormSection]
+            if (isPersistentItem) {
+              this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, 'PeIt');
+              this.sections = [this.simpleFormSection]
+            } else {
+              this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, 'TeEn');
+              this.timeSpanSection.showHeader$.next(false)
+              this.sections = [this.timeSpanSection, this.simpleFormSection]
+            }
           } else if (isPersistentItem) {
             this.sections = [this.basicSection, this.metadataSection, this.specificSection]
           } else {
-            this.sections = [this.specificSection, this.metadataSection, this.basicSection]
+            this.sections = [this.timeSpanSection, this.specificSection, this.metadataSection, this.basicSection]
           }
           // console.log('aaa sections: ', this.sections) // freezing bug log
 
@@ -406,6 +417,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               // console.log('aaa place2') // freezing bug log
 
               return sectionsWithFields.map(s => {
+
                 // then create the child nodes
                 const n: LocalNodeConfig = {
                   id: U.uuid(),
@@ -470,6 +482,41 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * Generates the array of gvFormFields
    */
   private getGvFormFields(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const section = arrayConfig.data.gvFormSection.section;
+    const fields = arrayConfig.data.gvFormSection.fields;
+    const init: any = arrayConfig.data.gvFormSection.initValue;
+    const initVal: InfResourceWithRelations = init?.resource ?? init // todo, fix this at the root of the problem
+
+    // if the section is time-span section, add a timespan ctrl
+    if (section.key === SectionName.timeSpan) {
+      const n = this.timeSpanCtrl2<InfResourceWithRelations>(50, 'has time-span', 'Time Span', false, initVal?.outgoing_statements, (v) => {
+        const statements: InfStatementWithRelations[] = Object.keys(v).map(key => {
+          const timePrim: TimeSpanResult = v[key]
+          const statement: InfStatementWithRelations = {
+            entity_version_project_rels: [
+              {
+                is_in_project: true,
+                calendar: timePrim.calendar
+              }
+            ],
+            fk_property: parseInt(key, 10),
+            object_time_primitive: {
+              julian_day: timePrim.julianDay,
+              duration: timePrim.duration,
+              fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+            }
+          }
+          return statement
+        });
+        const resource: InfResourceWithRelations = {
+          fk_class: arrayConfig.data.pkClass,
+          outgoing_statements: statements
+        };
+        return resource
+      })
+      return of([n])
+    }
+
     return combineLatest([
       this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass)
     ])
@@ -477,9 +524,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         filter(([klass]) => !!klass),
         map(([dfhClass]) => {
 
-          const section = arrayConfig.data.gvFormSection.section;
-          const fields = arrayConfig.data.gvFormSection.fields;
-          const initVal: any = arrayConfig.data.gvFormSection.initValue;
           const isPersistentItem = (dfhClass.basic_type === 8 || dfhClass.basic_type === 30);
 
           return fields.map(f => {
@@ -513,7 +557,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   },
                   pkClass: undefined,
                 },
-                initValue: this.getInitValueForFieldNode(f, initVal?.resource ?? initVal),
+                initValue: this.getInitValueForFieldNode(f, initVal),
                 placeholder: f.label,
                 required: this.ctrlRequired(f),
                 validators: [
@@ -528,7 +572,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                       ? null : { 'maxLength': { value: control.value, maxLength } }
                   }
                 ],
-                mapValue: (x) => {
+                mapValue: (x: InfStatementWithRelations[]): Partial<InfResourceWithRelations> => {
                   const items = flatten(x) // Flattens the values of the lists of this field
                   const key = getStatementKey(f.isOutgoing)
                   return { [key]: items }
@@ -820,7 +864,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           targetClass,
           targetClassLabel
         },
-        mapValue: (val) => {
+        mapValue: (val): InfStatementWithRelations[] => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
           const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
@@ -846,6 +890,44 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
     };
     return of([controlConfig]);
+  }
+
+  private timeSpanCtrl2<R>(
+    targetClass: number,
+    placeholder: string,
+    targetClassLabel: string,
+    required: boolean,
+    initStmts: InfStatementWithRelations[] = [{}],
+    mapValue: (val: CtrlTimeSpanDialogResult | null | undefined) => R
+  ): LocalNodeConfig {
+    const initValue: CtrlTimeSpanModel = {}
+    for (let i = 0; i < initStmts.length; i++) {
+      const element = initStmts[i];
+      if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(element.fk_property)) {
+        const calendar = element?.entity_version_project_rels?.[0].calendar
+        initValue[element.fk_property] = {
+          duration: element?.object_time_primitive?.duration,
+          julianDay: element?.object_time_primitive?.julian_day,
+          fk_class: element?.object_time_primitive?.fk_class,
+          calendar
+        }
+      }
+    }
+    const controlConfig: LocalNodeConfig = {
+      control: {
+        initValue,
+        placeholder,
+        required,
+        data: {
+          appearance: this.appearance,
+          controlType: 'ctrl-time-span',
+          targetClass,
+          targetClassLabel
+        },
+        mapValue
+      }
+    };
+    return controlConfig;
   }
 
 
@@ -1249,7 +1331,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * returns true if control is required
    * TODO!
    */
-  private ctrlRequired(f: Subfield | Field): boolean {
+  private ctrlRequired(f: Field): boolean {
     return (
       f &&
       f.isOutgoing &&

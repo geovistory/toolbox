@@ -5,6 +5,7 @@ import { GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaMod
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
+import { createStatementWithTarget } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { DatDigitalMock } from 'projects/__test__/data/auto-gen/gvDB/DatDigitalMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -108,27 +109,30 @@ export class ReduxMainServiceMock {
     let o: Observable<GvPaginationObject>
     if (req.page.property === InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY.fk_property) {
 
-      // the page of statements of property carrierts provided by
-      const page = req.page
       const pageToExpression: GvPaginationObject = {
-        schemas: { inf: { statement: [InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY] } },
         subfieldPages: [
           {
             count: 1,
-            page,
-            paginatedStatements: [InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY.pk_entity]
+            req,
+            paginatedStatements: [
+              createStatementWithTarget(
+                InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY,
+                ProInfoProjRelMock.PROJ_1_STMT_HABS_EMP_CARRIERS_PROVIDED_BY,
+                undefined,
+                { entity: { resource: InfResourceMock.HABS_EMP_EXPR, entityPreview: WarEntityPreviewMock.HABS_EMP_EXPR } },
+                req.page.isOutgoing
+              )
+            ]
           }
         ]
       }
       o = of(pageToExpression)
     } else {
-      const page = req.page
       const pageToExpression: GvPaginationObject = {
-        schemas: { inf: { statement: [InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY] } },
         subfieldPages: [
           {
             count: 0,
-            page,
+            req,
             paginatedStatements: []
           }
         ]

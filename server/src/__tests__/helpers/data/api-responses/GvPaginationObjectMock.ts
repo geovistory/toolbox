@@ -81,6 +81,16 @@ export namespace GvPaginationObjectMock {
       }
     ]
   }
+
+  export const appeTeEnHasAppeVtEmpty: GvPaginationObject = {
+    subfieldPages: [
+      {
+        req: GvFieldPageReqMock.appeTeEnRefersToName,
+        count: 0,
+        paginatedStatements: [],
+      }
+    ]
+  }
   export const appeTeEnUsedInLanguage: GvPaginationObject = {
     subfieldPages: [
       {
@@ -344,8 +354,85 @@ export namespace GvPaginationObjectMock {
       },
     ],
   }
+  export const personHasTwoAppeTeEn: GvPaginationObject = {
+    subfieldPages: [
+      {
+        req: {
+          ...GvFieldPageReqMock.person1HasAppeTeEn,
+          page: {...GvFieldPageReqMock.person1HasAppeTeEn.page, isOutgoing: false},
+        },
+        count: 2,
+        paginatedStatements: [
+          createStatementWithTarget(
+            InfStatementMock.NAME_1_TO_PERSON,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              entity: {
+                resource: InfResourceMock.NAMING_1 as InfResource,
+                entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
+              }
+            },
+            false
+          ),
+          createStatementWithTarget(
+            InfStatementMock.NAME_2_TO_PERSON,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              entity: {
+                resource: InfResourceMock.NAMING_2 as InfResource,
+                entityPreview: WarEntityPreviewMock.NAMING_2 as WarEntityPreview
+              }
+            },
+            false
+          )
+        ],
+      },
+      {
+        req: {
+          ...GvFieldPageReqMock.appeTeEnRefersToName,
+          page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
+        },
+        count: 1,
+        paginatedStatements: [
+          createStatementWithTarget(
+            InfStatementMock.NAME_1_TO_APPE,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
+            },
+            true
+          )
+        ],
+      },
+      {
+        req: {
+          ...GvFieldPageReqMock.appeTeEn2RefersToName,
+          page: {...GvFieldPageReqMock.appeTeEn2RefersToName.page, limit: 1},
+        },
+        count: 1,
+        paginatedStatements: [
+          createStatementWithTarget(
+            InfStatementMock.NAME_2_TO_APPE,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              appellation: InfAppellationMock.JACK as InfAppellation
+            },
+            true
+          )
+        ],
+      },
+    ],
+  }
 
 }
+
+
+
+
 
 export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPageReq {
   return {

@@ -1,12 +1,12 @@
 .loc-panel {
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
 
   box-sizing: content-box;
 
   height: 100%;
-  
+
   width: calc(100% / 3);
   flex-grow: 1;
   flex-shrink: 0;

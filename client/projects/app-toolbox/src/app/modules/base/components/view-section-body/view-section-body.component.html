@@ -1,0 +1,14 @@
+<div [@openClose]="(showBody$|async) ? 'open' : 'closed'" *ngIf="(fields$ | async)?.length > 0">
+  <!-- <div class="mat-list-base subheader">
+    <h3 class="d-flex mat-text-secondary">{{toPascalCase(section)}} fields
+      <mat-slide-toggle class="mat-body show-empty-toggle" [matTooltip]="'Show empty fields'"
+        [(ngModel)]="showEmptyFields">
+      </mat-slide-toggle>
+    </h3>
+  </div> -->
+  <gv-view-field #f *ngFor="let field of fields$|async"
+    [hidden]="(!(showEmptyFields$ |async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
+    [field]="field" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source" [scope]="scope">
+  </gv-view-field>
+
+</div>

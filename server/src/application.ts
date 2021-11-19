@@ -21,6 +21,7 @@ import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
 import {NodeENV} from './utils/code.utils';
+import {getGvPgUrlForLoopback} from './utils/databaseUrl';
 
 
 export class GeovistoryApplication extends BootMixin(
@@ -73,7 +74,16 @@ export class GeovistoryApplication extends BootMixin(
 
     registerAuthenticationStrategy(this, BasicAuthenticationStrategy);
 
-
+    const config = {
+      url: getGvPgUrlForLoopback(),
+      name: 'postgres1',
+      connector: 'postgresql',
+      ssl: {
+        rejectUnauthorized: true,
+      },
+      type: ''
+    };
+    this.bind('datasources.config.postgres1').to(config)
     // Bind datasource
     //TODO: is 2nd param needed?
     this.dataSource(Postgres1DataSource, 'datasources.postgres1');

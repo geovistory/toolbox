@@ -19,7 +19,7 @@ import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { InfResourceWithRelationsMock } from 'projects/__test__/data/InfResourceWithRelationsMock';
-import { createCrmAsGvPositiveSchema, createHasTimeSpanProperty } from 'projects/__test__/helpers/transformers';
+import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
@@ -239,7 +239,6 @@ export default sandboxOf(FormCreateEntityComponent, {
       initState: IAppStateMock.stateProject1,
       schemaObjects: [
         ...initialSchemaObects,
-        { dfh: { property: [createHasTimeSpanProperty(61)] } }
       ]
     },
     template: `
@@ -264,7 +263,6 @@ export default sandboxOf(FormCreateEntityComponent, {
       initState: IAppStateMock.stateProject1,
       schemaObjects: [
         ...initialSchemaObects,
-        { dfh: { property: [createHasTimeSpanProperty(61)] } }
       ]
     },
     template: `
