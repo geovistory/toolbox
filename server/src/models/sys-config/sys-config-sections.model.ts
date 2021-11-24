@@ -1,4 +1,4 @@
-import { model, property } from '@loopback/repository';
+import {model, property} from '@loopback/repository';
 
 @model()
 export class Section {
@@ -12,5 +12,6 @@ export class Sections {
   @property() basic?: Section;
   @property() metadata?: Section;
   @property() specific?: Section;
+  @property() timeSpan?: Section;
   @property() simpleForm?: Section;
 }

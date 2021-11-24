@@ -11,7 +11,7 @@
  */
 import { InfStatementWithRelations } from './infStatementWithRelations';
 import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
-import { QuillDocWithRelations } from './quillDocWithRelations';
+import { QuillDoc } from './quillDoc';
 
 
 /**
@@ -19,7 +19,7 @@ import { QuillDocWithRelations } from './quillDocWithRelations';
  */
 export interface InfAppellationWithRelations { 
     pk_entity?: number;
-    quill_doc?: QuillDocWithRelations;
+    quill_doc?: QuillDoc;
     fk_class: number;
     string?: string;
     incoming_statements?: Array<InfStatementWithRelations>;

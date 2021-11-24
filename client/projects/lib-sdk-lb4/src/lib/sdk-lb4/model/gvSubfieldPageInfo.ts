@@ -9,13 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvFieldPage } from './gvFieldPage';
+import { StatementWithTarget } from './statementWithTarget';
+import { GvFieldPageReq } from './gvFieldPageReq';
 
 
 export interface GvSubfieldPageInfo { 
-    page: GvFieldPage;
+    req: GvFieldPageReq;
     count: number;
-    paginatedStatements: Array<number>;
+    paginatedStatements: Array<StatementWithTarget>;
     validFor?: string;
 }
 

@@ -1,0 +1,20 @@
+<div class="full-width">
+
+  <span class="checkbox-col" *ngIf="addMode$|async">
+    <ng-container *ngTemplateOutlet="selectionUI;context:{item:item}">
+    </ng-container>
+  </span>
+
+  <span class="loc-container">
+    <ng-content></ng-content>
+  </span>
+</div>
+
+<ng-template #selectionUI let-item="item">
+  <mat-checkbox *ngIf="allowMultiSelect" (click)="$event.stopPropagation()"
+    (change)="$event ? selectionChange.emit(item) : null" [checked]="checked">
+  </mat-checkbox>
+  <mat-radio-button *ngIf="!allowMultiSelect" (click)="$event.stopPropagation()"
+    (change)="$event ? selectionChange.emit(item) : null" [checked]="checked">
+  </mat-radio-button>
+</ng-template>

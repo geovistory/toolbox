@@ -1,8 +1,5 @@
-<span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2">
-  {{source.fkInfo}}</span>
-
-
-<gv-entity-field *ngFor="let field of (fields$|async)" [field]="field" [source]="source" [scope]="scope"
-  [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
-
+<gv-entity-field *ngFor="let field of (fields$|async)" class="loc-item" [field]="field" [source]="source"
+  [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
 </gv-entity-field>
+<gv-entity-field-time-span [hidden]="x.isEmpty$|async" #x class="loc-item" [source]="source" [scope]="scope">
+</gv-entity-field-time-span>

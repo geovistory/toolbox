@@ -1,12 +1,12 @@
-import { WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { TimePrimitive } from './time-primitive';
 // export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
 //   calendar: CalendarType
 // }
 export interface TimeSpanResult {
   julianDay: number,
-  calendar: 'gregorian' | 'julian'
-  duration: string
+  calendar: TimePrimitiveWithCal.CalendarEnum
+  duration: TimePrimitiveWithCal.DurationEnum
 }
 
 export interface TimeSpanWithNumberProps {

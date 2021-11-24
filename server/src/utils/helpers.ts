@@ -3,7 +3,7 @@ import {concat, mergeDeepWith} from 'ramda';
 import sqlFormatter from 'sql-formatter';
 import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
 
-export const logSql = (sql: string, params: any[]) => {
+export const logSql = (sql: string, params: any[], prefix = 'sql-') => {
 
   if (process.env.DB_ENV === 'development' || process.env.DB_ENV === 'test') {
     params.forEach((param, i) => {
@@ -11,18 +11,28 @@ export const logSql = (sql: string, params: any[]) => {
       sql = sql.replace(replaceStr, typeof param === 'string' ? "'" + param + "'" : param)
     })
 
-    const dir = './dev-logs';
-    if (!existsSync(dir)) {
-      mkdirSync(dir);
-    }
-    const filename = 'sql-' + new Date().toISOString()
-    const log = sqlFormatter.format(sql, {language: 'pl/sql'});
-    writeFileSync(dir + '/' + filename, log, 'utf-8')
 
+    const log = sqlFormatter.format(sql, {language: 'pl/sql'});
+    logToFile(log, prefix)
     // console.log(`
     // "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
     //   ${log}
     //   `)
+  }
+}
+
+
+export const logToFile = (str: string, prefix = 'log-') => {
+
+  if (process.env.DB_ENV === 'development' || process.env.DB_ENV === 'test') {
+
+    const dir = './dev-logs';
+    if (!existsSync(dir)) {
+      mkdirSync(dir);
+    }
+    const filename = prefix + new Date().toISOString()
+    writeFileSync(dir + '/' + filename, str, 'utf-8')
+
   }
 }
 
@@ -147,5 +157,5 @@ export function parsePGError(err: any, sqlString: string) {
  * @param new
  */
 export function mergeSchemaModifier(old: GvSchemaModifier, _new: Partial<GvSchemaModifier>) {
- return mergeDeepWith(concat, old, _new)
+  return mergeDeepWith(concat, old, _new)
 }

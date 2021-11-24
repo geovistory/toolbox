@@ -1,28 +1,36 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Field, GvFieldTargets, InformationPipesService, SubfieldPage } from '@kleiolab/lib-queries';
-import { GvFieldPage, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
+import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
-import { Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { SubfieldDialogComponent, SubfieldDialogData } from '../subfield-dialog/subfield-dialog.component';
+import { Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { PaginationService } from '../../services/pagination.service';
+import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
 
 @Component({
   selector: 'gv-entity-field',
   templateUrl: './entity-field.component.html',
-  styleUrls: ['./entity-field.component.scss']
+  styleUrls: ['./entity-field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityFieldComponent implements OnInit {
+  destroy$ = new Subject<boolean>();
+  @HostBinding('style.display') display = 'none'
+
   @Input() field: Field
   @Input() source: GvFieldSourceEntity
   @Input() scope: GvFieldPageScope
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   isCircular = false;
-  page$: Observable<SubfieldPage>
+  page$: Observable<FieldPage>
   constructor(
+    private p: ActiveProjectPipesService,
     private i: InformationPipesService,
+    private pag: PaginationService,
     private dialog: MatDialog,
+    private ref: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -41,8 +49,30 @@ export class EntityFieldComponent implements OnInit {
       offset: 0,
       scope: this.scope,
     }
+    const targets = this.getFieldTargets(this.field)
     this.page$ = this.i.pipeFieldPage(page, this.getFieldTargets(this.field), this.field.isTimeSpanShortCutField)
+    this.page$.pipe(takeUntil(this.destroy$)).subscribe(p => {
+      let display: string
+      if (p.count > 0) display = 'inherit'
+      else display = 'none'
+      if (this.display !== display) {
+        this.display = display
+        this.ref.detectChanges()
+      }
+    })
 
+    this.registerUpdateListener(targets, page);
+  }
+
+  private registerUpdateListener(targets: GvFieldTargets, page: GvFieldPage) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      const req: GvFieldPageReq = {
+        pkProject,
+        targets,
+        page
+      };
+      this.pag.listenToPageUpdates(req, this.destroy$);
+    });
   }
 
   getFieldTargets(field: Field): GvFieldTargets {
@@ -56,16 +86,21 @@ export class EntityFieldComponent implements OnInit {
   openList() {
     this.page$.pipe(first()).subscribe((subentityPage) => {
 
-      const data: SubfieldDialogData = {
+      const data: ViewFieldDialogData = {
         title: this.field.label,
         field: this.field,
         source: this.source,
         scope: this.scope,
+        readonly$: this.readonly$,
         showOntoInfo$: this.showOntoInfo$,
       }
-      this.dialog.open(SubfieldDialogComponent, {
+      this.dialog.open(ViewFieldDialogComponent, {
         data
       })
     })
+  }
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 }

@@ -1,6 +1,5 @@
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { InfAppellation, InfLangString, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
@@ -273,23 +272,23 @@ export class FormPart {
     }
 
 
-    else if (this.fieldTarget.viewType.timeSpan) {
-      if (!val) return null;
+    // else if (this.fieldTarget.viewType.timeSpan) {
+    //   if (!val) return null;
 
-      const v = val as CtrlTimeSpanDialogResult;
-      const value: InfStatement[] = Object.keys(v).map(key => {
-        const statement: InfStatement = {
-          fk_property: parseInt(key, 10),
-          object_time_primitive: {
-            ...v[key],
-            fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-          },
-          ...{} as any
-        }
-        return statement
-      });
-      return value;
-    }
+    //   const v = val as CtrlTimeSpanDialogResult;
+    //   const value: InfStatement[] = Object.keys(v).map(key => {
+    //     const statement: InfStatement = {
+    //       fk_property: parseInt(key, 10),
+    //       object_time_primitive: {
+    //         ...v[key],
+    //         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+    //       },
+    //       ...{} as any
+    //     }
+    //     return statement
+    //   });
+    //   return value;
+    // }
     else {
       throw console.error('No mapping defined for list type', this.fieldTarget.viewType)
     }

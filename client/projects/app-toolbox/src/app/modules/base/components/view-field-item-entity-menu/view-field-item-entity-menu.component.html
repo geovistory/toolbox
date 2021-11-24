@@ -1,0 +1,25 @@
+<mat-menu #appMenu="matMenu">
+  <button mat-menu-item *ngIf="projRel?.is_in_project" (click)="openInNewTabFromEntity(  )">
+    <mat-icon>tab</mat-icon>
+    Open {{field.targets[resource.fk_class]?.targetClassLabel}} in new Tab
+  </button>
+  <button mat-menu-item *ngIf="!projRel?.is_in_project" (click)="addAndOpenInNewTabFromEntity()">
+    <mat-icon>add</mat-icon>
+    Add {{field.targets[resource.fk_class]?.targetClassLabel}} to project and open
+  </button>
+
+  <button mat-menu-item (click)="markAsFavorite()">
+    <mat-icon>star</mat-icon>
+    Mark As Favorite
+  </button>
+
+  <mat-divider></mat-divider>
+  <div class="dropdown-header">Danger Zone</div>
+  <button mat-menu-item (click)="removeEntity()">
+    <mat-icon color="warn">delete</mat-icon>
+    <span>Remove</span>
+  </button>
+</mat-menu>
+<button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+  <mat-icon>more_vert</mat-icon>
+</button>

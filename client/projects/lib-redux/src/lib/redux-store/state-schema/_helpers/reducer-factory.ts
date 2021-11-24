@@ -221,9 +221,9 @@ export class ReducerFactory<Payload, Model> {
         const start = getStart(meta.page.limit, meta.page.offset);
 
         const rows = {}
-        if (meta.pks) {
-          meta.pks.forEach((pk, i) => {
-            rows[start + i] = pk;
+        if (meta.statements) {
+          meta.statements.forEach((stmt, i) => {
+            rows[start + i] = stmt;
           })
         }
         state = facette(action, state, (innerState) => ({

@@ -1,4 +1,5 @@
-import {WarEntityPreviewId, WarEntityPreviewWithFulltext} from '../../../models';
+import {WarEntityPreviewWithFulltext} from '../../../models';
+import {WarEntityPreviewId} from '../../../models/entity-preview/WarEntityPreviewId';
 import {WarEntityPreviewRepository} from '../../../repositories';
 import {testdb} from "../testdb";
 

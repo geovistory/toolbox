@@ -50,7 +50,7 @@ export class PubAccount extends Entity {
   verificationToken?: string;
 
   @hasOne(() => PubCredential, {keyTo: 'accountId'})
-  pubAccountCredentials: PubCredential;
+  pubAccountCredentials?: PubCredential;
 
 
   // Indexer property to allow additional data

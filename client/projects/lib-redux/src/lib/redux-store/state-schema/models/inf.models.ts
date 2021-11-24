@@ -1,5 +1,5 @@
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { InfResource, InfStatement, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../root/models/model';
 
 interface PaginationInfo {
@@ -8,7 +8,7 @@ interface PaginationInfo {
   },
   count: number,
   rows: {
-    [key: string]: number
+    [key: string]: StatementWithTarget
   }
 }
 export class InfResourceSlice {

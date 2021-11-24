@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { GvFieldPage } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionsObservable } from 'redux-observable-es6-compat';
@@ -17,7 +17,7 @@ export interface FailActionMeta { removePending: string, pk?: number }
 
 export interface PaginateByParam { [key: string]: number | boolean | string }
 export interface LoadPageMeta { page: GvFieldPage, pk?: number }
-export interface LoadPageSucceededMeta { pks: number[], count: number, page: GvFieldPage, pk?: number }
+export interface LoadPageSucceededMeta { statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number }
 
 
 
@@ -157,20 +157,20 @@ export class SchemaActionsFactory<Model> {
     this.ngRedux.dispatch(action)
   }
 
-  loadPageSucceeded(pks: number[], count: number, page: GvFieldPage, pk?: number): void {
+  loadPageSucceeded(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number): void {
     const action: FluxStandardAction<Payload, LoadPageSucceededMeta> = ({
       type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
-      meta: { page, pks, count, pk },
+      meta: { page, statements, count, pk },
       payload: null,
     })
     this.ngRedux.dispatch(action)
   }
 
-  loadPageSucceededAction(pks: number[], count: number, page: GvFieldPage, pk?: number):
+  loadPageSucceededAction(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number):
     FluxStandardAction<Payload, LoadPageSucceededMeta> {
     return {
       type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
-      meta: { page, pks, count, pk },
+      meta: { page, statements, count, pk },
       payload: null,
     }
   }

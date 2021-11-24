@@ -1,11 +1,11 @@
 import {GvFieldPageReq} from '../../../../models'
-import {ProProjectMock} from '../gvDB/ProProjectMock'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {TrueEnum} from '../../../../models/enums/TrueEnum'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
+import {InfStatementMock} from '../gvDB/InfStatementMock'
+import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
-import {TrueEnum} from '../../../../models/sys-config/TrueEnum'
 
 export namespace GvFieldPageReqMock {
 
@@ -45,6 +45,23 @@ export namespace GvFieldPageReqMock {
     },
     page: {
       source: {fkInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info},
+      property: {fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property},
+      isOutgoing: true,
+      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      limit: 7,
+      offset: 0
+    }
+  }
+
+  export const appeTeEn2RefersToName: GvFieldPageReq = {
+    pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    targets: {
+      [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
+        appellation: TrueEnum.true
+      }
+    },
+    page: {
+      source: {fkInfo: InfStatementMock.NAME_2_TO_APPE.fk_subject_info},
       property: {fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -158,22 +175,22 @@ export namespace GvFieldPageReqMock {
     }
   }
 
-  export const shipVoyageHasTimeSpan: GvFieldPageReq = {
-    pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    targets: {
-      [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-        timeSpan: TrueEnum.true
-      }
-    },
-    page: {
-      source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
-      isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
-      limit: 1,
-      offset: 0
-    }
-  }
+  // export const shipVoyageHasTimeSpan: GvFieldPageReq = {
+  //   pkProject: ProProjectMock.PROJECT_1.pk_entity,
+  //   targets: {
+  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+  //       timeSpan: TrueEnum.true
+  //     }
+  //   },
+  //   page: {
+  //     source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
+  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+  //     isOutgoing: true,
+  //     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+  //     limit: 1,
+  //     offset: 0
+  //   }
+  // }
 
 
 }

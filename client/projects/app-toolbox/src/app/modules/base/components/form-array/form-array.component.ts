@@ -62,8 +62,8 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get parentLength() {
-    const formArray = this.parent?.arrayFactory.control;
-    if (formArray.controls && formArray.controls.length > 0) {
+    const formArray = this.parent?.arrayFactory?.control;
+    if (formArray?.controls?.length > 0) {
       return sum(formArray.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
     }
     return 0;

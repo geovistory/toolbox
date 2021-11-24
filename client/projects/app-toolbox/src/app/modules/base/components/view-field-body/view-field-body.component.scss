@@ -1,0 +1,17 @@
+:host {
+  width: 100%;
+}
+.loc-container {
+  background-color: white;
+}
+.loc-no-items {
+  height: 40px;
+  padding-left: 16px;
+  display: flex;
+  align-items: center;
+}
+
+mat-paginator {
+  margin-top: -8px;
+  // background-color: white;
+}

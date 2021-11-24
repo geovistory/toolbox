@@ -1,7 +1,10 @@
-import { GvFieldPage, GvFieldPageReq, GvPaginationObject, GvSubfieldPageInfo, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { concat, mergeDeepWith, values } from 'ramda';
+import { GvFieldPage, GvFieldPageReq, GvPaginationObject, GvSubfieldPageInfo, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, StatementTargetDimension, StatementTargetEntity, StatementTargeTimePrimitive, StatementTargetLangString, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
+import { concat, keys, mergeDeepWith, values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { createStatementWithTarget } from '../data/auto-gen/api-responses/GvPaginationObjectMock';
+import { CalendarType } from '../data/auto-gen/enums/CalendarType';
+import { TrueEnum } from '../data/auto-gen/enums/TrueEnum';
 import { DfhApiClassMock } from '../data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from '../data/auto-gen/gvDB/InfLanguageMock';
@@ -10,8 +13,6 @@ import { InfTimePrimitiveMock } from '../data/auto-gen/gvDB/InfTimePrimitiveMock
 import { OmitEntity } from '../data/auto-gen/gvDB/local-model.helpers';
 import { ProProjectMock } from '../data/auto-gen/gvDB/ProProjectMock';
 import { PubAccountMock } from '../data/auto-gen/gvDB/PubAccountMock';
-import { WarEntityPreviewMock } from '../data/auto-gen/gvDB/WarEntityPreviewMock';
-import { transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhLabel, transformDfhApiPropertyToDfhProperty } from '../helpers/transformers';
 
 /**
  * This Mock Service returns many statements targeting appellations
@@ -27,10 +28,10 @@ export class MockPaginationControllerForSandboxes {
   infDimensionSerial: number
   infTimePrimitiveSerial: number;
 
-  subfieldPageControllerLoadSubfieldPage(gvLoadSubfieldPageReq?: GvFieldPageReq): Observable<GvPaginationObject> {
+  subfieldPageControllerLoadSubfieldPages(gvLoadSubfieldPageReqs?: GvFieldPageReq[]): Observable<GvPaginationObject> {
     this.resetIdBase();
     console.log('REST API called: subfieldPageControllerLoadSubfieldPage')
-    return new BehaviorSubject(this.generateData(gvLoadSubfieldPageReq)).pipe(delay(250))
+    return new BehaviorSubject(this.handleRequests(gvLoadSubfieldPageReqs)).pipe(delay(250))
 
   }
   private resetIdBase() {
@@ -56,47 +57,57 @@ export class MockPaginationControllerForSandboxes {
     this.infTimePrimitiveSerial += amount;
   }
 
+  handleRequests(gvLoadSubfieldPageReqs?: GvFieldPageReq[]): GvPaginationObject {
+    const results = gvLoadSubfieldPageReqs.map(req => this.generateData(req))
+    let result: GvPaginationObject = { subfieldPages: [] };
+    for (const obj of results) {
+      result = mergeDeepWith(concat, result, obj);
+    }
+    return result;
+  }
+
   generateData(gvLoadSubfieldPageReq?: GvFieldPageReq): GvPaginationObject {
     if (values(gvLoadSubfieldPageReq.targets)[0].appellation) {
-      return this.generateDataForAppe(gvLoadSubfieldPageReq.page);
+      return this.generateDataForAppe(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].place) {
-      return this.generateDataForPlace(gvLoadSubfieldPageReq.page);
+      return this.generateDataForPlace(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].dimension) {
-      return this.generateDataForDimension(gvLoadSubfieldPageReq.page);
+      return this.generateDataForDimension(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].langString) {
-      return this.generateDataForLangString(gvLoadSubfieldPageReq.page);
+      return this.generateDataForLangString(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].language) {
-      return this.generateDataForLanguage(gvLoadSubfieldPageReq.page);
+      return this.generateDataForLanguage(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].nestedResource) {
-      return this.generateDataForTemporalEntity(gvLoadSubfieldPageReq);
+      return this.generateDataForEntity(gvLoadSubfieldPageReq);
     }
     else if (values(gvLoadSubfieldPageReq.targets)[0].entityPreview) {
-      return this.generateDataForEntityPreview(gvLoadSubfieldPageReq.page);
+      return this.generateDataForEntity(gvLoadSubfieldPageReq);
     }
-    else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
-      return this.generateDataForTimeSpan(gvLoadSubfieldPageReq.page);
-    }
+    // else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
+    //   return this.generateDataForTimeSpan(gvLoadSubfieldPageReq);
+    // }
     else if (values(gvLoadSubfieldPageReq.targets)[0].typeItem) {
-      return this.generateDataForEntityPreview(gvLoadSubfieldPageReq.page);
+      return this.generateDataForEntity(gvLoadSubfieldPageReq);
+    }
+    else if (values(gvLoadSubfieldPageReq.targets)[0].timePrimitive) {
+      return this.generateDataForTimePrimitive(gvLoadSubfieldPageReq);
     }
     throw new Error('mock not implemented for this request');
 
   }
 
 
-  generateDataForAppe(page: GvFieldPage): GvPaginationObject {
+  generateDataForAppe(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
-    const paginatedStatements: number[] = []
-    const statements: OmitEntity<InfStatement>[] = []
-    const appellations: OmitEntity<InfAppellation>[] = []
-    const projRels: OmitEntity<ProInfoProjRel>[] = []
+    const paginatedStatements: StatementWithTarget[] = []
 
     for (let i = offset; i < (offset + limit); i++) {
       const appellation: OmitEntity<InfAppellation> = {
@@ -104,7 +115,6 @@ export class MockPaginationControllerForSandboxes {
         fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
         string: 'Jack the foo ' + (this.infAppellationSerial + i),
       }
-      appellations.push(appellation)
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
@@ -112,8 +122,6 @@ export class MockPaginationControllerForSandboxes {
         fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
         fk_object_info: appellation.pk_entity,
       }
-      statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
       const projRel: OmitEntity<ProInfoProjRel> = {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -121,41 +129,30 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      projRels.push(projRel)
+      paginatedStatements.push(
+        createStatementWithTarget(statement, projRel, 1, { appellation }, page.isOutgoing)
+      )
     }
 
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
-      ],
-      schemas: {
-        inf: {
-          statement: statements,
-          appellation: appellations
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_40_APPELLATION)
-          ]
-        }
-      }
+      ]
     }
     return paginationObject
   }
 
 
-  generateDataForPlace(page: GvFieldPage): GvPaginationObject {
+  generateDataForPlace(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
-    const paginatedStatements: number[] = []
+    const paginatedStatements: StatementWithTarget[] = []
     const statements: OmitEntity<InfStatement>[] = []
     const places: OmitEntity<InfPlace>[] = []
     const projRels: OmitEntity<ProInfoProjRel>[] = []
@@ -176,7 +173,6 @@ export class MockPaginationControllerForSandboxes {
         fk_object_info: place.pk_entity,
       }
       statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
       const projRel: OmitEntity<ProInfoProjRel> = {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -184,62 +180,99 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      projRels.push(projRel)
+      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { place }, page.isOutgoing))
     }
 
 
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
-      ],
-      schemas: {
-        inf: {
-          statement: statements,
-          place: places
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_51_PLACE)
-          ]
-        }
-      }
+      ]
     }
     return paginationObject
   }
 
-  generateDataForDimension(page: GvFieldPage): GvPaginationObject {
+
+  generateDataForTimePrimitive(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
-    const paginatedStatements: number[] = []
-    const statements: OmitEntity<InfStatement>[] = []
-    const dimensions: OmitEntity<InfDimension>[] = []
-    const projRels: OmitEntity<ProInfoProjRel>[] = []
+    const paginatedStatements: StatementWithTarget[] = []
+    function isOdd(num: number) { return num % 2; }
+    for (let i = offset; i < (offset + limit); i++) {
+      const tp = isOdd(i) ? InfTimePrimitiveMock.TP_1 : InfTimePrimitiveMock.TP_2;
+      const infTimePrimitive: OmitEntity<InfTimePrimitive> = {
+        ...tp,
+        pk_entity: this.infTimePrimitiveSerial + i,
+
+      }
+      const timePrimitive: StatementTargeTimePrimitive = {
+        infTimePrimitive,
+        timePrimitive: {
+          julianDay: infTimePrimitive.julian_day,
+          duration: infTimePrimitive.duration,
+          calendar: CalendarType.gregorian
+        }
+      }
+      const statement: OmitEntity<InfStatement> = {
+        pk_entity: this.infStatementSerial + i,
+        fk_subject_info: page.source.fkInfo,
+        fk_property: page.property.fkProperty,
+        fk_object_info: infTimePrimitive.pk_entity,
+      }
+      const projRel: OmitEntity<ProInfoProjRel> = {
+        pk_entity: this.proInfoProjRelSerial + i,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        fk_entity: statement.pk_entity,
+        fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+        is_in_project: true
+      }
+      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { timePrimitive }, page.isOutgoing))
+    }
+
+
+    const paginationObject: GvPaginationObject = {
+      subfieldPages: [
+        {
+          req,
+          count: count,
+          paginatedStatements
+        }
+      ]
+    }
+    return paginationObject
+  }
+
+  generateDataForDimension(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
+    const limit = page.limit
+    const offset = page.offset
+    const count = 46;
+    const paginatedStatements: StatementWithTarget[] = []
+
 
     for (let i = offset; i < (offset + limit); i++) {
-      const dimension: OmitEntity<InfDimension> = {
+      const infDimension: OmitEntity<InfDimension> = {
         pk_entity: this.infDimensionSerial + i,
         fk_class: DfhApiClassMock.EN_689_DURATION.dfh_pk_class,
         numeric_value: i + 1,
         fk_measurement_unit: InfResourceMock.TIME_UNIT_MONTH.pk_entity
       }
-      dimensions.push(dimension)
+      const dimension: StatementTargetDimension = {
+        dimension: infDimension,
+      }
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
         fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_1613_HAS_DURATION.dfh_pk_property,
-        fk_object_info: dimension.pk_entity,
+        fk_object_info: infDimension.pk_entity,
       }
-      statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
       const projRel: OmitEntity<ProInfoProjRel> = {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -247,67 +280,50 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      projRels.push(projRel)
+      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { dimension }, page.isOutgoing))
     }
 
 
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
-      ],
-      schemas: {
-        inf: {
-          statement: statements,
-          dimension: dimensions
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_689_DURATION)
-          ]
-        },
-        war: {
-          entity_preview: [
-            WarEntityPreviewMock.TIME_UNIT_ONE_MONTH
-          ]
-        }
-      }
+      ]
     }
     return paginationObject
   }
 
-  generateDataForLangString(page: GvFieldPage): GvPaginationObject {
+  generateDataForLangString(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
-    const paginatedStatements: number[] = []
+    const paginatedStatements: StatementWithTarget[] = []
     const statements: OmitEntity<InfStatement>[] = []
     const langStrings: OmitEntity<InfLangString>[] = []
     const projRels: OmitEntity<ProInfoProjRel>[] = []
 
     for (let i = offset; i < (offset + limit); i++) {
-      const langString: OmitEntity<InfLangString> = {
+      const infLangString: OmitEntity<InfLangString> = {
         pk_entity: 9000 + i,
         fk_class: DfhApiClassMock.EN_689_DURATION.dfh_pk_class,
         fk_language: InfLanguageMock.ENGLISH.pk_entity,
         string: `«The Murderer» ${i + 1}`
       }
-      langStrings.push(langString)
 
+      const langString: StatementTargetLangString = {
+        langString: infLangString,
+        language: InfLanguageMock.ENGLISH
+      }
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
         fk_subject_info: page.source.fkInfo,
         fk_property: DfhApiPropertyMock.EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE.dfh_pk_property,
-        fk_object_info: langString.pk_entity,
+        fk_object_info: infLangString.pk_entity,
       }
-      statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
       const projRel: OmitEntity<ProInfoProjRel> = {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -315,47 +331,29 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      projRels.push(projRel)
+      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { langString }, page.isOutgoing))
     }
 
 
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
       ],
-      schemas: {
-        inf: {
-          statement: statements,
-          lang_string: langStrings,
-          language: [
-            InfLanguageMock.ENGLISH
-          ]
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_784_SHORT_TITLE)
-          ]
-        },
-      }
+
     }
     return paginationObject
   }
 
-  generateDataForLanguage(page: GvFieldPage): GvPaginationObject {
+  generateDataForLanguage(req: GvFieldPageReq): GvPaginationObject {
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
-    const paginatedStatements: number[] = []
-    const statements: OmitEntity<InfStatement>[] = []
-    const languages: OmitEntity<InfLanguage>[] = []
-    const projRels: OmitEntity<ProInfoProjRel>[] = []
+    const paginatedStatements: StatementWithTarget[] = []
 
     for (let i = offset; i < (offset + limit); i++) {
       const language: OmitEntity<InfLanguage> = {
@@ -364,7 +362,6 @@ export class MockPaginationControllerForSandboxes {
         notes: `Language ${i + 1}`,
         iso6391: `L${i + 1}`
       }
-      languages.push(language)
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
@@ -372,8 +369,6 @@ export class MockPaginationControllerForSandboxes {
         fk_property: DfhApiPropertyMock.EN_1112_USED_IN_LANGUAGE.dfh_pk_property,
         fk_object_info: language.pk_entity,
       }
-      statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
       const projRel: OmitEntity<ProInfoProjRel> = {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -381,102 +376,64 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      projRels.push(projRel)
+      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { language }, page.isOutgoing))
     }
 
 
     const paginationObject: GvPaginationObject = {
       subfieldPages: [
         {
-          page,
+          req,
           count: count,
           paginatedStatements
         }
-      ],
-      schemas: {
-        inf: {
-          statement: statements,
-          language: languages,
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_54_LANGUAGE)
-          ]
-        },
-      }
+      ]
     }
     return paginationObject
   }
 
 
-  generateDataForTemporalEntity(
-    mainReq: GvFieldPageReq,
+  generateDataForEntity(
+    req: GvFieldPageReq,
   ): GvPaginationObject {
-    const page = mainReq.page
+    const page = req.page
     const limit = page.limit
     const offset = page.offset
     const count = 46;
-    const paginatedStatements: number[] = []
-    const statements: OmitEntity<InfStatement>[] = []
-    const resource: OmitEntity<InfResource>[] = []
-    const projRels: OmitEntity<ProInfoProjRel>[] = []
+    const paginatedStatements: StatementWithTarget[] = []
     const subfieldPages: GvSubfieldPageInfo[] = [
       {
-        page,
+        req,
         count: count,
         paginatedStatements
       }
     ]
 
-    let paginationObject: GvPaginationObject = {
-      subfieldPages,
-      schemas: {
-        inf: {
-          statement: statements,
-          resource: resource,
-          language: [
-            InfLanguageMock.GERMAN
-          ]
-        },
-        pro: {
-          info_proj_rel: projRels,
-          project: [
-            ProProjectMock.PROJECT_1
-          ]
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_365_NAMING)
-          ],
-          property: [
-            transformDfhApiPropertyToDfhProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME)
-          ],
-          label: [
-            transformDfhApiClassToDfhLabel(DfhApiClassMock.EN_365_NAMING),
-            transformDfhApiPropertyToDfhLabel(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME)
-          ],
-        },
-      }
-    }
+    let paginationObject: GvPaginationObject = { subfieldPages }
 
     for (let i = offset; i < (offset + limit); i++) {
-      const temporalEntity: OmitEntity<InfResource> = {
+      const resource: OmitEntity<InfResource> = {
         pk_entity: this.infTemporalEntitySerial + i,
-        fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+        fk_class: parseInt(keys(req.targets)[0].toString())
+        // fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
       }
-      resource.push(temporalEntity)
+      const entity: StatementTargetEntity = {
+        resource: resource,
+        entityPreview: {
+          ...resource,
+          project: ProProjectMock.PROJECT_1.pk_entity,
+          fk_project: ProProjectMock.PROJECT_1.pk_entity,
+          entity_label: 'Label of entity ' + resource.pk_entity
+        }
+      }
 
       const statement: OmitEntity<InfStatement> = {
         pk_entity: this.infStatementSerial + i,
-        fk_subject_info: temporalEntity.pk_entity,
-        fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property,
+        fk_subject_info: resource.pk_entity,
+        fk_property: req.page.property.fkProperty,
+        // fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF_PERSON.dfh_pk_property,
         fk_object_info: page.source.fkInfo,
       }
-      statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
       const projRel: OmitEntity<ProInfoProjRel> = {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -484,24 +441,25 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      projRels.push(projRel)
+      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { entity }, page.isOutgoing))
 
 
     }
 
     // Do the subfields
-    for (const temporalEntity of resource) {
-      for (const teEnSubfield of mainReq.targets[temporalEntity.fk_class].nestedResource) {
+    for (const resource of paginatedStatements.filter(s => s.target.entity).map(s => s.target.entity.resource)) {
+      const nestedResource = req.targets[resource.fk_class]?.nestedResource ?? []
+      for (const teEnSubfield of nestedResource) {
         // increase the id base for subfields
         this.increaseIdBase(100000 + offset)
 
         const p: GvFieldPage = {
           ...teEnSubfield.page,
-          source: { fkInfo: temporalEntity.pk_entity },
+          source: { fkInfo: resource.pk_entity },
           scope: page.scope
         }
         const subReq: GvFieldPageReq = {
-          pkProject: mainReq.pkProject,
+          pkProject: req.pkProject,
           page: p,
           targets: teEnSubfield.targets
         }
@@ -514,171 +472,75 @@ export class MockPaginationControllerForSandboxes {
   }
 
 
-  generateDataForEntityPreview(page: GvFieldPage): GvPaginationObject {
-    const limit = page.limit
-    const offset = page.offset
-    const count = 3;
-    const paginatedStatements: number[] = []
-    const statements: OmitEntity<InfStatement>[] = []
-    const entityPreviews: OmitEntity<WarEntityPreview>[] = []
-    const resources: OmitEntity<InfResource>[] = []
-    const projRels: OmitEntity<ProInfoProjRel>[] = []
+  // generateDataForEntityPreview(req: GvFieldPageReq): GvPaginationObject {
+  //   const page = req.page
+  //   const limit = page.limit
+  //   const offset = page.offset
+  //   const count = 3;
+  //   const paginatedStatements: StatementWithTarget[] = []
 
-    for (let i = offset; i < (offset + limit); i++) {
-      const resource: OmitEntity<InfResource> = {
-        pk_entity: this.warEntityPreviewSerial + i,
-        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
-      }
-      resources.push(resource)
-      const projRel1: OmitEntity<ProInfoProjRel> = {
-        pk_entity: this.proInfoProjRelSerial + i,
-        fk_project: ProProjectMock.PROJECT_1.pk_entity,
-        fk_entity: resource.pk_entity,
-        fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
-        is_in_project: true
-      }
-      projRels.push(projRel1)
-      const entityPreview: OmitEntity<WarEntityPreview> = {
-        pk_entity: this.warEntityPreviewSerial + i,
-        fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
-        entity_label: 'Jack the foo ' + (this.warEntityPreviewSerial + i),
-        class_label: 'Person',
-        entity_type: 'peIt',
-        project: page.scope.inProject,
-        fk_project: page.scope.inProject
-      }
-      entityPreviews.push(entityPreview)
+  //   for (let i = offset; i < (offset + limit); i++) {
+  //     const resource: OmitEntity<InfResource> = {
+  //       pk_entity: this.warEntityPreviewSerial + i,
+  //       fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+  //     }
 
-      const statement: OmitEntity<InfStatement> = {
-        pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.source.fkInfo,
-        fk_property: page.property.fkProperty,
-        fk_object_info: entityPreview.pk_entity,
-      }
-      statements.push(statement)
-      paginatedStatements.push(statement.pk_entity)
-      const projRel: OmitEntity<ProInfoProjRel> = {
-        pk_entity: this.proInfoProjRelSerial + i,
-        fk_project: ProProjectMock.PROJECT_1.pk_entity,
-        fk_entity: statement.pk_entity,
-        fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
-        is_in_project: true
-      }
-      projRels.push(projRel)
-    }
+  //     const entityPreview: OmitEntity<WarEntityPreview> = {
+  //       pk_entity: this.warEntityPreviewSerial + i,
+  //       fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+  //       entity_label: 'Jack the foo ' + (this.warEntityPreviewSerial + i),
+  //       class_label: 'Person',
+  //       entity_type: 'peIt',
+  //       project: page.scope.inProject,
+  //       fk_project: page.scope.inProject
+  //     }
 
-    const paginationObject: GvPaginationObject = {
-      subfieldPages: [
-        {
-          page,
-          count: count,
-          paginatedStatements
-        }
-      ],
-      schemas: {
-        inf: {
-          statement: statements,
-          resource: resources
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_21_PERSON)
-          ]
-        },
-        war: {
-          entity_preview: entityPreviews
-        }
-      }
-    }
-    return paginationObject
+  //     const statement: OmitEntity<InfStatement> = {
+  //       pk_entity: this.infStatementSerial + i,
+  //       fk_subject_info: page.source.fkInfo,
+  //       fk_property: page.property.fkProperty,
+  //       fk_object_info: entityPreview.pk_entity,
+  //     }
+  //     paginatedStatements.push(statement.pk_entity)
+  //     const projRel: OmitEntity<ProInfoProjRel> = {
+  //       pk_entity: this.proInfoProjRelSerial + i,
+  //       fk_project: ProProjectMock.PROJECT_1.pk_entity,
+  //       fk_entity: statement.pk_entity,
+  //       fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+  //       is_in_project: true
+  //     }
+  //   }
+
+  //   const paginationObject: GvPaginationObject = {
+  //     subfieldPages: [
+  //       {
+  //         page,
+  //         count: count,
+  //         paginatedStatements
+  //       }
+  //     ],
+
+  //   }
+  //   return paginationObject
+  // }
+
+
+  generateDataForTimeSpan(req: GvFieldPageReq): GvPaginationObject {
+    const reqs = this.createTimeSpanFieldRequests(req)
+    return this.handleRequests(reqs)
   }
-
-  generateDataForTimeSpan(page: GvFieldPage): GvPaginationObject {
-    const limit = page.limit
-    const offset = page.offset
-    const statements: OmitEntity<InfStatement>[] = []
-    const timePrimitives: OmitEntity<InfTimePrimitive>[] = []
-    const projRels: OmitEntity<ProInfoProjRel>[] = []
-    function isOdd(num: number) { return num % 2; }
-
-    const paginationObject: GvPaginationObject = {
-      subfieldPages: [],
-      schemas: {
-        inf: {
-          statement: statements,
-          time_primitive: timePrimitives,
-        },
-        pro: {
-          info_proj_rel: projRels
-        },
-        dfh: {
-          klass: [
-            transformDfhApiClassToDfhClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE)
-          ]
-        },
-      }
-    }
-
-
-    const props = [
-      DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT,
-      DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN,
-      DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN,
-      DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN,
-      DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END,
-      DfhApiPropertyMock.EN_153_END_OF_THE_END
-    ]
-
-    props.forEach((prop, i) => {
-      const tp = isOdd(i) ? InfTimePrimitiveMock.TP_1 : InfTimePrimitiveMock.TP_2;
-      const timePrimitive: OmitEntity<InfTimePrimitive> = {
-        ...tp,
-        pk_entity: this.infTimePrimitiveSerial + i,
-
-      }
-      timePrimitives.push(timePrimitive)
-
-
-      const statement: OmitEntity<InfStatement> = {
-        pk_entity: this.infStatementSerial + i,
-        fk_subject_info: page.source.fkInfo,
-        fk_property: prop.dfh_pk_property,
-        fk_object_info: timePrimitive.pk_entity,
-      }
-      statements.push(statement)
-      paginationObject.subfieldPages.push({
+  private createTimeSpanFieldRequests(req: GvFieldPageReq): GvFieldPageReq[] {
+    return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
+      const request: GvFieldPageReq = {
+        ...req,
         page: {
-          property: { fkProperty: prop.dfh_pk_property },
-          source: page.source,
-          isOutgoing: true,
-          limit: 1,
-          offset: 0,
-          scope: page.scope,
+          ...req.page,
+          property: { fkProperty: timeSpanProperty },
         },
-        count: 1,
-        paginatedStatements: [
-          statement.pk_entity
-        ]
-      })
-      const projRel: OmitEntity<ProInfoProjRel> = {
-        pk_entity: this.proInfoProjRelSerial + i,
-        fk_project: ProProjectMock.PROJECT_1.pk_entity,
-        fk_entity: statement.pk_entity,
-        calendar: 'gregorian',
-        fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
-        is_in_project: true
-      }
-      projRels.push(projRel)
-
-    })
-
-
-
-    return paginationObject
+        targets: { 335: { timePrimitive: TrueEnum.true } }
+      };
+      return request;
+    });
   }
-
 
 }

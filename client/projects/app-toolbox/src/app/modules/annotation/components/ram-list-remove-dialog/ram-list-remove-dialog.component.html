@@ -23,8 +23,8 @@
 <div *ngIf="data.propertyHasReferences" mat-dialog-content>
   <mat-divider></mat-divider>
 
-  <gv-field [source]="{fkInfo:data.statement.pk_entity}" [field]="fieldDefinition" [readonly$]="readonly$">
-  </gv-field>
+  <gv-view-field [source]="{fkInfo:data.statement.pk_entity}" [field]="fieldDefinition" [readonly$]="readonly$">
+  </gv-view-field>
 
 </div>
 <div mat-dialog-actions>

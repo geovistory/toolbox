@@ -15,6 +15,20 @@ export interface InfTimePrimitive {
     pk_entity?: number;
     fk_class: number;
     julian_day: number;
-    duration: string;
+    duration: InfTimePrimitive.DurationEnum;
 }
+export namespace InfTimePrimitive {
+    export type DurationEnum = '1 century' | '1 decade' | '1 year' | '1 month' | '1 day' | '1 hour' | '1 minute' | '1 second';
+    export const DurationEnum = {
+        Century: '1 century' as DurationEnum,
+        Decade: '1 decade' as DurationEnum,
+        Year: '1 year' as DurationEnum,
+        Month: '1 month' as DurationEnum,
+        Day: '1 day' as DurationEnum,
+        Hour: '1 hour' as DurationEnum,
+        Minute: '1 minute' as DurationEnum,
+        Second: '1 second' as DurationEnum
+    };
+}
+
 

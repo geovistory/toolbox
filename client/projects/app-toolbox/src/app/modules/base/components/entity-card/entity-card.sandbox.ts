@@ -18,7 +18,7 @@ import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
-import { MockPaginationControllerForPropertiesTree } from 'projects/__test__/mock-services/MockPaginationControllerForPropertiesTree';
+import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
@@ -125,7 +125,7 @@ export default sandboxOf(EntityCardComponent, {
     InitStateModule
   ],
   providers: [
-    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForPropertiesTree },
+    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes },
     { provide: ActiveProjectPipesService, useClass: ActiveProjectPipesServiceMock },
     { provide: LanguagesService, useClass: LanguagesServiceMock },
   ]

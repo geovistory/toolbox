@@ -1,7 +1,8 @@
-<div *ngIf="(page$|async)?.count>0" class="main">
-
+<div class="main">
   <!-- small header of field -->
   <div class="mat-caption mat-text-secondary d-flex">
+    <gv-onto-property-info class="mr-2" *ngIf="showOntoInfo$|async" [pkProperty]="field.property.fkProperty">
+    </gv-onto-property-info>
     <gv-field-label [fkProperty]="field.property.fkProperty" [fkSourceClass]="field.sourceClass"
       [isOutgoing]="field.isOutgoing" [showTooltip]=true></gv-field-label>
     <a href *ngIf="(page$|async)?.count > 1" class="gv-passive-link ml-1" (click)="openList()" matTooltip="Open list">
@@ -10,9 +11,10 @@
   </div>
   <!-- value of field -->
   <ng-container *ngFor="let statementWT of (page$|async)?.statements">
-    <ng-container *ngIf="statementWT.target.entityPreview; else default">
+    <ng-container *ngIf="statementWT.target.entity; else default">
       <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)"
-        [preview]="statementWT.target.entityPreview" [matTooltip]="statementWT.target.entityPreview.entity_label">
+        [preview]="statementWT.target.entity.entityPreview"
+        [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
       </gv-entity-preview>
     </ng-container>
     <ng-template #default>

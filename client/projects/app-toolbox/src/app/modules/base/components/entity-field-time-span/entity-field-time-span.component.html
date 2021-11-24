@@ -1,0 +1,11 @@
+<div class="loc-main">
+  <!-- small header of field -->
+  <div class="mat-caption mat-text-secondary d-flex">
+    Time span
+  </div>
+  <!-- value of field -->
+  <gv-view-time-span-item-preview #s [scope]="scope" [source]="source"
+    (timeSpanPreviewChange)="timeSpanPreviewChange($event)">
+  </gv-view-time-span-item-preview>
+
+</div>

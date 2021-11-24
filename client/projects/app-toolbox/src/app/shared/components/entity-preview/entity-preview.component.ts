@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -18,10 +18,12 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   @Input() dragEnabled = true;
   @Input() openTabOnClick = false;
   @Input() showId = false;
+  @Input() hideClass = false;
 
   constructor(
     private p: ActiveProjectService,
     private ap: ActiveProjectPipesService,
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -30,7 +32,10 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
     if (this.pkEntity && !this.preview) {
       this.ap.streamEntityPreview(this.pkEntity)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(preview => this.preview = preview)
+        .subscribe(preview => {
+          this.preview = preview
+          this.ref.detectChanges()
+        })
     }
 
   }

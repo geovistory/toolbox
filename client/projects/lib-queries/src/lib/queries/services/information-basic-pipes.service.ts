@@ -188,4 +188,5 @@ export class InformationBasicPipesService {
 
   }
 
+
 }

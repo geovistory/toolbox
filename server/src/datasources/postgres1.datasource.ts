@@ -1,16 +1,5 @@
-import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
-import { juggler } from '@loopback/repository';
-import { getGvPgUrlForLoopback } from '../utils/databaseUrl';
-
-const config = {
-  url: getGvPgUrlForLoopback(),
-  name: 'postgres1',
-  connector: 'postgresql',
-  ssl: {
-    rejectUnauthorized: true,
-  },
-  type: ''
-};
+import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
+import {juggler} from '@loopback/repository';
 
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
@@ -20,13 +9,12 @@ const config = {
 export class Postgres1DataSource extends juggler.DataSource
   implements LifeCycleObserver {
   static dataSourceName = 'postgres1';
-  static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.postgres1', { optional: true })
-    dsConfig: object = config,
+    @inject('datasources.config.postgres1', {optional: true})
+    dsConfig: object,
   ) {
     super(dsConfig);
-    console.log('Geovistory Database:', config.url.split('@')[1])
+    console.log('Geovistory Database:', this.settings.url.split('@')[1])
   }
 }

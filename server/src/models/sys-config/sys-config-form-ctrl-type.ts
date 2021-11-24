@@ -1,6 +1,6 @@
 import {model, property} from '@loopback/repository';
+import {TrueEnum} from '../enums/TrueEnum';
 import {DimensionValueObjectType} from './sys-config-dimension-value-object-type';
-import {TrueEnum} from './TrueEnum';
 
 
 

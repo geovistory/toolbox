@@ -1,6 +1,6 @@
 import {ReferenceObject, SchemaObject, SchemasObject} from '@loopback/rest';
 import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/testlab';
-import ajv, {Ajv} from 'ajv';
+import Ajv, {ErrorObject, ValidateFunction} from 'ajv';
 import {path} from 'ramda';
 import {GeovistoryServer} from '../../server';
 import {testdb} from './testdb';
@@ -69,11 +69,11 @@ async function validateValueAgainstSchema(
   globalSchemas: SchemasObject = {},
 ) {
 
-  const ajvInst = new ajv();
+  const ajvInst = new Ajv();
   const validate = createValidator(schema, globalSchemas, ajvInst);
-  let validationErrors: ajv.ErrorObject[] = [];
+  let validationErrors: ErrorObject[] = [];
   try {
-    const validationResult = await validate(value);
+    const validationResult = validate(value);
     return validationResult;
   } catch (error) {
     validationErrors = error.errors;
@@ -96,7 +96,7 @@ function createValidator(
   schema: SchemaObject,
   globalSchemas: SchemasObject = {},
   ajvInst: Ajv,
-): ajv.ValidateFunction {
+): ValidateFunction {
   const jsonSchema = convertToJsonSchema(schema);
 
   // Clone global schemas to set `$async: true` flag
@@ -123,14 +123,14 @@ function convertToJsonSchema(openapiSchema: SchemaObject) {
 }
 
 function buildErrorDetails(
-  validationErrors: ajv.ErrorObject[],
+  validationErrors: ErrorObject[],
   value: unknown
 ) {
   return validationErrors.map(
-    (e: ajv.ErrorObject) => {
-      const givenValueAtPath = path([e.dataPath], value)
+    (e: ErrorObject) => {
+      const givenValueAtPath = path([e.schemaPath], value)
       return {
-        path: e.dataPath,
+        path: e.schemaPath,
         code: e.keyword,
         message: e.message ?? `must pass validation rule ${e.keyword}`,
         info: e.params,

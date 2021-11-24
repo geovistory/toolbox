@@ -1,9 +1,9 @@
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IAppState, SchemaService, SET_APP_STATE } from '@kleiolab/lib-redux';
-import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { GvPaginationObject, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { combineLatest, Observable, Subject, timer } from 'rxjs';
+import { combineLatest, Observable, of, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 
 
@@ -37,6 +37,7 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() initState: IAppState
 
   @Input() schemaObjects: GvPositiveSchemaObject[]
+  @Input() paginationObjects: GvPaginationObject[]
 
   @Output() ok = new EventEmitter();
 
@@ -115,6 +116,11 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.schemaObjects) {
       this.schemaObjects.forEach(item => {
         this.schemaService.storeSchemaObjectGv(item, 0)
+      })
+    }
+    if (this.paginationObjects) {
+      this.paginationObjects.forEach(item => {
+        this.schemaService.schemaActions.loadGvPaginationObject(of(item))
       })
     }
   }

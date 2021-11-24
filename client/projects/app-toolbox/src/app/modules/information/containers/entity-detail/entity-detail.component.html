@@ -12,7 +12,8 @@
 
 
         <gv-entity-card-header (removed)="close.emit()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
-          [fkClass$]="fkClass$" [pkEntity]="pkEntity"></gv-entity-card-header>
+          [fkClass$]="fkClass$" [pkEntity]="pkEntity">
+        </gv-entity-card-header>
       </gv-detail-top-bar>
       <gv-detail-content>
 
@@ -28,9 +29,9 @@
 
           <div class="gv-tile-body">
 
-            <gv-properties-tree *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+            <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
               [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
-            </gv-properties-tree>
+            </gv-view-sections>
 
           </div>
 

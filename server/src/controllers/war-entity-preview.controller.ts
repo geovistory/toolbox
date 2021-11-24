@@ -69,7 +69,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
 
 
   streamSub: Subscription;
-
+  logs = false
 
   constructor(
     @repository(WarEntityPreviewRepository)

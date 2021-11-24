@@ -19,7 +19,6 @@ import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema, ontomeProfileMockToGvPositiveSchema, transformDfhApiClassToDfhClass, transformDfhApiClassToDfhLabel, transformDfhApiPropertyToDfhProperty } from 'projects/__test__/helpers/transformers';
 import { first, take, toArray } from 'rxjs/operators';
 import { Field } from '../models/Field';
-import { Subfield } from '../models/Subfield';
 import { ConfigurationPipesService, DisplayType, SectionName } from './configuration-pipes.service';
 
 describe('ConfigurationPipeService', () => {
@@ -625,12 +624,18 @@ describe('ConfigurationPipeService', () => {
             const fs = actualSequence[0];
             // expect(fs[0].display.formSections.basic.position).toEqual(1)
             /*>> maybe the position is not 1: if there is a property with pos 1 but this class does not have it*/
-            expect(fs[0].label).toEqual('has appellation for language')
-            expect(fs[1].label).toEqual('has definition')
-            expect(fs[2].label).toEqual('has manifestation singleton type')
-            expect(fs[3].label).toEqual('is representative manifestation singleton for')
-            expect(fs[4].label).toEqual('has short title')
-            expect(fs[5].label).toEqual('[inverse property label missing for 992]')
+            expect(fs[0].label)
+              .toEqual('has short title')
+            expect(fs[1].label)
+              .toEqual('has appellation for language')
+            expect(fs[2].label)
+              .toEqual('has definition')
+            expect(fs[3].label)
+              .toEqual('has manifestation singleton type')
+            expect(fs[4].label)
+              .toEqual('is representative manifestation singleton for')
+            expect(fs[5].label)
+              .toEqual('[inverse property label missing for 992]')
           },
           null,
           done);
@@ -716,37 +721,6 @@ describe('ConfigurationPipeService', () => {
         .subscribe(
           actualSequence => {
             expect(actualSequence).toEqual(expectedSequence)
-          },
-          null,
-          done);
-
-    });
-
-  })
-
-  describe('.pipeSubfieldIdToSubfield()', () => {
-    it('should return subfield', (done) => {
-      setAppState(ngRedux, IAppStateMock.stateProject1)
-      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
-      schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, PK_DEFAULT_CONFIG_PROJECT)
-      // using pipe
-      const q$ = service.pipeSubfieldIdToSubfield(
-        21,
-        1111,
-        365,
-        false
-      )
-
-      // testing pipe
-      const expectedSequence: Subfield[][] = [[]]
-
-      q$.pipe(first(), toArray())
-        .subscribe(
-          actualSequence => {
-            const fs = actualSequence[0];
-            expect(fs.sourceClass).toEqual(21)
-            expect(fs.targetClass).toEqual(365)
           },
           null,
           done);
@@ -887,8 +861,25 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2021_06_30, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
-          sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
+          ontoMocks: [PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          sysConf: {
+            classes: {}, specialFields: {
+              bySourceClass: {
+                21: {
+                  "incomingProperties": {
+                    "1782": {
+                      "comment": "has identification",
+                      "viewSections": {
+                        "metadata": {
+                          "position": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           p: ProProjectMock.PROJECT_1.pk_entity
         }),
         PK_DEFAULT_CONFIG_PROJECT
@@ -897,7 +888,9 @@ describe('ConfigurationPipeService', () => {
 
       service.pipeSection(21, DisplayType.view, SectionName.metadata).pipe(first())
         .subscribe(
-          result => { expect(result.length).toBeGreaterThan(0); },
+          result => {
+            expect(result.length).toBeGreaterThan(0);
+          },
           null,
           done
         )
@@ -937,7 +930,7 @@ describe('ConfigurationPipeService', () => {
       )
       schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
 
-      service.pipeAllSections(21, DisplayType.view).pipe(first())
+      service.pipeAllSections(68, DisplayType.view).pipe(first())
         .subscribe(
           result => {
             // console.log(result)

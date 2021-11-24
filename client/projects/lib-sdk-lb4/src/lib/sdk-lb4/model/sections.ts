@@ -16,6 +16,7 @@ export interface Sections {
     basic?: Section;
     metadata?: Section;
     specific?: Section;
+    timeSpan?: Section;
     simpleForm?: Section;
 }
 
