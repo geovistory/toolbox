@@ -1,4 +1,11 @@
 :host {
   display: flex;
   overflow-y: auto;
+  flex-wrap: wrap;
+}
+.loc-item {
+  width: 160px;
+  margin-right: 16px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }

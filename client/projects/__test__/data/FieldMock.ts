@@ -146,6 +146,13 @@ export namespace FieldMock {
     [{ class: DfhApiClassMock.EN_633_UNION, viewType: { nestedResource: [] }, formControlType: { entity: 'true' } }],
     true,
   )
+
+  export const shipVoyageAtSomeTimeWithin: Field = createField(
+    DfhApiClassMock.EN_523_SHIP_VOYAGE,
+    DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN,
+    [{ class: DfhApiClassMock.EN_335_TIME_PRIMITIVE, viewType: { timePrimitive: 'true' }, formControlType: { timePrimitive: 'true' } }],
+    true,
+  )
 }
 
 export function createFieldBase(

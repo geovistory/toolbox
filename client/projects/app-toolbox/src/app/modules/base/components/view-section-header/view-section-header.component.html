@@ -1,14 +1,18 @@
-<div *ngIf="(section.fields$|async).length>0" class="mat-typography mat-bg-grey-100 loc-container">
-  <h3 class="d-flex mat-text-secondary">
+<div class="mat-typography mat-bg-grey-100 loc-container">
+  <h3 class="loc-left d-flex mat-text-secondary">
+    <!-- UNCOMMENT THIS TO TOGGLE BODY ON CLICK ON HEADER -->
+    <!-- <h3 class="loc-left d-flex mat-text-secondary gv-pointer" (click)="toggleBody()"> -->
     <ng-content select="[title]"></ng-content>
   </h3>
-  <div class="loc-buttons-right">
+  <div class="loc-right">
     <mat-slide-toggle [matTooltip]="'Show empty fields'" (change)="toggleEmptyFields($event)">
     </mat-slide-toggle>
-    <button mat-icon-button class="loc-toggle-btn" (click)="toggleBody()">
+
+    <!-- UNCOMMENT THIS TO TOGGLE BODY ON CLICK ON TOGGLE BTN -->
+    <!-- <button mat-icon-button class="loc-toggle-btn" (click)="toggleBody()">
       <mat-icon class="mat-icon-rtl-mirror">
         {{(section.showBody$|async) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
       </mat-icon>
-    </button>
+    </button> -->
   </div>
 </div>

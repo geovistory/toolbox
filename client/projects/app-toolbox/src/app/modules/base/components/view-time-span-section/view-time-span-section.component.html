@@ -1,0 +1,14 @@
+<ng-container *ngIf="showSection$|async">
+  <gv-view-time-span-section-header [body]="b" [section]="s">
+    <span title>Time Span</span>
+  </gv-view-time-span-section-header>
+  <mat-divider></mat-divider>
+
+  <gv-view-time-span-section-body #b [section]="s">
+    <gv-view-time-span-item [section]="s" #ts class="mat-bg-grey-50"> </gv-view-time-span-item>
+    <mat-divider></mat-divider>
+    <gv-view-section-body #s [showBodyOnInit]=false [source]="source" [scope]="scope" [pkClass$]="pkClass$"
+      [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=sectionName>
+    </gv-view-section-body>
+  </gv-view-time-span-section-body>
+</ng-container>

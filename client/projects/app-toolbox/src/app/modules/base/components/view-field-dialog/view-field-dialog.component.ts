@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Field } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
@@ -10,11 +10,13 @@ export interface ViewFieldDialogData {
   source: GvFieldSourceEntity
   scope: GvFieldPageScope
   showOntoInfo$: Observable<boolean>
+  readonly$: Observable<boolean>
 }
 @Component({
   selector: 'gv-view-field-dialog',
   templateUrl: './view-field-dialog.component.html',
-  styleUrls: ['./view-field-dialog.component.scss']
+  styleUrls: ['./view-field-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewFieldDialogComponent implements OnInit {
   constructor(

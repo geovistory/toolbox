@@ -1,4 +1,3 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Field } from '@kleiolab/lib-queries';
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
@@ -35,26 +34,28 @@ export default sandboxOf(ViewFieldComponent, {
       scope: inProjectScope,
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),
-      treeControl: new NestedTreeControl<Field>(node => ([])),
+      selectedIndex: 0,
       dataSource: dataSource
     },
     template: `
     <div class="d-flex justify-content-center mt-5">
        <div style="width:300px;height:400px" class="d-flex mr-4">
-
-          <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-view-sections">
-            <mat-nested-tree-node *matTreeNodeDef="let node">
-
-              gv-view-field #field [field]="node" [scope]="scope" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
-                [readonly$]="readonly$" [source]="source"></gv-field>
-
-            </mat-nested-tree-node>
-          </mat-tree>
+       <mat-tab-group [selectedIndex]="selectedIndex">
+        <mat-tab label="First">
+          <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
+          [readonly$]="readonly$" [source]="source"></gv-view-field>
+        </mat-tab>
+        <mat-tab label="Second"> Content 2 </mat-tab>
+        <mat-tab label="Third"> Content 3 </mat-tab>
+      </mat-tab-group>
 
       </div>
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
         <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="selectedIndex=1">tab 2</button>
+        <button (click)="selectedIndex=0">tab 1</button>
+
       </div>
     </div>
     `

@@ -1,0 +1,45 @@
+<span class="loc-left mat-typography" [ngClass]="{'loc-collapsed':!(expanded$|async)}">
+  <!-- MENU FOR CLASS INFO -->
+  <mat-menu #teEnMenu="matMenu">
+    <button mat-menu-item *ngIf="projRel?.is_in_project" (click)="itemComponent.openInNewTabFromEntity(resource)">
+      <mat-icon>tab</mat-icon>
+      Open {{field.targets[resource.fk_class]?.targetClassLabel}} in new Tab
+    </button>
+    <button mat-menu-item *ngIf="!projRel?.is_in_project"
+      (click)="itemComponent.addAndOpenInNewTabFromEntity(resource)">
+      <mat-icon>add</mat-icon>
+      Add {{field.targets[resource.fk_class]?.targetClassLabel}} to project and open
+    </button>
+  </mat-menu>
+
+  <!-- CLASS INFO -->
+
+  <span class="loc-class-info">
+    <span *ngIf="!(readonly$|async)" [matMenuTriggerFor]="teEnMenu">
+      <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class"
+        [pkEntity]="resource.pk_entity" [classLabel]="field.targets[resource.fk_class]?.targetClassLabel"
+        [isFavorite]="ordNum===0"></gv-view-field-item-class-info>
+    </span>
+    <span *ngIf="(readonly$|async)">
+      <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class"
+        [pkEntity]="resource.pk_entity" [classLabel]="field.targets[resource.fk_class]?.targetClassLabel"
+        [isFavorite]="ordNum===0"></gv-view-field-item-class-info>
+    </span>
+  </span>
+  <!-- NESTED FIELDS -->
+  <gv-entity-with-fields [source]="{fkInfo:resource.pk_entity}" [fkClass]="resource.fk_class"
+    [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">
+
+  </gv-entity-with-fields>
+</span>
+
+
+<span class="loc-right">
+  <button mat-icon-button *ngIf="(expanded$|async)" (click)="expanded$.next(false)">
+    <mat-icon>unfold_less</mat-icon>
+  </button>
+  <button mat-icon-button *ngIf="!(expanded$|async)" (click)="expanded$.next(true)">
+    <mat-icon>unfold_more</mat-icon>
+  </button>
+  <gv-view-field-item-entity-menu *ngIf="!(readonly$|async)"></gv-view-field-item-entity-menu>
+</span>

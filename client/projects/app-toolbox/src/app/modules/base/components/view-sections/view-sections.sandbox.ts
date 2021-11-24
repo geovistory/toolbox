@@ -173,13 +173,19 @@ export default sandboxOf(ViewSectionsComponent, {
       source: union1FieldSource,
       showOntoInfo$,
       readonly$,
-      scope: inProjectScope
+      scope: inProjectScope,
+      width: 300
     },
     template: `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
-
+        <div>
+          <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+          <button (click)="width=(width===300?600
+            :width===600?1100:300)">Change Witdh</button>
+          Width: {{width}}
+        </div>
         <div class="d-flex justify-content-center mt-5">
-            <div style="width:480px;height:500px" class="d-flex mr-5">
+            <div style="width:{{width}}px;height:500px" class="d-flex mr-5">
                 <gv-view-sections style="width: 100%;"
                   [pkClass$]="pkClass$"
                   [source]="source"
@@ -187,9 +193,7 @@ export default sandboxOf(ViewSectionsComponent, {
                   [readonly$]="readonly$"
                   [scope]="scope"
                 ></gv-view-sections>
-                  </div>
-            <div>
-              <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-            </div>
+              </div>
+
         </div>`
   })

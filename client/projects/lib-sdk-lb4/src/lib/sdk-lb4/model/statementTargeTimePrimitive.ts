@@ -9,12 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfTimePrimitive } from './infTimePrimitive';
 import { TimePrimitiveWithCal } from './timePrimitiveWithCal';
-import { InfLangString } from './infLangString';
 
 
 export interface StatementTargeTimePrimitive { 
-    infTimePrimitive: InfLangString;
+    infTimePrimitive: InfTimePrimitive;
     timePrimitive: TimePrimitiveWithCal;
 }
 

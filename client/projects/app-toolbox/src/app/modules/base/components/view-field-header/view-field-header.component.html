@@ -1,1 +1,33 @@
-<p>view-field-header works!</p>
+<div class="loc-left gv-pointer" [ngClass]="{ 'mat-text-primary': body.showBody$|async }" (click)="toggle()">
+  <a *ngIf="(showOntoInfo$|async)" class="loc-field-onto-info badge badge-success mr-2" href="{{ontoInfoUrl}}"
+    target="_blank">
+    {{ontoInfoLabel}}
+  </a>
+  <span class="mat-body-strong loc-field-label" [ngClass]="{'mat-text-secondary': !(itemsCount$ |async) }">
+    {{ fieldLabel}}
+    <span matTooltip="Required and not changeable (identity defining)" *ngIf="required">
+      *
+    </span>
+    <mat-icon *ngIf="removedFromProfiles" svgIcon="alert" color="warn"
+      matTooltip="This property of this field has been removed from the OntoMe profile(s) you have activated. Activate a profile that contains this property if you still want to use it. Otherwise refactor your data to not use this property anymore.">
+    </mat-icon>
+  </span>
+  <span *ngIf="!hideItemsCount" class="mat-body right-col" [ngClass]="{'mat-text-secondary': !(itemsCount$|async) }">
+    &nbsp;({{itemsCount$ | async}}) </span>
+
+  <ng-content select="[hastype]"></ng-content>
+
+</div>
+
+<div class="loc-right">
+  <button *ngIf="!(readonly$|async)" mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="add.emit()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="toggle()" [disabled]="disableToggle" [attr.aria-label]="'toggle ' + fieldLabel">
+    <mat-icon class="mat-icon-rtl-mirror">
+      {{(body.showBody$|async) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+    </mat-icon>
+  </button>
+
+</div>

@@ -134,6 +134,21 @@ export namespace StatementWithTargetMock {
       }
     }
   }
+  export const unionHasPartner: StatementWithTarget = {
+    statement: InfStatementMock.UNOIN_1_HAS_PARTNER_1,
+    projRel: ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1,
+    ordNum: ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1.ord_num_of_range,
+    isOutgoing: true,
+    targetLabel: WarEntityPreviewMock.PERSON_1.entity_label, //`Oct 31, 1756`,
+    targetClass: WarEntityPreviewMock.PERSON_1.fk_class,
+    target:
+    {
+      entity: {
+        entityPreview: WarEntityPreviewMock.PERSON_1,
+        resource: InfResourceMock.PERSON_1,
+      }
+    }
+  }
 
   //   export const shipVoyageHasTimeSpan: StatementWithTarget = {
   //     statement: { fk_object_info: InfResourceMock.SHIP_VOYAGE.pk_entity }, // InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,

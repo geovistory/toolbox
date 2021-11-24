@@ -2486,6 +2486,9 @@ $mat-color-secondary-text: mat.get-color-from-palette(
 .mat-bg-primary-50 {
   background-color: map-get($app-primary, 50);
 }
+.mat-bg-accent-50 {
+  background-color: map-get($app-accent, 50);
+}
 
 .mat-bg-accent {
   background-color: $mat-color-accent;

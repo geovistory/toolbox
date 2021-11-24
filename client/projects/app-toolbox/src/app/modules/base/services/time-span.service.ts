@@ -10,13 +10,13 @@ import { combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { CtrlTimeSpanDialogComponent } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 
-export interface SubentitySubfieldPage {
-  subfield: GvFieldId;
+export interface TimeSpanFieldPages {
+  fieldId: GvFieldId;
   count: number;
   statements: Array<StatementWithTarget>
 }
-export interface StatementTargetTimeSpan {
-  subfields: SubentitySubfieldPage[],
+export interface TimeSpanData {
+  subfields: TimeSpanFieldPages[],
   preview: WarEntityPreviewTimeSpan
 }
 
@@ -33,7 +33,7 @@ export class TimeSpanService {
     private dataService: ReduxMainService,
   ) { }
 
-  openModal(item: StatementTargetTimeSpan, fkTeEn: number) {
+  openModal(item: TimeSpanData, fkTeEn: number) {
 
     const timePrimitives = this.createDialogData(item)
 
@@ -49,7 +49,7 @@ export class TimeSpanService {
 
 
   }
-  onSave = (item: StatementTargetTimeSpan, fkTeEn: number) => (n: CtrlTimeSpanDialogResult) => {
+  onSave = (item: TimeSpanData, fkTeEn: number) => (n: CtrlTimeSpanDialogResult) => {
     return this.p.pkProject$.pipe(
       mergeMap((pkProject) => {
         const o = this.createOldData(item)
@@ -111,7 +111,7 @@ export class TimeSpanService {
     return statement
   }
 
-  createDialogData(item: StatementTargetTimeSpan): CtrlTimeSpanDialogResult {
+  createDialogData(item: TimeSpanData): CtrlTimeSpanDialogResult {
 
     if (!item) return {};
 
@@ -132,7 +132,7 @@ export class TimeSpanService {
 
     return timePrimitives
   }
-  createOldData(item: StatementTargetTimeSpan) {
+  createOldData(item: TimeSpanData) {
     const old: {
       [key: string]: {
         tp: TimePrimitiveWithCal,
@@ -140,7 +140,7 @@ export class TimeSpanService {
       }
     } = {}
     item.subfields.forEach((s) => {
-      const p = s.subfield.property.fkProperty
+      const p = s.fieldId.property.fkProperty
       if (s.statements.length > 0) {
         const r = s.statements[0].statement
         const i = s.statements[0].target.timePrimitive.timePrimitive;

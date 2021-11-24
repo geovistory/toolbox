@@ -9,9 +9,9 @@
   <span class="mat-body1 loc-field-title">
     Select and add items from the list below or create a new item.
   </span>
-  <gv-view-field-body class="gv-fh gv-col-space-between" [source]=" data.source" [field]="fieldWithOneTarget"
-    [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$"
-    (close)="onClose()" (next)="onNext()"></gv-view-field-body>
+  <gv-view-field-body [source]="data.source" [field]="fieldWithOneTarget" [showBodyOnInit]="true" [scope]="scope$|async"
+    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$" (close)="onClose()" (next)="onNext()">
+  </gv-view-field-body>
 </ng-container>
 
 

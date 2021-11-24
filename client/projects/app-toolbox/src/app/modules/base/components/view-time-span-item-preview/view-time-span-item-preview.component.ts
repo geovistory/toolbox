@@ -1,15 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { InformationPipesService, StatementTargetTimeSpan, SubentitySubfieldPage } from '@kleiolab/lib-queries';
+import { InformationPipesService } from '@kleiolab/lib-queries';
 import { GvFieldPage, GvFieldPageScope, GvFieldSourceEntity, GvFieldTargetViewType, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Observable, Subject } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
+import { TimeSpanData, TimeSpanFieldPages } from '../../services/time-span.service';
 
 @Component({
   selector: 'gv-view-time-span-item-preview',
   templateUrl: './view-time-span-item-preview.component.html',
   styleUrls: ['./view-time-span-item-preview.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewTimeSpanItemPreviewComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -17,8 +19,10 @@ export class ViewTimeSpanItemPreviewComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() scope: GvFieldPageScope
 
-  timeSpan$: Observable<StatementTargetTimeSpan>
+  timeSpan$: Observable<TimeSpanData>
   timeSpanPreview$: Observable<WarEntityPreviewTimeSpan>
+  @Output() timeSpanPreviewChange = new EventEmitter<WarEntityPreviewTimeSpan>()
+
   constructor(
     private i: InformationPipesService,
   ) { }
@@ -28,6 +32,7 @@ export class ViewTimeSpanItemPreviewComponent implements OnInit {
     this.timeSpan$ = this.pipeTimeSpan().pipe(shareReplay())
 
     this.timeSpanPreview$ = this.timeSpan$.pipe(map(ts => ts.preview))
+    this.timeSpanPreview$.pipe(takeUntil(this.destroy$)).subscribe(v => this.timeSpanPreviewChange.emit(v))
 
   }
   ngOnDestroy() {
@@ -35,7 +40,7 @@ export class ViewTimeSpanItemPreviewComponent implements OnInit {
     this.destroy$.unsubscribe();
   }
 
-  private pipeTimeSpan(): Observable<StatementTargetTimeSpan> {
+  private pipeTimeSpan(): Observable<TimeSpanData> {
 
     // for each of these subfields
     const subentityPages$ = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE
@@ -56,8 +61,8 @@ export class ViewTimeSpanItemPreviewComponent implements OnInit {
         }
         return this.i.pipeFieldPage(page, trgts, false).pipe(
           map(({ count, statements }) => {
-            const p: SubentitySubfieldPage = {
-              subfield: {
+            const p: TimeSpanFieldPages = {
+              fieldId: {
                 isOutgoing: page.isOutgoing,
                 property: page.property,
                 scope: page.scope,
@@ -84,7 +89,7 @@ export class ViewTimeSpanItemPreviewComponent implements OnInit {
               preview[key] = st.target.timePrimitive.timePrimitive
             }
           })
-          const res: StatementTargetTimeSpan = {
+          const res: TimeSpanData = {
             subfields,
             preview
           }

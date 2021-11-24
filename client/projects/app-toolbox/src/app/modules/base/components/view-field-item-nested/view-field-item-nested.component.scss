@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1 1 0;
+  overflow: hidden;
+  padding: 8px 0;
+}
+.loc-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.loc-collapsed {
+  max-height: 56px;
+}
+
+.loc-right {
+  display: flex;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+.loc-class-info {
+  margin: 8px 16px 8px 0;
+}

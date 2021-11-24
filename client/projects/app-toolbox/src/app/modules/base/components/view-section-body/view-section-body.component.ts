@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 
+
 @Component({
   selector: 'gv-view-section-body',
   templateUrl: './view-section-body.component.html',
@@ -25,12 +26,14 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   @Input() readonly$: Observable<boolean>;
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
+  @Input() showBodyOnInit: boolean;
+
 
   fields$: Observable<Field[]>
+  showBody$ = new BehaviorSubject(false);
   // treeControl = new NestedTreeControl<Field>(node => ([]));
   dataSource = new MatTreeNestedDataSource<Field>();
   showEmptyFields$ = new BehaviorSubject(false);
-  showBody$ = new BehaviorSubject(true);
 
   constructor(
     public c: ConfigurationPipesService,
@@ -44,6 +47,7 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
     if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
+    if (this.showBodyOnInit) this.showBody$.next(this.showBodyOnInit)
     this.fields$ = this.pkClass$.pipe(first(x => !!x), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
 
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe(data => {

@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
-import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
+import { dfhLabelByFksKey, IconType, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
 import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, uniq, values } from 'ramda';
@@ -1218,6 +1218,28 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       })
     )
     return this.cache('pipeTargetClassesOfProperties', obs$, ...arguments)
+
+  }
+
+  /**
+   * gets the icon type for the class
+   * @param pkClass
+   */
+  pipeIconTypeFromClass(pkClass: number): Observable<IconType> {
+    if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+      return of('expression-portion')
+    } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
+      return of('source')
+    }
+
+    return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
+      map(klass => {
+        if (klass.basic_type === 9) {
+          return 'temporal-entity'
+        }
+        return 'persistent-entity'
+      })
+    )
 
   }
 }

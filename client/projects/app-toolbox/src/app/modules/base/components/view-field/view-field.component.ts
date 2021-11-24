@@ -4,9 +4,8 @@ import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelect
 import { InfActions } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
-import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
@@ -18,7 +17,6 @@ import { getFormTargetClasses } from '../form-field-header/form-field-header.com
   templateUrl: './view-field.component.html',
   styleUrls: ['./view-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [openClose],
 })
 export class ViewFieldComponent implements OnInit {
 
@@ -35,7 +33,6 @@ export class ViewFieldComponent implements OnInit {
   // listsWithCounts$: Observable<SubfieldWithItemCount[]>
   showAddButton$
   itemsCount$: Observable<number>;
-  showBody$ = new BehaviorSubject(false)
   constructor(
     public i: InformationPipesService,
     public p: ActiveProjectService,
@@ -156,10 +153,6 @@ export class ViewFieldComponent implements OnInit {
       panelClass: 'gv-no-padding',
     }
     this.dialog.open(AddStatementDialogComponent, config);
-  }
-
-  toggle() {
-    this.showBody$.next(!this.showBody$.value)
   }
 
   ngOnDestroy() {

@@ -18,6 +18,7 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   @Input() dragEnabled = true;
   @Input() openTabOnClick = false;
   @Input() showId = false;
+  @Input() hideClass = false;
 
   constructor(
     private p: ActiveProjectService,

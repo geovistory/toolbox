@@ -8,10 +8,11 @@
   <div class="loc-buttons-right">
     <mat-slide-toggle [matTooltip]="'Show empty fields'" (change)="toggleEmptyFields($event)">
     </mat-slide-toggle>
-    <button mat-icon-button class="loc-toggle-btn" (click)="toggleBody()">
+    <!-- UNCOMMENT THIS TO TOGGLE BODY ON CLICK ON TOGGLE BTN -->
+    <!-- <button mat-icon-button class="loc-toggle-btn" (click)="toggleBody()">
       <mat-icon class="mat-icon-rtl-mirror">
         {{(body.showBody$|async) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
       </mat-icon>
-    </button>
+    </button> -->
   </div>
 </div>

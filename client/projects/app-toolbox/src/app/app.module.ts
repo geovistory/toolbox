@@ -42,7 +42,6 @@ import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { LoadingBarModule } from './shared/components/loading-bar/loading-bar.module';
 import { KeysModule } from './shared/pipes/keys.module';
-import { StylingColorsComponent } from './sandboxes/styling-colors/styling-colors.component';
 
 // TODO: check if this can stay.
 const socketIoConfig: SocketIoConfig = { url: environment.apiUrl, options: {} };
@@ -135,7 +134,6 @@ registerLocaleData(localeDeCh);
 @NgModule({
   declarations: [
     AppComponent,
-    StylingColorsComponent,
   ],
   imports: [
     // angular modules

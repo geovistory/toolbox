@@ -1,3 +1,5 @@
-<div *ngIf="(section.fields$|async).length>0" [@openClose]="(showBody$|async) ? 'open' : 'closed'">
-  <ng-content></ng-content>
+<div *ngIf="(section.fields$|async).length>0" gvOpenCloseContainer [isOpen$]="showBody$">
+  <div gvOpenCloseChild>
+    <ng-content></ng-content>
+  </div>
 </div>

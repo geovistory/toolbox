@@ -1,6 +1,8 @@
-<gv-view-time-span-item-preview class="mat-text-secondary" [scope]="section.scope" [source]="section.source" #ts>
+<gv-view-time-span-item-preview class="mat-body mat-text-secondary" [scope]="section.scope" [source]="section.source"
+  #ts>
 </gv-view-time-span-item-preview>
-<gv-view-time-span-item-edit-btn class="mat-text-secondary" [data]="ts.timeSpan$|async" [source]="section.source">
+<gv-view-time-span-item-edit-btn class="mat-text-secondary" [timeSpanData]="ts.timeSpan$|async"
+  [source]="section.source">
 </gv-view-time-span-item-edit-btn>
 <button mat-icon-button class="loc-toggle-btn" (click)="toggleBody()">
   <mat-icon class="mat-icon-rtl-mirror">

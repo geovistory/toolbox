@@ -1,17 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldSourceEntity, InfResource, ProInfoProjRel, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 
@@ -19,7 +18,8 @@ import { PaginationService } from '../../services/pagination.service';
   selector: 'gv-view-field-body',
   templateUrl: './view-field-body.component.html',
   styleUrls: ['./view-field-body.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [openClose],
 })
 export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -30,6 +30,8 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
+  @Input() showBodyOnInit: boolean
+
 
   items$: Observable<StatementWithTarget[]>
   itemsCount$: Observable<number>
@@ -46,16 +48,15 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter()
   @Output() next = new EventEmitter()
   adding$ = new BehaviorSubject(false)
-
+  showBody$ = new BehaviorSubject(false)
   targetIsUnique: boolean;
 
   constructor(
     private p: ActiveProjectService,
-    private ap: ActiveProjectPipesService,
-    private dialog: MatDialog,
     private pag: PaginationService,
     private i: InformationPipesService,
     private s: SchemaService,
+    private ap: ActiveProjectPipesService,
     private dataService: ReduxMainService,
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
@@ -65,7 +66,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const d = new Date()
+    // const d = new Date()
     // console.log(`SubfieldComponent Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
     const errors: string[] = []
     if (!this.field) errors.push('@Input() field is required.');
@@ -153,6 +154,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       startWith(0)
     )
 
+    if (this.showBodyOnInit) this.showBody$.next(true)
   }
 
   private loadFieldCount(until$: Observable<unknown>) {
@@ -167,49 +169,6 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   }
 
 
-  openPopup(item: StatementWithTarget) {
-    const data: ConfirmDialogData = {
-      hideNoButton: true,
-      noBtnText: '',
-      yesBtnText: 'Ok',
-      title: 'Details',
-      paragraphs: [item.targetLabel]
-    }
-    this.dialog.open(ConfirmDialogComponent, { data })
-  }
-
-  remove(item: StatementWithTarget) {
-    if (this.field.identityDefiningForSource && this.field.isOutgoing) {
-      alert('Item can not be removed, since it is defining the identity of the connected temporal entity. You might want to replace the entire temporal entity.')
-    } else {
-      this.ap.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
-
-        const statement = item.statement;
-        this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject)
-
-      })
-    }
-  }
-
-  openInNewTabFromEntity(e: InfResource) {
-    this.p.addEntityTab(e.pk_entity, e.fk_class)
-  }
-  openInNewTabFromPreview(e: WarEntityPreview) {
-    this.p.addEntityTab(e.pk_entity, e.fk_class)
-  }
-
-  addAndOpenInNewTabFromEntity(e: InfResource) {
-    this.addAndOpenInNewTab(e.pk_entity, e.fk_class)
-  }
-  addAndOpenInNewTabFromPreview(e: WarEntityPreview) {
-    this.addAndOpenInNewTab(e.pk_entity, e.fk_class)
-  }
-  private addAndOpenInNewTab(pkEntity: number, fkClass: number) {
-    this.p.addEntityToProject(pkEntity, () => {
-      this.p.addEntityTab(pkEntity, fkClass)
-    })
-  }
-
 
   toggleSelection(stmtWT: StatementWithTarget) {
     const id = stmtWT.statement.pk_entity
@@ -222,22 +181,6 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     this.selection.toggle(stmtWT.statement.pk_entity)
   }
 
-
-  markAsFavorite(item: StatementWithTarget) {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-      this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)
-    })
-  }
-  removeEntity(item: StatementWithTarget) {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-      // remove the related temporal entity
-      this.p.removeEntityFromProject(item.target.entity.resource.pk_entity, () => {
-        // remove the statement
-        this.dataService.removeInfEntitiesFromProject([item.statement.pk_entity], pkProject)
-      })
-    })
-
-  }
 
 
   /**
