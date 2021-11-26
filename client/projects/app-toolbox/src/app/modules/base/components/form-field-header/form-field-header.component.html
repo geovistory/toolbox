@@ -1,5 +1,5 @@
 <div class="gv-full-with mb-3" *ngIf="formField" style="justify-content: space-between;">
-  <div class="gv-row" style="width: 100%; justify-content: space-between;">
+  <div class="gv-row-center" style="width: 100%; justify-content: space-between;">
     <span class="mat-caption mat-text-secondary" style=" margin: auto;
       white-space:nowrap;">{{formArrayFactory?.config.placeholder}}</span>
     <span class="mat-caption mat-text-secondary" matTooltip="Required" *ngIf="formArrayFactory.config.required"> *
@@ -11,7 +11,7 @@
       maxLength}})</span>
   </div>
 
-  <div class="gv-column">
+  <div class="gv-col-center">
     <mat-icon color="primary" class="inside-width-center ml-2" style="font-size: 20px; height: 20px; cursor: pointer;"
       (click)="addItemInField(
       formField.field, targetClasses[0].pkClass)" *ngIf="targetClasses.length===1 && length < maxLength">

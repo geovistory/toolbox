@@ -44,8 +44,8 @@ import { LoadingBarModule } from './shared/components/loading-bar/loading-bar.mo
 import { KeysModule } from './shared/pipes/keys.module';
 
 // TODO: check if this can stay.
-const socketIoConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
-const socketsConfig: SocketsConfig = { baseUrl: environment.baseUrl, options: { autoConnect: true } };
+const socketIoConfig: SocketIoConfig = { url: environment.apiUrl, options: {} };
+const socketsConfig: SocketsConfig = { baseUrl: environment.apiUrl, options: { autoConnect: true } };
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'standard'
@@ -206,8 +206,8 @@ registerLocaleData(localeDeCh);
 })
 export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
-    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.baseUrl + '/assets/mdi/mdi.svg'));
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/mdi/mdi.svg'));
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 }

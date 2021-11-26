@@ -1,18 +1,14 @@
-<h2 class="form-title mat-h2" *ngIf="!formFactory?.formGroupFactory.globalConfig.hideTitle">
-  Create {{formFactory?.formGroupFactory?.childConfig.placeholder}}
+<h2 class="form-title mat-h2 row-center" *ngIf="!formFactory?.formGroupFactory.globalConfig.hideTitle">
+  Create a new {{classLabel}} or... {{formFactory?.formGroupFactory.globalConfig.hideTitle}}
 </h2>
 
 <form *ngIf="formFactory?.formGroup" [formGroup]="formFactory?.formGroup">
   <gv-form-group [formGroupFactory]="formFactory.formGroupFactory"></gv-form-group>
+  <button mat-button type="button" color="primary" class="mt-2" (click)="setAdvanced(!advancedMode$.value)"
+    *ngIf="!(advancedMode$|async)">Advanced form</button>
 </form>
 
-<div class="form-buttons mt-3 align-right">
-  <button mat-button type="button" color="primary" class="ml-2" (click)="setAdvanced(!advancedMode$.value)"
-    *ngIf="!(advancedMode$|async)">Advanced form</button>
-</div>
-
-<div *ngIf="!hideButtons && formFactory?.formGroup" class="form-buttons mt-3">
-
+<div *ngIf="!hideButtons && formFactory?.formGroup" class="form-buttons mt-3 align-space-between">
   <button mat-flat-button color="primary" [disabled]="(submitted && formFactory?.formGroup.invalid) || saving"
     (click)="submit()">
     <span *ngIf="!saving">Create</span>

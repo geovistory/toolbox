@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # db access from host machine: postgres://postgres:local_pw@{DOCKER_IP}:5005
+  db:
+    build:
+      context: ./db
+      dockerfile: db.dockerfile
+    shm_size: 1g
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_pw
+      GEOVISTORY_DB: ${GEOV_DB}
+    command: ${DOCKER_PG_COMMAND}
+    ports:
+      - ${DOCKER_PG_HOST_PORT}:5432
+    restart: always
+    volumes:
+      - 'postgis-data:/var/lib/postgresql/data'
+      - 'postgis-logs:/logs'
+
+  # web access from host machine: {DOCKER_IP}:${DOCKER_PG_HOST_PORT}
+  toolbox:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      API_URL: ${DOMAIN_NAME}:${GEOV_WEBSERVER_PORT}
+      ASSETS_URL: ${DOMAIN_NAME}:${GEOV_WEBSERVER_PORT}
+    ports:
+      - ${NGINX_TOOLBOX_PORT}:80
+
+  # web access from host machine: {DOCKER_IP}:${DOCKER_PG_HOST_PORT}
+  web:
+    build:
+      context: ./server
+      dockerfile: webserver.dockerfile
+    environment:
+      # db:5432 points to service db and its cointainer port
+      DATABASE_URL: postgres://postgres:local_pw@db:5432/${GEOV_DB}
+    ports:
+      - ${GEOV_WEBSERVER_PORT}:3000
+
+  warehouse:
+    build:
+      context: ./server
+      dockerfile: warehouse.dockerfile
+    environment:
+      # db:5432 points to service db and its cointainer port
+      WH_DATABASE_URL: postgres://postgres:local_pw@db:5432/${WH_DB}
+      DATABASE_URL: postgres://postgres:local_pw@db:5432/${GEOV_DB}
+
+volumes:
+  postgis-data:
+  postgis-logs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DOCKER_PG_HOST_LOGS_DIR}
+      o: bind

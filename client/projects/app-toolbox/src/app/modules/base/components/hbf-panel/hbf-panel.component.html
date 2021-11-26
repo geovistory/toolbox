@@ -1,0 +1,9 @@
+<div *ngIf="header" class="loc-header loc-item">
+    <ng-content select="[header]"></ng-content>
+</div>
+<div class="loc-body loc-item">
+    <ng-content select="[body]"></ng-content>
+</div>
+<div *ngIf="footer" class="loc-footer loc-item">
+    <ng-content select="[footer]"></ng-content>
+</div>

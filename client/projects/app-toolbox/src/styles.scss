@@ -7,8 +7,8 @@
 * Bootstrap variables are customized in ./assets/scss/bootstrap-variables.scss
 */
 
-@use '~@angular/material' as mat;
-@use '~@angular/material/core/theming/palette' as mat-palettes;
+@use "~@angular/material" as mat;
+@use "~@angular/material/core/theming/palette" as mat-palettes;
 @import "./assets/scss/bootstrap";
 $font-size-xs: 0.68rem;
 label {
@@ -160,6 +160,10 @@ button:focus {
 .gv-fade-out-right {
   -webkit-mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
+}
+.gv-fade-out-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
 }
 .gv-word-wrap-break-word {
   word-wrap: break-word;
@@ -906,7 +910,7 @@ gv-tile-header {
 * Properties Tree
 ****************************/
 
-.gv-properties-tree {
+.gv-view-sections {
   .tree-invisible {
     display: none;
   }
@@ -2327,6 +2331,39 @@ $gv-mat-teal: (
   ),
 );
 
+$gv-grey-palette: (
+  50: #f7f8fb,
+  100: #eeeff6,
+  200: #e5e9f0,
+  300: #d4dade,
+  400: #b7c2c8,
+  500: #9aaab1,
+  600: #68747b,
+  700: #4e5d65,
+  800: #374348,
+  900: #21282b,
+  A100: #eeeff6,
+  A200: #e5e9f0,
+  A400: #b7c2c8,
+  A700: #4e5d65,
+  contrast: (
+    50: mat-palettes.$dark-primary-text,
+    100: mat-palettes.$dark-primary-text,
+    200: mat-palettes.$dark-primary-text,
+    300: mat-palettes.$dark-primary-text,
+    400: mat-palettes.$dark-primary-text,
+    500: mat-palettes.$light-primary-text,
+    600: mat-palettes.$light-primary-text,
+    700: mat-palettes.$light-primary-text,
+    800: mat-palettes.$light-primary-text,
+    900: mat-palettes.$light-primary-text,
+    A100: mat-palettes.$dark-primary-text,
+    A200: mat-palettes.$dark-primary-text,
+    A400: mat-palettes.$light-primary-text,
+    A700: mat-palettes.$light-primary-text,
+  ),
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
@@ -2443,10 +2480,15 @@ $mat-color-secondary-text: mat.get-color-from-palette(
   color: $mat-color-secondary-text;
 }
 
-$backgound: map-get($app-theme, background);
-
 .mat-bg-primary {
   background-color: $mat-color-primary;
+}
+
+.mat-bg-primary-50 {
+  background-color: map-get($app-primary, 50);
+}
+.mat-bg-accent-50 {
+  background-color: map-get($app-accent, 50);
 }
 
 .mat-bg-accent {
@@ -2462,45 +2504,14 @@ $backgound: map-get($app-theme, background);
   color: rgba(black, 0.87);
 }
 
-/**
-* Custom gray palette
-*/
-$gv-grey-palette: (
-  50: #f7f8fb,
-  100: #eeeff6,
-  //#f5f5f5,
-  200: #e5e9f0,
-  300: #d4dade,
-  400: #b7c2c8,
-  500: #9aaab1,
-  600: #68747b,
-  700: #4e5d65,
-  800: #374348,
-  900: #21282b,
-  A100: #f5f5f5,
-  A200: #e5e9f0,
-  A400: #b7c2c8,
-  A700: #4e5d65,
-  contrast: (
-    50: mat-palettes.$dark-primary-text,
-    100: mat-palettes.$dark-primary-text,
-    200: mat-palettes.$dark-primary-text,
-    300: mat-palettes.$dark-primary-text,
-    400: mat-palettes.$light-primary-text,
-    500: mat-palettes.$light-primary-text,
-    600: mat-palettes.$light-primary-text,
-    700: mat-palettes.$light-primary-text,
-    800: mat-palettes.$light-primary-text,
-    900: mat-palettes.$light-primary-text,
-    A100: mat-palettes.$dark-primary-text,
-    A200: mat-palettes.$dark-primary-text,
-    A400: mat-palettes.$light-primary-text,
-    A700: mat-palettes.$light-primary-text,
-  ),
-);
-
 $color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
   "A400", "A700";
+
+.mat-bg-grey-100-on-hover:hover {
+  background-color: map_get($gv-grey-palette, 100);
+  $contrast-map: map_get($gv-grey-palette, "contrast");
+  color: map_get($contrast-map, 100);
+}
 
 @mixin mat-bg($palette, $prefix, $id) {
   .mat-bg-#{$prefix}-#{$id} {
@@ -2605,6 +2616,17 @@ mat-icon.mat-icon-sm,
     width: 18px;
   }
 }
+
+mat-icon.mat-icon-caption {
+  font-size: 12px;
+  height: 13px;
+  width: 13px;
+  svg {
+    height: 13px;
+    width: 13px;
+  }
+}
+
 /**
 * fix for inproper alignement
 * see: https://www.npmjs.com/package/@mdi/angular-material
@@ -3081,16 +3103,88 @@ gv-importer {
   }
 }
 
-.gv-row {
+// About columns
+.gv-col {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+}
+
+.gv-col-center {
+  @extend .gv-col;
   justify-content: center;
 }
 
-.gv-column {
+.gv-col-start {
+  @extend .gv-col;
+  justify-content: start;
+}
+
+.gv-col-end {
+  @extend .gv-col;
+  justify-content: end;
+}
+
+.gv-col-space-between {
+  @extend .gv-col;
+  justify-content: space-between;
+}
+
+// About rows
+.gv-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.gv-row-center {
+  @extend .gv-row;
   justify-content: center;
+}
+
+.gv-row-space-between {
+  @extend .gv-row;
+  justify-content: space-between;
+}
+
+.gv-row-start {
+  @extend .gv-row;
+  justify-content: start;
+}
+
+.gv-row-end {
+  @extend .gv-row;
+  justify-content: end;
+}
+
+// About widths
+.gv-fw {
+  width: 100%;
+}
+
+.gv-width-auto {
+  width: auto;
+}
+
+// About heights
+.gv-fh {
+  height: 100%;
+}
+
+.gv-height-auto {
+  height: auto;
+}
+
+// about overflows
+.gv-ovf-auto {
+  overflow: auto;
+}
+
+// for mat-dialog reset padding
+.gv-no-padding mat-dialog-container {
+  padding: 0;
+}
+
+.gv-text-align-center {
+  text-align: center;
 }
 
 @import "~jsoneditor/dist/jsoneditor.min.css";

@@ -1,6 +1,6 @@
-import { model, property } from '@loopback/repository';
-import { DimensionValueObjectType } from './sys-config-dimension-value-object-type';
-import { TrueEnum } from './TrueEnum';
+import {model, property} from '@loopback/repository';
+import {TrueEnum} from '../enums/TrueEnum';
+import {DimensionValueObjectType} from './sys-config-dimension-value-object-type';
 
 @model({
   jsonSchema: {
@@ -10,26 +10,26 @@ import { TrueEnum } from './TrueEnum';
   }
 })
 export class SysConfigValueObjectType {
-  @property({ type: 'string', jsonSchema: { enum: Object.values(TrueEnum) } })
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   appellation?: TrueEnum;
 
 
-  @property({ type: 'string', jsonSchema: { enum: Object.values(TrueEnum) } })
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   language?: TrueEnum;
 
 
-  @property({ type: 'string', jsonSchema: { enum: Object.values(TrueEnum) } })
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   place?: TrueEnum;
 
 
-  @property({ type: 'string', jsonSchema: { enum: Object.values(TrueEnum) } })
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   timePrimitive?: TrueEnum;
 
 
-  @property({ type: 'string', jsonSchema: { enum: Object.values(TrueEnum) } })
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   langString?: TrueEnum;
 
 
-  @property({ type: DimensionValueObjectType, })
+  @property({type: DimensionValueObjectType, })
   dimension?: DimensionValueObjectType;
 }

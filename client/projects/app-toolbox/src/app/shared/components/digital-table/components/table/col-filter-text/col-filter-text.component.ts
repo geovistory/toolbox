@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+import { TColFilter, TColFilterTxt } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { TColFilter, TColFilterOpText } from '../../../../../../../../../../../server/src/lb3/server/table/interfaces';
 
 @Component({
   selector: 'gv-col-filter-text',
@@ -15,7 +15,7 @@ export class ColFilterTextComponent implements OnInit, OnDestroy {
 
   @Output() filterChange = new EventEmitter<TColFilter | undefined>()
 
-  operator$ = new BehaviorSubject<TColFilterOpText>('%iLike%');
+  operator$ = new BehaviorSubject<TColFilterTxt.OperatorEnum>('%iLike%');
   value$ = new BehaviorSubject<string>(null);
 
   constructor() { }

@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { SysConfig } from '@kleiolab/lib-config';
-import { SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { ByPk } from '@kleiolab/lib-redux';
 import { DatDigital, GvFieldPageReq, ImportTableResponse, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
@@ -151,6 +151,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private service: NgContentTreeService,
     private p: SchemaSelectorsService,
     private pag: PaginationService,
+    private c: ConfigurationPipesService
   ) { }
 
   trackByFn(index: number, item: ContentTreeNode) {
@@ -413,33 +414,20 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * When user adds a new Expression Portion to the content tree
    */
   addExpressionPortion(pkParent: number, parentIsF2Expression = false) {
-    this.service.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    const pkClass = parentIsF2Expression ? 218 : 503;
 
-      this.m.openModalCreateOrAddEntity({
-        notInProjectClickBehavior: 'addToProject',
-        alreadyInProjectBtnText: 'Select',
-        notInProjectBtnText: 'Add',
-        classAndTypePk: {
-          pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
-          pkHasTypeProperty: undefined,
-          pkType: undefined
-        },
-        pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
-      }).subscribe((result) => {
-
-        this.service.loadResource(result.pkEntity, pkProject)
-
-
-        this.service.upsertInfStatementsWithRelations(
-          pkProject,
-          [{
-            fk_subject_info: result.pkEntity,
-            fk_object_info: pkParent,
-            fk_property: this.isPartOfProp()
-          }])
-
+    this.c.pipeFields(pkClass).pipe(
+      map(fields => fields.find(f => f.property.fkProperty == 1317 && !f.isOutgoing)),
+      first(f => !!f),
+      takeUntil(this.destroy$)).subscribe(field => {
+        this.m.openAddStatementDialog({
+          field,
+          valueTarget: false,
+          targetClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
+          source: { fkInfo: pkParent },
+          hiddenProperty: {}
+        })
       })
-    })
   }
 
   addTable(pkParent: number) {

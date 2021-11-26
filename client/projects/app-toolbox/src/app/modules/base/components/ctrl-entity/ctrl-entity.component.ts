@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { GvFieldProperty, InfResourceWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -149,7 +148,9 @@ export class CtrlEntityComponent implements OnDestroy,
 
     this.entityPreview$ = this.value$.pipe(switchMap(val => {
 
-      if (val && val.pkEntity) return this.ap.streamEntityPreview(val.pkEntity)
+      if (val && (val.pkEntity || val.resource.pk_entity)) {
+        return this.ap.streamEntityPreview(val.pkEntity ?? val.resource.pk_entity)
+      }
       else if (val && (val.resource)) {
         return combineLatest(
           this.s.dfh$.class$.by_pk_class$.key(this.pkClass),
@@ -193,21 +194,14 @@ export class CtrlEntityComponent implements OnDestroy,
           height: 'calc(100% - 30px)',
           width: this.showAddList ? '980px' : '500px',
           maxWidth: '100%',
+          panelClass: 'gv-no-padding',
           data: {
+            pkClass: this.pkClass,
+            hiddenProperty: this.property,
             initVal$: this.value$,
             showAddList: this.showAddList,
-            hiddenProperty: this.property,
-            alreadyInProjectBtnText: 'Select',
-            notInProjectClickBehavior: 'selectOnly',
-            notInProjectBtnText: 'Select',
             disableIfHasStatement: this.disableExistingWithStatement,
-            classAndTypePk: {
-              pkClass: this.pkClass,
-              pkType: undefined
-            },
-            defaultSearch: ''
-            ,
-            pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+            defaultSearch: '',
           }
         }
 

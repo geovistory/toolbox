@@ -9,24 +9,31 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ProjectVisibilityOptions } from './projectVisibilityOptions';
 
 
 export interface ProInfoProjRel { 
-    fk_project: number;
+    pk_entity?: number;
+    fk_project?: number;
     fk_entity?: number;
     fk_entity_version?: string;
     fk_entity_version_concat?: string;
     is_in_project?: boolean;
     is_standard_in_project?: boolean;
-    calendar?: string;
+    calendar?: ProInfoProjRel.CalendarEnum;
     ord_num_of_domain?: number;
     ord_num_of_range?: number;
     ord_num_of_text_property?: number;
-    tmsp_last_modification?: string;
     fk_creator?: number;
-    fk_last_modifier: number;
-    pk_entity?: number;
-    entity_version?: number;
-    tmsp_creation?: string;
+    fk_last_modifier?: number;
+    project_visibility?: ProjectVisibilityOptions;
 }
+export namespace ProInfoProjRel {
+    export type CalendarEnum = 'gregorian' | 'julian';
+    export const CalendarEnum = {
+        Gregorian: 'gregorian' as CalendarEnum,
+        Julian: 'julian' as CalendarEnum
+    };
+}
+
 

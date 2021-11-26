@@ -18,7 +18,7 @@ export class AppComponent {
     private status: SysStatusSocket,
     private ngRedux: NgRedux<IAppState>
   ) {
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.status.on('warehouseInitializing', (message: boolean) => {

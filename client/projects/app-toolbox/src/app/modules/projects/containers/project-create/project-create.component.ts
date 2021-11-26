@@ -38,7 +38,7 @@ export class ProjectCreateComponent implements OnInit {
     private authService: LoopBackAuth,
     private loadingBarActions: LoadingBarActions,
   ) {
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
   }

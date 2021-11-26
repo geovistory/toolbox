@@ -1,11 +1,11 @@
 import c from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import {Pool} from 'pg';
+import { Pool } from 'pg';
 import pgkDir from 'pkg-dir';
-import {createWarehouse} from './createWarehouse';
-import {Warehouse, WarehouseConfig} from './Warehouse';
-import {getGvDatabaseUrl, getWhDatabaseUrl} from '../utils/databaseUrl';
+import { getGvDatabaseUrl, getWhDatabaseUrl } from '../utils/databaseUrl';
+import { createWarehouse } from './createWarehouse';
+import { Warehouse, WarehouseConfig } from './Warehouse';
 
 const appRoot = pgkDir.sync() ?? ''
 const schemaPrefix = 'war_cache_'
@@ -47,8 +47,8 @@ export async function cleanAndStartDev() {
 
 function getSchemaName() {
     const file = 'warehouse-compat-list.txt'
-    const filePath = path.join(__dirname, '../../../deployment/', file)
-    // const filePath= path.join(appRoot, '/deployment/', file)
+    const filePath = path.join(__dirname, '../../', file)
+    // const filePath= path.join(appRoot, '/server/', file)
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
         .readFileSync(filePath)
@@ -86,7 +86,7 @@ export function getWarehouseConfig() {
  * @param notRemovingSchema complete name of schema not to remove, even if it begins with warehouseSchemaPrefix
  */
 async function removeWarehouseSchemasExcept(pgPool: Pool, warehouseSchemaPrefix: string, notRemovingSchema: string) {
-    const res = await pgPool.query<{schema: string}>(`
+    const res = await pgPool.query<{ schema: string }>(`
         SELECT schema_name AS schema
         FROM information_schema.schemata
         WHERE schema_name iLike $1 || '%'

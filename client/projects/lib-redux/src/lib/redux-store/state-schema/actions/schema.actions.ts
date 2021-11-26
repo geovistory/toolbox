@@ -99,10 +99,13 @@ export class GvSchemaActions {
   storeGvSchemaModifier(
     req: GvSchemaModifier,
   ): void {
-    const action: FluxStandardAction<GvSchemaModifier> = {
+    this.ngRedux.dispatch(this.storeGvSchemaModifierAction(req))
+  }
+
+  storeGvSchemaModifierAction(req: GvSchemaModifier): FluxStandardAction<GvSchemaModifier> {
+    return {
       type: GvSchemaActions.GV_MODIFIER_LOAD_SUCCEEDED,
       payload: req,
-    };
-    this.ngRedux.dispatch(action)
-  }
+    }
+  };
 }

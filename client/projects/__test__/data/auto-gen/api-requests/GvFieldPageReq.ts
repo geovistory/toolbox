@@ -1,9 +1,10 @@
-import {GvFieldPageReq, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
-import {ProProjectMock} from '../gvDB/ProProjectMock'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {GvFieldPageReq} from '@kleiolab/lib-sdk-lb4';
+import {TrueEnum} from '../enums/TrueEnum';
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
+import {InfStatementMock} from '../gvDB/InfStatementMock'
+import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
 
 export namespace GvFieldPageReqMock {
@@ -39,7 +40,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
-        appellation: 'true'
+        appellation: TrueEnum.true
       }
     },
     page: {
@@ -51,11 +52,28 @@ export namespace GvFieldPageReqMock {
       offset: 0
     }
   }
+
+  export const appeTeEn2RefersToName: GvFieldPageReq = {
+    pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    targets: {
+      [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
+        appellation: TrueEnum.true
+      }
+    },
+    page: {
+      source: {fkInfo: InfStatementMock.NAME_2_TO_APPE.fk_subject_info},
+      property: {fkProperty: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property},
+      isOutgoing: true,
+      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      limit: 7,
+      offset: 0
+    }
+  }
   export const appeTeEnIsAppeOfPerson: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_21_PERSON.dfh_pk_class]: {
-        entityPreview: 'true'
+        entityPreview: TrueEnum.true
       }
     },
     page: {
@@ -72,7 +90,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_51_PLACE.dfh_pk_class]: {
-        place: 'true'
+        place: TrueEnum.true
       }
     },
     page: {
@@ -108,7 +126,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_784_SHORT_TITLE.dfh_pk_class]: {
-        langString: 'true'
+        langString: TrueEnum.true
       }
     },
     page: {
@@ -126,7 +144,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_54_LANGUAGE.dfh_pk_class]: {
-        language: 'true'
+        language: TrueEnum.true
       }
     },
     page: {
@@ -144,7 +162,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
       [DfhApiClassMock.EN_335_TIME_PRIMITIVE.dfh_pk_class]: {
-        timePrimitive: 'true'
+        timePrimitive: TrueEnum.true
       }
     },
     page: {
@@ -157,22 +175,22 @@ export namespace GvFieldPageReqMock {
     }
   }
 
-  export const shipVoyageHasTimeSpan: GvFieldPageReq = {
-    pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    targets: {
-      [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-        timeSpan: 'true'
-      }
-    },
-    page: {
-      source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
-      property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
-      isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
-      limit: 1,
-      offset: 0
-    }
-  }
+  // export const shipVoyageHasTimeSpan: GvFieldPageReq = {
+  //   pkProject: ProProjectMock.PROJECT_1.pk_entity,
+  //   targets: {
+  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+  //       timeSpan: TrueEnum.true
+  //     }
+  //   },
+  //   page: {
+  //     source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
+  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+  //     isOutgoing: true,
+  //     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+  //     limit: 1,
+  //     offset: 0
+  //   }
+  // }
 
 
 }

@@ -1,0 +1,243 @@
+# This workflow creates and publishes docker images
+# and updates geovistory-charts repo with new image tags
+
+name: Build, push, deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the dev branch
+on:
+  push:
+    branches: [dev, master] # for production, change this to [dev, master]
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  extract-metadata:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{steps.extract_branch.outputs.branch}}
+      release_environment: ${{steps.release_env.outputs.environment}}
+      webserver_image_exists: ${{steps.webserver_image_exists.outputs.exists}}
+      warehouse_image_exists: ${{steps.warehouse_image_exists.outputs.exists}}
+      toolbox_image_exists: ${{steps.toolbox_image_exists.outputs.exists}}
+      webserver_sha: ${{steps.webserver_sha.outputs.sha}}
+      warehouse_sha: ${{steps.warehouse_sha.outputs.sha}}
+      toolbox_sha: ${{steps.toolbox_sha.outputs.sha}}
+    steps:
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Start building docker images"
+          description: "Build and upload docker images to GitHub Packages"
+          color: 0xffed2b
+          username: GitHub Actions
+
+      - name: Extract branch name
+        shell: bash
+        run: echo ::set-output name=branch::$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}})
+        id: extract_branch
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Extract release environment [dev|stag|prod|mpoc]
+        id: release_env
+        run: |
+          case ${{steps.extract_branch.outputs.branch}} in
+            dev)
+              echo ::set-output name=environment::'dev'
+              ;;
+            master)
+              echo ::set-output name=environment::'stag'
+              ;;
+            *)
+              echo 'branch does not match a release environment'
+              exit 1
+              ;;
+          esac
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract latest commit of toolbox
+        id: toolbox_sha
+        run: |
+          sha=$(bash deployment/get-commit-of-folder.sh -p client | cut -c1-8)
+          echo $sha
+          echo ::set-output name=sha::$sha
+
+      - name: Check if toolbox image exists
+        id: toolbox_image_exists
+        run: |
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-toolbox:${{steps.toolbox_sha.outputs.sha}} > /dev/null ; echo $?)
+          echo $exists
+          echo ::set-output name=exists::$exists
+
+      - name: Extract latest commit of webserver
+        id: webserver_sha
+        run: |
+          sha=$(bash deployment/get-commit-of-folder.sh -p server | cut -c1-8)
+          echo $sha
+          echo ::set-output name=sha::$sha
+
+      - name: Check if webserver image exists
+        id: webserver_image_exists
+        run: |
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-webserver:${{steps.webserver_sha.outputs.sha}} > /dev/null ; echo $?)
+          echo $exists
+          echo ::set-output name=exists::$exists
+
+      - name: Extract latest commit of warehouse
+        id: warehouse_sha
+        run: |
+          sha=$(bash deployment/get-commit-of-folder.sh -p server/src/warehouse | cut -c1-8)
+          echo $sha
+          echo ::set-output name=sha::$sha
+
+      - name: Check if warehouse image exists
+        id: warehouse_image_exists
+        run: |
+          exists=$(docker manifest inspect ghcr.io/kleiolab/geovistory-warehouse:${{steps.warehouse_sha.outputs.sha}} > /dev/null ; echo $?)
+          echo $exists
+          echo ::set-output name=exists::$exists
+
+      - name: report
+        shell: bash
+        run: |
+          echo toolbox sha: ${{steps.toolbox_sha.outputs.sha}} \
+               toolbox image exists: ${{steps.toolbox_image_exists.outputs.exists}} \
+               warehouse sha: ${{steps.warehouse_sha.outputs.sha}} \
+               warehouse image exists: ${{steps.warehouse_image_exists.outputs.exists}} \
+               webserver sha: ${{steps.webserver_sha.outputs.sha}} \
+               webserver image exists: ${{steps.webserver_image_exists.outputs.exists}}  \
+               release environment: ${{steps.release_env.outputs.environment}}
+
+  build-and-push-webserver:
+    runs-on: ubuntu-latest
+    needs: [extract-metadata]
+    if: ${{needs.extract-metadata.outputs.webserver_image_exists != 0}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v2
+        with:
+          # Location of Dockerfile, if not Dockerfile in root directory
+          file: server/webserver.dockerfile
+          # Directory to run `docker build` from, if not project root
+          context: server
+          push: true
+          tags: ghcr.io/kleiolab/geovistory-webserver:${{needs.extract-metadata.outputs.webserver_sha}}
+
+  build-and-push-warehouse:
+    runs-on: ubuntu-latest
+    needs: [extract-metadata]
+    if: ${{needs.extract-metadata.outputs.warehouse_image_exists != 0}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v2
+        with:
+          # Location of Dockerfile, if not Dockerfile in root directory
+          file: server/warehouse.dockerfile
+          # Directory to run `docker build` from, if not project root
+          context: server
+          push: true
+          tags: ghcr.io/kleiolab/geovistory-warehouse:${{needs.extract-metadata.outputs.warehouse_sha}}
+
+  build-and-push-toolbox:
+    runs-on: ubuntu-latest
+    needs: [extract-metadata]
+    if: ${{needs.extract-metadata.outputs.toolbox_image_exists != 0}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v2
+        with:
+          # Location of Dockerfile, if not Dockerfile in root directory
+          file: client/Dockerfile
+          # Directory to run `docker build` from, if not project root
+          context: client
+          push: true
+          tags: ghcr.io/kleiolab/geovistory-toolbox:${{needs.extract-metadata.outputs.toolbox_sha}}
+
+  update-geovistory-charts:
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      [
+        extract-metadata,
+        build-and-push-webserver,
+        build-and-push-toolbox,
+        build-and-push-warehouse,
+      ]
+    steps:
+      - name: Invoke workflow in geovistory-charts to make a pre production release
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update-release-files
+          repo: kleiolab/geovistory-charts
+          ref: ${{needs.extract-metadata.outputs.release_environment}}
+          token: ${{ secrets.KLEIOLAB_PRIVATE_REPOS_PAT }}
+          inputs: |
+            {
+              "releaseEnvironment": "${{needs.extract-metadata.outputs.release_environment}}",
+              "warehouseTag":"${{needs.extract-metadata.outputs.warehouse_sha}}",
+              "toolboxTag":"${{needs.extract-metadata.outputs.toolbox_sha}}", 
+              "webserverTag":"${{needs.extract-metadata.outputs.webserver_sha}}" 
+            }
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_DEVOPS_CHANNEL_WEBHOOK }}
+          title: "Done building docker images"
+          description: "Build and upload docker images to GitHub Packages"
+          color: 0x0000ff
+          username: GitHub Actions

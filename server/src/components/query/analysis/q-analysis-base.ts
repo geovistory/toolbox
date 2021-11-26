@@ -1,8 +1,7 @@
 import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
+import {WarEntityPreview} from '../../../models';
 import {ColDef, QueryDefinition, QueryFilter, QueryFilterData, QueryPathSegment} from '../../../models/pro-analysis.model';
 import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
-import {WarEntityPreview} from '../../../models';
-
 
 
 export interface QueryNode {
@@ -10,11 +9,8 @@ export interface QueryNode {
 }
 
 interface NestedQueryNodeWithAlias extends QueryFilter {
-  _tableAlias: string
-
-  // this keeps record of the next parent table that is joining entities
-  _parentEntityTableAlias: string;
-
+  _entityTable?: LeftTable
+  _statementTables?: LeftTable[]
   children: NestedQueryNodeWithAlias[]
 }
 
@@ -41,14 +37,18 @@ export class ColDefWithAliases extends ColDef {
 
 
 export interface QueryPathSegmentWithAlias extends QueryPathSegment {
-  _tableAlias: string
+  _entityTable?: LeftTable
+  _statementTables?: LeftTable[]
 }
 
 export interface QueryDefinitionWithAliases extends QueryDefinition {
   columnsWithAlias: ColDefWithAliases[]
 }
 
-
+export interface LeftTable {
+  table: string;
+  fk: string;
+}
 
 export abstract class QAnalysisBase extends SqlBuilderLb4Models {
   PK_HISTC8_GEOGRAPHICAL_PLACE = 363;
@@ -116,40 +116,49 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
       ...column,
       queryPathWithAlias: undefined
     }
+
+
+    let leftEntityTable: LeftTable = {table: leftTableAlias, fk: 'pk_entity'}
+    let leftStatementTables: LeftTable[] = []
     if (column?.queryPath && !column.ofRootTable) {
-      let thisTableAlias: string;
-      colWithAliases.queryPathWithAlias = column.queryPath.map((segment) => {
-        thisTableAlias = this.addTableAlias();
-        const node: QueryNodeWithAlias = {
-          ...segment,
-          _tableAlias: thisTableAlias
-        };
+      // let thisTableAlias: string;
+      colWithAliases.queryPathWithAlias = column.queryPath.map<QueryPathSegmentWithAlias>((segment) => {
+
 
         // JOIN statements
         if (this.isStatementsJoin(segment)) {
-          this.joinStatements(
-            node,
-            leftTableAlias,
-            thisTableAlias,
+          leftStatementTables = this.joinStatements(
+            segment,
+            leftEntityTable,
             fkProject,
             this.froms
           );
+          const res: QueryPathSegmentWithAlias = {
+            ...segment,
+            _statementTables: leftStatementTables
+          };
+          return res;
         }
         // JOIN values
 
         // JOIN entities
         else if (this.isEntitesJoin(segment)) {
-          this.joinEntities(
-            node,
-            leftTableAlias,
-            thisTableAlias,
+          leftEntityTable = this.joinEntities(
+            segment,
+            leftStatementTables,
             fkProject,
             this.froms
           );
+          const res: QueryPathSegmentWithAlias = {
+            ...segment,
+            _entityTable: leftEntityTable
+          };
+          return res
         }
-        leftTableAlias = thisTableAlias;
-
-        return node;
+        else {
+          const res: QueryPathSegmentWithAlias = segment;
+          return res;
+        }
       });
     }
     return colWithAliases
@@ -159,83 +168,84 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
     columns.forEach(column => {
       if (column.ofRootTable) {
         this.createSelectFromRootTable(column, leftTableAlias, fkProject);
-      } else if (column.queryPathWithAlias && column.queryPathWithAlias.length) {
+      } else if (column.queryPathWithAlias?.length) {
         this.createSelectFromJoinedTable(column, leftTableAlias, fkProject);
       }
     });
   }
 
   abstract createSelectFromJoinedTable(column: ColDefWithAliases, leftTableAlias: string, fkProject: number): void
-  // {
-  //   // if (column.defaultType === 'space_and_time_cont') {
-
-  //   //   this.selects.push(
-  //   //     `commons.analysis__czml_and_temporal_distribution(
-  //   //             ${leftTableAlias}.pk_entity,
-  //   //             COALESCE( array_agg( ${column.id}.pk_entity ) FILTER ( WHERE ${column.id}.pk_entity IS NOT NULL ), ARRAY[]::integer[]  ),
-  //   //             ${fkProject}
-  //   //          ) as space_and_time_cont`
-  //   //   );
-  //   // }
-  //   // else
-  //   const lastSegment = column.queryPathWithAlias?.[column?.queryPathWithAlias.length - 1];
-  //   if (lastSegment) {
-  //     // create a select for the last segment in the queryPath
-  //     this.createColumnSelect(lastSegment, column.id
-  //     );
-  //   }
-  //   else {
-  //     console.warn('To select from a column, it should have at least one item in the query path')
-  //   }
-  // }
 
   abstract createSelectFromRootTable(column: ColDefWithAliases, leftTableAlias: string, fkProject: number): void
 
 
 
 
-  createFilterFroms(node: QueryFilter, leftTableAlias: string, parentEntityTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
-    let parEntTabAlias = parentEntityTableAlias;
+  createFilterFroms(node: QueryFilter, rootTable: string, fkProject: number): NestedQueryNodeWithAlias {
 
-    const nodeWithAlias = {
+    const leftTable: LeftTable = {table: rootTable, fk: 'pk_entity'}
+
+    const nestedNodeWithAlias: NestedQueryNodeWithAlias = {
       ...node,
-      _tableAlias: this.addTableAlias(),
-      _parentEntityTableAlias: parEntTabAlias
+      _entityTable: leftTable,
+      children: (node.children ?? []).map(childNode => this.getFilterChildNode(childNode, fkProject, leftTable, []))
     }
 
-    if (level > 0) {
-      // JOIN statements
-      if (this.isStatementsJoin(nodeWithAlias)) {
-        this.joinStatements(
-          nodeWithAlias,
-          leftTableAlias,
-          nodeWithAlias._tableAlias,
-          fkProject,
-          this.filterFroms
-        );
-        leftTableAlias = nodeWithAlias._tableAlias;
-      }
-      // JOIN entities
-      else if (this.isEntitesJoin(nodeWithAlias)) {
-        this.joinEntities(
-          nodeWithAlias,
-          leftTableAlias,
-          nodeWithAlias._tableAlias,
-          fkProject,
-          this.filterFroms
-        );
-        parEntTabAlias = leftTableAlias = nodeWithAlias._tableAlias;
+    // console.log(JSON.stringify(nestedNodeWithAlias, null, 2))
+    return nestedNodeWithAlias
+  }
 
-      }
-    }
 
-    const nestedNodeWithAlias = {
-      ...nodeWithAlias,
-      children: (node.children ?? []).map(childNode => {
-        return this.createFilterFroms(childNode, leftTableAlias, parEntTabAlias, fkProject, level + 1);
-      })
+  createStatementFilterFrom(node: QueryFilter, fkProject: number, leftEntityTable: LeftTable): NestedQueryNodeWithAlias {
+    const statementTables = this.joinStatements(
+      node,
+      leftEntityTable,
+      fkProject,
+      this.filterFroms
+    );
+    const nestedNodeWithAlias: NestedQueryNodeWithAlias = {
+      ...node,
+      _entityTable: undefined,
+      _statementTables: statementTables,
+      children: (node.children ?? []).map(childNode => this.getFilterChildNode(childNode, fkProject, leftEntityTable, statementTables))
+
     }
     return nestedNodeWithAlias
+  }
+
+  createEntityFilterFrom(node: QueryFilter, fkProject: number, leftStatementTables: LeftTable[]): NestedQueryNodeWithAlias {
+    const entityTable = this.joinEntities(
+      node,
+      leftStatementTables,
+      fkProject,
+      this.filterFroms
+    );
+    const nestedNodeWithAlias: NestedQueryNodeWithAlias = {
+      ...node,
+      _entityTable: entityTable,
+      _statementTables: undefined,
+      children: (node.children ?? []).map(childNode => this.getFilterChildNode(childNode, fkProject, entityTable, leftStatementTables))
+
+    }
+    return nestedNodeWithAlias
+  }
+
+
+  createEntityConditionNode(node: QueryFilter, fkProject: number, leftEntityTable: LeftTable, leftStatementTables: LeftTable[]): NestedQueryNodeWithAlias {
+
+    const nestedNodeWithAlias: NestedQueryNodeWithAlias = {
+      ...node,
+      _entityTable: leftEntityTable,
+      _statementTables: leftStatementTables,
+      children: (node.children ?? []).map(childNode => this.getFilterChildNode(childNode, fkProject, leftEntityTable, leftStatementTables))
+    }
+    return nestedNodeWithAlias
+  }
+
+  getFilterChildNode(node: QueryFilter, fkProject: number, leftEntityTable: LeftTable, leftStatementTables: LeftTable[]) {
+    if (this.isStatementsJoin(node)) return this.createStatementFilterFrom(node, fkProject, leftEntityTable);
+    else if (this.isEntitesJoin(node)) return this.createEntityFilterFrom(node, fkProject, leftStatementTables);
+    else return this.createEntityConditionNode(node, fkProject, leftEntityTable, leftStatementTables)
   }
 
   getLastQPathSegment(colDef?: ColDefWithAliases) {
@@ -244,47 +254,63 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
     return lastSegment;
   }
 
-  joinEntities(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
+  joinEntities(node: QueryNode, leftTables: LeftTable[], fkProject: number, fromsArray: string[]): LeftTable {
+    const thisTableAlias = this.addTableAlias()
+    const joinOn = 'pk_entity'
+    const selects = leftTables.map(leftTable => `
+      SELECT *
+      FROM war.entity_preview t
+      WHERE
+      ${leftTable.table}.${leftTable.fk} = t.${joinOn}
+      AND
+      ${this.createEntityWhere(node, 't', fkProject)}
+    `)
     fromsArray.push(`
-                    LEFT JOIN war.entity_preview ${thisTableAlias} ON
-                    (${parentTableAlias}.fk_object_info = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_subject_info = ${thisTableAlias}.pk_entity)
-                    AND
-                     ${this.createEntityWhere(node, thisTableAlias, fkProject)}
+                    LEFT JOIN LATERAL (
+                     ${selects.join(`
+                     UNION
+                     `)}
+                    ) AS ${thisTableAlias} ON TRUE
                 `);
+    return {table: thisTableAlias, fk: joinOn}
   }
 
 
 
-  joinStatements(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
-    const topLevelWheres = [];
-    topLevelWheres.push(`
-                ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
-                `);
-    const secondLevelWheres = [];
-    if (node.data.ingoingProperties && node.data.ingoingProperties.length) {
-      secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_object_info AND ${thisTableAlias}.fk_property IN (${this.addParams(
-        node.data.ingoingProperties
-      )}))
-                    `);
+  joinStatements(node: QueryNode, leftTable: LeftTable, fkProject: number, fromsArray: string[]): LeftTable[] {
+    const tablesToJoin: LeftTable[] = []
+    if (node.data.outgoingProperties?.length) {
+      const t = this.joinDirectedStatements(true, fkProject, node.data.outgoingProperties, leftTable, fromsArray);
+      tablesToJoin.push(t)
     }
-    if (node.data.outgoingProperties && node.data.outgoingProperties.length) {
-      secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_subject_info AND ${thisTableAlias}.fk_property IN (${this.addParams(
-        node.data.outgoingProperties
-      )}))
-                    `);
+    if (node.data.ingoingProperties?.length) {
+      const t = this.joinDirectedStatements(false, fkProject, node.data.ingoingProperties, leftTable, fromsArray);
+      tablesToJoin.push(t)
     }
-    if (secondLevelWheres.length) {
-      topLevelWheres.push(`(
-                         ${this.joinWheres(secondLevelWheres, 'OR')}
-                    )`);
-    }
+    return tablesToJoin
+  }
+
+  private joinDirectedStatements(isOutgoing: boolean, fkProject: number, properties: number[], leftTable: LeftTable, fromsArray: string[]): LeftTable {
+    const thisTableAlias = this.addTableAlias()
+    // key to join parent table
+    const joinOn = isOutgoing ? 'fk_subject_info' : 'fk_object_info'
+    // key to join child tables
+    const fk = isOutgoing ? 'fk_object_info' : 'fk_subject_info';
+    const wheres = [];
+    wheres.push(`${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
+    `);
+    wheres.push(`${leftTable.table}.${leftTable.fk} = ${thisTableAlias}.${joinOn}
+    `);
+    wheres.push(`${thisTableAlias}.fk_property IN (${this.addParams(properties)})
+    `);
     fromsArray.push(`
                 LEFT JOIN ${this.STATAMENT_TABLE} ${thisTableAlias} ON
-                 ${this.joinWheres(topLevelWheres, 'AND')}
+                 ${this.joinWheres(wheres, 'AND')}
                 `);
+
+    return {table: thisTableAlias, fk}
   }
+
 
   createEntityWhere(filter: QueryNode, tableAlias: string, fkProject: number) {
     const whereProject = `${tableAlias}.fk_project = ${this.addParam(
@@ -292,12 +318,12 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
     )}`;
 
     const classOrTypeWheres = [];
-    if (filter.data && filter.data.classes && filter.data.classes.length) {
+    if (filter.data?.classes?.length) {
       classOrTypeWheres.push(
         `${tableAlias}.fk_class IN (${this.addParams(filter.data.classes)})`
       );
     }
-    if (filter.data && filter.data.types && filter.data.types.length) {
+    if (filter.data?.types?.length) {
       classOrTypeWheres.push(
         `${tableAlias}.fk_type IN (${this.addParams(filter.data.types)})`
       );
@@ -332,30 +358,33 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
       let where = '';
 
       // create the where clause for the entity table
-      if (childNode.data.classes || childNode.data.types) {
-        where = `${childNode._tableAlias}.pk_entity IS NOT NULL`;
+      if (childNode._entityTable && (childNode.data.classes || childNode.data.types)) {
+        where = `${childNode._entityTable.table}.pk_entity IS NOT NULL`;
       }
 
-      // create the where clause for the statement table
+      // create the where clauses for the statement tables
       else if (
-        (childNode.data.ingoingProperties && childNode.data.ingoingProperties.length) ||
-        (childNode.data.outgoingProperties && childNode.data.outgoingProperties.length)
-      ) {
-        const equals =
-          childNode.data.operator === 'IS'
-            ? 'IS NOT NULL'
-            : childNode.data.operator === 'IS NOT'
-              ? 'IS NULL'
-              : 'IS NOT NULL'; // DEFAULT
+        (
+          childNode.data.ingoingProperties?.length ||
+          childNode.data.outgoingProperties?.length
+        ) && childNode._statementTables?.length) {
+        where = childNode._statementTables.map(t => {
+          const equals =
+            childNode.data.operator === 'IS'
+              ? 'IS NOT NULL'
+              : childNode.data.operator === 'IS NOT'
+                ? 'IS NULL'
+                : 'IS NOT NULL'; // DEFAULT
 
-        where = `${childNode._tableAlias}.fk_object_info ${equals}`;
+          return `${t.table}.${t.fk} ${equals}`;
+        }).join(' AND ')
       }
 
-      else if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
+      else if (childNode._entityTable && childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
 
         // const n = node;
         // console.log(n)
-        where = `${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm ?? ''}%`)}`;
+        where = `${childNode._entityTable.table}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm ?? ''}%`)}`;
       }
 
 
@@ -488,7 +517,7 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
 
   groupByRootTable() {
     const groupBys = this.getColumns(WarEntityPreview.definition)
-    .map(col=>`t_1.${col}`)
+      .map(col => `t_1.${col}`)
     return this.joinGroupBys(groupBys);
   }
   joinGroupBys(groupBys: string[]) {

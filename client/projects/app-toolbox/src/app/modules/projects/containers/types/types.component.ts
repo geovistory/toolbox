@@ -7,7 +7,7 @@ import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
+import { ViewSectionsDialogComponent, ViewSectionsDialogData } from 'projects/app-toolbox/src/app/modules/base/components/view-sections-dialog/view-sections-dialog.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
@@ -194,12 +194,8 @@ export class TypesComponent implements OnInit, OnDestroy {
   */
   onAddOrCreate() {
 
-    this.m.openModalCreateOrAddEntity({
-      alreadyInProjectBtnText: 'Edit',
-      notInProjectClickBehavior: 'addToProject',
-      notInProjectBtnText: 'Add',
-      classAndTypePk: { pkClass: this.pkClass, pkHasTypeProperty: undefined, pkType: undefined },
-      pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
+    this.m.openAddEntityDialog({
+      pkClass: this.pkClass
     })
 
       .subscribe(result => {
@@ -221,14 +217,14 @@ export class TypesComponent implements OnInit, OnDestroy {
    * @param pkEntity
    */
   edit(pkEntity: number) {
-    const data: PropertiesTreeDialogData = {
+    const data: ViewSectionsDialogData = {
       appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
       pkClass$: of(this.pkClass),
       source: { fkInfo: pkEntity },
       readonly$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
     }
-    const dialogRef = this.dialog.open(PropertiesTreeDialogComponent, {
+    const dialogRef = this.dialog.open(ViewSectionsDialogComponent, {
       height: '90%',
       width: '90%',
       data

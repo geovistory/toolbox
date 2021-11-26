@@ -23,8 +23,9 @@ import { GvFieldTargetViewType } from '../model/models';
 import { GvSubentityFieldTargetViewType } from '../model/models';
 import { PingResponse } from '../model/models';
 import { ProjectPongRequest } from '../model/models';
-import { ProjectVisibilityOptionsWithRelations } from '../model/models';
-import { QuillOperationWithRelations } from '../model/models';
+import { ProjectVisibilityOptions } from '../model/models';
+import { QuillOperation } from '../model/models';
+import { StatementWithTarget } from '../model/models';
 import { SysConfigFieldDisplay } from '../model/models';
 import { SysConfigFieldsOfSourceClass } from '../model/models';
 import { TColFilter } from '../model/models';
@@ -386,10 +387,10 @@ export class PingControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public pingControllerXCommunityVisibilityOptionsWithRelations(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<CommunityVisibilityOptionsWithRelations>;
-    public pingControllerXCommunityVisibilityOptionsWithRelations(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<CommunityVisibilityOptionsWithRelations>>;
-    public pingControllerXCommunityVisibilityOptionsWithRelations(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<CommunityVisibilityOptionsWithRelations>>;
-    public pingControllerXCommunityVisibilityOptionsWithRelations(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public pingControllerXCommunityVisibilityOptions(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<CommunityVisibilityOptionsWithRelations>;
+    public pingControllerXCommunityVisibilityOptions(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<CommunityVisibilityOptionsWithRelations>>;
+    public pingControllerXCommunityVisibilityOptions(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<CommunityVisibilityOptionsWithRelations>>;
+    public pingControllerXCommunityVisibilityOptions(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -548,10 +549,10 @@ export class PingControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public pingControllerXProjectVisibilityOptionsWithRelations(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ProjectVisibilityOptionsWithRelations>;
-    public pingControllerXProjectVisibilityOptionsWithRelations(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ProjectVisibilityOptionsWithRelations>>;
-    public pingControllerXProjectVisibilityOptionsWithRelations(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ProjectVisibilityOptionsWithRelations>>;
-    public pingControllerXProjectVisibilityOptionsWithRelations(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public pingControllerXProjectVisibilityOptions(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ProjectVisibilityOptions>;
+    public pingControllerXProjectVisibilityOptions(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ProjectVisibilityOptions>>;
+    public pingControllerXProjectVisibilityOptions(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ProjectVisibilityOptions>>;
+    public pingControllerXProjectVisibilityOptions(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -586,7 +587,7 @@ export class PingControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<ProjectVisibilityOptionsWithRelations>(`${this.configuration.basePath}/ProjectVisibilityOptionsWithRelations`,
+        return this.httpClient.post<ProjectVisibilityOptions>(`${this.configuration.basePath}/ProjectVisibilityOptions`,
             null,
             {
                 responseType: <any>responseType,
@@ -602,10 +603,10 @@ export class PingControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public pingControllerXQuillOperationWithRelations(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<QuillOperationWithRelations>;
-    public pingControllerXQuillOperationWithRelations(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<QuillOperationWithRelations>>;
-    public pingControllerXQuillOperationWithRelations(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<QuillOperationWithRelations>>;
-    public pingControllerXQuillOperationWithRelations(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public pingControllerXQuillOperation(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<QuillOperation>;
+    public pingControllerXQuillOperation(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<QuillOperation>>;
+    public pingControllerXQuillOperation(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<QuillOperation>>;
+    public pingControllerXQuillOperation(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -640,7 +641,61 @@ export class PingControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<QuillOperationWithRelations>(`${this.configuration.basePath}/QuillOperationWithRelations`,
+        return this.httpClient.post<QuillOperation>(`${this.configuration.basePath}/QuillOperation`,
+            null,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public pingControllerXStatementWithTarget(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<StatementWithTarget>;
+    public pingControllerXStatementWithTarget(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<StatementWithTarget>>;
+    public pingControllerXStatementWithTarget(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<StatementWithTarget>>;
+    public pingControllerXStatementWithTarget(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<StatementWithTarget>(`${this.configuration.basePath}/StatementWithTarget`,
             null,
             {
                 responseType: <any>responseType,

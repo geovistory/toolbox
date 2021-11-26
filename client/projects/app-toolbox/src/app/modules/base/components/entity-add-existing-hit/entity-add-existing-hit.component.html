@@ -1,31 +1,27 @@
-<div class="gv-search-hit">
-  <div class="gv-search-hit-header">
-    <div class="d-flex">
-      <div class="gv-grow-1">
-        <gv-entity-preview [preview]="entityPreview" [dragEnabled]="false" [showId]="true"></gv-entity-preview>
-      </div>
-      <div class="d-flex">
-        <div class="gv-search-hit-is-in-project" *ngIf="isInProject">
-          Already in your project
-        </div>
-        <div class="gv-search-hit-project-count text-right">
-          <i class="fa fa-check"></i> {{projectsCount}} {{projectsCount === 1 ? 'project' : 'projects'}}
-        </div>
-      </div>
+<div class="loc-container" [ngClass]="{
+  'mat-bg-primary-50':selected,
+  'mat-bg-grey-100-on-hover':!selected
+}">
+  <div class="loc-first-line">
+    <div class="loc-title mat-body-1">
+      {{title}}
+    </div>
+    <div class="loc-meta mat-caption mat-text-secondary" [matTooltip]="metaTooltipText">
+      <mat-icon [svgIcon]="isInProject?'check-all':'check'" class="mat-icon-caption"
+        [ngClass]="{'mat-text-secondary':!isInProject, 'mat-text-accent':isInProject}"></mat-icon>
+      {{numberOfProject}}
     </div>
   </div>
-  <div class="d-flex">
-    <div class="gv-grow-1">
-      <div class="gv-search-hit-body text-muted">
-        <i class="gv-search-hit-property" [innerHtml]="hit.full_text_headline">
-        </i>
-      </div>
-    </div>
-    <div [matTooltip]="hit.btnTooltip">
-      <button type="button" name="button" (click)="open()" mat-flat-button color="primary" [disabled]="hit.btnDisabled"
-        [matTooltip]="hit.btnTooltip" *ngIf="isInProject">{{alreadyInProjectBtnText}}</button>
-      <button type="button" name="button" (click)="add()" mat-flat-button color="primary" [disabled]="hit.btnDisabled"
-        [matTooltip]="hit.btnTooltip" *ngIf="!isInProject">{{notInProjectBtnText}}</button>
+  <div class="loc-description mat-caption mat-text-secondary">
+    <span [innerHTML]="composedDescription"></span>
+  </div>
+  <div class="loc-footer">
+    <button class="loc-footer-item" mat-button color=primary (click)="onToggleDetailsOfEntity(selected)">
+      {{selected?'Hide':'Show'}} details
+    </button>
+    <div class="loc-footer-item" [matTooltip]="confirmBtnTooltip">
+      <button mat-stroked-button color=primary [disabled]="confirmBtnDisabled"
+        (click)="onConfirm()">{{confirmBtnText}}</button>
     </div>
   </div>
 </div>

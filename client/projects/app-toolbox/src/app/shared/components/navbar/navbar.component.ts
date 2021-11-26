@@ -33,7 +33,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private p: ActiveProjectService,
     private ngRedux: NgRedux<IAppState>,
   ) {
-    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
   }

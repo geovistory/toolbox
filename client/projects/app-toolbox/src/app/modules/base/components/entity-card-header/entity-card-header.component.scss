@@ -1,0 +1,48 @@
+:host {
+  display: flex;
+  padding: 1rem 0 1rem 24px;
+  width: 100%;
+}
+.card-header-icon {
+  display: flex;
+  flex: 0 0 70px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  font-size: 60px;
+  opacity: 0.3;
+  > mat-icon {
+    font-size: 60px;
+  }
+}
+.card-header-texts {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1 1 0;
+  overflow: hidden;
+  .card-header-entity-label {
+    margin: 0 0 4px;
+  }
+}
+.card-header-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.loc-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.loc-pkEntity {
+  white-space: nowrap;
+}
+
+.loc-title {
+  align-items: baseline;
+}

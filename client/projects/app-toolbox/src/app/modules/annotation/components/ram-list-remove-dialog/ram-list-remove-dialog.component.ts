@@ -5,7 +5,6 @@ import { Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
@@ -31,7 +30,6 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
   readonly$ = new BehaviorSubject(true);
   showOntoInfo$ = new BehaviorSubject(false)
   constructor(
-    public t: PropertiesTreeService,
     public p: ActiveProjectService,
     private dataService: ReduxMainService,
     public dialogRef: MatDialogRef<RamListRemoveDialogComponent>,

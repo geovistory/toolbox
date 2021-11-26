@@ -43,6 +43,9 @@ import { AccountComponent } from './pages/account/account.component';
     AccountPasswordComponent,
     AccessDeniedComponent,
   ],
+  exports: [
+    LoginComponent
+  ],
   providers: [
   ]
 })

@@ -1,12 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-queries';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4/public-api';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 type CtrlModel = number // pk_entity of type (persistent item)
@@ -25,12 +25,20 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
 
   model: CtrlModel;
   @ViewChild(MatSelect, { static: true }) matSelect: MatSelect;
+  @ViewChild('search') searchElement: ElementRef;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
   @Input() pkTypeClass: number;
   @Input() pkTypedClass: number;
   @Input() autoopen: boolean;
+
+  @Input() showPrimaryAction: boolean;
+  @Input() primaryActionText: string;
+
+
+
+  @Output() primaryAction = new EventEmitter()
 
   autofilled?: boolean;
   // emits true on destroy of this component
@@ -90,6 +98,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   value$ = new BehaviorSubject(null)
   typeLabel$: Observable<string>
   typeOptions$: Observable<Option[]>
+  filter$ = new BehaviorSubject<string>('')
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
@@ -112,7 +121,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
         map(preview => preview.entity_label)
       ))
     )
-    this.typeOptions$ = this.b.pipePersistentItemPksByClass(this.pkTypeClass).pipe(
+    const allOptions$ = this.b.pipePersistentItemPksByClass(this.pkTypeClass).pipe(
       switchMap(typePks => combineLatestOrEmpty(
         typePks.map(pkType => this.ap.streamEntityPreview(pkType).pipe(
           map<WarEntityPreview, Option>(preview => ({
@@ -126,6 +135,16 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
       )),
     )
 
+    this.typeOptions$ = combineLatest([allOptions$, this.filter$]).pipe(
+      map(([allOptions, filter]) => {
+        if (filter.length === 0) return allOptions
+        return allOptions.filter(option => option.label.toLowerCase().includes(filter.toLowerCase()))
+      }),
+    )
+
+  }
+  onFilter(e: KeyboardEvent) {
+    this.filter$.next((<HTMLInputElement>e.target).value)
   }
   // TODO: Adapt way of changing the value
   onSelect(e: MatSelectChange) {
@@ -184,8 +203,14 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   }
 
   menuToggled(opened: boolean) {
-    if (opened) this.onFocus()
-    else this.onBlur()
+    if (opened) {
+      this.searchElement.nativeElement.focus();
+      this.onFocus()
+    }
+    else {
+      this.filter$.next('')
+      this.onBlur()
+    }
   }
 
   clearForm() {

@@ -2,6 +2,11 @@
 
 echo '================ Start of heroku-postbuild.sh =============================='
 
+echo '================= Set environment variables for client ====================='
+envsubst <./client/dist/app-toolbox/assets/env.template.js >./client/dist/app-toolbox/assets/env.js
+echo 'client env vars'
+cat ./client/dist/app-toolbox/assets/env.js
+
 echo '================= Compile Server =============================='
 cd ./server
 

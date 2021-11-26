@@ -1,0 +1,24 @@
+:host {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.loc-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+}
+
+.loc-right {
+  display: flex;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
+}
+.loc-class-info {
+  margin: 8px 16px 8px 0;
+}

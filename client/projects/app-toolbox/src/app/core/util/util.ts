@@ -1,10 +1,10 @@
 // TODO DELETE UNUSED
 import { FormArray, FormGroup } from '@angular/forms';
+import { SysConfig } from '@kleiolab/lib-config';
 import { ByPk, ProjectPreview } from '@kleiolab/lib-redux';
 import { ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
-import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
-import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator

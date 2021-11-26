@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/camelcase */
 import {InfStatement} from '@kleiolab/lib-sdk-lb4';
 import {DatChunkMock} from './DatChunkMock';
 import {DatDigitalMock} from './DatDigitalMock';
@@ -8,8 +7,8 @@ import {InfAppellationMock} from './InfAppellationMock';
 import {InfDimensionMock} from './InfDimensionMock';
 import {InfLangStringMock} from './InfLangStringMock';
 import {InfLanguageMock} from './InfLanguageMock';
-import {InfResourceMock} from './InfResourceMock';
 import {InfPlaceMock} from './InfPlaceMock';
+import {InfResourceMock} from './InfResourceMock';
 import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
 import {OmitEntity} from './local-model.helpers';
 import {TabCellXMock} from './TabCellXMock';
@@ -431,6 +430,21 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_1430_HAS_APPELLATION_FOR_LANGUAGE_TYPE.dfh_pk_property,
     fk_object_info: InfResourceMock.APPE_IN_LANG_TYPE_FIRST_NAME.pk_entity,
   })
+
+  static readonly NAME_2_TO_PERSON: OmitEntity<InfStatement> = ({
+    pk_entity: 3060,
+    fk_subject_info: InfResourceMock.NAMING_2.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfResourceMock.PERSON_1.pk_entity,
+  })
+
+  static readonly NAME_2_TO_APPE: OmitEntity<InfStatement> = ({
+    pk_entity: 3061,
+    fk_subject_info: InfResourceMock.NAMING_2.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.JACK.pk_entity,
+  })
+
 
 }
 

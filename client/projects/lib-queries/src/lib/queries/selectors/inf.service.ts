@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, EntityModelAndClass, getFromTo, IAppState, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, infDefinitions, infRoot, InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks, paginateBy, PR_ENTITY_MODEL_MAP, ReducerConfigCollection, subfieldIdToString } from '@kleiolab/lib-redux';
-import { GvFieldId, GvFieldPage, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { equals } from 'ramda';
@@ -187,7 +187,7 @@ class InfStatementSelections extends Selector {
   public by_pk_entity$ = this.selector<InfStatement>('by_pk_entity')
   public by_fk_subject_data$ = this.selector<ByPk<InfStatement>>('by_fk_subject_data')
 
-  public pagination$ = this.paginationSelector<number>()
+  public pagination$ = this.paginationSelector<StatementWithTarget>()
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

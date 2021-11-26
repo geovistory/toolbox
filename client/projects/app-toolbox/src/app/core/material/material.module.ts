@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule, MatRippleModule } from '@angular/material/core';
@@ -66,7 +67,8 @@ const modules = [
   MatRippleModule,
   MatGridListModule,
   MatSnackBarModule,
-  ScrollingModule
+  ScrollingModule,
+  MatButtonToggleModule
 ]
 
 @NgModule({

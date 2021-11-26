@@ -1,0 +1,126 @@
+<ng-container *ngIf="(alreadyHas$ | async) === true">
+  <span class="mat-h2 loc-dialog-title top-dialog-padding">
+    Existing information found in other projects!
+  </span>
+  <span class="mat-body1 loc-dialog-title">
+    About: {{classLabel_source$ | async}} {{sourceEntityLabel$ | async}} – {{data.field.label}} –
+    {{classLabel_target$ | async}}
+  </span>
+  <span class="mat-body1 loc-field-title">
+    Select and add items from the list below or create a new item.
+  </span>
+  <gv-view-field-body [source]="data.source" [field]="fieldWithOneTarget" [showBodyOnInit]="true" [scope]="scope$|async"
+    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$" (close)="onClose()" (next)="onNext()">
+  </gv-view-field-body>
+</ng-container>
+
+
+<div class="gv-col gv-fh" *ngIf="(alreadyHas$ | async) === false">
+  <span class="gv-col-center">
+    <span class="loc-dialog-title mat-h2">Add...</span>
+    <div class="gv-row-center mat-caption mat-text-secondary pl-2 pr-2">
+      <div class="loc-title-left loc-ellipsis">to {{classLabel_source$ | async}} – {{sourceEntityLabel$ | async}}
+      </div>
+      <div>
+        <mat-icon svgIcon="arrow-right" class="loc-arrow-icon"></mat-icon>
+      </div>
+      <div class="loc-title-right loc-ellipsis">{{data.field.label}}</div>
+    </div>
+  </span>
+
+  <mat-divider></mat-divider>
+
+  <gv-slider class="gv-fh" [slide]="data.valueTarget ? 'center' : sliderView" style="height:'calc(100% - 95px)'">
+    <!--title height + padding bot + padding top  + divdier = 62 + 16 + 16 + 1 = 95  -->
+
+    <!-- SLIDE 1 -->
+    <ng-container left>
+      <gv-hbf-panel>
+
+        <!-- header -->
+        <ng-container header>
+          <span class="mat-h2">... a new {{this.fieldTargetClass.targetClassLabel}}</span>
+        </ng-container>
+
+        <!-- body -->
+        <ng-container body>
+
+          <gv-form-create-entity [field]="data.field" [pkClass]="data.targetClass" [source]="data.source"
+            [hideTitle]="true" [hideButtons]="true" [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
+            (searchString)="searchStringChange($event)" #f>
+          </gv-form-create-entity>
+        </ng-container>
+
+        <!-- footer -->
+        <ng-container footer>
+          <div class="gv-col-space-between">
+            <button mat-flat-button color="primary"
+              [disabled]="(f.submitted && f?.formFactory?.formGroup.invalid) || (loading$ | async)"
+              (click)="onSubmit(f)">
+              <span *ngIf="!(loading$ | async)">OK</span>
+              <div *ngIf="loading$ | async" style="margin: 6px;">
+                <mat-spinner [diameter]="20"></mat-spinner>
+              </div>
+            </button>
+          </div>
+
+          <div class="gv-col-space-between">
+            <button mat-button type="button" class="ml-2 mr-2" (click)="dialogRef.close()">Cancel</button>
+          </div>
+        </ng-container>
+
+      </gv-hbf-panel>
+    </ng-container>
+
+
+    <!-- SLIDE 2 -->
+    <ng-container center *ngIf="!data.valueTarget">
+      <gv-hbf-panel [footer]="false">
+
+        <!-- header -->
+        <ng-container header>
+          <span class="mat-h2">... an existing {{this.fieldTargetClass.targetClassLabel}}</span>
+        </ng-container>
+
+        <!-- body -->
+        <ng-container body>
+          <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass_target$ | async)"
+            [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
+            [confirmBtnTextInProject]="'Select'" [confirmBtnTextNotInProject]="'Select'"
+            [confirmBtnTooltipInProject]="'Select'" [confirmBtnTooltiptNotInProject]="'add to your project and select'"
+            (onConfirm)="onSelectExisting($event)" (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
+          </gv-search-existing-entity>
+        </ng-container>
+
+      </gv-hbf-panel>
+    </ng-container>
+
+
+    <!-- SLIDE 3 -->
+    <ng-container right *ngIf="!data.valueTarget">
+      <gv-hbf-panel [header]="false">
+
+        <!-- body -->
+        <ng-container body>
+          <mat-tab-group mat-align-tabs="center" [selectedIndex]="(selectedInProject$ | async) ? 0 : 1" class="gv-fh">
+            <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
+              <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
+                [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }"
+                [readonly$]="entityCardReadOnly$">
+              </gv-entity-card>
+            </mat-tab>
+
+            <mat-tab label="Community version" class="gv-fh gv-col-space-between">
+              <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
+                [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }"
+                [readonly$]="entityCardReadOnly$">
+              </gv-entity-card>
+            </mat-tab>
+          </mat-tab-group>
+        </ng-container>
+
+      </gv-hbf-panel>
+    </ng-container>
+
+  </gv-slider>
+</div>

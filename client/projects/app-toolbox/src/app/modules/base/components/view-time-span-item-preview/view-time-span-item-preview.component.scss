@@ -1,0 +1,42 @@
+.field-margin-left {
+  margin-left: 24px;
+}
+.field-margin-right {
+  margin-right: 24px;
+}
+.full-width {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.left-col {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.right-col {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.field-onto-info {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.field-label {
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: flex-start;
+  white-space: nowrap;
+}

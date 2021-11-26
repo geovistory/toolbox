@@ -1,12 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 
-import { EntitySearchHit } from "@kleiolab/lib-sdk-lb4";
 
-export interface HitPreview extends EntitySearchHit {
-  btnDisabled?: boolean
-  btnTooltip?: string
+export interface EntityAddExistingHit {
+  pkEntity: number;
+  title: string;
+  description: string;
+  isInProject: boolean;
+  numberOfProject: number;
+  selected: boolean;
+  confirmBtnText: string;
+  confirmBtnDisabled: boolean
+  confirmBtnTooltip: string
 }
+
 
 
 @Component({
@@ -16,85 +22,46 @@ export interface HitPreview extends EntitySearchHit {
 })
 export class EntityAddExistingHitComponent implements OnInit {
 
-  @Input() hit: HitPreview;
+  @Input() pkEntity: number;
+  @Input() title: string;
+  @Input() description: string;
+  @Input() isInProject: boolean;
+  @Input() numberOfProject: number;
 
+  @Input() selected: boolean;
+  @Input() confirmBtnText: string;
+  @Input() confirmBtnDisabled: boolean;
+  @Input() confirmBtnTooltip: string
 
-  @Input() alreadyInProjectBtnText: string;
-  @Input() notInProjectBtnText: string;
+  @Output() showDetailsOfEntity: EventEmitter<number> = new EventEmitter();
+  @Output() hideDetailsOfEntity: EventEmitter<number> = new EventEmitter();
+  @Output() confirm: EventEmitter<number> = new EventEmitter();
 
+  showDetailsTooltip = 'Show details'
+  hideDetailsTooltip = 'Hide details'
 
-
-  /**
-  * flag to indicate if this search hit is in the context of a project-wide
-  * search or in a repository-wide search.
-  *   false = project-wide
-  *   true = repository-wide
-  *   default = false
-  */
-  @Input() repositorySearch: boolean;
-
-  @Output() onAdd: EventEmitter<number> = new EventEmitter();
-  @Output() onOpen: EventEmitter<number> = new EventEmitter();
-  @Output() onSelect: EventEmitter<number> = new EventEmitter();
-
-  headlineItems: Array<string> = [];
-  isInProject: boolean;
-
-  projectsCount: number;
-
-  entityPreview: WarEntityPreview;
-
-
+  metaTooltipText: string;
+  composedDescription: string
 
   constructor() { }
 
   ngOnInit() {
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
+    this.metaTooltipText = `This entity is in ${this.numberOfProject} ${this.isInProject ? '' : 'other'} ${this.numberOfProject === 1 ?
+      'project' :
+      'projects'}${this.isInProject ?
+        ', including yours' : `, and not in yours`
+      }.`;
 
-    this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
-
-    if (this.hit.fk_project) {
-      this.isInProject = true;
-    } else {
-      this.repositorySearch = true;
-      this.isInProject = false;
-    }
-
-    this.entityPreview = {
-      pk_entity: this.hit.pk_entity,
-      fk_project: this.hit.fk_project,
-      project: this.hit.project,
-      fk_class: this.hit.fk_class,
-      entity_label: this.hit.entity_label,
-      entity_type: this.hit.entity_type,
-      class_label: this.hit.class_label,
-      type_label: this.hit.type_label,
-      time_span: this.hit.time_span
-    }
+    this.composedDescription = `ID ${this.pkEntity} – ${this.description}`
   }
 
-  add() {
-    this.onAdd.emit(this.hit.pk_entity)
+  onToggleDetailsOfEntity(selected: boolean) {
+    if (selected) this.hideDetailsOfEntity.emit(this.pkEntity)
+    else this.showDetailsOfEntity.emit(this.pkEntity)
   }
 
-  open() {
-    this.onOpen.emit(this.hit.pk_entity)
-  }
-
-  select() {
-    this.onSelect.emit(this.hit.pk_entity)
-  }
-
-
-  linkClicked() {
-    if (!this.repositorySearch) {
-      if (this.isInProject) {
-        this.open();
-      } else {
-        this.add();
-      }
-    }
+  onConfirm() {
+    this.confirm.emit(this.pkEntity)
   }
 
 }

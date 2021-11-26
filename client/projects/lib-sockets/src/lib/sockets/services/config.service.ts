@@ -9,6 +9,28 @@ export class ConfigService {
       autoConnect: false
     }
   }
-  constructor() {
+  // get the path of the baseUrl (e.g: 'https://foo.org/abc' returns '/abc')
+  get path(): string {
+    const suffix = '/socket.io'
+    try {
+      return this.removeTrailingSlash(new URL(this.config.baseUrl).pathname) + suffix
+    } catch {
+      return suffix
+    }
+  }
+
+  get url(): string {
+    try {
+      return this.removeTrailingSlash(new URL(this.config.baseUrl).origin)
+    } catch {
+      return ''
+    }
+  }
+
+  public createNamespaceUrl(namespace: string) {
+    return this.removeTrailingSlash(this.url) + '/' + namespace;
+  }
+  private removeTrailingSlash(x: string) {
+    return x.replace(/\/$/, '');
   }
 }

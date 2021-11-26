@@ -1,6 +1,7 @@
-import {GvSubentitFieldPageReq, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {GvSubentitFieldPageReq} from '@kleiolab/lib-sdk-lb4';
+import {TrueEnum} from '../enums/TrueEnum';
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 
 export namespace GvSubentityFieldPageReqMock {
 
@@ -9,7 +10,7 @@ export namespace GvSubentityFieldPageReqMock {
   export const appeTeEnRefersToName: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
-        appellation: 'true'
+        appellation: TrueEnum.true
       }
     },
     page: {
@@ -24,7 +25,7 @@ export namespace GvSubentityFieldPageReqMock {
   export const appeTeEnHasDefinition: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_365_NAMING.dfh_pk_class]: {
-        langString: 'true'
+        langString: TrueEnum.true
       }
     },
     page: {
@@ -36,24 +37,24 @@ export namespace GvSubentityFieldPageReqMock {
     }
   }
 
-  export const appeTeEnHasTimeSpan: GvSubentitFieldPageReq = {
-    targets: {
-      [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-        timeSpan: 'true'
-      }
-    },
-    page: {
-      property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
-      isOutgoing: true,
-      isCircular: false,
-      limit: 1,
-      offset: 0,
-    }
-  }
+  // export const appeTeEnHasTimeSpan: GvSubentitFieldPageReq = {
+  //   targets: {
+  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+  //       timeSpan: TrueEnum.true
+  //     }
+  //   },
+  //   page: {
+  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+  //     isOutgoing: true,
+  //     isCircular: false,
+  //     limit: 1,
+  //     offset: 0,
+  //   }
+  // }
   export const appeTeEnIsAppeOfPerson: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_21_PERSON.dfh_pk_class]: {
-        entityPreview: 'true'
+        entityPreview: TrueEnum.true
       }
     },
     page: {

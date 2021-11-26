@@ -1,6 +1,6 @@
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
@@ -70,16 +70,13 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           height: 'calc(100% - 30px)',
           width: '980px',
           maxWidth: '100%',
+          panelClass: 'gv-no-padding',
           data: {
             initVal$: new BehaviorSubject(undefined),
             showAddList: true,
             hiddenProperty: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
-            alreadyInProjectBtnText: 'Select',
-            notInProjectClickBehavior: 'selectOnly',
-            notInProjectBtnText: 'Select',
             disableIfHasStatement: undefined,
-            classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
-            pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
+            pkClass: this.pkClass,
             defaultSearch: this.cellContent
           }
         })

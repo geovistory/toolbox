@@ -19,17 +19,22 @@ export class LoadingBarActions {
   static readonly ADD_JOB = 'LOADING_BAR_ADD_JOB';
   static readonly REMOVE_JOB = 'LOADING_BAR_REMOVE_JOB';
 
-  @dispatch() addJob = (): LoadingBarAction => ({
+  addJobAction = {
     type: LoadingBarActions.ADD_JOB,
     meta: null,
     payload: null,
-  })
-
-  @dispatch() removeJob = (): LoadingBarAction => ({
+  }
+  removeJobAction = {
     type: LoadingBarActions.REMOVE_JOB,
     meta: null,
     payload: null
-  })
+  }
+
+  @dispatch()
+  addJob = (): LoadingBarAction => this.addJobAction
+
+  @dispatch()
+  removeJob = (): LoadingBarAction => this.removeJobAction
 
 
 }

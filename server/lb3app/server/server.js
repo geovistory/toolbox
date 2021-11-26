@@ -9,17 +9,17 @@ var boot = require('loopback-boot');
 
 var app = (module.exports = loopback());
 
-var enforce = require('express-sslify');
+// var enforce = require('express-sslify');
 
 const { Client } = require('pg');
 const { Subject } = require('rxjs');
 
-/**
- * Enfoce using ssl (https) on staging and production
- */
-if (['production', 'staging'].includes(process.env.DB_ENV)) {
-  app.use(enforce.HTTPS({ trustProtoHeader: true }));
-}
+// /**
+//  * Enfoce using ssl (https) on staging and production
+//  */
+// if (['production', 'staging'].includes(process.env.DB_ENV)) {
+//   app.use(enforce.HTTPS({ trustProtoHeader: true }));
+// }
 
 app.start = function () {
   // start the web server

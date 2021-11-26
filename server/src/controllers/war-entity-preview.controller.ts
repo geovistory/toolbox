@@ -2,8 +2,6 @@ import {inject, Subscription} from '@loopback/core';
 import {Fields} from '@loopback/filter';
 import {model, property, repository} from '@loopback/repository';
 import {HttpErrors, post, requestBody} from '@loopback/rest';
-import _ from 'lodash';
-import {indexBy, keys} from 'ramda';
 import {Socket} from 'socket.io';
 import {QWarEntityPreviewSearchExisiting, SearchExistingRelatedStatement} from '../components/query/q-war-search-existing';
 import {Postgres1DataSource} from '../datasources';
@@ -12,6 +10,7 @@ import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRela
 import {Streams} from '../realtime/streams/streams';
 import {AddToStreamMsg, WebsocketControllerBase} from '../realtime/websockets/websocker-controller-base';
 import {WarEntityPreviewRepository} from '../repositories';
+import {logSql} from '../utils/helpers';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {EntitySearchHit} from './EntitySearchHit';
 
@@ -19,9 +18,11 @@ import {EntitySearchHit} from './EntitySearchHit';
 
 // Fields to include in streamed WarEntityPreviews
 // see about Lb4 filters: https://loopback.io/doc/en/lb4/Fields-filter.html
-const includeFieldsForSteam: Fields<WarEntityPreviewWithFulltext> = {
+const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
+  key: true,
   pk_entity: true,
   fk_project: true,
+  project: true,
   fk_class: true,
   class_label: true,
   entity_label: true,
@@ -48,6 +49,7 @@ const includeFieldsForSteam: Fields<WarEntityPreviewWithFulltext> = {
 }
 @model() export class WarEntityPreviewSearchExistingReq extends WarEntityPreviewSearchReq {
   @property() relatedStatement?: SearchExistingRelatedStatement
+  @property() scope: string
 }
 
 
@@ -67,7 +69,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
 
 
   streamSub: Subscription;
-
+  logs = false
 
   constructor(
     @repository(WarEntityPreviewRepository)
@@ -120,25 +122,25 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     const result: WarEntityPreviewWithRelations[] = [];
 
     if (this.cache.currentProjectPk) {
-      const entityPks = Object.keys(this.cache.streamedIds).map(pk => parseInt(pk, 10));
-      if (entityPks?.length) {
-        const pkProject = parseInt(this.cache.currentProjectPk, 10)
+      const ids = Object.keys(this.cache.streamedIds).map(pk => pk);
+      if (ids?.length) {
+        // const pkProject = parseInt(this.cache.currentProjectPk, 10)
 
         // Query entities modified and needed by current cache in project version
-        const projectItems = await this.findModifiedSinceTmsp(pkProject, entityPks, tmsp);
-        const projectItemsIdx = indexBy((i) => i?.pk_entity?.toString() ?? '', projectItems)
+        const items = await this.findModifiedSinceTmsp(ids, tmsp);
+        // const projectItemsIdx = indexBy((i) => i?.pk_entity?.toString() ?? '', items)
 
         // Query entities modified and needed by current cache in repo version
-        const repoItems = await this.findRepoModifiedSinceTmsp(pkProject, entityPks, tmsp);
+        // const repoItems = await this.findRepoModifiedSinceTmsp(pkProject, ids, tmsp);
 
 
-        result.push(...projectItems)
+        result.push(...items)
 
-        for (const repoItem of repoItems) {
-          if (repoItem.pk_entity && !projectItemsIdx[repoItem.pk_entity.toString()]) {
-            result.push(repoItem)
-          }
-        }
+        // for (const repoItem of repoItems) {
+        //   if (repoItem.pk_entity && !projectItemsIdx[repoItem.pk_entity.toString()]) {
+        //     result.push(repoItem)
+        //   }
+        // }
 
       }
 
@@ -168,11 +170,11 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   @ws.subscribe('addToStream')
   async handleAddToStream(data: AddToStreamMsg) {
 
-    const {pkProject, ids} = this.handleExtendStream(data)
-    const pks = ids.map(id => parseInt(id))
+    const {ids} = this.handleExtendStream(data)
+    // const ids = ids.map(id => parseInt(id))
     // Query and emit requested previews
-    const projectItems = await this.findByProjectAndEntityPks(pkProject, pks)
-    const allItems = await this.completeProjectWithRepoPreviews(projectItems, pks);
+    const allItems = await this.findByKey(ids)
+    // const allItems = await this.completeProjectWithRepoPreviews(projectItems, pks);
     this.emitEntityPreviews(allItems);
   }
 
@@ -185,8 +187,8 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   */
   @ws.subscribe('extendStream')
   handleExtendStream(data: AddToStreamMsg) {
-    const {pkProject, ids} = this.sanitizeAddToStreamMsg(data);
-    return this.extendStream(pkProject, ids);
+    // const {pkProject, ids} = this.sanitizeAddToStreamMsg(data);
+    return this.extendStream(data.pkProject, data.pks);
   }
 
   /**
@@ -234,15 +236,14 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
    * Set pkProject to null to query repo version.
    *
    * @param pkProject if null, repo version is queried, if number, project version is queried
-   * @param entityPks array of pk_entity of the entity prieviews to query
+   * @param ids array of pk_entity of the entity prieviews to query
    */
-  private async findByProjectAndEntityPks(pkProject: number | null, entityPks: number[]) {
+  private async findByKey(ids: string[]) {
     return this.warEntityPreviewRepository.find({
-      fields: includeFieldsForSteam,
+      fields: includeFieldsForStream,
       where: {
         and: [
-          {fk_project: {eq: pkProject}},
-          {pk_entity: {inq: entityPks}},
+          {key: {inq: ids}},
         ]
       }
     });
@@ -254,78 +255,77 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
    * after tsmpLastModification.
    *
    * @param tsmpLastModification
-   * @param entityPks
+   * @param ids
    */
-  private async findModifiedSinceTmsp(pkProject: number, entityPks: number[], tsmpLastModification: string) {
+  private async findModifiedSinceTmsp(ids: string[], tsmpLastModification: string) {
     return this.warEntityPreviewRepository.find({
-      fields: includeFieldsForSteam,
+      fields: includeFieldsForStream,
       where: {
         and: [
           {tmsp_last_modification: {eq: tsmpLastModification}},
-          {fk_project: {eq: pkProject}},
-          {pk_entity: {inq: entityPks}}
+          {key: {inq: ids}}
         ]
       }
     });
   }
 
-  /**
-  * Queries repo entity previews that are in the array of entityPks and
-  * and that are modified at the same time or after tsmpLastModification
-  * that are not available as project version.
-  *
-  * @param tsmpLastModification
-  * @param entityPks
-  */
-  private async findRepoModifiedSinceTmsp(pkProject: number, entityPks: number[], tsmpLastModification: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const params: any[] = []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addParam = (val: any) => {
-      params.push(val)
-      return '$' + params.length
-    }
-    const sql = `WITH tw0 AS (
-      Select pk_entity
-      FROM war.entity_preview
-      WHERE project = 0
-      AND tmsp_last_modification >= ${addParam(tsmpLastModification)}
-      AND pk_entity IN (${entityPks.map(pk => addParam(pk))})
-      EXCEPT
-      Select pk_entity
-      FROM war.entity_preview
-      WHERE project = ${addParam(pkProject)}
-    )
-    SELECT ${keys(includeFieldsForSteam).map(k => 't1.' + k).join(', ')}
-    FROM war.entity_preview t1,
-    tw0 t2
-    WHERE t1.pk_entity = t2.pk_entity
-    AND t1.project = 0`
-    return this.warEntityPreviewRepository.dataSource.execute(sql, params);
-  }
+  // /**
+  // * Queries repo entity previews that are in the array of entityPks and
+  // * and that are modified at the same time or after tsmpLastModification
+  // * that are not available as project version.
+  // *
+  // * @param tsmpLastModification
+  // * @param entityPks
+  // */
+  // private async findRepoModifiedSinceTmsp(pkProject: number, entityPks: number[], tsmpLastModification: string) {
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   const params: any[] = []
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   const addParam = (val: any) => {
+  //     params.push(val)
+  //     return '$' + params.length
+  //   }
+  //   const sql = `WITH tw0 AS (
+  //     Select pk_entity
+  //     FROM war.entity_preview
+  //     WHERE project = 0
+  //     AND tmsp_last_modification >= ${addParam(tsmpLastModification)}
+  //     AND pk_entity IN (${entityPks.map(pk => addParam(pk))})
+  //     EXCEPT
+  //     Select pk_entity
+  //     FROM war.entity_preview
+  //     WHERE project = ${addParam(pkProject)}
+  //   )
+  //   SELECT ${keys(includeFieldsForStream).map(k => 't1.' + k).join(', ')}
+  //   FROM war.entity_preview t1,
+  //   tw0 t2
+  //   WHERE t1.pk_entity = t2.pk_entity
+  //   AND t1.project = 0`
+  //   return this.warEntityPreviewRepository.dataSource.execute(sql, params);
+  // }
 
 
 
 
-  private async completeProjectWithRepoPreviews(projectItems: WarEntityPreviewWithRelations[], requestedPks: number[]): Promise<WarEntityPreviewWithRelations[]> {
-    const result: WarEntityPreviewWithRelations[] = [...projectItems]
+  // private async completeProjectWithRepoPreviews(projectItems: WarEntityPreviewWithRelations[], requestedPks: number[]): Promise<WarEntityPreviewWithRelations[]> {
+  //   const result: WarEntityPreviewWithRelations[] = [...projectItems]
 
 
-    // find pks of requestedPks not present in projectItems
-    const notInProject = _.difference(
-      requestedPks.map((item) => item),
-      projectItems.map((item) => item?.pk_entity)
-    ).filter(x => typeof x === 'number') as number[];
+  //   // find pks of requestedPks not present in projectItems
+  //   const notInProject = _.difference(
+  //     requestedPks.map((item) => item),
+  //     projectItems.map((item) => item?.pk_entity)
+  //   ).filter(x => typeof x === 'number') as number[];
 
-    // query repo versions
-    if (notInProject.length) {
-      const repoItems = await this.findByProjectAndEntityPks(null, notInProject);
-      // add repo versions to result
-      result.push(...repoItems)
-    }
+  //   // query repo versions
+  //   if (notInProject.length) {
+  //     const repoItems = await this.findByProjectAndEntityPks(null, notInProject);
+  //     // add repo versions to result
+  //     result.push(...repoItems)
+  //   }
 
-    return result;
-  }
+  //   return result;
+  // }
 
 
 
@@ -345,7 +345,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     this.log(
       this.socket.id +
       ' emitted entityPreview: ' +
-      entityPreview.pk_entity +
+      entityPreview.key +
       ' ' +
       entityPreview.entity_label +
       ' for project ' +
@@ -379,6 +379,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
 
     const q = new SqlBuilderLb4Models(this.dataSource)
 
+
     q.sql = `
       WITH tw1 AS (
           select
@@ -389,7 +390,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
           ts_headline(type_label, q) as type_label_headline,
           count(pk_entity) OVER() AS total_count
           from war.entity_preview t1,
-          to_tsquery(${q.addParam(tsSearchString)}) q
+          to_tsquery(${tsSearchString === '' ? "''" : tsSearchString}) q
           WHERE 1=1
           ${tsSearchString
         ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
@@ -437,7 +438,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         LEFT JOIN count ON true;
         `;
 
-    // if (log) logSql(q.sql, q.params);
+    logSql(q.sql, q.params);
 
     return q.executeAndReturnFirstData<WareEntityPreviewPage>()
   }
@@ -457,7 +458,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   ): Promise<WareEntityPreviewPage> {
     const i = this.prepareSearchInputs(req.limit, req.page, req.searchString)
     const q = new QWarEntityPreviewSearchExisiting(this.dataSource)
-    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement)
+    return q.query(req.projectId, i.tsSearchString, req.searchString, req.pkClasses, i.limit, i.offset, req.entityType, req.relatedStatement, req.scope)
   }
 
   @post('/war-entity-previews/paginated-list-by-pks', {
@@ -528,16 +529,21 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     }
 
     const offset = limit * (page - 1);
-
-    const tsSearchString = searchString ?
-      searchString
+    let tsSearchString = '';
+    if (searchString) {
+      tsSearchString = searchString
         .trim()
+        .replace(/'/g, ' ') // replace single quote with a space
+        .replace(/ +(?= )/g, '') // replace multiple spaces with a single space
         .split(' ')
+        .filter(part => part.length > 0)
         .map((word) => {
-          return word + ':*';
+          return `'"${word}"':*`;
         })
         .join(' & ')
-      : '';
+    }
+    if (tsSearchString.length > 0) tsSearchString = `$$${tsSearchString}$$`
+
     return {tsSearchString, offset, limit};
   }
 

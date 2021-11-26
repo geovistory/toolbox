@@ -1,0 +1,93 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.loc-slider-header {
+  flex: 0 0 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.loc-slider-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.loc-slider-footer {
+  flex: 0 0 42px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.loc-embed-slider {
+  height: calc(100% - 42px);
+}
+
+.loc-dialog-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 8px 16px 0;
+}
+
+.top-dialog-padding {
+  padding-top: 16px;
+}
+
+.loc-field-title {
+  margin: 40px 52px 0;
+}
+
+::ng-deep .mat-tab-body-wrapper {
+  height: 100%;
+}
+
+::ng-deep .mat-tab-body-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+gv-form-create-entity {
+  padding: 0 16px 0 16px;
+}
+
+gv-view-field-body {
+  padding: 0px 16px 16px 16px;
+}
+
+mat-tab-group {
+  padding: 8px 0 0 0;
+}
+
+::ng-deep .loc-body .loc-header {
+  padding-top: 0 !important;
+}
+
+.loc-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loc-title-left {
+  flex-grow: 1;
+  text-align: end;
+}
+.loc-title-right {
+  flex-grow: 1;
+}
+
+.loc-arrow-icon {
+  transform: scale(0.7);
+}
+
+.loc-align-center {
+  align-items: center;
+}

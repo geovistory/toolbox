@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, TableName } from '@kleiolab/lib-queries';
+import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
+import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
@@ -14,10 +14,9 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
@@ -164,6 +163,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     label: 'Metadata Fields',
     pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.metadata)
   }
+  timeSpanSection: FieldSection = {
+    showHeader$: new BehaviorSubject(true),
+    expanded$: new BehaviorSubject(true),
+    key: SectionName.timeSpan,
+    label: 'Time Span',
+    pipeFields: (pk) => this.c.pipeSection(pk, DisplayType.form, SectionName.timeSpan)
+  }
   simpleFormSection: FieldSection = {
     showHeader$: new BehaviorSubject(false),
     expanded$: new BehaviorSubject(true),
@@ -177,6 +183,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   previousHasNames: Array<string> = [];
   previousFocusName = '';
 
+  classLabel = '';
+
   constructor(
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
@@ -184,12 +192,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     private ss: SchemaSelectorsService,
     public ap: ActiveProjectPipesService,
     public s1: SchemaService,
-    private s2: SchemaSelectorsService,
   ) { }
 
   ngOnInit() {
 
     if (!this.pkClass) throw new Error('You must provide a pkClass');
+
+    this.c.pipeClassLabel(this.pkClass).subscribe(label => this.classLabel = label);
 
     if (this.initVal$) {
       this.initVal$.subscribe(b => {
@@ -206,7 +215,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       rootFormGroup$: of({ data }),
       getChildNodeConfigs: this.getChildNodeConfigs
     }, this.destroy$)
-
 
     this.formFactory$.pipe(
       first(), takeUntil(this.destroy$)
@@ -286,13 +294,28 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * generate the top level sections of the form
    */
   private getGvFormSections(pkClass: number): Observable<LocalNodeConfig[]> {
+    // console.log('aaa aaaaaaaaa')// freezing bug log
     return combineLatest([
       this.advancedMode$,
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa advancedMode$'))),
       this._initVal$,
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa _initVal$'))),
       this.ss.dfh$.class$.by_pk_class$.key(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa by_pk_class$'))),
       this.c.pipeTargetTypesOfClass(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa pipeTargetTypesOfClass$'))),
       this.c.pipeTableNameOfClass(pkClass),
-      this.c.pipeClassLabel(pkClass),
+      // freezing bug log
+      // .pipe(tap(x => console.log('aaa pipeTableNameOfClass$'))),
+      this.c.pipeClassLabel(pkClass).pipe(
+        distinctUntilChanged(),
+        // freezing bug log
+        //  tap(x => console.log('aaa pipeClassLabel$', pkClass, x))
+      ),
     ]).pipe(
       switchMap(([advancedMode, initVal, klass, targets, parentModel, label]) => {
 
@@ -312,18 +335,26 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           // initialize the correct sections
           const isPersistentItem = (klass.basic_type === 8 || klass.basic_type === 30);
           if (!advancedMode) {
-            const basicType = isPersistentItem ? 'PeIt' : 'TeEn'
-            this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, basicType);
-            this.sections = [this.simpleFormSection]
+            if (isPersistentItem) {
+              this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, 'PeIt');
+              this.sections = [this.simpleFormSection]
+            } else {
+              this.simpleFormSection.pipeFields = (pk) => this.c.pipeSimpleForm(pk, 'TeEn');
+              this.timeSpanSection.showHeader$.next(false)
+              this.sections = [this.timeSpanSection, this.simpleFormSection]
+            }
           } else if (isPersistentItem) {
             this.sections = [this.basicSection, this.metadataSection, this.specificSection]
           } else {
-            this.sections = [this.specificSection, this.metadataSection, this.basicSection]
+            this.sections = [this.timeSpanSection, this.specificSection, this.metadataSection, this.basicSection]
           }
+          // console.log('aaa sections: ', this.sections) // freezing bug log
+
           // pipe the fields of each section
           const sectionsWithFields$ = combineLatestOrEmpty(
             this.sections.map(section => section.pipeFields(pkClass).pipe(
               map(fields => {
+                // console.log('aaa section', pkClass, section) // freezing bug log
                 return fields.filter(fDef => {
                   // Q: is this field hidden?
                   if (equals(fDef.property, this.hiddenProperty)) return false;
@@ -334,8 +365,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             ))
           )
 
+
+
+
+          // const nb = 0 // freezing bug log
+          // if (this.sections[nb]) this.sections[nb].pipeFields(pkClass).subscribe(() => console.log('section', nb)) // freezing bug log
+          // console.log(this.sections) // freezing bug log
+
+
           return sectionsWithFields$.pipe(
             map(sectionsWithFields => {
+
+              // console.log('aaa ---') // freezing bug log
 
               // if simple mode
               if (!advancedMode) {
@@ -373,7 +414,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               }
 
 
+              // console.log('aaa place2') // freezing bug log
+
               return sectionsWithFields.map(s => {
+
                 // then create the child nodes
                 const n: LocalNodeConfig = {
                   id: U.uuid(),
@@ -405,7 +449,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                       this.previousHasNames = curHasNames;
 
-                      this.emitNewSearchString(focusName);
+                      this.emitNewSearchString(curHasNames[0] ? focusName : '');
 
                       const result: InfResourceWithRelations = {} as InfResourceWithRelations;
                       items.forEach(item => {
@@ -438,6 +482,41 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * Generates the array of gvFormFields
    */
   private getGvFormFields(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const section = arrayConfig.data.gvFormSection.section;
+    const fields = arrayConfig.data.gvFormSection.fields;
+    const init: any = arrayConfig.data.gvFormSection.initValue;
+    const initVal: InfResourceWithRelations = init?.resource ?? init // todo, fix this at the root of the problem
+
+    // if the section is time-span section, add a timespan ctrl
+    if (section.key === SectionName.timeSpan) {
+      const n = this.timeSpanCtrl2<InfResourceWithRelations>(50, 'has time-span', 'Time Span', false, initVal?.outgoing_statements, (v) => {
+        const statements: InfStatementWithRelations[] = Object.keys(v).map(key => {
+          const timePrim: TimeSpanResult = v[key]
+          const statement: InfStatementWithRelations = {
+            entity_version_project_rels: [
+              {
+                is_in_project: true,
+                calendar: timePrim.calendar
+              }
+            ],
+            fk_property: parseInt(key, 10),
+            object_time_primitive: {
+              julian_day: timePrim.julianDay,
+              duration: timePrim.duration,
+              fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+            }
+          }
+          return statement
+        });
+        const resource: InfResourceWithRelations = {
+          fk_class: arrayConfig.data.pkClass,
+          outgoing_statements: statements
+        };
+        return resource
+      })
+      return of([n])
+    }
+
     return combineLatest([
       this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass)
     ])
@@ -445,9 +524,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         filter(([klass]) => !!klass),
         map(([dfhClass]) => {
 
-          const section = arrayConfig.data.gvFormSection.section;
-          const fields = arrayConfig.data.gvFormSection.fields;
-          const initVal: any = arrayConfig.data.gvFormSection.initValue;
           const isPersistentItem = (dfhClass.basic_type === 8 || dfhClass.basic_type === 30);
 
           return fields.map(f => {
@@ -481,7 +557,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   },
                   pkClass: undefined,
                 },
-                initValue: this.getInitValueForFieldNode(f, initVal?.resource ?? initVal),
+                initValue: this.getInitValueForFieldNode(f, initVal),
                 placeholder: f.label,
                 required: this.ctrlRequired(f),
                 validators: [
@@ -496,7 +572,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                       ? null : { 'maxLength': { value: control.value, maxLength } }
                   }
                 ],
-                mapValue: (x) => {
+                mapValue: (x: InfStatementWithRelations[]): Partial<InfResourceWithRelations> => {
                   const items = flatten(x) // Flattens the values of the lists of this field
                   const key = getStatementKey(f.isOutgoing)
                   return { [key]: items }
@@ -539,15 +615,26 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         s.object_place ||
         s.object_lang_string ||
         s.subject_resource ||
-        s.object_dimension;
+        s.object_dimension ||
+        s.object_time_primitive;
       if (relObj) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language, .dimension
         return of({ fk_class: relObj.fk_class, statement: s })
       } else {
         // --> else get related entity preview and its class
-        return this.ap.streamEntityPreview(isOutgoing ? s.fk_object_info : s.fk_subject_info).pipe(
+
+        // related can also be in ressource so:
+        let pkEntity;
+        if (isOutgoing) pkEntity = s.fk_object_info ?? s.object_resource.pk_entity;
+        else pkEntity = s.fk_subject_info ?? s.subject_resource.pk_entity;
+
+        return this.ap.streamEntityPreview(pkEntity).pipe(
           map(preview => ({ fk_class: preview.fk_class, statement: s }))
         )
+
+        // return this.ap.streamEntityPreview(isOutgoing ? s.fk_object_info : s.fk_subject_info).pipe(
+        //   map(preview => ({ fk_class: preview.fk_class, statement: s }))
+        // )
       }
     })
     // add a list, where initial statements are available
@@ -690,7 +777,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private emitNewSearchString(str: string) {
-    // this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
     this.searchString.emit(str);
   }
 
@@ -706,17 +792,31 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     }
   }
 
-  save() {
+  checkValidation(): boolean {
+    this.submitted = true
+    if (!this.formFactory.formGroup.valid) {
+      const f = this.formFactory.formGroup.controls.childControl as FormArray;
+      U.recursiveMarkAsTouched(f)
+    }
 
+    return this.formFactory.formGroup.valid;
+  }
+
+  save() {
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       const value = this.formFactory.formGroupFactory.valueChanges$.value
       let upsert$: Observable<GvSchemaModifier>;
+
       if (value.resource) {
         upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
-      }
-      else {
-        throw new Error(`Submitting ${value} is not implemented`);
-      }
+
+      } else if (value.statement) {
+        if (this.field.isOutgoing) value.statement.fk_subject_info = this.source.fkInfo;
+        else value.statement.fk_object_info = this.source.fkInfo;
+        upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
+
+      } else throw new Error(`Submitting ${value} is not implemented`);
+
 
       upsert$.pipe(takeUntil(this.destroy$))
         .subscribe((res: GvSchemaModifier) => {
@@ -745,7 +845,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     for (let i = 0; i < initStmts.length; i++) {
       const element = initStmts[i];
       const calendar = element?.entity_version_project_rels?.[0].calendar
-      initValue[element.fk_property] = { ...element.object_time_primitive, calendar }
+      initValue[element.fk_property] = {
+        duration: element?.object_time_primitive?.duration,
+        julianDay: element?.object_time_primitive?.julian_day,
+        fk_class: element?.object_time_primitive?.fk_class,
+        calendar
+      }
     }
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     const controlConfig: LocalNodeConfig = {
@@ -759,11 +864,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           targetClass,
           targetClassLabel
         },
-        mapValue: (val) => {
+        mapValue: (val): InfStatementWithRelations[] => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
           const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
-            const timePrim: TimePrimitiveWithCal = v[key]
+            const timePrim: TimeSpanResult = v[key]
             const statement: InfStatementWithRelations = {
               entity_version_project_rels: [
                 {
@@ -785,6 +890,44 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
     };
     return of([controlConfig]);
+  }
+
+  private timeSpanCtrl2<R>(
+    targetClass: number,
+    placeholder: string,
+    targetClassLabel: string,
+    required: boolean,
+    initStmts: InfStatementWithRelations[] = [{}],
+    mapValue: (val: CtrlTimeSpanDialogResult | null | undefined) => R
+  ): LocalNodeConfig {
+    const initValue: CtrlTimeSpanModel = {}
+    for (let i = 0; i < initStmts.length; i++) {
+      const element = initStmts[i];
+      if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(element.fk_property)) {
+        const calendar = element?.entity_version_project_rels?.[0].calendar
+        initValue[element.fk_property] = {
+          duration: element?.object_time_primitive?.duration,
+          julianDay: element?.object_time_primitive?.julian_day,
+          fk_class: element?.object_time_primitive?.fk_class,
+          calendar
+        }
+      }
+    }
+    const controlConfig: LocalNodeConfig = {
+      control: {
+        initValue,
+        placeholder,
+        required,
+        data: {
+          appearance: this.appearance,
+          controlType: 'ctrl-time-span',
+          targetClass,
+          targetClassLabel
+        },
+        mapValue
+      }
+    };
+    return controlConfig;
   }
 
 
@@ -1188,7 +1331,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * returns true if control is required
    * TODO!
    */
-  private ctrlRequired(f: Subfield | Field): boolean {
+  private ctrlRequired(f: Field): boolean {
     return (
       f &&
       f.isOutgoing &&

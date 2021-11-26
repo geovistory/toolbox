@@ -1,21 +1,19 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SysConfig } from "@kleiolab/lib-config";
-import { SubstoreComponent } from "projects/app-toolbox/src/app/core/basic/basic.module";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { RootEpics } from "@kleiolab/lib-redux";
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { ClassAndTypePk } from "@kleiolab/lib-queries";
+import { SysConfig } from '@kleiolab/lib-config';
+import { ClassAndTypePk, ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { IAppState, RootEpics } from '@kleiolab/lib-redux';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InformationAPIActions } from './api/entity-list.actions';
 import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
-import { IAppState } from "@kleiolab/lib-redux";
-import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -82,12 +80,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
         this.p.setListType('')
 
-        this.m.openModalCreateOrAddEntity({
-          alreadyInProjectBtnText: 'Open',
-          notInProjectClickBehavior: 'addToProject',
-          notInProjectBtnText: 'Add and Open',
-          classAndTypePk,
-          pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+        this.m.openAddEntityDialog({
+          pkClass: classAndTypePk.pkClass
         }).subscribe(result => {
           this.p.addEntityTab(result.pkEntity, result.pkClass)
         })

@@ -8,14 +8,12 @@ import { DateTimeModule } from '@kleiolab/lib-utils';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
-import { DndModule } from 'ng2-dnd';
 import { TreeModule } from 'primeng/tree';
 import { TimelineModule } from 'projects/app-toolbox/src/app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { ListModule } from 'projects/app-toolbox/src/app/shared/components/list/list.module';
-import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
@@ -54,7 +52,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     TimelineModule,
     FilterByKeyModule,
     HighlightModule,
-    DndModule,
     DateTimeModule,
     DragDropModule,
     CdkTreeModule,
@@ -62,7 +59,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     DetailTopBarModule,
     AnnotationModule,
     TileHeaderModule,
-    EntityLabelConfigModule,
 
     TreeModule
   ],

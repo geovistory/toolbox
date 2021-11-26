@@ -5,7 +5,8 @@ import { GvPositiveSchemaObject, InfLanguage, ProProject, WarEntityPreview } fro
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, first, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap } from 'rxjs/operators';
+import { WarSelector } from '../selectors/war.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
 
@@ -22,6 +23,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
     private ngRedux: NgRedux<IAppState>,
     private s: SchemaSelectorsService,
     private entityPreviewSocket: EntityPreviewSocket,
+    private warSelector: WarSelector,
     private schemaService: SchemaService
 
   ) {
@@ -43,7 +45,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
       this.pkProject$.pipe(first())
         .subscribe((pkProject) => {
           const pks = Object.keys({
-            ...this.ngRedux.getState().war.entity_preview,
+            ...this.ngRedux.getState().war.entity_preview.by_project__pk_entity,
             ...this.requestedEntityPreviews
           });
           if (pks.length) {
@@ -90,33 +92,60 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
    *
    * @param pkEntity
    * @param forceReload
+   * @param pkProject set to 0 to have the community version
    */
-  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
+  streamEntityPreview(pkEntity: number, forceReload?: boolean, pkProject?: number): Observable<WarEntityPreview> {
+
     const state = this.ngRedux.getState();
+    const pkActiveProject = state?.activeProject?.pk_project ?? 0;
+    const pkRequestedProject = pkProject ?? pkActiveProject;
 
-    if (
-      (
-        !(((state.war || {}).entity_preview || {}).by_pk_entity || {})[pkEntity] &&
-        !this.requestedEntityPreviews[pkEntity]
-      ) || forceReload) {
-      this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
-        this.entityPreviewSocket.emit('addToStream', {
-          pkProject,
-          pks: [pkEntity]
-        })
-        // const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+    const repoKey = 0 + '_' + pkEntity
+    let projectKey: string;
+    let keys: string[];
 
-        // this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
-        this.requestedEntityPreviews[pkEntity] = true;
-      })
+    const wantsProjectVersion = pkRequestedProject !== 0;
+
+    if (wantsProjectVersion) {
+      projectKey = pkRequestedProject + '_' + pkEntity
+      keys = [projectKey, repoKey]
+    }
+    else {
+      keys = [repoKey]
     }
 
-    return this.ngRedux.select<WarEntityPreview>(['war', 'entity_preview', 'by_pk_entity', pkEntity])
-      .pipe(
-        distinctUntilChanged<WarEntityPreview>(equals),
-        filter(prev => (!!prev))
-      )
+    let hasBeenRequested = false;
+    keys.forEach(k => {
+      if (state.war?.entity_preview?.by_project__pk_entity?.[k]) return hasBeenRequested = true;
+      if (this.requestedEntityPreviews?.[k]) return hasBeenRequested = true;
+    })
+
+    if (forceReload || !hasBeenRequested) {
+      this.entityPreviewSocket.emit('addToStream', {
+        pkProject: pkActiveProject,
+        pks: keys
+      })
+      keys.forEach(pk => { this.requestedEntityPreviews[pk] = true; })
+    }
+
+    if (wantsProjectVersion) {
+      return combineLatest([
+        this.warSelector.entity_preview$.by_project__pk_entity$.key(projectKey),
+        this.warSelector.entity_preview$.by_project__pk_entity$.key(repoKey),
+      ])
+        .pipe(
+          map(([projectVersion, repoVersion]) => projectVersion ?? repoVersion),
+          distinctUntilChanged<WarEntityPreview>(equals),
+          filter(prev => (!!prev))
+        )
+    } else {
+      return this.warSelector.entity_preview$.by_project__pk_entity$.key(repoKey)
+        .pipe(
+          distinctUntilChanged<WarEntityPreview>(equals),
+          filter(prev => (!!prev))
+        )
+    }
   }
 
   /**
@@ -129,7 +158,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
     if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
       this.entityPreviewSocket.emit('extendStream', {
         pkProject,
-        pks: object.war.entity_preview.map(p => p.pk_entity)
+        pks: object.war.entity_preview.map(p => p.project + '_' + p.pk_entity)
       });
     }
   }

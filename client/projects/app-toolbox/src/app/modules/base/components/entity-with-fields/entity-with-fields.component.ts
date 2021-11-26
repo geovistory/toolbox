@@ -1,33 +1,56 @@
-import { Component, Input, OnInit, Optional } from '@angular/core';
-import { ConfigurationPipesService, DisplayType, Field } from '@kleiolab/lib-queries';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FieldComponent } from '../field/field.component';
+import { ViewFieldComponent } from '../view-field/view-field.component';
 
 @Component({
   selector: 'gv-entity-with-fields',
   templateUrl: './entity-with-fields.component.html',
-  styleUrls: ['./entity-with-fields.component.scss']
+  styleUrls: ['./entity-with-fields.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityWithFieldsComponent implements OnInit {
+  destroy$ = new Subject<boolean>();
+
   @Input() source: GvFieldSourceEntity
   @Input() fkClass: number
-  @Input() showOntoInfo$: Observable<boolean>
   @Input() scope: GvFieldPageScope
+  @Input() readonly$: Observable<boolean>
+  @Input() showOntoInfo$: Observable<boolean>
+
 
   fields$: Observable<Field[]>
 
+  timeSpanFields$: Observable<Field[]>
+
+
   constructor(
     private c: ConfigurationPipesService,
-    @Optional() public parentField: FieldComponent
-  ) { }
+    @Optional() public parentField: ViewFieldComponent
+  ) {
+  }
 
   ngOnInit() {
-    this.fields$ = this.c.pipeAllSections(this.fkClass, DisplayType.view, true)
+    const errors: string[] = []
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.fkClass) errors.push('@Input() fkClass is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+    const sections = [
+      SectionName.basic,
+      SectionName.metadata,
+      SectionName.specific,
+    ]
+    this.fields$ = this.c.pipeSections(this.fkClass, DisplayType.view, sections, true)
       .pipe(
         map(fields => fields.filter(field => !this.isCircular(field)))
       )
+    this.timeSpanFields$ = this.c.pipeSection(this.fkClass, DisplayType.view, SectionName.timeSpan, true)
+
   }
 
   isCircular(field: Field): boolean {
@@ -38,6 +61,11 @@ export class EntityWithFieldsComponent implements OnInit {
       return true
     }
     return false
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 }

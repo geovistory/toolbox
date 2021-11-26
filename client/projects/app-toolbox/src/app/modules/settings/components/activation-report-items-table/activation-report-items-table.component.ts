@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ActivationReportItem } from '../../../../../../../../../server/src/lb3/common/interfaces/profile-activation-report.interface';
+import { ActivationReportItem } from '@kleiolab/lib-sdk-lb4';
 
 @Component({
   selector: 'gv-activation-report-items-table',

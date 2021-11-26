@@ -3,14 +3,20 @@ import { TimePrimitive } from './time-primitive';
 // export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
 //   calendar: CalendarType
 // }
+export interface TimeSpanResult {
+  julianDay: number,
+  calendar: TimePrimitiveWithCal.CalendarEnum
+  duration: TimePrimitiveWithCal.DurationEnum
+}
+
 export interface TimeSpanWithNumberProps {
   // key is the dfh_pk_property, expressing what the time primitive means for the time span
-  72?: TimePrimitiveWithCal; // p82 | At some time within | outer bounds | not before – not after
-  152?: TimePrimitiveWithCal; // p82a | begin of the begin | left outer bound | not before
-  153?: TimePrimitiveWithCal; // p82b | end of the end | right outer bound | not after
-  71?: TimePrimitiveWithCal; // p81 | Ongoing throughout | inner bounds | surely from – surely to
-  150?: TimePrimitiveWithCal; // p81a | end of the begin | left inner bound | surely from
-  151?: TimePrimitiveWithCal; // p81b | begin of the end | right inner bound | surely to
+  72?: TimeSpanResult; // p82 | At some time within | outer bounds | not before – not after
+  152?: TimeSpanResult; // p82a | begin of the begin | left outer bound | not before
+  153?: TimeSpanResult; // p82b | end of the end | right outer bound | not after
+  71?: TimeSpanResult; // p81 | Ongoing throughout | inner bounds | surely from – surely to
+  150?: TimeSpanResult; // p81a | end of the begin | left inner bound | surely from
+  151?: TimeSpanResult; // p81b | begin of the end | right inner bound | surely to
 }
 export class TimeSpanUtil {
 
@@ -22,24 +28,6 @@ export class TimeSpanUtil {
   p81a?: TimePrimitive; // end of the begin | left inner bound | surely from
   p81b?: TimePrimitive; // begin of the end | right inner bound | surely to
   p82b?: TimePrimitive; // end of the end | right outer bound | not after
-
-
-  get earliestDay() {
-
-    if (this.isEmpty()) return null;
-
-    let min = Number.POSITIVE_INFINITY;
-
-    this.tpKeys.forEach(key => {
-      if (this[key]) {
-        const current = this[key].julianDay;
-        // if this timePrimitive is earlier than min, set this as new min
-        min = current < min ? current : min;
-      }
-    })
-
-    return min;
-  }
 
   /**
   * get the earliest and latest TimePrimitive of given array of TimePrimitives
@@ -82,6 +70,24 @@ export class TimeSpanUtil {
     if (d['151']) x['p81b'] = d['151'];
     if (d['153']) x['p82b'] = d['153'];
     return new TimeSpanUtil(x)
+  }
+
+
+  get earliestDay() {
+
+    if (this.isEmpty()) return null;
+
+    let min = Number.POSITIVE_INFINITY;
+
+    this.tpKeys.forEach(key => {
+      if (this[key]) {
+        const current = this[key].julianDay;
+        // if this timePrimitive is earlier than min, set this as new min
+        min = current < min ? current : min;
+      }
+    })
+
+    return min;
   }
 
   constructor(data?: WarEntityPreviewTimeSpan) {

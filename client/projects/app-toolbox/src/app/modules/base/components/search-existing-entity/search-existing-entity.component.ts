@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
-import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
+import { equals } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { EntityAddExistingHit } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 export interface DisableIfHasStatement {
   sourceClassLabel: string
@@ -12,105 +15,156 @@ export interface DisableIfHasStatement {
   maxQuantity: number
 }
 
+export enum SearchExistingEntityListMode {
+  mode1 = 'mode1',
+  mode2 = 'mode2'
+}
+
+export enum SearchScope {
+  everywhere = 'everywhere',
+  inProject = 'in project',
+  // outsideProject = 'outside project'
+}
+
+export interface SeachExistingEntityConfirmEvent {
+  pkEntity: number;
+  isInProject: boolean;
+}
+
+export interface SeachExistingEntityMoreEvent {
+  pkEntity: number;
+  hit: EntityAddExistingHit;
+}
+
 @Component({
   selector: 'gv-search-existing-entity',
   templateUrl: './search-existing-entity.component.html',
-  styleUrls: ['./search-existing-entity.component.css']
+  styleUrls: ['./search-existing-entity.component.scss']
 })
 export class SearchExistingEntityComponent implements OnInit, OnDestroy {
-
-  // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // // local store of this component
-  // localStore: ObservableStore<SearchExistingEntity>;
+  pkProject: number;
+  pkNamespace: number;
+  className: string;
 
-  // path to the substore
-  // @Input() basePath: string[];
-
-  @Input() alreadyInProjectBtnText: string;
-  @Input() notInProjectBtnText: string;
   @Input() pkClass: number;
-  @Input() searchString$: Observable<string>;
+  @Input() mode: string = SearchExistingEntityListMode.mode1;
+  @Input() searchString$: Subject<string>; // string or '' (can be used to filter the list from the outside)
   @Input() disableIfHasStatement: DisableIfHasStatement;
+  @Input() confirmBtnTextInProject: string;
+  @Input() confirmBtnTextNotInProject: string;
+  @Input() confirmBtnTooltipInProject: string;
+  @Input() confirmBtnTooltiptNotInProject: string;
+
+
+  @Output() onMore = new EventEmitter<SeachExistingEntityMoreEvent>();
+  @Output() onBack = new EventEmitter();
+  @Output() onConfirm = new EventEmitter<SeachExistingEntityConfirmEvent>();
 
   // select observables of substore properties
   loading$ = new BehaviorSubject<boolean>(false);
 
   // Hits
-  persistentItems$ = new BehaviorSubject<HitPreview[]>([]);
+  hits$: Observable<EntityAddExistingHit[]>;
 
-  // Total count of hits
-  collectionSize$ = new BehaviorSubject<number>(0);
-
-  @Output() onAddExisting = new EventEmitter<number>();
-  @Output() onOpenExisting = new EventEmitter<number>();
-
-  // Search
-  pkProject: number;
-  searchString = '';
-  minSearchStringLength = 0;
-  pkNamespace: number;
+  // For search
+  scope$ = new BehaviorSubject<SearchScope>(SearchScope.everywhere);
 
   // Pagination
   collectionSize: number; // number of search results
-  limit = 3; // max number of results on a page
-  page = 1; // current page
+  collectionSize$: Observable<number>
+  limit = 5; // max number of results on a page
+  page$ = new BehaviorSubject<number>(1);
 
-  hitsFound = false;
-  hitsTo$: Observable<number>;
+  // current selection
+  selected$ = new BehaviorSubject<number>(-1);
 
   constructor(
-    // protected rootEpics: RootEpics,
-    // private epics: SearchExistingEntityAPIEpics,
-    // public ngRedux: NgRedux<IAppState>,
     private entityPreviewApi: WarEntityPreviewControllerService,
-    private p: ActiveProjectService
-  ) {
-  }
-
-  // getBasePath = () => this.basePath;
+    private p: ActiveProjectService,
+    private c: ConfigurationPipesService
+  ) { }
 
   ngOnInit() {
-    // this.localStore = this.ngRedux.configureSubStore(this.basePath, peItSearchExistingReducer);
-    // this.rootEpics.addEpic(this.epics.createEpics(this));
-
+    // input validation
     if (!this.pkClass) throw Error('please provide a pkClass')
     if (typeof this.pkClass !== 'number') throw Error('pkClass is not a number')
     if (!this.searchString$) throw Error('please provide a searchString$')
-    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
-    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
+
+    // get class label
+    this.c.pipeClassLabel(this.pkClass).subscribe(name => this.className = name);
 
 
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.pkProject = pkProject;
-
-      this.searchString$.pipe(
-        debounceTime(400),
-        takeUntil(this.destroy$)
-      ).subscribe(newValue => {
-        this.searchString = newValue;
-        if (newValue.length >= this.minSearchStringLength) {
-          this.page = 1;
-          this.search();
-        } else {
-          this.persistentItems$.next([])
-          this.collectionSize$.next(0)
-        }
-      });
-    })
-
-    // set hitsFound true, once there are some hits
-    this.persistentItems$.pipe(takeUntil(this.destroy$)).subscribe((i) => {
-      if (i && i.length > 0) this.hitsFound = true
-    })
-
-    this.hitsTo$ = this.collectionSize$.pipe(
-      map(collectionSize => {
-        const upper = (this.limit * (this.page - 1)) + this.limit;
-        return upper > collectionSize ? collectionSize : upper;
-      })
+    // reset the page on each change of pkProject, searchString and/or scope if we are not on page 1
+    const filterParams$ = combineLatest([this.p.pkProject$, this.searchString$.pipe(debounceTime(400)), this.scope$]).pipe(
+      tap(() => { if (this.page$.value !== 1) this.page$.next(1) })
     )
+
+    // all params needed for api call
+    const params$ = combineLatest([filterParams$, this.page$]).pipe(
+      debounceTime(0),
+      distinctUntilChanged(equals), // because of filterParams$ and page$ can both emit at the same time (see l.86)
+      map(([params, page]) => ({
+        pkProject: params[0],
+        searchString: params[1],
+        scope: params[2],
+        page
+      }))
+    )
+
+    // the api call
+    const page$ = params$.pipe(
+      tap(() => this.loading$.next(true)),
+      switchMap(({ pkProject, searchString, page, scope }) => {
+        const req: WarEntityPreviewSearchExistingReq = {
+          projectId: pkProject,
+          searchString: searchString.trim(),
+          pkClasses: [this.pkClass],
+          limit: this.limit,
+          page: page,
+          relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined,
+          scope
+        }
+        return this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req);
+      }),
+      tap(() => this.loading$.next(false)),
+    )
+
+    const result$ = combineLatest([page$, this.selected$]).pipe(
+      map(([resp, selected]) => {
+        const res: EntitySearchHit[] = resp.data;
+        const hits: EntityAddExistingHit[] = res.map(r => {
+          const isInProject = !!r.fk_project
+          const confirmBtnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
+          const confirmBtnTooltip = confirmBtnDisabled ?
+            `This ${r.class_label} can't be selected because it is already related to ${r.related_statements.length} ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`
+            : isInProject ? this.confirmBtnTooltipInProject : this.confirmBtnTooltiptNotInProject;
+
+          const hit: EntityAddExistingHit = {
+            pkEntity: r.pk_entity,
+            title: r.entity_label,
+            confirmBtnText: isInProject ? this.confirmBtnTextInProject : this.confirmBtnTextNotInProject,
+            confirmBtnDisabled,
+            confirmBtnTooltip,
+            description: r.full_text_headline,
+            isInProject,
+            numberOfProject: r.projects.length,
+            selected: r.pk_entity === selected,
+          }
+          return hit
+        })
+        return {
+          hits,
+          collectionSize: resp.totalCount
+        }
+
+      }),
+      shareReplay()
+    )
+
+    this.hits$ = result$.pipe(map(obj => obj.hits), startWith([]))
+    this.collectionSize$ = result$.pipe(map(obj => obj.collectionSize), startWith(0))
   }
 
   ngOnDestroy() {
@@ -118,71 +172,29 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  pageChange() {
-    this.search()
+  pageChange(event: PageEvent) {
+    this.page$.next(event.pageIndex + 1);
   }
 
-  search() {
-    const relatedStatement = !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined;
-    const req: WarEntityPreviewSearchExistingReq = {
-      projectId: this.pkProject,
-      searchString: this.searchString,
-      pkClasses: [this.pkClass],
-      limit: this.limit,
-      page: this.page,
-      relatedStatement: relatedStatement
-    }
-    if (this.disableIfHasStatement) {
-
-      this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
-        .subscribe((result) => {
-          const res: EntitySearchHit[] = result.data;
-
-          const hits: HitPreview[] = res.map(r => {
-            const btnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
-            return {
-              ...r,
-              btnDisabled,
-              btnTooltip: btnDisabled ?
-                `This ${r.class_label} can't be selected because it is already related to ${r.related_statements.length} ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`
-                : ''
-            }
-          })
-          this.persistentItems$.next(hits)
-          this.collectionSize$.next(result.totalCount)
-        }, error => {
-          this.persistentItems$.next([])
-          this.collectionSize$.next(0)
-        })
-    } else {
-      this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req)
-        .subscribe((result) => {
-          const res: EntitySearchHit[] = result.data;
-          this.persistentItems$.next(res)
-          this.collectionSize$.next(result.totalCount)
-        }, error => {
-          this.persistentItems$.next([])
-          this.collectionSize$.next(0)
-        })
-
-
-    }
-
-
+  onMoreClick(hit: EntityAddExistingHit) {
+    this.selected$.next(hit.pkEntity);
+    this.onMore.emit({ pkEntity: hit.pkEntity, hit });
   }
 
-  hitsFrom() {
-    return (this.limit * (this.page - 1)) + 1;
+  onBackClick() {
+    this.selected$.next(-1);
+    this.onBack.emit();
   }
 
-
-  onAdd(pkEntity: number) {
-    this.onAddExisting.emit(pkEntity)
+  onConfirmClick(pkEntity: number, isInProject: boolean) {
+    this.onConfirm.emit({ pkEntity, isInProject })
+  }
+  searchStringChange(term: string) {
+    this.searchString$.next(term)
   }
 
-  onOpen(pkEntity: number) {
-    this.onOpenExisting.emit(pkEntity)
+  changeScope(value: SearchScope) {
+    if (value != this.scope$.value) this.page$.next(1)
+    this.scope$.next(value);
   }
-
-
 }

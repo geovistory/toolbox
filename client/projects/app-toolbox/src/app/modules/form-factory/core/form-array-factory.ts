@@ -57,6 +57,8 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     if (!defaultChildConfigs$) console.error('no defaultChildConfigs$ created for ', this.config)
     const defaultChildConfig$ = defaultChildConfigs$.pipe(map(cs => cs[0]))
 
+    // console.log('aaa -1', this.config.data) // freezing bug log
+
     if (!childNodes$) console.error('no childNodes$ created for ', this.config)
     /**
      * First

@@ -1,8 +1,9 @@
 import {Postgres1DataSource} from '../../../datasources/postgres1.datasource';
-import {QAnalysisBase, ColDefWithAliases} from './q-analysis-base';
-import {QueryDefinition} from '../../../models/pro-analysis.model';
-import {GeoEntityMapAndTimeCont} from '../../../models/analysis/analysis-map-response.model';
 import {WarEntityPreview} from '../../../models';
+import {GeoEntityMapAndTimeCont} from '../../../models/analysis/analysis-map-response.model';
+import {QueryDefinition} from '../../../models/pro-analysis.model';
+import {logSql} from '../../../utils/helpers';
+import {ColDefWithAliases, QAnalysisBase} from './q-analysis-base';
 
 export class QAnalysisMap extends QAnalysisBase {
 
@@ -27,7 +28,7 @@ export class QAnalysisMap extends QAnalysisBase {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     // create froms and selects according to column definition
@@ -103,16 +104,8 @@ export class QAnalysisMap extends QAnalysisBase {
           tw2.temporal_data;
      `
 
-    // let forLog = this.sql;
-    // this.params.forEach((param, i) => {
-    //   const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g');
-    //   forLog = forLog.replace(replaceStr, param);
-    // });
-    // console.log(`
-    // "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
-    // ${sqlFormatter.format(forLog, {language: 'pl/sql'})}
+    logSql(this.sql, this.params)
 
-    // `);
     return this.execute<GeoEntityMapAndTimeCont[]>()
 
   }
@@ -138,7 +131,7 @@ export class QAnalysisMap extends QAnalysisBase {
       return {selectPkEntities, selectTemporalData};
     } else {
 
-      const aliasOfEntityTable = lastSegment._tableAlias;
+      const aliasOfEntityTable = lastSegment._entityTable?.table;
 
       const selectPkEntities = `coalesce(jsonb_agg(${aliasOfEntityTable}.pk_entity) Filter (Where ${aliasOfEntityTable}.pk_entity Is Not Null), '[]')`;
       const selectTemporalData = `commons.analysis__time_chart_cont__czml_time_values(array_agg(${aliasOfEntityTable}.pk_entity), ${fkProject})`;

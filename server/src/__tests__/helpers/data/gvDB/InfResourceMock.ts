@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {InfResource} from '../../../../models';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
@@ -243,6 +242,18 @@ export class InfResourceMock {
   static readonly VOLUME_UNIT_CUBIC_METER: OmitEntity<InfResource> = ({
     pk_entity: 4022,
     fk_class: DfhApiClassMock.EN_715_VOLUME_MEASUREMENT_UNIT.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+
+  static readonly GEO_PLACE_TYPE_VILLAGE: OmitEntity<InfResource> = ({
+    pk_entity: 4023,
+    fk_class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+
+  static readonly NAMING_2: OmitEntity<InfResource> = ({
+    pk_entity: 4024,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
 

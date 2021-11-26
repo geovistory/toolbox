@@ -24,7 +24,6 @@ export interface GvSubentityFieldTargetViewType {
     dimension?: DimensionValueObjectType;
     entityPreview?: GvSubentityFieldTargetViewType.EntityPreviewEnum;
     typeItem?: GvSubentityFieldTargetViewType.TypeItemEnum;
-    timeSpan?: GvSubentityFieldTargetViewType.TimeSpanEnum;
 }
 export namespace GvSubentityFieldTargetViewType {
     export type AppellationEnum = 'true';
@@ -54,10 +53,6 @@ export namespace GvSubentityFieldTargetViewType {
     export type TypeItemEnum = 'true';
     export const TypeItemEnum = {
         True: 'true' as TypeItemEnum
-    };
-    export type TimeSpanEnum = 'true';
-    export const TimeSpanEnum = {
-        True: 'true' as TimeSpanEnum
     };
 }
 

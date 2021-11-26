@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SchemaObjectApi } from '@kleiolab/lib-sdk-lb3';
 import { GvNegativeSchemaObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
+import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
+import { SchemaActionsFactory, SucceedActionMeta } from '../../public-api';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
@@ -177,25 +179,20 @@ export class SchemaService {
   storeSchemaObjectGv(object: GvPositiveSchemaObject, pkProject: number | null) {
 
     this.schemaActions.storeGvSchemaModifier({ positive: object })
-    // if (object && Object.keys(object).length > 0) {
-    //   Object.keys(object).forEach(schema => {
-    //     let actions;
-    //     if (schema === 'inf') actions = this.infActions;
-    //     else if (schema === 'pro') actions = this.proActions;
-    //     else if (schema === 'dat') actions = this.datActions;
-    //     else if (schema === 'war') actions = this.warActions;
-    //     else if (schema === 'tab') actions = this.tabActions;
-    //     else if (schema === 'dfh') actions = this.dfhActions;
-    //     else if (schema === 'sys') actions = this.sysActions;
-    //     if (actions) {
-    //       Object.keys(object[schema]).forEach(model => {
-    //         actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
-    //       });
-    //     }
-    //   });
-    // }
+
     this.schemaObjectStored$.next(object)
   }
+
+  /**
+ *
+ * @param object
+ * @param pkProject primary key of project or null, if repo versions
+ */
+  getStoreSchemaObjectGvAction(object: GvPositiveSchemaObject) {
+    this.schemaObjectStored$.next(object)
+    return this.schemaActions.storeGvSchemaModifierAction({ positive: object })
+  }
+
 
   /**
    *
@@ -211,11 +208,37 @@ export class SchemaService {
         if (schema === 'pro') actions = this.proActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
-            actions[model].deleteSucceeded(object[schema][model], undefined, pkProject);
+            const m: SchemaActionsFactory<any> = actions[model]
+            m.deleteSucceeded(object[schema][model], undefined, pkProject);
           });
         }
       });
     }
+  }
+
+  /**
+   * Returns an array of actions for model delete actions
+   * @param object
+   * @param pkProject primary key of project or null, if repo versions
+   */
+  getDeleteSchemaObjectGvActions(object: GvNegativeSchemaObject, pkProject: number | null):
+    FluxStandardAction<any, SucceedActionMeta<any>>[] {
+    const deleteActions: FluxStandardAction<any, SucceedActionMeta<any>>[] = []
+    if (object && Object.keys(object).length > 0) {
+      Object.keys(object).forEach(schema => {
+        let actions;
+        if (schema === 'dat') actions = this.datActions;
+        if (schema === 'inf') actions = this.infActions;
+        if (schema === 'pro') actions = this.proActions;
+        if (actions) {
+          Object.keys(object[schema]).forEach(model => {
+            const m: SchemaActionsFactory<any> = actions[model]
+            deleteActions.push(m.deleteSucceededAction(object[schema][model], undefined, pkProject))
+          });
+        }
+      });
+    }
+    return deleteActions
   }
 
 

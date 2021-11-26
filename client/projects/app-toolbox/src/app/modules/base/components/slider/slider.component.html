@@ -1,0 +1,21 @@
+<div class="gv-flex-fh mat-typography">
+    <div [@leftRight]="slide">
+
+        <div class="loc-panel">
+            <ng-content select="[left]"></ng-content>
+        </div>
+
+        <mat-divider [vertical]="true" class="divider" [@divider]="slide=='left' ? 'on' : 'off'"></mat-divider>
+
+        <div class="loc-panel">
+            <ng-content select="[center]"></ng-content>
+        </div>
+
+        <mat-divider [vertical]="true" class="divider" [@divider]="slide=='right' ? 'on' : 'off'"></mat-divider>
+
+        <div class="loc-panel">
+            <ng-content select="[right]"></ng-content>
+        </div>
+
+    </div>
+</div>

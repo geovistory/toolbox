@@ -1,8 +1,8 @@
-import {model, property, ValueObject} from '@loopback/repository';
+import {model, property} from '@loopback/repository';
 import {QuillAttributes} from "./quill-attributes.model";
 
 @model()
-export class QuillOperation extends ValueObject {
+export class QuillOperation {
   // TODO: actually insert can also be an object:
   //  read: https://quilljs.com/docs/delta/#embeds
   //  the following line should be compatible with the code below

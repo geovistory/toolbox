@@ -1,8 +1,9 @@
-import {Postgres1DataSource} from '../../datasources';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {model, property} from '@loopback/repository';
-import {InfStatement} from '../../models';
 import {WareEntityPreviewPage} from '../../controllers';
+import {Postgres1DataSource} from '../../datasources';
+import {InfStatement} from '../../models';
+import {logSql} from '../../utils/helpers';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 @model()
 class SearchExistingRelatedStatementFilter {
   @property({type: String, required: true}) key: 'fk_property' | 'fk_property_of_property';
@@ -37,6 +38,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
     offset: number,
     entityType?: string,
     relatedStatement?: SearchExistingRelatedStatement,
+    scope = 'everywhere'
   ) {
 
 
@@ -46,9 +48,44 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       whereEntityType = `AND entity_type = ${this.addParam(entityType)}`;
     }
 
+    const repo = () => `
+    -- repo versions (if we dont only want project versions)
+    select *
+    from
+      tw0 t0,
+      war.entity_preview t1
+    WHERE t1.fk_project IS NULL
+    ${tsSearchString ? `
+    AND (
+      t1.ts_vector @@ t0.q
+      OR
+      t1.pk_entity::text = ${this.addParam(searchString)}
+    )
+    ` : ''}
+    ${whereEntityType}
+    ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
+  `
+    const proj = () => `
+    -- project versions (if we dont only want repo versions)
+      select *
+      from
+        tw0 t0,
+        war.entity_preview t1
+      where t1.project= ${this.addParam(pkProject)}
+      ${tsSearchString ? `
+      AND (
+        t1.ts_vector @@ t0.q
+        OR
+        t1.pk_entity::text = ${this.addParam(searchString)}
+      )
+      ` : ''}
+      ${whereEntityType}
+      ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
+  `
 
-
-
+    const froms = []
+    if (scope === 'everywhere') froms.push(repo(), proj())
+    else if (scope === 'in project') froms.push(proj())
 
     this.sql = `
       WITH
@@ -56,7 +93,18 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       -- this ensures we allways search in the full repo full-text (finds more)
       -- and it includes the information, whether the entity is in project or not
       tw0 AS (
-        SELECT  to_tsquery(${this.addParam(tsSearchString)}) q
+        SELECT  to_tsquery(${tsSearchString === '' ? "''" : tsSearchString}) q
+      ),
+      te1 AS (
+        ${froms.join(' UNION ALL ')}
+      ),
+      te2 AS (
+
+        -- take one preview per pk_entity, project version wins
+        select distinct on (pk_entity)
+        *
+        FROM te1
+        order by pk_entity, project desc
       ),
       tw1 AS (
         SELECT
@@ -74,20 +122,10 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
           t1.ts_vector
           FROM
           tw0 t0,
-          war.entity_preview t1
+          te2 t1
           LEFT JOIN projects.info_proj_rel t2 ON t1.pk_entity = t2.fk_entity
             AND t2.fk_project = ${this.addParam(pkProject)}
             AND t2.is_in_project = true
-          WHERE t1.fk_project IS NULL
-          ${tsSearchString ? `
-          AND (
-            t1.ts_vector @@ t0.q
-            OR
-            t1.pk_entity::text = ${this.addParam(searchString)}
-          )
-          ` : ''}
-          ${whereEntityType}
-          ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
         ),
         tw2 AS (
           select
@@ -137,7 +175,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
             t1.type_label_headline,
             ${relatedStatement ? `
               COALESCE(
-                json_agg(${this.createBuildObject('t2', InfStatement.definition)})
+                json_agg(DISTINCT ${this.createBuildObject('t2', InfStatement.definition)})
                 FILTER (WHERE t2.pk_entity IS NOT NULL),
                 '[]'
               )  related_statements,
@@ -201,6 +239,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
         LEFT JOIN items ON true
         LEFT JOIN count ON true;
     `;
+    logSql(this.sql, this.params)
     return this.executeAndReturnFirstData<WareEntityPreviewPage>()
   }
 }

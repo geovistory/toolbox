@@ -5,12 +5,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { ApiProfile } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { indexBy } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ApiProfile } from '../../../../../../../../../server/src/lb3/common/interfaces';
 import { OntomeProfileActivationReportDialogComponent, OntomeProfileActivationReportDialogData } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
 import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
 
