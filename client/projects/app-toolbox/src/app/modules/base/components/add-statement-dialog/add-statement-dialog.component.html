@@ -30,7 +30,7 @@
 
     <mat-divider></mat-divider>
 
-    <gv-slider class="gv-fh" [slide]="data.valueTarget ? 'center' : sliderView" style="height:'calc(100% - 95px)'">
+    <gv-slider class="gv-fh" [slide]="!data.showAddList ? 'center' : sliderView" style="height:'calc(100% - 95px)'">
         <!--title height + padding bot + padding top  + divdier = 62 + 16 + 16 + 1 = 95  -->
 
         <!-- SLIDE 1 -->
@@ -45,9 +45,8 @@
                 <!-- body -->
                 <ng-container body>
                     <gv-form-create-entity class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
-                        [source]="data.source" [hideTitle]="true" [hideButtons]="true"
-                        [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
-                        (searchString)="searchStringChange($event)" #f>
+                        [source]="data.source" [hideTitle]="true" [hiddenProperty]="data.hiddenProperty"
+                        [hideButtons]="true" (searchString)="searchStringChange($event)" #f>
                     </gv-form-create-entity>
                 </ng-container>
 
@@ -74,7 +73,7 @@
 
 
         <!-- SLIDE 2 -->
-        <ng-container center *ngIf="!data.valueTarget">
+        <ng-container center *ngIf="data.showAddList">
             <gv-hbf-panel [footer]="false">
 
                 <!-- header -->
@@ -95,7 +94,7 @@
 
 
         <!-- SLIDE 3 -->
-        <ng-container right *ngIf="!data.valueTarget">
+        <ng-container right *ngIf="data.showAddList">
             <gv-hbf-panel [header]="false">
 
                 <!-- body -->

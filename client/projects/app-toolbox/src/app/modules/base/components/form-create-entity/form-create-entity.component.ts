@@ -4,7 +4,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
 import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -136,7 +136,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   formFactory$: Observable<FormFactory>;
   formFactory: FormFactory
   submitted = false;
-  saving = false;
   searchStringPartId = 0;
   searchStringParts: { [key: number]: string } = {}
 
@@ -725,17 +724,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     this.searchString.emit(str);
   }
 
-  submit() {
-    this.submitted = true
-    if (this.formFactory.formGroup.valid) {
-      this.saving = true;
-      this.save()
-
-    } else {
-      const f = this.formFactory.formGroup.controls.childControl as FormArray;
-      U.recursiveMarkAsTouched(f)
-    }
-  }
 
   checkValidation(): boolean {
     this.submitted = true
@@ -747,34 +735,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return this.formFactory.formGroup.valid;
   }
 
-  save() {
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const value = this.formFactory.formGroupFactory.valueChanges$.value
-      let upsert$: Observable<GvSchemaModifier>;
-
-      if (value.resource) {
-        upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
-
-      } else if (value.statement) {
-        if (this.field.isOutgoing) value.statement.fk_subject_info = this.source.fkInfo;
-        else value.statement.fk_object_info = this.source.fkInfo;
-        upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
-
-      } else throw new Error(`Submitting ${value} is not implemented`);
-
-
-      upsert$.pipe(takeUntil(this.destroy$))
-        .subscribe((res: GvSchemaModifier) => {
-          if (res) {
-            if (value.resource) {
-              if (!res.positive.inf.resource.length) throw new Error('bad result')
-              this.saved.emit(res.positive.inf.resource[0])
-            }
-            this.saving = false;
-          }
-        })
-    })
-  }
 
 
   /**

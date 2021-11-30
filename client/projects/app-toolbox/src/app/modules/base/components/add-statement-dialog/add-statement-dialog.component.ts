@@ -14,7 +14,7 @@ import { FormCreateEntityComponent } from '../form-create-entity/form-create-ent
 export interface AddStatementDialogData {
   field: Field;
   targetClass: number;
-  valueTarget: boolean;
+  showAddList: boolean;
 
   // primary key of the source entity
   source: GvFieldSourceEntity;

@@ -12,21 +12,20 @@
       <!-- body -->
       <ng-container body>
         <gv-form-create-entity class="gv-ovf-auto" [pkClass]="(pkClass$ | async)" [hideTitle]="true"
-          [hideButtons]="true" (cancel)="closeAddForm()" (saved)="onCreated($event)"
-          (searchString)="searchStringChange($event)" #f>
+          [hideButtons]="true" (cancel)="closeAddForm()" (searchString)="searchStringChange($event)" #f>
+          <!-- (saved)="onCreated($event)" -->
         </gv-form-create-entity>
       </ng-container>
 
       <!-- footer -->
       <ng-container footer>
         <button mat-flat-button color="primary"
-          [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="f?.submit()">
-          <ng-container *ngIf="!f?.saving">Create</ng-container>
-          <ng-container *ngIf="f?.saving">
+          [disabled]="(f.submitted && f?.formFactory?.formGroup.invalid) || (loading$ | async)" (click)="onSubmit(f)">
+          <span *ngIf="!(loading$ | async)">Create</span>
+          <div *ngIf="loading$ | async" style="margin: 6px;">
             <mat-spinner [diameter]="20"></mat-spinner>
-          </ng-container>
+          </div>
         </button>
-
         <button mat-button type="button" class="ml-2 mr-2" (click)="closeAddForm()">Cancel</button>
       </ng-container>
 

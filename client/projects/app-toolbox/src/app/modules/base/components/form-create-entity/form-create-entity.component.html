@@ -8,11 +8,11 @@
     *ngIf="!(advancedMode$|async)">Advanced form</button>
 </form>
 
-<div *ngIf="!hideButtons && formFactory?.formGroup" class="form-buttons mt-3 align-space-between">
+<!-- <div *ngIf="!hideButtons && formFactory?.formGroup" class="form-buttons mt-3 align-space-between">
   <button mat-flat-button color="primary" [disabled]="(submitted && formFactory?.formGroup.invalid) || saving"
     (click)="submit()">
     <span *ngIf="!saving">Create</span>
     <span *ngIf="saving">Saving</span>
   </button>
   <button mat-button type="button" class="ml-2" (click)="cancel.emit()">Cancel</button>
-</div>
+</div> -->

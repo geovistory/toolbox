@@ -2,11 +2,13 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
-import { GvFieldPageScope, GvFieldSourceEntity, InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { ReduxMainService } from '@kleiolab/lib-redux';
+import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
+import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
 
 
 export interface AddEntityDialogData {
@@ -31,6 +33,7 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
 
   pkClass$: Observable<number>;
   pkClass: number;
+  loading$ = new BehaviorSubject(false);
 
   // for titles
   classLabel$: Observable<string>;
@@ -59,7 +62,8 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     private c: ConfigurationPipesService,
     public dialogRef: MatDialogRef<AddEntityDialogComponent, CreateEntityEvent>,
     @Inject(MAT_DIALOG_DATA) public data: AddEntityDialogData,
-    private warSelector: WarSelector
+    private warSelector: WarSelector,
+    private dataService: ReduxMainService,
   ) {
     // input checking
     if (!data.pkClass) throw new Error('You must provide classAndTypePk to this dialog')
@@ -94,18 +98,6 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     this.searchString$.next(term)
   }
 
-  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onCreated(entity: InfResource | InfStatement) {
-    this.onCreateOrAdd({
-      action: 'created',
-      pkEntity: entity.pk_entity,
-      pkClass: this.pkClass
-    })
-  }
-
-  onCreateOrAdd(res) {
-    this.dialogRef.close(res);
-  }
 
   closeAddForm() {
     this.dialogRef.close();
@@ -146,7 +138,7 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
 
   addEntityToProject() {
     this.p.addEntityToProject(this.selectedPkEntity$.value, () => {
-      this.onCreateOrAdd({
+      this.dialogRef.close({
         action: 'added',
         pkEntity: this.selectedPkEntity$.value,
         pkClass: this.pkClass
@@ -162,4 +154,56 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
+
+  onSubmit(f: FormCreateEntityComponent) {
+    if (!f.checkValidation()) return;
+
+    this.loading$.next(true);
+
+    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      const value = f.formFactory.formGroupFactory.valueChanges$.value
+      let upsert$: Observable<GvSchemaModifier>;
+
+      if (value.resource) {
+        upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
+      }
+      //  else if (value.statement) {
+      //   if (this.field.isOutgoing) value.statement.fk_subject_info = this.source.fkInfo;
+      //   else value.statement.fk_object_info = this.source.fkInfo;
+      //   upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
+
+      // }
+      else throw new Error(`Submitting ${value} is not implemented`);
+
+
+      // upsert$.pipe(takeUntil(this.destroy$))
+      //   .subscribe((res: GvSchemaModifier) => {
+      //     if (res) {
+      //       if (value.resource) {
+      //         if (!res.positive.inf.resource.length) throw new Error('bad result')
+      //         this.saved.emit(res.positive.inf.resource[0])
+      //       }
+      //       this.saving = false;
+      //     }
+      //   })
+
+
+      upsert$.pipe(takeUntil(this.destroy$))
+        .subscribe((res: GvSchemaModifier) => {
+          if (res) {
+            if (value.resource) {
+              if (!res.positive.inf.resource.length) throw new Error('bad result')
+
+              this.dialogRef.close({
+                action: 'created',
+                pkEntity: res.positive.inf.resource[0].pk_entity,
+                pkClass: this.pkClass
+              })
+            }
+          }
+        })
+    })
+  }
+
 }
