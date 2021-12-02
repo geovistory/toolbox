@@ -2,8 +2,9 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { InfAppellation, QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, QuillDoc, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { QuillEditComponent } from 'projects/app-toolbox/src/app/modules/quill/quill-edit/quill-edit.component';
+import { AppellationFormCtrlType } from 'projects/__test__/data/auto-gen/enums/AppellationFormCtrlType';
 import { Subject } from 'rxjs';
 
 export type CtrlAppellationModel = InfAppellation;
@@ -19,6 +20,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   static nextId = 0;
 
   model: CtrlAppellationModel;
+  @Input() type: SysConfigFormCtrlType.AppellationEnum = AppellationFormCtrlType.true
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -55,7 +57,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
     return this.model ? false : true;
   }
 
-  get shouldLabelFloat() { return this.focused || !this.empty; }
+  get shouldLabelFloat() { return this.focused || !this.empty || this.type === 'textEditor'; }
 
   @Input()
   get placeholder(): string { return this._placeholder; }

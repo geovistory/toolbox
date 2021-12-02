@@ -125,6 +125,15 @@ export namespace SubfieldHelper {
 
   }
 
+  // Data to test subfield-page-query for AppeTeEn->refers to name->Appellation
+  export async function definitionHasValueVersions() {
+    await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_1)
+    await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2)
+    await createInfAppellation(InfAppellationMock.VALUE_VERSION_1)
+    await createInfAppellation(InfAppellationMock.VALUE_VERSION_2)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2)
+  }
+
   export async function makeProject1() {
     const accountId = await createAccountVerified('gaetan.muck@kleiolab.ch', 'testtest1');
     await createInfLanguage(InfLanguageMock.GERMAN);

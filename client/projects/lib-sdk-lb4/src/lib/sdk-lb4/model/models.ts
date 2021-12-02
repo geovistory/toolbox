@@ -133,6 +133,7 @@ export * from './quillAttributes';
 export * from './quillDoc';
 export * from './quillOperation';
 export * from './relatedProfile';
+export * from './replaceStatementInFieldRequest';
 export * from './resetPasswordRequest';
 export * from './responseWithMsg';
 export * from './role';

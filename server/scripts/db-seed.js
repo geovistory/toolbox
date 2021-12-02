@@ -7,6 +7,7 @@ async function getUserInputs() {
   const featureX = require('../dist/__tests__/helpers/graphs/feature-X.helper');
   const factoids = require('../dist/__tests__/helpers/graphs/heavy-factoids.helper');
   const forFullText = require('../dist/__tests__/helpers/graphs/entity-fulltext.helper');
+  const digitals = require('../dist/__tests__/helpers/graphs/digitals.helper');
   const cleanDb = require('../dist/__tests__/helpers/meta/clean-db.helper');
   const response = await prompts([
     {
@@ -33,6 +34,11 @@ async function getUserInputs() {
           title: 'Mockdata forFullText',
           description: `Creates mockdata useful for developing the warehouse to produce full texts for entities.`,
           value: forFullText.forFullText,
+        },
+        {
+          title: 'Mockdata for digitals',
+          description: `Creates mockdata useful for digitals.`,
+          value: digitals.digitalsSeeds,
         },
       ],
     },

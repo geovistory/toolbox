@@ -1,5 +1,25 @@
 .ql-container {
-    display: flex;
-    flex-grow: 1;
+  display: flex;
+  flex-grow: 1;
 }
-
+.gv-toolbar {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+}
+.loc-toolbar-spacer {
+  flex-grow: 1;
+}
+.loc-toolbar-btns-left {
+  flex-grow: 0;
+  padding: 8px;
+}
+.loc-toolbar-btns-right {
+  flex-grow: 0;
+  display: flex;
+  flex-direction: row;
+  padding-right: 8px;
+}
+.loc-btn-show-ids {
+  margin: 7px 8px 9px 8px;
+}

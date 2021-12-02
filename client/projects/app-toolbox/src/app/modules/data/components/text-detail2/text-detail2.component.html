@@ -1,0 +1,56 @@
+<as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': t.layoutMode!=='both'}" [direction]="'horizontal'"
+  [gutterSize]="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
+
+  <!-------------------------------------------------------------------
+       Left
+    -------------------------------------------------------------------->
+  <as-split-area [size]="t.splitSizeLeft" class="gv-flex-fh">
+
+    <gv-detail-top-bar height="5rem" [openRightAreaBtn]="t.layoutMode=='left-only'"
+      [closeLeftAreaBtn]="t.layoutMode=='both'" (closeLeft)="t.setLayoutMode('right-only')"
+      (openRight)="t.setLayoutMode('both');">
+
+      <gv-entity-card-header (removed)="close.emit()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+        [fkClass$]="fkClass$" [pkEntity]="pkEntity">
+      </gv-entity-card-header>
+    </gv-detail-top-bar>
+    <gv-detail-content>
+
+      <gv-view-field-has-value-version class="gv-flex-fh" *ngIf="(scope$|async) && (hasValueVersionField$|async)"
+        [field]="hasValueVersionField$|async" [scope]="scope$|async" [source]="source" [showOntoInfo$]="showOntoInfo$"
+        [readonly$]="readonly$">
+      </gv-view-field-has-value-version>
+
+    </gv-detail-content>
+  </as-split-area>
+
+  <!-------------------------------------------------------------------
+      Right
+    -------------------------------------------------------------------->
+  <as-split-area [size]="t.splitSizeRight" class="gv-flex-fh">
+
+    <mat-tab-group mat-stretch-tabs class="loc-tabs-right">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <div class="loc-tab">
+            <mat-icon class="example-tab-icon">comment_quote_outline</mat-icon>
+            Annotations
+          </div>
+        </ng-template>
+        Content 1
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <div class="loc-tab">
+            <mat-icon class="example-tab-icon">view_list</mat-icon>
+            Fields
+          </div>
+        </ng-template>
+        <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+          [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+        </gv-view-sections>
+      </mat-tab>
+    </mat-tab-group>
+
+  </as-split-area>
+</as-split>

@@ -405,5 +405,21 @@ export class ProInfoProjRelMock {
     is_in_project: true
   })
 
+  static readonly PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_1: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2044,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: false
+  })
+  static readonly PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2045,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
 
 }

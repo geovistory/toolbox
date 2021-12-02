@@ -1,9 +1,10 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
+import { ValidationDirectivesModule } from "projects/app-toolbox/src/app/core/validation/validation.directives";
+import { AppellationFormCtrlType } from 'projects/__test__/data/auto-gen/enums/AppellationFormCtrlType';
 import { BaseModule } from '../../base.module';
 import { CtrlAppellationComponent } from './ctrl-appellation.component';
-import { ValidationDirectivesModule } from "projects/app-toolbox/src/app/core/validation/validation.directives";
 
 
 
@@ -105,4 +106,52 @@ export default sandboxOf(CtrlAppellationComponent, {
         </div>`
   })
 
+  .add('CtrlAppellation TextEditor | Existing ', {
+    context: {
+      type: AppellationFormCtrlType.textEditor,
+      model: {
+        fk_class: 40,
+        "quill_doc": {
+          "latestId": 2,
+          "ops": [
+            {
+              "attributes": {
+                "charid": "2"
+              },
+              "insert": "a"
+            },
+            {
+              "attributes": {
+                "blockid": "1"
+              },
+              "insert": "\n"
+            }
+          ]
+        }
+      },
+      parentPath: ''
+    },
+    template: `
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:430px;height:400px" class="d-flex mr-4">
+                <form #f="ngForm" class="gv-grow-1">
+                    <gv-ctrl-appellation [required]="true" [type]="type" placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-appellation>
+                </form>
+            </div>
+            <div>
+                <p>Form.valid: {{f.valid | json}}</p>
 
+                <p>Form.touched: {{f.touched | json}}</p>
+
+                <p>Form.dirty: {{f.dirty | json}}</p>
+
+                <p>Form.value </p>
+                <pre>
+                    {{f.value | json}}
+                </pre>
+
+                Invalid: {{m.invalid | json}}
+
+            </div>
+        </div>`
+  })

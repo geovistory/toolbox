@@ -15,14 +15,14 @@ import { GvSchemaActions } from '../actions/schema.actions';
 export class ReduxMainService {
 
   constructor(
-    private schemaActions: GvSchemaActions,
-    private projectDataApi: ProjectDataService,
-    private projectConfigApi: ProjectConfigurationService,
-    private dataModelApi: DataModelService,
-    private accountDataApi: AccountDataService,
-    private contentTree: ContentTreeService,
-    private pag: SubfieldPageControllerService,
-    private proInfoProjRelApi: ProInfoProjRelApi
+    protected schemaActions: GvSchemaActions,
+    protected projectDataApi: ProjectDataService,
+    protected projectConfigApi: ProjectConfigurationService,
+    protected dataModelApi: DataModelService,
+    protected accountDataApi: AccountDataService,
+    protected contentTree: ContentTreeService,
+    protected pag: SubfieldPageControllerService,
+    protected proInfoProjRelApi: ProInfoProjRelApi
   ) { }
 
   /**

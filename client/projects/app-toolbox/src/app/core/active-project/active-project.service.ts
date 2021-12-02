@@ -307,6 +307,9 @@ export class ActiveProjectService {
     if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
       this.addSourceExpressionPortionTab(pkEntity)
     }
+    else if (pkClass === DfhConfig.CLASS_PK_DEFINITION) {
+      this.addText2Tab(pkEntity)
+    }
     else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
       this.addSourceTab(pkEntity)
     }
@@ -402,6 +405,17 @@ export class ActiveProjectService {
     this.addTab({
       active: true,
       component: 'text-detail',
+      icon: 'text',
+      data: {
+        pkEntity: pkEntity
+      },
+      pathSegment: 'textDetails'
+    })
+  }
+  addText2Tab(pkEntity: number) {
+    this.addTab({
+      active: true,
+      component: 'text-detail-2',
       icon: 'text',
       data: {
         pkEntity: pkEntity

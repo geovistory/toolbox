@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, InjectionToken, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
@@ -7,8 +7,9 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+export const VIEW_FIELD_ITEM_TYPE = new InjectionToken<ViewFieldItemType>('ViewFieldItemType');
 
-type ItemType = 'preview' | 'nested' | 'timePrimitive' | 'value';
+export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion';
 
 @Component({
   selector: 'gv-view-field-item',
@@ -30,18 +31,20 @@ export class ViewFieldItemComponent implements OnInit {
   @Input() checked: boolean
   @Output() selectionChange = new EventEmitter<StatementWithTarget>()
 
-  itemType: ItemType
+  itemType: ViewFieldItemType
   constructor(
     private ap: ActiveProjectPipesService,
     private dataService: ReduxMainService,
     private p: ActiveProjectService,
     private dialog: MatDialog,
+    @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemType
   ) { }
 
   ngOnInit(): void {
     this.itemType = this.getItemType(this.field, this.item)
   }
-  getItemType(field: Field, item: StatementWithTarget): ItemType {
+  getItemType(field: Field, item: StatementWithTarget): ViewFieldItemType {
+    if (this.itemTypeOverride) return this.itemTypeOverride;
     if (field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem) {
       return 'preview'
     }
@@ -62,13 +65,13 @@ export class ViewFieldItemComponent implements OnInit {
     }
   }
 
-  openPopup() {
+  openPopup(string: string) {
     const data: ConfirmDialogData = {
       hideNoButton: true,
       noBtnText: '',
       yesBtnText: 'Ok',
       title: 'Details',
-      paragraphs: [this.item.targetLabel]
+      paragraphs: [string]
     }
     this.dialog.open(ConfirmDialogComponent, { data })
   }

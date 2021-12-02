@@ -428,6 +428,25 @@ export namespace GvPaginationObjectMock {
     ],
   }
 
+
+  export const definitionHasValueVersion: GvPaginationObject = {
+    subfieldPages: [
+      {
+        req: GvFieldPageReqMock.definitionHasValueVersion,
+        count: 1,
+        paginatedStatements: [
+          createStatementWithTarget(
+            InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2,
+            ProInfoProjRelMock.PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              appellation: InfAppellationMock.VALUE_VERSION_2 as InfAppellation
+            },
+            true
+          )],
+      }
+    ],
+  }
 }
 
 

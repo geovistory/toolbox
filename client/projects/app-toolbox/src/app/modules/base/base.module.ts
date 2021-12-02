@@ -57,6 +57,7 @@ import { SliderComponent } from './components/slider/slider.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
 import { ViewFieldBodyComponent } from './components/view-field-body/view-field-body.component';
 import { ViewFieldDialogComponent } from './components/view-field-dialog/view-field-dialog.component';
+import { ViewFieldHasValueVersionComponent } from './components/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewFieldHeaderComponent } from './components/view-field-header/view-field-header.component';
 import { ViewFieldItemClassInfoComponent } from './components/view-field-item-class-info/view-field-item-class-info.component';
 import { ViewFieldItemEntityMenuComponent } from './components/view-field-item-entity-menu/view-field-item-entity-menu.component';
@@ -64,6 +65,7 @@ import { ViewFieldItemLayoutComponent } from './components/view-field-item-layou
 import { ViewFieldItemNestedComponent } from './components/view-field-item-nested/view-field-item-nested.component';
 import { ViewFieldItemPreviewComponent } from './components/view-field-item-preview/view-field-item-preview.component';
 import { ViewFieldItemTimePrimitiveComponent } from './components/view-field-item-time-primitive/view-field-item-time-primitive.component';
+import { ViewFieldItemValueVersionComponent } from './components/view-field-item-value-version/view-field-item-value-version.component';
 import { ViewFieldItemValueComponent } from './components/view-field-item-value/view-field-item-value.component';
 import { ViewFieldItemComponent } from './components/view-field-item/view-field-item.component';
 import { ViewFieldComponent } from './components/view-field/view-field.component';
@@ -137,6 +139,7 @@ const components = [
   ViewFieldItemEntityMenuComponent,
   ViewFieldItemTimePrimitiveComponent,
   ViewFieldItemValueComponent,
+  ViewFieldItemValueVersionComponent,
   ViewFieldItemLayoutComponent,
   ViewTimeSpanItemPreviewComponent,
   ViewTimeSpanSectionComponent,
@@ -145,6 +148,7 @@ const components = [
   ViewTimeSpanItemComponent,
   ViewTimeSpanItemEditBtnComponent,
   ViewTimeSpanHelpDialogComponent,
+  ViewFieldHasValueVersionComponent
 ]
 
 const baseModules = [

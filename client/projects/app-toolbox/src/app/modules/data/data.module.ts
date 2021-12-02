@@ -18,6 +18,7 @@ import { ImporterComponent } from './components/importer/importer.component';
 import { TableConfigDialogComponent } from './components/table-config-dialog/table-config-dialog.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
 import { TextDetailComponent } from './components/text-detail/text-detail.component';
+import { TextDetail2Component } from './components/text-detail2/text-detail2.component';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 
 @NgModule({
@@ -40,7 +41,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     InfoDialogModule
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent],
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, TextDetail2Component],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, TextDetail2Component],
 })
 export class DataModule { }

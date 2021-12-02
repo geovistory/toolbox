@@ -13,7 +13,7 @@
   <mat-menu #appMenu="matMenu">
 
     <ng-container *ngIf="itemComponent.item.target.langString">
-      <button mat-menu-item (click)="itemComponent. openPopup()">
+      <button mat-menu-item (click)="itemComponent.openPopup(itemComponent.item.target.langString?.langString?.string)">
         <mat-icon svgIcon="arrow-expand-all"></mat-icon>
         <span>Open in popup</span>
       </button>

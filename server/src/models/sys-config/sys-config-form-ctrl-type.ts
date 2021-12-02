@@ -1,4 +1,5 @@
 import {model, property} from '@loopback/repository';
+import {AppellationFormCtrlType} from '../enums/AppellationFormCtrlType';
 import {TrueEnum} from '../enums/TrueEnum';
 import {DimensionValueObjectType} from './sys-config-dimension-value-object-type';
 
@@ -22,8 +23,8 @@ export class SysConfigFormCtrlType {
   appellationTeEn?: TrueEnum;
 
   // form element to create appellation (string)
-  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  appellation?: TrueEnum;
+  @property({type: 'string', jsonSchema: {enum: Object.values(AppellationFormCtrlType)}})
+  appellation?: AppellationFormCtrlType;
 
   // form element to pick language
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})

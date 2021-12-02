@@ -15,6 +15,7 @@ import { PROFILE_16_INTERACTIONS_S_2021_07_10 } from 'projects/__test__/data/aut
 import { PROFILE_20_PHYSICAL_MAN_MA_2021_07_11 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2021-07-11';
 import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
 import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2021-07-09';
+import { PROFILE_99_DIGITALS } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-99-digitals';
 import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
@@ -484,6 +485,38 @@ export default sandboxOf(FormCreateEntityComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="212" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+  .add('Definition', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        createCrmAsGvPositiveSchema({
+          ontoMocks: [
+            PROFILE_5_GEOVISTORY_BASI_2021_08_24,
+            PROFILE_99_DIGITALS
+          ],
+          sysConf: SysConfigValueMock.SYS_CONFIC_DIGITALS, // add SYS_CONFIG json
+          p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
+        }),
+        GvSchemaObjectMock.project1, // add project and its default language
+      ]
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-entity [pkClass]="9901" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
             </div>
             <div>
                 <p>searchString: {{s}}</p>

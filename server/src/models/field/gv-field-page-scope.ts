@@ -9,5 +9,6 @@ import {model, property} from '@loopback/repository';
 export class GvFieldPageScope {
   @property() inProject?: number;
   @property() notInProject?: number;
-  @property() inRepo?: boolean;
+  @property() inRepo?: boolean; // in one project
+  @property() noContraint?: boolean; // all
 }

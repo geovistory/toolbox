@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { EntityDetail, IAppState, IconType, InfActions, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
+import { EntityDetail, IAppState, IconType, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
@@ -93,7 +93,6 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     private ap: ActiveProjectPipesService,
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
-    private inf: InfActions,
     private truncatePipe: TruncatePipe,
     private dataService: ReduxMainService
 

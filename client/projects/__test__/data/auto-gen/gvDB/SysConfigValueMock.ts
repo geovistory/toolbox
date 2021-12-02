@@ -1,5 +1,6 @@
-import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
-import { TrueEnum } from '../enums/TrueEnum';
+import {AppellationFormCtrlType} from '../enums/AppellationFormCtrlType';
+import {TrueEnum} from '../enums/TrueEnum';
+import {SysConfigValue} from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -10,9 +11,9 @@ export class SysConfigValueMock {
       "formControlType": {
         "entity": TrueEnum.true
       },
-      communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
-      communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
-      projectVisibilityDefault: { dataApi: false, website: false },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      projectVisibilityDefault: {dataApi: false, website: false},
     },
     "classesByBasicType": {
       "8": {
@@ -22,12 +23,12 @@ export class SysConfigValueMock {
         "formControlType": {
           "entity": TrueEnum.true
         },
-        communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
-        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
       },
       9: {
-        communityVisibilityRange: { toolbox: [true], dataApi: [true, false], website: [true, false] },
-        communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
+        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
       },
       "30": {
         "viewType": {
@@ -36,8 +37,8 @@ export class SysConfigValueMock {
         "formControlType": {
           "entity": TrueEnum.true
         },
-        communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
-        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true }
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
       }
     },
     "classes": {
@@ -49,7 +50,7 @@ export class SysConfigValueMock {
           "appellation": TrueEnum.true
         },
         "formControlType": {
-          "appellation": TrueEnum.true
+          "appellation": AppellationFormCtrlType.true
         },
         "valueObjectType": {
           "appellation": TrueEnum.true
@@ -121,7 +122,7 @@ export class SysConfigValueMock {
           "appellation": TrueEnum.true
         },
         "formControlType": {
-          "appellation": TrueEnum.true
+          "appellation": AppellationFormCtrlType.textEditor
         },
         "valueObjectType": {
           "appellation": TrueEnum.true
@@ -155,8 +156,8 @@ export class SysConfigValueMock {
         "excludedFromEntities": true
       },
       635: {
-        communityVisibilityRange: { toolbox: [false], dataApi: [false], website: [false] },
-        communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+        communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
+        communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
       },
       "657": {
         "viewType": {
@@ -290,37 +291,37 @@ export class SysConfigValueMock {
       {
         "comment": "add <Ongoing throughout> to all teEn",
         "isOutgoing": true,
-        "toSourceClass": { "whereBasicTypeIn": [9] },
+        "toSourceClass": {"whereBasicTypeIn": [9]},
         "wherePkProperty": 71
       },
       {
         "comment": "add <At some time within> to all teEn",
         "isOutgoing": true,
-        "toSourceClass": { "whereBasicTypeIn": [9] },
+        "toSourceClass": {"whereBasicTypeIn": [9]},
         "wherePkProperty": 72
       },
       {
         "comment": "add <end of the begin> to all teEn",
         "isOutgoing": true,
-        "toSourceClass": { "whereBasicTypeIn": [9] },
+        "toSourceClass": {"whereBasicTypeIn": [9]},
         "wherePkProperty": 150
       },
       {
         "comment": "add <begin of the end> to all teEn",
         "isOutgoing": true,
-        "toSourceClass": { "whereBasicTypeIn": [9] },
+        "toSourceClass": {"whereBasicTypeIn": [9]},
         "wherePkProperty": 151
       },
       {
         "comment": "add <begin of the begin> to all teEn",
         "isOutgoing": true,
-        "toSourceClass": { "whereBasicTypeIn": [9] },
+        "toSourceClass": {"whereBasicTypeIn": [9]},
         "wherePkProperty": 152
       },
       {
         "comment": "add <end of the end> to all teEn",
         "isOutgoing": true,
-        "toSourceClass": { "whereBasicTypeIn": [9] },
+        "toSourceClass": {"whereBasicTypeIn": [9]},
         "wherePkProperty": 153
       },
       {
@@ -845,4 +846,127 @@ export class SysConfigValueMock {
 
   }
 
+  static readonly SYS_CONFIC_DIGITALS: SysConfigValue = {
+    "classesDefault": {
+      "viewType": {
+        "nestedResource": []
+      },
+      "formControlType": {
+        "entity": TrueEnum.true
+      },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      projectVisibilityDefault: {dataApi: false, website: false},
+    },
+    "classesByBasicType": {
+      "8": {
+        "viewType": {
+          "entityPreview": TrueEnum.true
+        },
+        "formControlType": {
+          "entity": TrueEnum.true
+        },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+      },
+      9: {
+        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
+        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+      },
+      "30": {
+        "viewType": {
+          "entityPreview": TrueEnum.true
+        },
+        "formControlType": {
+          "entity": TrueEnum.true
+        },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
+      },
+      "54": {
+        "viewType": {
+          "language": TrueEnum.true
+        },
+        "formControlType": {
+          "language": TrueEnum.true
+        },
+        "valueObjectType": {
+          "language": TrueEnum.true
+        },
+        "excludedFromEntities": true
+      },
+    },
+    "classes": {
+      "339": {
+        "viewType": {
+          "appellation": TrueEnum.true
+        },
+        "formControlType": {
+          "appellation": AppellationFormCtrlType.textEditor
+        },
+        "valueObjectType": {
+          "appellation": TrueEnum.true
+        },
+        "excludedFromEntities": true
+      },
+
+    },
+    "addProperty": [
+
+    ],
+    "specialFields": {
+      "bySourceClass": {
+        "9901": {
+          outgoingProperties: {
+            99002: {
+              "comment": "Definition has language",
+              formSections: {
+                "simpleForm": {
+                  "position": 2,
+                  hideRemoveBtn: true,
+                  required: 1,
+                  controlsOnInit: 1,
+                },
+                "specific": {
+                  "position": 2,
+                  hideRemoveBtn: true,
+                  required: 1,
+                  controlsOnInit: 1,
+                }
+              }
+            }
+          }
+        }
+      },
+      "outgoingProperties": {
+        "99001": {
+          "comment": "geov:P? has value version",
+          "formSections": {
+            "basic": {
+              "position": 1,
+              "noFieldHeader": true, // hide the field header
+              hideRemoveBtn: true,
+              required: 1,
+              controlsOnInit: 1,
+            },
+            "simpleForm": {
+              "position": 1,
+              "noFieldHeader": true,// hide the field header
+              hideRemoveBtn: true,
+              required: 1,
+              controlsOnInit: 1,
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          }
+        }
+
+      },
+
+    }
+
+  }
 }

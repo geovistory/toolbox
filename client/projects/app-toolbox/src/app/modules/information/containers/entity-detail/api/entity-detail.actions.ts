@@ -56,8 +56,7 @@ export class EntityDetailAPIActions {
     meta: { keyToToggle },
     payload: null
   })
-
-  @dispatch() init = (config: EntityDetail): EntityDetailAPIAction => ({
+  init = (config: EntityDetail): EntityDetailAPIAction => ({
     type: EntityDetailAPIActions.INIT,
     meta: { config },
     payload: null,

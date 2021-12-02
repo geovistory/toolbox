@@ -24,13 +24,11 @@ export class ViewFieldComponent implements OnInit {
 
   @Input() source: GvFieldSourceEntity;
   @Input() field: Field
-  // @Input() treeControl: NestedTreeControl<Field>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() scope: GvFieldPageScope;
 
 
-  // listsWithCounts$: Observable<SubfieldWithItemCount[]>
   showAddButton$
   itemsCount$: Observable<number>;
   constructor(

@@ -55,6 +55,9 @@ export class DfhConfig {
 
   static PROPERTY_PK_P18_HAS_DEFINITION = 1762;
 
+  static PROPERTY_PK_HAS_VALUE_VERSION = 99001; // TODO replace by pk from ontome when available
+
+
   // static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
   // static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
   // static PROPERTY_PK_BEGIN_OF_BEGIN = 152;
@@ -132,10 +135,12 @@ export class DfhConfig {
 
   static CLASS_PK_EXPRESSION = 218;
 
+
   static CLASS_PK_MANIFESTATION_PRODUCT_TYPE = 219;
   static CLASS_PK_MANIFESTATION_SINGLETON = 220;
   static CLASS_PK_ITEM = 221;
   static CLASS_PK_WEB_REQUEST = 502;
+  static CLASS_PK_DEFINITION = 9901; // TODO replace by pk from ontome when available
   static CLASS_PK_SPOT = 457;
   static CLASS_PK_CHUNK = 456;
   static CLASS_PK_EXPRESSION_PORTION = 503;

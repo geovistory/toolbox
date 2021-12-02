@@ -26,12 +26,13 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   control: FormArray
 
 
-  get parentListDefsLength() {
+  get targetClasssesLength() {
     return this.parent?.arrayFactory?.config?.data?.gvFormField?.field?.targetClasses?.length
   }
 
   showRemoveBtn(child: FormArrayChild<FormControlData, FormArrayData, FormChildData>) {
-    return this.parentListDefsLength > 1 ||
+    if (this.parent?.arrayFactory?.config?.data?.gvFormField?.config?.hideRemoveBtn) return false
+    return this.targetClasssesLength > 1 ||
       (
         (child.factoryType === 'control' || child.factoryType == 'childFactory')
         && this.parentLength > this.parentMinLength

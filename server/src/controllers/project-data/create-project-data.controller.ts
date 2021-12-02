@@ -18,9 +18,11 @@ import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFk
 import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
 import {InfStatementSubjectFks} from '../../models/statement/InfStatementSubjectFks';
 import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubjectValues';
+import {ReplaceStatementInFieldRequest} from '../../models/statement/replace-statement-in-field-request';
 import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
 import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {VisibilityController} from '../backoffice/visibility.controller';
 
 @tags('project data')
@@ -130,6 +132,36 @@ export class CreateProjectDataController {
   }
 
 
+
+  @post('project-data/replace-statements-of-field', {
+    responses: {
+      '200': {
+        description: 'Upsert a statement of a field and remove all other statements of that field',
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async replaceStatementsOfField(
+    @requestBody() req: ReplaceStatementInFieldRequest
+  ): Promise<void> {
+    const newStmt = await this.findOrCreateStatementWithRelations(req.statement, req.pkProject)
+    const q = new SqlBuilderLb4Models(this.datasource)
+    const filter = q.createStatementFilterObject(req.isOutgoing, req.source, req.property)
+    q.sql = `
+      UPDATE projects.info_proj_rel
+      SET is_in_project=false
+      WHERE fk_entity IN (
+        SELECT pk_entity
+        FROM information.statement t1
+        WHERE ${q.getStatementWhereFilter('t1', filter).join(' AND ')}
+        AND t1.pk_entity != ${q.addParam(newStmt.pk_entity)}
+      )
+      AND fk_project = ${q.addParam(req.pkProject)}
+      AND is_in_project = true
+    `
+    await q.execute()
+  }
 
 
   async findOrCreateResourceWithRelations(resource: PartialDeep<InfResourceWithRelations>, project: number): Promise<InfResourceWithRelations> {

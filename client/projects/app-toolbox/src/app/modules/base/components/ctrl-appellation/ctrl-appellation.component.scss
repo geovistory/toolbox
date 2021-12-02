@@ -18,3 +18,7 @@
     bottom: 0;
   }
 }
+
+::ng-deep .gv-text-editor .ql-editor {
+  min-height: 165px;
+}

@@ -20,12 +20,6 @@
 
 
         <span class="gv-tile" *ngIf="(showProperties$ | async)">
-          <!-- <div class="gv-one-liner mx-2 mt-3">
-            <h2>
-              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async | truncate:240}}</span>
-              <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
-            </h2>
-          </div> -->
 
           <div class="gv-tile-body">
 
@@ -36,14 +30,6 @@
           </div>
 
         </span>
-
-
-
-
-        <!-- Repros. Reproductions of a section -->
-        <!-- <gv-repros class="gv-flex-fh" class="gv-tile" *ngIf="(showRepros$ | async) && !isolatedChild"
-          [basePath]="basePath.concat('repros')" (annotate)="onAnnotate()" (close)="toggle('showRepros')">
-        </gv-repros> -->
 
 
       </gv-detail-content>

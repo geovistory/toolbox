@@ -4,7 +4,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, TableName } from '@kleiolab/lib-queries';
 import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, GvSchemaModifier, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, Section, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -14,6 +14,7 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
+import { TrueEnum } from 'projects/__test__/data/auto-gen/enums/TrueEnum';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -61,6 +62,7 @@ export interface FormCreateEntityValue {
 
 export interface FormField {
   field: Field
+  config?: Section
   addItemsOnInit: number
   minLength: number
   maxLength: number
@@ -70,7 +72,7 @@ interface FormGroupData {
   pkClass: number
 }
 export interface FormControlData {
-  controlType: ControlType
+  controlType: SysConfigFormCtrlType
   field?: Field
   targetClass: number
   targetClassLabel: string
@@ -543,6 +545,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
             }
 
+            const config = f.display.formSections?.[section.key]
             const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
             const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
 
@@ -553,6 +556,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                     minLength,
                     maxLength,
                     field: f,
+                    config,
                     addItemsOnInit
                   },
                   pkClass: undefined,
@@ -562,7 +566,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 required: this.ctrlRequired(f),
                 validators: [
                   (control: FormArray): { [key: string]: any } | null => {
-                    const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                    const length = sum(
+                      control.controls.map((ctrl: FormArray) => ctrl.controls
+                        .filter(c => c.status === 'VALID').length))
                     return length >= minLength
                       ? null : { 'minLength': { value: control.value, minLength } }
                   },
@@ -760,16 +766,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     field: Field,
     initStmts: InfStatementWithRelations[] = [{}]
   ): Observable<LocalNodeConfig[]> {
-    if (formCtrlType.timeSpan) return this.timeSpanCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.place) return this.placeCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.appellationTeEn) return this.appellationTeEnCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.entity) return this.entityCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.language) return this.languageCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.appellation) return this.appellationCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.langString) return this.langStringCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.dimension) return this.dimensionCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.typeItem) return this.typeCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.timePrimitive) return this.timePrimitiveCtrl(targetClass, field, initStmts)
+    if (formCtrlType.timeSpan) return this.timeSpanCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.place) return this.placeCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.appellationTeEn) return this.appellationTeEnCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.entity) return this.entityCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.language) return this.languageCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.appellation) return this.appellationCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.langString) return this.langStringCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.dimension) return this.dimensionCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.typeItem) return this.typeCtrl(targetClass, field, initStmts, formCtrlType)
+    else if (formCtrlType.timePrimitive) return this.timePrimitiveCtrl(targetClass, field, initStmts, formCtrlType)
     else console.error('formCtrlType not found: ', JSON.stringify(formCtrlType))
   }
 
@@ -839,7 +845,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private timeSpanCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const initValue: CtrlTimeSpanModel = {}
     for (let i = 0; i < initStmts.length; i++) {
@@ -860,7 +867,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         required: this.ctrlRequired(field),
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-time-span',
+          controlType: formControlType,
           targetClass,
           targetClassLabel
         },
@@ -920,7 +927,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         required,
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-time-span',
+          controlType: { timeSpan: TrueEnum.true },
           targetClass,
           targetClassLabel
         },
@@ -934,7 +941,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private languageCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
       const targetClassLabel = field.targets[targetClass].targetClassLabel
@@ -945,7 +953,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           required: this.ctrlRequired(field),
           data: {
             appearance: this.appearance,
-            controlType: 'ctrl-language',
+            controlType: formControlType,
             targetClass,
             targetClassLabel
           },
@@ -972,7 +980,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private typeCtrl(
     targetClass: number,
     field: Field,
-    initItems: InfStatementWithRelations[] = [{}]
+    initItems: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {
@@ -986,7 +995,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           required: this.ctrlRequired(field),
           data: {
             appearance: this.appearance,
-            controlType: 'ctrl-type',
+            controlType: formControlType,
             field,
             targetClass,
             targetClassLabel
@@ -1016,7 +1025,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private appellationCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
 
@@ -1028,7 +1038,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         validators: [ValidationService.appellationValidator()],
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-appellation',
+          controlType: formControlType,
           targetClass,
           targetClassLabel
         },
@@ -1054,7 +1064,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private placeCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     // with [{}] we make sure at least one item is added
     const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal) => ({
@@ -1093,7 +1104,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private langStringCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
 
     const controlConfigs: LocalNodeConfig[] = initStmts.map((stmt) => ({
@@ -1130,7 +1142,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private dimensionCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const controlConfigs: LocalNodeConfig[] = initStmts.map((stmt) => ({
       childFactory: {
@@ -1167,7 +1180,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private entityCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
 
@@ -1197,7 +1211,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               required: true,
               data: {
                 appearance: this.appearance,
-                controlType: 'ctrl-entity',
+                controlType: formControlType,
                 field,
                 targetClass,
                 targetClassLabel,
@@ -1239,7 +1253,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private timePrimitiveCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     // with [{}] we make sure at least one item is added
@@ -1251,7 +1266,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         validators: [],
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-time-primitive',
+          controlType: formControlType,
           targetClass,
           targetClassLabel
         },
@@ -1281,7 +1296,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private appellationTeEnCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
+    formControlType: SysConfigFormCtrlType
   ): Observable<LocalNodeConfig[]> {
     const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal) => ({
       childFactory: {

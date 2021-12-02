@@ -53,15 +53,15 @@ export class FieldChangeController extends WebsocketControllerBase {
     // Subscribe to stream of timestamps emitted when field changed
     this.streamSub = this.streams.warFieldChanges$.subscribe(
       (warFieldChange) => {
-        // is the warFieldChange a field change of the current project?
-        if (this.cache.currentProjectPk === warFieldChange.fk_project.toString()) {
+        // // is the warFieldChange a field change of the current project?
+        // if (this.cache.currentProjectPk === warFieldChange.fk_project.toString()) {
 
-          // is the changed field part of the stream?
-          const fieldId = fieldChangeToStringId(warFieldChange)
-          if (this.cache.streamedIds[fieldId]) {
-            this.emitFieldChange(warFieldChange)
-          }
+        // is the changed field part of the stream?
+        const fieldId = fieldChangeToStringId(warFieldChange)
+        if (this.cache.streamedIds[fieldId]) {
+          this.emitFieldChange(warFieldChange)
         }
+        // }
       }
     );
   }

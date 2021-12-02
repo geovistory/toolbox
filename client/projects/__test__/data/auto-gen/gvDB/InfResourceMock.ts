@@ -257,5 +257,11 @@ export class InfResourceMock {
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
 
+  static readonly DEFINITION_1: OmitEntity<InfResource> = ({
+    pk_entity: 4025,
+    fk_class: DfhApiClassMock.EN_9901_DEFINITION.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+
 
 }

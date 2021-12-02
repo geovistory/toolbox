@@ -1,7 +1,10 @@
 import {ModelDefinition} from '@loopback/repository';
-import {SqlBuilderBase} from './sql-builder-base';
-import {Postgres1DataSource} from '../../datasources';
 import {indexBy} from 'ramda';
+import {Postgres1DataSource} from '../../datasources';
+import {GvFieldProperty} from '../../models/field/gv-field-property';
+import {GvFieldSourceEntity} from '../../models/field/gv-field-source-entity';
+import {GvPaginationStatementFilter} from '../../models/field/gv-pagination-statement-filter';
+import {SqlBuilderBase} from './sql-builder-base';
 
 /**
  * Abstract Class providing basic logic for building SQL
@@ -78,4 +81,32 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
     const res = await this.dataSource.execute(this.sql, this.params);
     return res;
   }
+
+  getStatementWhereFilter(tableAlias: string, filterObject: GvPaginationStatementFilter): string[] {
+    const filters: string[] = []
+    let column: keyof GvPaginationStatementFilter;
+    for (column in filterObject) {
+      const value = filterObject[column];
+      if (value) {
+        filters.push(`${tableAlias}.${column}=${this.addParam(value)}`)
+      }
+    }
+    return filters;
+  }
+  createStatementFilterObject(isOutgoing: boolean, source: GvFieldSourceEntity, property: GvFieldProperty) {
+    const filterObject: GvPaginationStatementFilter = {
+      fk_subject_info: isOutgoing ? source.fkInfo : undefined,
+      fk_object_info: isOutgoing ? undefined : source.fkInfo,
+      fk_subject_data: isOutgoing ? source.fkData : undefined,
+      fk_object_data: isOutgoing ? undefined : source.fkData,
+      fk_subject_tables_cell: isOutgoing ? source.fkTablesCell : undefined,
+      fk_object_tables_cell: isOutgoing ? undefined : source.fkTablesCell,
+      fk_subject_tables_row: isOutgoing ? source.fkTablesRow : undefined,
+      fk_object_tables_row: isOutgoing ? undefined : source.fkTablesRow,
+      fk_property: property.fkProperty,
+      fk_property_of_property: property.fkPropertyOfProperty
+    };
+    return filterObject
+  }
 }
+

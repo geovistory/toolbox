@@ -51,7 +51,7 @@ export interface PanelTab<D> {
   // wheter tab is active or not
   active: boolean;
   // the root component included in this tab, in dash separate minuscles: PeItDetailComponent -> 'entity-detail'
-  component: 'text-detail' | 'table-detail' | 'entity-detail' | 'te-en-detail' | 'analysis-detail' | 'query-detail' | 'visual-detail' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
+  component: 'text-detail' | 'text-detail-2' | 'table-detail' | 'entity-detail' | 'te-en-detail' | 'analysis-detail' | 'query-detail' | 'visual-detail' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
   // icon to be displayed in tab, e.g.: gv-icon-source
   icon: IconType
   // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]

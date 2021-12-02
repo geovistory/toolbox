@@ -48,7 +48,9 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
     if (errors.length) throw new Error(errors.join('\n'));
 
     if (this.showBodyOnInit) this.showBody$.next(this.showBodyOnInit)
-    this.fields$ = this.pkClass$.pipe(first(x => !!x), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
+    this.fields$ = this.pkClass$.pipe(first(x => {
+      return !!x
+    }), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
 
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.dataSource.data = data;

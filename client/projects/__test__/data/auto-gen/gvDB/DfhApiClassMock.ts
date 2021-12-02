@@ -1,4 +1,4 @@
-import { DfhApiClass } from "./local-model.helpers"
+import {DfhApiClass} from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -685,10 +685,29 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E1"
-}
-}
+  }
+  static readonly EN_9901_DEFINITION: DfhApiClass = {
+    pk_entity: 9901,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 9901,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Definition",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class is a subclass of Text. It contains Definitions of the entities it is about.",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
 
-
+}
 
 /**
  * SQL to create mock items

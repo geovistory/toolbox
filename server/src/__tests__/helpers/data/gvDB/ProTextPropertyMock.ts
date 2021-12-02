@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProTextProperty } from '../../../../models';
-import { InfLanguageMock } from './InfLanguageMock';
-import { DfhApiPropertyMock } from './DfhApiPropertyMock';
-import { SysSystemTypeMock } from './SysSystemTypeMock';
-import { ProProjectMock } from './ProProjectMock';
-import { DfhApiClassMock } from './DfhApiClassMock';
-import { PK_DEFAULT_CONFIG_PROJECT } from './local-model.helpers';
+import {ProTextProperty} from '../../../../models';
+import {DfhApiClassMock} from './DfhApiClassMock';
+import {DfhApiPropertyMock} from './DfhApiPropertyMock';
+import {InfLanguageMock} from './InfLanguageMock';
+import {PK_DEFAULT_CONFIG_PROJECT} from './local-model.helpers';
+import {ProProjectMock} from './ProProjectMock';
+import {SysSystemTypeMock} from './SysSystemTypeMock';
 
 /**
  * pk_entity prefix: 500
@@ -101,5 +101,12 @@ export class ProTextPropertyMock {
     fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
     string: 'Sandbox Project'
   })
-
+  static readonly PROJECT_1_NAME: Partial<ProTextProperty> = ({
+    pk_entity: 5010,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_pro_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
+    string: 'Project 1'
+  })
 }

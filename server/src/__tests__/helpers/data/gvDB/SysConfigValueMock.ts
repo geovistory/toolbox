@@ -1,3 +1,4 @@
+import {AppellationFormCtrlType} from '../../../../models/enums/AppellationFormCtrlType';
 import {TrueEnum} from '../../../../models/enums/TrueEnum';
 import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
 
@@ -49,7 +50,7 @@ export class SysConfigValueMock {
           "appellation": TrueEnum.true
         },
         "formControlType": {
-          "appellation": TrueEnum.true
+          "appellation": AppellationFormCtrlType.true
         },
         "valueObjectType": {
           "appellation": TrueEnum.true
@@ -121,7 +122,7 @@ export class SysConfigValueMock {
           "appellation": TrueEnum.true
         },
         "formControlType": {
-          "appellation": TrueEnum.true
+          "appellation": AppellationFormCtrlType.textEditor
         },
         "valueObjectType": {
           "appellation": TrueEnum.true
@@ -845,4 +846,140 @@ export class SysConfigValueMock {
 
   }
 
+  static readonly SYS_CONFIC_DIGITALS: SysConfigValue = {
+    "classesDefault": {
+      "viewType": {
+        "nestedResource": []
+      },
+      "formControlType": {
+        "entity": TrueEnum.true
+      },
+      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+      projectVisibilityDefault: {dataApi: false, website: false},
+    },
+    "classesByBasicType": {
+      "8": {
+        "viewType": {
+          "entityPreview": TrueEnum.true
+        },
+        "formControlType": {
+          "entity": TrueEnum.true
+        },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+      },
+      9: {
+        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
+        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+      },
+      "30": {
+        "viewType": {
+          "entityPreview": TrueEnum.true
+        },
+        "formControlType": {
+          "entity": TrueEnum.true
+        },
+        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
+        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
+      },
+      "54": {
+        "viewType": {
+          "language": TrueEnum.true
+        },
+        "formControlType": {
+          "language": TrueEnum.true
+        },
+        "valueObjectType": {
+          "language": TrueEnum.true
+        },
+        "excludedFromEntities": true
+      },
+    },
+    "classes": {
+
+      "54": {
+        "viewType": {
+          "language": TrueEnum.true
+        },
+        "formControlType": {
+          "language": TrueEnum.true
+        },
+        "valueObjectType": {
+          "language": TrueEnum.true
+        },
+        "excludedFromEntities": true
+      },
+      "339": {
+        "viewType": {
+          "appellation": TrueEnum.true
+        },
+        "formControlType": {
+          "appellation": AppellationFormCtrlType.textEditor
+        },
+        "valueObjectType": {
+          "appellation": TrueEnum.true
+        },
+        "excludedFromEntities": true
+      },
+
+    },
+    "addProperty": [
+
+    ],
+    "specialFields": {
+      "bySourceClass": {
+        "9901": {
+          outgoingProperties: {
+            99002: {
+              "comment": "Definition has language",
+              formSections: {
+                "simpleForm": {
+                  "position": 2,
+                  hideRemoveBtn: true,
+                  required: 1,
+                  controlsOnInit: 1,
+                },
+                "specific": {
+                  "position": 2,
+                  hideRemoveBtn: true,
+                  required: 1,
+                  controlsOnInit: 1,
+                }
+              }
+            }
+          }
+        }
+      },
+      "outgoingProperties": {
+        "99001": {
+          "comment": "geov:P? has value version",
+          "formSections": {
+            "basic": {
+              "position": 1,
+              "noFieldHeader": true, // hide the field header
+              hideRemoveBtn: true,
+              required: 1,
+              controlsOnInit: 1,
+            },
+            "simpleForm": {
+              "position": 1,
+              "noFieldHeader": true,// hide the field header
+              hideRemoveBtn: true,
+              required: 1,
+              controlsOnInit: 1,
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          }
+        }
+
+      },
+
+    }
+
+  }
 }

@@ -6,6 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class AbbreviatePipe implements PipeTransform {
 
   transform(input: string, ...args: unknown[]): string {
+    if (!input) return ''
     let res = input.replace(/([^A-Za-z])/g, ' ');
     res = res.replace(/ +(?= )/g, '').trim();
     const parts = res.split(' ');

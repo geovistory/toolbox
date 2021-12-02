@@ -1712,6 +1712,15 @@ gv-quill-edit {
   .ql-editor {
     @extend .gv-grow-1;
   }
+
+  .ql-snow.ql-toolbar button.mat-icon-button {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+  }
+  .ql-snow.ql-toolbar button.mat-icon-button:focus {
+    color: unset;
+  }
 }
 gv-text-detail {
   gv-quill-edit {
@@ -1734,7 +1743,6 @@ gv-quill-edit.gv-hide-toolbar {
     border-left: 0;
     border-right: 0;
     @extend .border-bottom;
-    background-color: #f5f5f5;
   }
   .ql-container.ql-snow {
     border: 0;
@@ -2174,7 +2182,7 @@ as-split.gv-split-style {
     opacity: 0.1;
   }
 
-  &.is-horizontal {
+  &.as-horizontal {
     > ::ng-deep > .as-split-gutter > .as-split-gutter-icon {
       width: 13px !important;
       left: -6px;
@@ -2188,7 +2196,7 @@ as-split.gv-split-style {
     }
   }
 
-  &.is-vertical {
+  &.as-vertical {
     > ::ng-deep > .as-split-gutter > .as-split-gutter-icon {
       height: 13px !important;
       top: -6px;

@@ -174,23 +174,23 @@ export namespace GvFieldPageReqMock {
       offset: 0
     }
   }
+  export const definitionHasValueVersion: GvFieldPageReq = {
+    pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    targets: {
+      [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
+        appellation: TrueEnum.true
+      }
+    },
+    page: {
+      source: {fkInfo: InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2.fk_subject_info},
+      property: {fkProperty: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property},
+      isOutgoing: true,
+      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      limit: 1,
+      offset: 0
+    }
+  }
 
-  // export const shipVoyageHasTimeSpan: GvFieldPageReq = {
-  //   pkProject: ProProjectMock.PROJECT_1.pk_entity,
-  //   targets: {
-  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-  //       timeSpan: TrueEnum.true
-  //     }
-  //   },
-  //   page: {
-  //     source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
-  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
-  //     isOutgoing: true,
-  //     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
-  //     limit: 1,
-  //     offset: 0
-  //   }
-  // }
 
 
 }

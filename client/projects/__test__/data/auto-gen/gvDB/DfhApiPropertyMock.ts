@@ -1,4 +1,4 @@
-import { DfhApiProperty } from "./local-model.helpers"
+import {DfhApiProperty} from "./local-model.helpers"
 
 export class DfhApiPropertyMock {
   static readonly EN_1111_IS_APPE_OF: DfhApiProperty = {
@@ -1166,6 +1166,38 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P15"
+  }
+
+  static readonly EN_99001_HAS_VALUE_VERSION: DfhApiProperty = {
+    "pk_entity": 99001,
+    "removed_from_api": false,
+    "requested_language": "en",
+    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+    "is_enabled_in_profile": null,
+    "dfh_pk_property": 99001,
+    "dfh_property_label_language": "en",
+    "dfh_property_label": "has value version",
+    "dfh_property_inverse_label": "is value version of",
+    "dfh_property_scope_note_language": "en",
+    "dfh_property_scope_note": "This property relates a Digital with a value version.",
+    "dfh_is_inherited": false,
+    "dfh_property_domain": 9901,
+    "dfh_domain_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": 1,
+    "dfh_property_range": 339,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_identity_defining": false,
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_identifier_in_namespace": "P14",
+    "dfh_namespace_uri": null,
+    "dfh_fk_namespace": 30,
+    "dfh_namespace_label_language": "en",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_profile_association_type": null,
+    "dfh_fk_profile": 99,
+    "dfh_profile_label": "Digitals",
+    "dfh_profile_label_language": "en"
   }
 }
 /**

@@ -1,0 +1,20 @@
+.loc-loading-spinner ,
+.loc-loading-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+.loc-body {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.loc-header {
+  height: 60px;
+  padding: 0 16px;
+  display: flex;
+  flex-basis: 60px;
+  flex-shrink: 0;
+  align-items: center;
+}

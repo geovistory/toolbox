@@ -358,6 +358,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         t2.fk_source,
         t2.fk_property,
         t2.is_outgoing,
+        t2.scope,
         COALESCE(jsonb_agg(t2.stmt_with_target) FILTER (WHERE t2.stmt_with_target IS NOT NULL), '[]'::jsonb) paginatedStatements,
         jsonb_agg(t2."data") FILTER (WHERE t2."data" IS NOT NULL) nested,
         t2.count
@@ -368,10 +369,11 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         ${joinStatementsOfProperty}
       ) AS t2 ON t1.pk_entity = t2.fk_source
       GROUP BY
-        fk_source,
-        fk_property,
-        is_outgoing,
-        count
+        t2.fk_source,
+        t2.fk_property,
+        t2.is_outgoing,
+        t2.scope,
+        t2.count
     )
     `
 
@@ -413,12 +415,14 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
           t1.pk_entity as fk_source,
           ${this.addParam(property.fkProperty)} as fk_property,
           ${this.addParam(isOutgoing)}::boolean as is_outgoing,
+          '${JSON.stringify(scope)}'::jsonb as scope,
           filteredStmts.fk_target,
           filteredStmts.stmt_with_target,
           c.count
         FROM (
             TABLE allStmts
             -- WHERE stmt_with_target->'targetLabel' %ilike 'foo'
+            ORDER BY pk_statement DESC
             LIMIT ${this.addParam(limit)}
             OFFSET ${this.addParam(offset)}
           ) AS filteredStmts
@@ -509,6 +513,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       t1.pk_entity as fk_source,
       t2.${statementTargetFk} as fk_target,
       t2.fk_property,
+      t2.pk_entity as pk_statement,
       jsonb_strip_nulls(jsonb_build_object(
         'isOutgoing', ${this.addParam(isOutgoing)}::boolean,
         ${scope.inProject ? `
@@ -885,6 +890,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       on ${groupBySubqueryTw}.fk_source = ${sourceSubqueryTw}.pk_entity
       AND ${groupBySubqueryTw}.fk_property = ${this.addParam(fkProperty)}
       AND ${groupBySubqueryTw}.is_outgoing = ${this.addParam(isOutgoing)}
+      AND ${groupBySubqueryTw}.scope = '${JSON.stringify(req.page.scope)}'::jsonb
       ${sourceClasses.length ?
         `WHERE ${sourceSubqueryTw}.fk_class IN (${this.addParams(sourceClasses)})`
         : ''}

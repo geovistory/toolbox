@@ -145,6 +145,10 @@
               [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-text-detail>
 
+            <gv-text-detail2 class="gv-flex-fh" *ngIf="tab.component=='text-detail-2'" [tabId]="tab.path[2]"
+              [pkEntity]="tab.data.pkEntity"></gv-text-detail2>
+
+
             <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table-detail'" [pkEntity]="tab.data.pkEntity"
               [filterOnRow]="tab.data.filterOnRow" [basePath]="tab.path"
               (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">

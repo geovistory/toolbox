@@ -445,7 +445,18 @@ export class InfStatementMock {
     fk_object_info: InfAppellationMock.JACK.pk_entity,
   })
 
-
+  static readonly DEFINITION_1_HAS_VALUE_VERSION_1: OmitEntity<InfStatement> = ({
+    pk_entity: 3061,
+    fk_subject_info: InfResourceMock.DEFINITION_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_object_info: InfAppellationMock.VALUE_VERSION_1.pk_entity,
+  })
+  static readonly DEFINITION_1_HAS_VALUE_VERSION_2: OmitEntity<InfStatement> = ({
+    pk_entity: 3062,
+    fk_subject_info: InfResourceMock.DEFINITION_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_object_info: InfAppellationMock.VALUE_VERSION_2.pk_entity,
+  })
 }
 
 

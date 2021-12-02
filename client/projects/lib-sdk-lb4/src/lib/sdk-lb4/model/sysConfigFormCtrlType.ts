@@ -36,9 +36,10 @@ export namespace SysConfigFormCtrlType {
     export const AppellationTeEnEnum = {
         True: 'true' as AppellationTeEnEnum
     };
-    export type AppellationEnum = 'true';
+    export type AppellationEnum = 'true' | 'textEditor';
     export const AppellationEnum = {
-        True: 'true' as AppellationEnum
+        True: 'true' as AppellationEnum,
+        TextEditor: 'textEditor' as AppellationEnum
     };
     export type LanguageEnum = 'true';
     export const LanguageEnum = {
