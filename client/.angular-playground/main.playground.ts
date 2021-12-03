@@ -45,6 +45,7 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODVhZ
 export class MatIconRegistryModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3000/assets/mdi/mdi.svg'));
+    matIconRegistry.addSvgIconSetInNamespace('gv', domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3000/assets/gv-icons.svg'));
   }
 }
 

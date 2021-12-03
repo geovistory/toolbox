@@ -1,0 +1,26 @@
+<div class="mat-typography d-flex flex-direction-row" style="padding: 20px; ">
+  <span>
+    <ng-container *ngFor="let shade of shades">
+      <h3>{{shade}}</h3>
+      <ng-container *ngFor="let category of categories">
+        <div [class]="'loc-item gv-'+category+'-'+shade+'-bg'">
+          .gv-{{category}}-{{shade}}-bg
+        </div>
+      </ng-container>
+    </ng-container>
+
+  </span>
+
+  <span>
+    <ng-container *ngFor="let shade of shades">
+      <h3>{{shade}}</h3>
+      <ng-container *ngFor="let category of categories">
+        <div [class]="'loc-item gv-'+category+'-'+shade+'-color'">
+          .gv-{{category}}-{{shade}}-color
+        </div>
+      </ng-container>
+    </ng-container>
+
+  </span>
+
+</div>

@@ -207,6 +207,7 @@ registerLocaleData(localeDeCh);
 export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/mdi/mdi.svg'));
+    matIconRegistry.addSvgIconSetInNamespace('gv', domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/gv-icons.svg'));
     LoopBackConfig.setBaseURL(environment.apiUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }

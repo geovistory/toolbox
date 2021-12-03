@@ -1231,16 +1231,26 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
       return of('source')
     }
-
-    return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
-      map(klass => {
-        if (klass.basic_type === 9) {
-          return 'temporal-entity'
+    const obs$ = combineLatest([
+      this.s.sys$.config$.main$,
+      this.s.dfh$.class$.by_pk_class$.key(pkClass)
+    ]).pipe(
+      filter(i => !i.includes(undefined)),
+      map(([config, klass]) => {
+        const classConfig: ClassConfig = config.classes[pkClass];
+        if (classConfig?.valueObjectType) {
+          return 'value'
         }
-        return 'persistent-entity'
+        else {
+          if (klass.basic_type === 9) {
+            return 'temporal-entity'
+          }
+          return 'persistent-entity'
+        }
       })
     )
 
+    return obs$
   }
 }
 

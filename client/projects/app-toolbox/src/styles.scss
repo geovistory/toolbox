@@ -2211,6 +2211,59 @@ as-split.gv-split-style.gv-hide-split-gutter {
 .gv-sub-query-item {
   margin-left: 0rem;
 }
+
+$gv-category-primary: (
+  digitals: #fd7e14,
+  sources: #17a2b8,
+  entities: #007bff,
+  analysis: #e83e8c,
+  stories: #28a745,
+  values: #68747b,
+);
+
+$gv-category-secondary: (
+  digitals: #f7a865,
+  sources: #85d2de,
+  entities: #7cb7f7,
+  analysis: #e080ac,
+  stories: #70e08a,
+  values: #9aaab1,
+);
+
+$gv-category-light: (
+  digitals: #fddfc5,
+  sources: #c3e5eb,
+  entities: #b2d7ff,
+  analysis: #e8b3cb,
+  stories: #9de0ac,
+  values: #d4dade,
+);
+
+$categories: digitals, sources, entities, analysis, stories, values;
+@each $category in $categories {
+  .gv-#{$category}-primary-bg {
+    background-color: map_get($gv-category-primary, $category);
+  }
+  .gv-#{$category}-primary-color {
+    color: map_get($gv-category-primary, $category);
+  }
+}
+@each $category in $categories {
+  .gv-#{$category}-secondary-bg {
+    background-color: map_get($gv-category-secondary, $category);
+  }
+  .gv-#{$category}-secondary-color {
+    color: map_get($gv-category-secondary, $category);
+  }
+}
+@each $category in $categories {
+  .gv-#{$category}-light-bg {
+    background-color: map_get($gv-category-light, $category);
+  }
+  .gv-#{$category}-light-color {
+    color: map_get($gv-category-light, $category);
+  }
+}
 .gv-digital-color {
   color: $secondary;
 }
@@ -2590,10 +2643,10 @@ button:not(.mat-icon-button) {
   }
 }
 
-.mat-icon svg {
-  height: 24px;
-  width: 24px;
-}
+// .mat-icon svg {
+//   height: 24px;
+//   width: 24px;
+// }
 mat-icon {
   svg {
     overflow: unset;

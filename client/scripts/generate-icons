@@ -1,0 +1,22 @@
+#!/bin/bash
+
+inputDir=./geovistory-icons
+outputFile=./projects/app-toolbox/src/assets/gv-icons.svg
+echo READ all *.svg files in $inputDir
+
+echo '<svg><defs>' >$outputFile
+find $inputDir -type f -iname "*.svg" |
+  while read filename; do
+    id="${filename/.svg/}"  # remove .svg
+    id="${id/$inputDir\//}" # remove first part of path
+    id="${id//\//-}"        # replace slashes with dashes
+    echo CREATE icon $id from file $filename
+    filecontent=$(<$filename)
+    iconSvg="${filecontent/viewBox/id="$id" viewBox}"
+    echo $iconSvg >>$outputFile
+  done
+echo '</defs></svg>' >>$outputFile
+
+echo UPDATED file $outputFile
+
+exit 0

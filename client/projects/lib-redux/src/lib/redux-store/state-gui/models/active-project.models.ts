@@ -39,7 +39,7 @@ export interface EntityVersionsByPk<T> {
 
 // export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
-export type IconType = 'text' | 'table' | 'persistent-entity' | 'temporal-entity' | 'source' | 'expression-portion' | 'analysis' | 'query' | 'visual' | 'story' | 'settings';
+export type IconType = 'text' | 'table' | 'persistent-entity' | 'temporal-entity' | 'source' | 'expression-portion' | 'value' | 'analysis' | 'query' | 'visual' | 'story' | 'settings';
 
 export interface Panel {
   id: number;
