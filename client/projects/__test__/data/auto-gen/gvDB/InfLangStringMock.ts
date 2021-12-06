@@ -21,5 +21,11 @@ export class InfLangStringMock {
     fk_language: InfLanguageMock.ENGLISH.pk_entity as number,
     string: 'Manuscript «The Murderer»'
   }
+  static readonly EN_PAGE_1: OmitEntity<InfLangString> = {
+    pk_entity: 9003,
+    fk_class: DfhApiClassMock.EN_785_TEXT.dfh_pk_class,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity as number,
+    string: 'p. 1'
+  }
 
 }

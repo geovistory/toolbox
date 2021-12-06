@@ -28,6 +28,7 @@ export class ViewFieldComponent implements OnInit {
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() scope: GvFieldPageScope;
+  @Input() showBodyOnInit = false;
 
 
   // listsWithCounts$: Observable<SubfieldWithItemCount[]>

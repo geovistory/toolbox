@@ -130,7 +130,7 @@ export class MockPaginationControllerForSandboxes {
         is_in_project: true
       }
       paginatedStatements.push(
-        createStatementWithTarget(statement, projRel, 1, { appellation }, page.isOutgoing)
+        createStatementWithTarget(statement, 1, { appellation }, page.isOutgoing, projRel)
       )
     }
 
@@ -180,7 +180,7 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { place }, page.isOutgoing))
+      paginatedStatements.push(createStatementWithTarget(statement, 1, { place }, page.isOutgoing, projRel))
     }
 
 
@@ -232,7 +232,7 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { timePrimitive }, page.isOutgoing))
+      paginatedStatements.push(createStatementWithTarget(statement, 1, { timePrimitive }, page.isOutgoing, projRel))
     }
 
 
@@ -280,7 +280,7 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { dimension }, page.isOutgoing))
+      paginatedStatements.push(createStatementWithTarget(statement, 1, { dimension }, page.isOutgoing, projRel))
     }
 
 
@@ -331,7 +331,7 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { langString }, page.isOutgoing))
+      paginatedStatements.push(createStatementWithTarget(statement, 1, { langString }, page.isOutgoing, projRel))
     }
 
 
@@ -376,7 +376,7 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { language }, page.isOutgoing))
+      paginatedStatements.push(createStatementWithTarget(statement, 1, { language }, page.isOutgoing, projRel))
     }
 
 
@@ -441,7 +441,7 @@ export class MockPaginationControllerForSandboxes {
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }
-      paginatedStatements.push(createStatementWithTarget(statement, projRel, 1, { entity }, page.isOutgoing))
+      paginatedStatements.push(createStatementWithTarget(statement, 1, { entity }, page.isOutgoing, projRel))
 
 
     }

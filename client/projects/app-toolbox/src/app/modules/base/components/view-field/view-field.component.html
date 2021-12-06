@@ -17,6 +17,6 @@
 <mat-divider></mat-divider>
 
 <!-- Body -->
-<gv-view-field-body [hidden]="field.isSpecialField" #b [source]="source" [field]="field" [scope]="scope"
-  [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+<gv-view-field-body [showBodyOnInit]="showBodyOnInit" [hidden]="field.isSpecialField" #b [source]="source"
+  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
 </gv-view-field-body>

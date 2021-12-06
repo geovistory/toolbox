@@ -117,10 +117,10 @@ export class ReduxMainServiceMock {
             paginatedStatements: [
               createStatementWithTarget(
                 InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY,
-                ProInfoProjRelMock.PROJ_1_STMT_HABS_EMP_CARRIERS_PROVIDED_BY,
                 undefined,
                 { entity: { resource: InfResourceMock.HABS_EMP_EXPR, entityPreview: WarEntityPreviewMock.HABS_EMP_EXPR } },
-                req.page.isOutgoing
+                req.page.isOutgoing,
+                ProInfoProjRelMock.PROJ_1_STMT_HABS_EMP_CARRIERS_PROVIDED_BY,
               )
             ]
           }
