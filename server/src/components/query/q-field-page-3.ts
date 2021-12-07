@@ -559,9 +559,9 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         FROM information.statement t4,
              projects.info_proj_rel t5
         WHERE
-          t1.pk_entity = t2.${statementSourceFk}
+          t1.pk_entity = t4.${statementSourceFk}
         AND
-          t2.${propertyFk} = ${this.addParam(propertyId)}
+          t4.${propertyFk} = ${this.addParam(propertyId)}
         AND
           t4.pk_entity = t5.fk_entity
         AND

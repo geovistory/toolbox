@@ -3,8 +3,8 @@ import {SubfieldPageController} from '../controllers/project-data/subfield-page.
 import {GvFieldPageReq} from '../models'
 import {logToFile} from '../utils/helpers'
 import {Postgres1DataSource} from './Postgres1DataSource'
-import {adamo} from './res/adamo'
-import {zocoler} from './res/zocoler'
+import {maleIsGenderOf} from './res/maleIsGenderOf'
+
 // expected number of fields
 // zocoler:
 // 8          root
@@ -23,8 +23,9 @@ async function main() {
 
 
   const reqs: {[key: string]: GvFieldPageReq[]} = {
-    zocoler,
-    adamo
+    // zocoler,
+    // adamo,
+    maleIsGenderOf
   }
 
   for (const key in reqs) {
@@ -33,9 +34,9 @@ async function main() {
 
     const configs = [
       // {joinNestedInSql: false, mergeReqsBySourceInSql: false, mergeReqsByTargetInSql: false},
-      // {joinNestedInSql: false, mergeReqsBySourceInSql: true, mergeReqsByTargetInSql: false},
+      {joinNestedInSql: false, mergeReqsBySourceInSql: true, mergeReqsByTargetInSql: false},
       // {joinNestedInSql: false, mergeReqsBySourceInSql: true, mergeReqsByTargetInSql: true},
-      {joinNestedInSql: true, mergeReqsBySourceInSql: false, mergeReqsByTargetInSql: false},
+      // {joinNestedInSql: true, mergeReqsBySourceInSql: false, mergeReqsByTargetInSql: false},
       // {joinNestedInSql: true, mergeReqsBySourceInSql: true, mergeReqsByTargetInSql: false},
       // {joinNestedInSql: true, mergeReqsBySourceInSql: true, mergeReqsByTargetInSql: true},
     ]

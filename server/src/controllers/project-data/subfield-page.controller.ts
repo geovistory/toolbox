@@ -3,7 +3,6 @@ import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {getModelSchemaRef, post, requestBody} from '@loopback/rest';
 import objectHash from 'object-hash';
-import {performance} from 'perf_hooks';
 import {concat, mergeDeepWith, values} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
 import {QFieldPage3} from '../../components/query/q-field-page-3';
@@ -60,13 +59,13 @@ export class SubfieldPageController {
   ): Promise<GvPaginationObject> {
 
 
-    const t0 = performance.now()
+    // const t0 = performance.now()
     const result = this.mergeReqsBySourceInSql ?
       await this.queryPages(reqs) :
       await this.loadPages(reqs);
 
-    const t1 = performance.now()
-    console.log('Call to loadSubfieldPages took ms ', t1 - t0)
+    // const t1 = performance.now()
+    // console.log('Call to loadSubfieldPages took ms ', t1 - t0)
     return result;
   }
 
