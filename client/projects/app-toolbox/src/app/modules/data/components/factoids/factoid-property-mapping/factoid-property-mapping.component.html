@@ -10,8 +10,9 @@
     </gv-column-mapping>
 
     <!-- Select the right default -->
-    <gv-default-value-entity class="mx-2" [pkProject]="pkProject" [pkClass]="pkClass" (onChange)="setDefault($event)">
-    </gv-default-value-entity>
+    <gv-ctrl-entity-or-value-matcher class="mx-2" [pkProject]="pkProject" [pkClass]="pkClass"
+        (onChange)="setDefault($event)">
+    </gv-ctrl-entity-or-value-matcher>
 
     <!-- Comment about the line -->
     <div class="gv-col-center">

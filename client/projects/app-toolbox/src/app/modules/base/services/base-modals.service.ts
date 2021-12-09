@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { AddEntityDialogComponent, AddEntityDialogData, CreateEntityEvent } from '../components/add-entity-dialog/add-entity-dialog.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../components/add-statement-dialog/add-statement-dialog.component';
 
 @Injectable({
@@ -17,13 +17,13 @@ export class BaseModalsService {
   /**
    * Returns an observable that emits the added entity
    */
-  openAddEntityDialog(config: AddEntityDialogData) {
+  openAddEntityDialog(config: AddEntityOrValueDialogData) {
     const observable = new Subject<CreateEntityEvent>();
 
     // this.ngRedux.dispatch(this.actions.openAddForm(config));
 
-    this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateEntityEvent>(
-      AddEntityDialogComponent,
+    this.dialog.open<AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent>(
+      AddEntityOrValueDialogComponent,
       {
         // height: '90%',
         // width: '90%',

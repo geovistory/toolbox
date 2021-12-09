@@ -25,7 +25,7 @@ import { MockPaginationControllerForPropertiesTree } from 'projects/__test__/moc
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { BaseModule } from '../modules/base/base.module';
-import { AddEntityDialogComponent, AddEntityDialogData } from '../modules/base/components/add-entity-dialog/add-entity-dialog.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../modules/base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
 import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../modules/base/components/ctrl-entity/ctrl-entity.component';
@@ -88,8 +88,8 @@ export class SandBoxCreateDialogsComponent {
   }
 
   fromNewEntity() {
-    this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateOrAddEntityEvent>(
-      AddEntityDialogComponent, {
+    this.dialog.open<AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateOrAddEntityEvent>(
+      AddEntityOrValueDialogComponent, {
       ...this.dialogSizing,
       data: {
         pkClass: 21,

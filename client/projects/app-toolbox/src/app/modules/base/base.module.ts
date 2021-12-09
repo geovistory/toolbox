@@ -16,7 +16,6 @@ import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/trunca
 import { EntityLabelConfigModule } from '../../shared/modules/entity-label-config/entity-label-config.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
-import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 import { AddEntityOrValueDialogComponent } from './components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent } from './components/add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
@@ -88,7 +87,7 @@ const components = [
   ChooseClassDialogComponent,
   ExistenceTimeHelpComponent,
   AddStatementDialogComponent,
-  AddEntityDialogComponent,
+  AddEntityOrValueDialogComponent,
   AddEntityOrValueDialogComponent,
   SearchExistingEntityComponent,
   EntityAddExistingHitComponent,

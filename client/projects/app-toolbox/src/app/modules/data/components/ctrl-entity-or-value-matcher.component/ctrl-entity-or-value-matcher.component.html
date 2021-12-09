@@ -1,7 +1,3 @@
-<mat-form-field *ngIf="isEntity$|async" appearance="outline" (click)="openEntityDialog()">
-    <input matInput readonly placeholder="Default entity">
-</mat-form-field>
-
-<mat-form-field *ngIf="!(isEntity$|async)" appearance="outline" (click)="openValueDialog()">
-    <input matInput readonly placeholder="Default value">
+<mat-form-field appearance="outline" (click)="openEntityOrValueDialog()">
+    <input matInput readonly placeholder="Default {{ (isEntity$|async) ? 'entity' : 'value'}}">
 </mat-form-field>
