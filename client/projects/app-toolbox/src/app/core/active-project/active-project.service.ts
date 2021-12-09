@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService, SchemaObject, SchemaService } from '@kleiolab/lib-redux';
+import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { ProProject } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
@@ -40,9 +40,6 @@ export class ActiveProjectService {
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
 
-  get state(): ProjectDetail {
-    return this.ngRedux.getState().activeProject;
-  }
 
   // classPksEnabledInEntities$: Observable<number[]>
 
@@ -72,6 +69,9 @@ export class ActiveProjectService {
 
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
 
+  get state(): ProjectDetail {
+    return this.ngRedux.getState().activeProject;
+  }
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
@@ -176,10 +176,12 @@ export class ActiveProjectService {
   * Change Project Relations
   ************************************************************************************/
 
-  removeEntityFromProject(pkEntity: number, cb?: (schemaObject: SchemaObject) => any) {
+  removeEntityFromProject(pkEntity: number, cb?: (schemaObject: GvPositiveSchemaObject) => any) {
     this.pkProject$.pipe(first()).subscribe(pkProject => {
       const timer$ = timer(200)
-      const call$ = this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
+
+      // this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
+      const call$ = this.dataService.removeEntityFromProject(pkProject, pkEntity);
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
@@ -189,7 +191,7 @@ export class ActiveProjectService {
         dialogRef = this.dialog.open(ProgressDialogComponent, { data, disableClose: true })
       })
       call$.subscribe(
-        (schemaObject: SchemaObject) => {
+        (schemaObject: GvPositiveSchemaObject) => {
           if (cb) cb(schemaObject)
           if (dialogRef) dialogRef.close()
         }
@@ -197,11 +199,12 @@ export class ActiveProjectService {
     })
   }
 
-  addEntityToProject(pkEntity: number, cb?: (schemaObject: SchemaObject) => any): Observable<SchemaObject> {
-    const s$ = new Subject<SchemaObject>()
+  addEntityToProject(pkEntity: number, cb?: (schemaObject: GvPositiveSchemaObject) => any): Observable<GvPositiveSchemaObject> {
+    const s$ = new Subject<GvPositiveSchemaObject>()
     this.pkProject$.pipe(first()).subscribe(pkProject => {
       const timer$ = timer(200)
-      const call$ = this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+      // const call$ = this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+      const call$ = this.dataService.addEntityToProject(pkProject, pkEntity);
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
@@ -211,7 +214,7 @@ export class ActiveProjectService {
         dialogRef = this.dialog.open(ProgressDialogComponent, { data, disableClose: true })
       })
       call$.subscribe(
-        (schemaObject: SchemaObject) => {
+        (schemaObject: GvPositiveSchemaObject) => {
           s$.next(schemaObject)
           if (cb) cb(schemaObject)
           if (dialogRef) dialogRef.close()
@@ -449,7 +452,7 @@ export class ActiveProjectService {
 
       dialog.afterClosed().pipe(first()).subscribe(confirmed => {
         if (confirmed) {
-          this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
+          this.dataService.removeEntityFromProject(pkProject, pkEntity)
             .pipe(first(success => !!success)).subscribe(() => {
               s.next()
             })

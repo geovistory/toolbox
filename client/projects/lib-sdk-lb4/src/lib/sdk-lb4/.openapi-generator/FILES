@@ -33,7 +33,6 @@ api/projectConfiguration.service.ts
 api/projectData.service.ts
 api/pubAccount.service.ts
 api/ramList.service.ts
-api/schemaObject.service.ts
 api/subfieldPageController.service.ts
 api/sysClassField.service.ts
 api/sysClassHasTypeProperty.service.ts
@@ -133,6 +132,7 @@ model/importTable.ts
 model/importTableResponse.ts
 model/infAppellation.ts
 model/infAppellationWithRelations.ts
+model/infData.ts
 model/infDimension.ts
 model/infDimensionWithRelations.ts
 model/infLangString.ts
@@ -192,7 +192,6 @@ model/relatedProfile.ts
 model/resetPasswordRequest.ts
 model/responseWithMsg.ts
 model/role.ts
-model/schemaObject.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts
 model/section.ts

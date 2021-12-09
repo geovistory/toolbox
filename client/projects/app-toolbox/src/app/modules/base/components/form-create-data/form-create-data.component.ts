@@ -751,8 +751,15 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       const initValue: CtrlTimeSpanModel = {}
       for (let i = 0; i < initStmts.length; i++) {
         const element = initStmts[i];
-        const calendar = element?.entity_version_project_rels?.[0].calendar
-        initValue[element.fk_property] = { ...element.object_time_primitive, calendar }
+        const infTp = element.object_time_primitive
+        if (infTp) {
+          const tpWithCal: TimePrimitiveWithCal = {
+            calendar: infTp.calendar,
+            duration: infTp.duration,
+            julianDay: infTp.julian_day,
+          }
+          initValue[element.fk_property] = tpWithCal
+        }
       }
       // get the control
       return of([this.timeSpanCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initValue, (val) => {
@@ -761,14 +768,9 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
           const timePrim: TimePrimitiveWithCal = v[key]
           const statement: InfStatementWithRelations = {
-            entity_version_project_rels: [
-              {
-                is_in_project: true,
-                calendar: timePrim.calendar
-              }
-            ],
             fk_property: parseInt(key, 10),
             object_time_primitive: {
+              calendar: timePrim.calendar,
               julian_day: timePrim.julianDay,
               duration: timePrim.duration,
               fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -781,20 +783,22 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     }
 
     // Place Control
-    else if (formCtrlType.place) return of(initStmts.map((initVal) => {
-      return this.placeCtrl(this.ctrlRequired(field), initVal.object_place, (val: InfPlace) => {
-        if (!val) return null;
-        const value: InfStatementWithRelations = {
-          fk_object_info: undefined,
-          fk_property: field.property.fkProperty,
-          object_place: {
-            ...val,
-            fk_class: targetClass,
-          },
-        };
-        return value;
-      })
-    }));
+    else if (formCtrlType.place) {
+      return of(initStmts.map((initVal) => {
+        return this.placeCtrl(this.ctrlRequired(field), initVal.object_place, (val: InfPlace) => {
+          if (!val) return null;
+          const value: InfStatementWithRelations = {
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            object_place: {
+              ...val,
+              fk_class: targetClass,
+            },
+          };
+          return value;
+        })
+      }));
+    }
 
     // Appellation Temporal Entity Control
     else if (formCtrlType.appellationTeEn) return this.appellationTeEnCtrl(targetClass, field, initStmts)
@@ -803,98 +807,106 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     else if (formCtrlType.entity) return this.entityCtrl(targetClass, field, initStmts)
 
     // Language Control
-    else if (formCtrlType.language) return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
-      return initStmts.map((initVal) => this.languageCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_language, defaultLanguage, (val: InfLanguage) => {
-        if (!val) return null;
-        const value: InfStatementWithRelations = {
-          fk_object_info: undefined,
-          fk_property: field.property.fkProperty,
-          object_language: {
-            ...val,
-            fk_class: targetClass,
-          },
-        };
-        return value;
+    else if (formCtrlType.language) {
+      return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
+        return initStmts.map((initVal) => this.languageCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_language, defaultLanguage, (val: InfLanguage) => {
+          if (!val) return null;
+          const value: InfStatementWithRelations = {
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            object_language: {
+              ...val,
+              fk_class: targetClass,
+            },
+          };
+          return value;
+        }))
       }))
-    }))
+    }
 
     // Appellation Control
-    else if (formCtrlType.appellation) return of(initStmts.map((initVal) => {
-      return this.appellationCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_appellation, (val: InfAppellation) => {
-        if (!val) return null;
-        const value: InfStatementWithRelations = {
-          fk_object_info: undefined,
-          fk_property: field.property.fkProperty,
-          object_appellation: {
-            ...val,
-            fk_class: targetClass,
-          },
-        };
-        return value;
-      })
-    }))
+    else if (formCtrlType.appellation) {
+      return of(initStmts.map((initVal) => {
+        return this.appellationCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_appellation, (val: InfAppellation) => {
+          if (!val) return null;
+          const value: InfStatementWithRelations = {
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            object_appellation: {
+              ...val,
+              fk_class: targetClass,
+            },
+          };
+          return value;
+        })
+      }))
+    }
 
     // Language String Control
-    else if (formCtrlType.langString) return of(initStmts.map((initVal) => {
-      return this.langStringCtrl(this.ctrlRequired(field), initVal.object_lang_string, (val: InfLangString) => {
-        const value: InfStatementWithRelations = {
-          fk_object_info: undefined,
-          fk_property: field.property.fkProperty,
-          fk_property_of_property: field.property.fkPropertyOfProperty,
-          object_lang_string: {
-            ...val,
-            fk_class: targetClass,
-          },
-        };
-        return value;
-      })
-    }))
+    else if (formCtrlType.langString) {
+      return of(initStmts.map((initVal) => {
+        return this.langStringCtrl(this.ctrlRequired(field), initVal.object_lang_string, (val: InfLangString) => {
+          const value: InfStatementWithRelations = {
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            fk_property_of_property: field.property.fkPropertyOfProperty,
+            object_lang_string: {
+              ...val,
+              fk_class: targetClass,
+            },
+          };
+          return value;
+        })
+      }))
+    }
 
     // Dimension Control
-    else if (formCtrlType.dimension) return of(initStmts.map((initVal) => {
-      return this.dimensionCtrl(this.ctrlRequired(field), targetClass, initVal.object_dimension, (val: InfDimension) => {
-        const value: InfStatementWithRelations = {
-          fk_object_info: undefined,
-          fk_property: field.property.fkProperty,
-          fk_property_of_property: field.property.fkPropertyOfProperty,
-          object_dimension: {
-            ...val,
-            fk_class: targetClass,
-          },
-        };
-        return value;
-      })
-    }))
+    else if (formCtrlType.dimension) {
+      return of(initStmts.map((initVal) => {
+        return this.dimensionCtrl(this.ctrlRequired(field), targetClass, initVal.object_dimension, (val: InfDimension) => {
+          const value: InfStatementWithRelations = {
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            fk_property_of_property: field.property.fkPropertyOfProperty,
+            object_dimension: {
+              ...val,
+              fk_class: targetClass,
+            },
+          };
+          return value;
+        })
+      }))
+    }
 
     // Type Control
     else if (formCtrlType.typeItem) return this.typeCtrl(targetClass, field, initStmts)
 
     // Time Primitive Control
-    else if (formCtrlType.timePrimitive) return of(initStmts.map((initVal) => {
+    else if (formCtrlType.timePrimitive) {
+      return of(initStmts.map((initVal) => {
 
-      const initValWithCal: TimePrimitiveWithCal = {
-        julianDay: initVal?.object_time_primitive?.julian_day,
-        duration: initVal?.object_time_primitive?.duration as TimePrimitiveWithCal.DurationEnum,
-        calendar: initVal?.entity_version_project_rels?.[0].calendar as TimePrimitiveWithCal.CalendarEnum
-      }
-      return this.timePrimitiveCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initValWithCal, (val: TimePrimitiveWithCal) => {
-        if (!val) return null;
-        const { calendar, ...timePrim } = val;
-        const value: InfStatementWithRelations = {
-          entity_version_project_rels: [
-            { calendar: val.calendar }
-          ],
-          fk_object_info: undefined,
-          fk_property: field.property.fkProperty,
-          object_time_primitive: {
-            julian_day: timePrim.julianDay,
-            duration: timePrim.duration,
-            fk_class: targetClass,
-          },
-        };
-        return value;
-      })
-    }))
+        const initValWithCal: TimePrimitiveWithCal = {
+          julianDay: initVal?.object_time_primitive?.julian_day,
+          duration: initVal?.object_time_primitive?.duration,
+          calendar: initVal?.object_time_primitive?.calendar
+        }
+        return this.timePrimitiveCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initValWithCal, (val: TimePrimitiveWithCal) => {
+          if (!val) return null;
+          const value: InfStatementWithRelations = {
+
+            fk_object_info: undefined,
+            fk_property: field.property.fkProperty,
+            object_time_primitive: {
+              calendar: val.calendar,
+              julian_day: val.julianDay,
+              duration: val.duration,
+              fk_class: targetClass,
+            },
+          };
+          return value;
+        })
+      }))
+    }
 
 
     else console.error('formCtrlType not found: ', JSON.stringify(formCtrlType))
@@ -907,41 +919,59 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   ): Observable<LocalNodeConfig[]> {
 
     // Place
-    if (formCtrlType.place) return of([this.placeCtrl(true, initVal?.place, (val: InfPlace): InfData => {
-      return { place: { ...val, fk_class: targetClass } }
+    if (formCtrlType.place) {
+      return of([this.placeCtrl(true, initVal?.place, (val: InfPlace): InfData => {
+        return { place: { ...val, fk_class: targetClass } }
 
-    })])
+      })])
+    }
 
     // Language
-    else if (formCtrlType.language) return combineLatest([
-      this.c.pipeClassLabel(targetClass),
-      this.ap.pipeActiveDefaultLanguage()])
-      .pipe(map(([label, defaultLanguage]) => [this.languageCtrl(true, '', targetClass, label, initVal?.language, defaultLanguage, (val: InfLanguage): InfData => {
-        return { language: { ...val, fk_class: targetClass } }
-      })]))
+    else if (formCtrlType.language) {
+      return combineLatest([
+        this.c.pipeClassLabel(targetClass),
+        this.ap.pipeActiveDefaultLanguage()])
+        .pipe(map(([label, defaultLanguage]) => [this.languageCtrl(true, '', targetClass, label, initVal?.language, defaultLanguage, (val: InfLanguage): InfData => {
+          return { language: { ...val, fk_class: targetClass } }
+        })]))
+    }
 
     // Appellation
-    else if (formCtrlType.appellation) return this.c.pipeClassLabel(targetClass).pipe(map(label => [this.appellationCtrl(true, '', targetClass, label, initVal?.appellation, (val: InfAppellation): InfData => {
-      return { appellation: { ...val, fk_class: targetClass } }
-    })]))
+    else if (formCtrlType.appellation) {
+      return this.c.pipeClassLabel(targetClass).pipe(map(label => [this.appellationCtrl(true, '', targetClass, label, initVal?.appellation, (val: InfAppellation): InfData => {
+        return { appellation: { ...val, fk_class: targetClass } }
+      })]))
+    }
 
     // Language String
-    else if (formCtrlType.langString) return of([this.langStringCtrl(true, initVal?.langString, (val: InfLangString): InfData => {
-      return { langString: { ...val, fk_class: targetClass } }
-    })])
+    else if (formCtrlType.langString) {
+      return of([this.langStringCtrl(true, initVal?.langString, (val: InfLangString): InfData => {
+        return { langString: { ...val, fk_class: targetClass } }
+      })])
+    }
 
     // Dimension
-    else if (formCtrlType.dimension) return of([this.dimensionCtrl(true, targetClass, initVal?.dimension, (val: InfDimension): InfData => {
-      return { dimension: { ...val, fk_class: targetClass } }
-    })])
+    else if (formCtrlType.dimension) {
+      return of([this.dimensionCtrl(true, targetClass, initVal?.dimension, (val: InfDimension): InfData => {
+        return { dimension: { ...val, fk_class: targetClass } }
+      })])
+    }
 
-    // // Time Primitive
-    // else if (formCtrlType.timePrimitive) return this.c.pipeClassLabel(targetClass).pipe(
-    //   map(label => [this.timePrimitiveCtrl(true, '', targetClass, label, initVal?.timePrimitive, (val: TimePrimitiveWithCal): InfData => {
-    //     return { timePrimitive: {
-    //       ...val, fk_class: targetClass } }
-    //   })]
-    //   ))
+    // Time Primitive
+    else if (formCtrlType.timePrimitive) {
+      return this.c.pipeClassLabel(targetClass).pipe(
+        map(label => [this.timePrimitiveCtrl(true, '', targetClass, label, initVal?.timePrimitive, (val: TimePrimitiveWithCal): InfData => {
+          return {
+            timePrimitive: {
+              julian_day: val.julianDay,
+              calendar: val.calendar,
+              duration: val.duration,
+              fk_class: targetClass
+            }
+          }
+        })]
+        ))
+    }
 
     else console.error('formCtrlType not found: ', JSON.stringify(formCtrlType))
   }

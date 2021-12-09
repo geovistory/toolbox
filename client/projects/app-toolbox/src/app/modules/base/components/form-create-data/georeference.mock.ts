@@ -1,6 +1,6 @@
-import { InfResource } from '@kleiolab/lib-sdk-lb4';
+import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 
-export const mockGeoreference: InfResource = {
+export const mockGeoreference: InfResourceWithRelations = {
   outgoing_statements: [
     {
       fk_property: 148,
@@ -8,11 +8,8 @@ export const mockGeoreference: InfResource = {
         fk_class: 51,
         lat: 234,
         long: 23423,
-        ...{} as any
       },
-      ...{} as any
     }
   ],
   fk_class: 84,
-  ...{} as any
 }

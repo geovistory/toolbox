@@ -2,8 +2,8 @@
 import { FormArray, FormGroup } from '@angular/forms';
 import { ByPk, ProjectPreview } from '@kleiolab/lib-redux';
 import { ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
-import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { SysConfig } from '../../../../../../../server/src/lb3/common/config/sys-config';
 
 export interface LabelGeneratorSettings {
@@ -68,21 +68,6 @@ export class Utils {
   static firstItemInObject<T>(item: ByPk<T>): T {
     return item && Object.keys(item).length ? Utils.obj2Arr(item)[0] : undefined;
   }
-
-
-  // /**
-  //  *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
-  // */
-  // static getCalendarFromStatement(statement: InfStatement): CalendarType {
-  //   if (!statement) return null;
-
-  //   const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
-  //     statement.entity_version_project_rels[0].calendar :
-  //     statement.community_favorite_calendar ?
-  //       statement.community_favorite_calendar : null;
-
-  //   return cal as CalendarType;
-  // }
 
 
   static stringFromQuillDoc(quillDoc: QuillDoc): string {

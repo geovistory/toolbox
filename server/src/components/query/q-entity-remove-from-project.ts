@@ -1,18 +1,20 @@
-import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
+import {Postgres1DataSource} from '../../datasources';
+import {ProInfoProjRel} from '../../models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
-import { Lb3Models } from '../utils/interfaces';
-import { logSql } from '../utils';
 
-export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
+export class QEntityRemoveFromProject extends SqlBuilderLb4Models {
 
-  constructor(lb3models: Lb3Models) {
-    super(lb3models)
+  constructor(
+    dataSource: Postgres1DataSource
+  ) {
+    super(dataSource)
   }
 
-
   /**
-   * Removes an entity (persitent or temporal) from the project.
-   * It sets info_proj_rel.is_in_project to false for the following records
+   * Adds an entity (persitent or temporal) to the project.
+   * It inserts or updates the info_proj_rel.is_in_project for the following records
    * - The entity itself
    * - The outgoing statements
    * - The text properties (TODO remove, once text properties are replaced by lang_string )
@@ -22,12 +24,10 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
    * @param pkEntity the temporal entity to add to the project
    * @param accountId the account of the user performing the action
    */
-  create(
-    fkProject: number,
-    pkEntity: number,
-    accountId: number,
-  ) {
-    const sql = `
+  query(fkProject: number, pkEntity: number, accountId: number): Promise<GvPositiveSchemaObject> {
+
+
+    this.sql = `
     -- select items to remove from project
     WITH RECURSIVE tw1 (pk, pk_related) AS (
 
@@ -132,7 +132,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'ProInfoProjRel')} as objects
+          ${this.createBuildObject('t1', ProInfoProjRel.definition)} as objects
           FROM (
             SELECT * FROM tw2
           ) AS t1
@@ -149,7 +149,6 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
       (select 0 ) as one_row
       LEFT JOIN info_proj_rel ON true;
     `;
-    logSql(sql, this.params)
-    return { sql, params: this.params };
+    return this.executeAndReturnFirstData<GvPositiveSchemaObject>();
   }
 }

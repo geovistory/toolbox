@@ -130,4 +130,14 @@ export class ReduxMainService {
     const call$ = this.contentTree.contentTreeControllerGetContentTree(pkProject, pkTreeRootEntity)
     return this.schemaActions.loadGvSchemaObject(call$)
   }
+
+
+  addEntityToProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectDataApi.addOrRemoveEntityControllerAddEntityToProject(pkProject, pkEntity)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+  removeEntityFromProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectDataApi.addOrRemoveEntityControllerRemoveEntityFromProject(pkProject, pkEntity)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
 }

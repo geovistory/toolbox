@@ -1,59 +1,61 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { createDatChunk } from '../atomic/dat-chunk.helper';
-import { createDatClassColumnMapping } from '../atomic/dat-class-mapping.helper';
-import { createDatColumn } from '../atomic/dat-column.helper';
-import { createDatDigital } from '../atomic/dat-digital.helper';
-import { createDatFactoidMapping, createDatFactoidPropertyMapping } from '../atomic/dat-factoid.helper';
-import { createDatTextProperty } from '../atomic/dat-text-property.helper';
-import { createInfAppellation } from '../atomic/inf-appellation.helper';
-import { createInfDimension } from '../atomic/inf-dimension.helper';
-import { createInfLangString } from '../atomic/inf-lang-string.helper';
-import { createInfPlace } from '../atomic/inf-place.helper';
-import { createInfResource } from '../atomic/inf-resource.helper';
-import { createInfStatement } from '../atomic/inf-statement.helper';
-import { createInfTimePrimitive } from '../atomic/inf-time-primitive.helper';
-import { createProClassFieldConfig } from '../atomic/pro-class-field-config.helper';
-import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper';
-import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
-import { createProProject } from '../atomic/pro-project.helper';
-import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
-import { createSysSystemConfig } from '../atomic/sys-system-config.helper';
-import { createCellTable_old, createTabCell } from '../atomic/tab-cell-X.helper';
-import { createRowTable, createTabRow } from '../atomic/tab-row.helper';
-import { DatChunkMock } from '../data/gvDB/DatChunkMock';
-import { DatClassColumnMappingMock } from '../data/gvDB/DatClassColumnMappingMock';
-import { DatColumnMock } from '../data/gvDB/DatColumnMock';
-import { DatDigitalMock } from '../data/gvDB/DatDigitalMock';
-import { DatFactoidMappingMock } from '../data/gvDB/DatFactoidMappingMock';
-import { DatFactoidPropertyMappingMock } from '../data/gvDB/DatFactoidPropertyMappingMock';
-import { DatNamespaceMock } from '../data/gvDB/DatNamespaceMock';
-import { DatTextPropertyMock } from '../data/gvDB/DatTextPropertyMock';
-import { DfhApiClassMock } from '../data/gvDB/DfhApiClassMock';
-import { DfhApiPropertyMock } from '../data/gvDB/DfhApiPropertyMock';
-import { InfLanguageMock } from '../data/gvDB/InfLanguageMock';
-import { InfResourceMock } from '../data/gvDB/InfResourceMock';
-import { InfStatementMock } from '../data/gvDB/InfStatementMock';
-import { ProClassFieldConfigMock } from '../data/gvDB/ProClassFieldConfigMock';
-import { ProProjectMock } from '../data/gvDB/ProProjectMock';
-import { PubAccountMock } from '../data/gvDB/PubAccountMock';
-import { SysConfigValueMock } from '../data/gvDB/SysConfigValueMock';
-import { TabCellXMock } from '../data/gvDB/TabCellXMock';
-import { TabRowMock } from '../data/gvDB/TabRowMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2021_06_30 } from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
-import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from '../data/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
-import { createDigital } from '../generic/digital.helper';
-import { createFactoid, createFactoidMapping } from '../generic/factoid.helper';
-import { createCity } from '../generic/geo-place.helper';
-import { createOntomeProfileMock } from '../generic/ontomeprofile.helper';
-import { createSource } from '../generic/source.helper';
-import { createCell, createColumn, createColumnMapping, createRow, createTable, mapCell } from '../generic/table.helper';
-import { getIndex } from '../meta/index.helper';
-import { createLanguages, createTypes } from '../meta/model.helper';
-import { createGaetanMuck } from './account.helper';
-import { createBunchOfPersons } from './person.helper';
-import { createSandBoxProject } from './project.helper';
-import { createBunchOfSources } from './source.helper';
+import {CalendarType} from '../../../models/enums/CalendarType';
+import {Granularity} from '../../../models/enums/Granularity';
+import {createDatChunk} from '../atomic/dat-chunk.helper';
+import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
+import {createDatColumn} from '../atomic/dat-column.helper';
+import {createDatDigital} from '../atomic/dat-digital.helper';
+import {createDatFactoidMapping, createDatFactoidPropertyMapping} from '../atomic/dat-factoid.helper';
+import {createDatTextProperty} from '../atomic/dat-text-property.helper';
+import {createInfAppellation} from '../atomic/inf-appellation.helper';
+import {createInfDimension} from '../atomic/inf-dimension.helper';
+import {createInfLangString} from '../atomic/inf-lang-string.helper';
+import {createInfPlace} from '../atomic/inf-place.helper';
+import {createInfResource} from '../atomic/inf-resource.helper';
+import {createInfStatement} from '../atomic/inf-statement.helper';
+import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
+import {createProClassFieldConfig} from '../atomic/pro-class-field-config.helper';
+import {addProfilesToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
+import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
+import {createProProject} from '../atomic/pro-project.helper';
+import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
+import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
+import {createCellTable_old, createTabCell} from '../atomic/tab-cell-X.helper';
+import {createRowTable, createTabRow} from '../atomic/tab-row.helper';
+import {DatChunkMock} from '../data/gvDB/DatChunkMock';
+import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
+import {DatColumnMock} from '../data/gvDB/DatColumnMock';
+import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
+import {DatFactoidMappingMock} from '../data/gvDB/DatFactoidMappingMock';
+import {DatFactoidPropertyMappingMock} from '../data/gvDB/DatFactoidPropertyMappingMock';
+import {DatNamespaceMock} from '../data/gvDB/DatNamespaceMock';
+import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
+import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
+import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
+import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {ProClassFieldConfigMock} from '../data/gvDB/ProClassFieldConfigMock';
+import {ProProjectMock} from '../data/gvDB/ProProjectMock';
+import {PubAccountMock} from '../data/gvDB/PubAccountMock';
+import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
+import {TabCellXMock} from '../data/gvDB/TabCellXMock';
+import {TabRowMock} from '../data/gvDB/TabRowMock';
+import {PROFILE_12_BIOGRAPHICAL_BA_2021_06_30} from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
+import {PROFILE_5_GEOVISTORY_BASI_2021_08_24} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
+import {createDigital} from '../generic/digital.helper';
+import {createFactoid, createFactoidMapping} from '../generic/factoid.helper';
+import {createCity} from '../generic/geo-place.helper';
+import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
+import {createSource} from '../generic/source.helper';
+import {createCell, createColumn, createColumnMapping, createRow, createTable, mapCell} from '../generic/table.helper';
+import {getIndex} from '../meta/index.helper';
+import {createLanguages, createTypes} from '../meta/model.helper';
+import {createGaetanMuck} from './account.helper';
+import {createBunchOfPersons} from './person.helper';
+import {createSandBoxProject} from './project.helper';
+import {createBunchOfSources} from './source.helper';
 
 
 export async function forFeatureX() {
@@ -253,19 +255,19 @@ export async function forFeatureX() {
     await createColumnMapping(colPerson, 21) // person
     await createColumnMapping(colGeoPlace, 363) // geo place
     //type
-    const timeUnitPEIT = await createInfResource({ pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class });
-    const timeUnitAppellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'Time Unit label' });
-    const timeUnitTeEn = await createInfResource({ pk_entity: getIndex(), fk_class: 365 });
-    const statement_refersToName = await createInfStatement({ pk_entity: getIndex(), fk_object_info: timeUnitAppellation.pk_entity, fk_property: 1113, fk_subject_info: timeUnitTeEn.pk_entity });
-    const statement_isAppelForLangOf = await createInfStatement({ pk_entity: getIndex(), fk_object_info: timeUnitPEIT.pk_entity, fk_property: 1111, fk_subject_info: timeUnitTeEn.pk_entity });
-    const statement_usedInLang = await createInfStatement({ pk_entity: getIndex(), fk_object_info: InfLanguageMock.ENGLISH.pk_entity, fk_property: 1112, fk_subject_info: timeUnitTeEn.pk_entity });
+    const timeUnitPEIT = await createInfResource({pk_entity: getIndex(), fk_class: DfhApiClassMock.EN_690_TIME_UNIT.dfh_pk_class});
+    const timeUnitAppellation = await createInfAppellation({pk_entity: getIndex(), fk_class: 40, string: 'Time Unit label'});
+    const timeUnitTeEn = await createInfResource({pk_entity: getIndex(), fk_class: 365});
+    const statement_refersToName = await createInfStatement({pk_entity: getIndex(), fk_object_info: timeUnitAppellation.pk_entity, fk_property: 1113, fk_subject_info: timeUnitTeEn.pk_entity});
+    const statement_isAppelForLangOf = await createInfStatement({pk_entity: getIndex(), fk_object_info: timeUnitPEIT.pk_entity, fk_property: 1111, fk_subject_info: timeUnitTeEn.pk_entity});
+    const statement_usedInLang = await createInfStatement({pk_entity: getIndex(), fk_object_info: InfLanguageMock.ENGLISH.pk_entity, fk_property: 1112, fk_subject_info: timeUnitTeEn.pk_entity});
     await addInfosToProject(projectId, [timeUnitPEIT.pk_entity, statement_refersToName.pk_entity, statement_isAppelForLangOf.pk_entity, statement_usedInLang.pk_entity]);
     //Mappings
-    const appellation = await createInfAppellation({ pk_entity: getIndex(), fk_class: 40, string: 'An appellation' });
-    const place = await createInfPlace({ pk_entity: getIndex(), lat: 51.5074, long: 0.1278, fk_class: 51 });
-    const dimension = await createInfDimension({ pk_entity: getIndex(), fk_class: 689, fk_measurement_unit: timeUnitPEIT.pk_entity, numeric_value: 4 });
-    const languageString = await createInfLangString({ pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12' })
-    const timePrimitive = await createInfTimePrimitive({ pk_entity: getIndex(), julian_day: 2431383, duration: '1 day', fk_class: 335 })
+    const appellation = await createInfAppellation({pk_entity: getIndex(), fk_class: 40, string: 'An appellation'});
+    const place = await createInfPlace({pk_entity: getIndex(), lat: 51.5074, long: 0.1278, fk_class: 51});
+    const dimension = await createInfDimension({pk_entity: getIndex(), fk_class: 689, fk_measurement_unit: timeUnitPEIT.pk_entity, numeric_value: 4});
+    const languageString = await createInfLangString({pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12'})
+    const timePrimitive = await createInfTimePrimitive({pk_entity: getIndex(), julian_day: 2431383, duration: Granularity['1 day'], calendar: CalendarType.gregorian, fk_class: 335})
     //Matchings
     await mapCell(projectId, cell_1_0, appellation.pk_entity as number);
     await mapCell(projectId, cell_1_1, place.pk_entity as number);

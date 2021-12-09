@@ -1,6 +1,7 @@
-import {GvSubentitFieldPageReq, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
+import {GvSubentitFieldPageReq} from '@kleiolab/lib-sdk-lb4';
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {SysConfigValueObjectType} from '../../../../models/sys-config/TrueEnum'
 
 export namespace GvSubentityFieldPageReqMock {
 

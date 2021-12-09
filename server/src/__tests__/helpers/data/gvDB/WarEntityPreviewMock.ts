@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
-import {WarEntityPreview, CalendarType, Granularity} from '../../../../models'
-import {ProProjectMock} from './ProProjectMock'
+import {WarEntityPreview} from '../../../../models'
+import {CalendarType} from '../../../../models/enums/CalendarType'
+import {Granularity} from '../../../../models/enums/Granularity'
 import {DfhApiClassMock} from './DfhApiClassMock'
-import {InfLangStringMock} from './InfLangStringMock'
-import {OmitEntity} from './local-model.helpers'
 import {InfAppellationMock} from './InfAppellationMock'
+import {InfLangStringMock} from './InfLangStringMock'
 import {InfResourceMock} from './InfResourceMock'
+import {OmitEntity} from './local-model.helpers'
+import {ProProjectMock} from './ProProjectMock'
 
 /**
  * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400

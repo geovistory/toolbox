@@ -32,9 +32,6 @@
     "is_standard_in_project": {
       "type": "boolean"
     },
-    "calendar": {
-      "type": "string"
-    },
     "ord_num_of_domain": {
       "type": "number"
     },

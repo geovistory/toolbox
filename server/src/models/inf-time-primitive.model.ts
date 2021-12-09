@@ -1,10 +1,12 @@
-import {model, property, Entity} from '@loopback/repository';
+import {Entity, model, property} from '@loopback/repository';
 import {InfEntity} from '.';
+import {CalendarType} from './enums/CalendarType';
+import {Granularity} from './enums/Granularity';
 
 @model({
   settings: {strict: true, postgresql: {schema: 'information', table: 'v_time_primitive'}}
 })
-export class InfTimePrimitive  extends Entity implements InfEntity {
+export class InfTimePrimitive extends Entity implements InfEntity {
 
   @property({
     type: 'number',
@@ -12,7 +14,7 @@ export class InfTimePrimitive  extends Entity implements InfEntity {
     generated: true,
     updateOnly: true,
   })
-  pk_entity ?: number;
+  pk_entity?: number;
 
   @property({
     type: 'number',
@@ -27,16 +29,23 @@ export class InfTimePrimitive  extends Entity implements InfEntity {
   julian_day: number;
 
   @property({
-    type: 'string',
     required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(Granularity),
+    },
   })
-  duration: string;
+  duration: Granularity;
 
+  @property({
+    required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(CalendarType),
+    },
+  }) calendar: CalendarType;
   // Define well-known properties here
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
 
   constructor(data?: Partial<InfTimePrimitive>) {
     super(data);

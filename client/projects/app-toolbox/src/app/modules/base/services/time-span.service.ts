@@ -88,15 +88,12 @@ export class TimeSpanService {
     const statement: InfStatementWithRelations = {
       fk_subject_info: fkTeEn,
       fk_property: parseInt(key),
-      entity_version_project_rels: [{
-        calendar: t.calendar
-      }],
       object_time_primitive: {
         duration: t.duration,
+        calendar: t.calendar,
         julian_day: t.julianDay,
         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
       },
-      ...{} as any
     }
     return statement
   }

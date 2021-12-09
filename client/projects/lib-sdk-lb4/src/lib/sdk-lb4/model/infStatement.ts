@@ -25,6 +25,5 @@ export interface InfStatement {
     fk_object_tables_row?: number;
     is_in_project_count?: number;
     is_standard_in_project_count?: number;
-    community_favorite_calendar?: string;
 }
 
