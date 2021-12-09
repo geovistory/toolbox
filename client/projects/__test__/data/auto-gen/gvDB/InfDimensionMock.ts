@@ -13,7 +13,7 @@ export class InfDimensionMock {
     pk_entity: 8001,
     fk_class: DfhApiClassMock.EN_689_DURATION.dfh_pk_class,
     numeric_value: 1,
-    fk_measurement_unit: InfResourceMock.TIME_UNIT_MONTH.pk_entity
+    fk_measurement_unit: InfResourceMock.TIME_UNIT_MONTH.pk_entity ?? -1
   }
 
 }

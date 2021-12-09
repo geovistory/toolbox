@@ -9,11 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { WarEntityPreview } from './warEntityPreview';
+import { EntitySearchHit } from './entitySearchHit';
 
 
 export interface WareEntityPreviewPage { 
     totalCount?: number;
-    data?: Array<WarEntityPreview>;
+    data?: Array<EntitySearchHit>;
 }
 

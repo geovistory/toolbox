@@ -2,8 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActiveProjectPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
-import { InfStatement, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPage, GvFieldPageReq } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldPageReq, InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PaginationService } from '../../services/pagination.service';
@@ -102,7 +101,7 @@ export class TypeItemComponent implements OnInit {
       this.pkType$ = hasTypeStmtWt$.pipe(
         map(swt => {
           try {
-            return swt.target.entityPreview.pk_entity
+            return swt.target.entity.entityPreview.pk_entity
           } catch (e) {
             return undefined
           }
@@ -112,7 +111,7 @@ export class TypeItemComponent implements OnInit {
       this.typeLabel$ = hasTypeStmtWt$.pipe(
         map(swt => {
           try {
-            return swt.target.entityPreview.entity_label
+            return swt.target.entity.entityPreview.entity_label
           } catch (e) {
             return undefined
           }
@@ -158,7 +157,7 @@ export class TypeItemComponent implements OnInit {
         const calls$ = [];
         if (statement) {
           // remove old statement from project
-          const oldStatement = new InfStatement({
+          const oldStatement: InfStatementWithRelations = {
             pk_entity: statement.pk_entity,
             fk_subject_info: statement.fk_subject_info,
             fk_object_info: statement.fk_object_info,
@@ -166,8 +165,8 @@ export class TypeItemComponent implements OnInit {
             entity_version_project_rels: [{
               fk_project,
               is_in_project: false
-            } as ProInfoProjRel]
-          })
+            }]
+          }
           const call$ = this.dataService.removeInfEntitiesFromProject([oldStatement.pk_entity], fk_project)
           calls$.push(call$);
         }
@@ -177,12 +176,12 @@ export class TypeItemComponent implements OnInit {
           const subject = this.isOutgoing ? this.pkEntity : targetEntity;
           const object = this.isOutgoing ? targetEntity : this.pkEntity;
 
-          const newStmt = new InfStatement({
+          const newStmt: InfStatementWithRelations = {
             fk_subject_info: subject,
             fk_object_info: object,
             fk_property: this.pkProperty,
-            entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
-          })
+            entity_version_project_rels: [{ is_in_project: true }]
+          }
           const call$ = this.dataService.upsertInfStatementsWithRelations(fk_project, [newStmt])
           calls$.push(call$);
         }

@@ -1,0 +1,38 @@
+.class-label {
+  white-space: nowrap;
+}
+
+.full-width {
+  display: flex;
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 8px;
+  min-height: 40px;
+  background-color: white;
+}
+.loc-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.left-col {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.checkbox-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 40px;
+  overflow: hidden;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

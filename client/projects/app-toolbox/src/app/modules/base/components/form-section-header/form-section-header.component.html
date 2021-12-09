@@ -1,0 +1,11 @@
+<h2 class="title mt-3" (click)="section.expanded$.next(!section.expanded$.value)">
+  <span>
+    {{section?.label}}
+    <span class="mat-caption mat-error" style="display: inline-block;"
+      *ngIf="control.touched && control.invalid">Error!</span>
+  </span>
+  <button mat-icon-button>
+    <mat-icon class="icon" [svgIcon]="section.expanded$.value ? 'chevron-up' : 'chevron-down'">
+    </mat-icon>
+  </button>
+</h2>

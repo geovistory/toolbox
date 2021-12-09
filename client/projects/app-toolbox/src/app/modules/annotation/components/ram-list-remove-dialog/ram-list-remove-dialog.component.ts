@@ -4,8 +4,8 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { PropertiesTreeService } from 'projects/app-toolbox/src/app/modules/base/components/properties-tree/properties-tree.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
@@ -14,6 +14,7 @@ export interface RamListRemoveDialogData {
   // the root statement of the dialog
   statement: InfStatement;
 
+  scope: GvFieldPageScope
   propertyLabel: string;
 
   propertyHasReferences: boolean
@@ -27,18 +28,17 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  fieldDefinition: Field;
+  field: Field;
   readonly$ = new BehaviorSubject(true);
   showOntoInfo$ = new BehaviorSubject(false)
   constructor(
-    public t: PropertiesTreeService,
     public p: ActiveProjectService,
     private dataService: ReduxMainService,
     public dialogRef: MatDialogRef<RamListRemoveDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RamListRemoveDialogData,
   ) {
 
-    this.fieldDefinition = fieldAtReferencePoP
+    this.field = fieldAtReferencePoP
 
 
   }

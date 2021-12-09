@@ -4,7 +4,7 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { DatDigital, RamListService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { DatDigital, GvFieldPageScope, RamListService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -61,6 +61,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   @Input() fkProperty: number;
   @Input() annotatedIn: 'sources' | 'digital-text' | 'digital-tables';
   @Input() disableAddBtn: boolean;
+  @Input() scope: GvFieldPageScope;
 
   items$: Observable<RamListItem[]>;
   cols: any[];
@@ -606,6 +607,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   onEdit(statement: InfStatement) {
     const data: RamListEditDialogData = {
       statement,
+      scope: this.scope,
       propertyLabel: this.getPropertyLabel()
     }
     this.dialog.open(RamListEditDialogComponent, {
@@ -620,6 +622,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     const propertyHasReferences = this.propertyHasReference()
     const data: RamListRemoveDialogData = {
       statement,
+      scope: this.scope,
       propertyLabel: this.getPropertyLabel(),
       propertyHasReferences
     }

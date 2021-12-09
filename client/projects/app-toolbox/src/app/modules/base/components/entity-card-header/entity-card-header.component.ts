@@ -40,12 +40,15 @@ export class EntityCardHeaderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const errors: string[] = []
+    if (!this.fkClass$) errors.push('@Input() fkClass$ is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true, this.pkProject)
 
-    this.iconType$ = this.b.pipeIconType(this.pkEntity)
-
-    if (this.fkClass$) this.classLabel$ = this.fkClass$.pipe(switchMap(fkClass => this.c.pipeClassLabel(fkClass)))
-    else this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+    this.classLabel$ = this.fkClass$.pipe(switchMap(fkClass => this.c.pipeClassLabel(fkClass)))
+    // if (this.fkClass$)
+    // else this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
   }
 
   openClassConfig() {

@@ -19,6 +19,9 @@ export class SqlBuilderBase {
   // contains the sql (potentially parametrized)
   sql = '';
 
+  // allows to increase n of $n when used as subquery of parent SqlBuilder
+  paramsOffset = 0
+
   constructor() {
 
   }
@@ -34,7 +37,7 @@ export class SqlBuilderBase {
    */
   addParam(val: any) {
     this.params.push(val);
-    return '$' + this.params.length;
+    return '$' + (this.params.length + this.paramsOffset);
   }
 
   /**

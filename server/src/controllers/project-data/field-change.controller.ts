@@ -22,6 +22,8 @@ export class FieldChangeController extends WebsocketControllerBase {
 
   streamSub: Subscription;
 
+  logs = false
+
   // for caching notifications, to avoid emitting the same modification timestamp more than once
   emittedNotifications: {[key: string]: true} = {}
 

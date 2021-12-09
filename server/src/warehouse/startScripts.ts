@@ -48,7 +48,6 @@ export async function cleanAndStartDev() {
 function getSchemaName() {
     const file = 'warehouse-compat-list.txt'
     const filePath = path.join(__dirname, '../../', file)
-    // const filePath= path.join(appRoot, '/server/', file)
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
         .readFileSync(filePath)

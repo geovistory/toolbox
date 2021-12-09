@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
-import { DfhConfig } from '@kleiolab/lib-config';
-import { IconType } from '@kleiolab/lib-redux';
-import { InfStatement, InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { CalendarType, Granularity, TimeSpanUtil } from '@kleiolab/lib-utils';
-import { BehaviorSubject, combineLatest, merge, Observable, pipe } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { SchemaSelectorsService } from './schema-selectors.service';
+import {Injectable} from '@angular/core';
+import {InfStatement, InfTimePrimitive, TimePrimitiveWithCal} from '@kleiolab/lib-sdk-lb4';
+import {CalendarType, Granularity, TimeSpanUtil} from '@kleiolab/lib-utils';
+import {BehaviorSubject, combineLatest, merge, Observable, pipe} from 'rxjs';
+import {filter, map, switchMap} from 'rxjs/operators';
+import {ActiveProjectPipesService} from './active-project-pipes.service';
+import {SchemaSelectorsService} from './schema-selectors.service';
 
 
 
@@ -36,7 +34,7 @@ export class InformationBasicPipesService {
   * Pipe outgoing statements of an entity
   */
   pipeOutgoingStatements(pkEntity): Observable<InfStatement[]> {
-    return this.s.inf$.statement$.by_subject$({ fk_subject_info: pkEntity })
+    return this.s.inf$.statement$.by_subject$({fk_subject_info: pkEntity})
   }
 
   /**
@@ -166,26 +164,6 @@ export class InformationBasicPipesService {
       }))
   }
 
-  /**
-   * gets the css classes for that entity
-   * @param pkEntity
-   */
-  pipeIconType(pkEntity: number): Observable<IconType> {
 
-    return this.p.streamEntityPreview(pkEntity).pipe(
-      map(preview => {
-        if (preview.entity_type == 'teEn') {
-          return 'temporal-entity'
-        }
-        if (preview.fk_class === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
-          return 'expression-portion'
-        } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(preview.fk_class)) {
-          return 'source'
-        }
-        return 'persistent-entity'
-      })
-    )
-
-  }
 
 }

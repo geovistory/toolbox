@@ -78,9 +78,7 @@ export abstract class WebsocketControllerBase {
         // extend cache of streamedPks
         ids.forEach((pk) => this.extendStreamedIds(pk));
 
-        if (this.logs) {
-          this.log(`${this.constructor.name}: project ${this.cache.currentProjectPk} extended stream ${this.socket.id} with: ${JSON.stringify(ids)}`);
-        }
+        this.log(`${this.constructor.name}: project ${this.cache.currentProjectPk} extended stream ${this.socket.id} with: ${JSON.stringify(ids)}`);
       }
     }
     else {
@@ -100,9 +98,7 @@ export abstract class WebsocketControllerBase {
         // extend cache of streamedPks
         ids.forEach((pk) => this.removeFromStreamIds(pk));
 
-        if (this.logs) {
-          this.log(`${this.constructor.name}: project ${this.cache.currentProjectPk} removed ids from stream ${this.socket.id}: ${JSON.stringify(ids)}`);
-        }
+        this.log(`${this.constructor.name}: project ${this.cache.currentProjectPk} removed ids from stream ${this.socket.id}: ${JSON.stringify(ids)}`);
       }
     }
     else {
@@ -125,11 +121,11 @@ export abstract class WebsocketControllerBase {
         this.socket.leave(this.cache.currentProjectPk);
       }
 
-      if (this.logs) {this.log(this.socket.id + ' left project ' + this.cache.currentProjectPk);}
+      this.log(this.socket.id + ' left project ' + this.cache.currentProjectPk);
 
       this.socket.join(newProjectPk);
 
-      if (this.logs) this.log(this.socket.id + ' joined project ' + newProjectPk);
+      this.log(this.socket.id + ' joined project ' + newProjectPk);
 
       this.resetStreamedIds();
       this.cache.currentProjectPk = newProjectPk;
@@ -148,9 +144,7 @@ export abstract class WebsocketControllerBase {
   protected saveLeave() {
     if (this.cache.currentProjectPk)
       this.socket.leave(this.cache.currentProjectPk);
-
-    if (this.logs) {this.log(this.socket.id + ' left project ' + this.cache.currentProjectPk);}
-
+    this.log(this.socket.id + ' left project ' + this.cache.currentProjectPk);
     this.resetCache();
   }
 
@@ -158,12 +152,12 @@ export abstract class WebsocketControllerBase {
   /************************ Generics ****************************/
 
   protected log(msg: string, ...params: string[]) {
-    if (process.env.NO_LOGS === 'true') return;
+    if (process.env.NO_LOGS === 'true' || !this.logs) return;
     console.log(msg, ...params)
   }
 
   protected warn(msg: string, ...params: string[]) {
-    if (process.env.NO_LOGS === 'true') return;
+    if (process.env.NO_LOGS === 'true' || !this.logs) return;
     console.warn(msg, ...params)
   }
 

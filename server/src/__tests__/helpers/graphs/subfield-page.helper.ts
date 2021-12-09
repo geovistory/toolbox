@@ -1,25 +1,25 @@
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
+import {createInfDimension} from '../atomic/inf-dimension.helper';
+import {createInfLangString} from '../atomic/inf-lang-string.helper';
 import {createInfLanguage} from '../atomic/inf-language.helper';
+import {createInfPlace} from '../atomic/inf-place.helper';
+import {createInfResource} from '../atomic/inf-resource.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
+import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
 import {createProInfoProjRel} from '../atomic/pro-info-proj-rel.helper';
+import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
+import {InfDimensionMock} from '../data/gvDB/InfDimensionMock';
+import {InfLangStringMock} from '../data/gvDB/InfLangStringMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
+import {InfPlaceMock} from '../data/gvDB/InfPlaceMock';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {InfTimePrimitiveMock} from '../data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../data/gvDB/ProInfoProjRelMock';
+import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
 import {addAccountToProject, createAccountVerified} from '../generic/account.helper';
 import {createProject1} from './project.helper';
-import {InfPlaceMock} from '../data/gvDB/InfPlaceMock';
-import {createInfPlace} from '../atomic/inf-place.helper';
-import {InfDimensionMock} from '../data/gvDB/InfDimensionMock';
-import {createInfDimension} from '../atomic/inf-dimension.helper';
-import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
-import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
-import {createInfLangString} from '../atomic/inf-lang-string.helper';
-import {InfLangStringMock} from '../data/gvDB/InfLangStringMock';
-import {InfTimePrimitiveMock} from '../data/gvDB/InfTimePrimitiveMock';
-import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
-import {createInfResource} from '../atomic/inf-resource.helper';
-import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 
 /**
  * mock data for testing subgield page queries
@@ -97,9 +97,38 @@ export namespace SubfieldHelper {
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
     await createInfResource(InfResourceMock.PERSON_1)
     await createInfResource(InfResourceMock.NAMING_1)
+    await createWarEntityPreview(WarEntityPreviewMock.NAMING_1)
     await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
+  }
+
+  export async function personHasTwoAppeTeEn() {
+    await createInfResource(InfResourceMock.PERSON_1)
+    await createInfResource(InfResourceMock.NAMING_1)
+    await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
+    await createInfStatement(InfStatementMock.NAME_1_TO_APPE)
+    await createWarEntityPreview(WarEntityPreviewMock.NAMING_1)
+    await createInfAppellation(InfAppellationMock.JACK_THE_FOO)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
+
+    await createInfResource(InfResourceMock.NAMING_2)
+    await createWarEntityPreview(WarEntityPreviewMock.NAMING_2)
+    await createInfStatement(InfStatementMock.NAME_2_TO_PERSON)
+    await createInfStatement(InfStatementMock.NAME_2_TO_APPE)
+    await createInfAppellation(InfAppellationMock.JACK)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON)
+
+
+
+  }
+  export async function statementOfStatementHasExactReference() {
+    await createInfStatement(InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE)
+    await createInfLanguage(InfLanguageMock.ENGLISH)
+    await createInfLangString(InfLangStringMock.EN_PAGE_1)
   }
 
   export async function makeProject1() {

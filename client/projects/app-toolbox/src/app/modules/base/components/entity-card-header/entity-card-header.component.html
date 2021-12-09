@@ -1,18 +1,8 @@
-<div class="card-header-icon" dnd-draggable [dragData]="preview$ | async">
+<gv-view-field-item-class-info *ngIf="classLabel$|async" class="card-header-icon" dnd-draggable
+  [dragData]="preview$ | async" [showOntoInfo$]="showOntoInfo$" shade [size]="60" [pkClass]="fkClass$|async"
+  [classLabel]="classLabel$|async" [isFavorite]="false" [shade]="'light'">
+</gv-view-field-item-class-info>
 
-  <mat-icon *ngIf="(iconType$ | async)==='expression-portion'" class="gv-source-color">folder
-  </mat-icon>
-
-  <span *ngIf="(iconType$ | async)==='source'"
-    class="icon gv-icon gv-icon-source gv-source-color align-self-center gv-icon-preview"></span>
-
-  <span *ngIf="(iconType$ | async)==='persistent-entity'"
-    class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-
-  <span *ngIf="(iconType$ | async)==='temporal-entity'"
-    class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
-
-</div>
 <div class="card-header-texts">
   <div class="ellipsis">
     <h2 class="card-header-entity-label gv-row-start loc-title">

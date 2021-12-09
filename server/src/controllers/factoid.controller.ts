@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { authenticate } from '@loopback/authentication';
-import { authorize } from '@loopback/authorization';
-import { inject } from '@loopback/context';
-import { model, property, repository } from '@loopback/repository';
-import { get, param } from '@loopback/rest';
-import { Roles } from '../components/authorization';
-import { QFactoidsFromEntity } from '../components/query/q-factoids-from-entity';
-import { Postgres1DataSource } from '../datasources';
-import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
+import {inject} from '@loopback/context';
+import {model, property, repository} from '@loopback/repository';
+import {get, param} from '@loopback/rest';
+import {Roles} from '../components/authorization';
+import {QFactoidsFromEntity} from '../components/query/q-factoids-from-entity';
+import {Postgres1DataSource} from '../datasources';
+import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
 import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
-import { InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository } from '../repositories';
+import {InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../repositories';
 
 enum ValueObjectTypeName {
   appellation = 'appellation',
@@ -128,7 +128,7 @@ export class FactoidController {
   ) { }
 
   @authenticate('basic')
-  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   @get('/get-factoids-from-entity', {
     description: 'Fetch all factoids about an entity',
     responses: {
@@ -145,10 +145,10 @@ export class FactoidController {
     },
   })
   async factoidsFromEntity(
-    @param.query.string('pkProject', { required: true }) pkProject: string,
-    @param.query.string('pkEntity', { required: true }) pkEntity: string,
-    @param.query.string('factoidNumber', { required: true }) factoidNumber: number,
-    @param.query.string('page', { required: true }) page: number
+    @param.query.string('pkProject', {required: true}) pkProject: string,
+    @param.query.string('pkEntity', {required: true}) pkEntity: string,
+    @param.query.string('factoidNumber', {required: true}) factoidNumber: number,
+    @param.query.string('page', {required: true}) page: number
   ): Promise<GetFactoidsFromEntityResponse> {
 
     const offset = page * factoidNumber;
@@ -173,15 +173,15 @@ export class FactoidController {
         if (vot) {
           bs.vot = vot;
           if (!schemaObject.inf || !bs.pkEntity) continue;
-          if (vot === ValueObjectTypeName.appellation) schemaObject.inf.appellation = await this.infAppellationRepository.find({ where: { pk_entity: bs.pkEntity } })
-          if (vot === ValueObjectTypeName.langString) schemaObject.inf.lang_string = await this.infLangStringRepository.find({ where: { pk_entity: bs.pkEntity } })
-          if (vot === ValueObjectTypeName.language) schemaObject.inf.language = await this.infLanguageRepo.find({ where: { pk_entity: bs.pkEntity } })
-          if (vot === ValueObjectTypeName.place) schemaObject.inf.place = await this.infPlaceRepository.find({ where: { pk_entity: bs.pkEntity } })
-          if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension = await this.infDimensionRepository.find({ where: { pk_entity: bs.pkEntity } })
+          if (vot === ValueObjectTypeName.appellation) schemaObject.inf.appellation = await this.infAppellationRepository.find({where: {pk_entity: bs.pkEntity}})
+          if (vot === ValueObjectTypeName.langString) schemaObject.inf.lang_string = await this.infLangStringRepository.find({where: {pk_entity: bs.pkEntity}})
+          if (vot === ValueObjectTypeName.language) schemaObject.inf.language = await this.infLanguageRepo.find({where: {pk_entity: bs.pkEntity}})
+          if (vot === ValueObjectTypeName.place) schemaObject.inf.place = await this.infPlaceRepository.find({where: {pk_entity: bs.pkEntity}})
+          if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension = await this.infDimensionRepository.find({where: {pk_entity: bs.pkEntity}})
           if (vot === ValueObjectTypeName.timePrimitive) {
-            schemaObject.inf.time_primitive = await this.infTimePrimitiveRepository.find({ where: { pk_entity: bs.pkEntity } })
-            bs.pkStatement = (await this.infStatementRepository.find({ where: { fk_object_info: bs.pkEntity, fk_property: 1334 } }))[0].pk_entity;
-            schemaObject.pro = { info_proj_rel: (await this.proInfProjRelRepository.find({ where: { fk_entity: bs.pkStatement, fk_project: pkProject } })) }
+            schemaObject.inf.time_primitive = await this.infTimePrimitiveRepository.find({where: {pk_entity: bs.pkEntity}})
+            bs.pkStatement = (await this.infStatementRepository.find({where: {fk_object_info: bs.pkEntity, fk_property: 1334}}))[0].pk_entity;
+            schemaObject.pro = {info_proj_rel: (await this.proInfProjRelRepository.find({where: {fk_entity: bs.pkStatement, fk_project: parseInt(pkProject)}}))}
           }
         }
       }

@@ -6,14 +6,15 @@ import {get, param, post, Request, requestBody, ResponseObject, RestBindings} fr
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Roles} from '../components/authorization/keys';
 import {TColFilter} from '../components/query/q-table-page';
+import {StatementWithTarget} from '../models/field-response/gv-statement-with-target';
 import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
 import {GvSubentityFieldTargetViewType} from '../models/field/gv-subentity-field-target-view-type';
-import {QuillOperationWithRelations} from '../models/quill-doc/quill-operation-with-relations';
+import {QuillOperation} from '../models/quill-doc/quill-operation.model';
 import {ClassConfig} from '../models/sys-config/sys-config-class-config';
 import {CommunityVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-community-visibility-options';
 import {SysConfigFieldDisplay} from '../models/sys-config/sys-config-field-display.model';
 import {SysConfigFieldsOfSourceClass} from '../models/sys-config/sys-config-fields-of-source-class.model';
-import {ProjectVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-project-visibility-options';
+import {ProjectVisibilityOptions} from '../models/sys-config/sys-config-project-visibility-options';
 
 /**
  * OpenAPI response for ping()
@@ -178,15 +179,15 @@ export class PingController {
   })
   xSysConfigFieldDisplay() { }
 
-  @post('/QuillOperationWithRelations', {
+  @post('/QuillOperation', {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': QuillOperationWithRelations}}}
+        content: {'application/json': {schema: {'x-ts-type': QuillOperation}}}
       }
     }
   })
-  xQuillOperationWithRelations() { }
+  xQuillOperation() { }
 
 
   @post('/CommunityVisibilityOptionsWithRelations', {
@@ -197,17 +198,28 @@ export class PingController {
       }
     }
   })
-  xCommunityVisibilityOptionsWithRelations() { }
+  xCommunityVisibilityOptions() { }
 
-  @post('/ProjectVisibilityOptionsWithRelations', {
+  @post('/ProjectVisibilityOptions', {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': ProjectVisibilityOptionsWithRelations}}}
+        content: {'application/json': {schema: {'x-ts-type': ProjectVisibilityOptions}}}
       }
     }
   })
-  xProjectVisibilityOptionsWithRelations() { }
+  xProjectVisibilityOptions() { }
+
+
+  @post('/StatementWithTarget', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': StatementWithTarget}}}
+      }
+    }
+  })
+  xStatementWithTarget() { }
 }
 
 

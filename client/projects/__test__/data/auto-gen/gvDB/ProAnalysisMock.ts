@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ColDef, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { ColDefDefaultType, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from './DfhApiClassMock';
 import { ProProjectMock } from './ProProjectMock';
 import { SysSystemTypeMock } from './SysSystemTypeMock';
@@ -21,7 +21,7 @@ export class ProAnalysisMock {
           {
             id: 'col1',
             ofRootTable: true,
-            defaultType: 'entity_label' as ColDef.DefaultTypeEnum,
+            defaultType: ColDefDefaultType.entity_label,
             label: 'Geo-Places',
           }
         ],
@@ -50,7 +50,7 @@ export class ProAnalysisMock {
           {
             id: 'col1',
             ofRootTable: true,
-            defaultType: 'entity_label' as ColDef.DefaultTypeEnum,
+            defaultType: ColDefDefaultType.entity_label,
             label: 'Geo-Places',
           }
         ],
@@ -82,7 +82,7 @@ export class ProAnalysisMock {
               id: 'col_0',
               ofRootTable: true,
               preventGroupBy: true,
-              defaultType: 'temporal_distribution' as ColDef.DefaultTypeEnum
+              defaultType: ColDefDefaultType.temporal_distribution
             }
           ],
           filter: {

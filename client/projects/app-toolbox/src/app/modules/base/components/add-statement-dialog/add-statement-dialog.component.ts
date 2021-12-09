@@ -139,7 +139,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
             targets: fieldToGvFieldTargets(this.fieldWithOneTarget),
             page: fieldToFieldPage(this.fieldWithOneTarget, this.data.source, { notInProject: pkProject }, 0, 0)
           }
-          return this.paginationApi.subfieldPageControllerLoadSubfieldPage(req).pipe(
+          return this.paginationApi.subfieldPageControllerLoadSubfieldPages([req]).pipe(
             map(res => res.subfieldPages[0].count)
           )
         }),

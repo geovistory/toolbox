@@ -1,0 +1,17 @@
+<div class="mat-typography" style="padding: 20px; background-color: lightskyblue;">
+  <h3>Grey colors</h3>
+  <ng-container *ngFor="let shade of shades">
+    <div [class]="'loc-item mat-bg-grey-'+shade">
+      .mat-bg-grey-{{shade}}
+    </div>
+  </ng-container>
+
+  <h3>Other Backgrounds</h3>
+  <div [class]="'loc-item mat-bg-primary-50'">
+    .mat-bg-primary-50
+  </div>
+  <div [class]="'loc-item mat-bg-accent-50'">
+    .mat-bg-accent-50
+  </div>
+
+</div>

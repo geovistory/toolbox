@@ -10,11 +10,9 @@
  * Do not edit the class manually.
  */
 import { GvSubfieldPageInfo } from './gvSubfieldPageInfo';
-import { GvPositiveSchemaObject } from './gvPositiveSchemaObject';
 
 
 export interface GvPaginationObject { 
-    schemas: GvPositiveSchemaObject;
     subfieldPages: Array<GvSubfieldPageInfo>;
 }
 

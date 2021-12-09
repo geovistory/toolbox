@@ -1,7 +1,7 @@
 import {GvSubentitFieldPageReq} from '../../../../models'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {TrueEnum} from '../../../../models/enums/TrueEnum'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
-import {TrueEnum} from '../../../../models/sys-config/TrueEnum'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 
 export namespace GvSubentityFieldPageReqMock {
 
@@ -37,20 +37,20 @@ export namespace GvSubentityFieldPageReqMock {
     }
   }
 
-  export const appeTeEnHasTimeSpan: GvSubentitFieldPageReq = {
-    targets: {
-      [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-        timeSpan: TrueEnum.true
-      }
-    },
-    page: {
-      property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
-      isOutgoing: true,
-      isCircular: false,
-      limit: 1,
-      offset: 0,
-    }
-  }
+  // export const appeTeEnHasTimeSpan: GvSubentitFieldPageReq = {
+  //   targets: {
+  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+  //       timeSpan: TrueEnum.true
+  //     }
+  //   },
+  //   page: {
+  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+  //     isOutgoing: true,
+  //     isCircular: false,
+  //     limit: 1,
+  //     offset: 0,
+  //   }
+  // }
   export const appeTeEnIsAppeOfPerson: GvSubentitFieldPageReq = {
     targets: {
       [DfhApiClassMock.EN_21_PERSON.dfh_pk_class]: {

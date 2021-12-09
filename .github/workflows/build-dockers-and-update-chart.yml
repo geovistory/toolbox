@@ -154,6 +154,9 @@ jobs:
     if: ${{needs.extract-metadata.outputs.warehouse_image_exists != 0}}
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Build warehouse compat list
+        run: bash deployment/create-warehouse-compat-list.sh
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1

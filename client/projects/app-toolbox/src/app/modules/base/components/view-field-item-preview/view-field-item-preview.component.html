@@ -1,0 +1,18 @@
+<span class="loc-left mat-typography">
+  <!-- <gv-onto-class-info class="mr-2" [pkClass]="itemComponent.item.targetClass"
+    *ngIf="itemComponent.showOntoInfo$ | async"> </gv-onto-class-info> -->
+
+  <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
+    [pkClass]="resource.fk_class" [pkEntity]="resource.pk_entity"
+    [classLabel]="field.targets[resource.fk_class]?.targetClassLabel" [isFavorite]="ordNum===0">
+  </gv-view-field-item-class-info>
+
+  <gv-entity-preview class="loc-item" [hideClass]="true"
+    [pkEntity]="itemComponent.item.target.entity.resource.pk_entity" [dragEnabled]="false"
+    [openTabOnClick]="!(itemComponent.readonly$|async)">
+  </gv-entity-preview>
+</span>
+
+<span class="loc-right">
+  <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readonly$|async)"></gv-view-field-item-entity-menu>
+</span>

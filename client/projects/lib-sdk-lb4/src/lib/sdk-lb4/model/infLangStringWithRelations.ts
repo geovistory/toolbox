@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 import { InfStatementWithRelations } from './infStatementWithRelations';
+import { QuillDoc } from './quillDoc';
 import { InfLanguageWithRelations } from './infLanguageWithRelations';
-import { QuillDocWithRelations } from './quillDocWithRelations';
 
 
 /**
@@ -20,7 +20,7 @@ import { QuillDocWithRelations } from './quillDocWithRelations';
 export interface InfLangStringWithRelations { 
     pk_entity?: number;
     fk_class: number;
-    quill_doc?: QuillDocWithRelations;
+    quill_doc?: QuillDoc;
     string?: string;
     fk_language?: number;
     incoming_statements?: Array<InfStatementWithRelations>;

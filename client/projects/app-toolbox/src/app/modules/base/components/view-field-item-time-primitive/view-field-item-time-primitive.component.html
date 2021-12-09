@@ -1,0 +1,24 @@
+<span class="loc-left mat-typography">
+  <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
+    [pkClass]="timePrimitive.fk_class" [pkEntity]="timePrimitive.pk_entity"
+    [classLabel]="field.targets[timePrimitive.fk_class]?.targetClassLabel" [isFavorite]="ordNum===0">
+  </gv-view-field-item-class-info>
+  <div> {{itemComponent.item.target.timePrimitive.timePrimitive|timePrimitive}}</div>
+</span>
+
+<span class="loc-right" *ngIf="!(itemComponent.readonly$|async)">
+  <mat-menu #appMenu="matMenu">
+
+    <div class="dropdown-header">Danger Zone</div>
+    <button mat-menu-item (click)="itemComponent.remove()">
+      <mat-icon color="warn">delete</mat-icon>
+      <span>Remove</span>
+    </button>
+
+  </mat-menu>
+
+  <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+</span>

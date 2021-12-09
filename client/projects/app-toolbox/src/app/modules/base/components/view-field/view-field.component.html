@@ -1,0 +1,22 @@
+<!-- <ng-container *ngIf="!field.isSpecialField; else hasType"> -->
+
+<!-- Header -->
+<gv-view-field-header class="mat-bg-grey-50" [body]=b [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
+  [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=field.ontoInfoUrl
+  [ontoInfoLabel]=field.ontoInfoLabel [fieldLabel]=field.label
+  [required]="(field.isOutgoing && field.identityDefiningForSource)" [disableToggle]="field.isSpecialField==='has-type'"
+  [hideItemsCount]="field.isSpecialField==='has-type'" [removedFromProfiles]=field.allSubfieldsRemovedFromAllProfiles
+  (add)="addClick()">
+
+  <gv-type-item hastype *ngIf="field.isSpecialField==='has-type'" class="ml-3 mat-body mat-text-secondary"
+    [pkEntity]="source.fkInfo" [pkProperty]="field.property.fkProperty" [pkTypedClass]="field.sourceClass"
+    [pkTypeClass]="field.targetClasses[0]" [isOutgoing]="field.isOutgoing">
+  </gv-type-item>
+
+</gv-view-field-header>
+<mat-divider></mat-divider>
+
+<!-- Body -->
+<gv-view-field-body [showBodyOnInit]="showBodyOnInit" [hidden]="field.isSpecialField" #b [source]="source"
+  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+</gv-view-field-body>

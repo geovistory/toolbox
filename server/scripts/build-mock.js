@@ -19,7 +19,14 @@ const pathMappings = [
   {
     fromPathMock: __dirname + '/../src/__tests__/helpers/data/ontome-profiles/',
     toPathMock:
-      __dirname + '/../../client/projects/__test__/data/auto-gen/ontome-profiles',
+      __dirname +
+      '/../../client/projects/__test__/data/auto-gen/ontome-profiles',
+  },
+  /** COPY ENUM FILES */
+  {
+    fromPathMock: __dirname + '/../src/models/enums',
+    toPathMock:
+      __dirname + '/../../client/projects/__test__/data/auto-gen/enums',
   },
 ];
 
@@ -96,50 +103,67 @@ function autoGenFiles(from, to, type) {
     if (blacklist.some(avoid => fileName.indexOf(avoid) !== -1)) return;
 
     let content = fs.readFileSync(path, 'utf8').split('\n');
+    content = changeImportEnumsToSdk(content);
     content = changeImportModelToSdk(content);
-    content = treatEnum(
-      content,
-      'ColDef',
-      'ColDefDefaultType',
-      "'${param}' as ColDef.DefaultTypeEnum",
-    );
-    content = treatEnum(
-      content,
-      'TimePrimitiveWithCal',
-      'CalendarType',
-      "'${param}' as TimePrimitiveWithCal.CalendarEnum",
-    );
+    // content = treatEnum(
+    //   content,
+    //   'ColDef',
+    //   'ColDefDefaultType',
+    //   "'${param}' as ColDef.DefaultTypeEnum",
+    // );
+    // content = treatEnum(
+    //   content,
+    //   'TimePrimitiveWithCal',
+    //   'CalendarType',
+    //   "'${param}' as TimePrimitiveWithCal.CalendarEnum",
+    // );
 
-    content = treatEnum(
-      content,
-      'SysConfigValueObjectType',
-      'TrueEnum',
-      "'${param}'",
-    );
+    // content = treatEnum(
+    //   content,
+    //   'SysConfigValueObjectType',
+    //   'TrueEnum',
+    //   "'${param}'",
+    // );
 
-    content = treatEnumSpecial(
-      content,
-      '',
-      'Granularity',
-      '${param} as TimePrimitiveWithCal.DurationEnum',
-    );
+    // content = treatEnumSpecial(
+    //   content,
+    //   '',
+    //   'Granularity',
+    //   '${param} as TimePrimitiveWithCal.DurationEnum',
+    // );
     fs.writeFileSync(to + '/' + fileName, content.join('\n'));
   });
   console.log('Done.');
 }
+function changeImportEnumsToSdk(content) {
+  return content.map(line => {
+    if (
+      line.trim().replace(/"/g, "'").indexOf('import') === 0 &&
+      line.indexOf('/models/enums') !== -1
+    ) {
+      const enumName = line.match(/(?<=\{)(.*?)(?=\})/)[0];
+      line = line.replace(
+        line.substring(line.indexOf('from ') + 5),
+        `'../enums/${enumName}';`,
+      );
+    }
+    return line;
+  });
+}
 
 function changeImportModelToSdk(content) {
-  const index = content.findIndex(
-    line =>
+  return content.map(line => {
+    if (
       line.trim().replace(/"/g, "'").indexOf('import') === 0 &&
-      line.indexOf("/models'") !== -1,
-  );
-  if (index !== -1)
-    content[index] = content[index].replace(
-      content[index].substring(content[index].indexOf("'")),
-      "'@kleiolab/lib-sdk-lb4';",
-    );
-  return content;
+      line.indexOf('/models') !== -1
+    ) {
+      line = line.replace(
+        line.substring(line.indexOf('from ') + 5),
+        "'@kleiolab/lib-sdk-lb4';",
+      );
+    }
+    return line;
+  });
 }
 
 //////////////////////////

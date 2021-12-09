@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CommunityVisibilityOptionsWithRelations } from './communityVisibilityOptionsWithRelations';
 import { InfStatementWithRelations } from './infStatementWithRelations';
+import { CommunityVisibilityOptions } from './communityVisibilityOptions';
 import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
 
 
@@ -20,7 +20,7 @@ import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
 export interface InfResourceWithRelations { 
     pk_entity?: number;
     fk_class: number;
-    community_visibility?: CommunityVisibilityOptionsWithRelations;
+    community_visibility?: CommunityVisibilityOptions;
     entity_version_project_rels?: Array<ProInfoProjRelWithRelations>;
     outgoing_statements?: Array<InfStatementWithRelations>;
     incoming_statements?: Array<InfStatementWithRelations>;

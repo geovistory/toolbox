@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Edit</h1>
+<div mat-dialog-content>
+  <gv-view-sections [source]="data.source" [pkClass$]="data.pkClass$" [showOntoInfo$]="data.showOntoInfo$"
+    [readonly$]="data.readonly$">
+  </gv-view-sections>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="true">Close</button>
+</div>

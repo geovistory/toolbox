@@ -21,7 +21,7 @@ import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
-import { MockPaginationControllerForPropertiesTree } from 'projects/__test__/mock-services/MockPaginationControllerForPropertiesTree';
+import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BaseModule } from '../modules/base/base.module';
 import { AddEntityDialogComponent, AddEntityDialogData } from '../modules/base/components/add-entity-dialog/add-entity-dialog.component';
@@ -268,7 +268,7 @@ export default sandboxOf(SandBoxCreateDialogsComponent, {
     { provide: LanguagesService, useClass: LanguagesServiceMock },
     { provide: ReduxMainService, useClass: ReduxMainServiceMock },
     { provide: InformationBasicPipesService, useClass: InformationBasicPipesServiceMock },
-    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForPropertiesTree },
+    { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes },
   ]
 })
   .add('Create Entity Dialog | From a field (CtrlEntityComponent) ', {
