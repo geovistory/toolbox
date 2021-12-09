@@ -1,8 +1,8 @@
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-queries';
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { DataModule } from '../../../data.module';
 import { FactoidPropertyDisplayComponent } from './factoid-property-display.component';
 
@@ -10,14 +10,16 @@ import { FactoidPropertyDisplayComponent } from './factoid-property-display.comp
  * MOCK services
  *****************************************************************************/
 class ConfigurationPipesServiceMock {
-    pipeFields(pkClass: number, noNesting = false): Observable<Partial<Field>[]> {
-        return of([
-            { label: 'property label 1', property: { fkProperty: 1 } },
-            { label: 'property label 2', property: { fkProperty: 2 } },
-            { label: 'property label 3', property: { fkProperty: 3 } },
-            { label: 'property label 4', property: { fkProperty: 4 } },
-            { label: 'property label 5', property: { fkProperty: 5 } }
-        ])
+    pipeSection(pkClass: number, displayType: DisplayType, section: SectionName) {
+        if (section == 'basic') return of([
+            { label: 'property label 2 basic', property: { fkProperty: 2 } }])
+        if (section == 'metadata') return of([
+            { label: 'property label metadata 1', property: { fkProperty: 1 } },
+            { label: 'property label metadata 2', property: { fkProperty: 2 } }])
+        if (section == 'specific') return of([
+            { label: 'property label specific 1', property: { fkProperty: 1 } },
+            { label: 'property label specific 2', property: { fkProperty: 2 } }])
+        if (section == 'simpleForm') return of([])
     }
 }
 class ActiveProjectServiceMock {

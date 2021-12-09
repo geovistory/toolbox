@@ -24,7 +24,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../base.module';
-import { FormCreateEntityComponent } from './form-create-entity.component';
+import { FormCreateDataComponent } from './form-create-data.component';
 import { mockGeoreference } from './georeference.mock';
 
 /*****************************************************************************
@@ -109,7 +109,7 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
 /*****************************************************************************
  * Sandboxes
  *****************************************************************************/
-export default sandboxOf(FormCreateEntityComponent, {
+export default sandboxOf(FormCreateDataComponent, {
   declareComponent: false,
   imports: [
     BaseModule,
@@ -131,7 +131,7 @@ export default sandboxOf(FormCreateEntityComponent, {
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="84" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="84" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -154,7 +154,7 @@ export default sandboxOf(FormCreateEntityComponent, {
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="84" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="84" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -176,7 +176,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="365" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="365" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -198,7 +198,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="365" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="365" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -222,7 +222,7 @@ export default sandboxOf(FormCreateEntityComponent, {
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="50" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="50" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -246,7 +246,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="61" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="61" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -271,7 +271,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="61" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="61" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -293,7 +293,7 @@ export default sandboxOf(FormCreateEntityComponent, {
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="78" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="78" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -314,7 +314,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="523" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="523" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -335,7 +335,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="21"  #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="21"  #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
 
@@ -358,7 +358,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="21" [initVal$]="initVal$"  #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="21" [initVal$]="initVal$"  #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -379,7 +379,7 @@ export default sandboxOf(FormCreateEntityComponent, {
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
     <div class="d-flex justify-content-center mt-5">
     <div style="width:480px;height:500px" class="d-flex mr-5">
-    <gv-form-create-entity [pkClass]="363" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+    <gv-form-create-data [pkClass]="363" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
     </div>
     <div>
     <p>searchString: {{s}}</p>
@@ -401,7 +401,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="363" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="363" [initVal$]="initVal$" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -422,7 +422,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="220" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="220" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -443,7 +443,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="503" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="503" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -464,7 +464,138 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="633" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="633" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+  .add('Place (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [pkClass]="51" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
+  .add('Language (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [pkClass]="54" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
+  .add('Appellation (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [pkClass]="40" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
+  .add('LangString (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [pkClass]="657" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
+  .add('Dimension (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [pkClass]="52" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
+  .add('Time primitive (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [pkClass]="335" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -485,7 +616,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [pkClass]="212" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [pkClass]="212" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -507,7 +638,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-              <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="365" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+              <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="365" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -530,7 +661,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-              <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="716" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+              <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="716" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -554,7 +685,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="51" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="51" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -579,7 +710,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="40" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="40" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -601,7 +732,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="54" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="54" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -623,7 +754,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="785" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="785" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -645,7 +776,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="21" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="21" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>
@@ -667,7 +798,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
-                <gv-form-create-entity [source]="{fkInfo:456}" [field]="field" [targetClass]="633" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+                <gv-form-create-data [source]="{fkInfo:456}" [field]="field" [targetClass]="633" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
             </div>
             <div>
                 <p>searchString: {{s}}</p>

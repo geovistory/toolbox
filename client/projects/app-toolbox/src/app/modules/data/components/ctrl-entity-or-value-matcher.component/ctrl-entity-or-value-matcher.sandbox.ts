@@ -10,7 +10,7 @@ import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { DataModule } from '../../data.module';
-import { DefaultValueEntityComponent } from './default-value-entity.component';
+import { CtrlEntityOrValueMatcherComponent } from './ctrl-entity-or-value-matcher.component';
 
 /*****************************************************************************
  * MOCK services
@@ -32,7 +32,7 @@ const initialSchemaObects = [
 /*****************************************************************************
  * Sandboxes
  *****************************************************************************/
-export default sandboxOf(DefaultValueEntityComponent, {
+export default sandboxOf(CtrlEntityOrValueMatcherComponent, {
     declareComponent: false,
     imports: [
         DataModule,
@@ -41,7 +41,7 @@ export default sandboxOf(DefaultValueEntityComponent, {
     providers: [
     ]
 })
-    .add('DefaultValueEntityComponent', {
+    .add('CtrlEntityOrValueMatcherComponent', {
         context: {
             schemaObjects: initialSchemaObects,
         },
@@ -61,7 +61,7 @@ export default sandboxOf(DefaultValueEntityComponent, {
     </div>
     dimension:
     <div style="display:flex;flex-direction:row;justify-content:center">
-        <gv-default-value-entity [pkClass]="56"></gv-default-value-entity>
+        <gv-default-value-entity [pkClass]="52"></gv-default-value-entity>
     </div>
     lang string:
     <div style="display:flex;flex-direction:row;justify-content:center">

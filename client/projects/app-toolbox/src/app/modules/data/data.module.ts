@@ -8,6 +8,7 @@ import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/mater
 import { AnnotationModule } from 'projects/app-toolbox/src/app/modules/annotation/annotation.module';
 import { DigitalTableModule } from 'projects/app-toolbox/src/app/shared/components/digital-table/digital-table.module';
 import { CoverModule } from 'projects/app-toolbox/src/app/shared/directives/cover/cover.module';
+import { CommentMenuModule } from '../../shared/components/comment-menu/comment-menu.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { InfoDialogModule } from '../../shared/components/info-dialog/info-dialog.module';
@@ -15,8 +16,9 @@ import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy
 import { BaseModule } from '../base/base.module';
 import { QuillModule } from '../quill';
 import { ColumnMappingComponent } from './components/column-mapping/column-mapping.component';
-import { DefaultValueEntityComponent } from './components/default-value-entity/default-value-entity.component';
+import { CtrlEntityOrValueMatcherComponent } from './components/ctrl-entity-or-value-matcher.component/ctrl-entity-or-value-matcher.component';
 import { FactoidPropertyDisplayComponent } from './components/factoids/factoid-property-display/factoid-property-display.component';
+import { FactoidPropertyMappingComponent } from './components/factoids/factoid-property-mapping/factoid-property-mapping.component';
 import { ImporterComponent } from './components/importer/importer.component';
 import { TableConfigDialogComponent } from './components/table-config-dialog/table-config-dialog.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
@@ -41,9 +43,10 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     DragDropModule,
     CopyClipboardModule,
     InfoDialogModule,
+    CommentMenuModule,
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, DefaultValueEntityComponent],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, DefaultValueEntityComponent],
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent],
 })
 export class DataModule { }

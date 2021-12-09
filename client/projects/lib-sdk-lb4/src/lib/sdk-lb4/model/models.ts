@@ -85,6 +85,7 @@ export * from './importTable';
 export * from './importTableResponse';
 export * from './infAppellation';
 export * from './infAppellationWithRelations';
+export * from './infData';
 export * from './infDimension';
 export * from './infDimensionWithRelations';
 export * from './infLangString';

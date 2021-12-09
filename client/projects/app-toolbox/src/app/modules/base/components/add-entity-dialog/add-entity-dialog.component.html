@@ -11,10 +11,10 @@
 
       <!-- body -->
       <ng-container body>
-        <gv-form-create-entity class="gv-ovf-auto" [pkClass]="(pkClass$ | async)" [hideTitle]="true"
-          [hideButtons]="true" (cancel)="closeAddForm()" (searchString)="searchStringChange($event)" #f>
+        <gv-form-create-data class="gv-ovf-auto" [pkClass]="(pkClass$ | async)" [hideTitle]="true" [hideButtons]="true"
+          (cancel)="closeAddForm()" (searchString)="searchStringChange($event)" #f>
           <!-- (saved)="onCreated($event)" -->
-        </gv-form-create-entity>
+        </gv-form-create-data>
       </ng-container>
 
       <!-- footer -->

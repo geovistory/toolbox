@@ -10,7 +10,7 @@ import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
 import { ChildComponents } from '../form-control/form-control.component';
-import { FormArrayData, FormChildData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory } from '../form-create-entity/form-create-entity.component';
+import { FormArrayData, FormChildData, FormControlData, FormCreateDataComponent, LocalFormArrayFactory } from '../form-create-data/form-create-data.component';
 
 @Component({
   selector: 'gv-form-array',
@@ -62,8 +62,8 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get parentLength() {
-    const formArray = this.parent?.arrayFactory.control;
-    if (formArray.controls && formArray.controls.length > 0) {
+    const formArray = this.parent?.arrayFactory?.control;
+    if (formArray?.controls && formArray?.controls.length > 0) {
       return sum(formArray.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
     }
     return 0;
@@ -71,7 +71,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private formCreateEntity: FormCreateEntityComponent,
+    private formCreateData: FormCreateDataComponent,
   ) { }
 
   ngOnInit() {
@@ -94,14 +94,14 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     let formArrayChild = this.formArrayFactory.children.find(c => {
       if (c.arrayFactory) {
         const d = c.arrayFactory.config.data;
-        return equals({ field: d.controlWrapper.field, targetClass: d.controlWrapper.targetClass }, { field, targetClass })
+        return equals({ field: d.gvFieldItem.field, targetClass: d.gvFieldItem.targetClass }, { field, targetClass })
       }
       return false
     })
 
     // if not available, add a child FormArray containing the controls
     if (!formArrayChild) {
-      const config = this.formCreateEntity.getControlWrapper(field, targetClass, undefined)
+      const config = this.formCreateData.getFieldItem(field, targetClass, undefined)
       config.array.addOnInit = 0;
       formArrayChild = this.formArrayFactory.prepend(config)
     }

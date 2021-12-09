@@ -11,9 +11,9 @@
 
       <!-- body -->
       <ng-container body>
-        <gv-form-create-entity [pkClass]="(pkClass$ | async)" [hiddenProperty]="data.hiddenProperty" [hideTitle]="true"
+        <gv-form-create-data [pkClass]="(pkClass$ | async)" [hiddenProperty]="data.hiddenProperty" [hideTitle]="true"
           [hideButtons]="true" [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
-        </gv-form-create-entity>
+        </gv-form-create-data>
       </ng-container>
 
       <!-- footer -->

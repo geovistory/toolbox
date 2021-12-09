@@ -9,7 +9,7 @@ import { map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operator
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
-import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 
 export interface AddStatementDialogData {
   field: Field;
@@ -198,7 +198,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
 
   // onSubmit(resource: Partial<InfResource>) {
-  onSubmit(f: FormCreateEntityComponent) {
+  onSubmit(f: FormCreateDataComponent) {
     if (!f.checkValidation()) return;
 
     this.loading$.next(true)

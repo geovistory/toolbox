@@ -1,0 +1,27 @@
+<div class="gv-row-space-between">
+
+    <!-- Select the right property -->
+    <gv-factoid-property-display class="mx-2" [pkClass]="pkClass" (onChange)="setProperty($event)">
+    </gv-factoid-property-display>
+
+    <!-- Select the right column -->
+    <gv-column-mapping class="mx-2" [pkTable]="pkTable" [pkTargetClasses]="pkTargetClasses"
+        (onChange)="setColumn($event)">
+    </gv-column-mapping>
+
+    <!-- Select the right default -->
+    <gv-default-value-entity class="mx-2" [pkProject]="pkProject" [pkClass]="pkClass" (onChange)="setDefault($event)">
+    </gv-default-value-entity>
+
+    <!-- Comment about the line -->
+    <div class="gv-col-center">
+        <gv-comment-menu class="mx-2 gv-col-center" [title]="'Comment about this factoid mapping'" [content]="comment">
+        </gv-comment-menu>
+    </div>
+
+    <!-- Remove property -->
+    <div class="gv-col-center">
+        <mat-icon class="mx-2" class="loc-pointer" style="color: inherit">close</mat-icon>
+    </div>
+
+</div>

@@ -44,10 +44,10 @@
 
                 <!-- body -->
                 <ng-container body>
-                    <gv-form-create-entity class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
+                    <gv-form-create-data class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
                         [source]="data.source" [hideTitle]="true" [hiddenProperty]="data.hiddenProperty"
                         [hideButtons]="true" (searchString)="searchStringChange($event)" #f>
-                    </gv-form-create-entity>
+                    </gv-form-create-data>
                 </ng-container>
 
                 <!-- footer -->

@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, TableName } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, Subfield, SysSelector, TableName } from '@kleiolab/lib-queries';
 import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -14,9 +14,11 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
+import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
+import { InfData } from 'projects/lib-sdk-lb4/src/public-api';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
@@ -43,7 +45,7 @@ export interface FormArrayData {
   gvFormField?: FormField
 
   // a last wrapper before the leaf (FormControlData / FormChildData)
-  controlWrapper?: {
+  gvFieldItem?: {
     field: Field
     targetClass: number
     targetType: SysConfigFormCtrlType
@@ -54,7 +56,7 @@ export interface FormArrayData {
 }
 
 
-export interface FormCreateEntityValue {
+export interface FormCreateDataValue {
   resource?: InfResourceWithRelations;
   statement?: InfStatementWithRelations;
 }
@@ -68,6 +70,11 @@ export interface FormField {
 
 interface FormGroupData {
   pkClass: number
+  section?: boolean
+  value?: {
+    config: SysConfigValueObjectType,
+    initVal: InfValueObject
+  }
 }
 export interface FormControlData {
   controlType: ControlType
@@ -105,11 +112,11 @@ export interface FieldSection {
   pipeFields?: (pkClass: number) => Observable<Field[]>
 }
 @Component({
-  selector: 'gv-form-create-entity',
-  templateUrl: './form-create-entity.component.html',
-  styleUrls: ['./form-create-entity.component.scss']
+  selector: 'gv-form-create-data',
+  templateUrl: './form-create-data.component.html',
+  styleUrls: ['./form-create-data.component.scss']
 })
-export class FormCreateEntityComponent implements OnInit, OnDestroy {
+export class FormCreateDataComponent implements OnInit, OnDestroy {
 
 
   @Input() pkClass: number
@@ -121,13 +128,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   @Input() hideTitle: boolean;
 
   @Input() initVal$: Observable<InfResourceWithRelations | undefined>;
+  @Input() initVal_vot$ = new BehaviorSubject<InfValueObject>(undefined)
 
 
   @Input() hiddenProperty: GvFieldProperty;
 
   @Output() cancel = new EventEmitter<void>()
   @Output() searchString = new EventEmitter<string>()
-  @Output() saved = new EventEmitter<InfResourceWithRelations | InfStatementWithRelations>()
+  // @Output() saved = new EventEmitter<InfResourceWithRelations | InfStatementWithRelations>()
+  @Output() data = new EventEmitter<InfData>()
 
   appearance: MatFormFieldAppearance = 'outline';
 
@@ -176,6 +185,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   previousFocusName = '';
 
   classLabel = '';
+  isValue$: Observable<SysConfigValueObjectType>;
 
   constructor(
     private formFactoryService: FormFactoryService,
@@ -185,6 +195,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     public ap: ActiveProjectPipesService,
     public s1: SchemaService,
     private s2: SchemaSelectorsService,
+    private sys: SysSelector,
   ) { }
 
   ngOnInit() {
@@ -192,6 +203,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     if (!this.pkClass) throw new Error('You must provide a pkClass');
 
     this.c.pipeClassLabel(this.pkClass).subscribe(label => this.classLabel = label);
+
+    this.isValue$ = this.sys.config$.main$.pipe(map(config => config.classes[this.pkClass]?.valueObjectType))
 
     if (this.initVal$) {
       this.initVal$.subscribe(b => {
@@ -246,11 +259,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     if (n.group?.data) return this.getRootArray(n.group.data)
     else if (n.array) {
       const a = n.array
-      if (a?.data?.rootArray) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
+      if (a?.data?.rootArray?.section) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
+      if (a?.data?.rootArray?.value) return this.getValueLeafControl(a?.data?.rootArray.value.config, a?.data?.rootArray.value.initVal, this.pkClass)
       if (a.data.gvFormSection) return this.getGvFormFields(a)
-      if (a.data.gvFormField) return this.getControlWrappers(a.data.gvFormField, a.initValue)
-      if (a.data.controlWrapper) {
-        const w = a.data.controlWrapper
+      if (a.data.gvFormField) return this.getFieldItems(a.data.gvFormField, a.initValue)
+      if (a.data.gvFieldItem) {
+        const w = a.data.gvFieldItem
         return this.getLeafControl(w.targetType, w.targetClass, w.field, a.initValue)
       }
 
@@ -260,27 +274,57 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   private getRootArray(data: FormGroupData): Observable<LocalNodeConfig[]> {
 
-    const n: LocalNodeConfig = {
-      array: {
-        placeholder: '',
-        data: { rootArray: data },
-        mapValue: (items?: FormCreateEntityValue[]): FormCreateEntityValue => {
-          if (items?.[0]?.resource) {
-            // merge the resources produced by each section
-            const outgoing_statements: InfStatementWithRelations[] = []
-            const incoming_statements: InfStatementWithRelations[] = []
-            items.forEach(i => {
-              outgoing_statements.push(...i.resource?.outgoing_statements ?? [])
-              incoming_statements.push(...i.resource?.incoming_statements ?? [])
-            })
-            return { resource: { ...items[0].resource, outgoing_statements, incoming_statements } }
+    return combineLatest([
+      this.initVal_vot$.pipe(startWith({})),
+      this.isValue$
+    ]).pipe(
+      map(([initVal, value]) => {
+        let rootArray, mapValue;
 
-          } else if (items?.[0]?.statement) return items[0]
-          else return {}
+        if (!value) { // if it is not a value
+          rootArray = {
+            ...data,
+            section: true
+          }
+
+          mapValue = (items?: FormCreateDataValue[]): FormCreateDataValue => {
+            if (items?.[0]?.resource) {
+              // merge the resources produced by each section
+              const outgoing_statements: InfStatementWithRelations[] = []
+              const incoming_statements: InfStatementWithRelations[] = []
+              items.forEach(i => {
+                outgoing_statements.push(...i.resource?.outgoing_statements ?? [])
+                incoming_statements.push(...i.resource?.incoming_statements ?? [])
+              })
+              return { resource: { ...items[0].resource, outgoing_statements, incoming_statements } }
+
+            } else if (items?.[0]?.statement) return items[0]
+            else return {}
+          }
+        } else { // if it is a value
+          rootArray = {
+            ...data,
+            value: {
+              config: value,
+              initVal
+            }
+          }
+
+          mapValue = (items?: InfData[]): InfData => items[0]
         }
-      }
-    }
-    return of([n])
+
+        const n: LocalNodeConfig = {
+          array: {
+            placeholder: '',
+            data: { rootArray: rootArray },
+            mapValue: mapValue
+          }
+        }
+        return [n]
+      })
+    )
+
+
   }
 
   /**
@@ -315,7 +359,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         // if we don't create an entity but a value object
         if (!targets.formControlType.entity) { // skip all the sections and wrap control directly
 
-          const c = this.getControlWrapper(this.field, pkClass);
+          const c = this.getFieldItem(this.field, pkClass);
           c.array.addOnInit = 1;
           const mapValue = (items: InfStatementWithRelations): GvSectionsModel => {
             return { statement: items[0] ?? {} }
@@ -543,9 +587,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Generate the array of controlWrappers
+   * Generate the array of FieldItems
    */
-  private getControlWrappers(
+  private getFieldItems(
     gvFormField: FormArrayData['gvFormField'],
     initStatements: InfStatementWithRelations[] = [],
   ): Observable<LocalNodeConfig[]> {
@@ -555,7 +599,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const isOutgoing = field.isOutgoing
 
     if (field.isSpecialField === 'time-span') {
-      return of([this.getControlWrapper(
+      return of([this.getFieldItem(
         field,
         targetClasses[0],
         initStatements
@@ -586,7 +630,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       map((items) => {
 
         if (items.length == 0 && gvFormField.maxLength > 0 && targetClasses.length == 1) {
-          return [this.getControlWrapper(field, targetClasses[0], undefined, gvFormField.addItemsOnInit)]
+          return [this.getFieldItem(field, targetClasses[0], undefined, gvFormField.addItemsOnInit)]
         }
 
         const byClass = groupBy((i) => i.fk_class.toString(), items)
@@ -594,7 +638,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         for (const pkClass in byClass) {
           if (byClass.hasOwnProperty(pkClass)) {
             const initStmts = byClass[pkClass].map(e => e.statement);
-            node.push(this.getControlWrapper(field, parseInt(pkClass, 10), initStmts))
+            node.push(this.getFieldItem(field, parseInt(pkClass, 10), initStmts))
           }
         }
         return node;
@@ -604,9 +648,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Generate the controlWrapper
+   * Generate the FieldItem
    */
-  getControlWrapper(
+  getFieldItem(
     field: Field,
     targetClass: number,
     initValue?: InfStatementWithRelations[],
@@ -646,7 +690,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         placeholder: field.label,
         initValue,
         data: {
-          controlWrapper: {
+          gvFieldItem: {
             field,
             targetClass,
             targetType: formControlType
@@ -694,29 +738,213 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       r.fk_property_of_property ? r.fk_property_of_property === field.property.fkPropertyOfProperty : false
   }
 
-
-
-
   private getLeafControl(
-
     formCtrlType: SysConfigFormCtrlType,
     targetClass: number,
     field: Field,
     initStmts: InfStatementWithRelations[] = [{}]
   ): Observable<LocalNodeConfig[]> {
-    if (formCtrlType.timeSpan) return this.timeSpanCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.place) return this.placeCtrl(targetClass, field, initStmts)
+
+    // Time Span Control
+    if (formCtrlType.timeSpan) {
+      // create init value
+      const initValue: CtrlTimeSpanModel = {}
+      for (let i = 0; i < initStmts.length; i++) {
+        const element = initStmts[i];
+        const calendar = element?.entity_version_project_rels?.[0].calendar
+        initValue[element.fk_property] = { ...element.object_time_primitive, calendar }
+      }
+      // get the control
+      return of([this.timeSpanCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initValue, (val) => {
+        if (!val) return null;
+        const v = val as CtrlTimeSpanDialogResult;
+        const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
+          const timePrim: TimePrimitiveWithCal = v[key]
+          const statement: InfStatementWithRelations = {
+            entity_version_project_rels: [
+              {
+                is_in_project: true,
+                calendar: timePrim.calendar
+              }
+            ],
+            fk_property: parseInt(key, 10),
+            object_time_primitive: {
+              julian_day: timePrim.julianDay,
+              duration: timePrim.duration,
+              fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+            }
+          }
+          return statement
+        });
+        return value;
+      })])
+    }
+
+    // Place Control
+    else if (formCtrlType.place) return of(initStmts.map((initVal) => {
+      return this.placeCtrl(this.ctrlRequired(field), initVal.object_place, (val: InfPlace) => {
+        if (!val) return null;
+        const value: InfStatementWithRelations = {
+          fk_object_info: undefined,
+          fk_property: field.property.fkProperty,
+          object_place: {
+            ...val,
+            fk_class: targetClass,
+          },
+        };
+        return value;
+      })
+    }));
+
+    // Appellation Temporal Entity Control
     else if (formCtrlType.appellationTeEn) return this.appellationTeEnCtrl(targetClass, field, initStmts)
+
+    // Entity Control
     else if (formCtrlType.entity) return this.entityCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.language) return this.languageCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.appellation) return this.appellationCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.langString) return this.langStringCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.dimension) return this.dimensionCtrl(targetClass, field, initStmts)
+
+    // Language Control
+    else if (formCtrlType.language) return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
+      return initStmts.map((initVal) => this.languageCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_language, defaultLanguage, (val: InfLanguage) => {
+        if (!val) return null;
+        const value: InfStatementWithRelations = {
+          fk_object_info: undefined,
+          fk_property: field.property.fkProperty,
+          object_language: {
+            ...val,
+            fk_class: targetClass,
+          },
+        };
+        return value;
+      }))
+    }))
+
+    // Appellation Control
+    else if (formCtrlType.appellation) return of(initStmts.map((initVal) => {
+      return this.appellationCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_appellation, (val: InfAppellation) => {
+        if (!val) return null;
+        const value: InfStatementWithRelations = {
+          fk_object_info: undefined,
+          fk_property: field.property.fkProperty,
+          object_appellation: {
+            ...val,
+            fk_class: targetClass,
+          },
+        };
+        return value;
+      })
+    }))
+
+    // Language String Control
+    else if (formCtrlType.langString) return of(initStmts.map((initVal) => {
+      return this.langStringCtrl(this.ctrlRequired(field), initVal.object_lang_string, (val: InfLangString) => {
+        const value: InfStatementWithRelations = {
+          fk_object_info: undefined,
+          fk_property: field.property.fkProperty,
+          fk_property_of_property: field.property.fkPropertyOfProperty,
+          object_lang_string: {
+            ...val,
+            fk_class: targetClass,
+          },
+        };
+        return value;
+      })
+    }))
+
+    // Dimension Control
+    else if (formCtrlType.dimension) return of(initStmts.map((initVal) => {
+      return this.dimensionCtrl(this.ctrlRequired(field), targetClass, initVal.object_dimension, (val: InfDimension) => {
+        const value: InfStatementWithRelations = {
+          fk_object_info: undefined,
+          fk_property: field.property.fkProperty,
+          fk_property_of_property: field.property.fkPropertyOfProperty,
+          object_dimension: {
+            ...val,
+            fk_class: targetClass,
+          },
+        };
+        return value;
+      })
+    }))
+
+    // Type Control
     else if (formCtrlType.typeItem) return this.typeCtrl(targetClass, field, initStmts)
-    else if (formCtrlType.timePrimitive) return this.timePrimitiveCtrl(targetClass, field, initStmts)
+
+    // Time Primitive Control
+    else if (formCtrlType.timePrimitive) return of(initStmts.map((initVal) => {
+
+      const initValWithCal: TimePrimitiveWithCal = {
+        julianDay: initVal?.object_time_primitive?.julian_day,
+        duration: initVal?.object_time_primitive?.duration as TimePrimitiveWithCal.DurationEnum,
+        calendar: initVal?.entity_version_project_rels?.[0].calendar as TimePrimitiveWithCal.CalendarEnum
+      }
+      return this.timePrimitiveCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initValWithCal, (val: TimePrimitiveWithCal) => {
+        if (!val) return null;
+        const { calendar, ...timePrim } = val;
+        const value: InfStatementWithRelations = {
+          entity_version_project_rels: [
+            { calendar: val.calendar }
+          ],
+          fk_object_info: undefined,
+          fk_property: field.property.fkProperty,
+          object_time_primitive: {
+            julian_day: timePrim.julianDay,
+            duration: timePrim.duration,
+            fk_class: targetClass,
+          },
+        };
+        return value;
+      })
+    }))
+
+
     else console.error('formCtrlType not found: ', JSON.stringify(formCtrlType))
   }
 
+  private getValueLeafControl(
+    formCtrlType: SysConfigFormCtrlType,
+    initVal: InfValueObject,
+    targetClass: number,
+  ): Observable<LocalNodeConfig[]> {
+
+    // Place
+    if (formCtrlType.place) return of([this.placeCtrl(true, initVal?.place, (val: InfPlace): InfData => {
+      return { place: { ...val, fk_class: targetClass } }
+
+    })])
+
+    // Language
+    else if (formCtrlType.language) return combineLatest([
+      this.c.pipeClassLabel(targetClass),
+      this.ap.pipeActiveDefaultLanguage()])
+      .pipe(map(([label, defaultLanguage]) => [this.languageCtrl(true, '', targetClass, label, initVal?.language, defaultLanguage, (val: InfLanguage): InfData => {
+        return { language: { ...val, fk_class: targetClass } }
+      })]))
+
+    // Appellation
+    else if (formCtrlType.appellation) return this.c.pipeClassLabel(targetClass).pipe(map(label => [this.appellationCtrl(true, '', targetClass, label, initVal?.appellation, (val: InfAppellation): InfData => {
+      return { appellation: { ...val, fk_class: targetClass } }
+    })]))
+
+    // Language String
+    else if (formCtrlType.langString) return of([this.langStringCtrl(true, initVal?.langString, (val: InfLangString): InfData => {
+      return { langString: { ...val, fk_class: targetClass } }
+    })])
+
+    // Dimension
+    else if (formCtrlType.dimension) return of([this.dimensionCtrl(true, targetClass, initVal?.dimension, (val: InfDimension): InfData => {
+      return { dimension: { ...val, fk_class: targetClass } }
+    })])
+
+    // // Time Primitive
+    // else if (formCtrlType.timePrimitive) return this.c.pipeClassLabel(targetClass).pipe(
+    //   map(label => [this.timePrimitiveCtrl(true, '', targetClass, label, initVal?.timePrimitive, (val: TimePrimitiveWithCal): InfData => {
+    //     return { timePrimitive: {
+    //       ...val, fk_class: targetClass } }
+    //   })]
+    //   ))
+
+    else console.error('formCtrlType not found: ', JSON.stringify(formCtrlType))
+  }
 
 
 
@@ -735,6 +963,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return this.formFactory.formGroup.valid;
   }
 
+  getData(): InfData {
+    return this.formFactory.formGroupFactory.valueChanges$.value
+  }
 
 
   /**
@@ -742,93 +973,53 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
 
   private timeSpanCtrl(
+    required: boolean,
+    placeholder: string,
     targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
-    const initValue: CtrlTimeSpanModel = {}
-    for (let i = 0; i < initStmts.length; i++) {
-      const element = initStmts[i];
-      const calendar = element?.entity_version_project_rels?.[0].calendar
-      initValue[element.fk_property] = { ...element.object_time_primitive, calendar }
-    }
-    const targetClassLabel = field.targets[targetClass].targetClassLabel
-    const controlConfig: LocalNodeConfig = {
+    targetClassLabel: string,
+    initValue: CtrlTimeSpanModel,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
+    return {
       control: {
         initValue,
-        placeholder: field.label,
-        required: this.ctrlRequired(field),
+        placeholder,
+        required,
         data: {
           appearance: this.appearance,
           controlType: 'ctrl-time-span',
           targetClass,
           targetClassLabel
         },
-        mapValue: (val) => {
-          if (!val) return null;
-          const v = val as CtrlTimeSpanDialogResult;
-          const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
-            const timePrim: TimePrimitiveWithCal = v[key]
-            const statement: InfStatementWithRelations = {
-              entity_version_project_rels: [
-                {
-                  is_in_project: true,
-                  calendar: timePrim.calendar
-                }
-              ],
-              fk_property: parseInt(key, 10),
-              object_time_primitive: {
-                julian_day: timePrim.julianDay,
-                duration: timePrim.duration,
-                fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-              }
-            }
-            return statement
-          });
-          return value;
-        }
+        mapValue: mapValue
       }
-    };
-    return of([controlConfig]);
+    }
   }
 
 
   private languageCtrl(
+    required: boolean,
+    placeholder: string,
     targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
-    return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
-      const targetClassLabel = field.targets[targetClass].targetClassLabel
-      // with [{}] we make sure at least one item is added
-      const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal: InfStatementWithRelations) => ({
-        control: {
-          placeholder: field.label,
-          required: this.ctrlRequired(field),
-          data: {
-            appearance: this.appearance,
-            controlType: 'ctrl-language',
-            targetClass,
-            targetClassLabel
-          },
-          initValue: initVal.object_language || defaultLanguage,
-          mapValue: (val: InfLanguage) => {
-            if (!val) return null;
-            const value: InfStatementWithRelations = {
-              fk_object_info: undefined,
-              fk_property: field.property.fkProperty,
-              object_language: {
-                ...val,
-                fk_class: targetClass,
-              },
-            };
-            return value;
-          }
-        }
-      }));
-      return controlConfigs;
-    })
-    )
+    targetClassLabel: string,
+    initValue: InfLanguage,
+    defaultLanguage: any,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
+    return {
+      control: {
+        placeholder,
+        required,
+        data: {
+          appearance: this.appearance,
+          controlType: 'ctrl-language',
+          targetClass,
+          targetClassLabel
+        },
+        initValue: initValue || defaultLanguage,
+        mapValue: mapValue
+      }
+    }
   }
 
   private typeCtrl(
@@ -876,17 +1067,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private appellationCtrl(
+    required: boolean,
+    placeholder: string,
     targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
-    const targetClassLabel = field.targets[targetClass].targetClassLabel
-
-    const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal: InfStatementWithRelations) => ({
+    targetClassLabel: string,
+    initValue: InfAppellation,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
+    return {
       control: {
-        initValue: initVal.object_appellation,
-        placeholder: field.label,
-        required: this.ctrlRequired(field),
+        initValue: initValue,
+        placeholder,
+        required,
         validators: [ValidationService.appellationValidator()],
         data: {
           appearance: this.appearance,
@@ -894,137 +1086,87 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           targetClass,
           targetClassLabel
         },
-        mapValue: (val: InfAppellation) => {
-          if (!val) return null;
-          const value: InfStatementWithRelations = {
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            object_appellation: {
-              ...val,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        }
+        mapValue: mapValue
       }
-    }))
-
-    return of(controlConfigs);
+    }
   }
 
 
   private placeCtrl(
-    targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
+    required: boolean,
+    initVal: InfPlace,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
     // with [{}] we make sure at least one item is added
-    const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal) => ({
+    return {
       childFactory: {
         component: FgPlaceComponent,
         getInjectData: (d) => {
           return d.place
         },
-        required: this.ctrlRequired(field),
+        required: required,
         data: {
           place: {
             appearance: this.appearance,
-            initVal$: of(initVal.object_place)
+            initVal$: of(initVal)
           }
         },
-        mapValue: (val: InfPlace) => {
-          if (!val) return null;
-          const value: InfStatementWithRelations = {
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            object_place: {
-              ...val,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        }
+        mapValue: mapValue
       }
-    }));
-    return of(controlConfigs);
-
-
+    };
   }
 
-
   private langStringCtrl(
-    targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
-
-    const controlConfigs: LocalNodeConfig[] = initStmts.map((stmt) => ({
+    required: boolean,
+    initVal: InfLangString,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
+    return {
       childFactory: {
         component: FgLangStringComponent,
         getInjectData: (d) => {
           return d.langString
         },
-        required: this.ctrlRequired(field),
+        required,
         data: {
           langString: {
             appearance: this.appearance,
-            initVal$: of(stmt.object_lang_string)
+            initVal$: of(initVal)
           }
         },
-        mapValue: (val: InfLangString) => {
-          const value: InfStatementWithRelations = {
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            fk_property_of_property: field.property.fkPropertyOfProperty,
-            object_lang_string: {
-              ...val,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        }
+        mapValue: mapValue
       }
-    }));
-    return of(controlConfigs);
-
+    }
   }
 
   private dimensionCtrl(
+    required: boolean,
     targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
-    const controlConfigs: LocalNodeConfig[] = initStmts.map((stmt) => ({
+    initVal: InfDimension,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
+    return {
       childFactory: {
         component: FgDimensionComponent,
         getInjectData: (d) => {
           return d.dimension
         },
-        required: this.ctrlRequired(field),
+        required,
         data: {
           dimension: {
             appearance: this.appearance,
             pkClassOfDimension: targetClass,
-            initVal$: of(stmt.object_dimension)
+            initVal$: of(initVal)
           }
         },
-        mapValue: (val: InfDimension) => {
-          const value: InfStatementWithRelations = {
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            fk_property_of_property: field.property.fkPropertyOfProperty,
-            object_dimension: {
-              ...val,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        }
+        mapValue: mapValue
       }
-    }));
-    return of(controlConfigs);
-
+    }
   }
+
+
+
+
 
   private entityCtrl(
     targetClass: number,
@@ -1099,17 +1241,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private timePrimitiveCtrl(
+    required: boolean,
+    placeholder: string,
     targetClass: number,
-    field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
-  ): Observable<LocalNodeConfig[]> {
-    const targetClassLabel = field.targets[targetClass].targetClassLabel
-    // with [{}] we make sure at least one item is added
-    const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal) => ({
+    targetClassLabel: string,
+    initVal: TimePrimitiveWithCal,
+    mapValue: (val) => any
+  ): LocalNodeConfig {
+    return {
       control: {
-        initValue: initVal.object_time_primitive,
-        placeholder: field.label,
-        required: this.ctrlRequired(field),
+        initValue: initVal,
+        placeholder,
+        required,
         validators: [],
         data: {
           appearance: this.appearance,
@@ -1117,27 +1260,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           targetClass,
           targetClassLabel
         },
-        mapValue: (val: TimePrimitiveWithCal) => {
-          if (!val) return null;
-          const { calendar, ...timePrim } = val;
-          const value: InfStatementWithRelations = {
-            entity_version_project_rels: [
-              { calendar: val.calendar }
-            ],
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            object_time_primitive: {
-              julian_day: timePrim.julianDay,
-              duration: timePrim.duration,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        }
+        mapValue: mapValue
       }
-    }))
-
-    return of(controlConfigs);
+    }
   }
 
   private appellationTeEnCtrl(

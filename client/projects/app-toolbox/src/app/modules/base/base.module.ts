@@ -17,6 +17,7 @@ import { EntityLabelConfigModule } from '../../shared/modules/entity-label-confi
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
+import { AddEntityOrValueDialogComponent } from './components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent } from './components/add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
@@ -45,7 +46,7 @@ import { FieldLabelComponent } from './components/field-label/field-label.compon
 import { FieldComponent } from './components/field/field.component';
 import { FormArrayComponent } from './components/form-array/form-array.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
-import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from './components/form-create-data/form-create-data.component';
 import { FormFieldHeaderComponent } from './components/form-field-header/form-field-header.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { HbfPanelComponent } from './components/hbf-panel/hbf-panel.component';
@@ -78,7 +79,7 @@ const components = [
   CtrlTimeSpanDialogComponent,
   CtrlTimePrimitiveComponent,
   CtrlTypeComponent,
-  FormCreateEntityComponent,
+  FormCreateDataComponent,
   FormGroupComponent,
   FormArrayComponent,
   FormFieldHeaderComponent,
@@ -88,6 +89,7 @@ const components = [
   ExistenceTimeHelpComponent,
   AddStatementDialogComponent,
   AddEntityDialogComponent,
+  AddEntityOrValueDialogComponent,
   SearchExistingEntityComponent,
   EntityAddExistingHitComponent,
   FgPlaceComponent,

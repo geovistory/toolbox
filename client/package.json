@@ -17,6 +17,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "playground": "node --max_old_space_size=8192 node_modules/.bin/angular-playground",
+    "sandbox": "node --max_old_space_size=8192 node_modules/.bin/ng serve playground --host=127.0.0.1 --port=4201 --publicHost=127.0.0.1:4201",
     "compodoc": "npx compodoc -p src/tsconfig.app.json"
   },
   "private": true,

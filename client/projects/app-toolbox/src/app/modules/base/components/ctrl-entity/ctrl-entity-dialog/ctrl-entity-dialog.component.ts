@@ -8,7 +8,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HitPreview } from '../../entity-add-existing-hit/entity-add-existing-hit.component';
-import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../../form-create-data/form-create-data.component';
 import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
@@ -65,7 +65,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   selectButtonDisabled: boolean;
   selectButtonTooltip: string;
 
-  @ViewChild(FormCreateEntityComponent, { static: true }) createEntity: FormCreateEntityComponent;
+  @ViewChild(FormCreateDataComponent, { static: true }) createEntity: FormCreateDataComponent;
 
   constructor(
     private p: ActiveProjectService,

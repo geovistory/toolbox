@@ -12,10 +12,10 @@ import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } 
 
 @Component({
   selector: 'gv-default-value-entity',
-  templateUrl: './default-value-entity.component.html',
-  styleUrls: ['./default-value-entity.component.scss']
+  templateUrl: './ctrl-entity-or-value-matcher.component.html',
+  styleUrls: ['./ctrl-entity-or-value-matcher.component.scss']
 })
-export class DefaultValueEntityComponent implements OnInit, OnDestroy {
+export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() pkProject: number;

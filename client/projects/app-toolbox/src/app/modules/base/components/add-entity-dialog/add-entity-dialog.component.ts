@@ -8,7 +8,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
-import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 
 
 export interface AddEntityDialogData {
@@ -156,7 +156,7 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
   }
 
 
-  onSubmit(f: FormCreateEntityComponent) {
+  onSubmit(f: FormCreateDataComponent) {
     if (!f.checkValidation()) return;
 
     this.loading$.next(true);

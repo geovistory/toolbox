@@ -4,16 +4,16 @@
         <mat-select-trigger>
             {{selected ? selected.columnName : ''}}
         </mat-select-trigger>
-        <mat-option *ngFor="let mc of (mappedCols$|async)" [value]="mc">
+        <mat-option class="gv-text-align-center" *ngFor="let mc of (mappedCols$|async)" [value]="mc">
             <i class="mat-body-1 mr-3">{{mc.columnName}}</i>
             <mat-icon svgIcon="arrow-right" color="primary"></mat-icon>
-            <span *ngIf="(icon$|async) === 'PeIt'"
+            <span *ngIf="(mc.icon$|async) === 'PeIt'"
                 class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-            <span *ngIf="(icon$|async) === 'TeEn'"
+            <span *ngIf="(mc.icon$|async) === 'TeEn'"
                 class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
-            <mat-icon *ngIf="(icon$|async) === 'VOT'" class="gv-entity-color" svgIcon="ruler-square"
+            <mat-icon *ngIf="(mc.icon$|async) === 'VOT'" class="gv-entity-color" svgIcon="ruler-square"
                 style="margin-right: 0;"></mat-icon>
-            <span class="mat-body-1 ml-1">{{this.classLabel$|async}}</span>
+            <span class="mat-body-1 ml-1">{{mc.className$|async}}</span>
         </mat-option>
     </mat-select>
 </mat-form-field>
