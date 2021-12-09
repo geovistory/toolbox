@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { WarStatement, CalendarType, Granularity } from '../../../../models'
-import { DfhApiPropertyMock } from './DfhApiPropertyMock'
-import { ProProjectMock } from './ProProjectMock'
-import { WarEntityPreviewMock } from './WarEntityPreviewMock'
-import { DfhApiClassMock } from './DfhApiClassMock'
+import {WarStatement} from '../../../../models'
+import {CalendarType} from '../../../../models/enums/CalendarType'
+import {Granularity} from '../../../../models/enums/Granularity'
+import {DfhApiClassMock} from './DfhApiClassMock'
+import {DfhApiPropertyMock} from './DfhApiPropertyMock'
+import {ProProjectMock} from './ProProjectMock'
+import {WarEntityPreviewMock} from './WarEntityPreviewMock'
 
 /**
  * pk_entity prefix: 200

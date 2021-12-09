@@ -144,7 +144,6 @@ export * from './relatedProfile';
 export * from './resetPasswordRequest';
 export * from './responseWithMsg';
 export * from './role';
-export * from './schemaObject';
 export * from './searchExistingRelatedStatement';
 export * from './searchExistingRelatedStatementFilter';
 export * from './section';

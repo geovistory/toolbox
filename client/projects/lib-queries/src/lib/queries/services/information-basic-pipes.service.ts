@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IconType } from '@kleiolab/lib-redux';
 import { InfStatement, InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { CalendarType, Granularity, TimeSpanUtil } from '@kleiolab/lib-utils';
+import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, merge, Observable, pipe } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
@@ -91,22 +91,16 @@ export class InformationBasicPipesService {
   timePrimitiveOfStatements = () => pipe(
     map((r: InfStatement[]) => r[0]),
     switchMap((r) => {
-      if (!r) return new BehaviorSubject(undefined)
+      if (!r) return new BehaviorSubject<TimePrimitiveWithCal>(undefined)
       return this.pipeInfTimePrimitive(r.fk_object_info).pipe(
-        switchMap((infTimePrimitive) => this.p.pkProject$.pipe(
-          switchMap((pkProject) => this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$
-            .key(pkProject + '_' + r[0].pk_entity).pipe(
-              filter(statement => !!statement),
-              map(ipr => {
-                const y: TimePrimitiveWithCal = {
-                  calendar: (ipr.calendar ? ipr.calendar : 'gregorian') as CalendarType,
-                  julianDay: infTimePrimitive.julian_day,
-                  duration: infTimePrimitive.duration as Granularity
-                }
-                return y;
-              })
-            ))
-        ))
+        map((infTimePrimitive) => {
+          const y: TimePrimitiveWithCal = {
+            calendar: infTimePrimitive.calendar,
+            julianDay: infTimePrimitive.julian_day,
+            duration: infTimePrimitive.duration
+          }
+          return y
+        })
       )
     })
   )

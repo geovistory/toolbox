@@ -1,10 +1,11 @@
-import {GvFieldPageReq, SysConfigValueObjectType} from '@kleiolab/lib-sdk-lb4';
+import {GvFieldPageReq} from '@kleiolab/lib-sdk-lb4';
 import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
 import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
+import {SysConfigValueObjectType} from '../../../../models/sys-config/TrueEnum'
 
 export namespace GvFieldPageReqMock {
 

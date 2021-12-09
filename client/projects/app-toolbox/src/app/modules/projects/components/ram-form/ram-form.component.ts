@@ -118,7 +118,6 @@ export class RamFormComponent implements OnInit, OnDestroy {
 
           // rest
           is_in_project_count: undefined,
-          community_favorite_calendar: undefined,
           is_standard_in_project_count: undefined,
         }
 
@@ -157,7 +156,6 @@ export class RamFormComponent implements OnInit, OnDestroy {
 
             // rest
             is_in_project_count: undefined,
-            community_favorite_calendar: undefined,
             is_standard_in_project_count: undefined,
           }
           return statementOfStatement;

@@ -1,7 +1,7 @@
-import { Postgres1DataSource } from '../../datasources';
-import { ProInfoProjRel } from '../../models';
-import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import {Postgres1DataSource} from '../../datasources';
+import {ProInfoProjRel} from '../../models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 export class QEntityAddToProject extends SqlBuilderLb4Models {
@@ -29,19 +29,19 @@ export class QEntityAddToProject extends SqlBuilderLb4Models {
 
     this.sql = `
       -- select items to add to project
-      WITH RECURSIVE tw1 (pk, pk_related, calendar) AS (
+      WITH RECURSIVE tw1 (pk, pk_related) AS (
 
       -- the entity itself
-      SELECT ${this.addParam(pkEntity)}, null::int, null::calendar_type
+      SELECT ${this.addParam(pkEntity)}, null::int
 
       UNION ALL
       -- the outgoing statements
-      SELECT t1.pk_entity, null::int, t1.calendar
+      SELECT t1.pk_entity, null::int
       FROM information.get_outgoing_statements_to_add(${this.addParam(pkEntity)},  ${this.addParam(fkProject)}) t1
 
       UNION ALL
       -- the ingoing statements of property 'has appellation'
-      SELECT t1.pk_entity, t1.fk_subject_info, null::calendar_type
+      SELECT t1.pk_entity, t1.fk_subject_info
       FROM information.v_statement t1
       WHERE t1.fk_object_info = ${this.addParam(pkEntity)}
       AND t1.fk_property = 1111
@@ -49,7 +49,7 @@ export class QEntityAddToProject extends SqlBuilderLb4Models {
 
       UNION ALL
       -- the text properties
-      SELECT t2.pk_entity, null::int, null::calendar_type
+      SELECT t2.pk_entity, null::int
       FROM information.text_property t2
       WHERE t2.fk_concerned_entity = ${this.addParam(pkEntity)}
 
@@ -67,13 +67,13 @@ export class QEntityAddToProject extends SqlBuilderLb4Models {
         )
 
         -- the entity itself
-        SELECT pk_related, null::int, null::calendar_type
+        SELECT pk_related, null::int
         FROM tw
 
         UNION ALL
 
         -- the outgoing statements (not in already selected statements)
-        SELECT t1.pk_entity, null::int, t1.calendar
+        SELECT t1.pk_entity, null::int
         FROM tw
         CROSS JOIN LATERAL
           (
@@ -85,7 +85,7 @@ export class QEntityAddToProject extends SqlBuilderLb4Models {
         UNION ALL
 
         -- the ingoing statements of property 'has appellation'
-        SELECT t1.pk_entity, t1.fk_subject_info, null::calendar_type
+        SELECT t1.pk_entity, t1.fk_subject_info
         FROM information.v_statement t1,	tw
         WHERE tw.pk_related = t1.fk_object_info
         AND t1.fk_property = 1111
@@ -96,12 +96,11 @@ export class QEntityAddToProject extends SqlBuilderLb4Models {
     -- insert the info_proj_rels
     tw2 AS (
 
-        INSERT INTO projects.v_info_proj_rel (fk_last_modifier, fk_entity, fk_project, calendar, is_in_project)
+        INSERT INTO projects.v_info_proj_rel (fk_last_modifier, fk_entity, fk_project, is_in_project)
         SELECT
           ${this.addParam(accountId)},
           pk,
           ${this.addParam(fkProject)},
-          calendar,
           true
         FROM tw1
         RETURNING *

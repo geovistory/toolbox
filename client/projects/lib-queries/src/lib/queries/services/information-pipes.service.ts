@@ -3,7 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldTargetViewType, InfStatement, TimePrimitiveWithCal, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, GvFieldTargetViewType, InfStatement, WarEntityPreview, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
@@ -246,39 +246,18 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
         else if (subfieldType.timePrimitive) {
           return this.s.inf$.time_primitive$.by_pk_entity$.key(targetInfo).pipe(
             filter(x => !!x),
-            switchMap(timePrimitive => {
-              // get calendar
-              let cal$: Observable<TimePrimitiveWithCal.CalendarEnum>
-              if (page.scope.inProject) {
-                cal$ = this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(page.scope.inProject + '_' + stmt.pk_entity)
-                  .pipe(
-                    map(
-                      infoProjRel => infoProjRel.calendar as TimePrimitiveWithCal.CalendarEnum
-                    )
-                  )
+            map(timePrimitive => {
+              const timePrimWithCal = infTimePrimToTimePrimWithCal(timePrimitive)
+              const stmtTarget: StatementTarget = {
+                statement: stmt,
+                isOutgoing,
+                targetLabel: this.timePrimitivePipe.transform(timePrimWithCal),
+                targetClass: timePrimitive.fk_class,
+                target: {
+                  timePrimitive: timePrimWithCal
+                }
               }
-              else {
-                cal$ = new BehaviorSubject(stmt.community_favorite_calendar as TimePrimitiveWithCal.CalendarEnum)
-              }
-              // pipe target time primitive of stmt
-              return cal$.pipe(
-                map(
-                  cal => {
-                    const timePrimWithCal = infTimePrimToTimePrimWithCal(timePrimitive, cal)
-                    const stmtTarget: StatementTarget = {
-                      statement: stmt,
-                      isOutgoing,
-                      targetLabel: this.timePrimitivePipe.transform(timePrimWithCal),
-                      targetClass: timePrimitive.fk_class,
-                      target: {
-                        timePrimitive: timePrimWithCal
-                      }
-                    }
-                    return stmtTarget
-
-                  }
-                )
-              )
+              return stmtTarget
             })
           )
         }

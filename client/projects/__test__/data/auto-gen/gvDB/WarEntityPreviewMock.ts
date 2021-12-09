@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
-import {WarEntityPreview, TimePrimitiveWithCal, } from '@kleiolab/lib-sdk-lb4';
-import {ProProjectMock} from './ProProjectMock'
+import {WarEntityPreview} from '@kleiolab/lib-sdk-lb4';
+import {TimePrimitiveWithCal} from '../../../../models/enums/CalendarType'
+import {} from '../../../../models/enums/Granularity'
 import {DfhApiClassMock} from './DfhApiClassMock'
-import {InfLangStringMock} from './InfLangStringMock'
-import {OmitEntity} from './local-model.helpers'
 import {InfAppellationMock} from './InfAppellationMock'
+import {InfLangStringMock} from './InfLangStringMock'
 import {InfResourceMock} from './InfResourceMock'
+import {OmitEntity} from './local-model.helpers'
+import {ProProjectMock} from './ProProjectMock'
 
 /**
  * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400

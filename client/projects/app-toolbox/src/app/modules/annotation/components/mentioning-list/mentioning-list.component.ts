@@ -8,7 +8,7 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { ByPk, IAppState, InfActions, RootEpics } from '@kleiolab/lib-redux';
 import { DatChunk, DatDigital, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -383,7 +383,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   submit() {
     if (this.formGroup.valid) {
       this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-        const statement: InfStatement = this.mentioningCreateCtrl.value;
+        const statement: InfStatementWithRelations = this.mentioningCreateCtrl.value;
         this.dataService.upsertInfStatementsWithRelations(pkProject, [statement])
           .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
             // this.create$.next(false)

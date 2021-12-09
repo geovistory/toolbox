@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {Inject, Injectable, InjectionToken, Injector, Type, forwardRef} from 'injection-js';
+import {forwardRef, Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
 import {Notification, Pool, PoolClient, PoolConfig} from 'pg';
+import {parse} from 'pg-connection-string';
 import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first, mapTo} from 'rxjs/operators';
-import {parse} from 'pg-connection-string';
-
-import {getPgSslForPg8, createPoolConfig} from '../utils/databaseUrl';
+import {createPoolConfig, getPgSslForPg8} from '../utils/databaseUrl';
 import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
 import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
 import {Logger} from './base/classes/Logger';
 import {PrimaryDataService} from './base/classes/PrimaryDataService';
+
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 export const APP_CONFIG = new InjectionToken<WarehouseConfig>('app.config');
@@ -295,140 +295,6 @@ export class Warehouse {
                 // this.dep.ready$.pipe(filter(r => r === true)),
             ).pipe(first()).subscribe(_ => res())
         })
-    }
-
-    /**
-     * Initialiue foreign data wrappers so that whDb sees
-     * schemas of gvDB
-     */
-    private async initializeForeignDataWrappers() {
-        const x = [
-            `CREATE EXTENSION IF NOT EXISTS postgres_fdw;`,
-            `CREATE EXTENSION IF NOT EXISTS postgis;`,
-
-            `CREATE SERVER IF NOT EXISTS gv_database_server
-            FOREIGN DATA WRAPPER postgres_fdw
-            OPTIONS (host '0.0.0.0', dbname 'gv_test_db');`,
-
-            `CREATE USER MAPPING  IF NOT EXISTS FOR CURRENT_USER
-            SERVER gv_database_server
-            OPTIONS (user 'postgres', password 'local_pw');`,
-
-            `DROP SCHEMA IF EXISTS information CASCADE;`,
-            `DROP SCHEMA IF EXISTS projects CASCADE;`,
-            `DROP SCHEMA IF EXISTS data_for_history CASCADE;`,
-            `DROP SCHEMA IF EXISTS commons CASCADE;`,
-            `DROP SCHEMA IF EXISTS war CASCADE;`,
-
-            `DROP TYPE IF EXISTS public.calendar_granularities;`,
-            `CREATE TYPE public.calendar_granularities AS ENUM
-                ('1 year', '1 month', '1 day', '1 hour', '1 minute', '1 second');`,
-
-            `DROP TYPE IF EXISTS public.calendar_type;`,
-            `CREATE TYPE public.calendar_type AS ENUM
-                ('gregorian', 'julian');`,
-
-            `CREATE SCHEMA information;`,
-            `IMPORT FOREIGN SCHEMA information
-            FROM SERVER gv_database_server
-            INTO information;`,
-
-            `CREATE SCHEMA projects;`,
-            `IMPORT FOREIGN SCHEMA projects
-            FROM SERVER gv_database_server
-            INTO projects;`,
-
-            `CREATE SCHEMA data_for_history;`,
-            `IMPORT FOREIGN SCHEMA data_for_history
-            FROM SERVER gv_database_server
-            INTO data_for_history;`,
-
-            `CREATE SCHEMA commons;`,
-            `IMPORT FOREIGN SCHEMA commons
-            FROM SERVER gv_database_server
-            INTO commons;`,
-
-            `CREATE OR REPLACE FUNCTION commons.time_primitive__get_first_second(
-                julian_day integer)
-                RETURNS bigint
-                LANGUAGE 'sql'
-
-                COST 100
-                VOLATILE
-
-              AS $BODY$
-                 SELECT (julian_day::bigint * 86400::bigint) ; -- 86400 = 60 * 60 * 24 = number of seconds per day
-                $BODY$;`,
-
-            `CREATE OR REPLACE FUNCTION commons.time_primitive__get_last_second(
-            julian_day integer,
-            duration calendar_granularities,
-            calendar calendar_type)
-            RETURNS bigint
-            LANGUAGE 'plpgsql'
-
-            COST 100
-            VOLATILE
-
-            AS $BODY$
-            DECLARE
-            day_after_added_duration int;
-            BEGIN
-
-            IF(calendar IS NULL) THEN
-            RAISE WARNING 'No calendar provided';
-            IF(julian_day < 2299161) THEN
-            calendar = 'julian';
-            ELSE
-            calendar = 'gregorian';
-            END IF;
-            END IF;
-
-            IF(calendar = 'gregorian') THEN
-            IF(duration = '1 day') THEN
-            SELECT julian_day + 1 INTO day_after_added_duration;
-            ELSIF(duration = '1 month') THEN
-            SELECT to_char((('J' || julian_day::text)::DATE + INTERVAL '1 month'), 'J') INTO day_after_added_duration;
-            ELSIF(duration = '1 year') THEN
-            SELECT to_char((('J' || julian_day::text)::DATE + INTERVAL '1 year'), 'J') INTO day_after_added_duration;
-            ELSE
-            RAISE EXCEPTION 'duration not supported --> %', duration
-            USING HINT = 'Supported durations: "1 day", "1 month", "1 year"';
-            END IF;
-
-            ELSIF (calendar = 'julian') THEN
-
-            IF(duration = '1 day') THEN
-            SELECT  julian_day + 1 INTO day_after_added_duration;
-            ELSIF(duration = '1 month') THEN
-            SELECT commons.julian_cal__add_1_month(julian_day) INTO day_after_added_duration;
-            ELSIF(duration = '1 year') THEN
-            SELECT commons.julian_cal__add_1_year(julian_day) INTO day_after_added_duration;
-            ELSE
-            RAISE EXCEPTION 'duration not supported --> %', duration
-            USING HINT = 'Supported durations: "1 day", "1 month", "1 year"';
-            END IF;
-
-            ELSE
-            RAISE EXCEPTION 'calendar not supported --> %', calendar
-            USING HINT = 'Supported calendars: "gregorian", "julian"';
-            END IF;
-
-            -- calculate the first second of the day after the added duration and subtract one second
-            -- so that we get the last second of the duration
-            RETURN commons.time_primitive__get_first_second(day_after_added_duration) - 1;
-            END;
-            $BODY$;`,
-            `CREATE SCHEMA war;`,
-            `CREATE TYPE war.edge_target_type AS ENUM ('text', 'type');`,
-            `IMPORT FOREIGN SCHEMA war
-            FROM SERVER gv_database_server
-            INTO war;`,
-        ];
-
-        for (const sql of x) {
-            await this.whPgPool.query(sql);
-        }
     }
 
     /**

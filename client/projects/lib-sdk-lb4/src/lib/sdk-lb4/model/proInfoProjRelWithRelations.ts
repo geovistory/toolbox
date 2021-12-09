@@ -23,10 +23,8 @@ export interface ProInfoProjRelWithRelations {
     fk_entity_version_concat?: string;
     is_in_project?: boolean;
     is_standard_in_project?: boolean;
-    calendar?: string;
     ord_num_of_domain?: number;
     ord_num_of_range?: number;
-    ord_num_of_text_property?: number;
     fk_creator?: number;
     fk_last_modifier?: number;
     project_visibility?: ProjectVisibilityOptionsWithRelations;

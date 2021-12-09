@@ -357,7 +357,7 @@ export class SubfieldComponent implements OnInit, OnDestroy {
           const pkEntity = s.target.entity.pkEntity
 
           // create api call
-          return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+          return this.dataService.addEntityToProject(pkProject, pkEntity)
         })
 
       // prepare entity project rels for the statement pointing to target entity
