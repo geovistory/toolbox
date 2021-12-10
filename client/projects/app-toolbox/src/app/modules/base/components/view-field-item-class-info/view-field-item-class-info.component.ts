@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { InfResource } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 
 @Component({
@@ -12,23 +14,25 @@ import { map, shareReplay } from 'rxjs/operators';
 })
 export class ViewFieldItemClassInfoComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>
-  @Input() pkClass: number
-  @Input() pkEntity: number
+  @Input() readonly$: Observable<boolean>
+  @Input() resource: InfResource
+  @Input() isInProject: boolean
   @Input() classLabel: string
   @Input() isFavorite: boolean
   @Input() size = 24
   @Input() shade = 'secondary'
+
 
   svgIcon$: Observable<string>
   colorClass$: Observable<string>
   tooltip: string
   constructor(
     private c: ConfigurationPipesService,
-
+    public itemComponent: ViewFieldItemComponent
   ) { }
 
   ngOnInit(): void {
-    const type$ = this.c.pipeIconTypeFromClass(this.pkClass).pipe(shareReplay())
+    const type$ = this.c.pipeIconTypeFromClass(this.resource.fk_class).pipe(shareReplay())
     this.svgIcon$ = type$.pipe(
       map(type => {
         const prefix = this.isFavorite ? 'filled' : 'outlined'
@@ -76,7 +80,7 @@ export class ViewFieldItemClassInfoComponent implements OnInit {
         }
       })
     )
-    this.tooltip = `${this.classLabel}${this.pkEntity ? ` (${this.pkEntity})` : ''}`
+    this.tooltip = `${this.classLabel}`
   }
 
 }

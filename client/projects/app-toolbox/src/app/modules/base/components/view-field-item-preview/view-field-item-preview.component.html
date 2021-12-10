@@ -1,9 +1,8 @@
 <span class="loc-left mat-typography">
-  <!-- <gv-onto-class-info class="mr-2" [pkClass]="itemComponent.item.targetClass"
-    *ngIf="itemComponent.showOntoInfo$ | async"> </gv-onto-class-info> -->
 
-  <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
-    [pkClass]="resource.fk_class" [pkEntity]="resource.pk_entity"
+  <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$"
+    [readonly$]="itemComponent.readonly$" [resource]="resource"
+    [isInProject]="itemComponent.item.projRel?.is_in_project"
     [classLabel]="field.targets[resource.fk_class]?.targetClassLabel" [isFavorite]="ordNum===0">
   </gv-view-field-item-class-info>
 

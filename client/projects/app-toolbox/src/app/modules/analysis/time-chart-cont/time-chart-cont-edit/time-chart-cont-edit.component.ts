@@ -7,9 +7,8 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'projects/app-toolbox/src/app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
-import { values } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { GvAnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent, TimeChartContInput } from '../time-chart-cont-form/time-chart-cont-form.component';
 
@@ -22,7 +21,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   destroy$ = new Subject<boolean>();
-  teEnClasses$ = new BehaviorSubject<number[]>([])
+  teEnClasses$: Observable<number[]>
   // initVal$ = new Subject<FilterDefinition>()
   queryFilter = new FormControl()
   @ViewChild('c') formComponent: TimeChartContFormComponent
@@ -109,9 +108,14 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.c.pipeSelectedTeEnClassesInProject().pipe(takeUntil(this.destroy$)).subscribe(x => {
-      this.teEnClasses$.next(values(x))
-    })
+    this.teEnClasses$ = this.c.pipeClassesOfProject().pipe(
+      map(items => items
+        .filter(item => item.belongsToCategory?.entities?.showInAddMenu)
+        .filter(item => item.dfhClass.basic_type === 9)
+        .map(item => item.dfhClass.pk_class)
+      ),
+      startWith([])
+    )
   }
 
   ngOnDestroy() {

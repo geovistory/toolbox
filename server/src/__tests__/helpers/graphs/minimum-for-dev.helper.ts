@@ -35,7 +35,7 @@ import {SysSystemRelevantClassMock} from '../data/gvDB/SysSystemRelevantClass';
 import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
 import {PROFILE_12_BIOGRAPHICAL_BA_2021_06_30} from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
 import {PROFILE_21_INTELLECTUAL_AN_2021_06_30} from '../data/ontome-profiles/profile-21-intellectual-an-2021-06-30';
-import {PROFILE_5_GEOVISTORY_BASI_2021_06_30} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-06-30';
+import {PROFILE_5_GEOVISTORY_BASI_2021_12_07} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-12-07';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
 import {testdb} from '../testdb';
 import {createTextAndAnnotation} from './feature-X.helper';
@@ -69,6 +69,9 @@ export async function minimumForDev() {
   await createSysSystemType(SysSystemTypeMock.VALUE)
   await createSysSystemType(SysSystemTypeMock.TEXT)
   await createSysSystemType(SysSystemTypeMock.LABEL_OF_DATA_RECORD)
+  await createSysSystemType(SysSystemTypeMock.ANALYSIS_TYPE_TABLE)
+  await createSysSystemType(SysSystemTypeMock.ANALYSIS_TYPE_MAP)
+  await createSysSystemType(SysSystemTypeMock.ANALYSIS_TYPE_TIME_CHART)
 
   // PubRole sys-admin
   await createPubRole(PubRoleMock.SYS_ADMIN)
@@ -80,7 +83,7 @@ export async function minimumForDev() {
    * OntoME data
    ***************************************************************************/
 
-  const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_06_30)
+  const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_12_07)
   const profileIntellectu = await createOntomeProfileMock(PROFILE_21_INTELLECTUAL_AN_2021_06_30)
   const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30)
 

@@ -38,25 +38,34 @@ export default sandboxOf(ViewFieldComponent, {
       dataSource: dataSource
     },
     template: `
-    <div class="d-flex justify-content-center mt-5">
-       <div style="width:300px;height:400px" class="d-flex mr-4">
-       <mat-tab-group [selectedIndex]="selectedIndex">
-        <mat-tab label="First">
+    <div>
+      <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+      <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+      <button (click)="selectedIndex=1">tab 2</button>
+      <button (click)="selectedIndex=0">tab 1</button>
+
+    </div>
+    <div class="d-flex d-flex-direction-row justify-content-center mt-5">
+      <div style="width:300px;height:400px" class="d-flex mr-4">
+        <mat-tab-group [selectedIndex]="selectedIndex">
+          <mat-tab label="First">
+            <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
+            [readonly$]="readonly$" [source]="source"></gv-view-field>
+          </mat-tab>
+          <mat-tab label="Second"> Content 2 </mat-tab>
+          <mat-tab label="Third"> Content 3 </mat-tab>
+        </mat-tab-group>
+
+      </div>
+
+      <hr>
+
+      <div style="width:600px;height:400px" class="d-flex mr-4">
           <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
           [readonly$]="readonly$" [source]="source"></gv-view-field>
-        </mat-tab>
-        <mat-tab label="Second"> Content 2 </mat-tab>
-        <mat-tab label="Third"> Content 3 </mat-tab>
-      </mat-tab-group>
-
       </div>
-      <div>
-        <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
-        <button (click)="selectedIndex=1">tab 2</button>
-        <button (click)="selectedIndex=0">tab 1</button>
 
-      </div>
+
     </div>
     `
   })

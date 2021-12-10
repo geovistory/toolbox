@@ -1,19 +1,15 @@
 import { Injectable } from '@angular/core';
+import { ClassAndTypeSelectModel, ConfigurationPipesService } from "@kleiolab/lib-queries";
+import { AnalysisDefinition, ColDef, QueryFilter, QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 import { classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
 import { FilterDefinition, QueryFilterComponent } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathFormComponent } from 'projects/app-toolbox/src/app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
-import { values } from 'd3';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { values } from 'ramda';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TableFormNodeConfig } from './table-form.component';
-import { ColDef } from "@kleiolab/lib-sdk-lb4";
-import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 
-import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
-import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
 
 interface PathColumn {
   rootClasses$: Observable<number[]>,
@@ -37,7 +33,11 @@ export class TableFormService {
   initPathSegments$: Observable<QueryPathSegment[]>
   constructor(private c: ConfigurationPipesService,
   ) {
-    this.rootClasses$ = this.c.pipeClassesInEntitiesOrSources().pipe(map(x => values(x)))
+    this.rootClasses$ = this.c.pipeClassesOfProject().pipe(
+      map(items => items
+        .filter(item => values(item.belongsToCategory)?.[0]?.showInAddMenu)
+        .map(item => item.dfhClass.pk_class)
+      ))
   }
 
 

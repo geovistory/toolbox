@@ -14,14 +14,15 @@
   white-space: nowrap;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: baseline;
   height: 48px;
+  padding-top: 13px;
 }
 
 .loc-right {
   flex: 0 0 auto;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
 }
 
@@ -38,4 +39,17 @@
   text-overflow: ellipsis;
   justify-content: flex-start;
   white-space: nowrap;
+}
+
+.loc-target-class-label {
+  flex: 0 2 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: flex-start;
+  white-space: nowrap;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.loc-count {
+  padding-right: 8px;
 }

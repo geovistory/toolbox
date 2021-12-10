@@ -415,4 +415,26 @@ export class ProInfoProjRelMock {
   })
 
 
+
+  static readonly PROJ_1_TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2045,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_BOOK.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
+
+
+
+  static readonly PROJ_1_TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<ProInfoProjRel> = ({
+    pk_entity: 2046,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_JOURNAL.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    project_visibility: {website: true, dataApi: true},
+    is_in_project: true
+  })
+
+
 }
