@@ -1,5 +1,3 @@
-import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { Field } from '@kleiolab/lib-queries';
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
@@ -13,8 +11,8 @@ import { BaseModule } from '../../base.module';
 import { ViewFieldComponent } from './view-field.component';
 
 const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }
-const dataSource = new MatTreeNestedDataSource<Field>()
-dataSource.data = [FieldMock.manifestationSingletonHasDefinition];
+
+
 
 export default sandboxOf(ViewFieldComponent, {
   declareComponent: false,
@@ -35,37 +33,65 @@ export default sandboxOf(ViewFieldComponent, {
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),
       selectedIndex: 0,
-      dataSource: dataSource
     },
     template: `
-    <div>
-      <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-      <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
-      <button (click)="selectedIndex=1">tab 2</button>
-      <button (click)="selectedIndex=0">tab 1</button>
-
-    </div>
-    <div class="d-flex d-flex-direction-row justify-content-center mt-5">
-      <div style="width:300px;height:400px" class="d-flex mr-4">
-        <mat-tab-group [selectedIndex]="selectedIndex">
-          <mat-tab label="First">
-            <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-            [readonly$]="readonly$" [source]="source"></gv-view-field>
-          </mat-tab>
-          <mat-tab label="Second"> Content 2 </mat-tab>
-          <mat-tab label="Third"> Content 3 </mat-tab>
-        </mat-tab-group>
+    <div class="mat-bg-grey-500" style="padding: 40px">
+      <div>
+        <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="selectedIndex=1">tab 2</button>
+        <button (click)="selectedIndex=0">tab 1</button>
 
       </div>
+      <div class="d-flex d-flex-direction-row justify-content-center mt-5">
+        <div style="width:300px;height:400px" class="d-flex mr-4">
+          <mat-tab-group [selectedIndex]="selectedIndex">
+            <mat-tab label="First">
+              <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
+              [readonly$]="readonly$" [source]="source"></gv-view-field>
+            </mat-tab>
+            <mat-tab label="Second"> Content 2 </mat-tab>
+            <mat-tab label="Third"> Content 3 </mat-tab>
+          </mat-tab-group>
 
-      <hr>
+        </div>
+
+        <hr>
+
+        <div style="width:600px;height:400px" class="d-flex mr-4">
+            <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
+            [readonly$]="readonly$" [source]="source"></gv-view-field>
+        </div>
+
+
+      </div>
+    </div>
+    `
+  })
+
+  .add('Field | type: typeItem ', {
+    context: {
+      field: FieldMock.placeHasType,
+      source: { fkInfo: InfResourceMock.GEO_PLACE_MADRID.pk_entity },
+      scope: inProjectScope,
+      showOntoInfo$: new BehaviorSubject(false),
+      readonly$: new BehaviorSubject(false),
+      selectedIndex: 0,
+    },
+    template: `
+   <div class="mat-bg-grey-500" style="padding: 40px">
+      <div>
+        <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="selectedIndex=1">tab 2</button>
+        <button (click)="selectedIndex=0">tab 1</button>
+      </div>
+      <br>
 
       <div style="width:600px;height:400px" class="d-flex mr-4">
           <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
           [readonly$]="readonly$" [source]="source"></gv-view-field>
       </div>
-
-
-    </div>
+   </div>
     `
   })

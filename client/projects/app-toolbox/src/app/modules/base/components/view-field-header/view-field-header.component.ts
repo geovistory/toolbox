@@ -15,6 +15,7 @@ export class ViewFieldHeaderComponent implements OnInit {
   @Input() showAddButton$: Observable<boolean>
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
+  @Input() showTargetClassLabels = true
   @Input() itemsMax: number
   @Input() disableToggle: boolean
   @Input() hideItemsCount: boolean

@@ -14,9 +14,8 @@
   white-space: nowrap;
   display: flex;
   justify-content: flex-start;
-  align-items: baseline;
+  align-items: center;
   height: 48px;
-  padding-top: 13px;
 }
 
 .loc-right {
@@ -49,6 +48,7 @@
   white-space: nowrap;
   padding-left: 8px;
   padding-right: 8px;
+  padding-top: 1px;
 }
 .loc-count {
   padding-right: 8px;

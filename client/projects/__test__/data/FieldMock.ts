@@ -153,6 +153,14 @@ export namespace FieldMock {
     [{ class: DfhApiClassMock.EN_335_TIME_PRIMITIVE, viewType: { timePrimitive: 'true' }, formControlType: { timePrimitive: 'true' } }],
     true,
   )
+
+  export const placeHasType: Field = createField(
+    DfhApiClassMock.EN_363_GEO_PLACE,
+    DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE,
+    [{ class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE, viewType: { typeItem: 'true' }, formControlType: { typeItem: 'true' } }],
+    true,
+    'has-type'
+  )
 }
 
 export function createFieldBase(
