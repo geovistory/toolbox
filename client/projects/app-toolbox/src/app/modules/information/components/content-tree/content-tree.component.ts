@@ -12,7 +12,7 @@ import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { PaginationService } from '../../../base/services/pagination.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
@@ -622,13 +622,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1317,  // is part of
         fk_object_info: pkObject
-      }),
-      // .pipe(startWith([])),
+      })
+        .pipe(startWith<InfStatement[]>([])),
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1216,  // is reproduction of
         fk_object_info: pkObject
       })
-      // .pipe(startWith([])),
+        .pipe(startWith<InfStatement[]>([])),
     ])
       .pipe(
         switchMap(([isPartOfStatements, isReproOfStatements]) => {
