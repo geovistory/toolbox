@@ -11,7 +11,6 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { QueryFilterComponent, QueryFilterInjectData } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
-import { values } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 export interface TimeChartContInput {
@@ -168,7 +167,14 @@ export class TimeChartContFormComponent implements OnInit, OnDestroy, AfterViewI
       }
       this.initVal$ = new BehaviorSubject(initVal)
     }
-    this.rootClasses$ = this.c.pipeSelectedTeEnClassesInProject().pipe(map(x => values(x)))
+    this.rootClasses$ = this.c.pipeClassesOfProject().pipe(
+      map(items => items
+        .filter(item => item.belongsToCategory?.entities?.showInAddMenu)
+        .filter(item => item.dfhClass.basic_type === 9)
+        .map(item => item.dfhClass.pk_class)
+      )
+    )
+
     const ffConfig: FormFactoryConfig<TccFormGroupData, TccFormArrayData, TccFormControlData, TccFormChildData> = {
       rootFormGroup$: of({
         data: {

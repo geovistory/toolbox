@@ -1,14 +1,14 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { IAppState } from '@kleiolab/lib-redux';
-import { GvFieldPage, InfStatement, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, InfStatement, SysConfigClassCategoryBelonging, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';
 import { combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { spyTag } from '../decorators/method-decorators';
+import { AddMenuClassOrTypeItem } from '../models/AddMenuClassOrTypeItem';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
 import { FieldPage } from '../models/FieldPage';
@@ -17,7 +17,7 @@ import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
 import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { ConfigurationPipesService, DisplayType, HasTypePropertyInfo } from './configuration-pipes.service';
+import { AddMenuClassItem, ConfigurationPipesService, DisplayType, HasTypePropertyInfo } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
@@ -445,13 +445,62 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     }
   }
 
-  @spyTag
-  // @cache({ refCount: false })
-  pipeClassesAndTypes(enabledIn: 'entities' | 'sources') {
-    const obs$ = this.c.pipeTypeAndTypedClasses(enabledIn).pipe(
-      switchMap(items => this.pipeClassAndTypeNodes(items)),
+  /**
+   * used by add menu
+   */
+  pipeClassesAndTypesOfAddMenu(enabledIn: keyof SysConfigClassCategoryBelonging): Observable<AddMenuClassOrTypeItem[]> {
+    const obs$ = this.c.pipeTypeAndTypedClassesShownInAddMenu(enabledIn).pipe(
+      switchMap(items => this.pipeClassAndTypeOfAddMenu(items)),
     )
-    return this.cache('pipeClassesAndTypes', obs$, ...arguments)
+    return this.cache('pipeClassesAndTypesOfAddMenu', obs$, ...arguments)
+  }
+
+  pipeClassAndTypeOfAddMenu(typeAndTypedClasses: AddMenuClassItem[]): Observable<AddMenuClassOrTypeItem[]> {
+    const obs$ = combineLatestOrEmpty(
+      typeAndTypedClasses.map(node => iif(
+
+        () => !!node.typeClass,
+
+        // if we have a type class pipe types
+        this.b.pipePersistentItemPksByClass(node.typeClass).pipe(
+          switchMap(typePks => combineLatestOrEmpty(
+            typePks.map(pkType => this.p.streamEntityPreview(pkType).pipe(
+              map<WarEntityPreview, AddMenuClassOrTypeItem>(preview => ({
+                label: preview.entity_label,
+                data: {
+                  pkClass: node.typedClass.dfhClass.pk_class,
+                  pkHasTypeProperty: node.hasTypeProperty,
+                  pkType
+                }
+              }))
+            ))
+          ).pipe(
+            sortAbc(n => n.label),
+          )),
+          map(children => ({ node, children }))
+        ),
+        // else no children
+        of({ node, children: [] }),
+      ).pipe(
+        map((item) => {
+          const x: AddMenuClassOrTypeItem = {
+            label: item.node.typedClass.classLabel,
+            helpUrl: item.node.typedClass.classConfig?.docUrl,
+            data: {
+              pkClass: item.node.typedClass.dfhClass.pk_class,
+              pkHasTypeProperty: item.node.hasTypeProperty,
+            },
+            children: item.children
+          }
+          return x
+        })
+      )
+
+      )
+    )
+
+    return this.cache('pipeClassAndTypeNodes', obs$, ...arguments)
+
   }
 
   @spyTag
@@ -463,7 +512,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     return this.cache('pipeClassesAndTypesOfClasses', obs$, ...arguments)
   }
 
-  @spyTag
+  // @spyTag
   // @cache({ refCount: false })
   pipeClassAndTypeNodes(typeAndTypedClasses: HasTypePropertyInfo[]): Observable<ClassAndTypeNode[]> {
     const obs$ = combineLatestOrEmpty(
@@ -546,16 +595,16 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
               pkProperty: f.property.fkProperty
             }))),
           switchMap(items => {
-            if (isTeEn) {
-              // add time properties (at some time within, ...)
-              DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(pkProperty => {
-                items.push({
-                  pkProperty,
-                  sourceClass: pkClass,
-                  isOutgoing: true
-                })
-              })
-            }
+            // if (isTeEn) {
+            //   // add time properties (at some time within, ...)
+            //   DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(pkProperty => {
+            //     items.push({
+            //       pkProperty,
+            //       sourceClass: pkClass,
+            //       isOutgoing: true
+            //     })
+            //   })
+            // }
 
             return combineLatestOrEmpty(items.map(item => this.c.pipeFieldLabel(
               item.sourceClass,

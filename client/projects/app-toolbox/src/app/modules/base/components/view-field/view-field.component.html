@@ -6,7 +6,7 @@
   [ontoInfoLabel]=field.ontoInfoLabel [fieldLabel]=field.label
   [required]="(field.isOutgoing && field.identityDefiningForSource)" [disableToggle]="field.isSpecialField==='has-type'"
   [hideItemsCount]="field.isSpecialField==='has-type'" [removedFromProfiles]=field.allSubfieldsRemovedFromAllProfiles
-  (add)="addClick()">
+  [itemsMax]="field.targetMaxQuantity" [targetClassLabels]=targetClassLabels (add)="addClick()">
 
   <gv-type-item hastype *ngIf="field.isSpecialField==='has-type'" class="ml-3 mat-body mat-text-secondary"
     [pkEntity]="source.fkInfo" [pkProperty]="field.property.fkProperty" [pkTypedClass]="field.sourceClass"

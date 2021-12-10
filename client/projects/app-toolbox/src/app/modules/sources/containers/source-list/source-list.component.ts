@@ -2,16 +2,14 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ClassAndTypePk, SysSelector } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
 import { IAppState, RootEpics } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
-import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { Information } from 'projects/app-toolbox/src/app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
@@ -56,13 +54,15 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     public router: Router,
     public p: ActiveProjectService,
     public sys: SysSelector,
-    private m: BaseModalsService
+    public c: ConfigurationPipesService,
   ) {
     super();
-    this.pkClassesOfAddBtn$ = this.sys.system_relevant_class$.by_required_by_sources$.all$.pipe(
-      first(d => !!d?.true),
-      map(reqBySource => U.obj2Arr(reqBySource.true).map(sysRelClass => sysRelClass.fk_class))
-    )
+    this.pkClassesOfAddBtn$ = this.c.pipeClassesOfProject().pipe(
+      map(items => items
+        .filter(item => item.belongsToCategory?.sources?.showInAddMenu)
+        .map(item => item.dfhClass.pk_class)
+      )
+    );
   }
 
   getBasePath = () => this.basePath;
@@ -78,15 +78,10 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   }
 
 
-  startCreate(classAndTypePk: ClassAndTypePk) {
+  startCreate() {
 
     this.p.setListType('')
 
-    this.m.openAddEntityDialog({
-      pkClass: classAndTypePk.pkClass
-    }).subscribe(result => {
-      this.p.addEntityTab(result.pkEntity, result.pkClass)
-    })
 
 
   }

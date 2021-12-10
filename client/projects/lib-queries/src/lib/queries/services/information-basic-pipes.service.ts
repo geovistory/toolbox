@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {InfStatement, InfTimePrimitive, TimePrimitiveWithCal} from '@kleiolab/lib-sdk-lb4';
-import {CalendarType, Granularity, TimeSpanUtil} from '@kleiolab/lib-utils';
-import {BehaviorSubject, combineLatest, merge, Observable, pipe} from 'rxjs';
-import {filter, map, switchMap} from 'rxjs/operators';
-import {ActiveProjectPipesService} from './active-project-pipes.service';
-import {SchemaSelectorsService} from './schema-selectors.service';
+import { Injectable } from '@angular/core';
+import { InfStatement, InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { CalendarType, Granularity, TimeSpanUtil } from '@kleiolab/lib-utils';
+import { BehaviorSubject, combineLatest, merge, Observable, pipe } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { ActiveProjectPipesService } from './active-project-pipes.service';
+import { SchemaSelectorsService } from './schema-selectors.service';
 
 
 
@@ -34,7 +34,7 @@ export class InformationBasicPipesService {
   * Pipe outgoing statements of an entity
   */
   pipeOutgoingStatements(pkEntity): Observable<InfStatement[]> {
-    return this.s.inf$.statement$.by_subject$({fk_subject_info: pkEntity})
+    return this.s.inf$.statement$.by_subject$({ fk_subject_info: pkEntity })
   }
 
   /**
@@ -156,7 +156,7 @@ export class InformationBasicPipesService {
   /**
    * get array of pks of persistent items of a specific class
    */
-  pipePersistentItemPksByClass(pkClass): Observable<number[]> {
+  pipePersistentItemPksByClass(pkClass: number): Observable<number[]> {
     return this.s.inf$.resource$.by_fk_class_key$(pkClass).pipe(
       map(ob => {
         if (ob) return Object.keys(ob).map(k => parseInt(k, 10));

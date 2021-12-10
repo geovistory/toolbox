@@ -69,13 +69,13 @@ export default sandboxOf(ViewFieldItemClassInfoComponent, {
           font-size:{{size}}px;
           flex-direction: row;
           ">
-              <gv-view-field-item-class-info
+              <gv-field-item-class-info
               [showOntoInfo$]="showOntoInfo$"
               [size]="size"
               [pkClass]="klass.pkClass"
               [classLabel]="klass.classLabel"
               [isFavorite]="isFavorite">
-              </gv-view-field-item-class-info>
+              </gv-field-item-class-info>
               <span>pkClass {{klass.pkClass}} classLabel {{klass.classLabel}} size {{size}} isFavorite {{isFavorite}}</span>
               </div>
           </ng-container>

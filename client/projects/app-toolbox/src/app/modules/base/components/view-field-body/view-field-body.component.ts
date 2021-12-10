@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
+import { SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -57,7 +57,6 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     private i: InformationPipesService,
     private s: SchemaService,
     private ap: ActiveProjectPipesService,
-    private dataService: ReduxMainService,
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)

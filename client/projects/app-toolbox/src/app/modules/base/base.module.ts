@@ -19,9 +19,11 @@ import { AbbreviateModule } from '../../shared/pipes/abbreviate/abbreviate.modul
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
+import { AddEntityMenuClassItemComponent } from './components/add-entity-menu-class-item/add-entity-menu-class-item.component';
+import { AddEntityMenuTypeItemComponent } from './components/add-entity-menu-type-item/add-entity-menu-type-item.component';
+import { AddEntityMenuComponent } from './components/add-entity-menu/add-entity-menu.component';
 import { AddStatementDialogComponent } from './components/add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
-import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
@@ -101,7 +103,9 @@ const components = [
   FormFieldHeaderComponent,
   FormSectionHeaderComponent,
   FormControlComponent,
-  ClassesAndTypesSelectComponent,
+  AddEntityMenuComponent,
+  AddEntityMenuClassItemComponent,
+  AddEntityMenuTypeItemComponent,
   ChooseClassDialogComponent,
   ExistenceTimeHelpComponent,
   AddStatementDialogComponent,

@@ -203,6 +203,8 @@ model/sysClassField.ts
 model/sysClassHasTypeProperty.ts
 model/sysConfigAddProperty.ts
 model/sysConfigAddPropertyForClass.ts
+model/sysConfigClassCategory.ts
+model/sysConfigClassCategoryBelonging.ts
 model/sysConfigFieldDisplay.ts
 model/sysConfigFieldsOfSourceClass.ts
 model/sysConfigFormCtrlType.ts
