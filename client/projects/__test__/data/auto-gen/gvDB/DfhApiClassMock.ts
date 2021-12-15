@@ -686,6 +686,7 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E1"
   }
+  // this is not from OntoME, it is added manually for digitals
   static readonly EN_9901_DEFINITION: DfhApiClass = {
     pk_entity: 9901,
     "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -704,6 +705,71 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_9902_ANNOTATION: DfhApiClass = {
+    pk_entity: 9902,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 9902,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Annotation",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "Annotation.",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
+
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_456_CHUNK: DfhApiClass = {
+    pk_entity: 456,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 456,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Chunk",
+    "dfh_fk_namespace": 30,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "Chunks are intended here in the sense of NLP, i.e. as the result of shallow parsing or chunking: a sentence is analyzed with the aim of identifying constituent parts of sentences (nouns, verbs, adjectives, etc.) and then of linking them to higher order units that have discrete grammatical meanings (noun groups or phrases, verb groups, etc.). Chunks are therefore groups of tokens, generally below the sentence level. They can be used to identify noun phrases, especially in the process of named entities recognition",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C2",
+    "dfh_profile_association_type": "selected"
+  }
+
+
+  static readonly EN_339_STRING: DfhApiClass = {
+    pk_entity: 339,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 339,
+    "dfh_basic_type": 0,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "String",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": null,
+    "dfh_class_scope_note": "This class comprises the instances of E59 Primitive Values used for documentation such as free text strings, bitmaps, vector graphics, etc.\r\nE62 String is not further elaborated upon within the model",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E62",
     "dfh_profile_association_type": "inferred"
   }
 

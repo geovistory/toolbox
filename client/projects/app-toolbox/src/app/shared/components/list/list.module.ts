@@ -2,14 +2,12 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DndModule } from 'ng2-dnd';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
-import { ListAPIActions } from './api/list.actions';
-import { ListAPIEpics } from './api/list.epics';
+import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
+import { EntityPreviewModule } from '../entity-preview/entity-preview.module';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { ListComponent } from './components/list/list.component';
-import { DndModule } from 'ng2-dnd';
-import { EntityPreviewModule } from '../entity-preview/entity-preview.module';
-import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 const components = [
   ListComponent,
   EntitySearchHitComponent
@@ -25,10 +23,7 @@ const components = [
     PassiveLinkModule
   ],
   declarations: components,
-  providers: [
-    ListAPIActions,
-    ListAPIEpics,
-  ],
+  providers: [],
   exports: components
 })
 export class ListModule { }

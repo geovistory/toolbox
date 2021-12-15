@@ -1,35 +1,22 @@
-import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IAppState, RootEpics } from '@kleiolab/lib-redux';
-import { EntitySearchHit } from '@kleiolab/lib-sdk-lb4';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { IAppState } from '@kleiolab/lib-redux';
+import { EntitySearchHit, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { WarEntityPreview } from 'projects/lib-sdk-lb4/src/public-api';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ListAPIActions } from '../../api/list.actions';
-import { ListAPIEpics } from '../../api/list.epics';
-import { List } from '../../api/list.models';
-import { listReducer } from '../../api/list.reducer';
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: listReducer
-})
+
 @Component({
   selector: 'gv-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
-export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class ListComponent implements OnInit, OnDestroy {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
-
-  // local store of this component
-  localStore: ObservableStore<List>;
-
-  // path to the substore
-  @Input() basePath: string[];
 
   @Input() showTeEnPeItFilter: boolean;
 
@@ -37,14 +24,14 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   @Input() pkAllowedClasses$: Observable<number[]>;
   pkAllowedClasses: number[];
 
-
   // emits pk_entity of click
   @Output() onOpen = new EventEmitter<WarEntityPreview>();
 
   // select observables of substore properties
-  @select() loading$: Observable<boolean>;
-  @select() items$: Observable<EntitySearchHit[]>;
-  @select() collectionSize$: Observable<number>;
+  items$ = new BehaviorSubject<EntitySearchHit[]>([]);
+  collectionSize$ = new BehaviorSubject<number>(0);
+  loading$ = new BehaviorSubject<boolean>(false);
+  error$ = new BehaviorSubject<boolean>(false);
 
   // Pagination
   collectionSize: number; // number of search results
@@ -67,11 +54,10 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   selectedType: { value: any, label: string } = this.typeOptions[0];
 
   constructor(
-    protected rootEpics: RootEpics,
-    private epics: ListAPIEpics,
+    private ap: ActiveProjectPipesService,
+    private entityPreviewApi: WarEntityPreviewControllerService,
     public ngRedux: NgRedux<IAppState>
   ) {
-    super();
 
     // listen to selecting entities for annotation
     this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities']);
@@ -79,17 +65,14 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
 
   }
 
-  getBasePath = () => this.basePath;
-
-
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, listReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    // this.localStore = this.ngRedux.configureSubStore(this.basePath, listReducer);
+    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    combineLatest(
-      this.ngRedux.select<number>(['activeProject', 'pk_project']),
+    combineLatest([
+      this.ap.pkProject$,
       this.pkAllowedClasses$
-    ).pipe(
+    ]).pipe(
       first((d) => (d.filter((i) => (!i)).length === 0)),
       takeUntil(this.destroy$)
     )
@@ -105,20 +88,44 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   }
 
   ngOnDestroy() {
-    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
 
   searchProject() {
     if (this.projectId && this.pkAllowedClasses) {
-      this.search(this.projectId, this.searchString, this.pkAllowedClasses, this.selectedType.value, this.limit, this.page)
+      this.search()
     }
   }
 
-  // selectMentionedEntity(entity: MentionedEntity) {
-  //   this.mentionedEntitiesCrtlStore.dispatch(this.mEntitiesActions.addMentionedEntity(entity))
-  // }
+  search() {
+    this.loading$.next(true)
+
+    this.entityPreviewApi.warEntityPreviewControllerSearch({
+      projectId: this.projectId,
+      searchString: this.searchString,
+      pkClasses: this.pkAllowedClasses,
+      entityType: this.selectedType.value,
+      limit: this.limit,
+      page: this.page
+    }).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe({
+      next: (res) => {
+        this.items$.next(res.data)
+        this.collectionSize$.next(res.totalCount)
+        this.error$.next(false)
+        this.loading$.next(false)
+      },
+      error: () => {
+        this.error$.next(true)
+      },
+      complete: () => {
+        this.loading$.next(false)
+
+      }
+    })
+  }
 
   get hitsFrom() {
     return (this.limit * (this.page - 1)) + 1;

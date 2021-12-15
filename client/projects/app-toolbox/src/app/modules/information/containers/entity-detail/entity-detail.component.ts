@@ -1,20 +1,20 @@
-import {NgRedux, ObservableStore, select, WithSubStore} from '@angular-redux/store';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService} from '@kleiolab/lib-queries';
-import {EntityDetail, IAppState, PanelTab, PeItTabData} from '@kleiolab/lib-redux';
-import {GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview} from '@kleiolab/lib-sdk-lb4';
-import {ActiveProjectService} from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import {SubstoreComponent} from 'projects/app-toolbox/src/app/core/basic/basic.module';
-import {MentioningListOf} from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
-import {TruncatePipe} from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
-import {ReduxMainService} from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';
-import {first, map, takeUntil} from 'rxjs/operators';
-import {TabLayout} from '../../../../shared/components/tab-layout/tab-layout';
-import {TabLayoutComponentInterface} from '../../../projects/directives/on-activate-tab.directive';
-import {slideInOut} from '../../shared/animations';
-import {EntityDetailAPIActions} from './api/entity-detail.actions';
-import {entityDetailReducer} from './api/entity-detail.reducer';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { EntityDetail, IAppState, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
+import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
+import { MentioningListOf } from 'projects/app-toolbox/src/app/modules/annotation/components/mentioning-list/mentioning-list.component';
+import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
+import { slideInOut } from '../../shared/animations';
+import { EntityDetailAPIActions } from './api/entity-detail.actions';
+import { entityDetailReducer } from './api/entity-detail.reducer';
 
 
 
@@ -112,7 +112,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true)
 
-    this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({inProject: pkProject})));
+    this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.dataService.loadInfResource(this.pkEntity, pkProject)
         .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
@@ -125,7 +125,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
       this.t.setLayoutMode(b ? 'both' : 'left-only')
     })
 
-    this.listOf = {pkEntity: this.pkEntity, type: 'entity'}
+    this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
 
 
     this.localStore.dispatch(this.actions.init(this.tab.data.peItDetailConfig.peItDetail))
@@ -155,7 +155,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
       })
 
     this.pkEntity$ = of(this.pkEntity)
-    this.source = {fkInfo: this.pkEntity}
+    this.source = { fkInfo: this.pkEntity }
 
   }
 

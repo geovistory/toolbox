@@ -31,12 +31,15 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() showBodyOnInit: boolean
+  @Input() limit = temporalEntityListDefaultLimit
+  @Input() noPagination = false
 
 
   items$: Observable<StatementWithTarget[]>
   itemsCount$: Observable<number>
 
-  limit$ = new BehaviorSubject(temporalEntityListDefaultLimit)
+  limit$: BehaviorSubject<number>
+
   pageIndex$ = new BehaviorSubject(temporalEntityListDefaultPageIndex);
   offset$: Observable<number>;
 
@@ -58,9 +61,6 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     private s: SchemaService,
     private ap: ActiveProjectPipesService,
   ) {
-    this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
-      map(([limit, pageIndex]) => limit * pageIndex)
-    )
 
   }
 
@@ -75,6 +75,12 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
+
+    this.limit$ = new BehaviorSubject(this.limit)
+    if (this.noPagination) this.limit$ = new BehaviorSubject(10000000)
+    this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
+      map(([limit, pageIndex]) => limit * pageIndex)
+    )
 
     this.targetIsUnique = this.field.identityDefiningForTarget && this.field.targetMaxQuantity == 1;
 

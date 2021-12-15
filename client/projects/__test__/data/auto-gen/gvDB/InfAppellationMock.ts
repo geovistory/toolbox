@@ -89,13 +89,13 @@ export class InfAppellationMock {
 
   static readonly VALUE_VERSION_1: OmitEntity<InfAppellation> = ({
     pk_entity: 5014,
-    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
     string: 'This person is the famous jack the foo, invented by KleioLab',
     quill_doc: createQuillDoc('This person is the famous jack the foo, invented by KleioLab')
   })
   static readonly VALUE_VERSION_2: OmitEntity<InfAppellation> = ({
-    pk_entity: 50145,
-    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    pk_entity: 5015,
+    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
     string: 'This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.',
     quill_doc: createQuillDoc('This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.')
   })

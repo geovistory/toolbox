@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import Delta from 'quill-delta';
 import { clone } from 'ramda';
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { DeltaI, Op, Ops } from '../quill.models';
@@ -51,6 +51,8 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   // Max number of characters
   @Input() maxLength = 10000;
 
+  @Input() showCharIdToggleBtn = true;
+
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
   @Output() focus = new EventEmitter<void>()
@@ -96,6 +98,8 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   // Array of event handlers where key is name of event, and value is the hanlder
   // Needed for calling .off(...) on destroy (https://quilljs.com/docs/api/#off)
   eventHandlers: { name: string; handler: any }[] = []
+
+  textLength$ = new BehaviorSubject(0)
 
   constructor(
     private quillEditorService: QuillEditorService,
@@ -182,7 +186,9 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   private registerOnTextChange() {
     this.addHandler('text-change', (delta, oldDelta, source) => {
       this.contentChanged(delta, oldDelta, source);
-      this.textLengthChange.emit((this.quillEditor.getLength() - 1))
+      const l = (this.quillEditor.getLength() - 1)
+      this.textLengthChange.emit(l)
+      this.textLength$.next(l)
     })
   }
 

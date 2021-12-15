@@ -104,7 +104,6 @@ export default sandboxOf(ViewFieldComponent, {
       showOntoInfo$: new BehaviorSubject(false),
       readonly$: new BehaviorSubject(false),
       selectedIndex: 0,
-      dataSource: dataSource
     },
     providers: [
       { provide: VIEW_FIELD_ITEM_TYPE, useValue: 'valueVersion' },

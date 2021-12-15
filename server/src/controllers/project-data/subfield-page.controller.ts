@@ -3,6 +3,7 @@ import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {getModelSchemaRef, post, requestBody} from '@loopback/rest';
 import objectHash from 'object-hash';
+import {performance} from 'perf_hooks';
 import {concat, mergeDeepWith, values} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
 import {QFieldPage3} from '../../components/query/q-field-page-3';
@@ -11,7 +12,6 @@ import {Postgres1DataSource} from '../../datasources';
 import {GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvSubentitFieldPageReq} from '../../models';
 import {TrueEnum} from '../../models/enums/TrueEnum';
 import {GvFieldSourceEntity} from '../../models/field/gv-field-source-entity';
-
 interface ReqsBySource {
   reqs: GvFieldPageReq[];
   source: GvFieldSourceEntity;
@@ -59,13 +59,13 @@ export class SubfieldPageController {
   ): Promise<GvPaginationObject> {
 
 
-    // const t0 = performance.now()
+    const t0 = performance.now()
     const result = this.mergeReqsBySourceInSql ?
       await this.queryPages(reqs) :
       await this.loadPages(reqs);
 
-    // const t1 = performance.now()
-    // console.log('Call to loadSubfieldPages took ms ', t1 - t0)
+    const t1 = performance.now()
+    console.log('Call to loadSubfieldPages took ms ', t1 - t0)
     return result;
   }
 
@@ -94,7 +94,7 @@ export class SubfieldPageController {
 
     if (this.joinNestedInSql) return result
     const nestedReqs = nestedRequestsFromPaginationObject(result)
-    const nestedResult = await this.queryFields(nestedReqs)
+    const nestedResult = await this.queryNestedFields(nestedReqs)
     return mergePaginationObjects([result, nestedResult]);
   }
 
@@ -122,6 +122,22 @@ export class SubfieldPageController {
     const result: GvPaginationObject = mergePaginationObjects(results);
     return result;
   }
+  private async queryNestedFields(reqs: GvFieldPageReq[]) {
+
+    const rs = groupReqsBySource(reqs);
+    // logToFile(JSON.stringify(rs, null, 2), 'by-source')
+
+    const grouped = groupReqsByField(rs)
+    // logToFile(JSON.stringify(grouped, null, 2), 'by-targets')
+
+    const results = await Promise.all(
+      grouped.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, r.sources))
+    );
+    const result: GvPaginationObject = mergePaginationObjects(results);
+    return result;
+  }
+
+
 
   replaceHasTimeSpanWithSixProps(reqs: GvFieldPageReq[]) {
     const index = reqs.findIndex((req) => req.page.property.fkProperty === 4 && req.page.isOutgoing === true)

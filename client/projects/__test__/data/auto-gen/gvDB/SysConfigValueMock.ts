@@ -1,6 +1,6 @@
-import {SysConfigValue} from '@kleiolab/lib-sdk-lb4';
 import {AppellationFormCtrlType} from '../enums/AppellationFormCtrlType';
 import {TrueEnum} from '../enums/TrueEnum';
+import {SysConfigValue} from '@kleiolab/lib-sdk-lb4';
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -1003,10 +1003,41 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "language": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
     },
     "classes": {
+
+      "54": {
+        "viewType": {
+          "language": TrueEnum.true
+        },
+        "formControlType": {
+          "language": TrueEnum.true
+        },
+        "valueObjectType": {
+          "language": TrueEnum.true
+        },
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "218": {
+        belongsToCategory: {
+          sources: {showInAddMenu: false}
+        }
+      },
+      "220": {
+        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 10
+          }
+        }
+      },
       "339": {
         "viewType": {
           "appellation": TrueEnum.true
@@ -1017,9 +1048,29 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "appellation": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
-
+      "456": {
+        "viewType": {
+          "appellation": TrueEnum.true
+        },
+        "formControlType": {
+          "appellation": AppellationFormCtrlType.textEditor
+        },
+        "valueObjectType": {
+          "appellation": TrueEnum.true
+        },
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "9901": {
+        belongsToCategory: {
+          digitals: {showInAddMenu: true}
+        }
+      },
     },
     "addProperty": [
 
@@ -1075,6 +1126,21 @@ export class SysConfigValueMock {
         }
 
       },
+      "incomingProperties": {
+        "99004": {
+          "comment": "geov:P? is annotation in",
+          "formSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          }
+        }
+      }
 
     }
 

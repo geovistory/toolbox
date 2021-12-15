@@ -1,4 +1,7 @@
 import {genSalt, hash} from 'bcrypt';
+import {InfAppellation, InfResource, InfStatement} from '../../../models';
+import {QuillDoc} from '../../../models/quill-doc/quill-doc.model';
+import {QuillOperation} from '../../../models/quill-doc/quill-operation.model';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
 import {createInfLanguage} from '../atomic/inf-language.helper';
@@ -17,10 +20,13 @@ import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
 import {createSysSystemType} from '../atomic/sys-system-type.helper';
 import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
 import {setSequencesToMax} from '../atomic/_sequences.helper';
+import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {OmitEntity} from '../data/gvDB/local-model.helpers';
 import {ProProjectMock} from '../data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../data/gvDB/ProTextPropertyMock';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';
@@ -144,15 +150,30 @@ export async function digitalsSeeds() {
   await createInfAppellation(InfAppellationMock.VALUE_VERSION_2)
 
   await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_1)
-  const hasValueVersion1 = await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2)
+  await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2)
+
+  const {entities, statements, appellations} = createTextVersionWithAnnotations(definition1.pk_entity ?? -1)
+  for (const e of entities) {
+    await createInfResource(e)
+  }
+  for (const s of statements) {
+    await createInfStatement(s)
+  }
+  for (const a of appellations) {
+    await createInfAppellation(a)
+  }
+
 
 
   // add info to sandbox
-  await addInfosToProject(project1.pk_entity, [
-    definition1,
-    hasValueVersion1,
-  ]
-    .map(x => x.pk_entity));
+  await addInfosToProject(
+    project1.pk_entity,
+    [
+      definition1,
+      ...entities,
+      ...statements,
+    ].map(x => x.pk_entity)
+  );
 
 
 
@@ -162,3 +183,105 @@ export async function digitalsSeeds() {
   await setSequencesToMax()
 }
 
+function createTextVersionWithAnnotations(pkText: number) {
+  let pkEntity = 90000
+  const entities: OmitEntity<InfResource>[] = []
+  const statements: OmitEntity<InfStatement>[] = []
+  const appellations: OmitEntity<InfAppellation>[] = []
+
+
+  // the quill-doc
+  const quillDoc: QuillDoc = {latestId: 1, ops: []}
+
+  // the text version
+  const textVersion: OmitEntity<InfAppellation> = {
+    pk_entity: pkEntity++,
+    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
+    quill_doc: quillDoc,
+  }
+  appellations.push(textVersion)
+
+  // the has value version statement
+  const hasValueVersion: OmitEntity<InfStatement> = ({
+    pk_entity: pkEntity++,
+    fk_subject_info: pkText,
+    fk_property: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_object_info: textVersion.pk_entity ?? -1,
+  })
+  statements.push(hasValueVersion)
+
+  const words = ['Peter', 'Anna', 'Hans', 'Doris', 'Lena', 'Marie', 'Jack', 'Susan']
+  for (let i = 0; i < 30; i++) {
+
+    // iterate over words
+    for (const word of words) {
+
+      const chunkOps: QuillOperation[] = []
+      // iterate over characters of word
+      for (const char of word) {
+        quillDoc.latestId++;
+        const op: QuillOperation = {
+          insert: char,
+          attributes: {
+            charid: quillDoc.latestId.toString()
+          }
+        }
+        // add character to the chunk of that word
+        chunkOps.push(op)
+        // add characters to the text version (the long text)
+        quillDoc.ops.push(op)
+      }
+
+      // create InfAppellation Chunk
+      const chunk: OmitEntity<InfAppellation> = {
+        pk_entity: pkEntity++,
+        fk_class: DfhApiClassMock.EN_456_CHUNK.dfh_pk_class,
+        quill_doc: {
+          latestId: quillDoc.latestId,
+          ops: chunkOps
+        }
+      }
+      appellations.push(chunk)
+
+      // create the Annotation
+      const annotation: OmitEntity<InfResource> = {
+        pk_entity: pkEntity++,
+        fk_class: DfhApiClassMock.EN_9902_ANNOTATION.dfh_pk_class,
+        community_visibility: {dataApi: true, website: true, toolbox: true},
+      }
+      entities.push(annotation)
+      // create the statement of the Annotation to the text
+      const isAnnotationOf: OmitEntity<InfStatement> = {
+        pk_entity: pkEntity++,
+        fk_subject_info: annotation.pk_entity ?? -1,
+        fk_property: DfhApiPropertyMock.EN_99004_IS_PART_OF.dfh_pk_property,
+        fk_object_info: pkText ?? -1
+      }
+      statements.push(isAnnotationOf)
+      // create the statement of the Annotation to the chunk
+      const stmtHasSpot: OmitEntity<InfStatement> = {
+        pk_entity: pkEntity++,
+        fk_subject_info: annotation.pk_entity ?? -1,
+        fk_property: DfhApiPropertyMock.EN_99005_HAS_SPOT.dfh_pk_property,
+        fk_object_info: chunk.pk_entity ?? -1
+      }
+      statements.push(stmtHasSpot)
+
+
+      // add a space to the text
+      quillDoc.latestId++;
+      const op: QuillOperation = {
+        insert: ' ',
+        attributes: {
+          charid: quillDoc.latestId.toString()
+        }
+      }
+      quillDoc.ops.push(op)
+    }
+
+  }
+
+
+  return {entities, statements, appellations}
+
+}

@@ -11,10 +11,23 @@
 }
 
 .loc-header {
-  height: 60px;
+  height: 48px;
   padding: 0 16px;
   display: flex;
-  flex-basis: 60px;
+  flex-basis: 48px;
   flex-shrink: 0;
   align-items: center;
+}
+
+.loc-history-header {
+  height: 48px;
+  padding: 0 8px 0 16px;
+  display: flex;
+  flex-basis: 48px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+}
+.loc-toolbar-item ~ .loc-toolbar-item {
+  margin-left: 8px;
 }

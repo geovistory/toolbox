@@ -336,14 +336,14 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
     combineLatest(this.p.ramTargetIsFix$, this.digital$)
       .pipe(delay(0), first())
       .subscribe(([targetIsFix, digital]) => {
-        this.p.ramSource$.next({
-          chunk: {
-            fk_text: digital.pk_text,
-            fk_entity_version: digital.entity_version,
-            fk_namespace: digital.fk_namespace,
-            quill_doc: this.quillDocForChunk(selectedDelta)
-          }
-        });
+        // this.p.ramSource$.next({
+        //   chunk: {
+        //     fk_text: digital.pk_text,
+        //     fk_entity_version: digital.entity_version,
+        //     fk_namespace: digital.fk_namespace,
+        //     quill_doc: this.quillDocForChunk(selectedDelta)
+        //   }
+        // });
 
         this.p.ramBoxLeft$.next('select-text');
         this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);

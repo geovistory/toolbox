@@ -33,11 +33,13 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <div class="loc-tab">
-            <mat-icon class="example-tab-icon">comment_quote_outline</mat-icon>
+            <mat-icon class="example-tab-icon" [svgIcon]="'comment-quote-outline'"></mat-icon>
             Annotations
           </div>
         </ng-template>
-        Content 1
+        <gv-view-field-annotations *ngIf="(scope$|async) && (fkClass$|async)" [scope]="scope$|async"
+          [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source">
+        </gv-view-field-annotations>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>

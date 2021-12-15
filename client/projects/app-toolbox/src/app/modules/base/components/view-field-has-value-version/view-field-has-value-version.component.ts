@@ -1,15 +1,18 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfStatementWithRelations, ProjectDataService, QuillDoc, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfResourceWithRelations, InfStatementWithRelations, ProjectDataService, QuillDoc, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/replaceStatementInFieldRequest';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from 'rxjs';
-import { catchError, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { DeltaI, Op, Ops } from '../../../quill/quill.models';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/view-field-item.component';
 interface QuillDocLoader {
   loading: boolean,
@@ -43,11 +46,18 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
   showHistory$ = new BehaviorSubject(false)
 
 
+  // the selction made by user in editor
+  selectedDelta$ = new BehaviorSubject<DeltaI>(null);
+  selectedChunk: InfAppellation
+  annotationsVisible$ = new BehaviorSubject<boolean>(false);
+
   constructor(
     public fieldApi: SubfieldPageControllerService,
     public dataApi: ReduxMainService,
     public projectData: ProjectDataService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public p: ActiveProjectService,
+    @Optional() public textDetailComponent: TextDetail2Component
   ) { }
 
   ngOnInit(): void {
@@ -115,7 +125,6 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
           hideNoButton: true
         }
       })
-      return;
     }
     const data: ProgressDialogData = {
       title: 'Saving Document',
@@ -175,6 +184,141 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     })
 
   }
+
+
+  /**
+    * When user changes text selection
+    */
+  selectedDeltaChange(d: DeltaI) {
+    if (this.p.ramOpen$.value && !!d && !!d.ops && d.ops.length) {
+      this.setChunk(d);
+    }
+    this.selectedDelta$.next(d)
+  }
+
+  annotate() {
+    // this.t.setLayoutMode('both')
+    this.setChunk(this.selectedDelta$.value);
+    this.p.ramOpen$.next(true);
+  }
+
+
+  private setChunk(selectedDelta: DeltaI) {
+    this.selectedChunk = {
+      fk_class: DfhConfig.CLASS_PK_CHUNK, // mapped to appellation table
+      quill_doc: this.quillDocForChunk(selectedDelta)
+    }
+
+    combineLatest([this.p.ramTargetIsFix$])
+      .pipe(delay(0), first())
+      .subscribe(([targetIsFix]) => {
+        this.p.ramOnSaveCallback = () => this.onSave()
+        this.p.ramSource$.next({
+          chunk: this.selectedChunk
+        });
+
+        this.p.ramBoxLeft$.next('select-text');
+        this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
+        if (!targetIsFix) {
+          this.p.ramTarget$.next();
+          this.p.ramTitle$.next(`Create an annotation`);
+          this.p.ramTitlePart2$.next();
+          this.p.ramBoxCenter$.next(true);
+          this.p.ramBoxRight$.next(true);
+        }
+      });
+  }
+  private quillDocForChunk(selectedDelta: DeltaI): QuillDoc {
+    const latestOp: Op = selectedDelta.ops.reduce(this.latestIdReducer);
+    const latestId: number = parseInt(latestOp.attributes.charid || latestOp.attributes.blockid, 10);
+    const ops: Ops = selectedDelta.ops;
+    const quill_doc: QuillDoc = { ops, latestId };
+    return quill_doc;
+  }
+  private latestIdReducer(a: Op, b: Op): Op {
+    const idOf = (op: Op): string => op.attributes.charid || op.attributes.blockid;
+    const aId = parseInt(idOf(a), 10);
+    const bId = parseInt(idOf(b), 10);
+    return aId > bId ? a : b;
+  }
+
+
+  async onSave() {
+
+    const req = await combineLatest([this.p.pkProject$, this.p.ramTarget$.pipe(filter(x => !!x))])
+      .pipe(
+        map(([pkProject, target]) => {
+          const annotation: InfResourceWithRelations = {
+            fk_class: DfhConfig.CLASS_PK_ANNOTATION,
+            outgoing_statements: [
+              {
+                fk_property: DfhConfig.PROPERTY_PK_ANNOTATION_IS_PART_OF,
+                fk_object_info: this.source.fkInfo // Text
+              },
+              {
+                fk_property: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT,
+                object_appellation: this.selectedChunk
+              },
+              {
+                fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
+                fk_object_info: target
+              }
+            ]
+          }
+          return { pkProject, annotation }
+        }),
+        first(),
+      )
+      .toPromise()
+
+    return this.dataApi.upsertInfResourcesWithRelations(req.pkProject, [req.annotation])
+      .pipe(first())
+      .toPromise()
+  }
+  onCancel() {
+    const data: ConfirmDialogData = {
+      title: 'Cancel edits?',
+      paragraphs: [
+        'Attention: Unsaved changes will be lost.'
+      ],
+      noBtnText: 'Cancel',
+      yesBtnText: 'Confirm',
+      yesBtnColor: 'warn',
+
+    }
+    this.dialog.open(ConfirmDialogComponent, { data })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.loadTrigger$.next();
+          this.editing$.next(false)
+        }
+      })
+  }
+
+  onQuillDocChange(q: QuillDoc) {
+    this.newQuillDoc = q
+    if (this.textDetailComponent) this.textDetailComponent.quillDocUpdated(q)
+  }
+  textNodeMouseenter(chunkPks: number[]) {
+    if (this.textDetailComponent) {
+      if (this.annotationsVisible$.value) {
+        this.textDetailComponent.annotationsToHighlightInList$.next(chunkPks)
+      }
+    }
+  }
+  textNodeMouseleave() {
+    if (this.textDetailComponent) {
+      this.textDetailComponent.annotationsToHighlightInList$.next([])
+    }
+  }
+
+  onNodeClicked(e: number[]) {
+    if (this.textDetailComponent) {
+      this.textDetailComponent.annotationsPinnedInList$.next(e)
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

@@ -1,11 +1,11 @@
-import {GvFieldPageReq} from '@kleiolab/lib-sdk-lb4';
+import {GvFieldPageReq, GvFieldPageScope} from '@kleiolab/lib-sdk-lb4';
 import {TrueEnum} from '../enums/TrueEnum';
-import {DfhApiClassMock} from '../gvDB/DfhApiClassMock';
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock';
-import {InfResourceMock} from '../gvDB/InfResourceMock';
-import {InfStatementMock} from '../gvDB/InfStatementMock';
-import {ProProjectMock} from '../gvDB/ProProjectMock';
-import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq';
+import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
+import {InfResourceMock} from '../gvDB/InfResourceMock'
+import {InfStatementMock} from '../gvDB/InfStatementMock'
+import {ProProjectMock} from '../gvDB/ProProjectMock'
+import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
 
 export namespace GvFieldPageReqMock {
 
@@ -177,7 +177,7 @@ export namespace GvFieldPageReqMock {
   export const definitionHasValueVersion: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
-      [DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class]: {
+      [DfhApiClassMock.EN_339_STRING.dfh_pk_class]: {
         appellation: TrueEnum.true
       }
     },
@@ -190,6 +190,7 @@ export namespace GvFieldPageReqMock {
       offset: 0
     }
   }
+
 
   export const statementOfStatementHasExactReference: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
@@ -207,23 +208,31 @@ export namespace GvFieldPageReqMock {
       offset: 0
     }
   }
+}
+// export const shipVoyageHasTimeSpan: GvFieldPageReq = {
+//   pkProject: ProProjectMock.PROJECT_1.pk_entity,
+//   targets: {
+//     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+//       timeSpan: TrueEnum.true
+//     }
+//   },
+//   page: {
+//     source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
+//     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+//     isOutgoing: true,
+//     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+//     limit: 1,
+//     offset: 0
+//   }
+// }
 
-  // export const shipVoyageHasTimeSpan: GvFieldPageReq = {
-  //   pkProject: ProProjectMock.PROJECT_1.pk_entity,
-  //   targets: {
-  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
-  //       timeSpan: TrueEnum.true
-  //     }
-  //   },
-  //   page: {
-  //     source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
-  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
-  //     isOutgoing: true,
-  //     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
-  //     limit: 1,
-  //     offset: 0
-  //   }
-  // }
 
-
+/**
+ * returns a copy of GvFieldPageReq with differen scope
+ * @param req
+ * @param scope
+ * @returns
+ */
+export function modifiedScope(req: GvFieldPageReq, scope: GvFieldPageScope): GvFieldPageReq {
+  return {...req, page: {...req.page, scope}}
 }

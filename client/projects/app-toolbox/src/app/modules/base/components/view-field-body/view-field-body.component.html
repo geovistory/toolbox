@@ -4,9 +4,9 @@
     <ng-container *ngIf="(items$|async)?.length">
       <div [ngClass]="{'gv-fh': (addMode$|async)}">
         <span class="mat-bg-grey-50">
-          <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="pageIndex$ | async"
-            [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]=true [hidden]="(itemsCount$ | async) <= 5"
-            (page)="onPageChange($event)">
+          <mat-paginator *ngIf="!noPagination" [length]="itemsCount$ | async" [pageSize]="limit$ | async"
+            [pageIndex]="pageIndex$ | async" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]=true
+            [hidden]="(itemsCount$ | async) <= 5" (page)="onPageChange($event)">
           </mat-paginator>
         </span>
         <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>

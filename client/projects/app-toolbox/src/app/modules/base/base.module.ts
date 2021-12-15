@@ -13,6 +13,7 @@ import { OntoInfoModule } from 'projects/app-toolbox/src/app/shared/components/o
 import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.module';
 import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.module';
+import { GvButtonsModule } from '../../shared/components/gv-buttons/gv-buttons.module';
 import { OpenCloseModule } from '../../shared/directives/open-close/open-close.module';
 import { EntityLabelConfigModule } from '../../shared/modules/entity-label-config/entity-label-config.module';
 import { AbbreviateModule } from '../../shared/pipes/abbreviate/abbreviate.module';
@@ -57,6 +58,8 @@ import { HbfPanelComponent } from './components/hbf-panel/hbf-panel.component';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
+import { ViewFieldAnnotationItemComponent } from './components/view-field-annotation-item/view-field-annotation-item.component';
+import { ViewFieldAnnotationsComponent } from './components/view-field-annotations/view-field-annotations.component';
 import { ViewFieldBodyComponent } from './components/view-field-body/view-field-body.component';
 import { ViewFieldDialogComponent } from './components/view-field-dialog/view-field-dialog.component';
 import { ViewFieldHasValueVersionComponent } from './components/view-field-has-value-version/view-field-has-value-version.component';
@@ -152,7 +155,9 @@ const components = [
   ViewTimeSpanItemComponent,
   ViewTimeSpanItemEditBtnComponent,
   ViewTimeSpanHelpDialogComponent,
-  ViewFieldHasValueVersionComponent
+  ViewFieldHasValueVersionComponent,
+  ViewFieldAnnotationsComponent,
+  ViewFieldAnnotationItemComponent
 ]
 
 const baseModules = [
@@ -175,7 +180,8 @@ const baseModules = [
   FormFactoryModule,
   EntityPreviewsPaginatedModule,
   EntityLabelConfigModule,
-  OpenCloseModule
+  OpenCloseModule,
+  GvButtonsModule
 ]
 
 @NgModule({

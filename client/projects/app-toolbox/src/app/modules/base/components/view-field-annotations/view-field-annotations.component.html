@@ -1,0 +1,21 @@
+<!-- Pinned items -->
+<span [hidden]="!(textDetailComponent.annotationsPinnedInList$|async).length">
+  <div class="mat-bg-grey-100 loc-pinned-header ">
+    <mat-icon [svgIcon]="'pin'"></mat-icon>
+    <div class="mat-body">
+      Pinned Annotations
+    </div>
+    <button mat-icon-button class="loc-close-btn" color="primary"
+      (click)="textDetailComponent.annotationsPinnedInList$.next([])">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+
+  <gv-view-field-annotation-item class="mat-bg-primary-50" *ngFor="let i of pinnedItems$|async" [itemData]="i">
+  </gv-view-field-annotation-item>
+</span>
+
+<span [hidden]="(textDetailComponent.annotationsPinnedInList$|async).length">
+  <gv-view-field-annotation-item *ngFor="let i of items$|async" [itemData]="i"></gv-view-field-annotation-item>
+</span>

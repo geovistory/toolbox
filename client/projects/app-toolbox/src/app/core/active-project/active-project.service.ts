@@ -40,9 +40,6 @@ export class ActiveProjectService {
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
 
-  get state(): ProjectDetail {
-    return this.ngRedux.getState().activeProject;
-  }
 
   // classPksEnabledInEntities$: Observable<number[]>
 
@@ -71,6 +68,11 @@ export class ActiveProjectService {
 
 
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
+  ramOnSaveCallback = async (): Promise<any> => { };
+
+  get state(): ProjectDetail {
+    return this.ngRedux.getState().activeProject;
+  }
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -253,6 +255,7 @@ export class ActiveProjectService {
     this.ramBoxCenter$.next(false)
     this.ramBoxRight$.next(false)
     this.ramTargetIsFix$.next(false)
+    this.ramOnSaveCallback = undefined
   }
 
 

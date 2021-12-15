@@ -14,6 +14,11 @@
 
       <div class="gv-main-categories btn-group-vertical rounded-0 d-block">
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='digitals'}" (click)="setList('digitals')">
+          <mat-icon [svgIcon]="'gv:outlined-gv-digitals'" class="gv-digitals-primary-color"></mat-icon>
+          <div>Digitals</div>
+        </button>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='sources'}" (click)="setList('sources')">
           <div class="fa-2x gv-icon gv-icon-source gv-source-color"></div>
           <div>Sources</div>
@@ -55,10 +60,9 @@
         <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%; z-index: 2000"
           (click)="list.close()" (positionChanged)="setList('')">
           <i class="fa fa-chevron-left"></i> </button>
+        <gv-digitals-list *ngIf="(p.list$ | async) === 'digitals'"></gv-digitals-list>
         <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
-        <!-- <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
-        <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list> -->
         <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'" class="h-100 gv-flex-fh"></gv-analysis-list>
         <div *ngIf="(p.list$ | async) === 'stories'">
           <gv-list-drawer-header>

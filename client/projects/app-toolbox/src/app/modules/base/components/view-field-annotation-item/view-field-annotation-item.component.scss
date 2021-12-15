@@ -1,0 +1,32 @@
+.loc-row {
+  display: flex;
+  flex-direction: row;
+}
+.loc-row-left {
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.loc-col {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 50%;
+}
+.loc-col ~ .loc-col {
+  margin-left: 16px;
+}
+.loc-actions {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 40px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  padding: 8px;
+}
+.loc-col-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

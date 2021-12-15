@@ -6,7 +6,6 @@
     </gv-add-entity-menu>
   </gv-list-drawer-header>
 
-  <gv-list class="gv-flex-fh" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)"
-    [pkAllowedClasses$]="pkClassesOfAddBtn$"> </gv-list>
+  <gv-list class="gv-flex-fh" (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkClassesOfAddBtn$"> </gv-list>
 
 </div>

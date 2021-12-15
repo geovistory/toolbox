@@ -1,6 +1,5 @@
 import { DatDigital } from '@kleiolab/lib-sdk-lb3';
 import { IVersion } from 'projects/app-toolbox/src/app/modules/data/components/version-picker/version-picker.component';
-import { List } from 'projects/app-toolbox/src/app/shared/components/list/api/list.models';
 import Delta from 'quill-delta';
 
 
@@ -73,7 +72,6 @@ export interface ISourceListState {
   // the filter applied to the list-query
   filter?: string;
   // the list of sources (search result)
-  list?: List,
   // if source being created
   // create?: CreateOrAddEntity,
   // the source being edited

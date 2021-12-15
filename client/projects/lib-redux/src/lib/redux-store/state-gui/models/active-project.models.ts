@@ -1,5 +1,5 @@
 import { ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
-import { DatChunk, InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { EntityDetail } from './active-project/entity-detail';
 import { ProjectSettingsData } from './active-project/project-settings-data.models';
@@ -46,7 +46,7 @@ export interface Panel {
   tabs: PanelTab<any>[];
 }
 
-export type ListType = '' | 'entities' | 'sources' | 'analysis' | 'queries' | 'visuals' | 'stories' | 'settings';
+export type ListType = '' | 'digitals' | 'entities' | 'sources' | 'analysis' | 'queries' | 'visuals' | 'stories' | 'settings';
 export interface PanelTab<D> {
   // wheter tab is active or not
   active: boolean;
@@ -103,7 +103,7 @@ export interface TabData {
 
 export interface RamSource {
   pkEntity?: number,
-  chunk?: DatChunk;
+  chunk?: InfAppellation;
 }
 
 export interface ProjectDetail extends ProjectPreview {

@@ -1,0 +1,204 @@
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { DfhConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
+import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
+import { PaginationService } from '../../services/pagination.service';
+export interface ViewFieldAnnotationItemData {
+  hasAnnotation: StatementWithTarget;
+  hasSpot: StatementWithTarget[];
+  refersTo: StatementWithTarget[];
+}
+@Component({
+  selector: 'gv-view-field-annotations',
+  templateUrl: './view-field-annotations.component.html',
+  styleUrls: ['./view-field-annotations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class ViewFieldAnnotationsComponent implements OnInit {
+
+  destroy$ = new Subject<boolean>();
+
+  @Input() pkClass: number;
+  @Input() source: GvFieldSourceEntity;
+  @Input() scope: GvFieldPageScope
+  @Input() readonly$: Observable<boolean>
+  @Input() showOntoInfo$: Observable<boolean>
+  items$: Observable<ViewFieldAnnotationItemData[]>
+  pinnedItems$: Observable<ViewFieldAnnotationItemData[]>
+
+  constructor(
+    private p: ActiveProjectService,
+    private pag: PaginationService,
+    private i: InformationPipesService,
+    private c: ConfigurationPipesService,
+    public textDetailComponent: TextDetail2Component
+  ) {
+
+  }
+
+  ngOnInit() {
+    const errors: string[] = []
+    if (!this.source) errors.push('@Input() pkEntity is required.');
+    if (!this.scope) errors.push('@Input() scope is required.');
+    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
+    const gvFieldPageReq$ = this.createGvFieldPageReq();
+    const annotations$ = gvFieldPageReq$.pipe(
+      switchMap((field) => {
+        // load data from server
+        this.pag.addPageLoader(field, this.destroy$)
+
+        // pipe data from store
+        return this.i.pipeFieldPage(field.page, field.targets, false)
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    );
+
+    const unsorted$: Observable<ViewFieldAnnotationItemData[]> = annotations$.pipe(
+      switchMap(as =>
+
+        combineLatestOrEmpty(as.statements.map(s =>
+          combineLatest([
+            //  subentity field has spot
+            this.i.pipeFieldPage({
+              isOutgoing: true,
+              property: { fkProperty: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT },
+              limit: 1,
+              offset: 0,
+              scope: this.scope,
+              source: { fkInfo: s.target.entity.resource.pk_entity }
+            }, {}, false),
+            //  subentity field refers to
+            this.i.pipeFieldPage({
+              isOutgoing: true,
+              property: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+              limit: 1,
+              offset: 0,
+              scope: this.scope,
+              source: { fkInfo: s.target.entity.resource.pk_entity }
+            }, {}, false),
+          ]).pipe(
+            map(([hasSpot, refersTo]) => ({
+              hasAnnotation: s,
+              hasSpot: hasSpot.statements,
+              refersTo: refersTo.statements
+            }))
+          )
+        ))
+      ),
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    )
+
+    this.items$ = combineLatest([unsorted$, this.textDetailComponent.characterPositionMap$]).pipe(
+      map(([unsorted, positions]) => {
+        const getPositon = (stmts: StatementWithTarget[]): number =>
+          positions[stmts?.[0]?.target?.appellation?.quill_doc?.ops?.[0]?.attributes?.charid]
+        return unsorted.sort((a, b) => {
+          return getPositon(a.hasSpot) - getPositon(b.hasSpot)
+        })
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    )
+    this.pinnedItems$ = combineLatest([this.items$, this.textDetailComponent.annotationsPinnedInList$]).pipe(
+      map(([items, pinned]) => items.filter(item => pinned.includes(item.hasAnnotation.target.entity.resource.pk_entity)))
+    )
+
+    unsorted$.pipe(takeUntil(this.destroy$)).subscribe(items => {
+      this.updateAnnotatedCharsMap(items)
+    })
+  }
+
+
+  private createGvFieldPageHasAnnotation(): GvFieldPage {
+    return {
+      isOutgoing: false,
+      property: { fkProperty: DfhConfig.PROPERTY_PK_ANNOTATION_IS_PART_OF },
+      limit: 100000,
+      offset: 0,
+      scope: this.scope,
+      source: this.source
+    }
+  }
+
+  private createGvFieldPageReq(): Observable<GvFieldPageReq> {
+    const refersToTargets$: Observable<GvFieldTargets> = this.c.pipeClassesEnabledByProjectProfiles().pipe(
+      map(allClasses => {
+        const refersToTarget: GvFieldTargets = {}
+        allClasses.forEach(pkClass => {
+          refersToTarget[pkClass.pk_class] = { entityPreview: 'true' }
+        })
+        return refersToTarget
+      })
+    )
+
+    return combineLatest([this.p.pkProject$, refersToTargets$])
+      .pipe(
+        first(),
+        map(([pkProject, refersToTargets]) => {
+          return {
+            pkProject,
+            targets: {
+              [DfhConfig.CLASS_PK_ANNOTATION]: {
+
+                nestedResource: [
+                  {
+                    page: {
+                      isOutgoing: true,
+                      property: { fkProperty: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT },
+                      limit: 1,
+                      offset: 0,
+                      isCircular: false
+                    },
+                    targets: {
+                      [DfhConfig.CLASS_PK_CHUNK]: {
+                        appellation: 'true'
+                      }
+                    }
+                  },
+                  {
+                    page: {
+                      isOutgoing: true,
+                      property: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+                      limit: 1,
+                      offset: 0,
+                      isCircular: false
+                    },
+                    targets: refersToTargets
+                  }
+                ]
+
+              }
+            },
+            page: this.createGvFieldPageHasAnnotation()
+          }
+        })
+      )
+  }
+
+  /**
+   * updates the annotatedCharsMap of textDetail
+   * @param items
+   */
+  updateAnnotatedCharsMap(items: ViewFieldAnnotationItemData[]) {
+    const annotatedCharsMap: IndexedCharids<number[]> = {}
+    items.forEach(item => {
+      const ops = item.hasSpot?.[0]?.target?.appellation?.quill_doc?.ops
+      if (ops) {
+        ops.forEach(op => {
+          const id = op?.attributes?.charid
+          if (id) annotatedCharsMap[id] = [...(annotatedCharsMap[id] || []), item.hasAnnotation.target.entity.resource.pk_entity]
+        })
+      }
+    })
+    this.textDetailComponent.annotatedCharsMap$.next(annotatedCharsMap);
+  }
+
+}

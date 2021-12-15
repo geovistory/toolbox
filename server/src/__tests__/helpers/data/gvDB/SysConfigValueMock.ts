@@ -1003,7 +1003,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "language": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
     },
     "classes": {
@@ -1018,7 +1020,23 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "language": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "218": {
+        belongsToCategory: {
+          sources: {showInAddMenu: false}
+        }
+      },
+      "220": {
+        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 10
+          }
+        }
       },
       "339": {
         "viewType": {
@@ -1030,9 +1048,29 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "appellation": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
-
+      "456": {
+        "viewType": {
+          "appellation": TrueEnum.true
+        },
+        "formControlType": {
+          "appellation": AppellationFormCtrlType.textEditor
+        },
+        "valueObjectType": {
+          "appellation": TrueEnum.true
+        },
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "9901": {
+        belongsToCategory: {
+          digitals: {showInAddMenu: true}
+        }
+      },
     },
     "addProperty": [
 
@@ -1088,6 +1126,21 @@ export class SysConfigValueMock {
         }
 
       },
+      "incomingProperties": {
+        "99004": {
+          "comment": "geov:P? is annotation in",
+          "formSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          }
+        }
+      }
 
     }
 

@@ -1,8 +1,8 @@
 <span class="loc-left mat-typography">
-  <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
+  <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
     [pkClass]="itemComponent.item.targetClass"
     [classLabel]="field.targets[itemComponent.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===0">
-  </gv-view-field-item-class-info>
+  </gv-class-info>
 
   <div class="ellipsis">
     Version ID: {{itemComponent.item.statement.pk_entity}}

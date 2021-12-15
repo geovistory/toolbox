@@ -56,3 +56,11 @@
   display: flex;
   -webkit-display: flex;
 }
+
+.gv-nav-btn {
+  mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+}
