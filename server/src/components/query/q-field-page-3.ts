@@ -70,7 +70,7 @@ interface DirectedProperty {
 }
 
 interface FinalSelectSpec {
-  fkProperty: number,
+  property: GvFieldProperty,
   isOutgoing: boolean,
   sourceClasses: number[]
   _req: GvFieldPageReq // only for the final result
@@ -357,6 +357,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       SELECT
         t2.fk_source,
         t2.fk_property,
+        t2.fk_property_of_property,
         t2.is_outgoing,
         t2.scope,
         COALESCE(jsonb_agg(t2.stmt_with_target) FILTER (WHERE t2.stmt_with_target IS NOT NULL), '[]'::jsonb) paginatedStatements,
@@ -371,6 +372,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       GROUP BY
         t2.fk_source,
         t2.fk_property,
+        t2.fk_property_of_property,
         t2.is_outgoing,
         t2.scope,
         t2.count
@@ -413,7 +415,8 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         )
         SELECT
           t1.pk_entity as fk_source,
-          ${this.addParam(property.fkProperty)} as fk_property,
+          ${this.addParam(property.fkProperty ?? 0)} as fk_property,
+          ${this.addParam(property.fkPropertyOfProperty ?? 0)} as fk_property_of_property,
           ${this.addParam(isOutgoing)}::boolean as is_outgoing,
           '${JSON.stringify(scope)}'::jsonb as scope,
           filteredStmts.fk_target,
@@ -514,6 +517,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       t2.${statementTargetFk} as fk_target,
       t2.fk_property,
       t2.pk_entity as pk_statement,
+      t2.fk_property_of_property,
       jsonb_strip_nulls(jsonb_build_object(
         'isOutgoing', ${this.addParam(isOutgoing)}::boolean,
         ${scope.inProject ? `
@@ -560,9 +564,9 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         FROM information.statement t4,
              projects.info_proj_rel t5
         WHERE
-          t1.pk_entity = t2.${statementSourceFk}
+          t1.pk_entity = t4.${statementSourceFk}
         AND
-          t2.${propertyFk} = ${this.addParam(propertyId)}
+          t4.${propertyFk} = ${this.addParam(propertyId)}
         AND
           t4.pk_entity = t5.fk_entity
         AND
@@ -845,7 +849,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       .map(x => this.paginationInfoPerSourceAndProperty(
         sourceSubqueryTw,
         joinSubqueryTw,
-        x.fkProperty,
+        x.property,
         x.isOutgoing,
         x.sourceClasses,
         x._req
@@ -866,7 +870,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
   paginationInfoPerSourceAndProperty(
     sourceSubqueryTw: string,
     groupBySubqueryTw: string,
-    fkProperty: number,
+    property: GvFieldProperty,
     isOutgoing: boolean,
     sourceClasses: number[],
     req: GvFieldPageReq
@@ -888,7 +892,8 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     FROM ${sourceSubqueryTw}
     LEFT JOIN ${groupBySubqueryTw}
       on ${groupBySubqueryTw}.fk_source = ${sourceSubqueryTw}.pk_entity
-      AND ${groupBySubqueryTw}.fk_property = ${this.addParam(fkProperty)}
+      AND ${groupBySubqueryTw}.fk_property = ${this.addParam(property.fkProperty ?? 0)}
+      AND ${groupBySubqueryTw}.fk_property_of_property = ${this.addParam(property.fkPropertyOfProperty ?? 0)}
       AND ${groupBySubqueryTw}.is_outgoing = ${this.addParam(isOutgoing)}
       AND ${groupBySubqueryTw}.scope = '${JSON.stringify(req.page.scope)}'::jsonb
       ${sourceClasses.length ?
@@ -963,7 +968,7 @@ function transformFinalSpecs(directedProps: DirectedProperty[]): FinalSelectSpec
     })
     const s: FinalSelectSpec = {
       _req: d._req,
-      fkProperty: d.property.fkProperty ?? d.property.fkPropertyOfProperty ?? -1,
+      property: d.property,
       isOutgoing: d.isOutgoing,
       sourceClasses
     }

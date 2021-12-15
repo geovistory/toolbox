@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
-import { GvFieldPageScope, GvFieldSourceEntity, InfResource, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, InfResource, InfResourceWithRelations, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { SeachExistingEntityMoreEvent } from '../search-existing-entity/search-e
 
 export interface AddEntityDialogData {
   pkClass: number;
+  initVal?: InfResourceWithRelations;
 }
 
 export type CreateEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
@@ -50,6 +51,7 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
   entityCardReadOnly$ = new BehaviorSubject(true);
   entityCardScope: GvFieldPageScope;
   source$: Observable<GvFieldSourceEntity>;
+  initVal$: Observable<InfResourceWithRelations>
 
   @ViewChild('f', { static: true }) form: NgForm;
 
@@ -66,6 +68,7 @@ export class AddEntityDialogComponent implements OnDestroy, OnInit {
 
     this.pkClass$ = of(data.pkClass);
     this.pkClass = data.pkClass;
+    if (data.initVal) this.initVal$ = of(data.initVal)
   }
 
 

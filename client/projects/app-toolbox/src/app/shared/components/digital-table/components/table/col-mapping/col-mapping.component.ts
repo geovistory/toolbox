@@ -8,6 +8,7 @@ import { SchemaService } from '@kleiolab/lib-redux';
 import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../confirm-dialog/confirm-dialog.component';
@@ -74,22 +75,22 @@ export class ColMappingComponent implements OnInit, OnDestroy {
     });
 
     // get the classes
-    this.classes$ = combineLatest([this.c.pipeClassesEnabledByProjectProfiles().pipe(
-      switchMap(klasses => combineLatestOrEmpty(klasses
-        .map(klass => this.c.pipeClassLabel(klass.pk_class).pipe(
+    this.classes$ = combineLatest([this.c.pipeClassesOfProject().pipe(
+      switchMap(items => combineLatestOrEmpty(items
+        .map(item => this.c.pipeClassLabel(item.dfhClass.pk_class).pipe(
           map(label => ({
             label,
-            pkClass: klass.pk_class
+            item
           }))
         ))))
     ), this.sys.config$.main$]).pipe(
-      map(([classes, config]) => {
+      map(([items, config]) => {
         const specialClasses: Array<ClassOption> = [];
         const normalClasses: Array<ClassOption> = [];
-        classes.forEach(c => {
-          const configOfClass = config.classes[c.pkClass]
-          if (configOfClass && configOfClass.valueObjectType) specialClasses.push(c);
-          else if (!configOfClass || !configOfClass.excludedFromEntities) normalClasses.push(c);
+        items.forEach(i => {
+          const o: ClassOption = { pkClass: i.item.dfhClass.pk_class, label: i.label }
+          if (i.item.classConfig?.valueObjectType) specialClasses.push(o);
+          else if (!values(i.item.belongsToCategory)?.[0]?.showInAddMenu === false) normalClasses.push(o);
         })
         normalClasses.sort((a, b) => a.label < b.label ? -1 : 1);
         specialClasses.sort((a, b) => a.label < b.label ? -1 : 1);

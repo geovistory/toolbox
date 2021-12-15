@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DfhConfig } from '@kleiolab/lib-config';
-import { IconType } from '@kleiolab/lib-redux';
 import { InfStatement, InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { CalendarType, Granularity, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, merge, Observable, pipe } from 'rxjs';
@@ -158,7 +156,7 @@ export class InformationBasicPipesService {
   /**
    * get array of pks of persistent items of a specific class
    */
-  pipePersistentItemPksByClass(pkClass): Observable<number[]> {
+  pipePersistentItemPksByClass(pkClass: number): Observable<number[]> {
     return this.s.inf$.resource$.by_fk_class_key$(pkClass).pipe(
       map(ob => {
         if (ob) return Object.keys(ob).map(k => parseInt(k, 10));
@@ -166,27 +164,6 @@ export class InformationBasicPipesService {
       }))
   }
 
-  /**
-   * gets the css classes for that entity
-   * @param pkEntity
-   */
-  pipeIconType(pkEntity: number): Observable<IconType> {
-
-    return this.p.streamEntityPreview(pkEntity).pipe(
-      map(preview => {
-        if (preview.entity_type == 'teEn') {
-          return 'temporal-entity'
-        }
-        if (preview.fk_class === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
-          return 'expression-portion'
-        } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(preview.fk_class)) {
-          return 'source'
-        }
-        return 'persistent-entity'
-      })
-    )
-
-  }
 
 
 }

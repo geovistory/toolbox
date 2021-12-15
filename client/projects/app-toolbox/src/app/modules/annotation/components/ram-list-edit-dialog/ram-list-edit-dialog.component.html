@@ -21,13 +21,9 @@
 </h1>
 <div mat-dialog-content>
   <mat-divider></mat-divider>
-  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-view-sections">
-    <mat-nested-tree-node *matTreeNodeDef="let field">
-      <!-- <gv-view-field [treeControl]="treeControl" [source]="{fkInfo:data.statement.pk_entity}" [showOntoInfo$]="showOntoInfo$"
-        [field]="field" [readonly$]="readonly$">
-      </gv-view-field> -->
-    </mat-nested-tree-node>
-  </mat-tree>
+  <gv-view-field [showBodyOnInit]=true [field]="field" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
+    [source]="{fkInfo:data.statement.pk_entity}" [scope]="data.scope">
+  </gv-view-field>
 
 </div>
 <div mat-dialog-actions>

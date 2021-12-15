@@ -1,16 +1,15 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase } from '@kleiolab/lib-queries';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
+import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 export interface RamListEditDialogData {
 
   // the root statement of the dialog
   statement: InfStatement;
-
+  scope: GvFieldPageScope
   propertyLabel: string
 
 }
@@ -67,16 +66,12 @@ export class RamListEditDialogComponent implements OnInit {
 
   readonly$ = new BehaviorSubject(false);
   showOntoInfo$ = new BehaviorSubject(false)
-  treeControl = new NestedTreeControl<Field>(node => ([]))
-  dataSource = new MatTreeNestedDataSource<Field>()
+  field: Field
   constructor(
     public dialogRef: MatDialogRef<RamListEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RamListEditDialogData,
   ) {
-
-    this.dataSource.data = [fieldAtReferencePoP];
-    this.treeControl.expand(fieldAtReferencePoP)
-
+    this.field = fieldAtReferencePoP
   }
 
   ngOnInit() {

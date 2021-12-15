@@ -1,11 +1,11 @@
 import {GvFieldPageReq} from '@kleiolab/lib-sdk-lb4';
 import {TrueEnum} from '../enums/TrueEnum';
-import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
-import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
-import {InfResourceMock} from '../gvDB/InfResourceMock'
-import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {ProProjectMock} from '../gvDB/ProProjectMock'
-import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq'
+import {DfhApiClassMock} from '../gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock';
+import {InfResourceMock} from '../gvDB/InfResourceMock';
+import {InfStatementMock} from '../gvDB/InfStatementMock';
+import {ProProjectMock} from '../gvDB/ProProjectMock';
+import {GvSubentityFieldPageReqMock} from './GvSubentityFieldPageReq';
 
 export namespace GvFieldPageReqMock {
 
@@ -191,6 +191,39 @@ export namespace GvFieldPageReqMock {
     }
   }
 
+  export const statementOfStatementHasExactReference: GvFieldPageReq = {
+    pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    targets: {
+      [DfhApiClassMock.EN_785_TEXT.dfh_pk_class]: {
+        langString: TrueEnum.true
+      }
+    },
+    page: {
+      source: {fkInfo: InfStatementMock.EXPRESSION_MENTIONS_RUDOLF.pk_entity},
+      property: {fkPropertyOfProperty: 1},
+      isOutgoing: true,
+      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      limit: 7,
+      offset: 0
+    }
+  }
+
+  // export const shipVoyageHasTimeSpan: GvFieldPageReq = {
+  //   pkProject: ProProjectMock.PROJECT_1.pk_entity,
+  //   targets: {
+  //     [DfhApiClassMock.EN_50_TIME_SPAN.dfh_pk_class]: {
+  //       timeSpan: TrueEnum.true
+  //     }
+  //   },
+  //   page: {
+  //     source: {fkInfo: InfResourceMock.SHIP_VOYAGE.pk_entity},
+  //     property: {fkProperty: DfhApiPropertyMock.EN_4_HAS_TIME_SPAN.dfh_pk_property},
+  //     isOutgoing: true,
+  //     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+  //     limit: 1,
+  //     offset: 0
+  //   }
+  // }
 
 
 }

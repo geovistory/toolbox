@@ -3,16 +3,16 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, InformationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { ByPk } from '@kleiolab/lib-redux';
-import { DatDigital, GvFieldPageReq, ImportTableResponse, InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { DatDigital, GvFieldPage, GvFieldPageReq, ImportTableResponse, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { ImporterComponent, ImporterDialogData } from 'projects/app-toolbox/src/app/modules/data/components/importer/importer.component';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { PaginationService } from '../../../base/services/pagination.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
@@ -151,6 +151,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private service: NgContentTreeService,
     private p: SchemaSelectorsService,
     private pag: PaginationService,
+    private i: InformationPipesService,
     private c: ConfigurationPipesService
   ) { }
 
@@ -170,10 +171,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   }
 
+
   /**
    * Loads the entity that is the root of the content tree
    */
   loadRootEntity(pkEntity: number, fkClass: number, pkProject: number) {
+
+    this.c.pipeFields(fkClass).pipe()
 
     // if we start from a source like class
     // load the statement that associates source --> expression
@@ -181,14 +185,18 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       this.rootIsF2Expression = true;
       this.fkPropertyFromSource = this.getFkPropertyFromSource(fkClass);
       this.sourceIsDomain = this.isSourceDomain(fkClass);
-      this.loadStatementToExpression(
+      const fieldPage = this.getFieldPage(
         pkProject,
         pkEntity,
         this.fkPropertyFromSource,
         this.sourceIsDomain,
+      )
+      this.loadStatementToExpression(
+        pkProject,
+        fieldPage,
         this.destroy$
       )
-      this.pkExpression$ = this.pipeExpression(pkEntity, this.fkPropertyFromSource, this.sourceIsDomain)
+      this.pkExpression$ = this.pipeExpression(fieldPage)
 
       this.pkRoot$ = this.pkExpression$;
     }
@@ -578,28 +586,34 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * @param fkProperty the fkProperty connecting source entity and expression
    * @param isOutgoing the direction of the property (true if source entity is subject)
    */
-  pipeExpression(pkSource: number, fkProperty: number, isOutgoing: boolean): Observable<number> {
+  pipeExpression(fieldPage: GvFieldPage): Observable<number> {
 
-    // TODO: instead of this custom implementation, we could use InformationPipeService.pipePage() ??
-    let selector$: Observable<InfStatement[]>;
-    let mapper: (x: InfStatement[]) => number;
-    if (isOutgoing) {
-      selector$ = this.p.inf$.statement$.by_subject_and_property$(
-        { fk_subject_info: pkSource, fk_property: fkProperty }, false);
-      mapper = (x) => x[0].fk_object_info
-    } else {
-      selector$ = this.p.inf$.statement$.by_object_and_property$(
-        { fk_object_info: pkSource, fk_property: fkProperty }, false);
-      mapper = (x) => x[0].fk_subject_info
-    }
 
-    return selector$.pipe(
-      tap((xs) => {
-        if (xs.length !== 1) console.warn('number of expressions must be one');
-      }),
-      filter((xs) => xs.length > 0),
-      map(mapper)
-    );
+    return this.i.pipeFieldPage(fieldPage, {}, false).pipe(
+      map(p => p.statements?.[0].target?.entity?.resource?.pk_entity),
+      filter(id => !!id)
+    )
+
+    // // TODO: instead of this custom implementation, we could use InformationPipeService.pipePage() ??
+    // let selector$: Observable<InfStatement[]>;
+    // let mapper: (x: InfStatement[]) => number;
+    // if (isOutgoing) {
+    //   selector$ = this.p.inf$.statement$.by_subject_and_property$(
+    //     { fk_subject_info: pkSource, fk_property: fkProperty }, false);
+    //   mapper = (x) => x[0].fk_object_info
+    // } else {
+    //   selector$ = this.p.inf$.statement$.by_object_and_property$(
+    //     { fk_object_info: pkSource, fk_property: fkProperty }, false);
+    //   mapper = (x) => x[0].fk_subject_info
+    // }
+
+    // return selector$.pipe(
+    //   tap((xs) => {
+    //     if (xs.length !== 1) console.warn('number of expressions must be one');
+    //   }),
+    //   filter((xs) => xs.length > 0),
+    //   map(mapper)
+    // );
   }
 
   pipeChildren(pkObject): Observable<StatementNode[]> {
@@ -608,13 +622,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1317,  // is part of
         fk_object_info: pkObject
-      }),
-      // .pipe(startWith([])),
+      })
+        .pipe(startWith<InfStatement[]>([])),
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1216,  // is reproduction of
         fk_object_info: pkObject
       })
-      // .pipe(startWith([])),
+        .pipe(startWith<InfStatement[]>([])),
     ])
       .pipe(
         switchMap(([isPartOfStatements, isReproOfStatements]) => {
@@ -729,26 +743,32 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   //     )
   // }
 
-
-  loadStatementToExpression(
+  getFieldPage(
     pkProject: number,
     pkEntity: number,
     fkProperty: number,
     isOutgoing: boolean,
+  ): GvFieldPage {
+    return {
+      isOutgoing,
+      property: { fkProperty },
+      scope: { inProject: pkProject },
+      source: { fkInfo: pkEntity },
+      limit: 1,
+      offset: 0
+    }
+  }
+
+  loadStatementToExpression(
+    pkProject: number,
+    fieldPage: GvFieldPage,
     destroy$: Observable<boolean>
   ) {
-    const fieldPage: GvFieldPageReq = {
+    const fieldPageReq: GvFieldPageReq = {
       pkProject,
-      page: {
-        isOutgoing,
-        property: { fkProperty },
-        scope: { inProject: pkProject },
-        source: { fkInfo: pkEntity },
-        limit: 1,
-        offset: 0
-      },
+      page: fieldPage,
       targets: { [DfhConfig.CLASS_PK_EXPRESSION]: { entityPreview: 'true' } }
     }
-    this.pag.addPageLoader(fieldPage, destroy$);
+    this.pag.addPageLoader(fieldPageReq, destroy$);
   }
 }

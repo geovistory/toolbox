@@ -14,6 +14,7 @@ export class SysConfigValueMock {
       communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
       communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
       projectVisibilityDefault: {dataApi: false, website: false},
+      belongsToCategory: {entities: {showInAddMenu: true}}
     },
     "classesByBasicType": {
       "8": {
@@ -43,7 +44,9 @@ export class SysConfigValueMock {
     },
     "classes": {
       "1": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "40": {
         "viewType": {
@@ -55,10 +58,19 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "appellation": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "41": {
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "50": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "51": {
         "formControlType": {
@@ -67,7 +79,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "place": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "52": {
         "viewType": {
@@ -85,7 +99,9 @@ export class SysConfigValueMock {
             "measurementUnitClass": 56
           }
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "54": {
         "viewType": {
@@ -97,13 +113,69 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "language": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "70": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "218": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          sources: {showInAddMenu: false}
+        }
+      },
+      "220": {
+        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 10
+          }
+        }
+      },
+      "503": {
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 20
+          }
+        }
+      },
+      "219": {
+        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 30
+          }
+        }
+      },
+      "221": {
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 40
+          }
+        }
+      },
+      "234": {
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 50
+          }
+        }
+      },
+      "502": {
+        belongsToCategory: {
+          sources: {
+            showInAddMenu: true,
+            positionInAddMenu: 60
+          }
+        }
       },
       "335": {
         "viewType": {
@@ -115,7 +187,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "timePrimitive": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "339": {
         "viewType": {
@@ -127,7 +201,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "appellation": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "365": {
         "formControlType": {
@@ -135,25 +211,39 @@ export class SysConfigValueMock {
         }
       },
       "445": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "454": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "455": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "456": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "457": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "518": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "521": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       635: {
         communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
@@ -169,7 +259,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "langString": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
 
       "689": {
@@ -188,16 +280,24 @@ export class SysConfigValueMock {
             "measurementUnitClass": 690
           }
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "707": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "709": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "713": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "716": {
         "viewType": {
@@ -215,13 +315,19 @@ export class SysConfigValueMock {
             "measurementUnitClass": 715
           }
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "717": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "783": {
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "784": {
         "viewType": {
@@ -233,7 +339,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "langString": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "785": {
         "viewType": {
@@ -245,7 +353,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "langString": TrueEnum.true
         },
-        "excludedFromEntities": true
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
       },
       "868": {
         "formControlType": {

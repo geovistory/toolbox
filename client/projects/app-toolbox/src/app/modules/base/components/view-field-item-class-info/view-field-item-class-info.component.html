@@ -1,27 +1,26 @@
-<div class="loc-ci-container">
-  <gv-onto-class-info class="mr-2" [pkClass]="pkClass" *ngIf="showOntoInfo$ | async">
-  </gv-onto-class-info>
-  <!-- <div class="loc-ci-left">
+<!-- MENU FOR CLASS INFO -->
+<mat-menu #classInfoMenu="matMenu">
+  <button mat-menu-item *ngIf="isInProject" (click)="itemComponent.openInNewTabFromEntity(resource)">
+    <mat-icon>tab</mat-icon>
+    Open {{classLabel}} in new Tab
+  </button>
+  <button mat-menu-item *ngIf="!isInProject" (click)="itemComponent.addAndOpenInNewTabFromEntity(resource)">
+    <mat-icon>add</mat-icon>
+    Add {{classLabel}} to project and open
+  </button>
+</mat-menu>
 
-    <mat-icon *ngIf="(iconType$ | async)==='expression-portion'" class="gv-source-color">folder
-    </mat-icon>
+<!-- CLASS INFO -->
 
-    <span *ngIf="(iconType$ | async)==='source'"
-      class="icon gv-icon gv-icon-source gv-source-color align-self-center gv-icon-preview"></span>
-
-    <span *ngIf="(iconType$ | async)==='persistent-entity'"
-      class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-
-    <span *ngIf="(iconType$ | async)==='temporal-entity'"
-      class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"
-      [ngClass]="{'fa-star-o':!isFavorite,'fa-star':isFavorite}"></span>
-  </div> -->
-  <div class="loc-ci-right mat-bg-grey-50" [ngClass]="{
-    'mat-bg-grey-50':!isFavorite,
-    'mat-bg-primary-50':isFavorite
-  }" *ngIf="!(showOntoInfo$ | async)" [matTooltip]="tooltip">
-    <span class="mat-text-secondary mat-body-2">{{classLabel|abbreviate}}</span>
-  </div>
-</div>
-<span *ngIf="(showOntoInfo$ | async) && pkEntity" class="mat-caption mat-text-secondary">
-  Entity ID: {{pkEntity}}</span>
+<span class="loc-class-info">
+  <span *ngIf="!(readonly$|async)" [matMenuTriggerFor]="classInfoMenu">
+    <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class" [classLabel]="classLabel"
+      [isFavorite]="isFavorite">
+    </gv-class-info>
+  </span>
+  <span *ngIf="(readonly$|async)">
+    <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class" [classLabel]="classLabel"
+      [isFavorite]="isFavorite">
+    </gv-class-info>
+  </span>
+</span>

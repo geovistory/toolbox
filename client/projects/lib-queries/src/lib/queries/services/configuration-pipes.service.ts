@@ -2,11 +2,11 @@
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { dfhLabelByFksKey, IconType, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProTextProperty, RelatedProfile, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { flatten, indexBy, uniq, values } from 'ramda';
+import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { Field } from '../models/Field';
 import { Profiles } from '../models/Profiles';
 import { SpecialFieldType } from '../models/SpecialFieldType';
@@ -35,6 +35,25 @@ export interface HasTypePropertyInfo {
   hasTypeProperty: number;
   isOutgoing: boolean;
   typeClass: number;
+}
+
+
+export interface AddMenuClassItem {
+  typedClass: DfhClassEnrichedWithLabel;
+  hasTypeProperty: number;
+  isOutgoing: boolean;
+  typeClass: number;
+}
+
+
+export interface DfhClassEnrichedWithLabel extends DfhClassEnriched {
+  classLabel: string
+}
+export interface DfhClassEnriched {
+  belongsToCategory: SysConfigClassCategoryBelonging;
+  dfhClass: DfhClass;
+  classConfig: ClassConfig;
+  projectRel?: ProDfhClassProjRel;
 }
 
 @Injectable({
@@ -889,13 +908,18 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
 
+
+
+  /** Pipes about classes */
+
   /**
+   * DEPRECATED this function is only used by form-create-entity.component,
+   * but actually not nedded, since caller always receives return val 'resource'
+   *
    * maps the class to the corresponding model (database table)
    * this is used by Forms to create new data in the shape of
    * the data model
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeTableNameOfClass(targetClassPk: number): Observable<TableName> {
     const obs$ = combineLatest([
       this.s.sys$.config$.main$,
@@ -929,46 +953,13 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   }
 
-
   /**
-   * returns an object where the keys are the pks of the Classes
-   * used by the given project:
-   * - or because the class is enabled by class_proj_rel
-   * - or because the class is required by sources
-   *
-   * This is usefull to create select dropdowns of classes users will know
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeClassesInEntitiesOrSources(): Observable<{ [key: string]: number }> {
-    const obs$ = combineLatest([
-      this.pipeClassesEnabledInEntities(),
-      this.pipeClassesRequiredBySources()
-    ]).pipe(
-      map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
-      startWith({})
-    )
-    return this.cache('pipeClassesInEntitiesOrSources', obs$, ...arguments)
-
-  }
-
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeClassesRequiredBySources() {
-    const obs$ = this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
-      .pipe(map(c => values(c).map(k => k.fk_class)))
-    return this.cache('pipeClassesRequiredBySources', obs$, ...arguments)
-  }
-
-  /**
-   * returns observable number[] wher the numbers are the pk_class
-   * of all classes that are enabled by at least one of the activated profiles
-   * of thte given project
-   */
-  // @spyTag
-  // @cache({ refCount: false })
+ * returns observable number[] wher the numbers are the pk_class
+ * of all classes that are enabled by at least one of the activated profiles
+ * of thte given project
+ */
   pipeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
-    const obs$ = this.a.pkProject$.pipe(switchMap(pkProject => combineLatest([
+    const obs$ = combineLatest([
       this.s.dfh$.class$.by_pk_class$.all$,
       this.pipeProfilesEnabledByProject()
     ]).pipe(
@@ -978,96 +969,144 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           .filter(klass => klass.profiles.some(profile => profilesMap[profile.fk_profile]))
       })
     )
-    ))
     return this.cache('pipeClassesEnabledByProjectProfiles', obs$, ...arguments)
 
   }
+
+  /**
+   * Pipes all classes enabled by the current project and
+   * enriches them with
+   * - category of belonging (from system config)
+   * - classConfig (from system config)
+   * - project relation (from project config)
+   * @returns
+   */
+  pipeClassesOfProject(): Observable<DfhClassEnriched[]> {
+    const obs$ = this.a.pkProject$.pipe(switchMap(pkProject => {
+      return combineLatest([
+        this.pipeClassesEnabledByProjectProfiles(),
+        this.s.pro$.dfh_class_proj_rel$.by_fk_project$.key(pkProject.toString()),
+        this.s.sys$.config$.main$.pipe(filter(x => !!x))
+      ])
+        .pipe(map(([dfhClasses, classProjRels, sysConfig]) => {
+          return dfhClasses.map(dfhClass => {
+            const belongsToCategory = getClassCategoryBelonging(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
+            const classConfig = getClassConfig(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
+            const projectRel = classProjRels?.[pkProject + '_' + dfhClass.pk_class]
+
+            return {
+              belongsToCategory,
+              classConfig,
+              dfhClass,
+              projectRel
+            }
+          })
+        }))
+    }))
+    return this.cache('pipeClassesOfProject', obs$, ...arguments)
+
+  }
+
+  // /**
+  //  * returns an object where the keys are the pks of the Classes
+  //  * used by the given project:
+  //  * - or because the class is enabled by class_proj_rel
+  //  * - or because the class is required by sources
+  //  *
+  //  * This is usefull to create select dropdowns of classes users will know
+  //  */
+  // pipeClassesInEntitiesOrSources(): Observable<{ [key: string]: number }> {
+  //   const obs$ = combineLatest([
+  //     this.pipeClassesEnabledInEntities(),
+  //     this.pipeClassesRequiredBySources()
+  //   ]).pipe(
+  //     map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
+  //     startWith({})
+  //   )
+  //   return this.cache('pipeClassesInEntitiesOrSources', obs$, ...arguments)
+
+  // }
+
+  // pipeClassesRequiredBySources() {
+  //   const obs$ = this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
+  //     .pipe(map(c => values(c).map(k => k.fk_class)))
+  //   return this.cache('pipeClassesRequiredBySources', obs$, ...arguments)
+  // }
+
+
 
   /**
   * returns observable number[] wher the numbers are the pk_class
   * of all type classes that are enabled by at least one of the activated profiles
   * of thte given project
   */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
-    const obs$ = combineLatest([
-      this.s.dfh$.class$.by_basic_type$.key(30),
-      this.pipeProfilesEnabledByProject()
-    ]).pipe(
-      map(([classesByPk, enabledProfiles]) => {
-        const profilesMap = indexBy((k) => k.toString(), values(enabledProfiles))
-        return values(classesByPk)
-          .filter(klass => {
-            return klass.profiles.some(profile => profilesMap[profile.fk_profile]) &&
-              // Exclude Manifestation product type and language
-              ![
-                DfhConfig.CLASS_PK_LANGUAGE,
-                DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE
-              ].includes(klass.pk_class)
-          })
-      })
+    const obs$ = this.pipeClassesOfProject().pipe(
+      map(items => items
+        .filter(item => item.dfhClass.basic_type === 30 &&
+          ![
+            DfhConfig.CLASS_PK_LANGUAGE,
+            DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE
+          ].includes(item.dfhClass.pk_class)
+        )
+        .map(item => item.dfhClass)
+      )
     )
+
     return this.cache('pipeTypeClassesEnabledByProjectProfiles', obs$, ...arguments)
 
   }
 
-  /**
-   * returns observable number[] where the numbers are the pk_class
-   * of all classes that are enabled by active project (using class_proj_rel)
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeClassesEnabledInEntities() {
-    const obs$ = this.a.pkProject$.pipe(
-      switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
-        .pipe(
-          map((rels) => values(rels).map(rel => rel.fk_class))
-        )
-      ))
-    return this.cache('pipeClassesEnabledInEntities', obs$, ...arguments)
-  }
+  // /**
+  //  * returns observable number[] where the numbers are the pk_class
+  //  * of all classes that are enabled by active project (using class_proj_rel)
+  //  */
+  // pipeClassesEnabledInEntities() {
+  //   const obs$ = this.a.pkProject$.pipe(
+  //     switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
+  //       .pipe(
+  //         map((rels) => values(rels).map(rel => rel.fk_class))
+  //       )
+  //     ))
+  //   return this.cache('pipeClassesEnabledInEntities', obs$, ...arguments)
+  // }
 
 
 
-  /**
-  * returns an object where the keys are the pks of the TeEn Classes
-  * used by the given project
-  */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
-    const obs$ = combineLatest([
-      this.pipeTeEnClassesEnabledInEntities(),
-      this.pipeTeEnClassesRequiredBySources()
-    ]).pipe(
-      map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
-      startWith({})
-    )
-    return this.cache('pipeSelectedTeEnClassesInProject', obs$, ...arguments)
-  }
+  // /**
+  // * returns an object where the keys are the pks of the TeEn Classes
+  // * used by the given project
+  // */
+  // pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
+  //   const obs$ = combineLatest([
+  //     this.pipeTeEnClassesEnabledInEntities(),
+  //     this.pipeTeEnClassesRequiredBySources()
+  //   ]).pipe(
+  //     map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
+  //     startWith({})
+  //   )
+  //   return this.cache('pipeSelectedTeEnClassesInProject', obs$, ...arguments)
+  // }
 
-  /**
-   * Gets array of pk_class with teEn classes enabled in entities
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeTeEnClassesEnabledInEntities() {
-    const obs$ = this.a.pkProject$.pipe(
-      switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
-        .pipe(
-          switchMap((cs) => combineLatest(
-            values(cs).map(c => this.s.dfh$.class$.by_pk_class$.key(c.fk_class).pipe(
-              filter(item => !!item)
-            ))
-          ).pipe(
-            map(dfhClasses => this.filterTeEnCasses(dfhClasses))
-          ))
-        )
-      ))
-    return this.cache('pipeTeEnClassesEnabledInEntities', obs$, ...arguments)
+  // /**
+  //  * Gets array of pk_class with teEn classes enabled in entities
+  //  */
+  // pipeTeEnClassesEnabledInEntities() {
+  //   const obs$ = this.a.pkProject$.pipe(
+  //     switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
+  //       .pipe(
+  //         switchMap((cs) => combineLatest(
+  //           values(cs).map(c => this.s.dfh$.class$.by_pk_class$.key(c.fk_class).pipe(
+  //             filter(item => !!item)
+  //           ))
+  //         ).pipe(
+  //           map(dfhClasses => this.filterTeEnCasses(dfhClasses))
+  //         ))
+  //       )
+  //     ))
+  //   return this.cache('pipeTeEnClassesEnabledInEntities', obs$, ...arguments)
 
-  }
+  // }
 
   /**
    * Filters array of DfhClass for TeEn Classes and returns array of pk_class
@@ -1083,27 +1122,25 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     return pks;
   }
 
-  /**
-   * Gets array of pk_class with teEn classes required by sources
-   */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeTeEnClassesRequiredBySources() {
-    const obs$ = this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
-      .pipe(
-        switchMap((cs) => combineLatest(
-          values(cs).map(c => this.s.dfh$.class$.by_pk_class$.key(c.fk_class).pipe(
-            filter(item => !!item)
-          ))
-        ).pipe(
-          map(dfhClasses => {
-            return this.filterTeEnCasses(dfhClasses)
-          })
-        ))
-      )
-    return this.cache('pipeTeEnClassesRequiredBySources', obs$, ...arguments)
+  // /**
+  //  * Gets array of pk_class with teEn classes required by sources
+  //  */
+  // pipeTeEnClassesRequiredBySources() {
+  //   const obs$ = this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
+  //     .pipe(
+  //       switchMap((cs) => combineLatest(
+  //         values(cs).map(c => this.s.dfh$.class$.by_pk_class$.key(c.fk_class).pipe(
+  //           filter(item => !!item)
+  //         ))
+  //       ).pipe(
+  //         map(dfhClasses => {
+  //           return this.filterTeEnCasses(dfhClasses)
+  //         })
+  //       ))
+  //     )
+  //   return this.cache('pipeTeEnClassesRequiredBySources', obs$, ...arguments)
 
-  }
+  // }
 
 
 
@@ -1113,36 +1150,69 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   /**
    *
    */
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<HasTypePropertyInfo[]> {
+  pipeTypeAndTypedClassesShownInAddMenu(enabledIn?: keyof SysConfigClassCategoryBelonging): Observable<AddMenuClassItem[]> {
 
-    let pks$: Observable<number[]>[];
-
-    const fromSources$ = this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true').pipe(
-      map(classes => values(classes).map(k => k.fk_class)),
-    )
-
-    const fromEntities$ = this.pipeClassesEnabledInEntities()
-
-    if (enabledIn === 'sources') {
-      pks$ = [fromSources$];
-    } else if (enabledIn === 'entities') {
-      pks$ = [fromEntities$];
-    } else {
-      pks$ = [fromSources$, fromEntities$]
-    }
-
-    const obs$ = combineLatest(pks$).pipe(
-      map(arrayOfPkArrays => uniq(flatten<number>(arrayOfPkArrays))),
-      switchMap(pks => this.pipeTypeAndTypedClassesOfTypedClasses(pks))
-    )
-    return this.cache('pipeTypeAndTypedClasses', obs$, ...arguments)
+    const obs$ = this.pipeClassesOfProject()
+      .pipe(
+        map(items => {
+          return items
+            .filter(item => item.belongsToCategory?.[enabledIn]?.showInAddMenu)
+            .filter(item => {
+              if (enabledIn === 'entities') {
+                return item.projectRel?.enabled_in_entities
+              }
+              return true
+            })
+        }),
+        // pipe class label
+        switchMap(enrichedClasses => combineLatestOrEmpty(enrichedClasses.map(enrichedClass =>
+          this.pipeClassLabel(enrichedClass.dfhClass.pk_class).pipe(
+            map<string, DfhClassEnrichedWithLabel>(classLabel => ({
+              ...enrichedClass,
+              classLabel,
+            }))
+          )
+        ))),
+        // sort 0-1 AZ
+        map(items => {
+          return items
+            .map(item => ({
+              item: item,
+              position: item.belongsToCategory?.[enabledIn]?.positionInAddMenu?.toString() || item.classLabel.toLowerCase()
+            }))
+            .sort((a, b) => {
+              if (a.position.toLowerCase() < b.position.toLowerCase()) {
+                return -1;
+              }
+              if (a.position.toLowerCase() > b.position.toLowerCase()) {
+                return 1;
+              }
+              return 0;
+            })
+            .map(sorted => sorted.item)
+        }),
+        // pipe add menu class item
+        switchMap(items => this.pipeAddMenuClassItem(items.map(item => item)))
+      )
+    return this.cache('pipeTypeAndTypedClassesShownInAddMenu', obs$, ...arguments)
 
   }
 
-  // @spyTag
-  // @cache({ refCount: false })
+  pipeAddMenuClassItem(enrichedClasses: DfhClassEnrichedWithLabel[]): Observable<AddMenuClassItem[]> {
+
+    const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+      map((allHasTypeProps) => {
+        const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
+        return enrichedClasses.map(enrichedClass => ({
+          typedClass: enrichedClass,
+          hasTypeProperty: byDomain[enrichedClass.dfhClass.pk_class]?.pk_property,
+          isOutgoing: true,
+          typeClass: byDomain[enrichedClass.dfhClass.pk_class]?.has_range
+        }))
+      }))
+    return this.cache('pipeAddMenuClassItem', obs$, ...arguments)
+  }
+
   pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<HasTypePropertyInfo[]> {
 
     const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
@@ -1158,19 +1228,15 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     return this.cache('pipeTypeAndTypedClassesOfTypedClasses', obs$, ...arguments)
   }
 
-  // @spyTag
-  // @cache({ refCount: false })
-  pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
-    const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
-      map((allHasTypeProps) => {
-        const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
-        return byDomain[pkTypedClass] ? byDomain[pkTypedClass].has_range : undefined
-      }))
-    return this.cache('pipeTypeClassOfTypedClass', obs$, ...arguments)
-  }
+  // pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
+  //   const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+  //     map((allHasTypeProps) => {
+  //       const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
+  //       return byDomain[pkTypedClass] ? byDomain[pkTypedClass].has_range : undefined
+  //     }))
+  //   return this.cache('pipeTypeClassOfTypedClass', obs$, ...arguments)
+  // }
 
-  // @spyTag
-  // @cache({ refCount: false })
   pipeTypedClassesOfTypeClasses(pkTypeClasses: number[]): Observable<number[]> {
 
     const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
@@ -1183,8 +1249,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
 
-  // @spyTag
-  // @cache({ refCount: false })
   pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
     const obs$ = this.s.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       map((allHasTypeProps) => {
@@ -1195,8 +1259,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   }
 
-  // @spyTag
-  // @cache({ refCount: false })
   pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]> {
     const obs$ = this.s.dfh$.property$.by_pk_property$.all$.pipe(
       map(x => {
@@ -1231,16 +1293,26 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
       return of('source')
     }
-
-    return this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
-      map(klass => {
-        if (klass.basic_type === 9) {
-          return 'temporal-entity'
+    const obs$ = combineLatest([
+      this.s.sys$.config$.main$,
+      this.s.dfh$.class$.by_pk_class$.key(pkClass)
+    ]).pipe(
+      filter(i => !i.includes(undefined)),
+      map(([config, klass]) => {
+        const classConfig: ClassConfig = config.classes[pkClass];
+        if (classConfig?.valueObjectType) {
+          return 'value'
         }
-        return 'persistent-entity'
+        else {
+          if (klass.basic_type === 9) {
+            return 'temporal-entity'
+          }
+          return 'persistent-entity'
+        }
       })
     )
 
+    return obs$
   }
 }
 
@@ -1337,3 +1409,15 @@ function getSettingsFromSysConfig(
   return settings;
 }
 
+function getClassCategoryBelonging(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): SysConfigClassCategoryBelonging {
+  return sysConfig?.classes?.[pkClass]?.belongsToCategory ??
+    sysConfig?.classesByBasicType?.[basicTypeId]?.belongsToCategory ??
+    sysConfig?.classesDefault?.belongsToCategory ??
+    { entities: { showInAddMenu: true } };
+}
+
+function getClassConfig(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): ClassConfig {
+  return sysConfig?.classes?.[pkClass] ??
+    sysConfig?.classesByBasicType?.[basicTypeId] ??
+    sysConfig?.classesDefault;
+}

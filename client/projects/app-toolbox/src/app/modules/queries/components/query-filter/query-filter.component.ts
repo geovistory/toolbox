@@ -1,31 +1,23 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional, AfterViewInit } from '@angular/core';
-import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor, Validators } from '@angular/forms';
+import { AfterViewInit, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
+import { ControlValueAccessor, FormArray, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from "@kleiolab/lib-queries";
+import { QueryFilter, QueryFilterData } from "@kleiolab/lib-sdk-lb4";
 import { U } from "@kleiolab/lib-utils";
+import { values } from 'd3';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
+import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
+import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-group-factory';
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
-import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
-import { FormArrayConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig";
 import { FormGroupConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormGroupConfig";
-import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { values } from 'd3';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil, filter, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
-import { propertiesRequiredValidator } from '../property-select/property-select.component';
-import { PropertySelectModel } from "@kleiolab/lib-queries";
-import { PropertyOption } from "@kleiolab/lib-queries";
-import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
-import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
-import { QueryFilterService } from './query-filter.service';
-import { InformationPipesService } from "@kleiolab/lib-queries";
+import { FormNodeConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig";
 import { equals } from 'ramda';
-import { QueryFilterData } from "@kleiolab/lib-sdk-lb4";
-import { QueryFilter } from "@kleiolab/lib-sdk-lb4";
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { QueryFilterService } from './query-filter.service';
 
 export type ClassFilterCondition = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS';
 export type SubgroupOperator = 'AND' | 'OR';
@@ -234,9 +226,11 @@ export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, C
       pkClasses$ = this.rootClasses$;
     } else {
       // else use the selected classes in this project
-      pkClasses$ = this.c.pipeClassesInEntitiesOrSources().pipe(
-        map(x => values(x))
-      )
+      pkClasses$ = this.c.pipeClassesOfProject().pipe(
+        map(items => items
+          .filter(item => (values(item.belongsToCategory)?.[0]?.showInAddMenu))
+          .map(item => item.dfhClass.pk_class)
+        ))
     }
     const config: FormFactoryConfig<QfFormGroupData, QfFormArrayData, QfFormControlData, null> = {
       rootFormGroup$: new BehaviorSubject({

@@ -142,14 +142,7 @@ describe('SubfieldPageController', () => {
         .expect(200);
       expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
     });
-    // it('should return field page for shipVoyageHasTimeSpan (targetType: timeSpan)', async () => {
-    //   await SubfieldHelper.shipVoyageHasTimeSpan()
-    //   const res = await client.post('/subfield-page/load-subfield-page')
-    //     .set('Authorization', lb4Token)
-    //     .send([GvFieldPageReqMock.shipVoyageHasTimeSpan])
-    //     .expect(200);
-    //   expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageHasTimeSpan);
-    // });
+
     it('should return field page for personHasAppeTeEn (targetType: temporalEntity)', async () => {
       await SubfieldHelper.personHasAppeTeEn()
       const res = await client.post('/subfield-page/load-subfield-page')
@@ -205,6 +198,17 @@ describe('SubfieldPageController', () => {
         .expect(200);
       const d = res.body.subfieldPages[0].validFor?.toString() as string
       expect(new Date(d) > new Date('1999-01-01')).to.be.true();
+    });
+
+    it('should return field page for propertyOfProperty (targetType: languageString)', async () => {
+      await SubfieldHelper.statementOfStatementHasExactReference()
+      const res = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send([GvFieldPageReqMock.statementOfStatementHasExactReference])
+        .expect(200);
+      checkPaginationObject(res.body, GvPaginationObjectMock.statementOfStatementHasExactReference);
+
+      // expect(res.body).to.containDeep(GvPaginationObjectMock.statementOfStatementHasExactReference);
     });
 
   });

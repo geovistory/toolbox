@@ -263,5 +263,15 @@ export class InfResourceMock {
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
 
+  static readonly TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<InfResource> = ({
+    pk_entity: 4026,
+    fk_class: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+  static readonly TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<InfResource> = ({
+    pk_entity: 4027,
+    fk_class: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
 
 }

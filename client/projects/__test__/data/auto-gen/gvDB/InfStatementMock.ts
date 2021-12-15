@@ -444,6 +444,19 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
     fk_object_info: InfAppellationMock.JACK.pk_entity,
   })
+  static readonly EXPRESSION_MENTIONS_RUDOLF: OmitEntity<InfStatement> = ({
+    pk_entity: 3062,
+    fk_subject_info: InfResourceMock.HABS_EMP_EXPR.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1218_MENTIONS.dfh_pk_property,
+    fk_object_info: InfResourceMock.RUDOLF.pk_entity,
+  })
+
+  static readonly MENTIONS_STMT_HAS_EXACT_REFERENCE: OmitEntity<InfStatement> = ({
+    pk_entity: 3063,
+    fk_subject_info: InfStatementMock.EXPRESSION_MENTIONS_RUDOLF.pk_entity,
+    fk_property_of_property: 1,
+    fk_object_info: InfLangStringMock.EN_PAGE_1.pk_entity,
+  })
 
   static readonly DEFINITION_1_HAS_VALUE_VERSION_1: OmitEntity<InfStatement> = ({
     pk_entity: 3061,

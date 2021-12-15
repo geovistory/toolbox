@@ -19,7 +19,7 @@ import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {PubAccountMock} from '../gvDB/PubAccountMock'
 import {WarEntityPreviewMock} from '../gvDB/WarEntityPreviewMock'
 
-export function createStatementWithTarget(statement: OmitEntity<InfStatement>, projRel: OmitEntity<ProInfoProjRel>, accountId = 1001, target: SatementTarget, isOutgoing: boolean): StatementWithTarget {
+export function createStatementWithTarget(statement: OmitEntity<InfStatement>, accountId = 1001, target: SatementTarget, isOutgoing: boolean, projRel?: OmitEntity<ProInfoProjRel>): StatementWithTarget {
 
   let targetLabel = ''
   if (target.appellation) {
@@ -45,7 +45,7 @@ export function createStatementWithTarget(statement: OmitEntity<InfStatement>, p
   }
   return {
     isOutgoing,
-    ordNum: isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain,
+    ordNum: isOutgoing ? projRel?.ord_num_of_range : projRel?.ord_num_of_domain,
     statement,
     target,
     targetClass: target.appellation?.fk_class ??
@@ -70,12 +70,12 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_APPE,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
           )
         ],
       }
@@ -99,12 +99,12 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_LANG,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_LANG,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               language: InfLanguageMock.ENGLISH as InfLanguage
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_LANG,
           )
         ],
       }
@@ -119,7 +119,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_PERSON,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               entity: {
@@ -127,7 +126,8 @@ export namespace GvPaginationObjectMock {
                 entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
               }
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
           )
         ],
       }
@@ -141,12 +141,12 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123,
-            ProInfoProjRelMock.PROJ_1_STMT_MADRIDS_PRESENCE_WAS_AT_PLACE_123,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               place: InfPlaceMock.PLACE_123 as InfPlace,
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_MADRIDS_PRESENCE_WAS_AT_PLACE_123,
           )
         ],
       }
@@ -160,7 +160,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION,
-            ProInfoProjRelMock.PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               dimension: {
@@ -168,7 +167,8 @@ export namespace GvPaginationObjectMock {
                 unitPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH as WarEntityPreview
               }
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION,
           )],
       }
     ],
@@ -182,7 +182,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
-            ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               langString: {
@@ -190,7 +189,8 @@ export namespace GvPaginationObjectMock {
                 language: InfLanguageMock.ENGLISH as InfLanguage
               }
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
           )],
       }
     ]
@@ -204,7 +204,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               timePrimitive: {
@@ -216,7 +215,8 @@ export namespace GvPaginationObjectMock {
                 }
               }
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
           )
         ],
       }
@@ -249,7 +249,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
             PubAccountMock.GAETAN_VERIFIED.id,
 
             {
@@ -262,7 +261,8 @@ export namespace GvPaginationObjectMock {
                 }
               }
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
           )
         ],
       },
@@ -283,7 +283,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               timePrimitive: {
@@ -295,7 +294,8 @@ export namespace GvPaginationObjectMock {
                 }
               }
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
           )
         ],
       },
@@ -322,7 +322,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_PERSON,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               entity: {
@@ -330,7 +329,8 @@ export namespace GvPaginationObjectMock {
                 entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
               }
             },
-            false
+            false,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
           )
         ],
       },
@@ -343,12 +343,12 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_APPE,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
           )
         ],
       },
@@ -365,7 +365,6 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_PERSON,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               entity: {
@@ -373,11 +372,11 @@ export namespace GvPaginationObjectMock {
                 entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
               }
             },
-            false
+            false,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
           ),
           createStatementWithTarget(
             InfStatementMock.NAME_2_TO_PERSON,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               entity: {
@@ -385,7 +384,8 @@ export namespace GvPaginationObjectMock {
                 entityPreview: WarEntityPreviewMock.NAMING_2 as WarEntityPreview
               }
             },
-            false
+            false,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON,
           )
         ],
       },
@@ -398,12 +398,12 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_1_TO_APPE,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
           )
         ],
       },
@@ -416,16 +416,37 @@ export namespace GvPaginationObjectMock {
         paginatedStatements: [
           createStatementWithTarget(
             InfStatementMock.NAME_2_TO_APPE,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE,
             PubAccountMock.GAETAN_VERIFIED.id,
             {
               appellation: InfAppellationMock.JACK as InfAppellation
             },
-            true
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE,
           )
         ],
       },
     ],
+  }
+  export const statementOfStatementHasExactReference: GvPaginationObject = {
+    subfieldPages: [
+      {
+        req: GvFieldPageReqMock.statementOfStatementHasExactReference,
+        count: 1,
+        paginatedStatements: [
+          createStatementWithTarget(
+            InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE,
+            PubAccountMock.GAETAN_VERIFIED.id,
+            {
+              langString: {
+                langString: InfLangStringMock.EN_PAGE_1 as InfLangString,
+                language: InfLanguageMock.ENGLISH as InfLanguage
+              }
+            },
+            true,
+            ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE,
+          )],
+      }
+    ]
   }
 
 

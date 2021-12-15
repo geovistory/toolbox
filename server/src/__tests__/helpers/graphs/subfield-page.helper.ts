@@ -124,6 +124,12 @@ export namespace SubfieldHelper {
 
 
   }
+  export async function statementOfStatementHasExactReference() {
+    await createInfStatement(InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE)
+    await createInfLanguage(InfLanguageMock.ENGLISH)
+    await createInfLangString(InfLangStringMock.EN_PAGE_1)
+  }
 
   // Data to test subfield-page-query for AppeTeEn->refers to name->Appellation
   export async function definitionHasValueVersions() {

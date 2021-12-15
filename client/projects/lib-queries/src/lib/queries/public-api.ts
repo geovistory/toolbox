@@ -2,6 +2,7 @@
 
 export * from './decorators/method-decorators';
 export * from './functions/functions';
+export * from './models/AddMenuClassOrTypeItem';
 export * from './models/ClassAndTypeNode';
 export * from './models/ClassAndTypePk';
 export * from './models/ClassAndTypeSelectModel';

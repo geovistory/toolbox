@@ -1199,6 +1199,39 @@ export class DfhApiPropertyMock {
     "dfh_profile_label": "Digitals",
     "dfh_profile_label_language": "en"
   }
+
+  // this is not from OntoME, it is added manually for acceptance tests
+  static readonly EN_1218_MENTIONS: DfhApiProperty = {
+    "pk_entity": 6294,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 1218,
+    "dfh_fk_namespace": 110,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_property_label": "mentions",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_property_domain": 218,
+    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "A propositional and symbolic object (an information object), e.g. a book, website or chunk, mentions somewhere (i.e. without further reference) an entity (a persistent item or temporal entity)",
+    "dfh_profile_label_language": "en",
+    "dfh_property_inverse_label": "is mentioned by",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": -1,
+    "dfh_range_instances_min_quantifier": 0,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P2"
+  }
 }
 /**
  * SQL to create mock items

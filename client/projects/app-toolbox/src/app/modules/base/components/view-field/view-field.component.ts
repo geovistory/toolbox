@@ -4,6 +4,7 @@ import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelect
 import { InfActions } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { values } from 'ramda';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
@@ -27,10 +28,12 @@ export class ViewFieldComponent implements OnInit {
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() scope: GvFieldPageScope;
+  @Input() showBodyOnInit = false;
 
 
   showAddButton$
   itemsCount$: Observable<number>;
+  targetClassLabels: string[]
   constructor(
     public i: InformationPipesService,
     public p: ActiveProjectService,
@@ -67,6 +70,7 @@ export class ViewFieldComponent implements OnInit {
           shareReplay({ refCount: true, bufferSize: 1 })
         )
     }
+    this.targetClassLabels = values(this.field.targets).map(c => c.targetClassLabel)
 
     // const limit = temporalEntityListDefaultLimit
     // const offset = temporalEntityListDefaultPageIndex

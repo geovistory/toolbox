@@ -196,5 +196,26 @@ export class WarEntityPreviewMock {
         entity_label: 'This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.',
         entity_type: 'peIt',
     })
+
+    static readonly TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<WarEntityPreview> = ({
+        pk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_BOOK.pk_entity,
+        fk_class: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_BOOK.fk_class,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_class_label,
+        entity_label: 'Book',
+        entity_type: 'peIt',
+    })
+    static readonly TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<WarEntityPreview> = ({
+        pk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_JOURNAL.pk_entity,
+        fk_class: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_JOURNAL.fk_class,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_class_label,
+        entity_label: 'Journal',
+        entity_type: 'peIt',
+    })
+
+
 }
 
