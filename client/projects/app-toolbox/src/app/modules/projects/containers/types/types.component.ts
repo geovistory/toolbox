@@ -217,22 +217,28 @@ export class TypesComponent implements OnInit, OnDestroy {
    * @param pkEntity
    */
   edit(pkEntity: number) {
-    const data: ViewSectionsDialogData = {
-      appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
-      pkClass$: of(this.pkClass),
-      source: { fkInfo: pkEntity },
-      readonly$: new BehaviorSubject(false),
-      showOntoInfo$: new BehaviorSubject(false),
-    }
-    const dialogRef = this.dialog.open(ViewSectionsDialogComponent, {
-      height: '90%',
-      width: '90%',
-      data
-    });
+    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+      const data: ViewSectionsDialogData = {
+        scope: { inProject: pkProject },
+        appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
+        pkClass$: of(this.pkClass),
+        source: { fkInfo: pkEntity },
+        readonly$: new BehaviorSubject(false),
+        showOntoInfo$: new BehaviorSubject(false),
+        showOpenInNewTabButton: true
+      }
+      const dialogRef = this.dialog.open(ViewSectionsDialogComponent, {
+        height: '90%',
+        width: '90%',
+        data
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+      });
+    })
+
   }
 
 
