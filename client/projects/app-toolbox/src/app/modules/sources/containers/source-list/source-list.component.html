@@ -2,8 +2,8 @@
 
   <gv-list-drawer-header>
     <div title>Your Sources</div>
-    <gv-classes-and-types-select buttons enabledIn="sources" (select)="startCreate($event)">
-    </gv-classes-and-types-select>
+    <gv-add-entity-menu buttons enabledIn="sources" (select)="startCreate()">
+    </gv-add-entity-menu>
   </gv-list-drawer-header>
 
   <gv-list class="gv-flex-fh" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)"

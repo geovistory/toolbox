@@ -1,7 +1,7 @@
-<gv-view-field-item-class-info *ngIf="classLabel$|async" class="card-header-icon" dnd-draggable
-  [dragData]="preview$ | async" [showOntoInfo$]="showOntoInfo$" shade [size]="60" [pkClass]="fkClass$|async"
-  [classLabel]="classLabel$|async" [isFavorite]="false" [shade]="'light'">
-</gv-view-field-item-class-info>
+<gv-class-info *ngIf="classLabel$|async" class="card-header-icon" dnd-draggable [dragData]="preview$ | async"
+  [showOntoInfo$]="showOntoInfo$" shade [size]="60" [pkClass]="fkClass$|async" [classLabel]="classLabel$|async"
+  [isFavorite]="false" [shade]="'light'">
+</gv-class-info>
 
 <div class="card-header-texts">
   <div class="ellipsis">

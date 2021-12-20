@@ -2,14 +2,13 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ClassAndTypePk, ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { IAppState, RootEpics } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
-import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { InformationAPIActions } from './api/entity-list.actions';
 import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
@@ -45,7 +44,13 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   pkClassesInProject;
   pkUiContextCreate = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
-  pkAllowedClasses$ = this.c.pipeClassesEnabledInEntities();
+  pkAllowedClasses$ = this.c.pipeClassesOfProject().pipe(
+    map(items => items
+      .filter(item => item.belongsToCategory?.entities?.showInAddMenu)
+      .filter(item => item.projectRel?.enabled_in_entities)
+      .map(item => item.dfhClass.pk_class)
+    )
+  );
 
   constructor(
     protected rootEpics: RootEpics,
@@ -55,7 +60,6 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     public router: Router,
     public p: ActiveProjectService,
     public c: ConfigurationPipesService,
-    private m: BaseModalsService
   ) {
     super()
 
@@ -74,19 +78,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   }
 
 
-  startCreate(classAndTypePk: ClassAndTypePk) {
-    this.p.dfh$.class$.by_pk_class$.key(classAndTypePk.pkClass)
-      .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(klass => {
-
-        this.p.setListType('')
-
-        this.m.openAddEntityDialog({
-          pkClass: classAndTypePk.pkClass
-        }).subscribe(result => {
-          this.p.addEntityTab(result.pkEntity, result.pkClass)
-        })
-
-      })
+  startCreate() {
+    this.p.setListType('')
   }
 
   ngOnDestroy() {

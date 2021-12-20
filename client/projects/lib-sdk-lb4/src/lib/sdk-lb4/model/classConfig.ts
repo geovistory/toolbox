@@ -13,6 +13,7 @@ import { CommunityVisibilityOptions } from './communityVisibilityOptions';
 import { GvFieldTargetViewType } from './gvFieldTargetViewType';
 import { AllowedCommunityVisibility } from './allowedCommunityVisibility';
 import { ProjectVisibilityOptions } from './projectVisibilityOptions';
+import { SysConfigClassCategoryBelonging } from './sysConfigClassCategoryBelonging';
 import { SysConfigFormCtrlType } from './sysConfigFormCtrlType';
 import { SysConfigValueObjectType } from './sysConfigValueObjectType';
 
@@ -24,9 +25,10 @@ export interface ClassConfig {
     viewType?: GvFieldTargetViewType;
     formControlType?: SysConfigFormCtrlType;
     valueObjectType?: SysConfigValueObjectType;
-    excludedFromEntities?: boolean;
+    belongsToCategory?: SysConfigClassCategoryBelonging;
     communityVisibilityRange?: AllowedCommunityVisibility;
     communityVisibilityDefault?: CommunityVisibilityOptions;
     projectVisibilityDefault?: ProjectVisibilityOptions;
+    docUrl?: string;
 }
 

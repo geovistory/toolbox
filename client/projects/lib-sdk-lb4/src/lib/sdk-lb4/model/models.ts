@@ -154,6 +154,8 @@ export * from './sysClassField';
 export * from './sysClassHasTypeProperty';
 export * from './sysConfigAddProperty';
 export * from './sysConfigAddPropertyForClass';
+export * from './sysConfigClassCategory';
+export * from './sysConfigClassCategoryBelonging';
 export * from './sysConfigFieldDisplay';
 export * from './sysConfigFieldsOfSourceClass';
 export * from './sysConfigFormCtrlType';

@@ -62,9 +62,9 @@ class ProInfoProjRelSelector extends Selector {
 
 
 class ProDfhClassProjRelSelector extends Selector {
-  public by_fk_project__enabled_in_entities$ = this.selector<ByPk<ProDfhClassProjRel>>('by_fk_project__enabled_in_entities')
   public by_fk_project__fk_class$ = this.selector<ProDfhClassProjRel>('by_fk_project__fk_class')
-  public by_fk_project$ = this.selector<ProDfhClassProjRel>('by_fk_project')
+  public by_fk_project__enabled_in_entities$ = this.selector<ByPk<ProDfhClassProjRel>>('by_fk_project__enabled_in_entities')
+  public by_fk_project$ = this.selector<ByPk<ProDfhClassProjRel>>('by_fk_project')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

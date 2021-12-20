@@ -1,0 +1,36 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 280px;
+}
+
+.loc-header-item {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.loc-toggle,
+.loc-help-btn {
+  height: 48px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 56px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.loc-label {
+  height: 48px;
+  padding-top: 13px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loc-container {
+  width: 100%;
+}
